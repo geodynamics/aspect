@@ -71,179 +71,179 @@ namespace aspect
        * @param amplitude The amplitude of the solitary wave, which is always
        * greater than 1.
        */
-       double solitary_wave_solution (const double phi, const double amplitude)
-       {
-         AssertThrow(phi > 1.0 && phi <= amplitude,
-                     ExcMessage("The solitary wave solution can only be computed "
-                         "for porosities larger than the background porosity of 1"
-                         "and smaller than or equal to the amplitude of the wave."));
-         AssertThrow(amplitude > 1,
-                     ExcMessage("Amplitude of the solitary wave must be larger than 1!"));
-         const double A_1   = std::sqrt(amplitude - 1.0);
-         const double A_phi = std::sqrt(amplitude - phi);
-         return std::sqrt(amplitude + 0.5)
-                * (2 * A_phi - 1.0/A_1 * std::log((A_1 - A_phi)/(A_1 + A_phi)));
-       }
+      double solitary_wave_solution (const double phi, const double amplitude)
+      {
+        AssertThrow(phi > 1.0 && phi <= amplitude,
+                    ExcMessage("The solitary wave solution can only be computed "
+                               "for porosities larger than the background porosity of 1"
+                               "and smaller than or equal to the amplitude of the wave."));
+        AssertThrow(amplitude > 1,
+                    ExcMessage("Amplitude of the solitary wave must be larger than 1!"));
+        const double A_1   = std::sqrt(amplitude - 1.0);
+        const double A_phi = std::sqrt(amplitude - phi);
+        return std::sqrt(amplitude + 0.5)
+               * (2 * A_phi - 1.0/A_1 * std::log((A_1 - A_phi)/(A_1 + A_phi)));
+      }
 
 
-       /**
-        * This function reads the coordinate and the porosity of the solitary wave
-        * from an input file.
-        *
-        * @param filename Name of the input file.
-        */
-       void read_solitary_wave_solution (const std::string &filename)
-       {
-         std::string temp;
-         std::ifstream in(filename.c_str(), std::ios::in);
-         AssertThrow (in,
-                      ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
+      /**
+       * This function reads the coordinate and the porosity of the solitary wave
+       * from an input file.
+       *
+       * @param filename Name of the input file.
+       */
+      void read_solitary_wave_solution (const std::string &filename)
+      {
+        std::string temp;
+        std::ifstream in(filename.c_str(), std::ios::in);
+        AssertThrow (in,
+                     ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
 
-         while (!in.eof())
-           {
-             double x, f;
-             in >> x >> f;
-             if (in.eof())
-               break;
-             getline(in, temp);
+        while (!in.eof())
+          {
+            double x, f;
+            in >> x >> f;
+            if (in.eof())
+              break;
+            getline(in, temp);
 
-             coordinate.insert(coordinate.begin(),x);
-             porosity.insert(porosity.begin(),f);
-           }
-       }
-
-
-       /**
-        * This function gets the coordinate as an input parameters and gives
-        * back the porosity of the solitary wave. As this function is only defined
-        * implicitly, we have to interpolate from the coordinates where we have the
-        * porosity to our mesh.
-        *
-        * @param amplitude The amplitude of the solitary wave, which is always
-        * greater than 1.
-        * @param offset The offset of the center of the solitary wave from the
-        * boundary of the domain.
-        */
-       void compute_porosity (const double amplitude,
-                              const double background_porosity,
-                              const double offset,
-                              const double compaction_length,
-                              const bool read_solution,
-                              const std::string file_name)
-       {
-         // non-dimensionalize the amplitude
-         const double non_dim_amplitude = amplitude / background_porosity;
-
-         if(read_solution)
-           read_solitary_wave_solution(file_name);
-         else
-           {
-             porosity.resize(max_points);
-             coordinate.resize(max_points);
-
-             // get the coordinates where we have the solution
-             for (unsigned int i=0;i<max_points;++i)
-               {
-                 porosity[i] = 1.0 + 1e-10*non_dim_amplitude
-                               + double(i)/double(max_points-1) * (non_dim_amplitude * (1.0 - 1e-10) - 1.0);
-                 coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
-               }
-           }
-
-             for (unsigned int i=0;i<coordinate.size();++i)
-               {
-                 // re-scale porosity and position
-                 porosity[i] *= background_porosity;
-                 coordinate[i] *= compaction_length;
-               }
-       }
+            coordinate.insert(coordinate.begin(),x);
+            porosity.insert(porosity.begin(),f);
+          }
+      }
 
 
-       double interpolate (const double position,
-                           const double offset)
-       {
-         // interpolate from the solution grid to the mesh used in the simulation
-         // solitary wave is a monotonically decreasing function, so the coordinates
-         // should be in descending order
+      /**
+       * This function gets the coordinate as an input parameters and gives
+       * back the porosity of the solitary wave. As this function is only defined
+       * implicitly, we have to interpolate from the coordinates where we have the
+       * porosity to our mesh.
+       *
+       * @param amplitude The amplitude of the solitary wave, which is always
+       * greater than 1.
+       * @param offset The offset of the center of the solitary wave from the
+       * boundary of the domain.
+       */
+      void compute_porosity (const double amplitude,
+                             const double background_porosity,
+                             const double offset,
+                             const double compaction_length,
+                             const bool read_solution,
+                             const std::string file_name)
+      {
+        // non-dimensionalize the amplitude
+        const double non_dim_amplitude = amplitude / background_porosity;
 
-         // we only have the solution of the solitary wave for
-         // coordinates larger than 0 (one half of the wave)
-         const double x = (position > offset
+        if (read_solution)
+          read_solitary_wave_solution(file_name);
+        else
+          {
+            porosity.resize(max_points);
+            coordinate.resize(max_points);
+
+            // get the coordinates where we have the solution
+            for (unsigned int i=0; i<max_points; ++i)
+              {
+                porosity[i] = 1.0 + 1e-10*non_dim_amplitude
+                              + double(i)/double(max_points-1) * (non_dim_amplitude * (1.0 - 1e-10) - 1.0);
+                coordinate[i] = solitary_wave_solution(porosity[i], non_dim_amplitude);
+              }
+          }
+
+        for (unsigned int i=0; i<coordinate.size(); ++i)
+          {
+            // re-scale porosity and position
+            porosity[i] *= background_porosity;
+            coordinate[i] *= compaction_length;
+          }
+      }
+
+
+      double interpolate (const double position,
+                          const double offset)
+      {
+        // interpolate from the solution grid to the mesh used in the simulation
+        // solitary wave is a monotonically decreasing function, so the coordinates
+        // should be in descending order
+
+        // we only have the solution of the solitary wave for
+        // coordinates larger than 0 (one half of the wave)
+        const double x = (position > offset
                           ?
                           position - offset
                           :
                           offset - position);
 
-         if(x > coordinate[0])
-           return porosity[0];
+        if (x > coordinate[0])
+          return porosity[0];
 
-         unsigned int j= coordinate.size()-2;
-         unsigned int i = j/2;
-         while (!(x < coordinate[j] && x >= coordinate[j+1]))
-         {
-           if(x < coordinate[j])
-        	 j += i;
-           else
-        	 j -= i;
-           if (i>1)
-             i /= 2;
-         }
+        unsigned int j= coordinate.size()-2;
+        unsigned int i = j/2;
+        while (!(x < coordinate[j] && x >= coordinate[j+1]))
+          {
+            if (x < coordinate[j])
+              j += i;
+            else
+              j -= i;
+            if (i>1)
+              i /= 2;
+          }
 
-         const double distance = (x - coordinate[j+1])
-                                 /(coordinate[j] - coordinate[j+1]);
-         return porosity[j+1] + distance * (porosity[j] - porosity[j+1]);
-       }
+        const double distance = (x - coordinate[j+1])
+                                /(coordinate[j] - coordinate[j+1]);
+        return porosity[j+1] + distance * (porosity[j] - porosity[j+1]);
+      }
 
-       /**
-        * The exact solution for the Solitary wave benchmark.
-        */
-       template <int dim>
-       class FunctionSolitaryWave : public Function<dim>
-       {
-         public:
-    	   FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
-    	     :
-    		 Function<dim>(dim+4),
-    		 offset_(offset),
-    	     delta_(delta),
-    	     initial_pressure_(initial_pressure),
-    	     max_z_(max_z)
-    	   {}
+      /**
+       * The exact solution for the Solitary wave benchmark.
+       */
+      template <int dim>
+      class FunctionSolitaryWave : public Function<dim>
+      {
+        public:
+          FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
+            :
+            Function<dim>(dim+4),
+            offset_(offset),
+            delta_(delta),
+            initial_pressure_(initial_pressure),
+            max_z_(max_z)
+          {}
 
-    	   void set_delta(const double delta)
-    	   {
-    		   delta_ = delta;
-    	   }
+          void set_delta(const double delta)
+          {
+            delta_ = delta;
+          }
 
-           virtual void vector_value (const Point< dim > &p,
-                                      Vector< double >   &values) const
-           {
-        	 double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
-        	 if (p[dim-1]-delta_ < 0)
-        	   index = 0;
-        	 else if (p[dim-1]-delta_ > max_z_)
-          	   index = initial_pressure_.size()-1;
-        	 AssertThrow(index < initial_pressure_.size(), ExcMessage("not in range"));
-        	 const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
-        	 const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
-        	 const double interpolated_pressure = (index == initial_pressure_.size()-1)
-                    		                      ?
-                    		                      initial_pressure_[index]
-                    		                      :
-                    		                      initial_pressure_[index] + (initial_pressure_[index+1] - initial_pressure_[index])
-                    		                                  * (p[dim-1]-delta_ - z_coordinate1) / (z_coordinate2 - z_coordinate1);
+          virtual void vector_value (const Point< dim > &p,
+                                     Vector< double >   &values) const
+          {
+            double index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
+            if (p[dim-1]-delta_ < 0)
+              index = 0;
+            else if (p[dim-1]-delta_ > max_z_)
+              index = initial_pressure_.size()-1;
+            AssertThrow(index < initial_pressure_.size(), ExcMessage("not in range"));
+            const double z_coordinate1 = static_cast<double>(index)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
+            const double z_coordinate2 = static_cast<double>(index+1)/static_cast<double>(initial_pressure_.size()-1) * max_z_;
+            const double interpolated_pressure = (index == initial_pressure_.size()-1)
+                                                 ?
+                                                 initial_pressure_[index]
+                                                 :
+                                                 initial_pressure_[index] + (initial_pressure_[index+1] - initial_pressure_[index])
+                                                 * (p[dim-1]-delta_ - z_coordinate1) / (z_coordinate2 - z_coordinate1);
 
-             values[dim+3] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
-             values[dim+1] = interpolated_pressure;                                   //compaction pressure
-           }
+            values[dim+3] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
+            values[dim+1] = interpolated_pressure;                                   //compaction pressure
+          }
 
-         private:
-           const double offset_;
-           double delta_;
-           const std::vector<double> initial_pressure_;
-           const double max_z_;
-       };
-     }
+        private:
+          const double offset_;
+          double delta_;
+          const std::vector<double> initial_pressure_;
+          const double max_z_;
+      };
+    }
 
 
     /**
@@ -257,120 +257,120 @@ namespace aspect
     class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-      virtual bool
-      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
-          return true;
-        return false;
-      }
+        virtual bool
+        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+        {
+          if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
+            return true;
+          return false;
+        }
 
-      virtual bool
-      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
-          return true;
-        return false;
-      }
-
-
-      virtual bool
-      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
+        virtual bool
+        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+        {
+          if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
+            return true;
+          return false;
+        }
 
 
-      virtual bool
-      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
+        virtual bool
+        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+        {
+          return false;
+        }
 
 
-      virtual bool
-      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
+        virtual bool
+        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+        {
+          return false;
+        }
 
-      virtual bool is_compressible () const
-      {
-        return false;
-      }
 
-      virtual double reference_viscosity () const
-      {
-        return eta_0;
-      }
+        virtual bool
+        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+        {
+          return false;
+        }
 
-      virtual double reference_density () const
-      {
-        return reference_rho_s;
-      }
+        virtual bool is_compressible () const
+        {
+          return false;
+        }
 
-      double length_scaling (const double porosity) const
-      {
-        return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
-      }
+        virtual double reference_viscosity () const
+        {
+          return eta_0;
+        }
 
-      double velocity_scaling (const double porosity) const
-      {
-    	const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-        return reference_permeability * std::pow(porosity,2) * (reference_rho_s - reference_rho_f)
-        	   * this->get_gravity_model().gravity_vector(surface_point).norm() / eta_f;
-      }
+        virtual double reference_density () const
+        {
+          return reference_rho_s;
+        }
 
-      /**
-       * Declare the parameters this class takes through input files.
-       */
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+        double length_scaling (const double porosity) const
+        {
+          return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
+        }
 
-      /**
-       * Read the parameters this class declares from the parameter file.
-       */
-      virtual
-      void
-      parse_parameters (ParameterHandler &prm);
+        double velocity_scaling (const double porosity) const
+        {
+          const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
+          return reference_permeability * std::pow(porosity,2) * (reference_rho_s - reference_rho_f)
+                 * this->get_gravity_model().gravity_vector(surface_point).norm() / eta_f;
+        }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
-      {
-        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-        for (unsigned int i=0;i<in.position.size();++i)
-          {
-            double porosity = in.composition[i][porosity_idx];
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
-            out.viscosities[i] = eta_0 * (1.0 - porosity);
-            out.densities[i] = reference_rho_s;
-            out.thermal_expansion_coefficients[i] = 0.0;
-            out.specific_heat[i] = 1.0;
-            out.thermal_conductivities[i] = 0.0;
-            out.compressibilities[i] = 0.0;
-          }
-      }
+        virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+        {
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-      {
-        evaluate(in, out);
-        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+              double porosity = in.composition[i][porosity_idx];
 
-        for (unsigned int i=0;i<in.position.size();++i)
-          {
-            double porosity = in.composition[i][porosity_idx];
+              out.viscosities[i] = eta_0 * (1.0 - porosity);
+              out.densities[i] = reference_rho_s;
+              out.thermal_expansion_coefficients[i] = 0.0;
+              out.specific_heat[i] = 1.0;
+              out.thermal_conductivities[i] = 0.0;
+              out.compressibilities[i] = 0.0;
+            }
+        }
 
-            out.compaction_viscosities[i] = xi_0 * (1.0 - porosity);
-            out.fluid_viscosities[i]= eta_f;
-            out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
-            out.fluid_densities[i]= reference_rho_f;
-            out.fluid_compressibilities[i] = 0.0;
-          }
+        virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
+                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
+        {
+          evaluate(in, out);
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      }
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+              double porosity = in.composition[i][porosity_idx];
+
+              out.compaction_viscosities[i] = xi_0 * (1.0 - porosity);
+              out.fluid_viscosities[i]= eta_f;
+              out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
+              out.fluid_densities[i]= reference_rho_f;
+              out.fluid_compressibilities[i] = 0.0;
+            }
+
+        }
 
       private:
         double reference_rho_s;
@@ -390,27 +390,27 @@ namespace aspect
         prm.enter_subsection("Solitary wave");
         {
           prm.declare_entry ("Reference solid density", "3000",
-              Patterns::Double (0),
-              "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
+                             Patterns::Double (0),
+                             "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference melt density", "2500",
-              Patterns::Double (0),
-              "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
+                             Patterns::Double (0),
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference shear viscosity", "1e20",
-              Patterns::Double (0),
-              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
-              "Units: $Pa s$.");
+                             Patterns::Double (0),
+                             "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
+                             "Units: $Pa s$.");
           prm.declare_entry ("Reference compaction viscosity", "1e20",
-              Patterns::Double (0),
-              "The value of the constant volumetric viscosity $\\xi_0$ of the solid matrix. "
-              "Units: $Pa s$.");
+                             Patterns::Double (0),
+                             "The value of the constant volumetric viscosity $\\xi_0$ of the solid matrix. "
+                             "Units: $Pa s$.");
           prm.declare_entry ("Reference melt viscosity", "100.0",
-              Patterns::Double (0),
-              "The value of the constant melt viscosity $\\eta_f$. Units: $Pa s$.");
+                             Patterns::Double (0),
+                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa s$.");
 
           prm.declare_entry ("Reference permeability", "5e-9",
-              Patterns::Double(),
-              "Reference permeability of the solid host rock."
-              "Units: $m^2$.");
+                             Patterns::Double(),
+                             "Reference permeability of the solid host rock."
+                             "Units: $m^2$.");
         }
         prm.leave_subsection();
       }
@@ -444,41 +444,41 @@ namespace aspect
      */
     template <int dim>
     class SolitaryWaveInitialCondition : public CompositionalInitialConditions::Interface<dim>,
-                                         public ::aspect::SimulatorAccess<dim>
+      public ::aspect::SimulatorAccess<dim>
     {
       public:
 
-      /**
-       * Initialization function. Take references to the material model and
-       * get the compaction length, so that it can be used subsequently to
-       * compute the analytical solution for the shape of the solitary wave.
-       */
-      void
-      initialize ();
+        /**
+         * Initialization function. Take references to the material model and
+         * get the compaction length, so that it can be used subsequently to
+         * compute the analytical solution for the shape of the solitary wave.
+         */
+        void
+        initialize ();
 
-      /**
-       * Return the boundary velocity as a function of position.
-       */
-      virtual
-      double
-      initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        double
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
 
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-      virtual
-      void
-      parse_parameters (ParameterHandler &prm);
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
-      double
-      get_amplitude () const;
+        double
+        get_amplitude () const;
 
-      double
-      get_background_porosity () const;
+        double
+        get_background_porosity () const;
 
-      double
-      get_offset () const;
+        double
+        get_offset () const;
 
       private:
         double amplitude;
@@ -559,23 +559,23 @@ namespace aspect
         prm.enter_subsection("Solitary wave initial condition");
         {
           prm.declare_entry ("Amplitude", "0.01",
-              Patterns::Double (0),
-              "Amplitude of the solitary wave. Units: none.");
+                             Patterns::Double (0),
+                             "Amplitude of the solitary wave. Units: none.");
           prm.declare_entry ("Background porosity", "0.001",
-              Patterns::Double (0),
-              "Background porosity of the solitary wave. Units: none.");
+                             Patterns::Double (0),
+                             "Background porosity of the solitary wave. Units: none.");
           prm.declare_entry ("Offset", "150",
-              Patterns::Double (0),
-              "Offset of the center of the solitary wave from the boundary"
-              "of the domain. "
-              "Units: $m$.");
+                             Patterns::Double (0),
+                             "Offset of the center of the solitary wave from the boundary"
+                             "of the domain. "
+                             "Units: $m$.");
           prm.declare_entry ("Read solution from file", "false",
-              Patterns::Bool (),
-              "Whether to read the porosity initial condition from "
-              "a file or to compute it.");
+                             Patterns::Bool (),
+                             "Whether to read the porosity initial condition from "
+                             "a file or to compute it.");
           prm.declare_entry ("File name", "solitary_wave.txt",
-              Patterns::Anything (),
-              "The file name of the porosity initial condition data. ");
+                             Patterns::Anything (),
+                             "The file name of the porosity initial condition data. ");
         }
         prm.leave_subsection();
       }
@@ -600,7 +600,7 @@ namespace aspect
 
           AssertThrow(amplitude > background_porosity,
                       ExcMessage("Amplitude of the solitary wave must be larger "
-                          "than the background porosity."));
+                                 "than the background porosity."));
         }
         prm.leave_subsection();
       }
@@ -658,46 +658,46 @@ namespace aspect
     void
     SolitaryWavePostprocessor<dim>::initialize ()
     {
-        // verify that we are using the "Solitary wave" initial conditions and material model,
-    	// then get the parameters we need
+      // verify that we are using the "Solitary wave" initial conditions and material model,
+      // then get the parameters we need
 
-        if (dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions()) != NULL)
-          {
-            const SolitaryWaveInitialCondition<dim> *
-            initial_conditions
-              = dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions());
+      if (dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions()) != NULL)
+        {
+          const SolitaryWaveInitialCondition<dim> *
+          initial_conditions
+            = dynamic_cast<const SolitaryWaveInitialCondition<dim> *>(&this->get_compositional_initial_conditions());
 
-            amplitude           = initial_conditions->get_amplitude();
-            background_porosity = initial_conditions->get_background_porosity();
-            offset              = initial_conditions->get_offset();
-          }
-        else
-          {
-            AssertThrow(false,
-                        ExcMessage("Postprocessor Solitary Wave only works with the initial conditions model Solitary wave."));
-          }
+          amplitude           = initial_conditions->get_amplitude();
+          background_porosity = initial_conditions->get_background_porosity();
+          offset              = initial_conditions->get_offset();
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Postprocessor Solitary Wave only works with the initial conditions model Solitary wave."));
+        }
 
-        if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
-          {
-            const SolitaryWaveMaterial<dim> *
-            material_model
-              = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
+      if (dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model()) != NULL)
+        {
+          const SolitaryWaveMaterial<dim> *
+          material_model
+            = dynamic_cast<const SolitaryWaveMaterial<dim> *>(&this->get_material_model());
 
-            compaction_length = material_model->length_scaling(background_porosity);
-            velocity_scaling = material_model->velocity_scaling(background_porosity);
-          }
-        else
-          {
-            AssertThrow(false,
-                        ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
-          }
+          compaction_length = material_model->length_scaling(background_porosity);
+          velocity_scaling = material_model->velocity_scaling(background_porosity);
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
+        }
 
-        // we also need the boundary velocity, but we can not get it from simulator access
-        // TODO: write solitary wave boundary condition where the phase speed is calculated!
+      // we also need the boundary velocity, but we can not get it from simulator access
+      // TODO: write solitary wave boundary condition where the phase speed is calculated!
 
-        max_points = 1e6;
-        initial_pressure.resize(max_points);
-        maximum_pressure = 0.0;
+      max_points = 1e6;
+      initial_pressure.resize(max_points);
+      maximum_pressure = 0.0;
     }
 
     template <int dim>
@@ -733,14 +733,14 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-            		                                                                  p_s);
+                                                                                      p_s);
             fe_values[this->introspection().extractors.compaction_pressure].get_function_values (this->get_solution(),
-            		                                                                             p_f);
+                p_f);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-            		                                                                             phi);
+                phi);
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-            	double z = fe_values.quadrature_point(q)[dim-1];
+                double z = fe_values.quadrature_point(q)[dim-1];
                 const unsigned int idx = static_cast<unsigned int>((z*(max_points-1))/max_depth);
                 AssertThrow(idx < max_points, ExcInternalError());
 
@@ -759,47 +759,47 @@ namespace aspect
 
       // fill the first and last element of the initial_pressure vector if they are empty
       // this makes sure they can be used for the interpolation later on
-      if(pressure_all[0] == 0.0)
-      {
-    	unsigned int j = 1;
-    	while (pressure_all[j] == 0.0)
-    	  j++;
-    	pressure_all[0] = pressure_all[j];
-    	volume_all[0]   = volume_all[j];
-    	initial_pressure[0] = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
-      }
+      if (pressure_all[0] == 0.0)
+        {
+          unsigned int j = 1;
+          while (pressure_all[j] == 0.0)
+            j++;
+          pressure_all[0] = pressure_all[j];
+          volume_all[0]   = volume_all[j];
+          initial_pressure[0] = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
+        }
 
-      if(pressure_all[max_points-1] == 0.0)
-      {
-    	unsigned int k = max_points-2;
-    	while (pressure_all[k] == 0.0)
-    	  k--;
-    	pressure_all[max_points-1] = pressure_all[k];
-    	volume_all[max_points-1]   = volume_all[k];
-    	initial_pressure[max_points-1] = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
-      }
+      if (pressure_all[max_points-1] == 0.0)
+        {
+          unsigned int k = max_points-2;
+          while (pressure_all[k] == 0.0)
+            k--;
+          pressure_all[max_points-1] = pressure_all[k];
+          volume_all[max_points-1]   = volume_all[k];
+          initial_pressure[max_points-1] = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
+        }
 
       // interpolate between the non-zero elements to fill the elements that are 0
       for (unsigned int i=1; i<max_points-1; ++i)
-      {
-    	if (pressure_all[i] != 0.0)
-    	  initial_pressure[i] = pressure_all[i] / (static_cast<double>(volume_all[i])+1e-20);
-    	else
-    	{
-    	  // interpolate between the values we have
-    	  unsigned int k = i-1;
-    	  while (pressure_all[k] == 0.0)
-    		k--;
-    	  Assert(k >= 0, ExcInternalError());
-    	  unsigned int j = i+1;
-    	  while (pressure_all[j] == 0.0)
-    		j++;
-    	  Assert(j < max_points, ExcInternalError());
-    	  const double pressure_k = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
-    	  const double pressure_j = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
-    	  initial_pressure[i] = pressure_k + (pressure_j - pressure_k) * static_cast<double>(i-k)/static_cast<double>(j-k);
-    	}
-      }
+        {
+          if (pressure_all[i] != 0.0)
+            initial_pressure[i] = pressure_all[i] / (static_cast<double>(volume_all[i])+1e-20);
+          else
+            {
+              // interpolate between the values we have
+              unsigned int k = i-1;
+              while (pressure_all[k] == 0.0)
+                k--;
+              Assert(k >= 0, ExcInternalError());
+              unsigned int j = i+1;
+              while (pressure_all[j] == 0.0)
+                j++;
+              Assert(j < max_points, ExcInternalError());
+              const double pressure_k = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
+              const double pressure_j = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
+              initial_pressure[i] = pressure_k + (pressure_j - pressure_k) * static_cast<double>(i-k)/static_cast<double>(j-k);
+            }
+        }
     }
 
     template <int dim>
@@ -850,16 +850,16 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-            		                                                                                 compositional_values);
+                compositional_values);
             for (unsigned int q=0; q<n_q_points; ++q)
               {
                 const double composition = compositional_values[q];
 
-                if(composition > local_max_composition)
-                {
-                  local_max_composition = composition;
-                  z_max_composition = fe_values.quadrature_point(q)[dim-1];
-                }
+                if (composition > local_max_composition)
+                  {
+                    local_max_composition = composition;
+                    z_max_composition = fe_values.quadrature_point(q)[dim-1];
+                  }
               }
           }
 
@@ -873,7 +873,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-            		                                                                                 compositional_values);
+                compositional_values);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -882,26 +882,26 @@ namespace aspect
                 // we do not want to include the constant-porosity background in the calculation
                 // nor the peak of the wave where we maximum of the composition is not a good indicator
                 // if we are left or right of the maximum of the analytical solution
-                if(composition > background_porosity + (amplitude - background_porosity)*0.05  && composition <= amplitude*0.9)
-                {
-				  double z_analytical = compaction_length
-									    * AnalyticSolutions::solitary_wave_solution(composition/background_porosity,
-																				    amplitude/background_porosity);
-                  double z = fe_values.quadrature_point(q)[dim-1];
-
-                  if(z > z_max_composition)
+                if (composition > background_porosity + (amplitude - background_porosity)*0.05  && composition <= amplitude*0.9)
                   {
-                    z -= offset;
-  				    phase_shift_integral += (z - z_analytical);
-                  }
-                  else
-                  {
-                    z = offset - z;
-  				    phase_shift_integral -= (z - z_analytical);
-                  }
+                    double z_analytical = compaction_length
+                                          * AnalyticSolutions::solitary_wave_solution(composition/background_porosity,
+                                                                                      amplitude/background_porosity);
+                    double z = fe_values.quadrature_point(q)[dim-1];
 
-				  number_of_points += 1;
-                }
+                    if (z > z_max_composition)
+                      {
+                        z -= offset;
+                        phase_shift_integral += (z - z_analytical);
+                      }
+                    else
+                      {
+                        z = offset - z;
+                        phase_shift_integral -= (z - z_analytical);
+                      }
+
+                    number_of_points += 1;
+                  }
               }
           }
 
@@ -920,12 +920,12 @@ namespace aspect
                   ExcNotImplemented());
 
       // as we do not have an analytical solution for the pressure, we store the initial solution
-      if(this->get_timestep_number()==0)
-      {
-    	store_initial_pressure();
-        ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-      		                                                           this->get_geometry_model().maximal_depth()));
-      }
+      if (this->get_timestep_number()==0)
+        {
+          store_initial_pressure();
+          ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
+                                                                           this->get_geometry_model().maximal_depth()));
+        }
 
       double delta=0;
 
@@ -971,20 +971,20 @@ namespace aspect
             fe_values.reinit(cell);
             cell->get_dof_indices (local_dof_indices);
             fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
-            		this->get_solution(), porosity_values);
+              this->get_solution(), porosity_values);
             for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
               {
                 unsigned int pressure_idx
-                = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
-                    /*dof index within component=*/ j);
+                  = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
+                                                             /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
                 if (!this->get_dof_handler().locally_owned_dofs().is_element(pressure_idx))
                   continue;
 
                 unsigned int p_f_idx
-                = this->get_fe().component_to_system_index(this->introspection().component_indices.compaction_pressure,
-                    /*dof index within component=*/ j);
+                  = this->get_fe().component_to_system_index(this->introspection().component_indices.compaction_pressure,
+                                                             /*dof index within component=*/ j);
 
                 double p_s = this->get_solution()(local_dof_indices[pressure_idx]);
                 double p_f = this->get_solution()(local_dof_indices[p_f_idx]);
@@ -1022,7 +1022,7 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_f);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-    		                             compaction_pressure,
+                                         compaction_pressure,
                                          *ref_func,
                                          cellwise_errors_p,
                                          quadrature_formula,
@@ -1031,9 +1031,9 @@ namespace aspect
 
       std::ostringstream os;
       os << std::scientific << cellwise_errors_f.l2_norm() / (amplitude * sqrt(cellwise_errors_f.size()))
-                    << ", " << cellwise_errors_p.l2_norm() / (maximum_pressure * sqrt(cellwise_errors_p.size()))
-                    << ", " << error_c
-                    << ", " << std::abs(delta);
+         << ", " << cellwise_errors_p.l2_norm() / (maximum_pressure * sqrt(cellwise_errors_p.size()))
+         << ", " << error_c
+         << ", " << std::abs(delta);
 
       return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
@@ -1059,8 +1059,8 @@ namespace aspect
                                   "the Keller et al., JGI, 2013, paper with the one computed by ASPECT "
                                   "and reports the error.")
 
-   ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(SolitaryWaveInitialCondition,
-                                                    "Solitary wave initial condition",
-                                                    "Composition is set to a solitary wave function.")
+    ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(SolitaryWaveInitialCondition,
+                                                     "Solitary wave initial condition",
+                                                     "Composition is set to a solitary wave function.")
   }
 }
