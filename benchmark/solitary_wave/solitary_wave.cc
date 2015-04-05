@@ -12,6 +12,55 @@
 #include <deal.II/numerics/vector_tools.h>
 
 
+/**
+ * Computes MPI_MAX of @p local_max like Allreduce, but also transmits the @p local_data from the rank with the largest @local_max to every rank (returned in @p global_data).
+ */
+template <class T1, class T2>
+void MPI_max_and_data(const T1 & local_max,
+		      const T2 & local_data,
+		      T1 & global_max,
+		      T2 & global_data)
+{
+  AssertThrow(false, dealii::ExcNotImplemented()); 
+}
+
+void myop_func(void *invec,
+	       void *inoutvec,
+	       int *len,
+	       MPI_Datatype *datatype)
+{
+  AssertThrow(*len > 1, dealii::ExcNotImplemented());
+  AssertThrow(*datatype == MPI_DOUBLE, dealii::ExcNotImplemented());
+  
+  double * indata = static_cast<double*>(invec);
+  double * inoutdata = static_cast<double*>(inoutvec);
+
+  if (indata[0]>inoutdata[0])
+    {
+      for (int i=0;i<*len;++i)
+	inoutdata[i] = indata[i];
+    }  
+}
+ 
+
+template <>
+void MPI_max_and_data(const double & local_max,
+		      const double & local_data,
+		      double & global_max,
+		      double & global_data)
+{
+  MPI_Op myop;
+  MPI_Op_create(&myop_func, /* commutes? */ 1 ,&myop);
+
+  double local[] = {local_max, local_data};
+  double global[2];
+  
+  MPI_Allreduce(local, global, 2, MPI_DOUBLE, myop, MPI_COMM_WORLD);
+  global_max = global[0];
+  global_data = global[1];
+  MPI_Op_free(&myop);
+}
+
 
 namespace aspect
 {
@@ -721,6 +770,7 @@ namespace aspect
 
       // do the same stuff we do in depth average
       std::vector<double> volume(max_points,0.0);
+      std::vector<double> pressure(max_points,0.0);
       std::vector<double> p_s(n_q_points);
       std::vector<double> p_f(n_q_points);
       std::vector<double> phi(n_q_points);
@@ -744,60 +794,55 @@ namespace aspect
                 const unsigned int idx = static_cast<unsigned int>((z*(max_points-1))/max_depth);
                 AssertThrow(idx < max_points, ExcInternalError());
 
-                initial_pressure[idx] += (1.0-phi[q]) * (p_s[q] - p_f[q]) * fe_values.JxW(q);
+                pressure[idx] += (1.0-phi[q]) * (p_s[q] - p_f[q]) * fe_values.JxW(q);
                 volume[idx] += fe_values.JxW(q);
 
                 local_max_pressure = std::max (local_max_pressure, std::abs((1.0-phi[q]) * (p_s[q] - p_f[q])));
               }
           }
 
-      std::vector<double> pressure_all(max_points, 0.0);
       std::vector<double> volume_all(max_points, 0.0);
       Utilities::MPI::sum(volume, this->get_mpi_communicator(), volume_all);
-      Utilities::MPI::sum(initial_pressure, this->get_mpi_communicator(), pressure_all);
+      Utilities::MPI::sum(pressure, this->get_mpi_communicator(), initial_pressure);
       maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
 
+	{
+	  initial_pressure[i] = initial_pressure[i] / (static_cast<double>(volume_all[i])+1e-20);
+	}
+      
       // fill the first and last element of the initial_pressure vector if they are empty
       // this makes sure they can be used for the interpolation later on
-      if (pressure_all[0] == 0.0)
+      if (initial_pressure[0] == 0.0)
         {
           unsigned int j = 1;
-          while (pressure_all[j] == 0.0)
+          while (initial_pressure[j] == 0.0)
             j++;
-          pressure_all[0] = pressure_all[j];
-          volume_all[0]   = volume_all[j];
-          initial_pressure[0] = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
+          initial_pressure[0] = initial_pressure[j];
         }
 
-      if (pressure_all[max_points-1] == 0.0)
+      if (initial_pressure[max_points-1] == 0.0)
         {
           unsigned int k = max_points-2;
-          while (pressure_all[k] == 0.0)
+          while (initial_pressure[k] == 0.0)
             k--;
-          pressure_all[max_points-1] = pressure_all[k];
-          volume_all[max_points-1]   = volume_all[k];
-          initial_pressure[max_points-1] = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
+          initial_pressure[max_points-1] = initial_pressure[k];
         }
 
       // interpolate between the non-zero elements to fill the elements that are 0
       for (unsigned int i=1; i<max_points-1; ++i)
         {
-          if (pressure_all[i] != 0.0)
-            initial_pressure[i] = pressure_all[i] / (static_cast<double>(volume_all[i])+1e-20);
-          else
+          if (initial_pressure[i] == 0.0)
             {
               // interpolate between the values we have
               unsigned int k = i-1;
-              while (pressure_all[k] == 0.0)
+              while (initial_pressure[k] == 0.0)
                 k--;
               Assert(k >= 0, ExcInternalError());
               unsigned int j = i+1;
-              while (pressure_all[j] == 0.0)
+              while (initial_pressure[j] == 0.0)
                 j++;
               Assert(j < max_points, ExcInternalError());
-              const double pressure_k = pressure_all[k] / (static_cast<double>(volume_all[k])+1e-20);
-              const double pressure_j = pressure_all[j] / (static_cast<double>(volume_all[j])+1e-20);
-              initial_pressure[i] = pressure_k + (pressure_j - pressure_k) * static_cast<double>(i-k)/static_cast<double>(j-k);
+              initial_pressure[i] = initial_pressure[k] + (initial_pressure[j]-initial_pressure[k]) * static_cast<double>(i-k)/static_cast<double>(j-k);
             }
         }
     }
@@ -806,10 +851,6 @@ namespace aspect
     double
     SolitaryWavePostprocessor<dim>::compute_phase_shift ()
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-      // TODO: how do we calculate the coordinate of the wave peak with more than 1 processor?
-
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
                   ExcMessage("Postprocessor Solitary Wave only works if there is a compositional field called porosity."));
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
@@ -842,26 +883,33 @@ namespace aspect
       // In the end, these values for the phase shift are averaged.
 
       // compute the maximum composition by quadrature (because we also need the coordinate)
-      double local_max_composition = -std::numeric_limits<double>::max();
-      double z_max_composition = -std::numeric_limits<double>::max();
+      double z_max_porosity = std::numeric_limits<double>::quiet_NaN();
+      {
+	double local_max_porosity = -std::numeric_limits<double>::max();
+	double local_max_z_location = std::numeric_limits<double>::quiet_NaN();
+	
+	for (; cell!=endc; ++cell)
+	  if (cell->is_locally_owned())
+	    {
+	      fe_values.reinit (cell);
+	      fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
+														    compositional_values);
+	      for (unsigned int q=0; q<n_q_points; ++q)
+		{
+		  const double composition = compositional_values[q];
+		  
+		  if (composition > local_max_porosity)
+		    {
+		      local_max_porosity = composition;
+		      local_max_z_location = fe_values.quadrature_point(q)[dim-1];
+		    }
+		}
+	    }
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                compositional_values);
-            for (unsigned int q=0; q<n_q_points; ++q)
-              {
-                const double composition = compositional_values[q];
-
-                if (composition > local_max_composition)
-                  {
-                    local_max_composition = composition;
-                    z_max_composition = fe_values.quadrature_point(q)[dim-1];
-                  }
-              }
-          }
+	double max_porosity = 0.0;
+	MPI_max_and_data(local_max_porosity, local_max_z_location, max_porosity, z_max_porosity);
+      }
+      
 
       // iterate over all points and calculate the phase shift
       cell = this->get_dof_handler().begin_active();
@@ -889,7 +937,7 @@ namespace aspect
                                                                                       amplitude/background_porosity);
                     double z = fe_values.quadrature_point(q)[dim-1];
 
-                    if (z > z_max_composition)
+                    if (z > z_max_porosity)
                       {
                         z -= offset;
                         phase_shift_integral += (z - z_analytical);
@@ -905,20 +953,18 @@ namespace aspect
               }
           }
 
-      phase_shift_integral /= static_cast<double>(number_of_points);
-
+      double integral = Utilities::MPI::sum (phase_shift_integral, this->get_mpi_communicator())
+			/ Utilities::MPI::sum (static_cast<double>(number_of_points), this->get_mpi_communicator());      
+      
       // TODO: different case for moving wave (with zero boundary velocity)
       // const double phase_speed = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      return phase_shift_integral; // + phase_speed * this->get_time();
+      return integral; // + phase_speed * this->get_time();
     }
 
     template <int dim>
     std::pair<std::string,std::string>
     SolitaryWavePostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       // as we do not have an analytical solution for the pressure, we store the initial solution
       if (this->get_timestep_number()==0)
         {
@@ -947,11 +993,12 @@ namespace aspect
                       ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
         }
 
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
 
       // we need the compaction pressure, but we only have the solid and the fluid pressure stored in the solution vector.
       // Hence, we create a new vector only with the compaction pressure
-      LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
+      LinearAlgebra::BlockVector distributed_compaction_pressure (
+	this->introspection().index_sets.system_partitioning,
+	this->get_mpi_communicator());
 
       const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.pressure).get_unit_support_points());
@@ -979,7 +1026,7 @@ namespace aspect
                                                              /*dof index within component=*/ j);
 
                 // skip entries that are not locally owned:
-                if (!this->get_dof_handler().locally_owned_dofs().is_element(pressure_idx))
+                if (!this->get_dof_handler().locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
                   continue;
 
                 unsigned int p_f_idx
@@ -992,10 +1039,13 @@ namespace aspect
                 double p_c;
                 p_c = (1.0-phi) * (p_s - p_f);
 
-                compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
+                distributed_compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
               }
           }
 
+      distributed_compaction_pressure.compress(VectorOperation::insert);
+      LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
+      compaction_pressure = distributed_compaction_pressure;
 
       // what we want to compare:
       // (1) error of the numerical phase speed c:
@@ -1014,6 +1064,8 @@ namespace aspect
       ComponentSelectFunction<dim> comp_f(dim+3, dim+4);
       ComponentSelectFunction<dim> comp_p(dim+1, dim+4);
 
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree+1);
+
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
                                          *ref_func,
@@ -1029,11 +1081,16 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
+      double e_f = std::sqrt(Utilities::MPI::sum(cellwise_errors_f.norm_sqr(),MPI_COMM_WORLD));
+      double e_p = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD));
+ 
+      
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_f.l2_norm() / (amplitude * sqrt(cellwise_errors_f.size()))
-         << ", " << cellwise_errors_p.l2_norm() / (maximum_pressure * sqrt(cellwise_errors_p.size()))
+      os << std::scientific << e_f / amplitude
+         << ", " << e_p / maximum_pressure
          << ", " << error_c
          << ", " << std::abs(delta);
+      
 
       return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
