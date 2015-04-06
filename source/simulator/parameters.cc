@@ -31,8 +31,8 @@
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm,
-                                          MPI_Comm mpi_communicator)
+  Parameters<dim>::Parameters (ParameterHandler &prm,
+                               MPI_Comm mpi_communicator)
   {
     parse_parameters (prm, mpi_communicator);
   }
@@ -40,7 +40,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   declare_parameters (ParameterHandler &prm)
   {
     prm.declare_entry ("Dimension", "2",
@@ -616,14 +616,14 @@ namespace aspect
     prm.leave_subsection ();
 
     //Also declare the parameters that the FreeSurfaceHandler needs
-    FreeSurfaceHandler::declare_parameters( prm );
+    Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
   }
 
 
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   parse_parameters (ParameterHandler &prm,
                     const MPI_Comm mpi_communicator)
   {
@@ -831,11 +831,11 @@ namespace aspect
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
       if (include_melt_transport && (n_compositional_fields == 0))
-      {
-    	AssertThrow (false,
-    	    ExcMessage ("If melt transport is included in the model, "
-    	    		    "there has to be at least one compositional field."));
-      }
+        {
+          AssertThrow (false,
+                       ExcMessage ("If melt transport is included in the model, "
+                                   "there has to be at least one compositional field."));
+        }
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
@@ -870,13 +870,13 @@ namespace aspect
       // if we want to solve the melt transport equations, check that one of the fields
       // has the name porosity
       if (include_melt_transport && std::find(names_of_compositional_fields.begin(),
-    		                                  names_of_compositional_fields.end(), "porosity")
-                                              == names_of_compositional_fields.end())
-    	{
-    	  AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
-	    		                          "there has to be at least one compositional field "
-	    		                          "with the name 'porosity'."));
-    	}
+                                              names_of_compositional_fields.end(), "porosity")
+          == names_of_compositional_fields.end())
+        {
+          AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
+                                          "there has to be at least one compositional field "
+                                          "with the name 'porosity'."));
+        }
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
@@ -893,7 +893,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   parse_geometry_dependent_parameters(ParameterHandler &prm,
                                       const GeometryModel::Interface<dim> &geometry_model)
   {
@@ -1083,7 +1083,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
-    Parameters::declare_parameters (prm);
+    Parameters<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
@@ -1106,13 +1106,13 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm, \
-                                                   MPI_Comm mpi_communicator); \
-  template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
-  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
-                                                             const MPI_Comm mpi_communicator); \
-  template void Simulator<dim>::Parameters::parse_geometry_dependent_parameters(ParameterHandler &prm, \
-                                                                                const GeometryModel::Interface<dim> &geometry_model); \
+  template Parameters<dim>::Parameters (ParameterHandler &prm, \
+                                        MPI_Comm mpi_communicator); \
+  template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
+  template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
+                                                  const MPI_Comm mpi_communicator); \
+  template void Parameters<dim>::parse_geometry_dependent_parameters(ParameterHandler &prm, \
+                                                                     const GeometryModel::Interface<dim> &geometry_model); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)

@@ -29,6 +29,7 @@
 #include <deal.II/fe/mapping_q.h>
 
 #include <aspect/global.h>
+#include <aspect/parameters.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/geometry_model/interface.h>

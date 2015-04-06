@@ -25,7 +25,9 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/fe/fe_values_extractors.h>
+#include <deal.II/fe/fe.h>
 
+#include <aspect/parameters.h>
 
 namespace aspect
 {
@@ -62,9 +64,12 @@ namespace aspect
        * fields that will be used in this simulation. This is used in
        * initializing the fields of this class.
        */
-      Introspection (const bool split_vel_pressure,
-                     const bool add_compaction_pressure,
-                     const std::vector<std::string> &names_of_compositional_fields);
+      Introspection (const Parameters<dim> &parameters);
+
+      /**
+       *
+       */
+      ~Introspection ();
 
       /**
        * @name Things that are independent of the current mesh
@@ -80,6 +85,26 @@ namespace aspect
       const unsigned int n_components;
 
       /**
+       * A structure that enumerates the vector components of the finite
+       * element that correspond to each of the variables in this problem.
+       */
+      struct ComponentIndices
+      {
+        unsigned int       velocities[dim];
+        unsigned int       pressure;
+        unsigned int       fluid_velocities[dim];
+        unsigned int       fluid_pressure;
+        unsigned int       compaction_pressure;
+        unsigned int       temperature;
+        std::vector<unsigned int> compositional_fields;
+      };
+      /**
+       * A variable that enumerates the vector components of the finite
+       * element that correspond to each of the variables in this problem.
+       */
+      const ComponentIndices component_indices;
+
+      /**
        * The number of vector blocks. This equals $3+n_c$ where, in comparison
        * to the n_components field, the velocity components form a single
        * block.
@@ -87,16 +112,38 @@ namespace aspect
       const unsigned int n_blocks;
 
       /**
+       * A structure that enumerates the vector blocks of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      struct BlockIndices
+      {
+        unsigned int       velocities;
+        unsigned int       pressure;
+        unsigned int       fluid_velocities;
+        unsigned int       fluid_pressure;
+        unsigned int       compaction_pressure;
+        unsigned int       temperature;
+        std::vector<unsigned int> compositional_fields;
+      };
+      /**
+       * A variable that enumerates the vector blocks of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const BlockIndices block_indices;
+
+      /**
        * A structure that contains FEValues extractors for every block of the
        * finite element used in the overall description.
        */
       struct Extractors
       {
-        Extractors (const unsigned int n_compositional_fields,
-                    const bool add_compaction_pressure);
+        Extractors (const Introspection<dim>::ComponentIndices &component_indices,
+                    const unsigned int n_compositional_fields);
 
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;
+        const FEValuesExtractors::Vector              fluid_velocities;
+        const FEValuesExtractors::Scalar              fluid_pressure;
         const FEValuesExtractors::Scalar              compaction_pressure;
         const FEValuesExtractors::Scalar              temperature;
         const std::vector<FEValuesExtractors::Scalar> compositional_fields;
@@ -106,49 +153,6 @@ namespace aspect
        * element used in the overall description.
        */
       const Extractors extractors;
-
-
-      /**
-       * A structure that enumerates the vector components of the finite
-       * element that correspond to each of the variables in this problem.
-       */
-      struct ComponentIndices
-      {
-        ComponentIndices (const unsigned int n_compositional_fields,
-                          const bool add_compaction_pressure);
-
-        unsigned int       velocities[dim];
-        unsigned int       pressure;
-        unsigned int       compaction_pressure;
-        unsigned int       temperature;
-        const std::vector<unsigned int> compositional_fields;
-      };
-      /**
-       * A variable that enumerates the vector components of the finite
-       * element that correspond to each of the variables in this problem.
-       */
-      ComponentIndices component_indices;
-
-      /**
-       * A structure that enumerates the vector blocks of the finite element
-       * that correspond to each of the variables in this problem.
-       */
-      struct BlockIndices
-      {
-        BlockIndices (const unsigned int n_compositional_fields,
-                      const bool split_vel_pressure);
-
-        const unsigned int       velocities;
-        const unsigned int       pressure;
-        const unsigned int       compaction_pressure;
-        const unsigned int       temperature;
-        const std::vector<unsigned int> compositional_fields;
-      };
-      /**
-       * A variable that enumerates the vector blocks of the finite element
-       * that correspond to each of the variables in this problem.
-       */
-      BlockIndices block_indices;
 
       /**
        * A structure that enumerates the base elements of the finite element
@@ -162,20 +166,19 @@ namespace aspect
        */
       struct BaseElements
       {
-        BaseElements (const unsigned int n_compositional_fields,
-                      const bool add_compaction_pressure);
-
         unsigned int       velocities;
         unsigned int       pressure;
+        unsigned int       fluid_velocities;
+        unsigned int       fluid_pressure;
         unsigned int       compaction_pressure;
         unsigned int       temperature;
-        const unsigned int              compositional_fields;
+        unsigned int       compositional_fields;
       };
       /**
        * A variable that enumerates the base elements of the finite element
        * that correspond to each of the variables in this problem.
        */
-      BaseElements base_elements;
+      const BaseElements base_elements;
 
 
       /**
@@ -187,6 +190,8 @@ namespace aspect
       {
         ComponentMask              velocities;
         ComponentMask              pressure;
+        ComponentMask              fluid_velocities;
+        ComponentMask              fluid_pressure;
         ComponentMask              compaction_pressure;
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
@@ -202,7 +207,7 @@ namespace aspect
        * A variable that describes for each vector component which vector
        * block it corresponds to.
        */
-      const std::vector<unsigned int> components_to_blocks;
+      std::vector<unsigned int> components_to_blocks;
 
       /**
        * @}
@@ -315,12 +320,31 @@ namespace aspect
       bool
       compositional_name_exists (const std::string &name) const;
 
+      /**
+       * Return the vector of finite element spaces used for the construction of the FESystem.
+       */
+      const std::vector<const dealii::FiniteElement<dim> *> &get_fes();
+
+      /**
+       * Return the vector of multiplicities used for the construction of the FESystem.
+       */
+      const std::vector<unsigned int> &get_multiplicities();
+
     private:
       /**
        * A vector that stores the names of the compositional fields that will
        * be used in the simulation.
        */
       std::vector<std::string> composition_names;
+      /**
+       *
+       */
+      std::vector<const FiniteElement<dim> *> fes;
+      /**
+       *
+       */
+      std::vector<unsigned int> multiplicities;
+
   };
 }
 
