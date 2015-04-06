@@ -100,8 +100,7 @@ namespace aspect
                              ParameterHandler &prm)
     :
     parameters (prm, mpi_communicator_),
-    introspection (!parameters.use_direct_stokes_solver,
-                   parameters.names_of_compositional_fields),
+    introspection (parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),
@@ -117,7 +116,7 @@ namespace aspect
     // make sure the parameters object gets a chance to
     // parse those parameters that depend on symbolic names
     // for boundary components
-    post_geometry_model_creation_action (std_cxx11::bind (&Parameters::parse_geometry_dependent_parameters,
+    post_geometry_model_creation_action (std_cxx11::bind (&Parameters<dim>::parse_geometry_dependent_parameters,
                                                           std_cxx11::ref(parameters),
                                                           std_cxx11::ref(prm),
                                                           std_cxx11::cref(*geometry_model))),
@@ -168,20 +167,7 @@ namespace aspect
 
     // define the finite element. obviously, what we do here needs
     // to match the data we provide in the Introspection class
-    finite_element(FE_Q<dim>(parameters.stokes_velocity_degree),
-                   dim,
-                   (parameters.use_locally_conservative_discretization
-                    ?
-                    static_cast<const FiniteElement<dim> &>
-                    (FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                    :
-                    static_cast<const FiniteElement<dim> &>
-                    (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                   1,
-                   FE_Q<dim>(parameters.temperature_degree),
-                   1,
-                   FE_Q<dim>(parameters.composition_degree),
-                   parameters.n_compositional_fields),
+    finite_element(introspection.get_fes(), introspection.get_multiplicities()),
 
     dof_handler (triangulation),
 
