@@ -416,10 +416,10 @@ namespace aspect
     // compressible or compactible (in the case of melt transport), and
     // there is no open boundary to balance the pressure.
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible())
-                                                  &&
-                                                  (open_velocity_boundary_indicators.size() == 0)
-                                                  &&
-                                                  (!parameters.include_melt_transport));
+    		                                 ||
+    		                                 (parameters.include_melt_transport))
+                                                 &&
+                                                 (open_velocity_boundary_indicators.size() == 0);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
