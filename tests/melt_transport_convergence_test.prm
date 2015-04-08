@@ -1,20 +1,22 @@
 # A testcase that demonstrates melt transport with a compactible matrix,
-# and compressible matrix and fluid. Boundary conditions for the 
+# and incompressible matrix and fluid. Boundary conditions for the 
 # velocity and fluid pressure as well as porosity initial conditions 
 # are applied as described by the the derived analytical solution,
 # which can be found in the manuscript on compressible melt transport 
 # in Aspect.
 # We compute these material properties in a new material model, which
 # is implemented in the .cc file, together with a postprocessor to calculate 
-# the error and a new pressure boundary cinsition.     
-# 
+# the error and a new pressure boundary cinsition. 
+# An important feature of this setup is the steep gradient of porosity that
+# runs through the model and we use it to demonstrate the effectiveness 
+# of adaptive mesh refinement.     
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
 set Composition solver tolerance           = 1e-12
 set Nonlinear solver scheme                = iterated IMPES
 set Nonlinear solver tolerance             = 1e-6
-set Max nonlinear iterations               = 100
+set Max nonlinear iterations               = 3
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -24,12 +26,13 @@ set Dimension                              = 2
 set End time                               = 0
 
 set Pressure normalization                 = surface
-set Surface pressure                       = 2.202646579e4
+set Surface pressure                       = 2.718281828
 set Resume computation                     = false
 set Start time                             = 0
 
 set Use years in output instead of seconds = false
 set Use direct solver for Stokes system    = true
+set Number of cheap Stokes solver steps    = 0
 
 subsection Compositional fields
   set Number of fields = 1
@@ -75,8 +78,8 @@ subsection Gravity model
   set Model name = function
   subsection Function
     set Function constants = c=1,pi=3.14159265359
-    set Function expression = -0.1166666667*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))-.1000000000*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*(cos(z)+1)+1.000000000*exp(c*(.15+1 /40*pi+1/20*atan(x+2*z)))*sin(z);\
-                              -0.2*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*(cos(z)-1/3)+2.000000000*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*sin(z)-.5000000000e-1*c/(1+(x+2*z)^2)* exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*(cos(z)+1)+1.000000000*exp(z)-.1000000000*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))
+    set Function expression = -.1166666667*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))-.1000000000*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*(cos(z)+1)+1.000000000*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*sin(z);\
+                              -.3333333333e-1*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))-.5000000000e-1*c/(1+(x+2*z)^2)*exp(c*(.15+1/40*pi+1/20*atan(x+2*z)))*(cos(z)+1)+.1000000000*exp(1/10*z)
     set Variable names      = x,z
   end
 
@@ -121,7 +124,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial global refinement                = 6                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -130,7 +133,7 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 2,3        # default: 
   set Fixed composition boundary indicators   = 0,1,2,3   
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
 
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       =           # default: 
