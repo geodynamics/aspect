@@ -111,6 +111,12 @@ namespace aspect
         virtual
         double pressure (const Point<dim> &p) const = 0;
 
+        /**
+         * Return the reference_density at a given point of the domain.
+         */
+        virtual
+        double density (const Point<dim> &p) const = 0;
+
 
         /**
          * Declare the parameters this class takes through input files. The

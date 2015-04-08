@@ -291,6 +291,12 @@ namespace aspect
                          "physical viewpoint, adiabatic heating should always be used but may "
                          "be undesirable when comparing results with known benchmarks that "
                          "do not include this term in the temperature equation.");
+      prm.declare_entry ("Use full density formulation", "true",
+                         Patterns::Bool (),
+                         "Whether to use the full density formulation, using the same density "
+                         "for all terms of the equations. The usual approximations use the "
+                         "reference density profile in every term except the buoyancy term of "
+                         "the stokes equation.");
       prm.declare_entry ("Include latent heat", "false",
                          Patterns::Bool (),
                          "Whether to include the generation of latent heat at phase transitions "
@@ -729,6 +735,7 @@ namespace aspect
     {
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
+      use_full_density_formulation = prm.get_bool ("Use full density formulation");
       include_latent_heat = prm.get_bool ("Include latent heat");
 
       {

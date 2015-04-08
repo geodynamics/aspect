@@ -619,7 +619,12 @@ namespace aspect
                                          scratch.old_old_field_grads[q]) / 2;
 
         const double density              = ((advection_field.is_temperature())
-                                             ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
+                                             ?
+                                             ((parameters.use_full_density_formulation)
+                                              ?
+                                              scratch.explicit_material_model_outputs.densities[q]
+                                              : adiabatic_conditions->density(scratch.explicit_material_model_inputs.position[q]))
+                                             : 1.0);
         const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
         const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
         const double k_Delta_field = conductivity
@@ -1126,7 +1131,12 @@ namespace aspect
              scratch.material_model_outputs.compressibilities[q]
              :
              std::numeric_limits<double>::quiet_NaN() );
-        const double density = scratch.material_model_outputs.densities[q];
+        const double buoyancy_density = scratch.material_model_outputs.densities[q];
+        const double compressibility_density = (parameters.use_full_density_formulation)
+                                               ?
+                                               buoyancy_density
+                                               :
+                                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);;
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -1145,11 +1155,11 @@ namespace aspect
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
-                                 (density * gravity * scratch.phi_u[i])
+                                 (buoyancy_density * gravity * scratch.phi_u[i])
                                  + (is_compressible
                                     ?
                                     (pressure_scaling *
-                                     compressibility * density *
+                                     compressibility * compressibility_density *
                                      (scratch.velocity_values[q] * gravity) *
                                      scratch.phi_p[i])
                                     :
@@ -1303,7 +1313,11 @@ namespace aspect
     const Tensor<1,dim> current_grad_p = scratch.current_pressure_gradients[q];
 
     const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
-    const double density              = material_model_outputs.densities[q];
+    const double density              = (parameters.use_full_density_formulation)
+                                        ?
+                                        material_model_outputs.densities[q]
+                                        :
+                                        adiabatic_conditions->density(material_model_inputs.position[q]);
     const double viscosity            = material_model_outputs.viscosities[q];
     const bool is_compressible        = material_model->is_compressible();
     const double specific_radiogenic_heating_rate = heating_model->specific_heating_rate(material_model_inputs.temperature[q],
@@ -1545,10 +1559,15 @@ namespace aspect
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
           }
 
+        const double density = (parameters.use_full_density_formulation)
+                               ?
+                               scratch.material_model_outputs.densities[q]
+                               :
+                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
         const double density_c_P              =
           ((advection_field.is_temperature())
            ?
-           scratch.material_model_outputs.densities[q] *
+           density *
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
@@ -1563,7 +1582,7 @@ namespace aspect
         const double latent_heat_LHS =
           ((parameters.include_latent_heat && advection_field.is_temperature())
            ?
-           - scratch.material_model_outputs.densities[q] *
+           - density *
            scratch.material_model_inputs.temperature[q] *
            scratch.material_model_outputs.entropy_derivative_temperature[q]
            :
