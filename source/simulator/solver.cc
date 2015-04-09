@@ -584,7 +584,7 @@ namespace aspect
     const unsigned int block_p_c = introspection.block_indices.compaction_pressure;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
-    Assert(block_p_c == 1, ExcNotImplemented());
+    Assert(!parameters.include_melt_transport || block_p_c == 1, ExcNotImplemented());
 
     const internal::StokesBlock stokes_block(system_matrix);
 
