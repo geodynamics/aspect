@@ -4,7 +4,6 @@
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2
-set Nonlinear solver scheme                = Advection only
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
@@ -66,9 +65,55 @@ subsection Initial conditions
   end
 end
 
-
+# Begin Testing
 subsection Prescribed Stokes solution  
   set Model name = circle
+end
+
+ set Nonlinear solver scheme                = Advection only
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above. (As will be seen
+# in the next section, the actual temperature prescribed here
+# at the left and right does not matter.)
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+
+  # The next parameters then describe on which parts of the
+  # boundary we prescribe a zero or nonzero velocity and
+  # on which parts the flow is allowed to be tangential.
+  # Here, all four sides of the box allow tangential
+  # unrestricted flow but with a zero normal component:
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom, top
+
+  # The final part of this section describes whether we
+  # want to include adiabatic heating (from a small
+  # compressibility of the medium) or from shear friction,
+  # as well as the rate of internal heating. We do not
+  # want to use any of these options here:
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
 end
 
 
