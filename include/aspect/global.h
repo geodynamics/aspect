@@ -216,9 +216,9 @@ void print_aspect_header(Stream &stream)
          << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
   const int n_threads =
 #if DEAL_II_VERSION_GTE(8,3,0)
-      dealii::MultithreadInfo::n_threads();
+    dealii::MultithreadInfo::n_threads();
 #else
-      dealii::multithread_info.n_threads();
+    dealii::multithread_info.n_threads();
 #endif
   if (n_threads>1)
     stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");

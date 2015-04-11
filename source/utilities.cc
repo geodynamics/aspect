@@ -53,7 +53,7 @@ namespace aspect
       scoord[0] = position.norm(); // R
       scoord[1] = std::atan2(position(1),position(0)); // Phi
       if (scoord[1] < 0.0)
-	scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
+        scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
       if (dim==3)
         {
           if (scoord[0] > std::numeric_limits<double>::min())
