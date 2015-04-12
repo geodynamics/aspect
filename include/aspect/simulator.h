@@ -1096,6 +1096,14 @@ namespace aspect
                                    LinearAlgebra::BlockVector       &output_solution);
 
       /**
+       *
+       * @param input_solution
+       * @param output_solution
+       */
+      void compute_melt_variables(const LinearAlgebra::BlockVector &input_solution,
+                                   LinearAlgebra::BlockVector       &output_solution);
+
+      /**
        * This routine computes the initial Stokes residual that is
        * needed as a convergence criterion in models with the iterated
        * IMPES solver. We calculate it in the same way as the
