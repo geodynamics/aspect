@@ -36,52 +36,6 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that takes an output vector
-       * and computes melt velocity .
-       */
-      template <int dim>
-      class MeltVelocity
-        : public DataPostprocessorVector<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
-      {
-        public:
-          MeltVelocity ();
-
-          virtual
-          void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
-                                             std::vector<Vector<double> >                    &computed_quantities) const;
-      };
-
-      /**
-       * A class derived from DataPostprocessor that takes an output vector
-       * and computes melt pressure.
-       */
-      template <int dim>
-           class MeltPressure
-             : public DataPostprocessorScalar<dim>,
-               public SimulatorAccess<dim>,
-               public Interface<dim>
-           {
-             public:
-          MeltPressure ();
-
-               virtual
-               void
-               compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                                  const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                                  const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                                  const std::vector<Point<dim> >                  &normals,
-                                                  const std::vector<Point<dim> >                  &evaluation_points,
-                                                  std::vector<Vector<double> >                    &computed_quantities) const;
-           };
-
-      /**
-       * A class derived from DataPostprocessor that takes an output vector
        * and computes a variable that represents the melt density at every point.
        *
        * The member functions are all implementations of those declared in the
