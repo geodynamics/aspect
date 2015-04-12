@@ -1251,11 +1251,15 @@ namespace aspect
   {
     LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
-    const unsigned int block_p = introspection.block_indices.pressure;
+    const unsigned int block_p =
+           parameters.include_melt_transport ?
+                 introspection.block_indices.fluid_pressure
+               :
+                 introspection.block_indices.pressure;
 
     // if velocity and pressure are in the same block, we have to copy the
     // pressure to the solution and RHS vector with a zero velocity
-    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if(block_p == introspection.block_indices.velocities)
       {
         const IndexSet & idxset = (parameters.include_melt_transport) ?
             introspection.index_sets.locally_owned_fluid_pressure_dofs
@@ -1267,18 +1271,10 @@ namespace aspect
             types::global_dof_index idx = idxset.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
           }
-        remap.block(0).compress(VectorOperation::insert);
+        remap.block(block_p).compress(VectorOperation::insert);
       }
     else
       remap.block (block_p) = current_linearization_point.block (block_p);
-
-    // we have to do the same conversions and rescaling we do before solving
-    // the Stokes system: conversion of the pressure blocks (p_s, p_f --> p_f, p_c),
-    // denormalizing the pressure and applying the pressure scaling
-    residual = remap;
-    if (parameters.include_melt_transport)
-      convert_pressure_blocks(residual, true, remap);
-    residual = remap;
 
     // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
     // bigger vector here, oh well.
@@ -1297,7 +1293,7 @@ namespace aspect
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
-    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if(block_p == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
