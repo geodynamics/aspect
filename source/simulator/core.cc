@@ -773,22 +773,28 @@ namespace aspect
       for (unsigned int c=0; c<dim; ++c)
         for (unsigned int d=0; d<dim; ++d)
           coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
-      for (unsigned int d=0; d<dim; ++d)
-        {
-          coupling[x.velocities[d]][x.pressure] = DoFTools::always;
-          coupling[x.pressure][x.velocities[d]] = DoFTools::always;
-        }
+
       if (parameters.include_melt_transport)
         {
         for (unsigned int d=0; d<dim; ++d)
           {
             coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
             coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
+            coupling[x.velocities[d]][x.fluid_pressure] = DoFTools::always;
+            coupling[x.fluid_pressure][x.velocities[d]] = DoFTools::always;
           }
 
-        coupling[x.pressure][x.pressure] = DoFTools::always;
+        coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
         coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
         }
+      else
+      {
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.pressure] = DoFTools::always;
+              coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+            }
+      }
       coupling[x.temperature][x.temperature] = DoFTools::always;
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         coupling[x.compositional_fields[c]][x.compositional_fields[c]]
@@ -841,13 +847,24 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
-    for (unsigned int c=0; c<introspection.n_components; ++c)
-      for (unsigned int d=0; d<introspection.n_components; ++d)
-        if (c == d)
-          coupling[c][d] = DoFTools::always;
-        else
-          coupling[c][d] = DoFTools::none;
 
+    const typename Introspection<dim>::ComponentIndices &x
+      = introspection.component_indices;
+
+    for (unsigned int c=0; c<dim; ++c)
+        coupling[x.velocities[c]][x.velocities[c]] = DoFTools::always;
+
+    if (parameters.include_melt_transport)
+      {
+      coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
+      coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+      }
+    else
+        coupling[x.pressure][x.pressure] = DoFTools::always;
+    coupling[x.temperature][x.temperature] = DoFTools::always;
+
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
 
 #ifdef ASPECT_USE_PETSC
     LinearAlgebra::CompressedBlockSparsityPattern sp(introspection.index_sets.system_relevant_partitioning);
