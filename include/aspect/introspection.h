@@ -48,6 +48,22 @@ namespace aspect
    * The Introspection class is used both by the Simulator class itself, but
    * is also exported to plugins via the SimulatorAccess class.
    *
+   * The layout of the unknowns is the following:
+   *
+   * velocity pressure (in one block if using a direct solver)
+   * temperature
+   * composition1
+   * ...
+   *
+   * With melt transport the layout becomes:
+   * velocity fluid_pressure&compaction_pressure
+   * fluid_velocity
+   * pressure
+   * temperature
+   * composition1
+   * ...
+   *
+   *
    * @ingroup Simulator
    */
   template <int dim>

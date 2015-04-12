@@ -44,15 +44,16 @@ namespace aspect
       typename Introspection<dim>::ComponentIndices ci;
 
       unsigned int comp = 0;
-      if (include_melt_variables)
-        {
-          for (unsigned int i=0; i<dim; ++i)
-            ci.fluid_velocities[i] = comp++;
-          ci.fluid_pressure = comp++;
-          ci.compaction_pressure = comp++;
-        }
       for (unsigned int i=0; i<dim; ++i)
         ci.velocities[i] = comp++;
+      if (include_melt_variables)
+        {
+          ci.fluid_pressure = comp++;
+          ci.compaction_pressure = comp++;
+
+          for (unsigned int i=0; i<dim; ++i)
+            ci.fluid_velocities[i] = comp++;
+        }
       ci.pressure = comp++;
       ci.temperature = comp++;
       for (unsigned int i=0; i<n_compositional_fields; ++i)
@@ -77,19 +78,21 @@ namespace aspect
 
       if (include_melt_variables)
         {
-          b.fluid_velocities = block++;
-
-          // a single block is not split:
+          // A single block if not split. Note that fluid and compaction pressure
+          // are in the same block even when not using a direct solver so that we
+          // deal with a 2x2 Stokes matrix for the Schur complement system.
+          b.velocities = block; block += split;
           b.fluid_pressure = block;
-          block += split;
-          b.compaction_pressure = block;
-          block += split;
+          b.compaction_pressure = block++;
+
+          b.fluid_velocities = block++;
         }
-
-      b.velocities = block;
-      block += split;
+      else
+      {
+          b.velocities = block;
+          block += split;
+      }
       b.pressure = block++;
-
       b.temperature = block++;
       for (unsigned int i=0; i<n_compositional_fields; ++i)
         b.compositional_fields.push_back(block++);
@@ -108,13 +111,13 @@ namespace aspect
       std::vector<const FiniteElement<dim> *> fes;
       std::vector<unsigned int> multiplicities;
 
-      int base_element = 0;
+      unsigned int base_element = 0;
       if (parameters.include_melt_transport)
         {
-          // u_f
+          // u
           fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
           multiplicities.push_back(dim);
-          bes.fluid_velocities = base_element++;
+          bes.velocities = base_element++;
 
           // p_f
           if (parameters.use_locally_conservative_discretization)
@@ -131,12 +134,21 @@ namespace aspect
             fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree-1));
           multiplicities.push_back(1);
           bes.compaction_pressure = base_element++;
-        }
 
-      // u
-      fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
-      multiplicities.push_back(dim);
-      bes.velocities = base_element++;
+          // u_f
+          fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
+          multiplicities.push_back(dim);
+          bes.fluid_velocities = base_element++;
+
+
+        }
+      else
+      {
+          // u
+          fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
+          multiplicities.push_back(dim);
+          bes.velocities = base_element++;
+      }
 
       // p
       if (parameters.use_locally_conservative_discretization)
@@ -174,9 +186,9 @@ namespace aspect
     n_blocks (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).first),
     block_indices (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).second),
     extractors (component_indices, n_components),
+    base_elements (std_cxx1x::get<0>(internal::setup_fes<dim>(parameters))),
     system_dofs_per_block (n_blocks),
     composition_names(parameters.names_of_compositional_fields),
-    base_elements (std_cxx1x::get<0>(internal::setup_fes<dim>(parameters))),
     fes (std_cxx1x::get<1>(internal::setup_fes<dim>(parameters))),
     multiplicities (std_cxx1x::get<2>(internal::setup_fes<dim>(parameters)))
   {
