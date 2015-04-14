@@ -1245,8 +1245,14 @@ namespace aspect
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
+    // if the model is compressible then we need to adjust the right hand
+    // side of the equation to make it compatible with the matrix on the
+    // left
     if (do_pressure_rhs_compatibility_modification)
-      pressure_shape_function_integrals.compress(VectorOperation::add);
+      {
+        pressure_shape_function_integrals.compress(VectorOperation::add);
+        make_pressure_rhs_compatible(system_rhs);
+      }
 
 
     // record that we have just rebuilt the matrix

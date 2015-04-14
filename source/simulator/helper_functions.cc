@@ -898,8 +898,6 @@ namespace aspect
     denormalize_pressure (remap);
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
-    if (do_pressure_rhs_compatibility_modification)
-      make_pressure_rhs_compatible(system_rhs);
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
