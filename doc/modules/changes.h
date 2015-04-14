@@ -6,6 +6,18 @@
  *
  *
  * <ol>
+ * <li> Fixed: To make the right-hand side of the Stokes equation compatible
+ * to the matrix we need to apply a correction for inbalanced in-/outflow
+ * across the model boundaries. This correction was accidentally applied 
+ * twice in the first iteration of the iterated IMPES solver. This does not
+ * change the results, because subsequent iterations will do it correctly,
+ * but it might prevent the model to converge or slow down convergence. 
+ * This is fixed now by applying the correction directly after assembling
+ * the matrix and right-hand side.
+ * <br>
+ * (Rene Gassmoeller, Timo Heister, Juliane Dannberg, 2015/04/14)
+ *
+ * <ol>
  * <li> New: ASPECT can now read the list of input arguments from the
  * default input stdin, instead of a file, by specifying "--" for
  * the name of the input file.
