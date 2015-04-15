@@ -623,12 +623,13 @@ namespace aspect
           prm.declare_entry ("Number of grouped files", "0",
                              Patterns::Integer(0),
                              "VTU file output supports grouping files from several CPUs "
-                             "into one file using MPI I/O when writing on a parallel "
+                             "into a given number of files using MPI I/O when writing on a parallel "
                              "filesystem. Select 0 for no grouping. This will disable "
                              "parallel file output and instead write one file per processor "
                              "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
-                             "solution.");
+                             "solution, while a larger value will create that many files "
+                             "(at most as many as there are mpi ranks).");
 
           prm.declare_entry ("Interpolate output", "false",
                              Patterns::Bool(),

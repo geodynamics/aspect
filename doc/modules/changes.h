@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: vtu visualization output can now be grouped into an arbitrary
+ * number of files per time step by setting "Number of grouped files" to
+ * a number larger than 1.
+ * <br>
+ * (Timo Heister, 2015/04/15)
+
  * <li> Fixed: To make the right-hand side of the Stokes equation compatible
  * to the matrix we need to apply a correction for inbalanced in-/outflow
  * across the model boundaries. This correction was accidentally applied 
