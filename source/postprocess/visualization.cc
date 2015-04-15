@@ -332,15 +332,35 @@ namespace aspect
         {
           //TODO: There is some code duplication between the following two
           //code blocks. unify!
-          AssertThrow(group_files==1, ExcNotImplemented());
-          data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
-                                          ".vtu").c_str(),
+          if (group_files == 1)
+              data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                          ".0000.vtu").c_str(),
                                          this->get_mpi_communicator());
+          else
+          {
+              int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+              int color = myid % group_files;
+              MPI_Comm comm;
+              MPI_Comm_split(this->get_mpi_communicator(), color, myid, &comm);
+              data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                              "." + Utilities::int_to_string(color, 4)
+                                              + ".vtu").c_str(),
+                                             comm);
+              MPI_Comm_free(&comm);
+          }
 
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::vector<std::string> filenames;
-              filenames.push_back (solution_file_prefix + ".vtu");
+              {
+                  unsigned int size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+                  unsigned int n_files = (group_files>size)?size:group_files;
+                  for (unsigned int i=0;i<n_files; ++i)
+                    filenames.push_back (solution_file_prefix
+                                         + "." + Utilities::int_to_string(i, 4)
+                                         + ".vtu");
+              }
+
               const std::string pvtu_master_filename = (solution_file_prefix + ".pvtu");
               std::ofstream pvtu_master ((this->get_output_directory() +
                                           pvtu_master_filename).c_str());
