@@ -167,6 +167,46 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    Visualization<dim>::write_master_files (const std::string &solution_file_prefix,
+                                            const std::vector<std::string> &filenames)
+    {
+      DataOut<dim> data_out;
+      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                               this->get_time() / year_in_seconds :
+                                               this->get_time());
+      const std::string
+      pvtu_master_filename = (solution_file_prefix +
+                              ".pvtu");
+      std::ofstream pvtu_master ((this->get_output_directory() +
+                                  pvtu_master_filename).c_str());
+      data_out.write_pvtu_record (pvtu_master, filenames);
+
+      // now also generate a .pvd file that matches simulation
+      // time and corresponding .pvtu record
+      times_and_pvtu_names.push_back(std::make_pair
+                                     (time_in_years_or_seconds, pvtu_master_filename));
+      const std::string
+      pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+      std::ofstream pvd_master (pvd_master_filename.c_str());
+      data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+      // finally, do the same for Visit via the .visit file for this
+      // time step, as well as for all time steps together
+      const std::string
+      visit_master_filename = (this->get_output_directory() +
+                               solution_file_prefix +
+                               ".visit");
+      std::ofstream visit_master (visit_master_filename.c_str());
+      data_out.write_visit_record (visit_master, filenames);
+
+      output_file_names_by_timestep.push_back (filenames);
+
+      std::ofstream global_visit_master ((this->get_output_directory() +
+                                          "solution.visit").c_str());
+      data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+    }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -330,14 +370,12 @@ namespace aspect
         }
       else if ((output_format=="vtu") && (group_files!=0))
         {
-          //TODO: There is some code duplication between the following two
-          //code blocks. unify!
           if (group_files == 1)
-              data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
-                                          ".0000.vtu").c_str(),
-                                         this->get_mpi_communicator());
+            data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                            ".0000.vtu").c_str(),
+                                           this->get_mpi_communicator());
           else
-          {
+            {
               int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
               int color = myid % group_files;
               MPI_Comm comm;
@@ -347,48 +385,20 @@ namespace aspect
                                               + ".vtu").c_str(),
                                              comm);
               MPI_Comm_free(&comm);
-          }
+            }
 
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::vector<std::string> filenames;
               {
-                  unsigned int size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-                  unsigned int n_files = (group_files>size)?size:group_files;
-                  for (unsigned int i=0;i<n_files; ++i)
-                    filenames.push_back (solution_file_prefix
-                                         + "." + Utilities::int_to_string(i, 4)
-                                         + ".vtu");
+                const unsigned int size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+                const unsigned int n_files = (group_files>size)?size:group_files;
+                for (unsigned int i=0; i<n_files; ++i)
+                  filenames.push_back (solution_file_prefix
+                                       + "." + Utilities::int_to_string(i, 4)
+                                       + ".vtu");
               }
-
-              const std::string pvtu_master_filename = (solution_file_prefix + ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
-
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::make_pair(time_in_years_or_seconds,
-                                                            pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-
-              // finally, do the same for Visit via the .visit file for this
-              // time step, as well as for all time steps together
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       solution_file_prefix +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
-
-              output_file_names_by_timestep.push_back (filenames);
-
-              std::ofstream global_visit_master ((this->get_output_directory() +
-                                                  "solution.visit").c_str());
-              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+              write_master_files (solution_file_prefix, filenames);
             }
         }
       else
@@ -421,36 +431,8 @@ namespace aspect
                                      Utilities::int_to_string(i, 4) +
                                      DataOutBase::default_suffix
                                      (DataOutBase::parse_output_format(output_format)));
-              const std::string
-              pvtu_master_filename = (solution_file_prefix +
-                                      ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
 
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (time_in_years_or_seconds, pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-
-              // finally, do the same for Visit via the .visit file for this
-              // time step, as well as for all time steps together
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       solution_file_prefix +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
-
-              output_file_names_by_timestep.push_back (filenames);
-
-              std::ofstream global_visit_master ((this->get_output_directory() +
-                                                  "solution.visit").c_str());
-              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+              write_master_files (solution_file_prefix, filenames);
             }
 
           const std::string *filename
