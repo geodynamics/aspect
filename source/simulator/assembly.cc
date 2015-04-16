@@ -1010,6 +1010,7 @@ namespace aspect
     typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(n_q_points, parameters.n_compositional_fields);
     typename MaterialModel::Interface<dim>::MaterialModelOutputs *outputs;
 
+
     if (!parameters.include_melt_transport)
       {
 	compute_material_model_input_values (current_linearization_point,
@@ -1040,12 +1041,16 @@ namespace aspect
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
             scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-            scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-	    if (parameters.include_melt_transport)
+
+            if (parameters.include_melt_transport)
               {
+                scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (k, q);
                 scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
-                scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].gradient (k, q);
+                scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.fluid_pressure].gradient (k, q);
               }
+            else
+                scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+
 	  }
 
         const double eta = outputs->viscosities[q];
@@ -1356,16 +1361,21 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
+    const FEValuesExtractors::Scalar & extractor_pressure =
+            (parameters.include_melt_transport ?
+                 introspection.extractors.fluid_pressure
+               : introspection.extractors.pressure);
+
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
             scratch.phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-            scratch.phi_p[k]   = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+            scratch.phi_p[k]   = scratch.finite_element_values[extractor_pressure].value (k, q);
             if (parameters.include_melt_transport)
               {
                 scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
-                scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].gradient (k, q);
+                scratch.grad_phi_p[k] = scratch.finite_element_values[extractor_pressure].gradient (k, q);
               }
             if (rebuild_stokes_matrix)
               {
@@ -1524,7 +1534,7 @@ namespace aspect
                 for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
                 	// apply the fluid pressure boundary condition
-                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.pressure].value(i, q)
+                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.fluid_pressure].value(i, q)
                                           * pressure_scaling * K_D *
                                           (density_f
                                           * (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
