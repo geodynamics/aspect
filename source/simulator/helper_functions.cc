@@ -623,6 +623,11 @@ namespace aspect
     if (parameters.pressure_normalization == "no")
       return;
 
+    const FEValuesExtractors::Scalar & extractor_pressure =
+            (parameters.include_melt_transport ?
+                 introspection.extractors.fluid_pressure
+               : introspection.extractors.pressure);
+
     double my_pressure = 0.0;
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
@@ -650,7 +655,7 @@ namespace aspect
                        (face->diameter() / std::sqrt(1.*dim-1) / 3)))
                     {
                       fe_face_values.reinit (cell, face_no);
-                      fe_face_values[introspection.extractors.pressure].get_function_values(vector,
+                      fe_face_values[extractor_pressure].get_function_values(vector,
                                                                                             pressure_values);
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
@@ -680,7 +685,7 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
-              fe_values[introspection.extractors.pressure].get_function_values(vector,
+              fe_values[extractor_pressure].get_function_values(vector,
                                                                                pressure_values);
 
               for (unsigned int q = 0; q < n_q_points; ++q)
@@ -718,13 +723,18 @@ namespace aspect
 
     if (parameters.use_locally_conservative_discretization == false)
       {
-        if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
-            &&
-            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure
+            && !parameters.include_melt_transport)
           distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
         else
           {
-            // velocity and pressure are in the same block, so we have to modify the values manually
+            // pressure is not in a separate block, so we have to modify the values manually
+            const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                         introspection.block_indices.fluid_pressure
+                                                       : introspection.block_indices.pressure);
+            const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
+                                                            finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
+                                                          : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
             cell = dof_handler.begin_active(),
@@ -733,15 +743,11 @@ namespace aspect
               if (cell->is_locally_owned())
                 {
                   cell->get_dof_indices (local_dof_indices);
-                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                  for (unsigned int j=0; j<n_local_pressure_dofs; ++j)
                     {
                       unsigned int support_point_index
-                        = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                        = finite_element.component_to_system_index(pressure_component,
                                                                    /*dof index within component=*/ j);
-
-                      Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                              || local_dof_indices[support_point_index] >= vector.block(0).size(),
-                              ExcInternalError());
 
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
@@ -767,6 +773,9 @@ namespace aspect
         // of freedom on each cell.
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
+        const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                     introspection.block_indices.fluid_pressure
+                                                   : introspection.block_indices.pressure);
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
@@ -777,15 +786,11 @@ namespace aspect
               // identify the first pressure dof
               cell->get_dof_indices (local_dof_indices);
               const unsigned int first_pressure_dof
-                = finite_element.component_to_system_index (introspection.component_indices.pressure, 0);
+                = finite_element.component_to_system_index (pressure_component, 0);
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
-                      ExcInternalError());
-
-              Assert (introspection.block_indices.velocities == introspection.block_indices.pressure
-                      || local_dof_indices[first_pressure_dof] >= vector.block(0).size(),
                       ExcInternalError());
 
               // then adjust its value
@@ -811,15 +816,17 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization == false)
       {
         if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
-            &&
-            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
+            && !parameters.include_melt_transport)
           vector.block(introspection.block_indices.pressure).add(-1.0 * pressure_adjustment);
         else
           {
-            // velocity and pressure are in the same block, or we have several pressures in one block,
-            // so we have to modify the values manually
-
-            const unsigned int block_idx = introspection.block_indices.pressure;
+            // pressure is not in a separate block so we have to modify the values manually
+            const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                         introspection.block_indices.fluid_pressure
+                                                       : introspection.block_indices.pressure);
+            const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
+                                                            finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
+                                                          : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
@@ -829,10 +836,10 @@ namespace aspect
               if (cell->is_locally_owned())
                 {
                   cell->get_dof_indices (local_dof_indices);
-                  for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+                  for (unsigned int j=0; j<n_local_pressure_dofs; ++j)
                     {
                       const unsigned int local_dof_index
-                        = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                        = finite_element.component_to_system_index(pressure_component,
                                                                    /*dof index within component=*/ j);
 
                       // then adjust its value. Note that because we end up touching
@@ -860,6 +867,10 @@ namespace aspect
         // of freedom on each cell.
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
+        const unsigned int pressure_component = (parameters.include_melt_transport ?
+                                                     introspection.block_indices.fluid_pressure
+                                                   : introspection.block_indices.pressure);
+        Assert(!parameters.include_melt_transport, ExcNotImplemented());
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
@@ -870,7 +881,7 @@ namespace aspect
               // identify the first pressure dof
               cell->get_dof_indices (local_dof_indices);
               const unsigned int first_pressure_dof
-                = finite_element.component_to_system_index (dim, 0);
+                = finite_element.component_to_system_index (pressure_component, 0);
 
               // make sure that this DoF is really owned by the current processor
               // and that it is in fact a pressure dof
@@ -1034,7 +1045,7 @@ namespace aspect
 {
       // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
 
-          const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
+          const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.fluid_velocities).get_unit_support_points());
 
           typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
           typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
@@ -1046,7 +1057,7 @@ namespace aspect
           FEValues<dim> fe_values (mapping,
                                    finite_element,
                                    quadrature,
-                                   update_quadrature_points | update_values);
+                                   update_quadrature_points | update_values | update_gradients);
 
           std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
           typename DoFHandler<dim>::active_cell_iterator

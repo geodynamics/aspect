@@ -1164,8 +1164,14 @@ namespace aspect
           = finite_element.component_mask (introspection.extractors.pressure);
 
         if (parameters.include_melt_transport)
+        {
           introspection.component_masks.compaction_pressure
             = finite_element.component_mask (introspection.extractors.compaction_pressure);
+          introspection.component_masks.fluid_pressure
+            = finite_element.component_mask (introspection.extractors.fluid_pressure);
+          introspection.component_masks.fluid_velocities
+            = finite_element.component_mask (introspection.extractors.fluid_velocities);
+        }
 
         introspection.component_masks.temperature
           = finite_element.component_mask (introspection.extractors.temperature);
