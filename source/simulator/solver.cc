@@ -563,9 +563,7 @@ namespace aspect
         // convert melt pressures:
         if (parameters.include_melt_transport)
           {
-            compute_melt_variables(solution, distributed_stokes_solution);
-            solution.block(introspection.block_indices.fluid_velocities) = distributed_stokes_solution.block(introspection.block_indices.fluid_velocities);
-            solution.block(introspection.block_indices.pressure) = distributed_stokes_solution.block(introspection.block_indices.pressure);
+            compute_melt_variables(solution);
           }
 
         pcout << "done." << std::endl;
@@ -766,9 +764,7 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       {
-        compute_melt_variables(solution, distributed_stokes_solution);
-        solution.block(introspection.block_indices.fluid_velocities) = distributed_stokes_solution.block(introspection.block_indices.fluid_velocities);
-        solution.block(introspection.block_indices.pressure) = distributed_stokes_solution.block(introspection.block_indices.pressure);
+        compute_melt_variables(solution);
       }
 
     // print the number of iterations to screen and record it in the

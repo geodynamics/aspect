@@ -1032,16 +1032,18 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_melt_variables(const LinearAlgebra::BlockVector &input_solution,
-                                              LinearAlgebra::BlockVector       &output_solution)
+  void Simulator<dim>::compute_melt_variables(LinearAlgebra::BlockVector &solution)
   {
     if (!parameters.include_melt_transport)
       return;
 
+    LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.system_partitioning,
+                                                   mpi_communicator);
+
     const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
 
 
-    // fluid_velocity
+    // compute fluid_velocity
     {
       // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
 
@@ -1069,13 +1071,13 @@ namespace aspect
             fe_values.reinit(cell);
             cell->get_dof_indices (local_dof_indices);
             fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
-              input_solution, porosity_values);
+              solution, porosity_values);
             fe_values[introspection.extractors.velocities].get_function_values (
-              input_solution, u_s_values);
+              solution, u_s_values);
             fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
-              input_solution, grad_p_f_values);
+              solution, grad_p_f_values);
 
-            compute_material_model_input_values (input_solution,
+            compute_material_model_input_values (solution,
                                                  fe_values,
                                                  true, // TODO: use rebuild_stokes_matrix here?
                                                  in);
@@ -1109,16 +1111,15 @@ namespace aspect
                     value = u_s_values[j][d] - K_D * (grad_p_f_values[j][d] - out.fluid_densities[j] * gravity_d) / phi;
                   }
 
-                output_solution(local_dof_indices[j]) = value;
+                distributed_vector(local_dof_indices[j]) = value;
               }
           }
-      output_solution.block(introspection.block_indices.fluid_velocities).compress(VectorOperation::insert);
+      distributed_vector.block(introspection.block_indices.fluid_velocities).compress(VectorOperation::insert);
+      solution.block(introspection.block_indices.fluid_velocities) = distributed_vector.block(introspection.block_indices.fluid_velocities);
     }
 
-    //* pressure
-
+    //compute solid pressure
     {
-
       const unsigned int block_p = introspection.block_indices.pressure;
 
       // Think what we need to do if the pressure is not an FE_Q...
@@ -1143,11 +1144,11 @@ namespace aspect
             fe_values.reinit(cell);
             cell->get_dof_indices (local_dof_indices);
             fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
-              current_linearization_point, porosity_values);
+              solution, porosity_values);
             fe_values[introspection.extractors.compaction_pressure].get_function_values (
-              current_linearization_point, p_c_values);
+              solution, p_c_values);
             fe_values[introspection.extractors.fluid_pressure].get_function_values (
-              current_linearization_point, p_f_values);
+              solution, p_f_values);
 
             for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
               {
@@ -1165,10 +1166,11 @@ namespace aspect
                 if (phi < 1.0-parameters.melt_transport_threshold)
                   p = (p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
 
-                output_solution(local_dof_indices[pressure_idx]) = p;
+                distributed_vector(local_dof_indices[pressure_idx]) = p;
               }
           }
-      output_solution.block(block_p).compress(VectorOperation::insert);
+      distributed_vector.block(block_p).compress(VectorOperation::insert);
+      solution.block(introspection.block_indices.pressure) = distributed_vector.block(introspection.block_indices.pressure);
     }
   }
 
@@ -1673,8 +1675,7 @@ namespace aspect
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution, const bool solid_to_fluid_pressure, LinearAlgebra::BlockVector &output_solution); \
-  template void Simulator<dim>::compute_melt_variables(const LinearAlgebra::BlockVector &input_solution,\
-                                                       LinearAlgebra::BlockVector       &output_solution); \
+  template void Simulator<dim>::compute_melt_variables(LinearAlgebra::BlockVector &solution); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);

@@ -1096,12 +1096,10 @@ namespace aspect
                                    LinearAlgebra::BlockVector       &output_solution);
 
       /**
-       *
-       * @param input_solution
-       * @param output_solution
+       * Compute fluid velocity and solid pressure in this ghosted solution vector.
+       * @param solution
        */
-      void compute_melt_variables(const LinearAlgebra::BlockVector &input_solution,
-                                   LinearAlgebra::BlockVector       &output_solution);
+      void compute_melt_variables(LinearAlgebra::BlockVector &solution);
 
       /**
        * This routine computes the initial Stokes residual that is
