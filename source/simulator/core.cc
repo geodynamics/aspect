@@ -1130,6 +1130,26 @@ namespace aspect
     return ret;
   }
 
+  /**
+   * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+   * given by the @p dofs_per_block structure.
+   */
+  void  split_by_block (std::vector<IndexSet> & partitioned,
+                        const std::vector<types::global_dof_index> & dofs_per_block,
+                        const IndexSet & whole_set)
+  {
+      const unsigned int n_blocks = dofs_per_block.size();
+      partitioned.clear();
+
+      partitioned.resize(n_blocks);
+      types::global_dof_index start = 0;
+      for (unsigned int i=0;i<n_blocks;++i)
+      {
+          partitioned[i] = whole_set.get_view(start, start + dofs_per_block[i]);
+          start += dofs_per_block[i];
+      }
+  }
+
 
 
   template <int dim>
@@ -1161,77 +1181,42 @@ namespace aspect
                                     introspection.system_dofs_per_block,
                                     introspection.components_to_blocks);
     {
-      types::global_dof_index n_u = introspection.system_dofs_per_block[0],
-                              n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
-                              n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
+        IndexSet system_index_set = dof_handler.locally_owned_dofs();
+        split_by_block (introspection.index_sets.system_partitioning,
+                        introspection.system_dofs_per_block,
+                        system_index_set);
 
-      Assert(!parameters.use_direct_stokes_solver ||
-             (introspection.block_indices.velocities == introspection.block_indices.pressure),
-             ExcInternalError());
+        DoFTools::extract_locally_relevant_dofs (dof_handler,
+                                                 introspection.index_sets.system_relevant_set);
+        split_by_block (introspection.index_sets.system_relevant_partitioning,
+                        introspection.system_dofs_per_block,
+                        introspection.index_sets.system_relevant_set);
 
-      // only count pressure once if velocity and pressure are in the same block,
-      // i.e., direct solver is used.
-      if (introspection.block_indices.velocities == introspection.block_indices.pressure)
-        n_p = 0;
-
-      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        n_C[c] = introspection.system_dofs_per_block
-                 [introspection.block_indices.compositional_fields[c]];
-
-
-      IndexSet system_index_set = dof_handler.locally_owned_dofs();
-      introspection.index_sets.system_partitioning.clear ();
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
+        if (parameters.use_direct_stokes_solver)
         {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
-          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
+            introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
         }
-      if (parameters.include_melt_transport)
+        else
         {
-           introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure | introspection.component_masks.compaction_pressure);
-           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
         }
-      else
-	{
-	  introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
-	}
-      
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
+
+        if (parameters.include_melt_transport)
+        {
+           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure);
+        }
 
       introspection.index_sets.stokes_partitioning.clear ();
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
-        }
-
-      DoFTools::extract_locally_relevant_dofs (dof_handler,
-                                               introspection.index_sets.system_relevant_set);
-      introspection.index_sets.system_relevant_partitioning.clear ();
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.system_relevant_partitioning
-          .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
-        }
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
-
+      introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.velocities]);
+      if (!parameters.use_direct_stokes_solver)
       {
-        unsigned int n_C_so_far = 0;
-
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          if (parameters.include_melt_transport)
           {
-            introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                   n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            introspection.index_sets.system_relevant_partitioning
-            .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                             n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            n_C_so_far += n_C[c];
+              // p_f and p_c:
+              introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.fluid_pressure]);
           }
+        else
+              introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
       }
     }
 
