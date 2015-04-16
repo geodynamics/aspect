@@ -472,16 +472,15 @@ namespace aspect
         // We hardcode the blocks down below, so make sure block 0 is indeed
         // the block containing velocity and pressure:
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-        Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
+        Assert(introspection.block_indices.pressure == 0
+               ||
+               (parameters.include_melt_transport
+                && introspection.block_indices.fluid_pressure == 0
+                && introspection.block_indices.compaction_pressure == 0)
+               , ExcNotImplemented());
 
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
         solution.block(0) = current_linearization_point.block(0);
-
-        if (parameters.include_melt_transport)
-          {
-            convert_pressure_blocks(solution, true, distributed_stokes_solution);
-            solution.block(0) = distributed_stokes_solution.block(0);
-          }
 
         // While we don't need to set up the initial guess for the direct solver
         // (it will be ignored by the solver anyway), we need this if we are
@@ -564,8 +563,9 @@ namespace aspect
         // convert melt pressures:
         if (parameters.include_melt_transport)
           {
-            convert_pressure_blocks(solution, false, distributed_stokes_solution);
-            solution.block(0) = distributed_stokes_solution.block(0);
+            compute_melt_variables(solution, distributed_stokes_solution);
+            solution.block(introspection.block_indices.fluid_velocities) = distributed_stokes_solution.block(introspection.block_indices.fluid_velocities);
+            solution.block(introspection.block_indices.pressure) = distributed_stokes_solution.block(introspection.block_indices.pressure);
           }
 
         pcout << "done." << std::endl;
@@ -580,7 +580,7 @@ namespace aspect
     // pressure = 1). For example the remap vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
-    const unsigned int block_p = introspection.block_indices.pressure;
+    const unsigned int block_p = (parameters.include_melt_transport) ? introspection.block_indices.fluid_pressure : introspection.block_indices.pressure;
     const unsigned int block_p_c = introspection.block_indices.compaction_pressure;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
@@ -602,7 +602,7 @@ namespace aspect
 
     if (parameters.include_melt_transport)
       {
-        convert_pressure_blocks(current_linearization_point, true, distributed_stokes_solution);
+        //convert_pressure_blocks(current_linearization_point, true, distributed_stokes_solution);
         remap.block (block_p) = distributed_stokes_solution.block (block_p);
         // before solving we scale the initial solution to the right dimensions
         // because have to go through the elements of the pressure block individually,
@@ -766,8 +766,9 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       {
-        convert_pressure_blocks(solution, false, distributed_stokes_solution);
-        solution.block(block_p) = distributed_stokes_solution.block(block_p);
+        compute_melt_variables(solution, distributed_stokes_solution);
+        solution.block(introspection.block_indices.fluid_velocities) = distributed_stokes_solution.block(introspection.block_indices.fluid_velocities);
+        solution.block(introspection.block_indices.pressure) = distributed_stokes_solution.block(introspection.block_indices.pressure);
       }
 
     // print the number of iterations to screen and record it in the
