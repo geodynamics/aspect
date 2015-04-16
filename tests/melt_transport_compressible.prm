@@ -139,7 +139,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = melt pressure, melt velocity, melt density, permeability, melt viscosity, compaction viscosity, gravity, material properties, nonadiabatic pressure
+    set List of output variables      = melt density, permeability, melt viscosity, compaction viscosity, gravity, material properties, nonadiabatic pressure
 #    set List of output variables      = gravity, material properties, nonadiabatic pressure
 
     subsection Material properties
