@@ -637,8 +637,6 @@ namespace aspect
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          Assert(introspection.component_masks.velocities[0]==true,
-                 ExcInternalError()); // in case we ever move the velocity around
           const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
@@ -648,15 +646,15 @@ namespace aspect
                   switch (*direction)
                     {
                       case 'x':
-                        mask[0] = true;
+                        mask[introspection.component_indices.velocities[0]] = true;
                         break;
                       case 'y':
-                        mask[1] = true;
+                        mask[introspection.component_indices.velocities[1]] = true;
                         break;
                       case 'z':
                         // we must be in 3d, or 'z' should never have gotten through
                         Assert (dim==3, ExcInternalError());
-                        mask[2] = true;
+                        mask[introspection.component_indices.velocities[2]] = true;
                         break;
                       default:
                         Assert (false, ExcInternalError());
@@ -668,9 +666,6 @@ namespace aspect
               // no mask given -- take all velocities
               for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i]=introspection.component_masks.velocities[i];
-
-              Assert(introspection.component_masks.velocities[0]==true,
-                     ExcInternalError()); // in case we ever move the velocity down
             }
 
           VectorTools::interpolate_boundary_values (dof_handler,
