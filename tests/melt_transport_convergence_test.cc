@@ -11,6 +11,8 @@
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
+const double c = 1.0;
+const double pi = 3.14159265359;
 
 namespace aspect
 {
@@ -71,9 +73,6 @@ namespace aspect
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
-        const double c = 1.0;
-        const double pi = 3.14159265359;
-
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0;i<in.position.size();++i)
           {
@@ -131,7 +130,6 @@ namespace aspect
           {
             double x = p(0);
             double z = p(1);
-            const double pi = 3.14159265359;
 
             values[0]= x + std::sin(z);       //x vel
             values[1]= x;    //z vel
@@ -152,8 +150,6 @@ namespace aspect
           {
             double x = p(0);
             double z = p(1);
-            const double c = 1.0;
-            const double pi = 3.14159265359;
             double porosity = 1.0/20.0 * (pi/2.0 * std::atan(x + 2*z));
             double K_D = porosity*porosity;
 
@@ -183,8 +179,6 @@ namespace aspect
         execute (TableHandler &statistics);
 
 
-      private:
-        const double c = 1.0;
     };
 
     template <int dim>
