@@ -71,6 +71,9 @@ namespace aspect
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
+        const double c = 1.0;
+        const double pi = 3.14159265359;
+
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0;i<in.position.size();++i)
           {
@@ -111,8 +114,6 @@ namespace aspect
 
 
       private:
-        const double c = 1.0;
-        const double pi = 3.14159265359;
 
 
   };

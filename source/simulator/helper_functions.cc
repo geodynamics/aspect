@@ -922,6 +922,7 @@ namespace aspect
     FEFaceValues<dim> fe_face_values (mapping,
                                       finite_element,
                                       quadrature_formula,
+                                      static_cast<UpdateFlags>(parameters.include_melt_transport ? update_values : 0) |
                                       update_normal_vectors |
                                       update_q_points |
                                       update_JxW_values);

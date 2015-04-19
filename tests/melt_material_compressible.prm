@@ -144,7 +144,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity
+    set List of output variables      = density, viscosity, thermal expansivity
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
