@@ -493,9 +493,13 @@ namespace aspect
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
-        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                    introspection.index_sets.locally_owned_melt_pressure_dofs
+                                    : introspection.index_sets.locally_owned_pressure_dofs;
+
+        for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = pressure_idxset.nth_index_in_set(i);
 
             distributed_stokes_solution(idx) /= pressure_scaling;
           }
@@ -544,13 +548,18 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
-          {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+        {
+          IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                      introspection.index_sets.locally_owned_melt_pressure_dofs
+                                      : introspection.index_sets.locally_owned_pressure_dofs;
 
-            distributed_stokes_solution(idx) *= pressure_scaling;
-          }
-        distributed_stokes_solution.compress(VectorOperation::insert);
+          for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
+            {
+              types::global_dof_index idx = pressure_idxset.nth_index_in_set(i);
+              distributed_stokes_solution(idx) *= pressure_scaling;
+            }
+          distributed_stokes_solution.compress(VectorOperation::insert);
+        }
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components

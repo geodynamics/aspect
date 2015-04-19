@@ -1009,20 +1009,25 @@ namespace aspect
     else
       {
         // we need to operate only on p_f not on p_c
+        const IndexSet &idxset = parameters.include_melt_transport ?
+                                 introspection.index_sets.locally_owned_fluid_pressure_dofs
+                                 :
+                                 introspection.index_sets.locally_owned_pressure_dofs;
+
         double pressure_sum = 0.0;
 
-        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+        for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = idxset.nth_index_in_set(i);
             pressure_sum += vector(idx);
           }
 
         const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
         const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
 
-        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+        for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = idxset.nth_index_in_set(i);
             vector(idx) += correction * pressure_shape_function_integrals(idx);
           }
 
