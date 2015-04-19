@@ -1320,11 +1320,7 @@ namespace aspect
       data.local_matrix = 0;
     data.local_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
-      {
-        Assert(!parameters.include_melt_transport,
-            ExcMessage("compressible models do not work with melt transport yet."));
         data.local_pressure_shape_function_integrals = 0;
-      }
 
     // we only need the strain rates for the viscosity,
     // which we only need when rebuilding the matrix
