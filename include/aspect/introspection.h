@@ -289,8 +289,13 @@ namespace aspect
         IndexSet locally_owned_pressure_dofs;
 
         /**
-         * Fluid pressure unknowns that are locally owned. Only valid if
+         * Fluid and compaction pressure unknowns that are locally owned. Only valid if
          * melt transport is enabled.
+         */
+        IndexSet locally_owned_melt_pressure_dofs;
+
+        /**
+         * Fluid pressure unknowns that are locally owned. Only valid if melt transport is enabled.
          */
         IndexSet locally_owned_fluid_pressure_dofs;
       };
