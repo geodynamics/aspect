@@ -42,6 +42,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/melt_interface.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -50,6 +51,7 @@
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
@@ -244,6 +246,8 @@ namespace aspect
         bool                           include_shear_heating;
         bool                           include_adiabatic_heating;
         bool                           include_latent_heat;
+        bool                           include_melt_transport;
+        double                         melt_transport_threshold;
         double                         radiogenic_heating_rate;
         std::set<types::boundary_id> fixed_temperature_boundary_indicators;
         std::set<types::boundary_id> fixed_composition_boundary_indicators;
@@ -452,6 +456,13 @@ namespace aspect
          */
         bool
         is_temperature () const;
+
+        /**
+         * Return whether this object refers to the porosity field.
+         */
+
+        bool
+        is_porosity (const Introspection<dim> &introspection) const;
 
         /**
          * Look up the component index for this temperature or compositional
@@ -842,7 +853,37 @@ namespace aspect
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                   const AdvectionField &advection_field,
-                                  const unsigned int q) const;
+                                  const unsigned int q_point) const;
+
+
+      /**
+       * Compute the right-hand side for the advection system index. This is
+       * 0 for the temperature and all of the compositional fields, except for
+       * the porosity. It includes the melting rate and a term dependent
+       * on the density and velocity.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      double compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                 typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                 const AdvectionField &advection_field,
+                                 const unsigned int q_point) const;
+
+      /**
+       * Compute the right-hand side for the fluid pressure equation of the Staokes
+       * system in case the simulation uses melt transport. This includes a term
+       * derived from Darcy's law, a term including the melting rate and a term dependent
+       * on the densities and velocities of fluid and solid.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+                                        const unsigned int q_point) const;
 
 
       /**
@@ -882,10 +923,14 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Fills a vector with the artificial viscosity for the temperature on
-       * each local cell.
+       * Fills a vector with the artificial viscosity for the temperature
+       * or composition on each local cell.
+       * @param viscosity_per_cell Output vector
+       * @param advection_field Determines whether this variable should select
+       *   the temperature field or a compositional field.
        */
-      void get_artificial_viscosity (Vector<float> &viscosity_per_cell) const;
+      void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+                                     const AdvectionField &advection_field) const;
 
       /**
        * Internal routine to compute the depth average of a certain quantitiy.
@@ -1052,10 +1097,15 @@ namespace aspect
       /**
        * Invert the action of the function above.
        *
+       * This function modifies @p vector in-place and uses a second copy with relevant
+       * dofs (@p relevant_vector) for accessing the pressure values. Both @p vector and @p relevant_vector are expected to already contain
+       * the correct pressure values.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void denormalize_pressure(LinearAlgebra::BlockVector &vector);
+      void denormalize_pressure(LinearAlgebra::BlockVector &vector,
+          const LinearAlgebra::BlockVector &relevant_vector);
 
 
       /**
@@ -1207,9 +1257,10 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
+      template <class fevalues>
       void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                    &input_solution,
-                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
+                                           const fevalues                                      &input_finite_element_values,
                                            const bool                                                   compute_strainrate,
                                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
 
@@ -1251,6 +1302,36 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void output_statistics();
+
+      /**
+       * This routine exchanges the solid and fluid pressure for the fluid
+       * and the compaction pressure in the solution vector (or the other
+       * way round), depending on if solid_to_fluid_pressure is set to true
+       * or false.
+       * This is needed in models with melt transport, because we solve for
+       * the fluid and compaction pressure, but we need the solid pressure
+       * as input for the material model and for the postprocessing.
+       *
+       * @param[in] input_solution A solution vector that contained the
+       * pressures to be converted.
+       *
+       * @param[in] solid_to_fluid_pressure If set to true:
+       * (p_s, p_f) -> (p_f, p_c)
+       * p_c = (1-phi)*(p_s-p_f)
+       * p_f = (p_c - (1-phi) p_s) / (phi-1) or p_s if phi=1
+       * If set to false:
+       * (p_f, p_c) -> (p_s, p_f)
+       * p_s = (p_c - (phi-1) p_f) / (1-phi) or p_f if phi=1
+       *
+       * @param[out] output_solution A solution vector where the
+       * converted pressures are stored.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution,
+                                   const bool                       solid_to_fluid_pressure,
+                                   LinearAlgebra::BlockVector       &output_solution);
 
       /**
        * This routine computes the initial Stokes residual that is
@@ -1339,6 +1420,7 @@ namespace aspect
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
       std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
+      std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
       /**
        * @}
        */

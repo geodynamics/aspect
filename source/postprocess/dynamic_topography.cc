@@ -110,6 +110,7 @@ namespace aspect
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
+              in.cell = cell;
 
               this->get_material_model().evaluate(in, out);
 

@@ -90,6 +90,7 @@ namespace aspect
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
+            in.cell = cell;
 
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);

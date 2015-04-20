@@ -24,61 +24,37 @@
 
 namespace aspect
 {
-  template <>
-  const unsigned int
-  Introspection<2>::ComponentIndices::velocities[2] = { 0, 1 };
-
-  template <>
-  const unsigned int
-  Introspection<3>::ComponentIndices::velocities[3] = { 0, 1, 2 };
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::ComponentIndices::pressure;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::ComponentIndices::temperature;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BaseElements::velocities;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BaseElements::pressure;
-
-  template <int dim>
-  const unsigned int
-  Introspection<dim>::BaseElements::temperature;
-
-
   namespace
   {
     template <int dim>
     std::vector<unsigned int>
     component_to_block_mapping (const unsigned int n_components,
-                                const bool split_vel_pressure)
+                               const bool split_vel_pressure,
+                               const bool add_compaction_pressure)
     {
       // set up a mapping between vector components to the blocks they
       // correspond to.
       std::vector<unsigned int> components_to_blocks (n_components, 0U);
+
+      // velocity is always 0, so start at pressure:
+      unsigned int component = dim;
+      unsigned int block = 0;
+
+				       // pressure is block 0 or 1:
       if (split_vel_pressure)
-        {
-          // each variable has its own block except
-          // for the velocities which are all mapped into block 0
-          components_to_blocks[dim] = 1;
-          components_to_blocks[dim+1] = 2;
-          for (unsigned int i=dim+2; i<n_components; ++i)
-            components_to_blocks[i] = i-dim+1;
-        }
-      else
-        {
-          // here velocity and pressure is block 0:
-          components_to_blocks[dim+1] = 1;
-          for (unsigned int i=dim+2; i<n_components; ++i)
-            components_to_blocks[i] = i-dim;
-        }
+	++block;
+
+				       // set pressure:
+      components_to_blocks[component++] = block;
+				       // compaction pressure is always the same block as pressure
+      if (add_compaction_pressure)
+	components_to_blocks[component++] = block;
+
+      ++block;
+      
+      // number the remainder of components with increasing blocks:
+      while (component < n_components)
+        components_to_blocks[component++] = block++;
 
       return components_to_blocks;
     }
@@ -87,15 +63,16 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::Introspection(const bool split_vel_pressure,
+      const bool add_compaction_pressure,
                                     const std::vector<std::string> &names_of_compositional_fields)
     :
-    n_components (dim+2+names_of_compositional_fields.size()),
+    n_components (dim+2+names_of_compositional_fields.size()+(add_compaction_pressure?1:0)),
     n_blocks (((split_vel_pressure)?3:2)+names_of_compositional_fields.size()),
-    extractors (names_of_compositional_fields.size()),
-    component_indices (names_of_compositional_fields.size()),
+    extractors (names_of_compositional_fields.size(), add_compaction_pressure),
+    component_indices (names_of_compositional_fields.size(), add_compaction_pressure),
     block_indices (names_of_compositional_fields.size(), split_vel_pressure),
-    base_elements (names_of_compositional_fields.size()),
-    components_to_blocks (component_to_block_mapping<dim>(n_components, split_vel_pressure)),
+    base_elements (names_of_compositional_fields.size(), add_compaction_pressure),
+    components_to_blocks (component_to_block_mapping<dim>(n_components, split_vel_pressure, add_compaction_pressure)),
     system_dofs_per_block (n_blocks),
     composition_names(names_of_compositional_fields)
   {}
@@ -117,10 +94,18 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::ComponentIndices::
-  ComponentIndices (const unsigned int n_compositional_fields)
+  ComponentIndices (const unsigned int n_compositional_fields,
+                    const bool add_compaction_pressure)
     :
-    compositional_fields (half_open_sequence(dim+2, dim+2+n_compositional_fields))
-  {}
+    pressure (dim),
+    compaction_pressure (add_compaction_pressure ? dim+1 : numbers::invalid_unsigned_int),
+    temperature (add_compaction_pressure ? dim+2 : dim+1),
+    compositional_fields (half_open_sequence(temperature+1,
+                                             temperature+1+n_compositional_fields))
+  {
+    for (unsigned int i=0;i<dim;++i)
+      velocities[i]=i;
+  }
 
 
   template <int dim>
@@ -130,6 +115,7 @@ namespace aspect
     :
     velocities(0),
     pressure (split_vel_pressure?1:0),
+    compaction_pressure (split_vel_pressure?1:0),
     temperature (split_vel_pressure?2:1),
     compositional_fields (half_open_sequence(
                             (split_vel_pressure?3:2),
@@ -139,8 +125,13 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::BaseElements::
-  BaseElements (const unsigned int n_compositional_fields)
+  BaseElements (const unsigned int n_compositional_fields,
+                const bool add_compaction_pressure)
     :
+    velocities(0),
+    pressure (1),
+    compaction_pressure (add_compaction_pressure ? 1 : numbers::invalid_unsigned_int),
+    temperature (2),
     compositional_fields (n_compositional_fields > 0 ? 3 : numbers::invalid_unsigned_int)
   {}
 
@@ -159,14 +150,16 @@ namespace aspect
   }
 
   template <int dim>
-  Introspection<dim>::Extractors::Extractors (const unsigned int n_compositional_fields)
+  Introspection<dim>::Extractors::Extractors (const unsigned int n_compositional_fields,
+                                              const bool add_compaction_pressure)
     :
     velocities (0),
     pressure (dim),
-    temperature (dim+1),
-    compositional_fields (half_open_extractor_sequence (dim+2, dim+2+n_compositional_fields))
-  {
-  }
+    compaction_pressure (add_compaction_pressure ? dim+1 : numbers::invalid_unsigned_int),
+    temperature (add_compaction_pressure ? dim+2 : dim+1),
+    compositional_fields (half_open_extractor_sequence (dim+2+(add_compaction_pressure?1:0),
+                                                        dim+2+(add_compaction_pressure?1:0)+n_compositional_fields))
+  {}
 
   template <int dim>
   unsigned int

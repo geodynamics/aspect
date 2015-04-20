@@ -101,6 +101,7 @@ namespace aspect
     :
     parameters (prm, mpi_communicator_),
     introspection (!parameters.use_direct_stokes_solver,
+        parameters.include_melt_transport,
                    parameters.names_of_compositional_fields),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -177,7 +178,7 @@ namespace aspect
                     :
                     static_cast<const FiniteElement<dim> &>
                     (FE_Q<dim>(parameters.stokes_velocity_degree-1))),
-                   1,
+                   1 + parameters.include_melt_transport,
                    FE_Q<dim>(parameters.temperature_degree),
                    1,
                    FE_Q<dim>(parameters.composition_degree),
@@ -334,6 +335,17 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
+    if (parameters.include_melt_transport)
+      {
+	fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
+
+	if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+	  sim->initialize (*this);
+
+	fluid_pressure_boundary_conditions->parse_parameters (prm);
+	fluid_pressure_boundary_conditions->initialize ();
+      }
+    
 
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
@@ -400,11 +412,14 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
-    // we need to do the rhs compatibility modification, if the model is
-    // compressible, and there is no open boundary to balance the pressure
-    do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
-                                                  &&
-                                                  (open_velocity_boundary_indicators.size() == 0));
+    // We need to do the rhs compatibility modification, if the model is
+    // compressible or compactible (in the case of melt transport), and
+    // there is no open boundary to balance the pressure.
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible())
+    		                                 ||
+    		                                 (parameters.include_melt_transport))
+                                                 &&
+                                                 (open_velocity_boundary_indicators.size() == 0);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -778,6 +793,17 @@ namespace aspect
           coupling[x.velocities[d]][x.pressure] = DoFTools::always;
           coupling[x.pressure][x.velocities[d]] = DoFTools::always;
         }
+      if (parameters.include_melt_transport)
+        {
+        for (unsigned int d=0; d<dim; ++d)
+          {
+            coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
+            coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
+          }
+
+        coupling[x.pressure][x.pressure] = DoFTools::always;
+        coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+        }
       coupling[x.temperature][x.temperature] = DoFTools::always;
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         coupling[x.compositional_fields[c]][x.compositional_fields[c]]
@@ -1112,6 +1138,11 @@ namespace aspect
           = finite_element.component_mask (introspection.extractors.velocities);
         introspection.component_masks.pressure
           = finite_element.component_mask (introspection.extractors.pressure);
+
+        if (parameters.include_melt_transport)
+          introspection.component_masks.compaction_pressure
+            = finite_element.component_mask (introspection.extractors.compaction_pressure);
+
         introspection.component_masks.temperature
           = finite_element.component_mask (introspection.extractors.temperature);
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -1153,10 +1184,16 @@ namespace aspect
           introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
           introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
         }
-      else
+      if (parameters.include_melt_transport)
         {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+           introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure | introspection.component_masks.compaction_pressure);
+           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
         }
+      else
+	{
+	  introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+	}
+      
       introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
 
       introspection.index_sets.stokes_partitioning.clear ();
@@ -1507,6 +1544,7 @@ namespace aspect
                 }
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
+
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);

@@ -1,0 +1,91 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 23,303 (10,628+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00000
+     Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0/0
+
+*** Timestep 1:  t=1.29405e+09 years
+   Solving temperature system... 375 iterations.
+   Solving peridotite system ... 15 iterations.
+   Solving porosity system ... 249 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00001
+     Compositions min/max/mass: -0.02531/0.3252/3.749e+10 // -2.034e-15/2.034e-15/-1.462e-09
+
+*** Timestep 2:  t=3.4666e+09 years
+   Solving temperature system... 330 iterations.
+   Solving peridotite system ... 12 iterations.
+   Solving porosity system ... 15 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00002
+     Compositions min/max/mass: -0.02071/0.3189/3.749e+10 // -0.000555/0.0005621/175.2
+
+*** Timestep 3:  t=6.38253e+09 years
+   Solving temperature system... 268 iterations.
+   Solving peridotite system ... 11 iterations.
+   Solving porosity system ... 13 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00003
+     Compositions min/max/mass: -0.01785/0.3151/3.749e+10 // -0.0004905/0.00048/275.6
+
+*** Timestep 4:  t=9.41118e+09 years
+   Solving temperature system... 357 iterations.
+   Solving peridotite system ... 15 iterations.
+   Solving porosity system ... 18 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00004
+     Compositions min/max/mass: -0.01431/0.3136/3.749e+10 // -0.0002755/0.0002503/333.2
+
+*** Timestep 5:  t=1e+10 years
+   Solving temperature system... 176 iterations.
+   Solving peridotite system ... 10 iterations.
+   Solving porosity system ... 12 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_transport/solution-00005
+     Compositions min/max/mass: -0.01133/0.3133/3.749e+10 // -0.0002552/0.0002415/335.4
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      59.4s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      7.74s |        13% |
+| Assemble composition system     |        12 |      17.1s |        29% |
+| Assemble temperature system     |         6 |      10.4s |        17% |
+| Build composition preconditioner|        12 |     0.278s |      0.47% |
+| Build temperature preconditioner|         6 |     0.141s |      0.24% |
+| Solve Stokes system             |         6 |      3.82s |       6.4% |
+| Solve composition system        |        12 |     0.682s |       1.1% |
+| Solve temperature system        |         6 |      2.53s |       4.3% |
+| Initialization                  |         2 |      3.13s |       5.3% |
+| Postprocessing                  |         6 |      5.26s |       8.9% |
+| Setup dof systems               |         1 |      2.03s |       3.4% |
++---------------------------------+-----------+------------+------------+
+

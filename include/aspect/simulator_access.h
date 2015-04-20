@@ -191,11 +191,16 @@ namespace aspect
       include_latent_heat () const;
 
       /**
+       * Return whether we solve the equations for melt transport.
+       */
+      bool
+      include_melt_transport () const;
+      
+      /**
        * Return the stokes velocity degree.
        */
       int
       get_stokes_velocity_degree () const;
-
 
       /**
        * Return the adiabatic surface temperature.
@@ -239,6 +244,14 @@ namespace aspect
        */
       void
       get_artificial_viscosity(Vector<float> &viscosity_per_cell) const;
+
+      /**
+       * Returns the entropy viscosity on each locally owned cell as it is
+       * used to stabilize the composition equation.
+       */
+      void
+      get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell,
+                                           const unsigned int compositional_variable) const;
 
       /** @} */
 

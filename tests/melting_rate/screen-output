@@ -1,0 +1,134 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.2.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmelting_rate.so>
+
+Number of active cells: 2,048 (on 6 levels)
+Number of degrees of freedom: 46,215 (21,060+8,385+8,385+8,385)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.68997e+16, 3.84864e+14, 8.58088e-10, 8.58088e-10
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.68997e+16, 5.72786e+08, 8.58088e-10, 8.58088e-10
+
+      residual: 1
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.68997e+16, 5.72786e+08, 8.58088e-10, 8.58088e-10
+
+      residual: 1
+
+   Postprocessing:
+     Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
+
+*** Timestep 1:  t=47.4035 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 7 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.7112e+16, 1.57742e+11, 4160.33, 3071.9
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 5 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.7112e+16, 1.4726e+12, 109.258, 4.45152
+
+      residual: 9.33552
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.7112e+16, 5.80103e+12, 255.418, 4.8386
+
+      residual: 36.7755
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0001801/0.2001/1.257e+08 // 4.264e-29/0.2001/1.257e+08
+
+*** Timestep 2:  t=91.4056 years
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 5.48589e+16, 2.51575e+12, 489.367, 214.09
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 5.48589e+16, 5.99138e+12, 283.506, 7.93758
+
+      residual: 2.38155
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 5.48589e+16, 2.19607e+12, 565.965, 12.2889
+
+      residual: 1.15653
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0002944/0.2002/1.258e+08 // -7.146e-23/0.2002/1.258e+08
+
+*** Timestep 3:  t=100 years
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 7 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 4.29674e+16, 4.9614e+12, 2555.24, 2487.41
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 5 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 4.29674e+16, 8.89518e+12, 153.001, 3.6822
+
+      residual: 1.79288
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving peridotite system ... 5 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 4.29674e+16, 1.26072e+13, 38.758, 0.719069
+
+      residual: 2.54106
+
+   Postprocessing:
+     Compositions min/max/mass: -0.000354/0.2003/1.258e+08 // -1.768e-22/0.2003/1.258e+08
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      17.5s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        12 |      7.07s |        40% |
+| Assemble composition system     |        24 |      1.89s |        11% |
+| Assemble temperature system     |        12 |       1.2s |       6.9% |
+| Build composition preconditioner|        24 |     0.275s |       1.6% |
+| Build temperature preconditioner|         4 |    0.0463s |      0.26% |
+| Solve Stokes system             |        12 |      6.49s |        37% |
+| Solve composition system        |        24 |     0.107s |      0.61% |
+| Solve temperature system        |        12 |    0.0455s |      0.26% |
+| Initialization                  |         2 |    0.0728s |      0.42% |
+| Postprocessing                  |         4 |    0.0202s |      0.12% |
+| Setup dof systems               |         1 |     0.133s |      0.76% |
++---------------------------------+-----------+------------+------------+
+

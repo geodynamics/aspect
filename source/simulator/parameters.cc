@@ -298,6 +298,16 @@ namespace aspect
                          "always be used but may be undesirable when comparing results with known "
                          "benchmarks that do not include this term in the temperature equation "
                          "or when dealing with a model without phase transitions.");
+      prm.declare_entry ("Include melt transport", "false",
+                         Patterns::Bool (),
+                         "Whether to include the transport of melt into the model or not. If this "
+                         "is set to true, an additional compositional field for the porosity and "
+                         "an additional pressure (the compaction pressure) will be added.");
+      prm.declare_entry ("Melt transport threshold", "1e-3",
+                         Patterns::Double (),
+                         "The porosity limit for melt migration. For smaller porosities, the equations "
+                         "reduce to the Stokes equations and do neglect melt transport. Only used "
+                         "if Include melt transport is true. ");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -730,6 +740,8 @@ namespace aspect
       include_shear_heating = prm.get_bool ("Include shear heating");
       include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
       include_latent_heat = prm.get_bool ("Include latent heat");
+      include_melt_transport = prm.get_bool ("Include melt transport");
+      melt_transport_threshold  = prm.get_double ("Melt transport threshold");
 
       {
         nullspace_removal = NullspaceRemoval::none;
@@ -818,6 +830,12 @@ namespace aspect
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      if (include_melt_transport && (n_compositional_fields == 0))
+      {
+    	AssertThrow (false,
+    	    ExcMessage ("If melt transport is included in the model, "
+    	    		    "there has to be at least one compositional field."));
+      }
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
@@ -848,6 +866,17 @@ namespace aspect
       if (names_of_compositional_fields.size() == 0)
         for (unsigned int i=0; i<n_compositional_fields; ++i)
           names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
+      // if we want to solve the melt transport equations, check that one of the fields
+      // has the name porosity
+      if (include_melt_transport && std::find(names_of_compositional_fields.begin(),
+    		                                  names_of_compositional_fields.end(), "porosity")
+                                              == names_of_compositional_fields.end())
+    	{
+    	  AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
+	    		                          "there has to be at least one compositional field "
+	    		                          "with the name 'porosity'."));
+    	}
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
@@ -1068,6 +1097,7 @@ namespace aspect
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
+    FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
 

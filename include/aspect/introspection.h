@@ -56,11 +56,14 @@ namespace aspect
        * Constructor.
        * @param split_vel_pressure Set to true if velocity and pressure should
        * be in separate blocks.
+       * @param add_compaction_pressure Set to true if the compaction pressure
+       * should be added. TODO: there are different cases for the block
        * @param names_of_compositional_fields The names of compositional
        * fields that will be used in this simulation. This is used in
        * initializing the fields of this class.
        */
       Introspection (const bool split_vel_pressure,
+                     const bool add_compaction_pressure,
                      const std::vector<std::string> &names_of_compositional_fields);
 
       /**
@@ -89,10 +92,12 @@ namespace aspect
        */
       struct Extractors
       {
-        Extractors (const unsigned int n_compositional_fields);
+        Extractors (const unsigned int n_compositional_fields,
+                    const bool add_compaction_pressure);
 
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;
+        const FEValuesExtractors::Scalar              compaction_pressure;
         const FEValuesExtractors::Scalar              temperature;
         const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
@@ -109,11 +114,13 @@ namespace aspect
        */
       struct ComponentIndices
       {
-        ComponentIndices (const unsigned int n_compositional_fields);
+        ComponentIndices (const unsigned int n_compositional_fields,
+                          const bool add_compaction_pressure);
 
-        static const unsigned int       velocities[dim];
-        static const unsigned int       pressure    = dim;
-        static const unsigned int       temperature = dim+1;
+        unsigned int       velocities[dim];
+        unsigned int       pressure;
+        unsigned int       compaction_pressure;
+        unsigned int       temperature;
         const std::vector<unsigned int> compositional_fields;
       };
       /**
@@ -133,6 +140,7 @@ namespace aspect
 
         const unsigned int       velocities;
         const unsigned int       pressure;
+        const unsigned int       compaction_pressure;
         const unsigned int       temperature;
         const std::vector<unsigned int> compositional_fields;
       };
@@ -154,11 +162,13 @@ namespace aspect
        */
       struct BaseElements
       {
-        BaseElements (const unsigned int n_compositional_fields);
+        BaseElements (const unsigned int n_compositional_fields,
+                      const bool add_compaction_pressure);
 
-        static const unsigned int       velocities  = 0;
-        static const unsigned int       pressure    = 1;
-        static const unsigned int       temperature = 2;
+        unsigned int       velocities;
+        unsigned int       pressure;
+        unsigned int       compaction_pressure;
+        unsigned int       temperature;
         const unsigned int              compositional_fields;
       };
       /**
@@ -177,6 +187,7 @@ namespace aspect
       {
         ComponentMask              velocities;
         ComponentMask              pressure;
+        ComponentMask              compaction_pressure;
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
@@ -251,9 +262,16 @@ namespace aspect
 
         /**
          * Pressure unknowns that are locally owned. This IndexSet is needed
-         * if velocity and pressure end up in the same block.
+         * if velocity and pressure end up in the same block. If melt transport
+         * is enabled, this will contain both pressures.
          */
         IndexSet locally_owned_pressure_dofs;
+
+        /**
+         * Fluid pressure unknowns that are locally owned. Only valid if
+         * melt transport is enabled.
+         */
+        IndexSet locally_owned_fluid_pressure_dofs;
       };
       /**
        * A variable that contains index sets describing which of the globally

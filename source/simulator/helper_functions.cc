@@ -98,6 +98,17 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  Simulator<dim>::AdvectionField::is_porosity(const Introspection<dim> &introspection) const
+  {
+    if (field_type != compositional_field)
+      return false;
+    else
+	  return (introspection.name_for_compositional_index(compositional_variable) == "porosity");
+  }
+
+
+  template <int dim>
   unsigned int
   Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
@@ -282,9 +293,18 @@ namespace aspect
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
+    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
+                             update_values | (parameters.use_conduction_timestep || parameters.include_melt_transport
+                                              ?
+                                               (parameters.include_melt_transport
+                                                ?
+                                                update_gradients | update_quadrature_points
+                                                :
+                                                update_quadrature_points)
+                                              :
+                                              update_default));
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_pressure_gradients(n_q_points);
+    std::vector<double> pressure_values(n_q_points), fluid_pressure_values(n_q_points), temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
@@ -338,6 +358,7 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
+              in.cell = cell;
 
               material_model->evaluate(in, out);
 
@@ -356,6 +377,74 @@ namespace aspect
                                                            / thermal_diffusivity);
                 }
             }
+
+          if (parameters.include_melt_transport)
+            {
+              fe_values[introspection.extractors.pressure].get_function_values (solution,
+                                                                                pressure_values);
+              fe_values[introspection.extractors.compaction_pressure].get_function_values (solution,
+                                                                                           fluid_pressure_values);
+              fe_values[introspection.extractors.compaction_pressure].get_function_gradients (solution,
+                                                                                   fluid_pressure_gradients);
+              fe_values[introspection.extractors.temperature].get_function_values (solution,
+                                                                                   temperature_values);
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
+                    composition_values[c]);
+
+              typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
+              typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
+
+              const unsigned int porosity_idx = introspection.compositional_index_for_name("porosity");
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+                    composition_values_at_q_point[k] = composition_values[k][q];
+
+                  in.position[q] = fe_values.quadrature_point(q);
+                  in.temperature[q] = temperature_values[q];
+                  in.pressure[q] = pressure_values[q];
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    in.composition[q][c] = composition_values_at_q_point[c];
+                }
+
+              in.cell = cell;
+              const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&*material_model);
+              AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+              melt_mat->evaluate_with_melt(in, out);
+
+              // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / porosity  or = v_s, if porosity = 0
+              double max_local_melt_velocity = 0;
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  Tensor<1,dim> melt_velocity;
+                  double porosity = in.composition[q][porosity_idx];
+
+                  double p_s = in.pressure[q];
+                  double p_f = fluid_pressure_values[q];
+
+                  if (porosity < parameters.melt_transport_threshold)
+                    melt_velocity = velocity_values[q];
+                  else
+                    {
+                      double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                      Tensor<1,dim> grad_p_f = fluid_pressure_gradients[q];
+                      const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+
+                      // v_f =  v_s - K_D (nabla p_f - rho_f g) / porosity
+                      melt_velocity = velocity_values[q]  - K_D * (grad_p_f - out.fluid_densities[q] * gravity) / porosity;
+                    }
+                  max_local_melt_velocity = std::max (max_local_melt_velocity,
+                                                      melt_velocity.norm());
+
+                }
+              max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
+                                                       max_local_melt_velocity
+                                                       /
+                                                       cell->minimum_vertex_distance());
+            }
+
         }
 
     const double max_global_speed_over_meshsize
@@ -629,7 +718,9 @@ namespace aspect
 
     if (parameters.use_locally_conservative_discretization == false)
       {
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+        if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
+            &&
+            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
           distributed_vector.block(introspection.block_indices.pressure).add(pressure_adjustment);
         else
           {
@@ -712,23 +803,23 @@ namespace aspect
    * inverse to normalize_pressure.
    */
   template <int dim>
-  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector)
+  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector)
   {
     if (parameters.pressure_normalization == "no")
       return;
 
     if (parameters.use_locally_conservative_discretization == false)
       {
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+        if ((introspection.block_indices.velocities != introspection.block_indices.pressure)
+            &&
+            (introspection.component_indices.compaction_pressure == numbers::invalid_unsigned_int))
           vector.block(introspection.block_indices.pressure).add(-1.0 * pressure_adjustment);
         else
           {
-            // velocity and pressure are in the same block, so we have to modify the values manually
+            // velocity and pressure are in the same block, or we have several pressures in one block,
+            // so we have to modify the values manually
 
             const unsigned int block_idx = introspection.block_indices.pressure;
-            LinearAlgebra::BlockVector distributed_vector (introspection.index_sets.stokes_partitioning,
-                                                           mpi_communicator);
-            distributed_vector.block(block_idx) = vector.block(block_idx);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
@@ -747,12 +838,11 @@ namespace aspect
                       // then adjust its value. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
                       // distributed_vector but copy from the unchanged vector.
-                      distributed_vector(local_dof_indices[local_dof_index])
-                        = vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
+                      vector(local_dof_indices[local_dof_index])
+                        = relevant_vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
                     }
                 }
-            distributed_vector.compress(VectorOperation::insert);
-            vector.block(block_idx) = distributed_vector.block(block_idx);
+            vector.compress(VectorOperation::insert);
           }
       }
     else
@@ -792,6 +882,8 @@ namespace aspect
               // then adjust its value
               vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
             }
+
+        vector.compress(VectorOperation::insert);
       }
   }
 
@@ -808,11 +900,6 @@ namespace aspect
   {
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
-
-    // TODO: currently does not work if velocity and
-    // pressure are in the same block.
-    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-           ExcNotImplemented());
 
     // In the following we integrate the normal velocity over every surface
     // of the model. This integral is part of the correction term that needs
@@ -840,32 +927,180 @@ namespace aspect
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary() &&
-              (parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
-               parameters.prescribed_velocity_boundary_indicators.end()))
-            {
-              fe_face_values.reinit (cell, f);
+          {
+            if (!cell->face(f)->at_boundary())
+              continue;
 
-              // for each of the quadrature points, evaluate the
-              // normal velocity by calling the boundary conditions and add
-              // it to the integral
-              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                {
-                  const Tensor<1,dim> velocity =
-                    velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
+            fe_face_values.reinit (cell, f);
 
-                  const double normal_velocity = velocity * fe_face_values.normal_vector(q);
-                  local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
+            if (parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
+                parameters.prescribed_velocity_boundary_indicators.end())
+              {
+                                // for each of the quadrature points, evaluate the
+                                // normal velocity by calling the boundary conditions and add
+                                // it to the integral
+                                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                                      {
+                                        const Tensor<1,dim> velocity =
+                                              velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
+
+                                        const double normal_velocity = velocity * fe_face_values.normal_vector(q);
+                                        local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
+                                      }
+               }
+
+            // correct u by -K_D grad p_f = -K_D f
+            if (parameters.include_melt_transport)
+              {
+                typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(quadrature_formula.size(), parameters.n_compositional_fields);
+                typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(quadrature_formula.size(), parameters.n_compositional_fields);
+
+                compute_material_model_input_values (current_linearization_point,
+                                                     fe_face_values,
+                                                     rebuild_stokes_matrix,
+                                                     melt_inputs);
+                // TODO: fill other inputs
+                melt_inputs.cell = cell;
+                typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+                AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+                melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+
+                std::vector<Tensor<1,dim> > grad_p_f(quadrature_formula.size());
+                fluid_pressure_boundary_conditions->fluid_pressure_gradient(melt_inputs,
+                    melt_outputs,
+                    grad_p_f);
+
+                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                  {
+                    const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+                    const double porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
+                    const double K_D = (porosity > parameters.melt_transport_threshold
+                                      ?
+                                      melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q]
+                                      :
+                                      0.0);
+                    const double K_D_grad_p_f = - K_D * grad_p_f[q] * fe_face_values.normal_vector(q);
+                    local_normal_velocity_integral += K_D_grad_p_f * fe_face_values.JxW(q);
+                  }
                 }
             }
 
     const double global_normal_velocity_integral =
       Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
 
-    const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-    const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+    if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
+      {
+        const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
+        const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
 
-    vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
+        vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
+      }
+    else
+      {
+        // we need to operate only on p_f not on p_c
+        double pressure_sum = 0.0;
+
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+           {
+             types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+             pressure_sum += vector(idx);
+           }
+
+        const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
+        const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
+
+        for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
+           {
+             types::global_dof_index idx = introspection.index_sets.locally_owned_fluid_pressure_dofs.nth_index_in_set(i);
+             vector(idx) += correction * pressure_shape_function_integrals(idx);
+           }
+
+        vector.compress(VectorOperation::insert);
+      }
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution,
+                                               const bool                       solid_to_fluid_pressure,
+                                               LinearAlgebra::BlockVector       &output_solution)
+  {
+    if (!parameters.include_melt_transport)
+      return;
+
+    // for the direct solver we have to copy the whole block,
+    // because the velocity is included as well.
+    const unsigned int block_p = introspection.block_indices.pressure;
+    output_solution.block(block_p) = input_solution.block(block_p);
+
+    // Think what we need to do if the pressure is not an FE_Q...
+    Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
+
+    const unsigned int por_idx = introspection.compositional_index_for_name("porosity");
+    const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
+    std::vector<double> porosity_values(quadrature.size());
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature,
+                             update_quadrature_points | update_values);
+
+    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+    for (; cell != endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit(cell);
+          cell->get_dof_indices (local_dof_indices);
+          fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+              current_linearization_point, porosity_values);
+
+          for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
+            {
+              const unsigned int pressure_idx
+              = finite_element.component_to_system_index(introspection.component_indices.pressure,
+                  /*dof index within component=*/ j);
+
+              // skip entries that are not locally owned:
+              if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
+                continue;
+
+              const unsigned int p_c_idx
+              = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
+                  /*dof index within component=*/ j);
+
+              double phi = porosity_values[j];
+
+              if (solid_to_fluid_pressure)
+                // (p_s, p_f) -> (p_f, p_c)
+                {
+                  double p_s = input_solution(local_dof_indices[pressure_idx]);
+                  double p_f = input_solution(local_dof_indices[p_c_idx]);
+                  double p_c = (1-phi)*(p_s-p_f);
+
+                  output_solution(local_dof_indices[pressure_idx]) = p_f;
+                  output_solution(local_dof_indices[p_c_idx]) = p_c;
+                }
+              else
+                // (p_f, p_c) -> (p_s, p_f)
+                {
+                  double p_f = input_solution(local_dof_indices[pressure_idx]);
+                  double p_s;
+                  if (phi >(1.0-parameters.melt_transport_threshold) || (phi <= 0.0))
+                    p_s = p_f;
+                  else
+                  {
+                    double p_c = input_solution(local_dof_indices[p_c_idx]);
+                    p_s = (p_c - (phi-1.0) * p_f) / (1.0-phi);
+                  }
+
+                  output_solution(local_dof_indices[pressure_idx]) = p_s;
+                  output_solution(local_dof_indices[p_c_idx]) = p_f;
+                }
+            }
+        }
+    output_solution.block(block_p).compress(VectorOperation::insert);
   }
 
 
@@ -879,12 +1114,16 @@ namespace aspect
 
     // if velocity and pressure are in the same block, we have to copy the
     // pressure to the solution and RHS vector with a zero velocity
-    if (introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
-        for (unsigned int i=0; i < introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        const IndexSet & idxset = (parameters.include_melt_transport) ?
+            introspection.index_sets.locally_owned_fluid_pressure_dofs
+            :
+            introspection.index_sets.locally_owned_pressure_dofs;
+
+        for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx =
-              introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = idxset.nth_index_in_set(i);
             remap(idx)        = current_linearization_point(idx);
           }
         remap.block(0).compress(VectorOperation::insert);
@@ -893,16 +1132,29 @@ namespace aspect
       remap.block (block_p) = current_linearization_point.block (block_p);
 
     // we have to do the same conversions and rescaling we do before solving
-    // the Stokes system:
+    // the Stokes system: conversion of the pressure blocks (p_s, p_f --> p_f, p_c),
     // denormalizing the pressure and applying the pressure scaling
-    denormalize_pressure (remap);
+    residual = remap;
+    if (parameters.include_melt_transport)
+      convert_pressure_blocks(residual, true, remap);
+    residual = remap;
+
+    // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
+    // bigger vector here, oh well.
+    LinearAlgebra::BlockVector ghosted (introspection.index_sets.system_partitioning,
+        introspection.index_sets.system_relevant_partitioning,
+        mpi_communicator);
+    // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
+    // (only in cases where we need it)
+    ghosted.block(block_p) = remap.block(block_p);
+    denormalize_pressure (remap, ghosted);
     current_constraints.set_zero (remap);
+
     remap.block (block_p) /= pressure_scaling;
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
-    double residual_u, residual_p = 0;
-    if (introspection.block_indices.pressure == introspection.block_indices.velocities)
+    if(introspection.block_indices.pressure == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
@@ -911,10 +1163,10 @@ namespace aspect
       }
     else
       {
-        residual_u = system_matrix.block(0,1).residual (residual.block(0),
+        double residual_u = system_matrix.block(0,1).residual (residual.block(0),
                                                         remap.block(1),
                                                         system_rhs.block(0));
-        residual_p = system_rhs.block(block_p).l2_norm();
+        double residual_p = system_rhs.block(block_p).l2_norm();
         return sqrt(residual_u*residual_u+residual_p*residual_p);
       }
   }
@@ -980,6 +1232,8 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
+              in.cell = cell;
+
               material_model->evaluate(in, out);
             }
 
@@ -1241,8 +1495,11 @@ namespace aspect
     // left hand side of the Stokes equation is the viscosity. note
     // that our implementation of compressible materials makes sure
     // that the density does not appear on the lhs.
+    // if melt transport is included in the simulation, we have an
+    // additional equation with more coefficients on the left hand
+    // side.
     return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
-            == true);
+            || parameters.include_melt_transport);
   }
 }
 
@@ -1252,7 +1509,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
@@ -1265,6 +1522,7 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
+  template void Simulator<dim>::convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution, const bool solid_to_fluid_pressure, LinearAlgebra::BlockVector &output_solution); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);
