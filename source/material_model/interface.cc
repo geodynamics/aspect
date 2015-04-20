@@ -428,6 +428,7 @@ namespace aspect
         // chosen is project_to_Q1
         void average (const AveragingOperation  operation,
                       const FullMatrix<double> &projection_matrix,
+                      const FullMatrix<double> &expansion_matrix,
                       std::vector<double>      &values)
         {
           // if an output field has not been filled (because it was
@@ -435,10 +436,15 @@ namespace aspect
           if (values.size() == 0)
             return;
 
-
+          const unsigned int N = values.size();
+          const unsigned int P = expansion_matrix.n();
+          Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
+                  ExcInternalError());
           Assert (((operation == project_to_Q1) &&
-                   (projection_matrix.m() == values.size()) &&
-                   (projection_matrix.n() == values.size()))
+                   (projection_matrix.m() == P) &&
+                   (projection_matrix.n() == N) &&
+                   (expansion_matrix.m() == N) &&
+                   (expansion_matrix.n() == P))
                   ||
                   ((projection_matrix.m() == 0) &&
                    (projection_matrix.n() == 0)),
@@ -454,7 +460,6 @@ namespace aspect
 
               case arithmetic_average:
               {
-                const unsigned int N=values.size();
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
                   sum += values[i];
@@ -467,7 +472,6 @@ namespace aspect
 
               case harmonic_average:
               {
-                const unsigned int N=values.size();
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
                   sum += 1./values[i];
@@ -480,7 +484,6 @@ namespace aspect
 
               case pick_largest:
               {
-                const unsigned int N=values.size();
                 double max = -std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
                   max = std::max(max, values[i]);
@@ -494,7 +497,6 @@ namespace aspect
               {
                 // we will need the min/max values below, for use
                 // after the projection operation
-                const unsigned int N=values.size();
                 double min = std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
                   min = std::min(min, values[i]);
@@ -507,19 +509,22 @@ namespace aspect
                 // values. as explained in the documentation of the
                 // compute_projection_matrix, this performs the operation
                 // we want in the current context
-                Vector<double> x (N), y(N);
+                Vector<double> x (N), z(P), y(N);
                 for (unsigned int i=0; i<N; ++i)
                   y(i) = values[i];
-                projection_matrix.vmult (x, y);
+                projection_matrix.vmult (z, y);
+
+                // now that we have the Q1 values, restrict them to
+                // the min/max range of the original data
+                for (unsigned int i=0; i<P; ++i)
+                  z[i] = std::max (min,
+                                   std::min (max,
+                                             z[i]));
+
+                // then expand back to the quadrature points
+                expansion_matrix.vmult (x, z);
                 for (unsigned int i=0; i<N; ++i)
                   values[i] = x(i);
-
-                // now that we have the values, restrict them again to
-                // the min/max range of the original data
-                for (unsigned int i=0; i<N; ++i)
-                  values[i] = std::max (min,
-                                        std::min (max,
-                                                  values[i]));
 
                 break;
               }
@@ -534,7 +539,7 @@ namespace aspect
 
 
         /**
-         * Given a quadrature formula, compute a matrix $X$
+         * Given a quadrature formula, compute a matrices $E, M^{-1}F$
          * representing a linear operator in the following way: Let
          * there be a vector $F$ with $N$ elements where the elements
          * are data stored at each of the $N$ quadrature points. Then
@@ -562,13 +567,14 @@ namespace aspect
          * operation of shape functions at quadrature points.
          *
          * Then, the operation $X=EM^{-1}F$ is the operation we seek.
-         * This function computes this matrix.
+         * This function computes the matrices E and M^{-1}F.
          */
         template <int dim>
         void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                         const Quadrature<dim>   &quadrature_formula,
                                         const Mapping<dim>      &mapping,
-                                        FullMatrix<double>      &projection_matrix)
+                                        FullMatrix<double>      &projection_matrix,
+                                        FullMatrix<double>      &expansion_matrix)
         {
           static FE_Q<dim> fe(1);
           FEValues<dim> fe_values (mapping, fe, quadrature_formula,
@@ -579,7 +585,9 @@ namespace aspect
 
           FullMatrix<double> F (P, N);
           FullMatrix<double> M (P, P);
-          FullMatrix<double> E (N, P);
+
+          projection_matrix.reinit (P, N);
+          expansion_matrix.reinit (N, P);
 
           // reinitialize the fe_values object with the current cell. we get a
           // DoFHandler cell, but we are not going to use it with the
@@ -602,17 +610,13 @@ namespace aspect
 
           for (unsigned int q=0; q<N; ++q)
             for (unsigned int i=0; i<P; ++i)
-              E(q,i) = fe_values.shape_value(i,q);
+              expansion_matrix(q,i) = fe_values.shape_value(i,q);
 
           // replace M by M^{-1}
           M.gauss_jordan();
 
           // form M^{-1} F
-          FullMatrix<double> tmp (P, N);
-          M.mmult (tmp, F);
-
-          // form E M^{-1} F
-          E.mmult (projection_matrix, tmp);
+          M.mmult (projection_matrix, F);
         }
       }
 
@@ -626,6 +630,7 @@ namespace aspect
                     MaterialModelOutputs    &values)
       {
         FullMatrix<double> projection_matrix;
+        FullMatrix<double> expansion_matrix;
 
         if (operation == project_to_Q1)
           {
@@ -634,16 +639,24 @@ namespace aspect
             compute_projection_matrix (cell,
                                        quadrature_formula,
                                        mapping,
-                                       projection_matrix);
+                                       projection_matrix,
+                                       expansion_matrix);
           }
 
-        average (operation, projection_matrix, values.viscosities);
-        average (operation, projection_matrix, values.densities);
-        average (operation, projection_matrix, values.thermal_expansion_coefficients);
-        average (operation, projection_matrix, values.specific_heat);
-        average (operation, projection_matrix, values.compressibilities);
-        average (operation, projection_matrix, values.entropy_derivative_pressure);
-        average (operation, projection_matrix, values.entropy_derivative_temperature);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.viscosities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.densities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.thermal_expansion_coefficients);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.specific_heat);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.compressibilities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.entropy_derivative_pressure);
+        average (operation, projection_matrix, expansion_matrix,
+                 values.entropy_derivative_temperature);
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should

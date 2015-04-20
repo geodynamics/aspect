@@ -4389,6 +4389,9 @@ topography returns to zero after some time.
 \subsubsection{Averaging material properties}
 \label{sec:sinker-with-averaging}
 
+\textit{The original motivation for the functionality discussed here, as well
+  as the setup of the input file, were provided by Cedric Thieulot.}
+
 Geophysical models are often characterized by abrupt and large jumps in material
 properties, in particular in the viscosity. An example is a subducting, cold
 slab surrounded by the hot mantle: Here, the strong
@@ -4424,12 +4427,26 @@ To support such cases, \aspect{} supports an operation where we evaluate the
 material model at every quadrature point, given the temperature, pressure,
 strain rate, and compositions at this point, and then either (i) use these
 values, (ii) replace the values by their arithmetic average $\bar x = \frac 1N
-\sum_{i=1}^N x_i$, (iii) replace the values by their harmonic average $\bar x =
-\left(\frac 1N \sum_{i=1}^N \frac{1}{x_i}\right)^{-1}$, or (iv) replace the
-values by the largest value over all quadrature points on this cell. We do this
-operation for all quantities that the material model computes, i.e., in
-particular, the viscosity, the density, the compressibility, and the various
-thermal and thermodynamic properties.
+\sum_{i=1}^N x_i$, (iii) replace the values by their harmonic average $\bar x
+= \left(\frac 1N \sum_{i=1}^N \frac{1}{x_i}\right)^{-1}$, or (iv) replace the
+values by the largest value over all quadrature points on this cell. Option
+(v) is to project the values from the quadrature points to a bi- (in 2d) or
+trilinear (in 3d) $Q_1$ finite element space on every cell, and then evaluate this
+finite element representation again at the quadrature points. Unlike the other
+four operations, the values we get at the quadrature points are not all the
+same here.
+
+We do this operation for all quantities that the material model computes,
+i.e., in particular, the viscosity, the density, the compressibility, and the
+various thermal and thermodynamic properties. In the first 4 cases, the
+operation guarantees that the resulting material properties are bounded below
+and above by the minimum and maximum of the original data set. In the last
+case, the situation is a bit more complicated: The nodal values of the $Q_1$
+projection are not necessarily bounded by the minimal or maximal original
+values at the quadrature points, and then neither are the output values after
+re-interpolation to the quadrature points. Consequently, after projection, we
+limit the nodal values of the projection to the minimal and maximal original
+values, and only then interpolate back to the quadrature points.
 
 We demonstrate the effect of all of this with the ``sinker'' benchmark. This
 benchmark is defined by a high-viscosity, heavy sphere at the center of a
@@ -4442,8 +4459,8 @@ This is all modeled in the following input file that can also be found in
 
 The type of averaging on each cell is chosen using this part of the input file:
 \lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/harmonic.prm.out}
-For the various different cases of averaging, and for different levels of mesh
-refinement, Fig.~\ref{fig:sinker-with-averaging-iteration-pressure} shows
+For the various different averaging options, and for different levels of mesh
+refinement, Fig.~\ref{fig:sinker-with-averaging-pressure} shows
 pressure plots that illustrate the problem with oscillations of the discrete
 pressure, and
 Table~\ref{tab:sinker-with-averaging-iteration-counts} shows the number
@@ -4464,22 +4481,25 @@ of outer GMRES iterations when solving the Stokes equations
   outer iterations, see \cite{KHB12}) is reduced from 117 to 47 for the
   elliptic block and from 3.8 to 1.5 for the Schur complement.}
 The implication of these results is that the averaging gives us a solution
-that not only avoids the pressure over- and undershots, but is also
-significantly faster to compute the total run time for 8 global refinement steps is
-reduced from 5,250s for no averaging to 358s for harmonic averaging.
+that not only reduces the degree of pressure over- and undershots, but is also
+significantly faster to compute: for example, the total run time for 8 global
+refinement steps is reduced from 5,250s for no averaging to 358s for harmonic
+averaging.
 
-\begin{table}
+\begin{table}[htb]
   \center
-  \begin{tabular}{|c|cccc|}
+  \begin{tabular}{|c|ccccc|}
     \hline
-    \# global refinement steps & no averaging & arithmetic averaging & harmonic
-    averaging & pick largest & project to $Q_1$
+    \# of global & no averaging & arithmetic & harmonic
+    & pick & project \\
+    refinement steps & & averaging &
+    averaging & largest & to $Q_1$
     \\ \hline
-    4          & 30+64   & 30+13      & 30+10    & 30+13 & 30+238 \\
-    5          & 30+87   & 30+14      & 30+13    & 30+14 & 30+406 \\
-    6          & 30+171  & 30+14      & 30+15    & 30+15 & 30+1068 \\
-    7          & 30+143  & 30+27      & 30+28    & 30+26 & ?? \\
-    8          & 30+188  & 30+27      & 30+26    & 30+28 & 30+2382 \\ \hline
+    4          & 30+64   & 30+13      & 30+10    & 30+13 & 30+15 \\
+    5          & 30+87   & 30+14      & 30+13    & 30+14 & 30+16 \\
+    6          & 30+171  & 30+14      & 30+15    & 30+15 & 30+17 \\
+    7          & 30+143  & 30+27      & 30+28    & 30+26 & 30+28 \\
+    8          & 30+188  & 30+27      & 30+26    & 30+28 & 30+28 \\ \hline
   \end{tabular}
   \caption{\it Number of outer GMRES iterations to solve the Stokes equations
   for various numbers of global mesh refinement steps and for different
@@ -4488,6 +4508,60 @@ reduced from 5,250s for no averaging to 358s for harmonic averaging.
   preconditioner (see Section~\ref{parameters:Nonlinear solver tolerance}).}
   \label{tab:sinker-with-averaging-iteration-counts}
 \end{table}
+
+\begin{figure}[htb]
+  \centering
+  \begin{tabular}{ccccc}
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-7-none.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-7-arith.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-7-harmonic.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-7-largest.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-7-project.png}
+    \\
+    $[-45.2,45.2]$
+    &
+    $[-2.67,2.67]$
+    &
+    $[-3.58,3.58]$
+    &
+    $[-1.80,1.80]$
+    &
+    $[-2.77,2.77]$
+    \\
+    \\
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-8-none.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-8-arith.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-8-harmonic.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-8-largest.png}
+    &
+    \includegraphics[width=0.17\textwidth]{cookbooks/sinker-with-averaging/sinker-8-project.png}
+    \\
+    $[-44.5,44.5]$
+    &
+    $[-5.18,5.18]$
+    &
+    $[-5.08,5.08]$
+    &
+    $[-5.20,5.20]$
+    &
+    $[-7.99,7.99]$
+  \end{tabular}
+  \caption{\it Visualization of the pressure field for the ``sinker''
+    problem. Left to right: No averaging, arithmetic averaging, harmonic
+    averaging, pick largest, project to $Q_1$. Top: 7 global refinement
+    steps. Bottom: 8 global refinement steps. The minimal and maximal pressure
+    values are indicated below every picture. This range is symmetric because
+    we enforce that the average of the pressure equals zero. The color scale
+    is adjusted to show only values between $p=-3$ and $p=3$.}
+  \label{fig:sinker-with-averaging-pressure}
+\end{figure}
 
 Such improvements carry over to more complex and realistic models. For
 example, in a simulation of flow under the East African Rift by Sarah Stamps,
