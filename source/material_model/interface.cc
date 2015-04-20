@@ -24,6 +24,8 @@
 #include <aspect/material_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/fe/fe_q.h>
 
 #include <list>
 
@@ -393,7 +395,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|pick largest";
+        return "none|arithmetic average|harmonic average|pick largest|project to Q1";
       }
 
 
@@ -407,6 +409,8 @@ namespace aspect
           return harmonic_average;
         else if (s == "pick largest")
           return pick_largest;
+        else if (s == "project to Q1")
+          return project_to_Q1;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -419,14 +423,26 @@ namespace aspect
 
       namespace
       {
-        // do the requested averaging operation for one array
-        void average (const AveragingOperation operation,
-                      std::vector<double>     &values)
+        // Do the requested averaging operation for one array. The
+        // projection matrix argument is only used if the operation
+        // chosen is project_to_Q1
+        void average (const AveragingOperation  operation,
+                      const FullMatrix<double> &projection_matrix,
+                      std::vector<double>      &values)
         {
           // if an output field has not been filled (because it was
           // not requested), then simply do nothing -- no harm no foul
           if (values.size() == 0)
             return;
+
+
+          Assert (((operation == project_to_Q1) &&
+                   (projection_matrix.m() == values.size()) &&
+                   (projection_matrix.n() == values.size()))
+                  ||
+                  ((projection_matrix.m() == 0) &&
+                   (projection_matrix.n() == 0)),
+                  ExcInternalError());
 
           // otherwise do as instructed
           switch (operation)
@@ -474,6 +490,40 @@ namespace aspect
                 break;
               }
 
+              case project_to_Q1:
+              {
+                // we will need the min/max values below, for use
+                // after the projection operation
+                const unsigned int N=values.size();
+                double min = std::numeric_limits<double>::max();
+                for (unsigned int i=0; i<N; ++i)
+                  min = std::min(min, values[i]);
+
+                double max = -std::numeric_limits<double>::max();
+                for (unsigned int i=0; i<N; ++i)
+                  max = std::max(max, values[i]);
+
+                // take the projection matrix and apply it to the
+                // values. as explained in the documentation of the
+                // compute_projection_matrix, this performs the operation
+                // we want in the current context
+                Vector<double> x (N), y(N);
+                for (unsigned int i=0; i<N; ++i)
+                  y(i) = values[i];
+                projection_matrix.vmult (x, y);
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = x(i);
+
+                // now that we have the values, restrict them again to
+                // the min/max range of the original data
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = std::max (min,
+                                        std::min (max,
+                                                  values[i]));
+
+                break;
+              }
+
               default:
               {
                 AssertThrow (false,
@@ -481,22 +531,123 @@ namespace aspect
               }
             }
         }
+
+
+        /**
+         * Given a quadrature formula, compute a matrix $X$
+         * representing a linear operator in the following way: Let
+         * there be a vector $F$ with $N$ elements where the elements
+         * are data stored at each of the $N$ quadrature points. Then
+         * project this data into a Q1 space and evaluate this
+         * projection at the quadrature points. This operator can be
+         * expressed in the following way where $P=2^{dim}$ is the
+         * number of degrees of freedom of the $Q_1$ element:
+         *
+         * Let $y$ be the input vector with $N$ elements. Then let
+         * $F$ be the $P \times N$ matrix so that
+         * @f{align}
+         *   F_{iq} = \varphi_i(x_q) |J(x_q)| w_q
+         * @f}
+         * where $\varphi_i$ are the $Q_1$ shape functions, $x_q$ are
+         * the quadrature points, $J$ is the Jacobian matrix of the
+         * mapping from reference to real cell, and $w_q$ are the
+         * quadrature weights.
+         *
+         * Next, let $M_{ij}$ be the $P\times P$ mass matrix on the
+         * $Q_1$ space. Then $M^{-1}Fy$ corresponds to the projection
+         * of $y$ into the $Q_1$ space (or, more correctly, it
+         * corresponds to the nodal values of this projection).
+         *
+         * Finally, let $E_{qi} = \varphi_i(x_q)$ be the evaluation
+         * operation of shape functions at quadrature points.
+         *
+         * Then, the operation $X=EM^{-1}F$ is the operation we seek.
+         * This function computes this matrix.
+         */
+        template <int dim>
+        void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                        const Quadrature<dim>   &quadrature_formula,
+                                        const Mapping<dim>      &mapping,
+                                        FullMatrix<double>      &projection_matrix)
+        {
+          static FE_Q<dim> fe(1);
+          FEValues<dim> fe_values (mapping, fe, quadrature_formula,
+                                   update_values | update_JxW_values);
+
+          const unsigned int P = fe.dofs_per_cell;
+          const unsigned int N = quadrature_formula.size();
+
+          FullMatrix<double> F (P, N);
+          FullMatrix<double> M (P, P);
+          FullMatrix<double> E (N, P);
+
+          // reinitialize the fe_values object with the current cell. we get a
+          // DoFHandler cell, but we are not going to use it with the
+          // finite element associated with that DoFHandler, so cast it back
+          // to just a tria iterator (all we need anyway is the geometry)
+          fe_values.reinit (typename Triangulation<dim>::active_cell_iterator(cell));
+
+          // compute the matrices F, M, E
+          for (unsigned int i=0; i<P; ++i)
+            for (unsigned int q=0; q<N; ++q)
+              F(i,q) = fe_values.shape_value(i,q) *
+                       fe_values.JxW(q);
+
+          for (unsigned int i=0; i<P; ++i)
+            for (unsigned int j=0; j<P; ++j)
+              for (unsigned int q=0; q<N; ++q)
+                M(i,j) += fe_values.shape_value(i,q) *
+                          fe_values.shape_value(j,q) *
+                          fe_values.JxW(q);
+
+          for (unsigned int q=0; q<N; ++q)
+            for (unsigned int i=0; i<P; ++i)
+              E(q,i) = fe_values.shape_value(i,q);
+
+          // replace M by M^{-1}
+          M.gauss_jordan();
+
+          // form M^{-1} F
+          FullMatrix<double> tmp (P, N);
+          M.mmult (tmp, F);
+
+          // form E M^{-1} F
+          E.mmult (projection_matrix, tmp);
+        }
       }
 
 
 
+      template <int dim>
       void average (const AveragingOperation operation,
+                    const typename DoFHandler<dim>::active_cell_iterator &cell,
+                    const Quadrature<dim>   &quadrature_formula,
+                    const Mapping<dim>      &mapping,
                     MaterialModelOutputs    &values)
       {
-        average (operation, values.viscosities);
-        average (operation, values.densities);
-        average (operation, values.thermal_expansion_coefficients);
-        average (operation, values.specific_heat);
-        average (operation, values.compressibilities);
-        average (operation, values.entropy_derivative_pressure);
-        average (operation, values.entropy_derivative_temperature);
-        for (unsigned int r=0; r<values.reaction_terms.size(); ++r)
-          average (operation, values.reaction_terms[r]);
+        FullMatrix<double> projection_matrix;
+
+        if (operation == project_to_Q1)
+          {
+            projection_matrix.reinit (quadrature_formula.size(),
+                                      quadrature_formula.size());
+            compute_projection_matrix (cell,
+                                       quadrature_formula,
+                                       mapping,
+                                       projection_matrix);
+          }
+
+        average (operation, projection_matrix, values.viscosities);
+        average (operation, projection_matrix, values.densities);
+        average (operation, projection_matrix, values.thermal_expansion_coefficients);
+        average (operation, projection_matrix, values.specific_heat);
+        average (operation, projection_matrix, values.compressibilities);
+        average (operation, projection_matrix, values.entropy_derivative_pressure);
+        average (operation, projection_matrix, values.entropy_derivative_temperature);
+
+        // the reaction terms are unfortunately stored in reverse
+        // indexing. it's also not quite clear whether these should
+        // really be averaged, so avoid this for now
       }
 
     }
@@ -542,7 +693,18 @@ namespace aspect
   Interface<dim> * \
   create_material_model<dim> (ParameterHandler &prm); \
   \
-  template class MaterialModelInputs<dim>;
+  template class MaterialModelInputs<dim>; \
+  \
+  namespace MaterialAveraging \
+  { \
+    template                \
+    void average (const AveragingOperation operation, \
+                  const DoFHandler<dim>::active_cell_iterator &cell, \
+                  const Quadrature<dim>   &quadrature_formula, \
+                  const Mapping<dim>      &mapping, \
+                  MaterialModelOutputs    &values); \
+  }
+
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

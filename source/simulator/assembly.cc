@@ -909,6 +909,9 @@ namespace aspect
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
     MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_preconditioners,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1099,6 +1102,9 @@ namespace aspect
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
     MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
@@ -1519,6 +1525,9 @@ namespace aspect
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
     MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
     if (advection_field.is_temperature())
@@ -1532,7 +1541,13 @@ namespace aspect
               scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
-        material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
+        material_model->evaluate(scratch.explicit_material_model_inputs,
+                                 scratch.explicit_material_model_outputs);
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.explicit_material_model_outputs);
       }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
@@ -1567,7 +1582,10 @@ namespace aspect
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
-        Assert (density_c_P >= 0, ExcMessage ("The product of density and c_P needs to be a non-negative quantity."));
+
+        Assert (density_c_P >= 0,
+                ExcMessage ("The product of density and c_P needs to be a "
+                            "non-negative quantity."));
 
         const double conductivity =
           ((advection_field.is_temperature())

@@ -24,8 +24,11 @@
 
 #include <aspect/plugins.h>
 #include <deal.II/base/point.h>
+#include <deal.II/base/quadrature.h>
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/fe/mapping.h>
 
 namespace aspect
 {
@@ -303,25 +306,31 @@ namespace aspect
        * implemented. These are:
        * - No averaging, i.e., leave the values as they were provided
        *   by the material model.
-       * - Arithmetic averaging: set the values of each output quantity
+       * - Arithmetic averaging: Set the values of each output quantity
        *   at every quadrature point to
        *   $$ \bar x = \frac 1Q \sum_{q=1}^Q x_q $$
        *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Harmonic averaging: set the values of each output quantity
+       * - Harmonic averaging: Set the values of each output quantity
        *   at every quadrature point to
        *   $$ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} $$
        *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Pick largest: set the values of each output quantity
+       * - Pick largest: Set the values of each output quantity
        *   at every quadrature point to
        *   $$ \bar x = \max_{1\le q\le Q} x_q $$
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       * - Project to $Q_1$: This operation takes the values at the
+       *   quadrature points and computes the best bi- or trilinear
+       *   approximation for them. In other words, it projects the
+       *   values into the $Q_1$ finite element space. It then
+       *   re-evaluate this projection at the quadrature points.
        */
       enum AveragingOperation
       {
         none,
         arithmetic_average,
         harmonic_average,
-        pick_largest
+        pick_largest,
+        project_to_Q1
       };
 
 
@@ -341,10 +350,16 @@ namespace aspect
       AveragingOperation parse_averaging_operation_name (const std::string &s);
 
       /**
-       * Given the averaging @p operation, perform this operation on all
-       * elements of the @p values structure.
+       * Given the averaging @p operation, a description of where the
+       * quadrature points are located on the given cell, and a
+       * mapping, perform this operation on all elements of the @p
+       * values structure.
        */
+      template <int dim>
       void average (const AveragingOperation operation,
+                    const typename DoFHandler<dim>::active_cell_iterator &cell,
+                    const Quadrature<dim>   &quadrature_formula,
+                    const Mapping<dim>      &mapping,
                     MaterialModelOutputs    &values);
     }
 

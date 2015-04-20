@@ -4462,23 +4462,24 @@ of outer GMRES iterations when solving the Stokes equations
   Schur complement). In other words, the number of inner iterations per outer
   iteration (taking into account the split into ``cheap'' and ``expensive''
   outer iterations, see \cite{KHB12}) is reduced from 117 to 47 for the
-  elliptic block and from 3.8 to 1.5 for the Schur complement. The end effect
-  is that the total run time for 8 global refinement steps is reduced from
-  5250s to 358s for this particular example.}
-
+  elliptic block and from 3.8 to 1.5 for the Schur complement.}
+The implication of these results is that the averaging gives us a solution
+that not only avoids the pressure over- and undershots, but is also
+significantly faster to compute the total run time for 8 global refinement steps is
+reduced from 5,250s for no averaging to 358s for harmonic averaging.
 
 \begin{table}
   \center
   \begin{tabular}{|c|cccc|}
     \hline
     \# global refinement steps & no averaging & arithmetic averaging & harmonic
-    averaging & pick largest
+    averaging & pick largest & project to $Q_1$
     \\ \hline
-    4          & 30+64   & 30+13      & 30+10    & 30+13 \\
-    5          & 30+87   & 30+14      & 30+13    & 30+14 \\
-    6          & 30+171  & 30+14      & 30+15    & 30+15 \\
-    7          & 30+143  & 30+27      & 30+28    & 30+26 \\
-    8          & 30+188  & 30+27      & 30+26    & 30+28 \\ \hline
+    4          & 30+64   & 30+13      & 30+10    & 30+13 & 30+238 \\
+    5          & 30+87   & 30+14      & 30+13    & 30+14 & 30+406 \\
+    6          & 30+171  & 30+14      & 30+15    & 30+15 & 30+1068 \\
+    7          & 30+143  & 30+27      & 30+28    & 30+26 & ?? \\
+    8          & 30+188  & 30+27      & 30+26    & 30+28 & 30+2382 \\ \hline
   \end{tabular}
   \caption{\it Number of outer GMRES iterations to solve the Stokes equations
   for various numbers of global mesh refinement steps and for different
@@ -4487,6 +4488,17 @@ of outer GMRES iterations when solving the Stokes equations
   preconditioner (see Section~\ref{parameters:Nonlinear solver tolerance}).}
   \label{tab:sinker-with-averaging-iteration-counts}
 \end{table}
+
+Such improvements carry over to more complex and realistic models. For
+example, in a simulation of flow under the East African Rift by Sarah Stamps,
+using approximately 17 million unknowns and run on 64 processors, the number
+of outer and inner iterations is reduced from 169 and 114,482 without
+averaging to 77 and 23,180 with harmonic averaging, respectively.
+This translates into a reduction of run-time from 145 hours to 17
+hours. Assessing the accuracy of the answers is of course more complicated in
+such cases because we do not know the exact solution.
+
+
 
 
 \subsection{Geophysical setups}
