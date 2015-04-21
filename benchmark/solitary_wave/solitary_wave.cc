@@ -806,6 +806,7 @@ namespace aspect
       Utilities::MPI::sum(pressure, this->get_mpi_communicator(), initial_pressure);
       maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
 
+      for (unsigned int i=0; i<initial_pressure.size(); ++i)
 	{
 	  initial_pressure[i] = initial_pressure[i] / (static_cast<double>(volume_all[i])+1e-20);
 	}
@@ -1090,7 +1091,6 @@ namespace aspect
          << ", " << e_p / maximum_pressure
          << ", " << error_c
          << ", " << std::abs(delta);
-      
 
       return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
