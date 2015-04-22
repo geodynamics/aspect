@@ -395,7 +395,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|pick largest|project to Q1";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1";
       }
 
 
@@ -407,6 +407,8 @@ namespace aspect
           return arithmetic_average;
         else if (s == "harmonic average")
           return harmonic_average;
+        else if (s == "geometric average")
+          return geometric_average;
         else if (s == "pick largest")
           return pick_largest;
         else if (s == "project to Q1")
@@ -477,6 +479,24 @@ namespace aspect
                   sum += 1./values[i];
 
                 const double average = 1./(sum/N);
+                for (unsigned int i=0; i<N; ++i)
+                  values[i] = average;
+                break;
+              }
+
+              case geometric_average:
+              {
+                double prod = 1;
+                for (unsigned int i=0; i<N; ++i)
+                  {
+                    Assert (values[i] >= 0,
+                            ExcMessage ("Computing the geometric average "
+                                        "only makes sense for non-negative "
+                                        "quantities."));
+                    prod *= values[i];
+                  }
+
+                const double average = std::pow (prod, 1./N);
                 for (unsigned int i=0; i<N; ++i)
                   values[i] = average;
                 break;

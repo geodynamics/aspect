@@ -314,6 +314,10 @@ namespace aspect
        *   at every quadrature point to
        *   $$ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} $$
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       * - Geometric averaging: Set the values of each output quantity
+       *   at every quadrature point to
+       *   $$ \bar x = \left(\prod_{q=1}^Q x_q\right)^{1/Q} $$
+       *   where $x_q$ are the values at the $Q$ quadrature points.
        * - Pick largest: Set the values of each output quantity
        *   at every quadrature point to
        *   $$ \bar x = \max_{1\le q\le Q} x_q $$
@@ -329,6 +333,7 @@ namespace aspect
         none,
         arithmetic_average,
         harmonic_average,
+        geometric_average,
         pick_largest,
         project_to_Q1
       };
