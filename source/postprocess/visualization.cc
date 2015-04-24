@@ -169,10 +169,10 @@ namespace aspect
 
     template <int dim>
     void
-    Visualization<dim>::write_master_files (const std::string &solution_file_prefix,
+    Visualization<dim>::write_master_files (const DataOut<dim> &data_out,
+                                            const std::string &solution_file_prefix,
                                             const std::vector<std::string> &filenames)
     {
-      DataOut<dim> data_out;
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
@@ -398,7 +398,7 @@ namespace aspect
                                        + "." + Utilities::int_to_string(i, 4)
                                        + ".vtu");
               }
-              write_master_files (solution_file_prefix, filenames);
+              write_master_files (data_out, solution_file_prefix, filenames);
             }
         }
       else
@@ -432,7 +432,7 @@ namespace aspect
                                      DataOutBase::default_suffix
                                      (DataOutBase::parse_output_format(output_format)));
 
-              write_master_files (solution_file_prefix, filenames);
+              write_master_files (data_out, solution_file_prefix, filenames);
             }
 
           const std::string *filename
