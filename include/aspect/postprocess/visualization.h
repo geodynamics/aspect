@@ -29,6 +29,7 @@
 #include <deal.II/base/thread_management.h>
 #include <deal.II/numerics/data_postprocessor.h>
 #include <deal.II/base/data_out_base.h>
+#include <deal.II/numerics/data_out.h>
 
 namespace aspect
 {
@@ -420,11 +421,13 @@ namespace aspect
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *
+         * @param data_out The DataOut object that was used to write the solutions.
          * @param solution_file_prefix The stem of the filename to be written.
          * @param filenames List of filenames for the current output from all
          * processors.
          */
-        void write_master_files (const std::string &solution_file_prefix,
+        void write_master_files (DataOut<dim> &data_out,
+                                 const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
 
         /**
