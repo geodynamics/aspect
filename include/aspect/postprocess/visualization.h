@@ -426,7 +426,7 @@ namespace aspect
          * @param filenames List of filenames for the current output from all
          * processors.
          */
-        void write_master_files (DataOut<dim> &data_out,
+        void write_master_files (const DataOut<dim> &data_out,
                                  const std::string &solution_file_prefix,
                                  const std::vector<std::string> &filenames);
 

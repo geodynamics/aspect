@@ -169,7 +169,7 @@ namespace aspect
 
     template <int dim>
     void
-    Visualization<dim>::write_master_files (DataOut<dim> &data_out,
+    Visualization<dim>::write_master_files (const DataOut<dim> &data_out,
                                             const std::string &solution_file_prefix,
                                             const std::vector<std::string> &filenames)
     {
