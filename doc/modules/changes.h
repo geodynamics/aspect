@@ -6,6 +6,14 @@
  *
  *
  * <ol>
+ * <li> New: ASPECT can now average material properties between the
+ * quadrature points of a cell. This greatly increases the stability
+ * of solutions in simulations with spatially varying coefficients,
+ * and also greatly accelerates the solution, at times up to a factor
+ * of ten.
+ * <br>
+ * (Wolfgang Bangerth, 2015/04/25)
+ *
  * <li> Fixed: Removal rigid body translations and rotations when the
  * simulation has a nullspace was bugged. This feature has been fixed
  * and extended, and a new section has been added to the manual describing
