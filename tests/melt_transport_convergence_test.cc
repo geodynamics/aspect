@@ -77,7 +77,7 @@ namespace aspect
             const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
             const double z = in.position[i](1);
-            out.viscosities[i] = std::exp(c * porosity);
+            out.viscosities[i] = exp(c*porosity);
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -87,7 +87,7 @@ namespace aspect
             // We calculated it by subtracting the first term of the RHS (\Nabla (K_D \rho_f g)) from the LHS
             // we computed using our analytical solution.
             for (unsigned int c=0;c<in.composition[i].size();++c)
-              out.reaction_terms[i][c] = 0.1e1 - (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * exp((double) z / 0.10e2) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.50e2 - pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * exp((double) z / 0.10e2) / 0.100e3 + (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * (-0.1166666667e0 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) - 0.1000000000e0 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.1000000000e1 * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z)) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.10e2 + pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * (0.1166666667e0 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (double) (2 * x + 4 * z) - 0.5833333335e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) + 0.1000000000e0 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) * (double) (2 * x + 4 * z) - 0.5000000000e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z)) + (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * (-0.3333333333e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) - 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.1000000000e0 * exp((double) z / 0.10e2)) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.5e1 + pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * (0.3333333333e-1 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (double) (4 * x + 8 * z) - 0.3333333333e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) + 0.5000000000e-1 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) * (double) (4 * x + 8 * z) - 0.5000000000e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z) + 0.1000000000e-1 * exp((double) z / 0.10e2));
+              out.reaction_terms[i][c] = 0.1e1 - 0.2000000000e-1 * (0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * exp(0.1000000000e0 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) - 0.1000000000e-1 * pow(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z), 0.2e1) * exp(0.1000000000e0 * z) + 0.1000000000e0 * (0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (-0.1166666666e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) - 0.1000000000e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) + 0.1000000000e1 * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * sin(z)) / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) + 0.10e1 * pow(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z), 0.2e1) * (0.1166666666e0 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (0.2e1 * x + 0.40e1 * z) - 0.5833333330e-2 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) + 0.1000000000e0 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) * (0.2e1 * x + 0.40e1 * z) - 0.5000000000e-2 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) + 0.5000000000e-1 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * sin(z)) + 0.2000000000e0 * (0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (-0.3333333334e-1 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) - 0.5000000000e-1 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) + 0.1000000000e0 * exp(0.1000000000e0 * z)) / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) + 0.10e1 * pow(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z), 0.2e1) * (0.3333333334e-1 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (0.40e1 * x + 0.800e1 * z) - 0.3333333334e-2 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) + 0.5000000000e-1 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) * (0.40e1 * x + 0.800e1 * z) - 0.5000000000e-2 * pow(0.1e1 + pow(x + 0.20e1 * z, 0.2e1), -0.2e1) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * (cos(z) + 0.1e1) + 0.5000000000e-1 / (0.1e1 + pow(x + 0.20e1 * z, 0.2e1)) * exp(0.15e0 + 0.2500000000e-1 * pi + 0.5000000000e-1 * atan(x + 0.20e1 * z)) * sin(z) + 0.1000000000e-1 * exp(0.1000000000e0 * z));
           }
       }
 
@@ -100,7 +100,7 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = in.composition[i][porosity_idx];
-            out.compaction_viscosities[i] = std::exp(c * porosity);
+            out.compaction_viscosities[i] = exp(c*porosity);
             out.fluid_viscosities[i] = 1.0;
             out.permeabilities[i] = porosity * porosity;
             out.fluid_compressibilities[i] = 0.0;
@@ -132,7 +132,7 @@ namespace aspect
             double z = p(1);
             const double pi = 3.14159265359;
 
-            values[0]= x + std::sin(z);       //x vel
+            values[0]= x+sin(z);       //x vel
             values[1]= x;    //z vel
             values[2]= 0;  // p_s
             values[3]= std::exp(z/10.0);  // p_f
@@ -159,7 +159,7 @@ namespace aspect
             values[0]= 0;       //x melt vel
             values[1]= 0;    //y melt vel
             values[2]= 0;  // p_s
-            values[3]= - std::exp(c * porosity);  // p_c
+            values[3]= -exp(.15+.2500000000e-1*pi+.5000000000e-1*atan(x+2.0*z));  // p_c
             values[4]= 0; // T
             values[5]= porosity;
           }
