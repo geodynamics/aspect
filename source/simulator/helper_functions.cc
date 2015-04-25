@@ -730,8 +730,8 @@ namespace aspect
           {
             // pressure is not in a separate block, so we have to modify the values manually
             const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                     introspection.block_indices.fluid_pressure
-                                                     : introspection.block_indices.pressure);
+                                                     introspection.component_indices.fluid_pressure
+                                                     : introspection.component_indices.pressure);
             const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
                                                         finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
@@ -1098,23 +1098,26 @@ namespace aspect
                 if (base_index.first != introspection.base_elements.fluid_velocities)
                   continue;
 
+                const unsigned int q = finite_element.system_to_base_index(j).second;
                 const unsigned int d = base_index.second;
+
+                Assert(q < quadrature.size(), ExcInternalError());
 
                 // skip entries that are not locally owned:
                 if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[j]))
                   continue;
 
-                const double phi = std::max(0.0, porosity_values[j]);
+                const double phi = std::max(0.0, porosity_values[q]);
 
                 double value = 0.0;
                 // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
                 if (phi > parameters.melt_transport_threshold)
                   {
-                    const double K_D = out.permeabilities[j] / out.fluid_viscosities[j];
-                    const double gravity_d = this->gravity_model->gravity_vector(in.position[j])[d];
+                    const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                    const double gravity_d = this->gravity_model->gravity_vector(in.position[q])[d];
 
                     // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
-                    value = u_s_values[j][d] - K_D * (grad_p_f_values[j][d] - out.fluid_densities[j] * gravity_d) / phi;
+                    value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - out.fluid_densities[q] * gravity_d) / phi;
                   }
 
                 distributed_vector(local_dof_indices[j]) = value;
