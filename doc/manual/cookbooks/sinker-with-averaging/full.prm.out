@@ -33,7 +33,7 @@ subsection %%\hyperref[parameters:Material_20model]{Material model}%
     set %%\hyperref[parameters:Material model/Simple model/Density differential for compositional field 1]{Density differential for compositional field 1}% = 10%% \index[prmindex]{Density differential for compositional field 1} \index[prmindexfull]{Material model!Simple model!Density differential for compositional field 1} %
   end
 
-  set %%\hyperref[parameters:Material model/Material averaging for linear systems]{Material averaging for linear systems}% = none%% \index[prmindex]{Material averaging for linear systems} \index[prmindexfull]{Material model!Material averaging for linear systems} %
+  set %%\hyperref[parameters:Material model/Material averaging]{Material averaging}% = none%% \index[prmindex]{Material averaging} \index[prmindexfull]{Material model!Material averaging} %
 end
 
 subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%

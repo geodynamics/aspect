@@ -33,7 +33,7 @@ subsection Material model
     set Density differential for compositional field 1 = 10
   end
 
-  set Material averaging for linear systems = none
+  set Material averaging = none
 end
 
 subsection Gravity model

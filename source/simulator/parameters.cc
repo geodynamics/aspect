@@ -610,24 +610,13 @@ namespace aspect
     // preconditioner
     prm.enter_subsection ("Material model");
     {
-      prm.declare_entry ("Material averaging for linear systems", "none",
+      prm.declare_entry ("Material averaging", "none",
                          Patterns::Selection(MaterialModel::MaterialAveraging::
                                              get_averaging_operation_names()),
                          "Whether or not (and in the first case, how) to do any averaging of "
                          "material model output data when constructing the linear systems "
                          "for velocity/pressure, temperature, and compositions in each "
-                         "time step."
-			 "\n\n"
-			 "The process of averaging, and where it may be used, is "
-			 "discussed in more detail in "
-			 "Section~\\ref{sec:sinker-with-averaging}.");
-      prm.declare_entry ("Material averaging for preconditioners", "none",
-                         Patterns::Selection(MaterialModel::MaterialAveraging::
-                                             get_averaging_operation_names()),
-                         "Whether or not (and in the first case, how) to do any averaging of "
-                         "material model output data when constructing the preconditioners "
-                         "for the linear systems for velocity/pressure, temperature, and "
-                         "compositions."
+                         "time step, as well as their corresponding preconditioners."
 			 "\n\n"
 			 "The process of averaging, and where it may be used, is "
 			 "discussed in more detail in "
@@ -890,20 +879,12 @@ namespace aspect
     prm.leave_subsection ();
 
 
-    // now also get the parameters related to material model averaging
+    // now also get the parameter related to material model averaging
     prm.enter_subsection ("Material model");
     {
-      material_averaging_for_linear_systems
+      material_averaging
         = MaterialModel::MaterialAveraging::parse_averaging_operation_name
-          (prm.get ("Material averaging for linear systems"));
-      material_averaging_for_preconditioners
-        = MaterialModel::MaterialAveraging::parse_averaging_operation_name
-          (prm.get ("Material averaging for preconditioners"));
-
-      // implement the special rule that if the linear systems use some
-      // averaging, then the preconditioner needs to use the same
-      if (material_averaging_for_linear_systems != MaterialModel::MaterialAveraging::none)
-        material_averaging_for_preconditioners = material_averaging_for_linear_systems;
+          (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
   }

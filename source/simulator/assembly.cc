@@ -908,7 +908,7 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_preconditioners,
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
@@ -1101,7 +1101,7 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
@@ -1524,7 +1524,7 @@ namespace aspect
                                          scratch.material_model_inputs);
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
@@ -1543,7 +1543,7 @@ namespace aspect
           }
         material_model->evaluate(scratch.explicit_material_model_inputs,
                                  scratch.explicit_material_model_outputs);
-        MaterialModel::MaterialAveraging::average (parameters.material_averaging_for_linear_systems,
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                    cell,
                                                    scratch.finite_element_values.get_quadrature(),
                                                    scratch.finite_element_values.get_mapping(),
