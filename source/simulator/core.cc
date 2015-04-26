@@ -1005,7 +1005,6 @@ namespace aspect
 
     if (parameters.free_surface_enabled)
       free_surface->setup_dofs();
-    setup_nullspace_removal();
 
     computing_timer.exit_section();
   }

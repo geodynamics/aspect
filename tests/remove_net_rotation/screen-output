@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
+--     . version 1.3.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -88,7 +88,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 6:  t=777550 years
+*** Timestep 6:  t=777551 years
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+3 iterations.
@@ -286,7 +286,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 24:  t=1.46657e+06 years
+*** Timestep 24:  t=1.46658e+06 years
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
@@ -308,7 +308,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 26:  t=1.55216e+06 years
+*** Timestep 26:  t=1.55217e+06 years
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
@@ -473,7 +473,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 41:  t=2.75146e+06 years
+*** Timestep 41:  t=2.75147e+06 years
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
@@ -653,20 +653,20 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       196s |            |
+| Total wallclock time elapsed since start    |       129s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        57 |      48.5s |        25% |
-| Assemble temperature system     |        57 |      48.1s |        25% |
-| Build Stokes preconditioner     |        57 |      33.1s |        17% |
-| Build temperature preconditioner|        57 |     0.343s |      0.17% |
-| Solve Stokes system             |        57 |      10.8s |       5.5% |
-| Solve temperature system        |        57 |     0.356s |      0.18% |
-| Initialization                  |         2 |     0.256s |      0.13% |
-| Postprocessing                  |        57 |      3.62s |       1.8% |
-| Refine mesh structure, part 1   |        57 |      20.5s |        10% |
-| Refine mesh structure, part 2   |        57 |     0.594s |       0.3% |
-| Setup dof systems               |        58 |      19.9s |        10% |
+| Assemble Stokes system          |        57 |      29.8s |        23% |
+| Assemble temperature system     |        57 |      31.4s |        24% |
+| Build Stokes preconditioner     |        57 |      20.8s |        16% |
+| Build temperature preconditioner|        57 |      0.21s |      0.16% |
+| Solve Stokes system             |        57 |      11.4s |       8.9% |
+| Solve temperature system        |        57 |     0.238s |      0.19% |
+| Initialization                  |         2 |     0.194s |      0.15% |
+| Postprocessing                  |        57 |      2.47s |       1.9% |
+| Refine mesh structure, part 1   |        57 |      13.8s |        11% |
+| Refine mesh structure, part 2   |        57 |     0.377s |      0.29% |
+| Setup dof systems               |        58 |        11s |       8.5% |
 +---------------------------------+-----------+------------+------------+
 
