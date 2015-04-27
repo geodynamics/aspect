@@ -165,8 +165,7 @@ namespace aspect
        geometry_model->has_curved_elements() == false
       )?false:true),
 
-    // define the finite element. obviously, what we do here needs
-    // to match the data we provide in the Introspection class
+    // define the finite element
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),
 
     dof_handler (triangulation),
@@ -174,6 +173,9 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
+    // FE data is no longer needed because we constructed finite_element above
+    introspection.free_finite_element_data();
+
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         // only open the logfile on processor 0, the other processors won't be

@@ -305,6 +305,11 @@ namespace aspect
        */
       const std::vector<unsigned int> &get_multiplicities();
 
+      /**
+       * Free memory allocated inside @p fes after it is used to construct the FESystem.
+       */
+      void free_finite_element_data();
+
     private:
       /**
        * A vector that stores the names of the compositional fields that will
