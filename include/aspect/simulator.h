@@ -94,11 +94,6 @@ namespace aspect
   template <int dim>
   class Simulator
   {
-    private:
-
-      typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
-      typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
-
     public:
 
       /**
@@ -146,6 +141,18 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void run ();
+
+
+      /**
+       * Import Nonlinear Solver type.
+       */
+      typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
+
+      /**
+      * Import nullspace removal type.
+      */
+      typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
+
 
     private:
 
