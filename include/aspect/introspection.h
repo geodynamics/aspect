@@ -298,12 +298,12 @@ namespace aspect
       /**
        * Return the vector of finite element spaces used for the construction of the FESystem.
        */
-      const std::vector<const dealii::FiniteElement<dim> *> &get_fes();
+      const std::vector<const dealii::FiniteElement<dim> *> &get_fes() const;
 
       /**
        * Return the vector of multiplicities used for the construction of the FESystem.
        */
-      const std::vector<unsigned int> &get_multiplicities();
+      const std::vector<unsigned int> &get_multiplicities() const;
 
       /**
        * Free memory allocated inside @p fes after it is used to construct the FESystem.

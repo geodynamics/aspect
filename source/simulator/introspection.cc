@@ -171,13 +171,17 @@ namespace aspect
   template <int dim>
   Introspection<dim>::~Introspection ()
   {
+    free_finite_element_data();
+  }
+
+
+  template <int dim>
+  void Introspection<dim>::free_finite_element_data ()
+  {
     for (unsigned int i=0; i<fes.size(); ++i)
       delete fes[i];
     fes.clear();
   }
-
-
-
 
   namespace
   {
@@ -238,14 +242,14 @@ namespace aspect
 
   template <int dim>
   const std::vector<const FiniteElement<dim> *> &
-  Introspection<dim>::get_fes()
+  Introspection<dim>::get_fes() const
   {
     return fes;
   }
 
   template <int dim>
   const std::vector<unsigned int> &
-  Introspection<dim>::get_multiplicities()
+  Introspection<dim>::get_multiplicities() const
   {
     return multiplicities;
   }
