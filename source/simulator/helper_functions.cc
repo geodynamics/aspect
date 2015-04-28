@@ -1019,14 +1019,15 @@ namespace aspect
           return false;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -1062,13 +1063,14 @@ namespace aspect
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
         {
           output = out.viscosities;
         }
@@ -1102,10 +1104,11 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -1146,9 +1149,10 @@ namespace aspect
         }
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -1189,13 +1193,14 @@ namespace aspect
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {}
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+                        FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
         {
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)

@@ -415,7 +415,7 @@ namespace aspect
                      const double pressure,
                      const std::vector<double> &, /*composition*/
                      const SymmetricTensor<2,dim> &strain_rate,
-                     const Point<dim> &position) const
+                     const Point<dim> &) const
     {
       const double R=  8.3143; //TODO gasconstant (well its constant....)
 
@@ -472,7 +472,7 @@ namespace aspect
     thermal_expansion_coefficient (const double temperature,
                                    const double pressure,
                                    const std::vector<double> &, /*composition*/
-                                   const Point<dim> &p) const
+                                   const Point<dim> &) const
     {
       static internal::P_T_LookupFunction alpha(data_directory+"alpha_bin");
       return alpha.value(temperature, pressure);
@@ -536,7 +536,7 @@ namespace aspect
     density (const double temperature,
              const double pressure,
              const std::vector<double> &, /*composition*/
-             const Point<dim> &position) const
+             const Point<dim> &) const
     {
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.value(temperature, pressure);
@@ -594,7 +594,7 @@ namespace aspect
     compressibility (const double temperature,
                      const double pressure,
                      const std::vector<double> &, /*composition*/
-                     const Point<dim> &position) const
+                     const Point<dim> &) const
     {
       static internal::P_T_LookupFunction rho(data_directory+"rho_bin");
       return rho.d_by_dp(temperature, pressure) / rho.value(temperature,pressure);

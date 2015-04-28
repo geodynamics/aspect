@@ -57,7 +57,7 @@ namespace aspect
     template <int dim>
     double
     AsciiData<dim>::
-    composition (const GeometryModel::Interface<dim> &geometry_model,
+    composition (const GeometryModel::Interface<dim> &,
                  const unsigned int                   boundary_indicator,
                  const Point<dim>                    &position,
                  const unsigned int                   compositional_field) const

@@ -69,11 +69,11 @@ namespace aspect
     template <int dim>
     double
     Multicomponent<dim>::
-    viscosity (const double temperature,
+    viscosity (const double,
                const double,
-               const std::vector<double> &composition,       /*composition*/
+               const std::vector<double> &composition,
                const SymmetricTensor<2,dim> &,
-               const Point<dim> &p) const
+               const Point<dim> &) const
     {
       double visc = 0.0;
       std::vector<double> volume_fractions = compute_volume_fractions(composition);
@@ -95,7 +95,6 @@ namespace aspect
           }
           case geometric:
           {
-            double geometric_mean = 0.0;
             for (unsigned int i=0; i < volume_fractions.size(); ++i)
               visc += volume_fractions[i]*std::log(viscosities[i]);
             visc = std::exp(visc);
@@ -225,7 +224,7 @@ namespace aspect
     template <int dim>
     double
     Multicomponent<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &composition,
                                    const Point<dim> &) const

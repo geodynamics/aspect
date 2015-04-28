@@ -324,8 +324,6 @@ namespace aspect
            boundary_id = boundary_ids.begin();
            boundary_id != boundary_ids.end(); ++boundary_id)
         {
-          const std_cxx11::array<unsigned int,dim-1> dimensions = get_boundary_dimensions(*boundary_id);
-
           std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
                                                               Utilities::AsciiDataBase<dim>::scale_factor));

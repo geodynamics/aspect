@@ -160,13 +160,13 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &prm)
+    declare_parameters (dealii::ParameterHandler &)
     {}
 
 
     template <int dim>
     void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &prm)
+    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
     {}
 
 
@@ -218,11 +218,11 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    viscosity_ratio (const double temperature,
-                     const double pressure,
-                     const std::vector<double>    &compositional_fields,
-                     const SymmetricTensor<2,dim> &strain_rate,
-                     const Point<dim> &position) const
+    viscosity_ratio (const double,
+                     const double,
+                     const std::vector<double>    &,
+                     const SymmetricTensor<2,dim> &,
+                     const Point<dim> &) const
     {
       return 1.0;
     }
@@ -231,10 +231,10 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    seismic_Vp (double dummy1,
-                double dummy2,
+    seismic_Vp (const double,
+                const double,
                 const std::vector<double> &, /*composition*/
-                const Point<dim> &dummy3) const
+                const Point<dim> &) const
     {
       return -1.0;
     }
@@ -243,10 +243,10 @@ namespace aspect
     template <int dim>
     double
     Interface<dim>::
-    seismic_Vs (double dummy1,
-                double dummy2,
+    seismic_Vs (const double,
+                const double,
                 const std::vector<double> &, /*composition*/
-                const Point<dim> &dummy3) const
+                const Point<dim> &) const
     {
       return -1.0;
     }
@@ -255,8 +255,8 @@ namespace aspect
     template <int dim>
     unsigned int
     Interface<dim>::
-    thermodynamic_phase (double dummy1,
-                         double dummy2,
+    thermodynamic_phase (const double,
+                         const double,
                          const std::vector<double> & /*composition*/) const
     {
       return 0;
@@ -343,11 +343,11 @@ namespace aspect
     template <int dim>
     double
     InterfaceCompatibility<dim>::
-    entropy_derivative (const double temperature,
-                        const double pressure,
-                        const std::vector<double> &compositional_fields,
-                        const Point<dim> &position,
-                        const NonlinearDependence::Dependence dependence) const
+    entropy_derivative (const double,
+                        const double,
+                        const std::vector<double> &,
+                        const Point<dim> &,
+                        const NonlinearDependence::Dependence) const
     {
       return 0.0;
     }
@@ -356,11 +356,11 @@ namespace aspect
     template <int dim>
     double
     InterfaceCompatibility<dim>::
-    reaction_term (const double temperature,
-                   const double pressure,
-                   const std::vector<double> &compositional_fields,
-                   const Point<dim> &position,
-                   const unsigned int compositional_variable) const
+    reaction_term (const double,
+                   const double,
+                   const std::vector<double> &,
+                   const Point<dim> &,
+                   const unsigned int) const
     {
       return 0.0;
     }

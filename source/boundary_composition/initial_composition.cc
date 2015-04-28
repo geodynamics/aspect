@@ -32,8 +32,8 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    composition (const GeometryModel::Interface<dim> &geometry_model,
-                 const unsigned int                   boundary_indicator,
+    composition (const GeometryModel::Interface<dim> &,
+                 const unsigned int                   ,
                  const Point<dim>                    &location,
                  const unsigned int                   compositional_field) const
     {
@@ -44,7 +44,7 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    minimal_composition (const std::set<types::boundary_id> &) const
     {
       return min_composition;
     }
@@ -54,7 +54,7 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    maximal_composition (const std::set<types::boundary_id> &) const
     {
       return max_composition;
     }

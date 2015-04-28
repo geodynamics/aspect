@@ -607,8 +607,7 @@ namespace aspect
     UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors |
                                            update_quadrature_points | update_JxW_values);
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, quadrature, update_flags);
-    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
-                       dofs_per_cell = fe_face_values.dofs_per_cell;
+    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points;
 
     const FEValuesExtractors::Vector velocities (0);
 

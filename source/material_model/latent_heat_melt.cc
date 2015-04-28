@@ -32,10 +32,10 @@ namespace aspect
     double
     LatentHeatMelt<dim>::
     viscosity (const double temperature,
-               const double pressure,
+               const double,
                const std::vector<double> &composition,       /*composition*/
                const SymmetricTensor<2,dim> &,
-               const Point<dim> &position) const
+               const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
       double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
@@ -104,7 +104,7 @@ namespace aspect
     thermal_conductivity (const double,
                           const double,
                           const std::vector<double> &, /*composition*/
-                          const Point<dim> &position) const
+                          const Point<dim> &) const
     {
       return k_value;
     }
@@ -305,8 +305,8 @@ namespace aspect
     LatentHeatMelt<dim>::
     peridotite_melt_fraction (const double temperature,
                               const double pressure,
-                              const std::vector<double> &composition, /*composition*/
-                              const Point<dim> &position) const
+                              const std::vector<double> &,
+                              const Point<dim> &) const
     {
       // anhydrous melting of peridotite after Katz, 2003
       const double T_solidus  = A1 + 273.15
@@ -346,8 +346,8 @@ namespace aspect
     LatentHeatMelt<dim>::
     pyroxenite_melt_fraction (const double temperature,
                               const double pressure,
-                              const std::vector<double> &composition, /*composition*/
-                              const Point<dim> &position) const
+                              const std::vector<double> &,
+                              const Point<dim> &) const
     {
       // melting of pyroxenite after Sobolev et al., 2011
       const double T_melting = D1 + 273.15
@@ -436,7 +436,7 @@ namespace aspect
     template <int dim>
     bool
     LatentHeatMelt<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }

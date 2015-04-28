@@ -90,7 +90,7 @@ namespace aspect
     template <int dim>
     double
     LatentHeat<dim>::
-    phase_function_derivative (const Point<dim> &position,
+    phase_function_derivative (const Point<dim> &,
                                const double temperature,
                                const double pressure,
                                const int phase) const
@@ -124,10 +124,10 @@ namespace aspect
     double
     LatentHeat<dim>::
     viscosity (const double temperature,
-               const double pressure,
+               const double,
                const std::vector<double> &composition,       /*composition*/
                const SymmetricTensor<2,dim> &,
-               const Point<dim> &position) const
+               const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
       double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
@@ -196,7 +196,7 @@ namespace aspect
     thermal_conductivity (const double,
                           const double,
                           const std::vector<double> &, /*composition*/
-                          const Point<dim> &position) const
+                          const Point<dim> &) const
     {
       return k_value;
     }
@@ -281,10 +281,10 @@ namespace aspect
     template <int dim>
     double
     LatentHeat<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &, /*composition*/
-                                   const Point<dim> &position) const
+                                   const Point<dim> &) const
     {
       return thermal_alpha;
     }
@@ -395,7 +395,7 @@ namespace aspect
     template <int dim>
     bool
     LatentHeat<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }
