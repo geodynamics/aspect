@@ -751,11 +751,13 @@ namespace aspect
 
       const GeometryModel::Interface<dim> &geometry_model =
         this->get_geometry_model();
-
+      (void)geometry_model;
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "
                           "is a spherical shell."));
-      Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
+      Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360,
+             ExcMessage("The gplates velocity model works only for an opening "
+                        "angle of the geometry equal to 360."));
     }
 
 

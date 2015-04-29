@@ -46,7 +46,7 @@ namespace aspect
       void
       InternalHeating<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
@@ -57,7 +57,6 @@ namespace aspect
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
-        Assert (duh[0].size() == this->introspection().n_components,ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

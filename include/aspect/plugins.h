@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -348,9 +348,10 @@ namespace aspect
       template <typename InterfaceClass>
       InterfaceClass *
       PluginList<InterfaceClass>::
-      create_plugin (const std::string  &name,
+      create_plugin (const std::string &name,
                      const std::string &documentation)
       {
+        (void)documentation;
         Assert (plugins != 0,
                 ExcMessage ("No postprocessors registered!?"));
         Assert (name != "",
@@ -389,7 +390,7 @@ namespace aspect
       PluginList<InterfaceClass>::
       create_plugin (const std::string &name,
                      const std::string &documentation,
-                     ParameterHandler &prm)
+                     ParameterHandler  &prm)
       {
         InterfaceClass *i = create_plugin(name, documentation);
         i->parse_parameters (prm);

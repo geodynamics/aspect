@@ -37,9 +37,11 @@ namespace aspect
     SphericalConstant<dim>::
     composition (const GeometryModel::Interface<dim> &geometry_model,
                  const unsigned int                   boundary_indicator,
-                 const Point<dim>                    &location,
-                 const unsigned int                   compositional_field) const
+                 const Point<dim> &,
+                 const unsigned int                   ) const
     {
+      (void)geometry_model;
+
       // verify that the geometry is in fact a spherical shell since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
@@ -64,7 +66,7 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    minimal_composition (const std::set<types::boundary_id> &) const
     {
       return std::min (inner_composition, outer_composition);
     }
@@ -74,7 +76,7 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    maximal_composition (const std::set<types::boundary_id> &) const
     {
       return std::max (inner_composition, outer_composition);
     }

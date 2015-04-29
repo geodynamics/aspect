@@ -40,6 +40,8 @@ namespace aspect
                  const Point<dim> &,
                  const unsigned int                   compositional_field) const
     {
+      (void)geometry_model;
+
       // verify that the geometry is in fact a box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean

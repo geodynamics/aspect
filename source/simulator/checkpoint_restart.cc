@@ -109,6 +109,7 @@ namespace aspect
                                (const Bytef *) oss.str().data(),
                                oss.str().length(),
                                Z_BEST_COMPRESSION);
+          (void)err;
           Assert (err == Z_OK, ExcInternalError());
 
           // build compression header
