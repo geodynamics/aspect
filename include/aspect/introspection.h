@@ -129,7 +129,7 @@ namespace aspect
        */
       struct Extractors
       {
-        Extractors (const Introspection<dim>::ComponentIndices &component_indices);
+        Extractors (const ComponentIndices &component_indices);
 
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;

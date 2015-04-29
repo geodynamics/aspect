@@ -181,6 +181,7 @@ namespace aspect
     for (unsigned int i=0; i<fes.size(); ++i)
       delete fes[i];
     fes.clear();
+    multiplicities.clear();
   }
 
   namespace
@@ -244,6 +245,8 @@ namespace aspect
   const std::vector<const FiniteElement<dim> *> &
   Introspection<dim>::get_fes() const
   {
+    Assert(fes.size()>0,
+           ExcMessage("Error: finite element spaces are only available during construction."));
     return fes;
   }
 
@@ -251,6 +254,8 @@ namespace aspect
   const std::vector<unsigned int> &
   Introspection<dim>::get_multiplicities() const
   {
+    Assert(multiplicities.size()>0,
+           ExcMessage("Error: finite element multiplicities are only available during construction."));
     return multiplicities;
   }
 
