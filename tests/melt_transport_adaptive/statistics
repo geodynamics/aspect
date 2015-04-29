@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Time step size (seconds)
+# 10: Visualization file name
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal pressure (Pa)
+# 14: Average pressure (Pa)
+# 15: Maximal pressure (Pa)
+# 16: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 17: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 18: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 19: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 20: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 21: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 22: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 23: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.0000e+00 1024 10628  4225  4225 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 1504 15928  6343  6343 0 0 2.0952e-02                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0     0     0 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 3034 32216 12855 12855 0 0 1.0471e-02                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0     0     0 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0     0     0 0 0 5.2350e-03 output-melt_transport_adaptive/solution-00000 8.19412678e+00 1.48411680e+01 6.05785640e-01 1.04216379e+00 1.64923170e+00 1.48660484e+01 1.34536471e+01 1.48660484e+01 1.34536471e+01 1.44323291e+01 3.88919368e-01 1.44323291e+01 3.88919368e-01 
