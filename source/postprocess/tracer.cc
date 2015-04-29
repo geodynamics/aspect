@@ -46,10 +46,8 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    PassiveTracers<dim>::execute (TableHandler &statistics)
+    PassiveTracers<dim>::execute (TableHandler &)
     {
-      bool            output_data = false;
-
       if (!initialized)
         {
           // Create a generator object using a random uniform distribution

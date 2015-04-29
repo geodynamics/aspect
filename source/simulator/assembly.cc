@@ -743,8 +743,6 @@ namespace aspect
             continue;
           }
 
-        const bool use_bdf2_scheme = (timestep_number > 1);
-
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
         // also have the number of dofs that correspond just to the element for
@@ -754,9 +752,6 @@ namespace aspect
         Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-
-        const unsigned int solution_component
-          = introspection.component_indices.temperature;
 
         const FEValuesExtractors::Scalar solution_field
           = introspection.extractors.temperature;

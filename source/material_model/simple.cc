@@ -141,7 +141,7 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
@@ -219,7 +219,7 @@ namespace aspect
     template <int dim>
     bool
     Simple<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }

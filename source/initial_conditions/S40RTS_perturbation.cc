@@ -244,8 +244,6 @@ namespace aspect
 
       const int num_spline_knots = 21; // The tomography models are parameterized by 21 layers
 
-      const int num_coeffs = (maxdegree+1) * (maxdegree+2) / 2 * num_spline_knots;
-
       // get the spherical harmonics coefficients
       const std::vector<double> a_lm = spherical_harmonics_lookup->cos_coeffs();
       const std::vector<double> b_lm = spherical_harmonics_lookup->sin_coeffs();

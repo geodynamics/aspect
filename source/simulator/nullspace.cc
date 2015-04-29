@@ -222,9 +222,8 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe.reinit (cell);
-          const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
-          //Get the velocity at each quadrature point
+          // get the velocity at each quadrature point
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
 
           // get the density at each quadrature point if necessary

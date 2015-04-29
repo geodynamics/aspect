@@ -34,7 +34,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    BasicStatistics<dim>::execute (TableHandler &statistics)
+    BasicStatistics<dim>::execute (TableHandler &)
     {
       if (this->get_time() == 0e0)
         {

@@ -41,7 +41,6 @@ namespace aspect
 
       double reference_height = 0.0;
       bool vertical_gravity = false;
-      double time = this->get_time();
       types::boundary_id relevant_boundary = 0;
 
       if (GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>

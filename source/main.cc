@@ -116,7 +116,7 @@ get_dimension(const std::string &parameters)
 // collect the names of the shared libraries linked to by this program. this
 // function is a callback for the dl_iterate_phdr() function we call below
 int get_names_of_shared_libs (struct dl_phdr_info *info,
-                              size_t size,
+                              size_t,
                               void *data)
 {
   reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
