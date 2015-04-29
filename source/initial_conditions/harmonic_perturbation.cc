@@ -62,7 +62,7 @@ namespace aspect
           spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
-          const std_cxx1x::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
 
           if (dim==2)
             {

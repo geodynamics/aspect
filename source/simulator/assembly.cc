@@ -969,16 +969,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_stokes_preconditioner,
                           this,
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_stokes_preconditioner,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     mapping,
@@ -1224,16 +1224,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_stokes_system,
                           this,
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_stokes_system,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
                             (update_values    |
@@ -1271,7 +1271,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
-                                                 std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
+                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
   {
     switch (advection_field.field_type)
       {
@@ -1701,7 +1701,7 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_advection_system,
                           this,
                           advection_field,
@@ -1713,13 +1713,13 @@ namespace aspect
                           get_entropy_variation ((global_field_range.first +
                                                   global_field_range.second) / 2,
                                                  advection_field),
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_advection_system,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
 
          // we have to assemble the term u.grad phi_i * phi_j, which is
          // of total polynomial degree
@@ -1782,7 +1782,7 @@ namespace aspect
   template void Simulator<dim>::assemble_stokes_system (); \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
-                                                                std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+                                                                std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const std::pair<double,double> global_field_range, \

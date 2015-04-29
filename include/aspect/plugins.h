@@ -24,7 +24,7 @@
 
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/base/std_cxx11/tuple.h>
 
 #include <string>
 #include <list>
@@ -105,7 +105,7 @@ namespace aspect
          * - A function that can produce objects of this plugin type.
          */
         typedef
-        std_cxx1x::tuple<std::string,
+        std_cxx11::tuple<std::string,
                   std::string,
                   void ( *) (ParameterHandler &),
                   InterfaceClass *( *) ()>
@@ -239,7 +239,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          Assert (std_cxx1x::get<0>(*p) != name,
+          Assert (std_cxx11::get<0>(*p) != name,
                   ExcMessage ("A plugin with name <" + name + "> has "
                               "already been registered!"));
 
@@ -266,7 +266,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names.insert (std_cxx1x::get<0>(*p));
+          names.insert (std_cxx11::get<0>(*p));
 
         // now create a pattern from all of these sorted names
         std::string pattern_of_names;
@@ -297,7 +297,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names_and_descriptions[std_cxx1x::get<0>(*p)] = std_cxx1x::get<1>(*p);;
+          names_and_descriptions[std_cxx11::get<0>(*p)] = std_cxx11::get<1>(*p);;
 
         // then output it all
         typename std::map<std::string,std::string>::const_iterator
@@ -340,7 +340,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          (std_cxx1x::get<2>(*p))(prm);
+          (std_cxx11::get<2>(*p))(prm);
       }
 
 
@@ -372,9 +372,9 @@ namespace aspect
 
         for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
              p != plugins->end(); ++p)
-          if (std_cxx1x::get<0>(*p) == name)
+          if (std_cxx11::get<0>(*p) == name)
             {
-              InterfaceClass *i = std_cxx1x::get<3>(*p)();
+              InterfaceClass *i = std_cxx11::get<3>(*p)();
               return i;
             }
 

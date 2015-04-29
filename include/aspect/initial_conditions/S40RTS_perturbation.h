@@ -23,7 +23,7 @@
 #define __aspect__initial_conditions_S40RTS_perturbation_h
 
 #include <aspect/simulator_access.h>
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
 
 namespace aspect
 {
@@ -126,13 +126,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std_cxx1x::shared_ptr<internal::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std_cxx11::shared_ptr<internal::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std_cxx1x::shared_ptr<internal::SplineDepthsLookup> spline_depths_lookup;
+        std_cxx11::shared_ptr<internal::SplineDepthsLookup> spline_depths_lookup;
 
     };
 

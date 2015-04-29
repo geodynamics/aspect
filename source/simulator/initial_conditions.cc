@@ -207,9 +207,9 @@ namespace aspect
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
         VectorTools::interpolate (mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                                                               std_cxx1x::cref (*adiabatic_conditions),
-                                                                               std_cxx1x::_1),
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
+                                                                               std_cxx11::cref (*adiabatic_conditions),
+                                                                               std_cxx11::_1),
                                                                                introspection.component_indices.pressure,
                                                                                introspection.n_components),
                                   system_tmp);
@@ -250,9 +250,9 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                             std_cxx1x::cref(*adiabatic_conditions),
-                                             std_cxx1x::_1));
+        adiabatic_pressure (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
+                                             std_cxx11::cref(*adiabatic_conditions),
+                                             std_cxx11::_1));
 
 
         typename DoFHandler<dim>::active_cell_iterator

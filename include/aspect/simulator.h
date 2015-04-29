@@ -493,7 +493,7 @@ namespace aspect
        */
       struct IntermediaryConstructorAction
       {
-        IntermediaryConstructorAction (std_cxx1x::function<void ()> action);
+        IntermediaryConstructorAction (std_cxx11::function<void ()> action);
       };
 
       /**
@@ -606,7 +606,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void build_advection_preconditioner (const AdvectionField &advection_field,
-                                           std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
+                                           std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
@@ -1354,7 +1354,7 @@ namespace aspect
       const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
-      std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
+      std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       /**
        * @}
        */
@@ -1454,11 +1454,11 @@ namespace aspect
 
 
 
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
 //TODO: use n_compositional_field separate preconditioners
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;
@@ -1644,7 +1644,7 @@ namespace aspect
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std_cxx1x::shared_ptr<FreeSurfaceHandler> free_surface;
+      std_cxx11::shared_ptr<FreeSurfaceHandler> free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;

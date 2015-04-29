@@ -282,19 +282,19 @@ namespace aspect
          * Perplex files. There is one pointer/object per compositional field
          * data provided.
          */
-        std::vector<std_cxx1x::shared_ptr<internal::MaterialLookup> > material_lookup;
+        std::vector<std_cxx11::shared_ptr<internal::MaterialLookup> > material_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
          * temperature dependency of viscosity.
          */
-        std_cxx1x::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
+        std_cxx11::shared_ptr<internal::LateralViscosityLookup> lateral_viscosity_lookup;
 
         /**
          * Pointer to an object that reads and processes data for the radial
          * viscosity profile.
          */
-        std_cxx1x::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
+        std_cxx11::shared_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
     };
   }

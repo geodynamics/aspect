@@ -21,7 +21,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 
 #include <deal.II/base/table.h>
@@ -45,10 +45,10 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    std_cxx1x::array<double,dim>
+    std_cxx11::array<double,dim>
     spherical_coordinates(const Point<dim> &position)
     {
-      std_cxx1x::array<double,dim> scoord;
+      std_cxx11::array<double,dim> scoord;
 
       scoord[0] = position.norm(); // R
       scoord[1] = std::atan2(position(1),position(0)); // Phi
@@ -66,7 +66,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
+    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
     {
       Point<dim> ccoord;
 
@@ -736,10 +736,10 @@ namespace aspect
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
 
-    template Point<2> cartesian_coordinates<2>(const std_cxx1x::array<double,2> &scoord);
-    template Point<3> cartesian_coordinates<3>(const std_cxx1x::array<double,3> &scoord);
+    template Point<2> cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
+    template Point<3> cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
-    template std_cxx1x::array<double,2> spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx1x::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
   }
 }

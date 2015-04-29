@@ -317,7 +317,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
   SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
   {
     return simulator->velocity_boundary_conditions;

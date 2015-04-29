@@ -245,8 +245,8 @@ namespace aspect
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
-      std::list<std_cxx1x::shared_ptr<Vector<float> > > cell_data_vectors;
-      for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      std::list<std_cxx11::shared_ptr<Vector<float> > > cell_data_vectors;
+      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
           try
@@ -276,7 +276,7 @@ namespace aspect
                                       "on the current processor."));
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std_cxx1x::shared_ptr<Vector<float> >
+                  cell_data_vectors.push_back (std_cxx11::shared_ptr<Vector<float> >
                                                (cell_data.second));
 
                   data_out.add_data_vector (*cell_data.second,
@@ -590,7 +590,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
@@ -672,7 +672,7 @@ namespace aspect
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+            = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -689,7 +689,7 @@ namespace aspect
                             "to have in your output file.\n\n"
                             "The following postprocessors are available:\n\n"
                             +
-                            std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                            std_cxx11::get<dim>(registered_plugins).get_description_string());
         }
         prm.leave_subsection();
       }
@@ -697,7 +697,7 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // visualization postprocessors in turn
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -705,7 +705,7 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
@@ -732,9 +732,9 @@ namespace aspect
             {
               viz_names.clear();
               for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
-                   p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
-                   p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
-                viz_names.push_back (std_cxx1x::get<0>(*p));
+                   p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
+                   p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
+                viz_names.push_back (std_cxx11::get<0>(*p));
             }
         }
         prm.leave_subsection();
@@ -746,7 +746,7 @@ namespace aspect
       for (unsigned int name=0; name<viz_names.size(); ++name)
         {
           VisualizationPostprocessors::Interface<dim> *
-          viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
+          viz_postprocessor = std_cxx11::get<dim>(registered_plugins)
                               .create_plugin (viz_names[name],
                                               "Visualization plugins");
 
@@ -763,7 +763,7 @@ namespace aspect
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+          postprocessors.push_back (std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -775,7 +775,7 @@ namespace aspect
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
       this->get_triangulation().signals.post_refinement
-      .connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
+      .connect(std_cxx11::bind(&Visualization::mesh_changed_signal, std_cxx11::ref(*this)));
     }
 
 
@@ -853,7 +853,7 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);

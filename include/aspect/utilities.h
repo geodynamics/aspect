@@ -24,7 +24,7 @@
 
 #include <aspect/global.h>
 
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 
@@ -53,7 +53,7 @@ namespace aspect
      *
      */
     template <int dim>
-    std_cxx1x::array<double,dim>
+    std_cxx11::array<double,dim>
     spherical_coordinates(const Point<dim> &position);
 
     /**
@@ -63,7 +63,7 @@ namespace aspect
      */
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord);
+    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
      * Checks whether a file named filename exists.
