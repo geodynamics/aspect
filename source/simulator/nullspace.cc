@@ -66,7 +66,7 @@ namespace aspect
         //Constructor for TensorFunction that takes an axis
         //and creates a solid body rotation around that axis.
         Rotation(const Tensor<1,dim> &rotation_axis)
-          : 
+          :
           axis(rotation_axis)
         {}
 
@@ -94,14 +94,14 @@ namespace aspect
 
       public:
         //Constructor for TensorFunction that takes a Cartesian direction (1,2, or 3)
-        //and creates a translation along that axis 
+        //and creates a translation along that axis
         Translation(const unsigned int d)
           :
           translation( Point<dim>::unit_vector(d) )
         {}
 
         //Constructor for TensorFunction that takes a vector
-        //and creates a translation along that vector 
+        //and creates a translation along that vector
         Translation(const Tensor<1,dim> &t)
           :
           translation(t)
@@ -228,16 +228,16 @@ namespace aspect
 
           // get the density at each quadrature point if necessary
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                parameters.n_compositional_fields);
+                                                                         parameters.n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                  parameters.n_compositional_fields);
+                                                                           parameters.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
-                                                                                composition_values[c]);
+                                                                                         composition_values[c]);
 
               for (unsigned int i=0; i<n_q_points; ++i)
                 {
@@ -255,7 +255,7 @@ namespace aspect
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
 
               local_momentum += velocities[k] * rho * fe.JxW(k);
-              local_mass += rho * fe.JxW(k); 
+              local_mass += rho * fe.JxW(k);
             }
         }
 
@@ -271,20 +271,20 @@ namespace aspect
     //the velocity correction if it is not selected by the NullspaceRemoval flag
     if (use_constant_density) //disable translation correction
       {
-        if( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_x) )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_x) )
           velocity_correction[0] = 0.0;  //don't correct x translation
-        if( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_y) )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_y) )
           velocity_correction[1] = 0.0;  //don't correct y translation
-        if( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_z) && dim == 3 )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_z) && dim == 3 )
           velocity_correction[2] = 0.0;  //don't correct z translation
       }
     else //disable momentum correction
       {
-        if( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_x) )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_x) )
           velocity_correction[0] = 0.0;  //don't correct x translation
-        if( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_y) )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_y) )
           velocity_correction[1] = 0.0;  //don't correct y translation
-        if( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_z) && dim == 3 )
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_z) && dim == 3 )
           velocity_correction[2] = 0.0;  //don't correct z translation
       }
 
@@ -297,12 +297,12 @@ namespace aspect
     tmp_distributed_stokes.block(introspection.block_indices.velocities).add(-1.0,correction);
 
     //copy into the locally relevant vector
-    relevant_dst.block(introspection.block_indices.velocities) = 
-            tmp_distributed_stokes.block(introspection.block_indices.velocities);
+    relevant_dst.block(introspection.block_indices.velocities) =
+      tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
   template <int dim>
-  void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density, 
+  void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density,
                                                     LinearAlgebra::BlockVector &relevant_dst,
                                                     LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
@@ -312,7 +312,7 @@ namespace aspect
     // compute and remove angular momentum from velocity field, by computing
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
     // \int \rho r \times u =  I^{-1} \cdot \omega  (3 dimensions)
-    
+
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
@@ -346,16 +346,16 @@ namespace aspect
 
           // get the density at each quadrature point if necessary
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                parameters.n_compositional_fields);
+                                                                         parameters.n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                  parameters.n_compositional_fields);
+                                                                           parameters.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
-                                                                                composition_values[c]);
+                                                                                         composition_values[c]);
 
               for (unsigned int i=0; i<n_q_points; ++i)
                 {
@@ -373,7 +373,7 @@ namespace aspect
               const Point<dim> r_vec = q_points[k];
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
 
-              if(dim == 2)
+              if (dim == 2)
                 {
                   // Get the velocity perpendicular to the position vector
                   Tensor<1,dim> r_perp;
@@ -389,9 +389,9 @@ namespace aspect
                   //calculate angular momentum vector
                   Tensor<1,dim> r_cross_v;
                   cross_product( r_cross_v, r_vec, velocities[k]);
-                  for (unsigned int i=0; i<dim; ++i) 
+                  for (unsigned int i=0; i<dim; ++i)
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
- 
+
                   //calculate moment of inertia
                   local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0]*r_vec[0])*rho * fe.JxW(k);
                   local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1]*r_vec[1])*rho * fe.JxW(k);
@@ -406,7 +406,7 @@ namespace aspect
     //vector for storing the correction to the velocity field
     LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
 
-    if( dim == 2)
+    if ( dim == 2)
       {
         const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
         const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
@@ -423,13 +423,13 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(8,3,0)
         //sum up the local contributions to moment of inertia
         const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
-                                                         mpi_communicator );
+                                                                              mpi_communicator );
         //sum up the local contributions to angular momentum
         const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
 #else
         //sum up the local contributions to moment of inertia
         const SymmetricTensor<2,dim> moment_of_inertia = internal::sum( local_moment_of_inertia,
-                                                         mpi_communicator );
+                                                                        mpi_communicator );
         //sum up the local contributions to angular momentum
         const Tensor<1,dim> angular_momentum = internal::sum( local_angular_momentum, mpi_communicator );
 #endif
@@ -445,8 +445,8 @@ namespace aspect
       }
 
     //copy into the locally relevant vector
-    relevant_dst.block(introspection.block_indices.velocities) = 
-            tmp_distributed_stokes.block(introspection.block_indices.velocities);
+    relevant_dst.block(introspection.block_indices.velocities) =
+      tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
 }

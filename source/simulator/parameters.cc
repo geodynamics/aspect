@@ -617,10 +617,10 @@ namespace aspect
                          "material model output data when constructing the linear systems "
                          "for velocity/pressure, temperature, and compositions in each "
                          "time step, as well as their corresponding preconditioners."
-			 "\n\n"
-			 "The process of averaging, and where it may be used, is "
-			 "discussed in more detail in "
-			 "Section~\\ref{sec:sinker-with-averaging}.");
+                         "\n\n"
+                         "The process of averaging, and where it may be used, is "
+                         "discussed in more detail in "
+                         "Section~\\ref{sec:sinker-with-averaging}.");
     }
     prm.leave_subsection ();
 
