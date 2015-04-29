@@ -36,7 +36,7 @@ namespace aspect
     double
     Box<dim>::
     temperature (const GeometryModel::Interface<dim> &geometry_model,
-                 const unsigned int                   boundary_indicator,
+                 const types::boundary_id             boundary_indicator,
                  const Point<dim> &) const
     {
       (void)geometry_model;
