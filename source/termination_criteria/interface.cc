@@ -63,7 +63,7 @@ namespace aspect
     double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p)
         {
@@ -89,7 +89,7 @@ namespace aspect
       // call the execute() functions of all plugins we have
       // here in turns.
       std::list<std::string>::const_iterator  itn = termination_obj_names.begin();;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = termination_objects.begin();
            p != termination_objects.end(); ++p,++itn)
         {
@@ -166,7 +166,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -191,7 +191,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered termination criteria
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry("Termination criteria",
                           "end time",
                           Patterns::MultipleSelection(pattern_of_names),
@@ -201,13 +201,13 @@ namespace aspect
                           "termination criterion will always be used."
                           "The following termination criteria are available:\n\n"
                           +
-                          std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection();
 
       // now declare the parameters of each of the registered
       // plugins in turn
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -216,7 +216,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No termination criteria plugins registered!?"));
 
       // first find out which plugins are requested
@@ -238,8 +238,8 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
-          termination_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                         (std_cxx1x::get<dim>(registered_plugins)
+          termination_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                         (std_cxx11::get<dim>(registered_plugins)
                                           .create_plugin (plugin_names[name],
                                                           "Termination criteria::Termination criteria")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
@@ -259,7 +259,7 @@ namespace aspect
                                                   void (*declare_parameters_function) (ParameterHandler &),
                                                   Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);

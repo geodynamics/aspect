@@ -132,8 +132,8 @@ namespace aspect
             Tensor<1,3> rotation_axis;
             const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
 
-            std_cxx1x::array<double,3> angles = angles_from_matrix(rotation_matrix);
-            std_cxx1x::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
+            std_cxx11::array<double,3> angles = angles_from_matrix(rotation_matrix);
+            std_cxx11::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
 
             output << "   Input point 1 spherical coordinates: " << surface_point_one  << std::endl
                    << "   Input point 1 normalized cartesian coordinates: " << point_one  << std::endl
@@ -570,10 +570,10 @@ namespace aspect
         return rotation_angle;
       }
 
-      std_cxx1x::array<double,3>
+      std_cxx11::array<double,3>
       GPlatesLookup::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
       {
-        std_cxx1x::array<double,3> orientation;
+        std_cxx11::array<double,3> orientation;
 
         /*
          * The following code is part of the VTK project and copied here for
@@ -685,7 +685,7 @@ namespace aspect
       GPlatesLookup::calculate_spatial_index(int *index,
                                              const Tensor<1,3> &position) const
       {
-        const std_cxx1x::array<double,3> scoord =
+        const std_cxx11::array<double,3> scoord =
           ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
         index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);

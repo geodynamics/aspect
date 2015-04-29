@@ -85,7 +85,7 @@ namespace aspect
    */
   template <int dim>
   Simulator<dim>::IntermediaryConstructorAction::
-  IntermediaryConstructorAction (std_cxx1x::function<void ()> action)
+  IntermediaryConstructorAction (std_cxx11::function<void ()> action)
   {
     action();
   }
@@ -117,10 +117,10 @@ namespace aspect
     // make sure the parameters object gets a chance to
     // parse those parameters that depend on symbolic names
     // for boundary components
-    post_geometry_model_creation_action (std_cxx1x::bind (&Parameters::parse_geometry_dependent_parameters,
-                                                          std_cxx1x::ref(parameters),
-                                                          std_cxx1x::ref(prm),
-                                                          std_cxx1x::cref(*geometry_model))),
+    post_geometry_model_creation_action (std_cxx11::bind (&Parameters::parse_geometry_dependent_parameters,
+                                                          std_cxx11::ref(parameters),
+                                                          std_cxx11::ref(prm),
+                                                          std_cxx11::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
     heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
@@ -468,7 +468,7 @@ namespace aspect
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
-                                                  const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
+                                                  const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
 
         /**
          * Return the value of the
@@ -497,7 +497,7 @@ namespace aspect
          * The function object which we call when this class's value() or
          * value_list() functions are called.
          **/
-        const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> function_object;
+        const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
 
 
@@ -505,7 +505,7 @@ namespace aspect
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
     (const unsigned int n_components,
-     const std_cxx1x::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
+     const std_cxx11::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
       :
       Function<dim>(n_components),
       function_object (function_object)
@@ -624,16 +624,16 @@ namespace aspect
     {
       // set the current time and do the interpolation
       // for the prescribed velocity fields
-      for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
+      for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::iterator
            p = velocity_boundary_conditions.begin();
            p != velocity_boundary_conditions.end(); ++p)
         {
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx1x::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+           std_cxx11::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
                             p->second,
-                            std_cxx1x::_1));
+                            std_cxx11::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
@@ -700,11 +700,11 @@ namespace aspect
                   ExcInternalError());
           VectorTools::interpolate_boundary_values (dof_handler,
                                                     *p,
-                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                        std_cxx1x::cref(*boundary_temperature),
-                                                        std_cxx1x::cref(*geometry_model),
+                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                        std_cxx11::cref(*boundary_temperature),
+                                                        std_cxx11::cref(*geometry_model),
                                                         *p,
-                                                        std_cxx1x::_1),
+                                                        std_cxx11::_1),
                                                         introspection.component_masks.temperature.first_selected_component(),
                                                         introspection.n_components),
                                                     current_constraints,
@@ -731,11 +731,11 @@ namespace aspect
                     ExcInternalError());
             VectorTools::interpolate_boundary_values (dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx1x::bind (&BoundaryComposition::Interface<dim>::composition,
-                                                          std_cxx1x::cref(*boundary_composition),
-                                                          std_cxx1x::cref(*geometry_model),
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                          std_cxx11::cref(*boundary_composition),
+                                                          std_cxx11::cref(*geometry_model),
                                                           *p,
-                                                          std_cxx1x::_1,
+                                                          std_cxx11::_1,
                                                           c),
                                                           introspection.component_masks.compositional_fields[c].first_selected_component(),
                                                           introspection.n_components),

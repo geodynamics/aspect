@@ -419,7 +419,7 @@ namespace aspect
 
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
-        material_lookup.push_back(std_cxx1x::shared_ptr<internal::MaterialLookup>
+        material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
                                   (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
       lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
       radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));

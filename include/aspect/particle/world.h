@@ -210,9 +210,9 @@ namespace aspect
          */
         void set_triangulation(const parallel::distributed::Triangulation<dim> *new_tria)
         {
-          //if (triangulation) triangulation->signals.post_refinement.disconnect(std_cxx1x::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
+          //if (triangulation) triangulation->signals.post_refinement.disconnect(std_cxx11::bind(&World::mesh_changed, std_cxx11::ref(*this)));
           triangulation = new_tria;
-          triangulation->signals.post_refinement.connect(std_cxx1x::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
+          triangulation->signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx11::ref(*this)));
         };
 
         /**

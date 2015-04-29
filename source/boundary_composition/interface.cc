@@ -23,7 +23,7 @@
 #include <aspect/boundary_composition/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
 
@@ -64,7 +64,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -80,7 +80,7 @@ namespace aspect
                                    void (*declare_parameters_function) (ParameterHandler &),
                                    Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
@@ -98,7 +98,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
+      return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Boundary composition model::Model name");
     }
 
@@ -112,14 +112,14 @@ namespace aspect
       prm.enter_subsection ("Boundary composition model");
       {
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
         try
           {
             prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
                                +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                               std_cxx11::get<dim>(registered_plugins).get_description_string());
           }
         catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
           {
@@ -129,7 +129,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
   }

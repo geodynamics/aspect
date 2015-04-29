@@ -23,7 +23,7 @@
 #define __aspect__velocity_boundary_conditions_gplates_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
 #include <aspect/simulator_access.h>
 
 
@@ -151,7 +151,7 @@ namespace aspect
            * coordinate axes in the order y-x-z (instead of the often used
            * z-x-z)
            */
-          std_cxx1x::array<double,3>
+          std_cxx11::array<double,3>
           angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
 
           /**
@@ -415,7 +415,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from
          * gplates files.
          */
-        std_cxx1x::shared_ptr<internal::GPlatesLookup> lookup;
+        std_cxx11::shared_ptr<internal::GPlatesLookup> lookup;
 
         /**
          * Handles the update of the velocity data in lookup.

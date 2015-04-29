@@ -89,7 +89,7 @@ namespace aspect
       std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
                                                         Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -196,7 +196,7 @@ namespace aspect
       // call the tag_additional_cells() functions of all
       // plugins we have here in turns.
       unsigned int index = 0;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -259,7 +259,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -279,7 +279,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered plugins
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry("Strategy",
                           "thermal energy density",
                           Patterns::MultipleSelection(pattern_of_names),
@@ -292,7 +292,7 @@ namespace aspect
                           "merged through the operation selected in this section.\n\n"
                           "The following criteria are available:\n\n"
                           +
-                          std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
 
         prm.declare_entry("Normalize individual refinement criteria",
                           "true",
@@ -360,7 +360,7 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // plugins in turn
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -369,7 +369,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No mesh refinement plugins registered!?"));
 
       // find out which plugins are requested and the various other
@@ -408,8 +408,8 @@ namespace aspect
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (unsigned int name=0; name<plugin_names.size(); ++name)
         {
-          mesh_refinement_objects.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                             (std_cxx1x::get<dim>(registered_plugins)
+          mesh_refinement_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                             (std_cxx11::get<dim>(registered_plugins)
                                               .create_plugin (plugin_names[name],
                                                               "Mesh refinement::Refinement criteria merge operation")));
 
@@ -429,7 +429,7 @@ namespace aspect
                                                       void (*declare_parameters_function) (ParameterHandler &),
                                                       Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);
