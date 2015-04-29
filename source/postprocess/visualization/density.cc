@@ -22,7 +22,6 @@
 #include <aspect/postprocess/visualization/density.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
