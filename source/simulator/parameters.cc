@@ -31,8 +31,8 @@
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::Parameters::Parameters (ParameterHandler &prm,
-                                          MPI_Comm mpi_communicator)
+  Parameters<dim>::Parameters (ParameterHandler &prm,
+                               MPI_Comm mpi_communicator)
   {
     parse_parameters (prm, mpi_communicator);
   }
@@ -40,7 +40,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   declare_parameters (ParameterHandler &prm)
   {
     prm.declare_entry ("Dimension", "2",
@@ -625,14 +625,14 @@ namespace aspect
     prm.leave_subsection ();
 
     //Also declare the parameters that the FreeSurfaceHandler needs
-    FreeSurfaceHandler::declare_parameters( prm );
+    Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
   }
 
 
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   parse_parameters (ParameterHandler &prm,
                     const MPI_Comm mpi_communicator)
   {
@@ -893,7 +893,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::Parameters::
+  Parameters<dim>::
   parse_geometry_dependent_parameters(ParameterHandler &prm,
                                       const GeometryModel::Interface<dim> &geometry_model)
   {
@@ -1083,7 +1083,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
-    Parameters::declare_parameters (prm);
+    Parameters<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
@@ -1105,13 +1105,13 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template Simulator<dim>::Parameters::Parameters (ParameterHandler &prm, \
-                                                   MPI_Comm mpi_communicator); \
-  template void Simulator<dim>::Parameters::declare_parameters (ParameterHandler &prm); \
-  template void Simulator<dim>::Parameters::parse_parameters(ParameterHandler &prm, \
-                                                             const MPI_Comm mpi_communicator); \
-  template void Simulator<dim>::Parameters::parse_geometry_dependent_parameters(ParameterHandler &prm, \
-                                                                                const GeometryModel::Interface<dim> &geometry_model); \
+  template Parameters<dim>::Parameters (ParameterHandler &prm, \
+                                        MPI_Comm mpi_communicator); \
+  template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
+  template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
+                                                  const MPI_Comm mpi_communicator); \
+  template void Parameters<dim>::parse_geometry_dependent_parameters(ParameterHandler &prm, \
+                                                                     const GeometryModel::Interface<dim> &geometry_model); \
   template void Simulator<dim>::declare_parameters (ParameterHandler &prm);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
