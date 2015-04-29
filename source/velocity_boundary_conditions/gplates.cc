@@ -24,8 +24,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/table.h>
+#include <deal.II/base/utilities.h>
+
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -190,7 +190,7 @@ namespace aspect
         // and n_phi to properly size the arrays and get the grip point positions
         const double dn_theta = 0.5 + std::sqrt(0.25 + n_points/2);
         const unsigned int n_theta = static_cast<unsigned int> (dn_theta);
-        const unsigned int n_phi = 2 * (dn_theta - 1);
+        const unsigned int n_phi = static_cast<unsigned int> (2 * (dn_theta - 1));
 
         AssertThrow(dn_theta - n_theta <= 1e-5,
                     ExcMessage("The velocity file has a grid structure that is not readable. Please refer to the manual for a proper grid structure."));
