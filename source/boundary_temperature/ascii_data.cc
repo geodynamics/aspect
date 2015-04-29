@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -56,7 +56,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::temperature (const GeometryModel::Interface<dim> &geometry_model,
+    AsciiData<dim>::temperature (const GeometryModel::Interface<dim> &,
                                  const unsigned int                   boundary_indicator,
                                  const Point<dim>                    &position) const
     {
@@ -69,7 +69,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    AsciiData<dim>::minimal_temperature (const std::set<types::boundary_id> &) const
     {
       return 0;
     }
@@ -77,7 +77,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    AsciiData<dim>::maximal_temperature (const std::set<types::boundary_id> &) const
     {
       return 0;
     }

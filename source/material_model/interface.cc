@@ -83,6 +83,8 @@ namespace aspect
                                           const Point<dim> &,
                                           const NonlinearDependence::Dependence dependence) const
     {
+      (void)dependence;
+
       Assert (viscosity_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
@@ -100,6 +102,8 @@ namespace aspect
                                         const Point<dim> &,
                                         const NonlinearDependence::Dependence dependence) const
     {
+      (void)dependence;
+
       Assert (density_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
@@ -107,6 +111,8 @@ namespace aspect
               ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
+
+
 
     template <int dim>
     double
@@ -116,6 +122,8 @@ namespace aspect
                                                 const Point<dim> &,
                                                 const NonlinearDependence::Dependence dependence) const
     {
+      (void)dependence;
+
       Assert (compressibility_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
@@ -123,6 +131,8 @@ namespace aspect
               ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
+
+
 
     template <int dim>
     double
@@ -132,6 +142,8 @@ namespace aspect
                                               const Point<dim> &,
                                               const NonlinearDependence::Dependence dependence) const
     {
+      (void)dependence;
+
       Assert (specific_heat_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
@@ -139,6 +151,8 @@ namespace aspect
               ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
+
+
 
     template <int dim>
     double
@@ -148,6 +162,8 @@ namespace aspect
                                                      const Point<dim> &,
                                                      const NonlinearDependence::Dependence dependence) const
     {
+      (void)dependence;
+
       Assert (thermal_conductivity_depends_on(dependence) == false,
               ExcMessage ("For a model declaring a certain dependence, "
                           "the partial derivatives have to be implemented."));
@@ -155,6 +171,7 @@ namespace aspect
               ExcMessage ("The given dependence must identify a single variable!"));
       return 0;
     }
+
 
 
     template <int dim>
