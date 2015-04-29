@@ -1085,10 +1085,10 @@ namespace aspect
 
       /**
        * Remove the angular momentum of the given vector
-       *  
+       *
        * @param use_constant_density determines whether to use a constant density
        * (which corresponds to removing a net rotation instead of net angular
-       * momentum). 
+       * momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -1097,7 +1097,7 @@ namespace aspect
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_net_angular_momentum( const bool use_constant_density,
-                                        LinearAlgebra::BlockVector &relevant_dst, 
+                                        LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
@@ -1105,7 +1105,7 @@ namespace aspect
        *
        * @param use_constant_density determines whether to use a constant density
        * (which corresponds to removing a net translation instead of net linear
-       * momentum). 
+       * momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -1113,8 +1113,8 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_linear_momentum( const bool use_constant_density, 
-                                       LinearAlgebra::BlockVector &relevant_dst, 
+      void remove_net_linear_momentum( const bool use_constant_density,
+                                       LinearAlgebra::BlockVector &relevant_dst,
                                        LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**

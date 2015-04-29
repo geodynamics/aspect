@@ -220,7 +220,7 @@ namespace aspect
     Interface<dim>::
     viscosity_ratio (const double,
                      const double,
-                     const std::vector<double>    &,
+                     const std::vector<double> &,
                      const SymmetricTensor<2,dim> &,
                      const Point<dim> &) const
     {

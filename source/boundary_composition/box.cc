@@ -37,7 +37,7 @@ namespace aspect
     Box<dim>::
     composition (const GeometryModel::Interface<dim> &geometry_model,
                  const unsigned int                   boundary_indicator,
-                 const Point<dim>                    &,
+                 const Point<dim> &,
                  const unsigned int                   compositional_field) const
     {
       // verify that the geometry is in fact a box since only
