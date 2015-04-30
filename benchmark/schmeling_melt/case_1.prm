@@ -1,0 +1,117 @@
+# Case 1 of the Schmeling benchmark
+# ---------------------------------
+# This case is identical to case 1 of Blankenbach et al (1989), but batch melting is 
+# swit ched on. This is done by using the simplified equation for the melt fraction. 
+# In case 1 neither dynamic nor thermal feedback is assumed. The aim is to determine 
+# the transient and steady state values of the amount of melt.
+# 
+# The requested output parameters can be found in the statistics file
+# and can be plotted with gnuplot:
+# Column 14: RMS velocity ("RMS velocity (m/s)")
+# Column 21: Maximum melt fraction ("Maximal value for composition porosity")
+# Column 22: Total melt volume ("Global mass for composition porosity")
+# Column 26: Surface Nusselt number ("Outward heat flux through boundary with indicator 3 ("top") (W)")
+
+
+set Additional shared libraries            = ./libschmeling_melt.so
+
+set End time                               = 0.06
+set Output directory                       = output
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1e3 
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+# case 1a)
+#    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
+# case 1b)
+    set Function constants  = z1=0.047465, z2=0.952535, pi=3.14159265359
+# case 1c)
+#    set Function constants  = z1=0.022756, z2=0.977244, pi=3.14159265359
+    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
+    set Variable names      = x,z
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function constants  = 
+    set Function expression = 0.0
+    set Variable names      = x,z
+  end
+end
+
+
+subsection Material model
+  set Model name = schmeling melt
+
+  subsection Schmeling melt
+    set Reference solid density       = 1
+    set Thermal expansion coefficient = 1
+
+# this corresponds to 1/Ra
+# case 1a): 1e-4, case 1b): 1e-5, case 1c): 1e-6
+    set Reference shear viscosity     = 1e-5
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 5                       # default: 2
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false 
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       = 
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, composition statistics, heat flux statistics # default: all
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+    set List of output variables      = density, viscosity, thermal expansivity
+  end
+end

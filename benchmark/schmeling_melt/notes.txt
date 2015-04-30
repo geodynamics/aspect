@@ -1,0 +1,7 @@
+This directory contains the melt migration benchmark defined in Schmeling et al. et al 2015
+It contains 5 different cases with increasing complexity, starting from the Blankenbach benchmark
+with added melt generation and leading up to full melt migration with extraction of melt in case 5. 
+
+6 different input files are provided, the first one being the original Blankenbach case, and the 
+remaining 5 corresponding to the Schmeling benchmark cases. 
+
