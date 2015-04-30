@@ -743,7 +743,7 @@ namespace aspect
   Interface<dim> * \
   create_material_model<dim> (ParameterHandler &prm); \
   \
-  template class MaterialModelInputs<dim>; \
+  template struct MaterialModelInputs<dim>; \
   \
   namespace MaterialAveraging \
   { \
