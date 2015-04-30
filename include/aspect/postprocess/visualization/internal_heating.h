@@ -26,7 +26,7 @@
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
+#include <deal.II/numerics/data_postprocessor.h>
 
 
 namespace aspect

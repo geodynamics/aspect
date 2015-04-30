@@ -22,7 +22,6 @@
 #include <aspect/postprocess/visualization/melt_fraction.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
 #include <deal.II/base/parameter_handler.h>
 
 

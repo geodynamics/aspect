@@ -23,7 +23,6 @@
 #include <aspect/postprocess/visualization/internal_heating.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
