@@ -60,8 +60,7 @@ namespace aspect
                                  const types::boundary_id             boundary_indicator,
                                  const Point<dim>                    &position) const
     {
-      const types::boundary_id boundary_id(boundary_indicator);
-      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_id,
+      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                    position,
                                                                    0);
     }
