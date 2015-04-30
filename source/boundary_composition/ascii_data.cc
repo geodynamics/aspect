@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,12 +58,11 @@ namespace aspect
     double
     AsciiData<dim>::
     composition (const GeometryModel::Interface<dim> &,
-                 const unsigned int                   boundary_indicator,
+                 const types::boundary_id             boundary_indicator,
                  const Point<dim>                    &position,
                  const unsigned int                   compositional_field) const
     {
-      const types::boundary_id boundary_id(boundary_indicator);
-      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_id,
+      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                    position,
                                                                    compositional_field);
     }

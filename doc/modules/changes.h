@@ -6,6 +6,16 @@
  *
  *
  * <ol>
+ *
+ * <li> Changed: ASPECT accidentally used the type <code>unsigned int</code>
+ * in denoting boundary indicators in BoundaryComposition::Interface::composition()
+ * and BoundaryTemperature::Interface::temperature(), as well as derived
+ * classes' corresponding functions. It should have been the deal.II type
+ * types::boundary_id. This is now fixed. It may require fixing user plugins that
+ * overload these functions.
+ * <br>
+ * (Wolfgang Bangerth, 2015/04/30)
+ *
  * <li> New: ASPECT can now average material properties between the
  * quadrature points of a cell. This greatly increases the stability
  * of solutions in simulations with spatially varying coefficients,

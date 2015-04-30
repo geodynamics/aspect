@@ -33,7 +33,7 @@ namespace aspect
     double
     InitialComposition<dim>::
     composition (const GeometryModel::Interface<dim> &,
-                 const unsigned int                   ,
+                 const types::boundary_id             ,
                  const Point<dim>                    &location,
                  const unsigned int                   compositional_field) const
     {
