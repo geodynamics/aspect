@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: There are now visualization postprocessors that can output
+ * the shear stress and full stress tensors.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/02)
+ *
  * <li> Changed: ASPECT accidentally used the type <code>unsigned int</code>
  * in denoting boundary indicators in BoundaryComposition::Interface::composition()
  * and BoundaryTemperature::Interface::temperature(), as well as derived
