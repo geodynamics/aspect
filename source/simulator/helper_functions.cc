@@ -840,10 +840,19 @@ namespace aspect
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary() &&
-              (parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
-               parameters.prescribed_velocity_boundary_indicators.end()))
+          if (cell->face(f)->at_boundary())
             {
+              const types::boundary_id boundary_indicator
+#if DEAL_II_VERSION_GTE(8,3,0)
+                = cell->face(f)->boundary_id();
+#else
+                = cell->face(f)->boundary_indicator();
+#endif
+
+              if (parameters.prescribed_velocity_boundary_indicators.find(boundary_indicator)==
+                  parameters.prescribed_velocity_boundary_indicators.end())
+                continue;
+
               fe_face_values.reinit (cell, f);
 
               // for each of the quadrature points, evaluate the
@@ -852,7 +861,7 @@ namespace aspect
               for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                 {
                   const Tensor<1,dim> velocity =
-                    velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
+                    velocity_boundary_conditions.find(boundary_indicator)->second->boundary_velocity(fe_face_values.quadrature_point(q));
 
                   const double normal_velocity = velocity * fe_face_values.normal_vector(q);
                   local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
