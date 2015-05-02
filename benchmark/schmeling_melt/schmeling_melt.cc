@@ -9,6 +9,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/numerics/fe_field_function.h>
 
 
 namespace aspect
@@ -108,9 +109,31 @@ namespace aspect
         virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
                               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
         {
+          std::vector<double> maximum_melt_fractions(in.position.size());
+
+          // we want to get the depletion field from the old solution here,
+          // because it tells us how much of the material was already molten
+          if(this->include_melt_transport() && in.cell != this->get_dof_handler().end())
+            {
+              // Prepare the field function
+              Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+                fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
+
+              // only get depletion field from the old the solution
+              Assert(this->introspection().compositional_name_exists("depletion"),
+                     ExcMessage("Material model schmeling melt only works with melt transport if there is a "
+                                "compositional field called depletion."));
+              const unsigned int depletion_idx = this->introspection().compositional_index_for_name("depletion");
+
+              fe_value.set_active_cell(in.cell);
+              fe_value.value_list(in.position,
+                                  maximum_melt_fractions,
+                                  this->introspection().component_indices.compositional_fields[depletion_idx]);
+            }
+
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              // get the porosity and depletion of material is they exist
+              // get the porosity and depletion of material if they exist
               double porosity = 0.0;
               if(this->introspection().compositional_name_exists("porosity"))
                 {
@@ -131,8 +154,9 @@ namespace aspect
               out.viscosities[i] = eta_0;
               out.densities[i] = reference_rho_s
                                  + density_scaling * (- thermal_expansivity * (in.temperature[i] - reference_T)
-                                                      + porosity * (reference_rho_f - reference_rho_s)
                                                       + depletion * (1.0 - porosity) * (rho_depletion - reference_rho_s));
+              if (!this->include_melt_transport())
+                out.densities[i] += density_scaling * porosity * (reference_rho_f - reference_rho_s);
 
               out.thermal_expansion_coefficients[i] = thermal_expansivity;
               out.specific_heat[i] = 1.0;
@@ -140,7 +164,13 @@ namespace aspect
               out.compressibilities[i] = 0.0;
 
               // calculate the solidus for the melt fraction and latent heat
-              const double T_solidus = A1 + A2 * (1.0 - in.position[i](1));
+              const double delta_T_solidus = (false //this->include_melt_transport()
+                                              ?
+                                              (depletion - porosity) / (Delta_T_liquidus_solidus)
+                                              :
+                                              0.0);
+
+              const double T_solidus = A1 + A2 * (1.0 - in.position[i](1)) + delta_T_solidus;
               const double c_melt = ((in.temperature[i] > T_solidus) && (in.temperature[i] < T_solidus + Delta_T_liquidus_solidus))
                                     ?
                                     1.0
@@ -155,14 +185,32 @@ namespace aspect
               else if (in.temperature[i] > T_solidus + Delta_T_liquidus_solidus)
                 melt_fraction = 1.0;
 
+
               // we have to use the depletion here for both cases, and this doesn't work with iterated IMPES
               // (for that have a look at melt_simple material model)
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
                   if (this->introspection().name_for_compositional_index(c) == "porosity")
-                    out.reaction_terms[i][c] = melt_fraction - in.composition[i][c];
+                    {
+                      if(this->introspection().compositional_name_exists("depletion"))
+                        {
+                          const double porosity_idx = this->introspection().compositional_index_for_name("depletion");
+                          out.reaction_terms[i][c] = melt_fraction - in.composition[i][porosity_idx];
+
+                          if (this->include_melt_transport() && this->get_timestep_number() > 0)
+                            out.reaction_terms[i][c] = c_melt * (melt_fraction - maximum_melt_fractions[i])
+                                                       * reference_rho_s  / this->get_timestep();
+                        }
+                      else
+                        out.reaction_terms[i][c] = melt_fraction - in.composition[i][c];
+                    }
                   else if (this->introspection().name_for_compositional_index(c) == "depletion")
-                    out.reaction_terms[i][c] = melt_fraction - in.composition[i][c];
+                    {
+                      if (this->include_melt_transport() && this->get_timestep_number() > 0)
+                        out.reaction_terms[i][c] = c_melt * (melt_fraction - maximum_melt_fractions[i]);
+                      else
+                        out.reaction_terms[i][c] = melt_fraction - in.composition[i][c];
+                    }
                   else
                     out.reaction_terms[i][c] = 0.0;
                 }
@@ -170,8 +218,10 @@ namespace aspect
               // we have to scale the latent heat terms with the temperature and gravity, respectively, because the
               // terms in the benchmark are defined in terms of depth and in nondimensional form, so we have to scale
               // scale them back to the dimensions we use
-              out.entropy_derivative_pressure[i] = - A2 * c_melt / (Delta_T_liquidus_solidus * in.temperature[i]);
-              out.entropy_derivative_temperature[i] = 1.0 * c_melt / (Delta_T_liquidus_solidus * in.temperature[i] * reference_rho_s * gravity);
+              // also note that we have a different sign in the pressure derivative compared to the manuscript,
+              // resulting from the opposite directions of the z axis
+              out.entropy_derivative_temperature[i] = - c_melt * latent_heat / (Delta_T_liquidus_solidus * in.temperature[i]);
+              out.entropy_derivative_pressure[i] = A2 * c_melt * latent_heat / (Delta_T_liquidus_solidus * in.temperature[i] * reference_rho_s * gravity);
             }
         }
 
@@ -187,8 +237,8 @@ namespace aspect
 
               out.compaction_viscosities[i] = xi_0;
               out.fluid_viscosities[i]= eta_f;
-              out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
-              out.fluid_densities[i]= reference_rho_f;
+              out.permeabilities[i]= std::max(reference_permeability * std::pow(porosity,3),0.0);
+              out.fluid_densities[i]= reference_rho_f - thermal_expansivity * (in.temperature[i] - reference_T);
               out.fluid_compressibilities[i] = 0.0;
             }
 
@@ -208,6 +258,7 @@ namespace aspect
         double A1;
         double A2;
         double density_scaling;
+        double latent_heat;
     };
 
     template <int dim>
@@ -222,10 +273,10 @@ namespace aspect
                              Patterns::Double (0),
                              "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference melt density", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "Reference density of the melt $\\rho_{f,0}$. Units: $kg/m^3$.");
           prm.declare_entry ("Reference depleted density", "1.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "Reference density of the depleted material. Units: $kg/m^3$.");
           prm.declare_entry ("Density scaling", "1e-3",
                              Patterns::Double (0),
@@ -251,7 +302,7 @@ namespace aspect
           prm.declare_entry ("Reference melt viscosity", "1.0",
                              Patterns::Double (0),
                              "The value of the constant melt viscosity $\\eta_f$. Units: $Pa s$.");
-          prm.declare_entry ("Reference permeability", "5e-9",
+          prm.declare_entry ("Reference permeability", "0.02",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
                              "Units: $m^2$.");
@@ -268,6 +319,12 @@ namespace aspect
                              Patterns::Double (0),
                              "The prefactor A2 in the solidus law. "
                              "Units: None.");
+          prm.declare_entry ("Latent heat of melting", "0.256016385",
+                             Patterns::Double (0),
+                             "The latent heat change L across the phase transition from "
+                             "solid to fluid. This is related to the Stephan number by "
+                             "$St = \frac{c_p Delta T}{L}$. "
+                             "Units: $J / kg$.");
         }
         prm.leave_subsection();
       }
@@ -297,6 +354,7 @@ namespace aspect
           A1                         = prm.get_double ("A1");
           A2                         = prm.get_double ("A2");
           density_scaling            = prm.get_double ("Density scaling");
+          latent_heat                = prm.get_double ("Latent heat of melting");
         }
         prm.leave_subsection();
       }

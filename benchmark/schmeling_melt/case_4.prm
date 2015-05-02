@@ -1,0 +1,142 @@
+# Case 4b of the Schmeling benchmark
+# ---------------------------------
+# This case is identical to case 3, except that two-phase flow is assumed 
+# by choosing Rt = 50. In case 4a the CBA is assumed, while in case 4b full 
+# compaction (FC) is studied. Due to melt segregation depleted and enriched 
+# regions develop and are swept around in the model.
+# 
+# The requested output parameters can be found in the statistics file
+# and can be plotted with gnuplot:
+# Column 15: RMS velocity ("RMS velocity (m/s)")
+# Column 22: Maximum melt fraction ("Maximal value for composition porosity")
+# Column 23: Total melt volume ("Global mass for composition porosity")
+# Column 30: Surface Nusselt number ("Outward heat flux through boundary with indicator 3 ("top") (W)")
+
+
+set Additional shared libraries            = ./libschmeling_melt.so
+
+set End time                               = 0.12
+set Output directory                       = output_4
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = iterated IMPES
+set Linear solver tolerance = 1e-6
+set Max nonlinear iterations               = 5
+set Use direct solver for Stokes system = false
+
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, depletion
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1 
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+# case 1a)
+#    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
+# case 1b)
+    set Function constants  = z1=0.047465, z2=0.952535, pi=3.14159265359
+# case 1c)
+#    set Function constants  = z1=0.022756, z2=0.977244, pi=3.14159265359
+    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
+    set Variable names      = x,z
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function constants  = 
+    set Function expression = 0.0; 0.0
+    set Variable names      = x,z
+  end
+end
+
+
+subsection Material model
+  set Model name = schmeling melt
+
+  subsection Schmeling melt
+    set Reference solid density       = 1
+    set Thermal expansion coefficient = 2.5e-2
+    set Reference melt density        = 0.9375
+    set Reference depleted density    = 0.963
+    set Density scaling               = 1
+
+# this corresponds to 1/Ra
+# case 1a): 1e-4, case 1b): 1e-5, case 1c): 1e-6
+    set Reference shear viscosity     = 2.5e-7
+    set Reference compaction viscosity = 2.5e-7
+  end
+end
+
+subsection Fluid Pressure Boundary Condition
+  set Plugin name = density
+  subsection Density
+    set Include Fluid Density = true
+    set Include Solid Density = false
+  end
+
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.3
+  set Strategy                                 = composition
+  set Initial adaptive refinement              = 0                       # default: 2
+  set Initial global refinement                = 6                       # default: 2
+  set Time steps between mesh refinement       = 0
+  set Minimum refinement level                 = 5
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false 
+  set Include latent heat                     = true
+  set Include melt transport                  = true
+  set Melt transport threshold                = 0.0
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       = 
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Checkpointing
+  set Time between checkpoint  = 1800
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, composition statistics, heat flux statistics # default: all
+
+  subsection Visualization
+    set Time between graphical output = 0.001
+    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, permeability
+  end
+end
