@@ -822,8 +822,8 @@ namespace aspect
           {
             // pressure is not in a separate block so we have to modify the values manually
             const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                     introspection.block_indices.fluid_pressure
-                                                     : introspection.block_indices.pressure);
+                                                     introspection.component_indices.fluid_pressure
+                                                     : introspection.component_indices.pressure);
             const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
                                                         finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
@@ -868,8 +868,8 @@ namespace aspect
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                 introspection.block_indices.fluid_pressure
-                                                 : introspection.block_indices.pressure);
+                                                 introspection.component_indices.fluid_pressure
+                                                 : introspection.component_indices.pressure);
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
