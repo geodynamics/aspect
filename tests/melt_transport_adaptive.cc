@@ -221,7 +221,7 @@ namespace aspect
                                          cellwise_errors_p_c,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
-                                         &comp_p);
+                                         &comp_p_c);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
                                          ref_func,
@@ -235,7 +235,7 @@ namespace aspect
                                          cellwise_errors_u_f,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
-                                         &comp_u);
+                                         &comp_u_f);
 
       std::ostringstream os;
       os << std::scientific << cellwise_errors_u.l2_norm()
