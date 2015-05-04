@@ -1568,7 +1568,39 @@ solution which is making the more interesting flow features difficult to see. }
 This is a brief explanation of how to install all the required software and
 \aspect{} itself.
 
-\subsection{Prerequisites}
+\subsection{System prerequisites}
+
+In order to install \aspect{} and its dependencies, you should
+have your system set up to be able to compile and link programs. Additionally,
+\aspect{} needs a number of widely used libraries that are available
+for most operating systems. Therefore, you will need compilers for C, C++ and
+Fortran, the GNU make system, the CMake build system, development versions of
+the BLAS and LAPACK libraries and the zlib library, which is used for
+compressing the output data. To use more than one process for your computations
+you will need to install a development version of a MPI library and the
+necessary executables to run MPI programs. There are some optional packages
+for additional features, like the HDF5 libraries for additional output formats
+and PETSC for alternative solvers, but these are not strictly required.
+Finally, for obtaining a recent development version of \aspect{} you will
+need the git version control system.
+
+An exemplary command to obtain all required packages on Ubuntu 14.04 would be:
+
+\begin{verbatim}
+sudo apt-get install build-essential \
+                     gcc \
+                     g++ \
+                     gfortran \
+                     libblas-dev \
+                     liblapack-dev \
+                     libopenmpi-dev \
+                     openmpi-bin \
+                     cmake \
+                     git \
+                     zlib1g-dev
+\end{verbatim}
+
+\subsection{Software prerequisites}
 
 \aspect{} builds on a few other libraries that are widely used in the
 computational science area and that provide most of the lower-level
