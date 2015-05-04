@@ -1581,6 +1581,7 @@ you will need to install a development version of a MPI library and the
 necessary executables to run MPI programs. There are some optional packages
 for additional features, like the HDF5 libraries for additional output formats
 and PETSC for alternative solvers, but these are not strictly required.
+Numdiff is used for checking \aspect{}'s test results with reasonable accuracy.
 Finally, for obtaining a recent development version of \aspect{} you will
 need the git version control system.
 
@@ -1588,15 +1589,16 @@ An exemplary command to obtain all required packages on Ubuntu 14.04 would be:
 
 \begin{verbatim}
 sudo apt-get install build-essential \
+                     cmake \
                      gcc \
                      g++ \
                      gfortran \
+                     git \
                      libblas-dev \
                      liblapack-dev \
                      libopenmpi-dev \
+                     numdiff \
                      openmpi-bin \
-                     cmake \
-                     git \
                      zlib1g-dev
 \end{verbatim}
 
