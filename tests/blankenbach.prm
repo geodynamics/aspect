@@ -4,7 +4,9 @@
 # (Blankenbach 1989). Cases b and c can be run by changing the 
 # Viscosity to 1e-5 and 1e-6, respectively, which leads to the
 # corresponding change of the Rayleigh number from 1e4 to 1e5 and
-# 1e6. 
+# 1e6. This test essentially resembles the convection-box cookbook
+# and reproduces its results very closely (a slight difference results
+# from the different refinement levels).
 # The relevant output is the vrms velocity and the heat flux through
 # the top boundary, which in this setup is identical to the Nu number. 
 
