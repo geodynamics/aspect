@@ -16,7 +16,7 @@
 set Additional shared libraries            = ./libschmeling_melt.so
 
 set End time                               = 0.12
-set Output directory                       = output_4
+set Output directory                       = output_case_4b
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = iterated IMPES
 set Linear solver tolerance = 1e-6
@@ -89,10 +89,12 @@ subsection Material model
     set Reference depleted density    = 0.963
     set Density scaling               = 1
 
-# this corresponds to 1/Ra
-# case 1a): 1e-4, case 1b): 1e-5, case 1c): 1e-6
+# this corresponds to alpha/Ra
+# case 4a): 2.5e-6, case 4b): 2.5e-7, case 4c): 2.5e-8
     set Reference shear viscosity     = 2.5e-7
     set Reference compaction viscosity = 2.5e-7
+# case 4a): 8e3, case 4b): 8e4, case 4c): 8e5
+    set Reference permeability        = 8e4
   end
 end
 
@@ -102,7 +104,6 @@ subsection Fluid Pressure Boundary Condition
     set Include Fluid Density = true
     set Include Solid Density = false
   end
-
 end
 
 subsection Mesh refinement
@@ -119,7 +120,7 @@ end
 subsection Model settings
   set Include adiabatic heating               = false
   set Include shear heating                   = false 
-  set Include latent heat                     = true
+  set Include latent heat                     = false
   set Include melt transport                  = true
   set Melt transport threshold                = 0.0
   set Prescribed velocity boundary indicators = 
@@ -136,7 +137,11 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, composition statistics, heat flux statistics # default: all
 
   subsection Visualization
-    set Time between graphical output = 0.001
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, permeability
+    set Time between graphical output = 0.0001
+    set List of output variables      = material properties, melt pressure, melt velocity, permeability, internal heating
+
+    subsection Material properties
+      set List of material properties = density, viscosity, reaction terms
+    end
   end
 end
