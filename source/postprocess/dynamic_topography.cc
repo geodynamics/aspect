@@ -194,6 +194,10 @@ namespace aspect
         {
           std::ofstream file (filename.c_str());
 
+          file << "# "
+               << ((dim==2)? "x y" : "x y z")
+               << " topography" << std::endl;
+
           // first write out the data we have created locally
           file << output.str();
 
@@ -262,7 +266,7 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic Topography");
         {
-          subtract_mean_dyn_topography              = prm.get_bool("Subtract mean of dynamic topography");
+          subtract_mean_dyn_topography = prm.get_bool("Subtract mean of dynamic topography");
         }
         prm.leave_subsection();
       }
@@ -281,8 +285,8 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DynamicTopography,
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
-                                  "based on the stress at the surface. The data is written into a "
-                                  "file named 'dynamic\\_topography.NNNNN' in the output directory, "
+                                  "based on the stress at the surface. The data is written into text "
+                                  "files named 'dynamic\\_topography.NNNNN' in the output directory, "
                                   "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "
@@ -298,6 +302,9 @@ namespace aspect
                                   "topography is computed using the formula "
                                   "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
                                   "is the density at the cell center."
+                                  "\n"
+                                  "The file format then consists of lines with Euclidiean coordinates "
+                                  "followed by the corresponding topography value."
                                   "\n\n"
                                   "(As a side note, the postprocessor chooses the cell center "
                                   "instead of the center of the cell face at the surface, where we "
