@@ -234,7 +234,7 @@ namespace aspect
       const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
       if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
-         {
+        {
           // next make sure that all listed indicators are actually used by
           // this geometry
           for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
@@ -245,14 +245,14 @@ namespace aspect
                            != all_boundary_indicators.end(),
                            ExcMessage ("One of the boundary indicators listed in the input file "
                                        "is not used by the geometry model."));
-         }
+        }
       else
-      {
-    	  // next make sure that there are no listed indicators
-          for(unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-    	  AssertThrow (boundary_indicator_lists[i].empty(),
-    	                            ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
-      }
+        {
+          // next make sure that there are no listed indicators
+          for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
+            AssertThrow (boundary_indicator_lists[i].empty(),
+                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
+        }
 
 
       // now do the same for the fixed temperature indicators and the
@@ -331,28 +331,28 @@ namespace aspect
 
     // Make sure we only have a prescribed Stokes plugin if needed
     if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
-    {
-    	 AssertThrow(prescribed_stokes_solution.get()!=NULL,
-    			 ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
-    			 );
-    }
+      {
+        AssertThrow(prescribed_stokes_solution.get()!=NULL,
+                    ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
+                   );
+      }
     else
-    {
-    	 AssertThrow(prescribed_stokes_solution.get()==NULL,
-    			 ExcMessage("The prescribed stokes pulgin you selected only works with solver type 'Advection only' ")
-    			 );
-    }
+      {
+        AssertThrow(prescribed_stokes_solution.get()==NULL,
+                    ExcMessage("The prescribed stokes plugin you selected only works with solver type 'Advection only' ")
+                   );
+      }
 
 
 
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
-    	sim->initialize (*this);
+      sim->initialize (*this);
     if (prescribed_stokes_solution.get())
-    {
-    	prescribed_stokes_solution->parse_parameters (prm);
-    	prescribed_stokes_solution->initialize ();
-    }
+      {
+        prescribed_stokes_solution->parse_parameters (prm);
+        prescribed_stokes_solution->initialize ();
+      }
 
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
@@ -1405,88 +1405,88 @@ namespace aspect
   template <int dim>
   class VectorFunctionFromVectorFunctionObject : public Function<dim>
   {
-  public:
-    /**
-     * Converts a function with @p n_object_components components into a Function@dim@
-     * while optionally providing additional components that are set to zero.
-     *
-     * @param function_object The function that will form one component
-     *     of the resulting Function object.
-     * @param first_component The first component that should be
-     *     filled.
-     * @param n_object_components The number of components that should be
-     *     filled from the first.
-     * @param n_total_components The total number of vector components of the
-     *     resulting Function object.
-     **/
+    public:
+      /**
+       * Converts a function with @p n_object_components components into a Function@dim@
+       * while optionally providing additional components that are set to zero.
+       *
+       * @param function_object The function that will form one component
+       *     of the resulting Function object.
+       * @param first_component The first component that should be
+       *     filled.
+       * @param n_object_components The number of components that should be
+       *     filled from the first.
+       * @param n_total_components The total number of vector components of the
+       *     resulting Function object.
+       **/
 
-    VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
-                                            const unsigned int first_component,
-                                            const unsigned int n_object_components,
-                                            const unsigned int n_total_components)
-      :
-      Function<dim>(n_total_components),
-      function_object (function_object),
-      first_component (first_component),
-      n_object_components (n_object_components)
-    {
-        Assert ((n_object_components > 0
-    	&&
-    	first_component+n_object_components <= n_total_components),
-        ExcMessage ("Number of objects components needs to be less than number of total components"));
-    }
-
-    double
-    value (const Point<dim> &p,
-                                                        const unsigned int component) const
-    {
-      Assert (component < this->n_components,
-              ExcIndexRange (component, 0, this->n_components));
-
-      if (component < first_component)
-    	  return 0;
-      else if (component >= first_component + n_object_components)
-    	  return 0;
-      else
+      VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
+                                              const unsigned int first_component,
+                                              const unsigned int n_object_components,
+                                              const unsigned int n_total_components)
+        :
+        Function<dim>(n_total_components),
+        function_object (function_object),
+        first_component (first_component),
+        n_object_components (n_object_components)
       {
+        Assert ((n_object_components > 0
+                 &&
+                 first_component+n_object_components <= n_total_components),
+                ExcMessage ("Number of objects components needs to be less than number of total components"));
+      }
+
+      double
+      value (const Point<dim> &p,
+             const unsigned int component) const
+      {
+        Assert (component < this->n_components,
+                ExcIndexRange (component, 0, this->n_components));
+
+        if (component < first_component)
+          return 0;
+        else if (component >= first_component + n_object_components)
+          return 0;
+        else
+          {
+            Vector<double> temp(n_object_components);
+            function_object (p, temp);
+            return temp(component - first_component);
+          }
+      }
+
+      void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>     &values) const
+      {
+        AssertDimension(values.size(), this->n_components);
+
+        // set everything to zero, and then the right components to their correct values
+        values = 0;
         Vector<double> temp(n_object_components);
         function_object (p, temp);
-        return temp(component - first_component);
+        for (unsigned int i = 0; i < n_object_components; i++)
+          {
+            values(first_component + i) = temp(i);
+          }
       }
-    }
 
-    void
-    vector_value (const Point<dim>   &p,
-                  Vector<double>     &values) const
-    {
-      AssertDimension(values.size(), this->n_components);
+    private:
+      /**
+       * The function object which we call when this class's solution() function is called.
+       **/
+      const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
 
-      // set everything to zero, and then the right components to their correct values
-      values = 0;
-      Vector<double> temp(n_object_components);
-      function_object (p, temp);
-      for (unsigned int i = 0; i < n_object_components; i++)
-      {
-    	  values(first_component + i) = temp(i);
-      }
-    }
-
-  private:
-    /**
-     * The function object which we call when this class's solution() function is called.
-     **/
-    const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
-
-    /**
-     * The first vector component whose value is to be filled by the given
-     * function.
-     */
-    const unsigned int first_component;
-    /**
-     * The number of vector components whose values are to be filled by the given
-     * function.
-     */
-    const unsigned int n_object_components;
+      /**
+       * The first vector component whose value is to be filled by the given
+       * function.
+       */
+      const unsigned int first_component;
+      /**
+       * The number of vector components whose values are to be filled by the given
+       * function.
+       */
+      const unsigned int n_object_components;
 
   };
 
@@ -1769,12 +1769,12 @@ namespace aspect
           LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 
           VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::solution,
-                  std_cxx1x::cref(*prescribed_stokes_solution),
-                  std_cxx1x::_1,
-                  std_cxx1x::_2),
-                  0,
-                  dim+1, //velocity and pressure
-                  introspection.n_components);
+                                                                            std_cxx1x::cref(*prescribed_stokes_solution),
+                                                                            std_cxx1x::_1,
+                                                                            std_cxx1x::_2),
+                                                           0,
+                                                           dim+1, //velocity and pressure
+                                                           introspection.n_components);
 
           VectorTools::interpolate (mapping, dof_handler, func, distributed_stokes_solution);
 
@@ -1782,8 +1782,8 @@ namespace aspect
           const unsigned int block_p = introspection.block_indices.pressure;
 
           // distribute hanging node and
-             // other constraints
-             current_constraints.distribute (distributed_stokes_solution);
+          // other constraints
+          current_constraints.distribute (distributed_stokes_solution);
 
           solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
           solution.block(block_p) = distributed_stokes_solution.block(block_p);

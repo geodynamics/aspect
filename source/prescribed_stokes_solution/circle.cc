@@ -37,7 +37,7 @@ namespace aspect
           value(0) = -p(1);
           value(1) = p(0);
           if (dim == 3)
-        	  value(2) = 0;
+            value(2) = 0;
           value(dim) = 0;
         }
     };
