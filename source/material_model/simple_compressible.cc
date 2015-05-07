@@ -149,7 +149,7 @@ namespace aspect
     template <int dim>
     bool
     SimpleCompressible<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
+    viscosity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }
@@ -189,7 +189,7 @@ namespace aspect
     template <int dim>
     bool
     SimpleCompressible<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }

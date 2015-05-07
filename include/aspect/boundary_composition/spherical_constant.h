@@ -49,7 +49,7 @@ namespace aspect
          */
         virtual
         double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const unsigned int                   boundary_indicator,
+                            const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &location,
                             const unsigned int                   compositional_field) const;
 

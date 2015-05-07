@@ -83,7 +83,7 @@ namespace aspect
       Introspection (const Parameters<dim> &parameters);
 
       /**
-       *
+       * Destructor.
        */
       ~Introspection ();
 
@@ -153,8 +153,7 @@ namespace aspect
        */
       struct Extractors
       {
-        Extractors (const Introspection<dim>::ComponentIndices &component_indices,
-                    const unsigned int n_compositional_fields);
+        Extractors (const ComponentIndices &component_indices);
 
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;
@@ -344,12 +343,17 @@ namespace aspect
       /**
        * Return the vector of finite element spaces used for the construction of the FESystem.
        */
-      const std::vector<const dealii::FiniteElement<dim> *> &get_fes();
+      const std::vector<const dealii::FiniteElement<dim> *> &get_fes() const;
 
       /**
        * Return the vector of multiplicities used for the construction of the FESystem.
        */
-      const std::vector<unsigned int> &get_multiplicities();
+      const std::vector<unsigned int> &get_multiplicities() const;
+
+      /**
+       * Free memory allocated inside @p fes after it is used to construct the FESystem.
+       */
+      void free_finite_element_data();
 
     private:
       /**
@@ -358,11 +362,11 @@ namespace aspect
        */
       std::vector<std::string> composition_names;
       /**
-       *
+       * Dynamically allocated FiniteElements.
        */
       std::vector<const FiniteElement<dim> *> fes;
       /**
-       *
+       * Multiplicities of the @p fes.
        */
       std::vector<unsigned int> multiplicities;
 

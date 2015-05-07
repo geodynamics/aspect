@@ -38,7 +38,8 @@ namespace aspect
   {
     template <int dim>
     template <class Archive>
-    void DepthAverage<dim>::DataPoint::serialize (Archive &ar, const unsigned int version)
+    void DepthAverage<dim>::DataPoint::serialize (Archive &ar,
+                                                  const unsigned int)
     {
       ar &time &values;
     }
@@ -59,7 +60,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    DepthAverage<dim>::execute (TableHandler &statistics)
+    DepthAverage<dim>::execute (TableHandler &)
     {
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during

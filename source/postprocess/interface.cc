@@ -78,7 +78,7 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string> > output_list;
-      for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
@@ -145,7 +145,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       internal::Plugins::PluginList<Interface<2> >,
@@ -165,7 +165,7 @@ namespace aspect
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered postprocessors
         const std::string pattern_of_names
-          = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
         prm.declare_entry("List of postprocessors",
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
@@ -177,13 +177,13 @@ namespace aspect
                           "postprocessors should be run after each time step.\n\n"
                           "The following postprocessors are available:\n\n"
                           +
-                          std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection();
 
       // now declare the parameters of each of the registered
       // postprocessors in turn
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -192,7 +192,7 @@ namespace aspect
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
@@ -212,17 +212,17 @@ namespace aspect
         {
           postprocessor_names.clear();
           for (typename std::list<typename internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
-               p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
-               p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
-            postprocessor_names.push_back (std_cxx1x::get<0>(*p));
+               p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
+               p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
+            postprocessor_names.push_back (std_cxx11::get<0>(*p));
         }
 
       // then go through the list, create objects and let them parse
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
-          postprocessors.push_back (std_cxx1x::shared_ptr<Interface<dim> >
-                                    (std_cxx1x::get<dim>(registered_plugins)
+          postprocessors.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                    (std_cxx11::get<dim>(registered_plugins)
                                      .create_plugin (postprocessor_names[name],
                                                      "Postprocessor plugins")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -241,7 +241,7 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);

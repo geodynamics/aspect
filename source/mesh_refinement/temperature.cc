@@ -36,7 +36,8 @@ namespace aspect
 
       QGauss<dim-1> quadrature (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
 
-      KellyErrorEstimator<dim>::estimate (this->get_dof_handler(),
+      KellyErrorEstimator<dim>::estimate (this->get_mapping(),
+                                          this->get_dof_handler(),
                                           quadrature,
                                           typename FunctionMap<dim>::type(),
                                           this->get_solution(),

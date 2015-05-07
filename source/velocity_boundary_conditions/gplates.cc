@@ -24,8 +24,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/parameter_handler.h>
-#include <deal.II/base/table.h>
+#include <deal.II/base/utilities.h>
+
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -132,8 +132,8 @@ namespace aspect
             Tensor<1,3> rotation_axis;
             const double rotation_angle = rotation_axis_from_matrix(rotation_axis,rotation_matrix);
 
-            std_cxx1x::array<double,3> angles = angles_from_matrix(rotation_matrix);
-            std_cxx1x::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
+            std_cxx11::array<double,3> angles = angles_from_matrix(rotation_matrix);
+            std_cxx11::array<double,3> back_angles = angles_from_matrix(transpose(rotation_matrix));
 
             output << "   Input point 1 spherical coordinates: " << surface_point_one  << std::endl
                    << "   Input point 1 normalized cartesian coordinates: " << point_one  << std::endl
@@ -190,7 +190,7 @@ namespace aspect
         // and n_phi to properly size the arrays and get the grip point positions
         const double dn_theta = 0.5 + std::sqrt(0.25 + n_points/2);
         const unsigned int n_theta = static_cast<unsigned int> (dn_theta);
-        const unsigned int n_phi = 2 * (dn_theta - 1);
+        const unsigned int n_phi = static_cast<unsigned int> (2 * (dn_theta - 1));
 
         AssertThrow(dn_theta - n_theta <= 1e-5,
                     ExcMessage("The velocity file has a grid structure that is not readable. Please refer to the manual for a proper grid structure."));
@@ -570,10 +570,10 @@ namespace aspect
         return rotation_angle;
       }
 
-      std_cxx1x::array<double,3>
+      std_cxx11::array<double,3>
       GPlatesLookup::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
       {
-        std_cxx1x::array<double,3> orientation;
+        std_cxx11::array<double,3> orientation;
 
         /*
          * The following code is part of the VTK project and copied here for
@@ -685,7 +685,7 @@ namespace aspect
       GPlatesLookup::calculate_spatial_index(int *index,
                                              const Tensor<1,3> &position) const
       {
-        const std_cxx1x::array<double,3> scoord =
+        const std_cxx11::array<double,3> scoord =
           ::aspect::Utilities::spherical_coordinates(static_cast<Point<3> > (position));
         index[0] = lround(scoord[2]/delta_theta);
         index[1] = lround(scoord[1]/delta_phi);
@@ -751,11 +751,13 @@ namespace aspect
 
       const GeometryModel::Interface<dim> &geometry_model =
         this->get_geometry_model();
-
+      (void)geometry_model;
       Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model) != 0,
               ExcMessage ("This boundary condition can only be used if the geometry "
                           "is a spherical shell."));
-      Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360, ExcMessage("gplates velocity model just works for opening angle == 360"));
+      Assert((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&geometry_model))->opening_angle()==360,
+             ExcMessage("The gplates velocity model works only for an opening "
+                        "angle of the geometry equal to 360."));
     }
 
 

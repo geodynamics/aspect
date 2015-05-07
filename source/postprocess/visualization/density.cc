@@ -22,7 +22,6 @@
 #include <aspect/postprocess/visualization/density.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
 
 
 namespace aspect
@@ -45,9 +44,9 @@ namespace aspect
       void
       Density<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                         const std::vector<Point<dim> >                  &normals,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &,
+                                         const std::vector<std::vector<Tensor<2,dim> > > &,
+                                         const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {

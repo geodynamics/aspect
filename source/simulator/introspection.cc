@@ -34,7 +34,7 @@ namespace aspect
   {
 
     /**
-     * return pair with @p n_components and a filled ComponentIndices structure.
+     * Return pair with @p n_components and a filled ComponentIndices structure.
      */
     template <int dim>
     std::pair<unsigned int, typename Introspection<dim>::ComponentIndices>
@@ -113,7 +113,7 @@ namespace aspect
 
       unsigned int base_element = 0;
       if (parameters.include_melt_transport)
-        {
+    {
           // u
           fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
           multiplicities.push_back(dim);
@@ -140,8 +140,7 @@ namespace aspect
           multiplicities.push_back(dim);
           bes.fluid_velocities = base_element++;
 
-
-        }
+}
       else
       {
           // u
@@ -172,64 +171,89 @@ namespace aspect
       Assert(base_element == multiplicities.size(), ExcInternalError());
 
       return std_cxx11::make_tuple(bes, fes, multiplicities);
+
+
+      // compositions:
+      fes.push_back(new FE_Q<dim>(parameters.composition_degree));
+      multiplicities.push_back(parameters.n_compositional_fields);
+      bes.compositional_fields = base_element++;
+
+      Assert(base_element == fes.size(), ExcInternalError());
+      Assert(base_element == multiplicities.size(), ExcInternalError());
+      return std_cxx11::make_tuple(bes, fes, multiplicities);
     }
 
+    /**
+     * Construct mapping from component to block indices.
+     */
+    template <int dim>
+    std::vector<unsigned int>
+    setup_component_to_blocks (const typename Introspection<dim>::ComponentIndices &component_indices,
+                               const typename Introspection<dim>::BlockIndices &block_indices,
+                               const unsigned int n_components,
+                               const bool include_melt_transport)
+    {
+        std::vector<unsigned int> components_to_blocks;
+        const unsigned int n_compositional_fields = component_indices.compositional_fields.size();
+
+        // components_to_blocks
+        components_to_blocks.resize(n_components, dealii::numbers::invalid_unsigned_int);
+
+        for (unsigned int d=0; d<dim; ++d)
+            components_to_blocks[component_indices.velocities[d]] = block_indices.velocities;
+        components_to_blocks[component_indices.pressure] = block_indices.pressure;
+        components_to_blocks[component_indices.temperature] = block_indices.temperature;
+        for (unsigned int c=0; c<n_compositional_fields; ++c)
+            components_to_blocks[component_indices.compositional_fields[c]] = block_indices.compositional_fields[c];
+
+        if (include_melt_transport)
+        {
+            for (unsigned int d=0; d<dim; ++d)
+                components_to_blocks[component_indices.fluid_velocities[d]] = block_indices.fluid_velocities;
+            components_to_blocks[component_indices.fluid_pressure] = block_indices.fluid_pressure;
+            components_to_blocks[component_indices.compaction_pressure] = block_indices.compaction_pressure;
+        }
+
+#ifdef DEBUG
+        // check we assigned all components
+        for (unsigned int c=0; c<n_components; ++c)
+            Assert(components_to_blocks[c]!=dealii::numbers::invalid_unsigned_int, ExcInternalError());
+#endif
+
+        return components_to_blocks;
+    }
   }
-
-
 
   template <int dim>
   Introspection<dim>::Introspection(const Parameters<dim> &parameters)
-    :
+      :
     n_components (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).first),
     component_indices (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).second),
     n_blocks (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).first),
     block_indices (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).second),
-    extractors (component_indices, n_components),
+    extractors (component_indices),
     base_elements (std_cxx1x::get<0>(internal::setup_fes<dim>(parameters))),
+    components_to_blocks (internal::setup_component_to_blocks<dim>(component_indices, block_indices, n_components, parameters.include_melt_transport)),
     system_dofs_per_block (n_blocks),
     composition_names(parameters.names_of_compositional_fields),
     fes (std_cxx1x::get<1>(internal::setup_fes<dim>(parameters))),
     multiplicities (std_cxx1x::get<2>(internal::setup_fes<dim>(parameters)))
-  {
-
-
-
-    // components_to_blocks
-    components_to_blocks.resize(n_components, dealii::numbers::invalid_unsigned_int);
-    for (unsigned int d=0; d<dim; ++d)
-      components_to_blocks[component_indices.velocities[d]] = block_indices.velocities;
-    components_to_blocks[component_indices.pressure] = block_indices.pressure;
-    components_to_blocks[component_indices.temperature] = block_indices.temperature;
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      components_to_blocks[component_indices.compositional_fields[c]] = block_indices.compositional_fields[c];
-
-    if (parameters.include_melt_transport)
-      {
-        for (unsigned int d=0; d<dim; ++d)
-          components_to_blocks[component_indices.fluid_velocities[d]] = block_indices.fluid_velocities;
-        components_to_blocks[component_indices.fluid_pressure] = block_indices.fluid_pressure;
-        components_to_blocks[component_indices.compaction_pressure] = block_indices.compaction_pressure;
-      }
-
-#ifdef DEBUG
-    // check we assigned all components
-    for (unsigned int c=0; c<n_components; ++c)
-      Assert(components_to_blocks[c]!=dealii::numbers::invalid_unsigned_int, ExcInternalError());
-#endif
-  }
-
+  {}
 
   template <int dim>
   Introspection<dim>::~Introspection ()
   {
+    free_finite_element_data();
+  }
+
+  template <int dim>
+  void Introspection<dim>::free_finite_element_data ()
+  {
     for (unsigned int i=0; i<fes.size(); ++i)
       delete fes[i];
     fes.clear();
+    multiplicities.clear();
   }
-
-
-
 
   namespace
   {
@@ -244,8 +268,7 @@ namespace aspect
   }
 
   template <int dim>
-  Introspection<dim>::Extractors::Extractors (const Introspection<dim>::ComponentIndices &component_indices,
-                                              const unsigned int n_compositional_fields)
+  Introspection<dim>::Extractors::Extractors (const Introspection<dim>::ComponentIndices &component_indices)
     :
     velocities (component_indices.velocities[0]),
     pressure (component_indices.pressure),
@@ -293,15 +316,19 @@ namespace aspect
 
   template <int dim>
   const std::vector<const FiniteElement<dim> *> &
-  Introspection<dim>::get_fes()
+  Introspection<dim>::get_fes() const
   {
+    Assert(fes.size()>0,
+           ExcMessage("Error: finite element spaces are only available during construction."));
     return fes;
   }
 
   template <int dim>
   const std::vector<unsigned int> &
-  Introspection<dim>::get_multiplicities()
+  Introspection<dim>::get_multiplicities() const
   {
+    Assert(multiplicities.size()>0,
+           ExcMessage("Error: finite element multiplicities are only available during construction."));
     return multiplicities;
   }
 

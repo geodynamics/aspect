@@ -22,7 +22,6 @@
 #include <aspect/postprocess/visualization/melt_fraction.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
 #include <deal.II/base/parameter_handler.h>
 
 
@@ -46,10 +45,10 @@ namespace aspect
       void
       MeltFraction<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                         const std::vector<Point<dim> >                  &normals,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &,
+                                         const std::vector<std::vector<Tensor<2,dim> > > &,
+                                         const std::vector<Point<dim> > &,
+                                         const std::vector<Point<dim> > &,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
         const unsigned int n_quadrature_points = uh.size();

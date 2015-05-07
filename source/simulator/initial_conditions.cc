@@ -214,9 +214,9 @@ namespace aspect
 	   introspection.component_indices.pressure;
 	
         VectorTools::interpolate (mapping, dof_handler,
-                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                                                               std_cxx1x::cref (*adiabatic_conditions),
-                                                                               std_cxx1x::_1),
+                                  VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
+                                                                               std_cxx11::cref (*adiabatic_conditions),
+                                                                               std_cxx11::_1),
                                                                                pressure_comp,
                                                                                introspection.n_components),
                                   system_tmp);
@@ -234,8 +234,7 @@ namespace aspect
         // implement the local projection for the discontinuous pressure
         // element. this is only going to work if, indeed, the element
         // is discontinuous
-        const FiniteElement<dim> &system_pressure_fe = finite_element.base_element(introspection.base_elements.pressure);
-        Assert (system_pressure_fe.dofs_per_face == 0,
+        Assert (finite_element.base_element(introspection.base_elements.pressure).dofs_per_face == 0,
                 ExcNotImplemented());
 
         LinearAlgebra::BlockVector system_tmp;
@@ -260,9 +259,9 @@ namespace aspect
         std::vector<double> rhs_values(n_q_points);
 
         ScalarFunctionFromFunctionObject<dim>
-        adiabatic_pressure (std_cxx1x::bind (&AdiabaticConditions::Interface<dim>::pressure,
-                                             std_cxx1x::cref(*adiabatic_conditions),
-                                             std_cxx1x::_1));
+        adiabatic_pressure (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
+                                             std_cxx11::cref(*adiabatic_conditions),
+                                             std_cxx11::_1));
 
 
         typename DoFHandler<dim>::active_cell_iterator

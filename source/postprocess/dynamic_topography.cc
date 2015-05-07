@@ -31,7 +31,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    DynamicTopography<dim>::execute (TableHandler &statistics)
+    DynamicTopography<dim>::execute (TableHandler &)
     {
       const QMidpoint<dim> quadrature_formula;
       const QMidpoint<dim-1> quadrature_formula_face;

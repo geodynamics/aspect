@@ -53,12 +53,21 @@ namespace aspect
     class Rotation : public TensorFunction<1,dim>
     {
       private:
-        Tensor<1,dim> axis;
+        const Tensor<1,dim> axis;
 
       public:
+        //Constructor for TensorFunction that takes cartesian direction (1,2, or 3)
+        //and creates a solid body rotation around that axis.
         Rotation(const unsigned int a)
           :
           axis(Tensor<1,dim>(Point<dim>::unit_vector(a)))
+        {}
+
+        //Constructor for TensorFunction that takes an axis
+        //and creates a solid body rotation around that axis.
+        Rotation(const Tensor<1,dim> &rotation_axis)
+          :
+          axis(rotation_axis)
         {}
 
         virtual Tensor<1,dim> value (const Point<dim> &p) const
@@ -81,198 +90,365 @@ namespace aspect
     class Translation : public TensorFunction<1,dim>
     {
       private:
-        const unsigned int direction;
+        const Tensor<1,dim> translation;
 
       public:
+        //Constructor for TensorFunction that takes a Cartesian direction (1,2, or 3)
+        //and creates a translation along that axis
         Translation(const unsigned int d)
           :
-          direction(d)
+          translation( Point<dim>::unit_vector(d) )
+        {}
+
+        //Constructor for TensorFunction that takes a vector
+        //and creates a translation along that vector
+        Translation(const Tensor<1,dim> &t)
+          :
+          translation(t)
         {}
 
         virtual Tensor<1,dim> value(const Point<dim> &) const
         {
-          return Point<dim>::unit_vector(direction);
+          return translation;
         }
     };
 
+    /**
+     * Perform an MPI sum of the entries of a tensor.
+     */
+    template <int rank, int dim, typename Number>
+    inline
+    Tensor<rank,dim,Number>
+    sum (const Tensor<rank,dim,Number> &local,
+         const MPI_Comm &mpi_communicator)
+    {
+      const unsigned int n_entries = Tensor<rank,dim,Number>::n_independent_components;
+      Number entries[ Tensor<rank,dim,Number>::n_independent_components ];
+
+      for (unsigned int i=0; i< n_entries; ++i)
+        entries[i] = local[ local.unrolled_to_component_indices(i) ];
+
+      Number global_entries[ Tensor<rank,dim,Number>::n_independent_components ];
+      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
+
+      Tensor<rank,dim,Number> global;
+      for (unsigned int i=0; i< n_entries; ++i)
+        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
+
+      return global;
+    }
+
+    /**
+     * Perform an MPI sum of the entries of a symmetric tensor.
+     */
+    template <int rank, int dim, typename Number>
+    inline
+    SymmetricTensor<rank,dim,Number>
+    sum (const SymmetricTensor<rank,dim,Number> &local,
+         const MPI_Comm &mpi_communicator)
+    {
+      const unsigned int n_entries = SymmetricTensor<rank,dim,Number>::n_independent_components;
+      Number entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
+
+      for (unsigned int i=0; i< n_entries; ++i)
+        entries[i] = local[ local.unrolled_to_component_indices(i) ];
+
+      Number global_entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
+      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
+
+      SymmetricTensor<rank,dim,Number> global;
+      for (unsigned int i=0; i< n_entries; ++i)
+        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
+
+      return global;
+    }
+
   }
-
-  template <int dim>
-  void Simulator<dim>::setup_nullspace_removal()
-  {
-    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
-      AssertThrow(false, ExcNotImplemented());
-
-    std::vector<std_cxx1x::shared_ptr<TensorFunction<1,dim> > > funcs;
-
-    if (parameters.nullspace_removal & NullspaceRemoval::net_rotation)
-      {
-        if (dim==2)
-          funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(0)));
-        if (dim==3)
-          for (unsigned int a=0; a<dim; ++a)
-            funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Rotation<dim>(a)));
-      }
-
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_x)
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(0)));
-
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_y)
-      funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(1)));
-
-    if (parameters.nullspace_removal & NullspaceRemoval::net_translation_z)
-      {
-        //Only do z direction if dim == 3
-        AssertThrow( dim == 3, ExcMessage("Can't remove z translational mode in 2 dimensions"));
-        funcs.push_back(std_cxx1x::shared_ptr<TensorFunction<1,dim> >(new internal::Translation<dim>(2)));
-      }
-
-    if (funcs.size()>0)
-      {
-        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-               ExcNotImplemented());
-
-        net_rotations_translations.resize(funcs.size());
-        for (unsigned int i=0; i<funcs.size(); ++i)
-          {
-            // for each of the null space dimensions, set up
-            // a vector, fill it with an element of the null space,
-            // and normalize it
-            net_rotations_translations[i].reinit(
-              introspection.index_sets.system_partitioning[introspection.block_indices.velocities],
-              mpi_communicator);
-            interpolate_onto_velocity_system(*funcs[i],
-                                             net_rotations_translations[i]);
-            net_rotations_translations[i] /= net_rotations_translations[i].l2_norm();
-          }
-
-      }
-  }
-
-
 
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
-    if (parameters.nullspace_removal & NullspaceRemoval::net_rotation ||
-        parameters.nullspace_removal & NullspaceRemoval::net_translation )
-      {
-        Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
-               ExcNotImplemented());
-
-        for (unsigned int i=0; i<net_rotations_translations.size(); ++i)
-          {
-            // compute the magnitude of the solution vector in direction
-            // of this null space vector and subtract the corresponding multiple
-            const double power = net_rotations_translations[i]
-                                 * tmp_distributed_stokes.block(introspection.block_indices.velocities);
-            tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0,
-                                                                                      -1.0*power,
-                                                                                      net_rotations_translations[i]);
-          }
-        relevant_dst.block(0) = tmp_distributed_stokes.block(0);
-      }
     if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
       {
-        remove_net_angular_momentum( relevant_dst, tmp_distributed_stokes);
+        //use_constant_density = false, remove net angular momentum
+        remove_net_angular_momentum( false, relevant_dst, tmp_distributed_stokes);
+      }
+    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
+      {
+        //use_constant_density = false, remove net momentum
+        remove_net_linear_momentum( false, relevant_dst, tmp_distributed_stokes);
+      }
+    if (parameters.nullspace_removal & NullspaceRemoval::net_rotation)
+      {
+        //use_constant_density = true, remove net rotation
+        remove_net_angular_momentum( true, relevant_dst, tmp_distributed_stokes);
+      }
+    if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
+      {
+        //use_constant_density = true, remove net translation
+        remove_net_linear_momentum( true, relevant_dst, tmp_distributed_stokes);
       }
   }
 
-
-
-  template <>
-  void
-  Simulator<3>::remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst,
-                                             LinearAlgebra::BlockVector &tmp_distributed_stokes )
+  template <int dim>
+  void Simulator<dim>::remove_net_linear_momentum( const bool use_constant_density,
+                                                   LinearAlgebra::BlockVector &relevant_dst,
+                                                   LinearAlgebra::BlockVector &tmp_distributed_stokes )
   {
-    AssertThrow(false, ExcNotImplemented());
+    Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
+           ExcNotImplemented());
+
+    // compute and remove net linear momentum from velocity field, by computing
+    // \int \rho (v + v_const) = 0
+
+    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const unsigned int n_q_points = quadrature.size();
+    FEValues<dim> fe(mapping, finite_element, quadrature,
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+
+    Tensor<1,dim> local_momentum;
+    double local_mass = 0.0;
+
+
+    //Vectors for evaluating the finite element solution
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
+                                                          std::vector<double> (n_q_points));
+    std::vector< Tensor<1,dim> > velocities( n_q_points );
+
+    typename DoFHandler<dim>::active_cell_iterator cell;
+    //loop over all local cells
+    for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe.reinit (cell);
+
+          // get the velocity at each quadrature point
+          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
+
+          // get the density at each quadrature point if necessary
+          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
+                                                                         parameters.n_compositional_fields);
+          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
+                                                                           parameters.n_compositional_fields);
+          if ( ! use_constant_density)
+            {
+              fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
+              fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
+                                                                                         composition_values[c]);
+
+              for (unsigned int i=0; i<n_q_points; ++i)
+                {
+                  in.position[i] = fe.quadrature_point(i);
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    in.composition[i][c] = composition_values[c][i];
+                }
+              material_model->evaluate(in, out);
+            }
+
+          // actually compute the momentum and mass
+          for (unsigned int k=0; k<n_q_points; ++k)
+            {
+              // get the density at this quadrature point
+              const double rho = (use_constant_density ? 1.0 : out.densities[k]);
+
+              local_momentum += velocities[k] * rho * fe.JxW(k);
+              local_mass += rho * fe.JxW(k);
+            }
+        }
+
+    //Calculate the total mass and velocity correction
+    const double mass = Utilities::MPI::sum( local_mass, mpi_communicator);
+#if DEAL_II_VERSION_GTE(8,3,0)
+    Tensor<1,dim> velocity_correction = Utilities::MPI::sum(local_momentum, mpi_communicator)/mass;
+#else
+    Tensor<1,dim> velocity_correction = internal::sum(local_momentum, mpi_communicator)/mass;
+#endif
+
+    //We may only want to remove the nullspace for a single component, so zero out
+    //the velocity correction if it is not selected by the NullspaceRemoval flag
+    if (use_constant_density) //disable translation correction
+      {
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_x) )
+          velocity_correction[0] = 0.0;  //don't correct x translation
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_y) )
+          velocity_correction[1] = 0.0;  //don't correct y translation
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::net_translation_z) && dim == 3 )
+          velocity_correction[2] = 0.0;  //don't correct z translation
+      }
+    else //disable momentum correction
+      {
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_x) )
+          velocity_correction[0] = 0.0;  //don't correct x translation
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_y) )
+          velocity_correction[1] = 0.0;  //don't correct y translation
+        if ( !(parameters.nullspace_removal & NullspaceRemoval::linear_momentum_z) && dim == 3 )
+          velocity_correction[2] = 0.0;  //don't correct z translation
+      }
+
+    //vector for storing the correction to the velocity field
+    LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
+
+    // Now construct a translation vector with the desired rate and subtract it from our vector
+    internal::Translation<dim> translation( velocity_correction );
+    interpolate_onto_velocity_system(translation, correction);
+    tmp_distributed_stokes.block(introspection.block_indices.velocities).add(-1.0,correction);
+
+    //copy into the locally relevant vector
+    relevant_dst.block(introspection.block_indices.velocities) =
+      tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
-
-  template <>
-  void
-  Simulator<2>::remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst,
-                                             LinearAlgebra::BlockVector &tmp_distributed_stokes )
+  template <int dim>
+  void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density,
+                                                    LinearAlgebra::BlockVector &relevant_dst,
+                                                    LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
 
     // compute and remove angular momentum from velocity field, by computing
-    // int rho V \cdot r_orth = omega  * int rho x^2
-    const unsigned int dim=2;
+    // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
+    // \int \rho r \times u =  I^{-1} \cdot \omega  (3 dimensions)
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
 
-    DoFHandler<dim>::active_cell_iterator cell;
-    std::vector<Point<dim> > q_points(quadrature.size());
-    std::vector<Vector<double> > fe_vals(quadrature.size(), Vector<double>(finite_element.n_components()));
+    typename DoFHandler<dim>::active_cell_iterator cell;
+
+    // moment of inertia and angular momentum for 3D
+    SymmetricTensor<2,dim> local_moment_of_inertia;
+    Tensor<1,dim> local_angular_momentum;
 
     // analogues to the moment of inertia and angular momentum for 2D
-    double local_scalar_moment = 0;
-    double local_scalar_angular_momentum = 0;
+    double local_scalar_moment = 0.0;
+    double local_scalar_angular_momentum = 0.0;
+
+    //Vectors for evaluating the finite element solution
+    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
+                                                          std::vector<double> (n_q_points));
+    std::vector< Tensor<1,dim> > velocities( n_q_points );
+
 
     //loop over all local cells
     for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
       if (cell->is_locally_owned())
         {
           fe.reinit (cell);
-          q_points = fe.get_quadrature_points();
-          fe.get_function_values(relevant_dst, fe_vals);
+          const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
-          // get the density at each quadrature point
-          MaterialModel::Interface<dim>::MaterialModelInputs in(q_points.size(),
-                                                                parameters.n_compositional_fields);
-          MaterialModel::Interface<dim>::MaterialModelOutputs out(q_points.size(),
-                                                                  parameters.n_compositional_fields);
-          for (unsigned int i=0; i< q_points.size(); i++)
+          //Get the velocity at each quadrature point
+          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
+
+          // get the density at each quadrature point if necessary
+          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
+                                                                         parameters.n_compositional_fields);
+          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
+                                                                           parameters.n_compositional_fields);
+          if ( ! use_constant_density)
             {
-              in.pressure[i] = fe_vals[i][introspection.component_indices.pressure];
-              in.temperature[i] = fe_vals[i][introspection.component_indices.temperature];
+              fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
+              fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                in.composition[i][c] = fe_vals[i][introspection.component_indices.compositional_fields[c]];
-              in.position[i] = q_points[i];
+                fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
+                                                                                         composition_values[c]);
 
-            }
+              for (unsigned int i=0; i<n_q_points; ++i)
+                {
+                  in.position[i] = fe.quadrature_point(i);
+                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+                    in.composition[i][c] = composition_values[c][i];
+                }
           in.cell = cell;
 
-          material_model->evaluate(in, out);
-
-          Point<dim> r_vec;
-          Tensor<1,dim> velocity;
+              material_model->evaluate(in, out);
+            }
 
           // actually compute the moment of inertia and angular momentum
-          for (unsigned int k=0; k< quadrature.size(); ++k)
+          for (unsigned int k=0; k<n_q_points; ++k)
             {
-              // get the position and velocity at this quadrature point
-              r_vec = q_points[k];
-              for (unsigned int i=0; i<dim; ++i) velocity[i] = fe_vals[k][i];
-              // Get the velocity perpendicular to the position vector
-              Tensor<1,dim> r_perp;
-              cross_product(r_perp, r_vec);
-              Tensor<1,dim> v_perp = velocity - (velocity*r_vec)*r_vec/(r_vec.norm_square());
+              // get the position and density at this quadrature point
+              const Point<dim> r_vec = q_points[k];
+              const double rho = (use_constant_density ? 1.0 : out.densities[k]);
 
-              // calculate a signed scalar angular momentum
-              local_scalar_angular_momentum += fe.JxW(k) * velocity*r_perp * out.densities[k];
-              // calculate a scalar moment of inertia
-              local_scalar_moment += fe.JxW(k) * r_vec.norm_square() * out.densities[k];
+              if (dim == 2)
+                {
+                  // Get the velocity perpendicular to the position vector
+                  Tensor<1,dim> r_perp;
+                  cross_product(r_perp, r_vec);
+
+                  // calculate a signed scalar angular momentum
+                  local_scalar_angular_momentum += velocities[k] * r_perp * rho * fe.JxW(k);
+                  // calculate a scalar moment of inertia
+                  local_scalar_moment += r_vec.norm_square() * rho * fe.JxW(k);
+                }
+              else
+                {
+                  //calculate angular momentum vector
+                  Tensor<1,dim> r_cross_v;
+                  cross_product( r_cross_v, r_vec, velocities[k]);
+                  for (unsigned int i=0; i<dim; ++i)
+                    local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
+
+                  //calculate moment of inertia
+                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0]*r_vec[0])*rho * fe.JxW(k);
+                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1]*r_vec[1])*rho * fe.JxW(k);
+                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][1] += ( r_vec[0]*r_vec[1])*rho * fe.JxW(k);
+                  local_moment_of_inertia[0][2] += ( r_vec[0]*r_vec[2])*rho * fe.JxW(k);
+                  local_moment_of_inertia[1][2] += ( r_vec[1]*r_vec[2])*rho * fe.JxW(k);
+                }
             }
         }
 
-    const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
-    const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
-
-    const double rotation_rate = scalar_angular_momentum/scalar_moment;  //solve for the rotation rate to cancel the angular momentum
-
-    // Now construct a rotation vector with the desired rate and subtract it from our vector
+    //vector for storing the correction to the velocity field
     LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
-    internal::Rotation<dim> rot(0);
-    interpolate_onto_velocity_system(rot, correction);
-    tmp_distributed_stokes.block(introspection.block_indices.velocities).sadd(1.0, -1.0*rotation_rate,correction);
 
-    relevant_dst.block(0) = tmp_distributed_stokes.block(0);
+    if ( dim == 2)
+      {
+        const double scalar_moment = Utilities::MPI::sum( local_scalar_moment, mpi_communicator);
+        const double scalar_angular_momentum = Utilities::MPI::sum( local_scalar_angular_momentum, mpi_communicator);
+
+        const double rotation_rate = scalar_angular_momentum/scalar_moment;  //solve for the rotation rate to cancel the angular momentum
+
+        // Now construct a rotation vector with the desired rate and subtract it from our vector
+        internal::Rotation<dim> rot(0);
+        interpolate_onto_velocity_system(rot, correction);
+        tmp_distributed_stokes.block(introspection.block_indices.velocities).add(-1.0*rotation_rate,correction);
+      }
+    else
+      {
+#if DEAL_II_VERSION_GTE(8,3,0)
+        //sum up the local contributions to moment of inertia
+        const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
+                                                                              mpi_communicator );
+        //sum up the local contributions to angular momentum
+        const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
+#else
+        //sum up the local contributions to moment of inertia
+        const SymmetricTensor<2,dim> moment_of_inertia = internal::sum( local_moment_of_inertia,
+                                                                        mpi_communicator );
+        //sum up the local contributions to angular momentum
+        const Tensor<1,dim> angular_momentum = internal::sum( local_angular_momentum, mpi_communicator );
+#endif
+
+        //Solve for the rotation vector that cancels the net momentum
+        SymmetricTensor<2,dim> inverse_moment ( invert( Tensor<2,dim>(moment_of_inertia) ) );
+        Tensor<1,dim> omega = - inverse_moment * angular_momentum;
+
+        //Remove that rotation from the solution vector
+        internal::Rotation<dim> rot( omega );
+        interpolate_onto_velocity_system(rot, correction);
+        tmp_distributed_stokes.block(introspection.block_indices.velocities).add(1.0,correction);
+      }
+
+    //copy into the locally relevant vector
+    relevant_dst.block(introspection.block_indices.velocities) =
+      tmp_distributed_stokes.block(introspection.block_indices.velocities);
   }
 
 }
@@ -285,7 +461,6 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::setup_nullspace_removal (); \
   template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector);
 
   ASPECT_INSTANTIATE(INSTANTIATE)

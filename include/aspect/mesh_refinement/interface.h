@@ -26,7 +26,7 @@
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/std_cxx1x/shared_ptr.h>
+#include <deal.II/base/std_cxx11/shared_ptr.h>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
@@ -260,7 +260,7 @@ namespace aspect
          * A list of mesh refinement objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx1x::shared_ptr<Interface<dim> > > mesh_refinement_objects;
+        std::list<std_cxx11::shared_ptr<Interface<dim> > > mesh_refinement_objects;
     };
 
 

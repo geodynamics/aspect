@@ -505,9 +505,6 @@ namespace aspect
           }
         distributed_stokes_solution.compress(VectorOperation::insert);
 
-        if (do_pressure_rhs_compatibility_modification)
-          make_pressure_rhs_compatible(system_rhs);
-
         // we need a temporary vector for the residual (even if we don't care about it)
         LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
 
@@ -632,11 +629,6 @@ namespace aspect
 
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
-    // if the model is compressible then we need to adjust the right hand
-    // side of the equation to make it compatible with the matrix on the
-    // left
-    if (do_pressure_rhs_compatibility_modification)
-      make_pressure_rhs_compatible(system_rhs);
 
     // (ab)use the distributed solution vector to temporarily put a residual in
     // (we don't care about the residual vector -- all we care about is the

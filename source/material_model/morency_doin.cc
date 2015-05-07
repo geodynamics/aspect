@@ -71,7 +71,6 @@ namespace aspect
         {
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
-          const double pressure = in.pressure[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
           const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];

@@ -451,7 +451,7 @@ namespace aspect
       /**
        * Return the map of prescribed_velocity_boundary_conditions
        */
-      const std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+      const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
       get_prescribed_velocity_boundary_conditions () const;
 
       /**

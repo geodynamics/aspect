@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,13 +96,7 @@ namespace aspect
   template <int dim>
   class Simulator
   {
-    private:
-
-      typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
-      typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
-
     public:
-
 
       /**
        * Constructor.
@@ -149,6 +143,18 @@ namespace aspect
        * <code>source/simulator/core.cc</code>.
        */
       void run ();
+
+
+      /**
+       * Import Nonlinear Solver type.
+       */
+      typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
+
+      /**
+      * Import nullspace removal type.
+      */
+      typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
+
 
     private:
 
@@ -265,7 +271,7 @@ namespace aspect
        */
       struct IntermediaryConstructorAction
       {
-        IntermediaryConstructorAction (std_cxx1x::function<void ()> action);
+        IntermediaryConstructorAction (std_cxx11::function<void ()> action);
       };
 
       /**
@@ -378,7 +384,7 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void build_advection_preconditioner (const AdvectionField &advection_field,
-                                           std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
+                                           std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner);
 
       /**
        * Initiate the assembly of the Stokes matrix and right hand side.
@@ -881,15 +887,6 @@ namespace aspect
                                             LinearAlgebra::Vector &vec);
 
       /**
-       * Set up data structures for null space removal. Called after every
-       * mesh refinement.
-       *
-       * This function is implemented in
-       * <code>source/simulator/nullspace.cc</code>.
-       */
-      void setup_nullspace_removal();
-
-      /**
        * Eliminate the nullspace of the velocity in the given vector. Both
        * vectors are expected to contain the up to date data.
        *
@@ -905,13 +902,37 @@ namespace aspect
 
       /**
        * Remove the angular momentum of the given vector
+       *
+       * @param use_constant_density determines whether to use a constant density
+       * (which corresponds to removing a net rotation instead of net angular
+       * momentum).
+       * @param relevant_dst locally relevant vector for the whole FE, will be
+       * filled at the end.
+       * @param tmp_distributed_stokes only contains velocity and pressure.
+       *
+       * This function is implemented in
+       * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_angular_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
+      void remove_net_angular_momentum( const bool use_constant_density,
+                                        LinearAlgebra::BlockVector &relevant_dst,
+                                        LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
        * Remove the linear momentum of the given vector
+       *
+       * @param use_constant_density determines whether to use a constant density
+       * (which corresponds to removing a net translation instead of net linear
+       * momentum).
+       * @param relevant_dst locally relevant vector for the whole FE, will be
+       * filled at the end.
+       * @param tmp_distributed_stokes only contains velocity and pressure.
+       *
+       * This function is implemented in
+       * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_linear_momentum( LinearAlgebra::BlockVector &relevant_dst, LinearAlgebra::BlockVector &tmp_distributed_stokes);
+      void remove_net_linear_momentum( const bool use_constant_density,
+                                       LinearAlgebra::BlockVector &relevant_dst,
+                                       LinearAlgebra::BlockVector &tmp_distributed_stokes);
 
       /**
        * Compute the maximal velocity throughout the domain. This is needed to
@@ -1187,7 +1208,7 @@ namespace aspect
       const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
-      std::map<types::boundary_id,std_cxx1x::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
+      std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
       /**
        * @}
@@ -1288,16 +1309,15 @@ namespace aspect
 
 
 
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionAMG>     Amg_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     Mp_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     T_preconditioner;
 //TODO: use n_compositional_field separate preconditioners
-      std_cxx1x::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
+      std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
       bool                                                      rebuild_stokes_preconditioner;
 
-      std::vector<LinearAlgebra::Vector> net_rotations_translations;
       /**
        * @}
        */
@@ -1479,12 +1499,12 @@ namespace aspect
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std_cxx1x::shared_ptr<FreeSurfaceHandler> free_surface;
+      std_cxx11::shared_ptr<FreeSurfaceHandler> free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
       friend class FreeSurfaceHandler;  //FreeSurfaceHandler needs access to the internals of the Simulator
-      friend class Parameters<dim>;
+      friend struct Parameters<dim>;
   };
 }
 

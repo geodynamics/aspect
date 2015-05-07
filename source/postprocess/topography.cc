@@ -41,7 +41,6 @@ namespace aspect
 
       double reference_height = 0.0;
       bool vertical_gravity = false;
-      double time = this->get_time();
       types::boundary_id relevant_boundary = 0;
 
       if (GeometryModel::Box<dim> *gm = dynamic_cast<GeometryModel::Box<dim> *>
@@ -83,17 +82,28 @@ namespace aspect
       for (; cell != endc; ++cell)
         if (cell->is_locally_owned() && cell->at_boundary())
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if (cell->face(face_no)->at_boundary() && cell->face(face_no)->boundary_indicator() == relevant_boundary )
-              for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
-                {
-                  Point<dim> vertex = cell->face(face_no)->vertex(v);
-                  double topography = (vertical_gravity ? vertex[dim-1] : vertex.norm()) - reference_height;
-                  if ( topography > local_max_height)
-                    local_max_height = topography;
-                  if ( topography < local_min_height)
-                    local_min_height = topography;
+            if (cell->face(face_no)->at_boundary())
+              {
+                const types::boundary_id boundary_indicator
+#if DEAL_II_VERSION_GTE(8,3,0)
+                  = cell->face(face_no)->boundary_id();
+#else
+                  = cell->face(face_no)->boundary_indicator();
+#endif
+                if (boundary_indicator != relevant_boundary)
+                  continue;
 
-                }
+                for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
+                  {
+                    Point<dim> vertex = cell->face(face_no)->vertex(v);
+                    double topography = (vertical_gravity ? vertex[dim-1] : vertex.norm()) - reference_height;
+                    if ( topography > local_max_height)
+                      local_max_height = topography;
+                    if ( topography < local_min_height)
+                      local_min_height = topography;
+
+                  }
+              }
 
       double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
       double min_topography = -Utilities::MPI::max(-local_min_height, this->get_mpi_communicator());

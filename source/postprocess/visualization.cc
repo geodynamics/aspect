@@ -53,10 +53,10 @@ namespace aspect
           virtual
           void
           compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                             const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                             const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                                             const std::vector<Point<dim> >                  &normals,
-                                             const std::vector<Point<dim> >                  &evaluation_points,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &,
+                                             const std::vector<Point<dim> > &,
+                                             const std::vector<Point<dim> > &,
                                              std::vector<Vector<double> >                    &computed_quantities) const
           {
             const double velocity_scaling_factor =
@@ -183,6 +183,46 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    Visualization<dim>::write_master_files (const DataOut<dim> &data_out,
+                                            const std::string &solution_file_prefix,
+                                            const std::vector<std::string> &filenames)
+    {
+      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                               this->get_time() / year_in_seconds :
+                                               this->get_time());
+      const std::string
+      pvtu_master_filename = (solution_file_prefix +
+                              ".pvtu");
+      std::ofstream pvtu_master ((this->get_output_directory() +
+                                  pvtu_master_filename).c_str());
+      data_out.write_pvtu_record (pvtu_master, filenames);
+
+      // now also generate a .pvd file that matches simulation
+      // time and corresponding .pvtu record
+      times_and_pvtu_names.push_back(std::make_pair
+                                     (time_in_years_or_seconds, pvtu_master_filename));
+      const std::string
+      pvd_master_filename = (this->get_output_directory() + "solution.pvd");
+      std::ofstream pvd_master (pvd_master_filename.c_str());
+      data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
+
+      // finally, do the same for Visit via the .visit file for this
+      // time step, as well as for all time steps together
+      const std::string
+      visit_master_filename = (this->get_output_directory() +
+                               solution_file_prefix +
+                               ".visit");
+      std::ofstream visit_master (visit_master_filename.c_str());
+      data_out.write_visit_record (visit_master, filenames);
+
+      output_file_names_by_timestep.push_back (filenames);
+
+      std::ofstream global_visit_master ((this->get_output_directory() +
+                                          "solution.visit").c_str());
+      data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+    }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -218,8 +258,8 @@ namespace aspect
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
-      std::list<std_cxx1x::shared_ptr<Vector<float> > > cell_data_vectors;
-      for (typename std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+      std::list<std_cxx11::shared_ptr<Vector<float> > > cell_data_vectors;
+      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
            p = postprocessors.begin(); p!=postprocessors.end(); ++p)
         {
           try
@@ -249,7 +289,7 @@ namespace aspect
                                       "on the current processor."));
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std_cxx1x::shared_ptr<Vector<float> >
+                  cell_data_vectors.push_back (std_cxx11::shared_ptr<Vector<float> >
                                                (cell_data.second));
 
                   data_out.add_data_vector (*cell_data.second,
@@ -343,45 +383,35 @@ namespace aspect
         }
       else if ((output_format=="vtu") && (group_files!=0))
         {
-          //TODO: There is some code duplication between the following two
-          //code blocks. unify!
-          AssertThrow(group_files==1, ExcNotImplemented());
-          data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
-                                          ".vtu").c_str(),
-                                         this->get_mpi_communicator());
+          if (group_files == 1)
+            data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                            ".0000.vtu").c_str(),
+                                           this->get_mpi_communicator());
+          else
+            {
+              int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+              int color = myid % group_files;
+              MPI_Comm comm;
+              MPI_Comm_split(this->get_mpi_communicator(), color, myid, &comm);
+              data_out.write_vtu_in_parallel((this->get_output_directory() + solution_file_prefix +
+                                              "." + Utilities::int_to_string(color, 4)
+                                              + ".vtu").c_str(),
+                                             comm);
+              MPI_Comm_free(&comm);
+            }
 
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::vector<std::string> filenames;
-              filenames.push_back (solution_file_prefix + ".vtu");
-              const std::string pvtu_master_filename = (solution_file_prefix + ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
-
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::make_pair(time_in_years_or_seconds,
-                                                            pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-
-              // finally, do the same for Visit via the .visit file for this
-              // time step, as well as for all time steps together
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       solution_file_prefix +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
-
-              output_file_names_by_timestep.push_back (filenames);
-
-              std::ofstream global_visit_master ((this->get_output_directory() +
-                                                  "solution.visit").c_str());
-              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+              {
+                const unsigned int size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+                const unsigned int n_files = (group_files>size)?size:group_files;
+                for (unsigned int i=0; i<n_files; ++i)
+                  filenames.push_back (solution_file_prefix
+                                       + "." + Utilities::int_to_string(i, 4)
+                                       + ".vtu");
+              }
+              write_master_files (data_out, solution_file_prefix, filenames);
             }
         }
       else
@@ -414,36 +444,8 @@ namespace aspect
                                      Utilities::int_to_string(i, 4) +
                                      DataOutBase::default_suffix
                                      (DataOutBase::parse_output_format(output_format)));
-              const std::string
-              pvtu_master_filename = (solution_file_prefix +
-                                      ".pvtu");
-              std::ofstream pvtu_master ((this->get_output_directory() +
-                                          pvtu_master_filename).c_str());
-              data_out.write_pvtu_record (pvtu_master, filenames);
 
-              // now also generate a .pvd file that matches simulation
-              // time and corresponding .pvtu record
-              times_and_pvtu_names.push_back(std::pair<double,std::string>
-                                             (time_in_years_or_seconds, pvtu_master_filename));
-              const std::string
-              pvd_master_filename = (this->get_output_directory() + "solution.pvd");
-              std::ofstream pvd_master (pvd_master_filename.c_str());
-              data_out.write_pvd_record (pvd_master, times_and_pvtu_names);
-
-              // finally, do the same for Visit via the .visit file for this
-              // time step, as well as for all time steps together
-              const std::string
-              visit_master_filename = (this->get_output_directory() +
-                                       solution_file_prefix +
-                                       ".visit");
-              std::ofstream visit_master (visit_master_filename.c_str());
-              data_out.write_visit_record (visit_master, filenames);
-
-              output_file_names_by_timestep.push_back (filenames);
-
-              std::ofstream global_visit_master ((this->get_output_directory() +
-                                                  "solution.visit").c_str());
-              data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+              write_master_files (data_out, solution_file_prefix, filenames);
             }
 
           const std::string *filename
@@ -601,7 +603,7 @@ namespace aspect
 
     namespace
     {
-      std_cxx1x::tuple
+      std_cxx11::tuple
       <void *,
       void *,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
@@ -634,12 +636,13 @@ namespace aspect
           prm.declare_entry ("Number of grouped files", "0",
                              Patterns::Integer(0),
                              "VTU file output supports grouping files from several CPUs "
-                             "into one file using MPI I/O when writing on a parallel "
+                             "into a given number of files using MPI I/O when writing on a parallel "
                              "filesystem. Select 0 for no grouping. This will disable "
                              "parallel file output and instead write one file per processor "
                              "in a background thread. "
                              "A value of 1 will generate one big file containing the whole "
-                             "solution.");
+                             "solution, while a larger value will create that many files "
+                             "(at most as many as there are mpi ranks).");
 
           prm.declare_entry ("Interpolate output", "false",
                              Patterns::Bool(),
@@ -682,7 +685,7 @@ namespace aspect
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+            = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -699,7 +702,7 @@ namespace aspect
                             "to have in your output file.\n\n"
                             "The following postprocessors are available:\n\n"
                             +
-                            std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                            std_cxx11::get<dim>(registered_plugins).get_description_string());
         }
         prm.leave_subsection();
       }
@@ -707,7 +710,7 @@ namespace aspect
 
       // now declare the parameters of each of the registered
       // visualization postprocessors in turn
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -715,7 +718,7 @@ namespace aspect
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
-      Assert (std_cxx1x::get<dim>(registered_plugins).plugins != 0,
+      Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
@@ -742,9 +745,9 @@ namespace aspect
             {
               viz_names.clear();
               for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
-                   p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
-                   p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
-                viz_names.push_back (std_cxx1x::get<0>(*p));
+                   p = std_cxx11::get<dim>(registered_plugins).plugins->begin();
+                   p != std_cxx11::get<dim>(registered_plugins).plugins->end(); ++p)
+                viz_names.push_back (std_cxx11::get<0>(*p));
             }
         }
         prm.leave_subsection();
@@ -756,7 +759,7 @@ namespace aspect
       for (unsigned int name=0; name<viz_names.size(); ++name)
         {
           VisualizationPostprocessors::Interface<dim> *
-          viz_postprocessor = std_cxx1x::get<dim>(registered_plugins)
+          viz_postprocessor = std_cxx11::get<dim>(registered_plugins)
                               .create_plugin (viz_names[name],
                                               "Visualization plugins");
 
@@ -773,7 +776,7 @@ namespace aspect
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> >
+          postprocessors.push_back (std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> >
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -785,7 +788,7 @@ namespace aspect
       // Finally also set up a listener to check when the mesh changes
       mesh_changed = true;
       this->get_triangulation().signals.post_refinement
-      .connect(std_cxx1x::bind(&Visualization::mesh_changed_signal, std_cxx1x::ref(*this)));
+      .connect(std_cxx11::bind(&Visualization::mesh_changed_signal, std_cxx11::ref(*this)));
     }
 
 
@@ -863,7 +866,7 @@ namespace aspect
                                           void (*declare_parameters_function) (ParameterHandler &),
                                           VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
     {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+      std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
                                                                declare_parameters_function,
                                                                factory_function);

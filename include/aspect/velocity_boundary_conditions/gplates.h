@@ -23,7 +23,8 @@
 #define __aspect__velocity_boundary_conditions_gplates_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
+#include <deal.II/base/table.h>
 #include <aspect/simulator_access.h>
 
 
@@ -96,21 +97,21 @@ namespace aspect
           /**
            * Tables which contain the velocities
            */
-          dealii::Table<2,Tensor<1,3> > velocity_vals;
-          dealii::Table<2,Tensor<1,3> > old_velocity_vals;
+          Table<2,Tensor<1,3> > velocity_vals;
+          Table<2,Tensor<1,3> > old_velocity_vals;
 
           /**
            * Table for the data point positions.
            */
-          dealii::Table<2,Tensor<1,3> > velocity_positions;
+          Table<2,Tensor<1,3> > velocity_positions;
 
           /**
            * Pointers to the actual tables. Used to avoid unnecessary copying
            * of values. These pointers point to either velocity_vals or
            * old_velocity_vals.
            */
-          dealii::Table<2,Tensor<1,3> > *velocity_values;
-          dealii::Table<2,Tensor<1,3> > *old_velocity_values;
+          Table<2,Tensor<1,3> > *velocity_values;
+          Table<2,Tensor<1,3> > *old_velocity_values;
 
           /**
            * Distances between adjacent point in the Lat/Long grid
@@ -151,7 +152,7 @@ namespace aspect
            * coordinate axes in the order y-x-z (instead of the often used
            * z-x-z)
            */
-          std_cxx1x::array<double,3>
+          std_cxx11::array<double,3>
           angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
 
           /**
@@ -415,7 +416,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from
          * gplates files.
          */
-        std_cxx1x::shared_ptr<internal::GPlatesLookup> lookup;
+        std_cxx11::shared_ptr<internal::GPlatesLookup> lookup;
 
         /**
          * Handles the update of the velocity data in lookup.

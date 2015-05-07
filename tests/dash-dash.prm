@@ -1,0 +1,8 @@
+# Test that we indeed read from stdin when the input file is given as "--"
+
+# This .prm file is really a sham. Its only purpose is to set up a test that
+# automatically loads a shared library that only starts aspect (again!) with
+# "--" as argument, and when that has finished running terminates the original
+# copy of aspect. In other words, the original aspect is only used to load a
+# shared library, nothing else, and so the contents of the current .prm file do
+# not matter.

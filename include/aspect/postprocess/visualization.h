@@ -29,6 +29,7 @@
 #include <deal.II/base/thread_management.h>
 #include <deal.II/numerics/data_postprocessor.h>
 #include <deal.II/base/data_out_base.h>
+#include <deal.II/numerics/data_out.h>
 
 namespace aspect
 {
@@ -411,10 +412,29 @@ namespace aspect
                                 const std::string *file_contents);
 
         /**
+         * Write the various master record files. The master files are used by
+         * visualization programs to identify which of the output files in a
+         * directory, possibly one file written by each processor, belong to a
+         * single time step and/or form the different time steps of a
+         * simulation. For Paraview, this is a <code>.pvtu</code> file per
+         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * is a <code>.visit</code> file per time step and one for all time
+         * steps.
+         *
+         * @param data_out The DataOut object that was used to write the solutions.
+         * @param solution_file_prefix The stem of the filename to be written.
+         * @param filenames List of filenames for the current output from all
+         * processors.
+         */
+        void write_master_files (const DataOut<dim> &data_out,
+                                 const std::string &solution_file_prefix,
+                                 const std::vector<std::string> &filenames);
+
+        /**
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx1x::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
+        std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
 
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written

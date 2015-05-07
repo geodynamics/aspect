@@ -615,6 +615,25 @@ namespace aspect
     }
     prm.leave_subsection ();
 
+    // Finally declare a couple of parameters related how we should
+    // evaluate the material models when assembling the matrix and
+    // preconditioner
+    prm.enter_subsection ("Material model");
+    {
+      prm.declare_entry ("Material averaging", "none",
+                         Patterns::Selection(MaterialModel::MaterialAveraging::
+                                             get_averaging_operation_names()),
+                         "Whether or not (and in the first case, how) to do any averaging of "
+                         "material model output data when constructing the linear systems "
+                         "for velocity/pressure, temperature, and compositions in each "
+                         "time step, as well as their corresponding preconditioners."
+                         "\n\n"
+                         "The process of averaging, and where it may be used, is "
+                         "discussed in more detail in "
+                         "Section~\\ref{sec:sinker-with-averaging}.");
+    }
+    prm.leave_subsection ();
+
     //Also declare the parameters that the FreeSurfaceHandler needs
     Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
   }
@@ -885,6 +904,16 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+    }
+    prm.leave_subsection ();
+
+
+    // now also get the parameter related to material model averaging
+    prm.enter_subsection ("Material model");
+    {
+      material_averaging
+        = MaterialModel::MaterialAveraging::parse_averaging_operation_name
+          (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
   }

@@ -272,10 +272,18 @@ namespace aspect
     for (; cell!=endc; ++cell, ++fscell)
       if (cell->at_boundary() && cell->is_locally_owned())
         for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-          if ( cell->face(face_no)->at_boundary() &&
-               ((sim.parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())
-                 != sim.parameters.free_surface_boundary_indicators.end())))
+          if (cell->face(face_no)->at_boundary())
             {
+              const types::boundary_id boundary_indicator
+#if DEAL_II_VERSION_GTE(8,3,0)
+                = cell->face(face_no)->boundary_id();
+#else
+                = cell->face(face_no)->boundary_indicator();
+#endif
+              if (sim.parameters.free_surface_boundary_indicators.find(boundary_indicator)
+                  == sim.parameters.free_surface_boundary_indicators.end())
+                continue;
+
               fscell->get_dof_indices (cell_dof_indices);
               fs_fe_face_values.reinit (fscell, face_no);
               fe_face_values.reinit (cell, face_no);
@@ -607,18 +615,25 @@ namespace aspect
     UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors |
                                            update_quadrature_points | update_JxW_values);
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, quadrature, update_flags);
-    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
-                       dofs_per_cell = fe_face_values.dofs_per_cell;
+    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points;
 
     const FEValuesExtractors::Vector velocities (0);
 
     //only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
       for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-        if ( cell->face(face_no)->at_boundary() &&
-             sim.parameters.free_surface_boundary_indicators.find(cell->face(face_no)->boundary_indicator())!=
-             sim.parameters.free_surface_boundary_indicators.end())
+        if (cell->face(face_no)->at_boundary())
           {
+            const types::boundary_id boundary_indicator
+#if DEAL_II_VERSION_GTE(8,3,0)
+              = cell->face(face_no)->boundary_id();
+#else
+              = cell->face(face_no)->boundary_indicator();
+#endif
+            if (sim.parameters.free_surface_boundary_indicators.find(boundary_indicator)
+                == sim.parameters.free_surface_boundary_indicators.end())
+              continue;
+
             fe_face_values.reinit(cell, face_no);
 
             //come up with the density contrast across the free surface

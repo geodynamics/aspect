@@ -922,7 +922,9 @@ namespace aspect
     FEFaceValues<dim> fe_face_values (mapping,
                                       finite_element,
                                       quadrature_formula,
-                                      static_cast<UpdateFlags>(parameters.include_melt_transport ? update_values : 0) |
+                                      static_cast<UpdateFlags>(parameters.include_melt_transport ?
+                                                                   (update_values | update_gradients)
+                                                                 : 0) |
                                       update_normal_vectors |
                                       update_q_points |
                                       update_JxW_values);
@@ -939,22 +941,26 @@ namespace aspect
     for (; cell!=endc; ++cell)
       if (cell->is_locally_owned())
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->face(f)->at_boundary())
           {
-            if (!cell->face(f)->at_boundary())
-              continue;
-
-            fe_face_values.reinit (cell, f);
+              const types::boundary_id boundary_indicator
+#if DEAL_II_VERSION_GTE(8,3,0)
+                = cell->face(f)->boundary_id();
+#else
+                = cell->face(f)->boundary_indicator();
+#endif
 
             if (parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
                 parameters.prescribed_velocity_boundary_indicators.end())
               {
+                fe_face_values.reinit (cell, f);
                                 // for each of the quadrature points, evaluate the
                                 // normal velocity by calling the boundary conditions and add
                                 // it to the integral
                                 for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                                       {
                                         const Tensor<1,dim> velocity =
-                                              velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
+                    velocity_boundary_conditions.find(boundary_indicator)->second->boundary_velocity(fe_face_values.quadrature_point(q));
 
                                         const double normal_velocity = velocity * fe_face_values.normal_vector(q);
                                         local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
@@ -964,6 +970,9 @@ namespace aspect
             // correct u by -K_D grad p_f = -K_D f
             if (parameters.include_melt_transport)
               {
+                if (fe_face_values.get_cell()!=cell || fe_face_values.get_face_index() != cell->face_index(f))
+                    fe_face_values.reinit (cell, f);
+
                 typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(quadrature_formula.size(), parameters.n_compositional_fields);
                 typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(quadrature_formula.size(), parameters.n_compositional_fields);
 
@@ -1310,8 +1319,6 @@ namespace aspect
     current_constraints.set_zero (remap);
 
     remap.block (block_p) /= pressure_scaling;
-    if (do_pressure_rhs_compatibility_modification)
-      make_pressure_rhs_compatible(system_rhs);
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
@@ -1434,14 +1441,15 @@ namespace aspect
           return false;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -1477,13 +1485,14 @@ namespace aspect
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
                         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
         {
           output = out.viscosities;
         }
@@ -1517,10 +1526,11 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -1561,9 +1571,10 @@ namespace aspect
         }
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -1604,13 +1615,14 @@ namespace aspect
           return true;
         }
 
-        void setup(const unsigned int q_points)
+        void setup(const unsigned int)
         {}
 
         void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution, std::vector<double> &output)
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+                        FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output)
         {
           if (vs_)
             for (unsigned int q=0; q<output.size(); ++q)

@@ -6,6 +6,60 @@
  *
  *
  * <ol>
+ *
+ * <li> New: There are now visualization postprocessors that can output
+ * the shear stress and full stress tensors.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/02)
+ *
+ * <li> Changed: ASPECT accidentally used the type <code>unsigned int</code>
+ * in denoting boundary indicators in BoundaryComposition::Interface::composition()
+ * and BoundaryTemperature::Interface::temperature(), as well as derived
+ * classes' corresponding functions. It should have been the deal.II type
+ * types::boundary_id. This is now fixed. It may require fixing user plugins that
+ * overload these functions.
+ * <br>
+ * (Wolfgang Bangerth, 2015/04/30)
+ *
+ * <li> New: ASPECT can now average material properties between the
+ * quadrature points of a cell. This greatly increases the stability
+ * of solutions in simulations with spatially varying coefficients,
+ * and also greatly accelerates the solution, at times up to a factor
+ * of ten.
+ * <br>
+ * (Wolfgang Bangerth, 2015/04/25)
+ *
+ * <li> Fixed: Removal rigid body translations and rotations when the
+ * simulation has a nullspace was bugged. This feature has been fixed
+ * and extended, and a new section has been added to the manual describing
+ * its use.
+ * <br>
+ * (Ian Rose, 2015/04/23)
+ *
+ * <li> New: vtu visualization output can now be grouped into an arbitrary
+ * number of files per time step by setting "Number of grouped files" to
+ * a number larger than 1.
+ * <br>
+ * (Timo Heister, 2015/04/15)
+ *
+ * <li> Fixed: To make the right-hand side of the Stokes equation compatible
+ * to the matrix we need to apply a correction for inbalanced in-/outflow
+ * across the model boundaries. This correction was accidentally applied 
+ * twice in the first iteration of the iterated IMPES solver. This does not
+ * change the results, because subsequent iterations will do it correctly,
+ * but it might prevent the model to converge or slow down convergence. 
+ * This is fixed now by applying the correction directly after assembling
+ * the matrix and right-hand side.
+ * <br>
+ * (Rene Gassmoeller, Timo Heister, Juliane Dannberg, 2015/04/14)
+ *
+ * <ol>
+ * <li> New: ASPECT can now read the list of input arguments from the
+ * default input stdin, instead of a file, by specifying "--" for
+ * the name of the input file.
+ * <br>
+ * (Wolfgang Bangerth, 2015/03/20)
+ *
  * <li> Changed: We use the current linearization point instead of the old 
  * solution in the assembly of the composition advection system now, and 
  * update the current linearization point with the solution after we have 

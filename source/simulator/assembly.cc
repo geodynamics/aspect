@@ -828,14 +828,12 @@ namespace aspect
             continue;
           }
 
-        const bool use_bdf2_scheme = (timestep_number > 1);
-
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
         // also have the number of dofs that correspond just to the element for
         // the system we are currently trying to assemble
         const unsigned int advection_dofs_per_cell = scratch.phi_field.size();
-
+        (void)advection_dofs_per_cell;
         Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
@@ -846,7 +844,6 @@ namespace aspect
              introspection.component_indices.temperature
              :
              introspection.component_indices.compositional_fields[advection_field.compositional_variable]);
-
         const FEValuesExtractors::Scalar solution_field
           = (advection_field.field_type == AdvectionField::temperature_field
              ?
@@ -1018,7 +1015,13 @@ namespace aspect
 					     true, // TODO: use rebuild_stokes_matrix here?
 					     scratch.material_model_inputs);
         scratch.material_model_inputs.cell = cell;
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_outputs);
         outputs = &scratch.material_model_outputs;
       }
     else
@@ -1032,6 +1035,7 @@ namespace aspect
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+        // TODO: averaging
         outputs = &melt_outputs;
       }
 
@@ -1150,16 +1154,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_stokes_preconditioner,
                           this,
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_stokes_preconditioner,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula, face_quadrature_formula,
                                     mapping,
@@ -1337,7 +1341,13 @@ namespace aspect
                                              rebuild_stokes_matrix,
                                              scratch.material_model_inputs);
         scratch.material_model_inputs.cell = cell;
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_outputs);
         outputs = &scratch.material_model_outputs;
       }
     else
@@ -1351,6 +1361,7 @@ namespace aspect
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+        // TODO: averaging
         outputs = &melt_outputs;
       }
 
@@ -1599,16 +1610,16 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_stokes_system,
                           this,
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_stokes_system,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula, face_quadrature_formula,
                             (update_values    |
@@ -1628,8 +1639,14 @@ namespace aspect
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
 
+    // if the model is compressible then we need to adjust the right hand
+    // side of the equation to make it compatible with the matrix on the
+    // left
     if (do_pressure_rhs_compatibility_modification)
-      pressure_shape_function_integrals.compress(VectorOperation::add);
+      {
+        pressure_shape_function_integrals.compress(VectorOperation::add);
+        make_pressure_rhs_compatible(system_rhs);
+      }
 
 
     // record that we have just rebuilt the matrix
@@ -1641,7 +1658,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
-                                                 std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
+                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner)
   {
     switch (advection_field.field_type)
       {
@@ -1930,7 +1947,13 @@ namespace aspect
                                          scratch.material_model_inputs);
     scratch.material_model_inputs.cell = cell;
 
-    material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+    material_model->evaluate(scratch.material_model_inputs,
+                             scratch.material_model_outputs);
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_outputs);
 
     if (advection_field.is_temperature())
       {
@@ -1945,7 +1968,13 @@ namespace aspect
           }
         scratch.explicit_material_model_inputs.cell = cell;
 
-        material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
+        material_model->evaluate(scratch.explicit_material_model_inputs,
+                                 scratch.explicit_material_model_outputs);
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.explicit_material_model_outputs);
       }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
@@ -1980,7 +2009,10 @@ namespace aspect
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
-        Assert (density_c_P >= 0, ExcMessage ("The product of density and c_P needs to be a non-negative quantity."));
+
+        Assert (density_c_P >= 0,
+                ExcMessage ("The product of density and c_P needs to be a "
+                            "non-negative quantity."));
 
         const double conductivity =
           (advection_field.is_temperature()
@@ -2124,7 +2156,7 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx1x::bind (&Simulator<dim>::
+         std_cxx11::bind (&Simulator<dim>::
                           local_assemble_advection_system,
                           this,
                           advection_field,
@@ -2136,13 +2168,13 @@ namespace aspect
                           get_entropy_variation ((global_field_range.first +
                                                   global_field_range.second) / 2,
                                                  advection_field),
-                          std_cxx1x::_1,
-                          std_cxx1x::_2,
-                          std_cxx1x::_3),
-         std_cxx1x::bind (&Simulator<dim>::
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
                           copy_local_to_global_advection_system,
                           this,
-                          std_cxx1x::_1),
+                          std_cxx11::_1),
 
          // we have to assemble the term u.grad phi_i * phi_j, which is
          // of total polynomial degree
@@ -2206,7 +2238,7 @@ namespace aspect
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
                                                           const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
-                                                                std_cxx1x::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+                                                                std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const std::pair<double,double> global_field_range, \

@@ -26,7 +26,7 @@ MESSAGE("====================================================")
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
-FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc")
+FILE(GLOB_RECURSE TARGET_SRC  "source/*.cc" "include/*.h")
 INCLUDE_DIRECTORIES(include)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)

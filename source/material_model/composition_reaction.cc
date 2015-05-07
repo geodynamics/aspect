@@ -147,7 +147,7 @@ namespace aspect
     template <int dim>
     double
     CompositionReaction<dim>::
-    thermal_expansion_coefficient (const double temperature,
+    thermal_expansion_coefficient (const double,
                                    const double,
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
@@ -171,8 +171,8 @@ namespace aspect
     template <int dim>
     double
     CompositionReaction<dim>::
-    reaction_term (const double temperature,
-                   const double pressure,
+    reaction_term (const double,
+                   const double,
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &position,
                    const unsigned int compositional_variable) const
@@ -253,7 +253,7 @@ namespace aspect
     template <int dim>
     bool
     CompositionReaction<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }

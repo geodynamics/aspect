@@ -25,6 +25,7 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <aspect/global.h>
+#include <aspect/material_model/interface.h>
 
 namespace aspect
 {
@@ -258,6 +259,8 @@ namespace aspect
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;
+    MaterialModel::MaterialAveraging::AveragingOperation material_averaging;
+
     /**
      * @}
      */

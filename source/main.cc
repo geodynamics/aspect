@@ -34,15 +34,15 @@
 
 
 
-// get the value of a particular parameter from the input
+// get the value of a particular parameter from the contents of the input
 // file. return an empty string if not found
 std::string
-get_last_value_of_parameter(const std::string &parameter_filename,
+get_last_value_of_parameter(const std::string &parameters,
                             const std::string &parameter_name)
 {
   std::string return_value;
 
-  std::ifstream x_file(parameter_filename.c_str());
+  std::istringstream x_file(parameters);
   while (x_file)
     {
       // get one line and strip spaces at the front and back
@@ -95,14 +95,14 @@ get_last_value_of_parameter(const std::string &parameter_filename,
 
 
 // extract the dimension in which to run ASPECT from the
-// parameter file. this is something that we need to do
-// before processing the parameter file since we need to
-// know whether to use the dim=2 or dim=3 instantiation
+// the contents of the parameter file. this is something that
+// we need to do before processing the parameter file since we
+// need to know whether to use the dim=2 or dim=3 instantiation
 // of the main classes
 unsigned int
-get_dimension(const std::string &parameter_filename)
+get_dimension(const std::string &parameters)
 {
-  const std::string dimension = get_last_value_of_parameter(parameter_filename, "Dimension");
+  const std::string dimension = get_last_value_of_parameter(parameters, "Dimension");
   if (dimension.size() > 0)
     return dealii::Utilities::string_to_int (dimension);
   else
@@ -116,7 +116,7 @@ get_dimension(const std::string &parameter_filename)
 // collect the names of the shared libraries linked to by this program. this
 // function is a callback for the dl_iterate_phdr() function we call below
 int get_names_of_shared_libs (struct dl_phdr_info *info,
-                              size_t size,
+                              size_t,
                               void *data)
 {
   reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
@@ -188,13 +188,13 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
 
 // retrieve a list of shared libraries from the parameter file and
 // dlopen them so that we can load plugins declared in them
-void possibly_load_shared_libs (const std::string &parameter_filename)
+void possibly_load_shared_libs (const std::string &parameters)
 {
   using namespace dealii;
 
 
   const std::string shared_libs
-    = get_last_value_of_parameter(parameter_filename,
+    = get_last_value_of_parameter(parameters,
                                   "Additional shared libraries");
   if (shared_libs.size() > 0)
     {
@@ -266,13 +266,12 @@ void possibly_load_shared_libs (const std::string &parameter_filename)
  *  in backslashes.
  */
 std::string
-expand_backslashes (const std::string &filename)
+expand_backslashes (std::istream &input)
 {
   std::string result;
 
   unsigned int need_empty_lines = 0;
 
-  std::ifstream input (filename.c_str());
   while (input)
     {
       // get one line and strip spaces at the back
@@ -386,30 +385,81 @@ int main (int argc, char *argv[])
         {
           // print usage info only on processor 0
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-            std::cout << "\tUsage: ./aspect <parameter_file.prm>" << std::endl;
+            {
+              std::cout << "Usage: ./aspect <parameter_file.prm>   (to read from an input file)"
+                        << std::endl
+                        << "    or ./aspect --                     (to read from stdin)"
+                        << std::endl
+                        << std::endl;
+            }
           return 2;
         }
 
-      // see which parameter file to use
+      // see where to read input from, then do the reading and
+      // put the contents of the input into a string
+      //
+      // as stated above, treat "--" as special: as is common
+      // on unix, treat it as a way to read input from stdin
       std::string parameter_filename = argv[1];
+      std::string input_as_string;
 
-      // verify that it can be opened
-      {
-        std::ifstream parameter_file(parameter_filename.c_str());
-        if (!parameter_file)
-          {
-            const std::string message = (std::string("Input parameter file <")
-                                         + parameter_filename + "> not found.");
-            if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
-              AssertThrow(false, ExcMessage (message));
-            return 3;
-          }
-      }
-      // now that we know that the file can, at least in principle, be read
+      if (parameter_filename != "--")
+        {
+          std::ifstream parameter_file(parameter_filename.c_str());
+          if (!parameter_file)
+            {
+              if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+                AssertThrow(false, ExcMessage (std::string("Input parameter file <")
+                                               + parameter_filename + "> not found."));
+              return 3;
+            }
+
+          input_as_string = expand_backslashes (parameter_file);
+        }
+      else
+        {
+          // read parameters from stdin. unfortunately, if you do
+          //    echo "abc" | mpirun -np 4 ./aspect
+          // then only MPI process 0 gets the data. so we have to
+          // read it there, then broadcast it to the other processors
+          if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+            {
+              input_as_string = expand_backslashes (std::cin);
+              int size = input_as_string.size()+1;
+              MPI_Bcast (&size,
+                         1,
+                         MPI_INT,
+                         /*root=*/0, MPI_COMM_WORLD);
+              MPI_Bcast (const_cast<char *>(input_as_string.c_str()),
+                         size,
+                         MPI_CHAR,
+                         /*root=*/0, MPI_COMM_WORLD);
+            }
+          else
+            {
+              // on this side, read what processor zero has broadcast about
+              // the size of the input file. then create a buffer to put the
+              // text in, get it from processor 0, and copy it to
+              // input_as_string
+              int size;
+              MPI_Bcast (&size, 1,
+                         MPI_INT,
+                         /*root=*/0, MPI_COMM_WORLD);
+
+              char *p = new char[size];
+              MPI_Bcast (p, size,
+                         MPI_CHAR,
+                         /*root=*/0, MPI_COMM_WORLD);
+              input_as_string = p;
+              delete[] p;
+            }
+        }
+
+
       // try to determine the dimension we want to work in. the default
       // is 2, but if we find a line of the kind "set Dimension = ..."
       // then the last such line wins
-      const unsigned int dim = get_dimension(parameter_filename);
+      const unsigned int dim = get_dimension(input_as_string);
 
       // do the same with lines potentially indicating shared libs to
       // be loaded. these shared libs could contain additional module
@@ -417,7 +467,7 @@ int main (int argc, char *argv[])
       // available as part of the possible parameters of the input
       // file, so they need to be loaded before we even start processing
       // the parameter file
-      possibly_load_shared_libs (parameter_filename);
+      possibly_load_shared_libs (input_as_string);
 
       // now switch between the templates that code for 2d or 3d. it
       // would be nicer if we didn't have to duplicate code, but the
@@ -425,7 +475,6 @@ int main (int argc, char *argv[])
       // is only read at run-time
       ParameterHandler prm;
 
-      const std::string input_as_string = expand_backslashes (parameter_filename);
       switch (dim)
         {
           case 2:

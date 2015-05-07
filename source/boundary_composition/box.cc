@@ -36,10 +36,12 @@ namespace aspect
     double
     Box<dim>::
     composition (const GeometryModel::Interface<dim> &geometry_model,
-                 const unsigned int                   boundary_indicator,
-                 const Point<dim>                    &location,
+                 const types::boundary_id             boundary_indicator,
+                 const Point<dim> &,
                  const unsigned int                   compositional_field) const
     {
+      (void)geometry_model;
+
       // verify that the geometry is in fact a box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean

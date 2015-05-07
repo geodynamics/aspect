@@ -37,8 +37,8 @@ namespace aspect
     template <int dim>
     double
     Function<dim>::
-    temperature (const GeometryModel::Interface<dim> &geometry_model,
-                 const unsigned int                   boundary_indicator,
+    temperature (const GeometryModel::Interface<dim> &,
+                 const types::boundary_id             ,
                  const Point<dim>                    &position) const
     {
       return boundary_temperature_function.value(position);
@@ -62,7 +62,7 @@ namespace aspect
     template <int dim>
     double
     Function<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    minimal_temperature (const std::set<types::boundary_id> &) const
     {
       return min_temperature;
     }
@@ -72,7 +72,7 @@ namespace aspect
     template <int dim>
     double
     Function<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    maximal_temperature (const std::set<types::boundary_id> &) const
     {
       return max_temperature;
     }

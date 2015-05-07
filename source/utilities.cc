@@ -21,7 +21,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/std_cxx1x/array.h>
+#include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 
 #include <deal.II/base/table.h>
@@ -45,14 +45,15 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    std_cxx1x::array<double,dim>
+    std_cxx11::array<double,dim>
     spherical_coordinates(const Point<dim> &position)
     {
-      std_cxx1x::array<double,dim> scoord;
+      std_cxx11::array<double,dim> scoord;
 
       scoord[0] = position.norm(); // R
       scoord[1] = std::atan2(position(1),position(0)); // Phi
-      if (scoord[1] < 0.0) scoord[1] = 2*numbers::PI + scoord[1]; // correct phi to [0,2*pi]
+      if (scoord[1] < 0.0)
+        scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
       if (dim==3)
         {
           if (scoord[0] > std::numeric_limits<double>::min())
@@ -65,7 +66,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx1x::array<double,dim> &scoord)
+    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
     {
       Point<dim> ccoord;
 
@@ -323,8 +324,6 @@ namespace aspect
            boundary_id = boundary_ids.begin();
            boundary_id != boundary_ids.end(); ++boundary_id)
         {
-          const std_cxx11::array<unsigned int,dim-1> dimensions = get_boundary_dimensions(*boundary_id);
-
           std_cxx11::shared_ptr<Utilities::AsciiDataLookup<dim-1> > lookup;
           lookup.reset(new Utilities::AsciiDataLookup<dim-1> (components,
                                                               Utilities::AsciiDataBase<dim>::scale_factor));
@@ -401,7 +400,10 @@ namespace aspect
                 boundary_dimensions[0] = 1;
               }
             else
-              AssertThrow(false,ExcNotImplemented());
+              {
+                boundary_dimensions[0] = numbers::invalid_unsigned_int;
+                AssertThrow(false,ExcNotImplemented());
+              }
 
             break;
 
@@ -422,11 +424,17 @@ namespace aspect
                 boundary_dimensions[1] = 2;
               }
             else
-              AssertThrow(false,ExcNotImplemented());
+              {
+                boundary_dimensions[0] = numbers::invalid_unsigned_int;
+                boundary_dimensions[1] = numbers::invalid_unsigned_int;
+                AssertThrow(false,ExcNotImplemented());
+              }
 
             break;
 
           default:
+            for (unsigned int d=0; d<dim-1; ++d)
+              boundary_dimensions[d] = numbers::invalid_unsigned_int;
             AssertThrow(false,ExcNotImplemented());
         }
       return boundary_dimensions;
@@ -728,10 +736,10 @@ namespace aspect
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
 
-    template Point<2> cartesian_coordinates<2>(const std_cxx1x::array<double,2> &scoord);
-    template Point<3> cartesian_coordinates<3>(const std_cxx1x::array<double,3> &scoord);
+    template Point<2> cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
+    template Point<3> cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
-    template std_cxx1x::array<double,2> spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx1x::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
   }
 }

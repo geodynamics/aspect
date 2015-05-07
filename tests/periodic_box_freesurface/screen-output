@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
+--     . version 1.3.pre
+--     . running in OPTIMIZED mode
 --     . running with 1 MPI process
 --     . using Trilinos
 -----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ Number of free surface degrees of freedom: 3246
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             4e-05
-     Temperature contrast across model domain (K): 0
+     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        500000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     1e+20
@@ -40,68 +40,68 @@ Number of free surface degrees of freedom: 3246
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     RMS, max velocity:  0.627 m/year, 1.22 m/year
+     RMS, max velocity:  0.626 m/year, 1.23 m/year
      Topography min/max: 0 m, 0 m, 
 
-*** Timestep 1:  t=659.368 years
+*** Timestep 1:  t=655.581 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+7 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.44 m/year, 0.997 m/year
-     Topography min/max: -467.1 m, 512.7 m, 
+     RMS, max velocity:  0.438 m/year, 1 m/year
+     Topography min/max: -464.4 m, 509.8 m, 
 
-*** Timestep 2:  t=1538.64 years
+*** Timestep 2:  t=1528.06 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.408 m/year, 0.951 m/year
-     Topography min/max: -643.6 m, 756.6 m, 
+     RMS, max velocity:  0.405 m/year, 0.954 m/year
+     Topography min/max: -641.2 m, 753.2 m, 
 
-*** Timestep 3:  t=2488.34 years
+*** Timestep 3:  t=2470.73 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.396 m/year, 0.933 m/year
-     Topography min/max: -729.1 m, 911.4 m, 
+     RMS, max velocity:  0.393 m/year, 0.935 m/year
+     Topography min/max: -727.5 m, 908.4 m, 
 
-*** Timestep 4:  t=3470.16 years
+*** Timestep 4:  t=3445.85 years
    Solving mesh velocity system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.391 m/year, 0.923 m/year
-     Topography min/max: -774.2 m, 1012 m, 
+     RMS, max velocity:  0.387 m/year, 0.925 m/year
+     Topography min/max: -773.2 m, 1010 m, 
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      21.5s |            |
+| Total wallclock time elapsed since start    |      6.43s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      5.25s |        24% |
-| Assemble temperature system     |         6 |      2.89s |        13% |
-| Build Stokes preconditioner     |         6 |      3.74s |        17% |
-| Build temperature preconditioner|         6 |     0.174s |      0.81% |
-| Solve Stokes system             |         6 |      5.26s |        24% |
-| Solve temperature system        |         6 |     0.077s |      0.36% |
-| FreeSurface                     |         6 |     0.972s |       4.5% |
-| Initialization                  |         3 |     0.249s |       1.2% |
-| Postprocessing                  |         5 |     0.077s |      0.36% |
-| Refine mesh structure, part 1   |         1 |      1.37s |       6.4% |
-| Refine mesh structure, part 2   |         1 |    0.0166s |     0.077% |
-| Setup dof systems               |         2 |     0.907s |       4.2% |
+| Assemble Stokes system          |         6 |      1.04s |        16% |
+| Assemble temperature system     |         6 |     0.448s |         7% |
+| Build Stokes preconditioner     |         6 |      0.63s |       9.8% |
+| Build temperature preconditioner|         6 |    0.0648s |         1% |
+| Solve Stokes system             |         6 |      3.26s |        51% |
+| Solve temperature system        |         6 |    0.0232s |      0.36% |
+| FreeSurface                     |         6 |     0.196s |         3% |
+| Initialization                  |         3 |    0.0482s |      0.75% |
+| Postprocessing                  |         5 |   0.00948s |      0.15% |
+| Refine mesh structure, part 1   |         1 |     0.411s |       6.4% |
+| Refine mesh structure, part 2   |         1 |   0.00639s |     0.099% |
+| Setup dof systems               |         2 |     0.252s |       3.9% |
 +---------------------------------+-----------+------------+------------+
 
