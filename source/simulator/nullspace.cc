@@ -165,6 +165,28 @@ namespace aspect
 
   }
 
+
+  template <int dim>
+  void Simulator<dim>::setup_nullspace_constraints(ConstraintMatrix &constraints)
+  {
+    const unsigned int flags[] = {(NullspaceRemoval::linear_momentum_x
+                                   |NullspaceRemoval::net_translation_x),
+                                  (NullspaceRemoval::linear_momentum_y
+                                   |NullspaceRemoval::net_translation_y),
+                                  (NullspaceRemoval::linear_momentum_z
+                                   |NullspaceRemoval::net_translation_z)
+                                 };
+
+    for (unsigned int d=0; d<dim; ++d)
+      if (parameters.nullspace_removal & flags[d])
+        {
+          types::global_dof_index idx = d;
+          if (constraints.can_store_line(idx))
+            constraints.add_line(idx);
+        }
+  }
+
+
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
@@ -459,7 +481,8 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector);
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::setup_nullspace_constraints (ConstraintMatrix &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

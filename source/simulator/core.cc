@@ -914,6 +914,9 @@ namespace aspect
     //reinit the constraints matrix and make hanging node constraints
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
+
+    setup_nullspace_constraints(constraints);
+
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
 
@@ -936,7 +939,7 @@ namespace aspect
                   == parameters.prescribed_velocity_boundary_indicators.end() &&
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
                   == parameters.prescribed_velocity_boundary_indicators.end(),
-                  ExcInternalError());
+                  ExcMessage("Periodic boundaries must not have boundary conditions set."));
 
           DoFTools::make_periodicity_constraints(dof_handler,
                                                  (*p).first.first,  //first boundary id
