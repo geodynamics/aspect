@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Fixed: The advection solver had problems converging for 
+ * constant compositional fields in timestep 1. This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2015/05/11)
+ *
  * <li> New: There are now visualization postprocessors that can output
  * the shear stress and full stress tensors.
  * <br>
