@@ -32,7 +32,7 @@ namespace aspect
       public:
 
         virtual
-        void   stokes_solution (const Point<dim>   &p, Vector<double>     &value) const
+        void stokes_solution (const Point<dim> &p, Vector<double> &value) const
         {
           value(0) = -p(1);
           value(1) = p(0);
