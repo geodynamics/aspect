@@ -652,10 +652,14 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Fills a vector with the artificial viscosity for the temperature on
-       * each local cell.
+       * Fills a vector with the artificial viscosity for the temperature
+       * or composition on each local cell.
+       * @param viscosity_per_cell Output vector
+       * @param advection_field Determines whether this variable should select
+       *   the temperature field or a compositional field.
        */
-      void get_artificial_viscosity (Vector<float> &viscosity_per_cell) const;
+      void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+                                     const AdvectionField &advection_field) const;
 
       /**
        * Internal routine to compute the depth average of a certain quantitiy.
