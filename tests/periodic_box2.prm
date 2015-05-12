@@ -1,4 +1,7 @@
-# like periodix_box, except we are not periodic in x and y
+# like periodix_box.prm, except we are now periodic in x and y and running in
+# parallel
+#
+# MPI: 2
 
 set Dimension = 2
 set CFL number                             = 1.0
