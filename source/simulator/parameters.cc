@@ -148,7 +148,10 @@ namespace aspect
                        "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
                        "scheme only solves the Stokes system and ignores compositions and the "
                        "temperature equation (careful, the material model must not depend on "
-                       "the temperature; mostly useful for Stokes benchmarks).");
+                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only'"
+                       "scheme only solves the temperature and other advection systems and instead "
+                       "of solving for the Stokes system, a prescribed velocity and pressure is "
+                       "used");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),

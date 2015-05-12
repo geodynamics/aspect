@@ -43,8 +43,9 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * This plug in allows the user to prescribe a Stokes solution and can be thought of as
-     * velocity and pressure's equivalent of the initial conditions plug-in.
+     * This plugin allows the user to prescribe a Stokes solution and
+     * can be thought of as velocity and pressure's equivalent of the
+     * initial conditions plugin.
      *
      * Note: Only used if solver type  is "Advection only".
      *
@@ -70,10 +71,13 @@ namespace aspect
         initialize ();
 
         /**
-         * Given a position @p p, fill in desired velocity and pressure at that point into @p value, which will have dim+1 components.
+         * Given a position @p p, fill in desired velocity and
+         * pressure at that point into @p value, which will have dim+1
+         * components. In @p value, the velocity components come
+         * first, followed by the pressure component.
          */
         virtual
-        void   solution (const Point<dim>   &p, Vector<double>     &value) const = 0;
+        void stokes_solution (const Point<dim> &p, Vector<double> &value) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -101,15 +105,15 @@ namespace aspect
 
 
     /**
-     * Register initial prescribed Stokes solution model so that it can be selected from
-     * the parameter file.
+     * Register initial prescribed Stokes solution model so that it
+     * can be selected from the parameter file.
      *
      * @param name A string that identifies the prescribed Stokes solution model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this prescribed Stokes solution model wants
-     * to read from input files.
+     * @param declare_parameters_function A pointer to a function that
+     * can be used to declare the parameters that this prescribed
+     * Stokes solution model wants to read from input files.
      * @param factory_function A pointer to a function that can create an
      * object of this prescribed Stokes solution model.
      *
@@ -138,8 +142,8 @@ namespace aspect
 
 
     /**
-     * Declare the runtime parameters of the registered prescribed Stokes solution
-     * models.
+     * Declare the runtime parameters of the registered prescribed
+     * Stokes solution models.
      *
      * @ingroup PrescribedStokesSolution
      */
@@ -150,9 +154,10 @@ namespace aspect
 
 
     /**
-     * Given a class name, a name, and a description for the parameter file
-     * for a prescribed Stokes solution model, register it with the functions that can
-     * declare their parameters and create these objects.
+     * Given a class name, a name, and a description for the parameter
+     * file for a prescribed Stokes solution model, register it with
+     * the functions that can declare their parameters and create
+     * these objects.
      *
      * @ingroup PrescribedStokesSolutionModels
      */

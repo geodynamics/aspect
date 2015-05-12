@@ -1401,7 +1401,10 @@ namespace aspect
     computing_timer.exit_section();
   }
 
-
+  /**
+   * Converts a function with a certain number of components into a Function@dim@
+   * with optionally having additional zero components.
+   **/
   template <int dim>
   class VectorFunctionFromVectorFunctionObject : public Function<dim>
   {
@@ -1410,7 +1413,7 @@ namespace aspect
        * Converts a function with @p n_object_components components into a Function@dim@
        * while optionally providing additional components that are set to zero.
        *
-       * @param function_object The function that will form one component
+       * @param function_object The function that will form the components
        *     of the resulting Function object.
        * @param first_component The first component that should be
        *     filled.
@@ -1768,7 +1771,7 @@ namespace aspect
 
           LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
 
-          VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::solution,
+          VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
                                                                             std_cxx1x::cref(*prescribed_stokes_solution),
                                                                             std_cxx1x::_1,
                                                                             std_cxx1x::_2),
