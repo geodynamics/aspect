@@ -222,6 +222,8 @@ namespace aspect
           }
 
 #ifdef DEBUG
+      Assert(n_left_to_find == 0, ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+
       for (unsigned int d=0; d<dim; ++d)
         Assert(vel_idx[d] != numbers::invalid_dof_index,
                ExcMessage("Error, couldn't find a velocity DoF to constrain."));
