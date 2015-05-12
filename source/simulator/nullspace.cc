@@ -165,19 +165,7 @@ namespace aspect
 
   }
 
-  namespace
-  {
-    inline MPI_Datatype mpi_type_id (const unsigned int *)
-    {
-      return MPI_UNSIGNED;
-    }
 
-
-    inline MPI_Datatype mpi_type_id (const unsigned long int *)
-    {
-      return MPI_UNSIGNED_LONG;
-    }
-  }
 
   template <int dim>
   void Simulator<dim>::setup_nullspace_constraints(ConstraintMatrix &constraints)
@@ -203,8 +191,7 @@ namespace aspect
 
           // Make a reduction to find the smallest index (processors with a larger candidate
           // just happened to not be able to store that index)
-          types::global_dof_index global_idx;
-          MPI_Allreduce(&idx, &global_idx, 1, mpi_type_id(&global_idx), MPI_MIN, mpi_communicator);
+          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(idx, mpi_communicator);
 
           // Finally set this DoF to zero (if we care about it):
           if (idx == global_idx)
