@@ -915,8 +915,6 @@ namespace aspect
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
 
-    setup_nullspace_constraints(constraints);
-
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
 
@@ -950,6 +948,10 @@ namespace aspect
 
 
     }
+
+    // This needs to happen after the periodic constraints are added:
+    setup_nullspace_constraints(constraints);
+
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
