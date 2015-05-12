@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: There is now a mesh refinement criterion based on
+ * refining near a user-specified list of boundary indicators.
+ * <br>
+ * (Ian Rose, 2015/05/12)
+ *
  * <li> Fixed: We now use the correct residual to calculate the stabilization
  * for the advection of temperature and compositional fields. Both the latent
  * heat term for the temperature and the reaction terms for the compositional
