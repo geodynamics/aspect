@@ -24,40 +24,43 @@
 #include <aspect/global.h>
 
 
+/*
+ * MPI::min() functions
+ */
+#if DEAL_II_VERSION_GTE(8,3,0)
+// use deal.II's MPI::min() functions
+#else
 namespace dealii
 {
   namespace Utilities
   {
     namespace MPI
     {
-      namespace
-      {
-
-        inline MPI_Datatype mpi_type_id (const unsigned int *)
-        {
-          return MPI_UNSIGNED;
-        }
-
-
-        inline MPI_Datatype mpi_type_id (const unsigned long int *)
-        {
-          return MPI_UNSIGNED_LONG;
-        }
-      }
-
       template <typename T>
       inline
       T min (const T &t,
              const MPI_Comm &mpi_communicator)
       {
-        T result;
-        MPI_Allreduce (const_cast<void *>(static_cast<const void *>(&t)),
-                       &result, 1, mpi_type_id(&t), MPI_MIN,
-                       mpi_communicator);
-        return result;
+        return -max(-t, mpi_communicator);
+      }
+
+      template <typename T>
+      inline
+      void min (const std::vector<T> &values,
+                const MPI_Comm       &mpi_communicator,
+                std::vector<T>       &minima)
+      {
+        for (unsigned int i=0; i<values.size(); ++i)
+          minima[i] = -values[i];
+        max(minima, mpi_communicator, minima);
+        for (unsigned int i=0; i<values.size(); ++i)
+          minima[i] = -minima[i];
       }
     }
   }
 }
+#endif
+
+
 
 #endif

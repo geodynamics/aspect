@@ -482,8 +482,8 @@ namespace aspect
             }
       }
 
-    return std::make_pair(-Utilities::MPI::max (-min_local_field,
-                                                mpi_communicator),
+    return std::make_pair(Utilities::MPI::min (min_local_field,
+                                               mpi_communicator),
                           Utilities::MPI::max (max_local_field,
                                                mpi_communicator));
   }
