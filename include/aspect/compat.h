@@ -50,6 +50,7 @@ namespace dealii
                 const MPI_Comm       &mpi_communicator,
                 std::vector<T>       &minima)
       {
+        minima.resize(values.size());
         for (unsigned int i=0; i<values.size(); ++i)
           minima[i] = -values[i];
         max(minima, mpi_communicator, minima);
