@@ -165,6 +165,99 @@ namespace aspect
 
   }
 
+
+
+  template <int dim>
+  void Simulator<dim>::setup_nullspace_constraints(ConstraintMatrix &constraints)
+  {
+    if (!(parameters.nullspace_removal & (NullspaceRemoval::linear_momentum
+                                          | NullspaceRemoval::net_translation)))
+      return;
+
+    // Note: We want to add a single Dirichlet zero constraint for each
+    // translation direction. This is complicated by the fact that we need to
+    // find a DoF that is not already constrained. In parallel the constraint
+    // needs to be added on all processors where it is locally_relevant and
+    // all processors need to agree on the index.
+
+    // First find candidates for DoF indices to constrain for each velocity component.
+    types::global_dof_index vel_idx[dim];
+    {
+      for (unsigned int d=0; d<dim; ++d)
+        vel_idx[d] = numbers::invalid_dof_index;
+
+      unsigned int n_left_to_find = dim;
+
+      std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+      typename DoFHandler<dim>::active_cell_iterator cell;
+      for (cell = dof_handler.begin_active(); n_left_to_find>0 && cell != dof_handler.end(); ++cell)
+        if (cell->is_locally_owned())
+          {
+            cell->get_dof_indices (local_dof_indices);
+
+            for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
+              {
+                const unsigned int component = finite_element.system_to_component_index(i).first;
+
+                if (component < introspection.component_indices.velocities[0]
+                    || component >= introspection.component_indices.velocities[dim])
+                  continue; // only look at velocity
+
+                const unsigned int velocity_component = component - introspection.component_indices.velocities[0];
+
+                if (vel_idx[velocity_component] != numbers::invalid_dof_index)
+                  continue; // already found one
+
+                const types::global_dof_index idx = local_dof_indices[i];
+
+                if (constraints.can_store_line(idx) && !constraints.is_constrained(idx))
+                  {
+                    vel_idx[velocity_component] = idx;
+                    --n_left_to_find;
+                  }
+
+                // are we done searching?
+                if (n_left_to_find == 0)
+                  break; // exit inner loop, outer loop will terminate automatically
+              }
+
+          }
+
+#ifdef DEBUG
+      Assert(n_left_to_find == 0, ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+
+      for (unsigned int d=0; d<dim; ++d)
+        Assert(vel_idx[d] != numbers::invalid_dof_index,
+               ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+#endif
+    }
+
+
+    const unsigned int flags[] = {(NullspaceRemoval::linear_momentum_x
+                                   |NullspaceRemoval::net_translation_x),
+                                  (NullspaceRemoval::linear_momentum_y
+                                   |NullspaceRemoval::net_translation_y),
+                                  (NullspaceRemoval::linear_momentum_z
+                                   |NullspaceRemoval::net_translation_z)
+                                 };
+
+    for (unsigned int d=0; d<dim; ++d)
+      if (parameters.nullspace_removal & flags[d])
+        {
+          // Make a reduction to find the smallest index (processors with a larger candidate
+          // just happened to not be able to store that index)
+          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(vel_idx[d], mpi_communicator);
+
+          // Finally set this DoF to zero (if we care about it):
+          if (constraints.can_store_line(global_idx))
+            {
+              Assert(!constraints.is_constrained((global_idx)), ExcInternalError());
+              constraints.add_line(global_idx);
+            }
+        }
+  }
+
+
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
@@ -459,7 +552,8 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector);
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::setup_nullspace_constraints (ConstraintMatrix &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

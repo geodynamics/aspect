@@ -40,6 +40,7 @@
 #include <deal.II/base/tensor_function.h>
 
 #include <aspect/global.h>
+#include <aspect/compat.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -837,6 +838,24 @@ namespace aspect
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                             LinearAlgebra::Vector &vec);
+
+
+      /**
+       * Add constraints to the given @p constraints object that are required
+       * for unique solvability of the velocity block based on the nullspace
+       * removal settings.
+       *
+       * This method will add a zero Dirichlet constraint for the first
+       * velocity unknown in the domain for each velocity component, which is
+       * later being processed for translational or linear momentum
+       * removal. This avoids breakdowns of the linear solvers that otherwise
+       * occured in some instances.
+       *
+       * @note: Rotational modes are currently not handled and don't appear
+       * to require constraints so far.
+       */
+      void setup_nullspace_constraints(ConstraintMatrix &constraints);
+
 
       /**
        * Eliminate the nullspace of the velocity in the given vector. Both
