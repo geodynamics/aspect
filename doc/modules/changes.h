@@ -7,6 +7,13 @@
  *
  * <ol>
  *
+ * <li> Fixed: We now use the correct residual to calculate the stabilization
+ * for the advection of temperature and compositional fields. Both the latent
+ * heat term for the temperature and the reaction terms for the compositional
+ * fields were missing.
+ * <br>
+ * (Juliane Dannberg, 2015/05/13)
+ *
  * <li> Fixed: The advection solver had problems converging for 
  * constant compositional fields in timestep 1. This is fixed now.
  * <br>
