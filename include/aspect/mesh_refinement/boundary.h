@@ -46,6 +46,18 @@ namespace aspect
       public:
 
         /**
+         * Execute this mesh refinement criterion.
+         *
+         * @param[out] error_indicators A vector that for every active cell of
+         * the current mesh (which may be a partition of a distributed mesh)
+         * provides an error indicator. This vector will already have the
+         * correct size when the function is called.
+         */
+        virtual
+        void
+        execute (Vector<float> &error_indicators) const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -58,18 +70,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-        /**
-         * Execute this mesh refinement criterion.
-         *
-         * @param[out] error_indicators A vector that for every active cell of
-         * the current mesh (which may be a partition of a distributed mesh)
-         * provides an error indicator. This vector will already have the
-         * correct size when the function is called.
-         */
-        virtual
-        void
-        execute (Vector<float> &error_indicators) const;
 
       private:
         /**
