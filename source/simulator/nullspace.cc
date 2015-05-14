@@ -200,7 +200,7 @@ namespace aspect
                 const unsigned int component = finite_element.system_to_component_index(i).first;
 
                 if (component < introspection.component_indices.velocities[0]
-                    || component >= introspection.component_indices.velocities[dim])
+                    || component > introspection.component_indices.velocities[dim-1])
                   continue; // only look at velocity
 
                 const unsigned int velocity_component = component - introspection.component_indices.velocities[0];

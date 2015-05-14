@@ -129,17 +129,13 @@ namespace aspect
              p != boundary_indicators.end(); ++p)
           {
             local_max_values.push_back (local_max_vel[*p]);
-            local_min_values.push_back (-local_min_vel[*p]);
+            local_min_values.push_back (local_min_vel[*p]);
           }
         // then collect contributions from all processors
-        // now do the reductions over all processors. we can use Utilities::MPI::max
-        // for the maximal values. unfortunately, there is currently no matching
-        // Utilities::MPI::min function, so we already negated the argument, now take the maximum
-        // as well, then negate it all again
         std::vector<double> global_max_values;
         Utilities::MPI::max (local_max_values, this->get_mpi_communicator(), global_max_values);
         std::vector<double> global_min_values;
-        Utilities::MPI::max (local_min_values, this->get_mpi_communicator(), global_min_values);
+        Utilities::MPI::min (local_min_values, this->get_mpi_communicator(), global_min_values);
 
         // and now take them apart into the global map again
         unsigned int index = 0;
@@ -148,7 +144,7 @@ namespace aspect
              p != boundary_indicators.end(); ++p, ++index)
           {
             global_max_vel[*p] = global_max_values[index];
-            global_min_vel[*p] = -global_min_values[index];
+            global_min_vel[*p] = global_min_values[index];
           }
       }
 

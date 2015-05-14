@@ -40,7 +40,6 @@
 #include <deal.II/base/tensor_function.h>
 
 #include <aspect/global.h>
-#include <aspect/compat.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
