@@ -150,8 +150,8 @@ namespace aspect
       typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
 
       /**
-      * Import nullspace removal type.
-      */
+       * Import nullspace removal type.
+       */
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
@@ -653,11 +653,11 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Fills a vector with the artificial viscosity for the temperature
-       * or composition on each local cell.
+       * Fills a vector with the artificial viscosity for the temperature or
+       * composition on each local cell.
        * @param viscosity_per_cell Output vector
        * @param advection_field Determines whether this variable should select
-       *   the temperature field or a compositional field.
+       * the temperature field or a compositional field.
        */
       void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
                                      const AdvectionField &advection_field) const;
@@ -851,12 +851,12 @@ namespace aspect
        *
        * This method will add a zero Dirichlet constraint for the first
        * velocity unknown in the domain for each velocity component, which is
-       * later being processed for translational or linear momentum
-       * removal. This avoids breakdowns of the linear solvers that otherwise
-       * occured in some instances.
+       * later being processed for translational or linear momentum removal.
+       * This avoids breakdowns of the linear solvers that otherwise occured
+       * in some instances.
        *
-       * @note: Rotational modes are currently not handled and don't appear
-       * to require constraints so far.
+       * @note: Rotational modes are currently not handled and don't appear to
+       * require constraints so far.
        */
       void setup_nullspace_constraints(ConstraintMatrix &constraints);
 
@@ -878,9 +878,9 @@ namespace aspect
       /**
        * Remove the angular momentum of the given vector
        *
-       * @param use_constant_density determines whether to use a constant density
-       * (which corresponds to removing a net rotation instead of net angular
-       * momentum).
+       * @param use_constant_density determines whether to use a constant
+       * density (which corresponds to removing a net rotation instead of net
+       * angular momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -895,9 +895,9 @@ namespace aspect
       /**
        * Remove the linear momentum of the given vector
        *
-       * @param use_constant_density determines whether to use a constant density
-       * (which corresponds to removing a net translation instead of net linear
-       * momentum).
+       * @param use_constant_density determines whether to use a constant
+       * density (which corresponds to removing a net translation instead of
+       * net linear momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -1062,13 +1062,12 @@ namespace aspect
       void output_statistics();
 
       /**
-       * This routine computes the initial Stokes residual that is
-       * needed as a convergence criterion in models with the iterated
-       * IMPES solver. We calculate it in the same way as the
-       * tolerance for the linear solver, using the norm of the pressure
-       * RHS for the pressure part and a residual with zero velocity
-       * for the velocity part to get the part of the RHS not balanced
-       * by the static pressure.
+       * This routine computes the initial Stokes residual that is needed as a
+       * convergence criterion in models with the iterated IMPES solver. We
+       * calculate it in the same way as the tolerance for the linear solver,
+       * using the norm of the pressure RHS for the pressure part and a
+       * residual with zero velocity for the velocity part to get the part of
+       * the RHS not balanced by the static pressure.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
