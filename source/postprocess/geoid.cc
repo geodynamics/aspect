@@ -58,7 +58,7 @@ namespace aspect
       template <int dim>
       void
       SphericalHarmonicsExpansion<dim>::add_data_point (const Point<dim> &position,
-                                                  const double value)
+                                                        const double value)
       {
         const std_cxx11::array<double,dim> spherical_position =
             Utilities::spherical_coordinates(position);
@@ -112,13 +112,14 @@ namespace aspect
 
       // TODO AssertThrow (no_free_surface);
 
-      expansions.resize(number_of_layers);
+      buoyancy_expansions.resize(number_of_layers);
       for (unsigned int i = 0; i < number_of_layers; ++i)
-        expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+        buoyancy_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
       surface_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
       bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
+      //TODO: remove this when finished, it is only there for benchmark purposes
       internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -176,7 +177,7 @@ namespace aspect
 
               this->get_material_model().evaluate(in, out);
 
-              // see if the cell is at the *top* boundary
+              // see if the cell is at the *top* or *bottom* boundary
               bool surface_cell = false;
               bool bottom_cell = false;
 
@@ -207,12 +208,15 @@ namespace aspect
                   const double density   = out.densities[q];
                   const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
 
-                  expansions[layer_id]->add_data_point(location,buoyancy);
+                  buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
 
+                  //TODO: remove this when finished, it is only there for benchmark purposes
                   const std_cxx1x::array<double,dim> spherical_position =
                       Utilities::spherical_coordinates(location);
                   example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
 
+                  // if this is a cell at the surface, add the topography to
+                  // the topography expansion
                   if (surface_cell)
                     {
                       const double viscosity = out.viscosities[q];
@@ -228,6 +232,9 @@ namespace aspect
                       // Add topography contribution
                       surface_topography_expansion->add_data_point(location,dynamic_topography);
                     }
+
+                  // if this is a cell at the bottom, add the topography to
+                  // the bottom expansion
                   if (bottom_cell)
                     {
                       const double viscosity = out.viscosities[q];
@@ -246,6 +253,7 @@ namespace aspect
                 }
             }
 
+      // From here on we consider the gravity constant at the value of the surface
       const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));
 
       const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
@@ -257,8 +265,8 @@ namespace aspect
 
       for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
         {
-          expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
-          const internal::HarmonicCoefficients layer_coefficients = expansions[layer_id]->get_coefficients();
+          buoyancy_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients layer_coefficients = buoyancy_expansions[layer_id]->get_coefficients();
 
           const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
 
@@ -275,6 +283,8 @@ namespace aspect
 
                   buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
                   buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+
+                  //TODO: bottom_geoid
                   //bottom_geoid_expansion.sine_coefficients[index] += con1 * conb * layer_coefficients.sine_coefficients[index];
                   //bottom_geoid_expansion.cosine_coefficients[index] += con1 * conb * layer_coefficients.cosine_coefficients[index];
 
@@ -282,8 +292,8 @@ namespace aspect
             }
         }
 
-      internal::HarmonicCoefficients topography_contribution(max_degree);
 
+      internal::HarmonicCoefficients topography_contribution(max_degree);
       if (include_topography_contribution)
         {
           surface_topography_expansion->mpi_sum_coefficients(this->get_mpi_communicator());
@@ -318,7 +328,7 @@ namespace aspect
           for (unsigned int i = 0, k = 0; i < max_degree; i++)
             {
               const double con1 = density_contrast * scaling / (2.0 * i + 1.0);
-              const double con2 = con1 * pow(inner_radius, i+2);
+              const double con2 = con1 * pow(inner_radius/outer_radius, i+2);
 
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
@@ -336,10 +346,13 @@ namespace aspect
       // On process 0 write output file
       if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
+          const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                                   this->get_time() / year_in_seconds :
+                                                   this->get_time());
           std::ofstream file (filename.c_str());
 
           file << "# Timestep Maximum_degree Time" << std::endl;
-          file << this->get_timestep_number() << " " << max_degree << " " << this->get_time() << std::endl;
+          file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
           file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
           // Write the solution to an output file
           for (unsigned int i=0, k=0; i < max_degree; ++i)
