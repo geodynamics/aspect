@@ -126,10 +126,10 @@ namespace aspect
          * coefficients for each layer, which will be finally added to a
          * combined contribution at the surface.
          */
-        std::vector <std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > > expansions;
+        std::vector <std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > > expansions;
 
-        std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
-        std::auto_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;
+        std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
+        std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;
     };
   }
 }
