@@ -67,9 +67,9 @@ SET_IF_EMPTY(TEST_TIME_LIMIT 600)
 ADD_CUSTOM_TARGET(tests)
 
 #
-# We need a diff tool, preferably numdiff:
+# We need a diff tool, preferably numdiff otherwise diff. Let the user
+# override it by specifying TEST_DIFF.
 #
-
 FIND_PROGRAM(DIFF_EXECUTABLE
   NAMES diff
   HINTS ${DIFF_DIR}
@@ -86,14 +86,9 @@ MARK_AS_ADVANCED(DIFF_EXECUTABLE NUMDIFF_EXECUTABLE)
 
 IF("${TEST_DIFF}" STREQUAL "")
   #
-  # No TEST_DIFF is set, specify one:
-  #
 
   IF(NOT NUMDIFF_EXECUTABLE MATCHES "-NOTFOUND")
-    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE} -a 1e-6 -r 1e-8 -s ' \\t\\n:,')
-    IF(DIFF_EXECUTABLE MATCHES "-NOTFOUND")
-      SET(DIFF_EXECUTABLE ${NUMDIFF_EXECUTABLE})
-    ENDIF()
+    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE})
   ELSEIF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
     SET(TEST_DIFF ${DIFF_EXECUTABLE})
   ELSE()
@@ -114,6 +109,9 @@ FOREACH(_test ${_tests})
   CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 
   IF("${_use_test}" STREQUAL "1")
+
+    # main target for this test:
+    ADD_CUSTOM_TARGET(tests.${_test})
 
     MATH(EXPR _n_tests "${_n_tests} + 1")
 
@@ -214,13 +212,6 @@ FOREACH(_test ${_tests})
     ENDIF()
 
 
-    # The final target for this test
-    ADD_CUSTOM_TARGET(${_test}.run
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-      )
-
-
-    ADD_CUSTOM_TARGET(tests.${_test})
 
 
     # for each of the output files saved in the source directory for
@@ -268,20 +259,11 @@ FOREACH(_test ${_tests})
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	COMMAND
-	  if (${TEST_DIFF} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
-		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	      > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff) \; then
-	    : \;
-	  else
-	    mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
-	       ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
-	    echo "******* Error during diffing output results for ${_test}/${_output}" \;
-	    echo "******* Results are stored in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed" \;
-	    echo "******* Check: ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}" \;
-	    echo "******* Diffs are:" \;
-	    cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
-	    false \;
-	  fi
+	    ${CMAKE_CURRENT_SOURCE_DIR}/diff_test.sh 
+		${TEST_DIFF}
+		${_test}/${_output}
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}
 	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       )
