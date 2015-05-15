@@ -250,6 +250,10 @@ FOREACH(_test ${_tests})
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
       )
 
+      # While it looks like a typo to depend on screen-output and not on
+      # ${_output}, there is no rule to generate ${_output}. But generating
+      # screen-output will of course generate all output files (including
+      # ${_output}), so this rule will work as expected.
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
 	COMMAND
 	  cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
