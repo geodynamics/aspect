@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,6 +49,7 @@
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
@@ -1144,6 +1145,7 @@ namespace aspect
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
       const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
+      const std::auto_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;

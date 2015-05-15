@@ -137,7 +137,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -148,7 +148,10 @@ namespace aspect
                        "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
                        "scheme only solves the Stokes system and ignores compositions and the "
                        "temperature equation (careful, the material model must not depend on "
-                       "the temperature; mostly useful for Stokes benchmarks).");
+                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only'"
+                       "scheme only solves the temperature and other advection systems and instead "
+                       "of solving for the Stokes system, a prescribed velocity and pressure is "
+                       "used");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
@@ -661,6 +664,8 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
       nonlinear_solver = NonlinearSolver::Stokes_only;
+    else if (prm.get ("Nonlinear solver scheme") == "Advection only")
+      nonlinear_solver = NonlinearSolver::Advection_only;
     else
       AssertThrow (false, ExcNotImplemented());
 
@@ -1093,6 +1098,7 @@ namespace aspect
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
     CompositionalInitialConditions::declare_parameters<dim> (prm);
+    PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
