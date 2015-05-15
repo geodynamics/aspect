@@ -257,7 +257,7 @@ FOREACH(_test ${_tests})
 	  | egrep -v '^--'
 	  | sed 's\#${ASPECT_BASE_DIR}\#ASPECT_DIR\#g'
 	  > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
+	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
       )
 
