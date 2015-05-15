@@ -14,6 +14,11 @@
  * <br>
  * (Juliane Dannberg, 2015/05/13)
  *
+ * <li> New: There is now a mesh refinement criterion called Boundary
+ * based on refining near a user-specified list of boundary indicators.
+ * <br>
+ * (Ian Rose, 2015/05/12)
+ *
  * <li> Fixed: The advection solver had problems converging for 
  * constant compositional fields in timestep 1. This is fixed now.
  * <br>
