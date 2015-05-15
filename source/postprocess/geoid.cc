@@ -60,11 +60,11 @@ namespace aspect
       SphericalHarmonicsExpansion<dim>::add_data_point (const Point<dim> &position,
                                                   const double value)
       {
-        const std_cxx1x::array<double,dim> spherical_position =
+        const std_cxx11::array<double,dim> spherical_position =
             Utilities::spherical_coordinates(position);
 
-        for (int i = 0, k = 0; i < max_degree; ++i)
-          for (int j = 0; j <= i; ++j, ++k)
+        for (unsigned int i = 0, k = 0; i < max_degree; ++i)
+          for (unsigned int j = 0; j <= i; ++j, ++k)
           {
               coefficients.sine_coefficients[k] += value
                                                   * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1]);
