@@ -56,11 +56,6 @@ namespace aspect
     public:
       /**
        * Constructor.
-       * @param split_vel_pressure Set to true if velocity and pressure should
-       * be in separate blocks.
-       * @param names_of_compositional_fields The names of compositional
-       * fields that will be used in this simulation. This is used in
-       * initializing the fields of this class.
        */
       Introspection (const Parameters<dim> &parameters);
 

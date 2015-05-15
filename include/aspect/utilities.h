@@ -107,7 +107,7 @@ namespace aspect
          * in cartesian coordinates.
          *
          * @param position The current position to compute the data (velocity, temperature, etc.)
-         * @param time_weight A weighting between the two current timesteps n and n+1
+         * @param component The index of the data column to be returned.
          */
         double
         get_data(const Point<dim> &position,

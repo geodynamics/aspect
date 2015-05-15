@@ -70,7 +70,6 @@
  * <br>
  * (Rene Gassmoeller, Timo Heister, Juliane Dannberg, 2015/04/14)
  *
- * <ol>
  * <li> New: ASPECT can now read the list of input arguments from the
  * default input stdin, instead of a file, by specifying "--" for
  * the name of the input file.

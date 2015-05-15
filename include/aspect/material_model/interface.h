@@ -304,24 +304,30 @@ namespace aspect
       /**
        * An enum to define what kind of averaging operations are
        * implemented. These are:
+       *
        * - No averaging, i.e., leave the values as they were provided
        *   by the material model.
+       *
        * - Arithmetic averaging: Set the values of each output quantity
        *   at every quadrature point to
-       *   $$ \bar x = \frac 1Q \sum_{q=1}^Q x_q $$
+       *   \f[ \bar x = \frac 1Q \sum_{q=1}^Q x_q \f]
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       *
        * - Harmonic averaging: Set the values of each output quantity
        *   at every quadrature point to
-       *   $$ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} $$
+       *   \f[ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} \f]
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       *
        * - Geometric averaging: Set the values of each output quantity
        *   at every quadrature point to
-       *   $$ \bar x = \left(\prod_{q=1}^Q x_q\right)^{1/Q} $$
+       *   \f[ \bar x = \left(\prod_{q=1}^Q x_q\right)^{1/Q} \f]
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       *
        * - Pick largest: Set the values of each output quantity
        *   at every quadrature point to
-       *   $$ \bar x = \max_{1\le q\le Q} x_q $$
+       *   \f[ \bar x = \max_{1\le q\le Q} x_q \f]
        *   where $x_q$ are the values at the $Q$ quadrature points.
+       *
        * - Project to $Q_1$: This operation takes the values at the
        *   quadrature points and computes the best bi- or trilinear
        *   approximation for them. In other words, it projects the
