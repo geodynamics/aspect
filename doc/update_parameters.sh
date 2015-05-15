@@ -17,6 +17,9 @@ sed -i 's/dynamic_topography.NNNNN/dynamic\\_topography.NNNNN/g' parameters.tex
 sed -i 's/Spline_knots.txt/Spline\\_knots.txt/g' parameters.tex
 sed -i 's/melt_fraction/melt\\_fraction/g' parameters.tex
 sed -i 's/phi\.%d/phi\.\\%d/g' parameters.tex
+sed -i 's/box_2d_%s.%d/box\\_2d\\_\\%s.\\%d/g' parameters.tex
+sed -i 's/box_2d\.txt/box\\_2d\.txt/g' parameters.tex
+sed -i 's/#/\\#/g' parameters.tex
 
 grep '[^\\]%' parameters.tex
 

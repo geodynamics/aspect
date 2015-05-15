@@ -251,9 +251,9 @@ namespace aspect
                            default_filename,
                            Patterns::Anything (),
                            "The file name of the material data. Provide file in format: "
-                           "(Velocity file name).\\%s%d where \\\\%s is a string specifying "
+                           "(Velocity file name).\\%s\\%d where \\%s is a string specifying "
                            "the boundary of the model according to the names of the boundary "
-                           "indicators (of a box or a spherical shell).%d is any sprintf integer "
+                           "indicators (of a box or a spherical shell).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
                            Patterns::Double (0),
