@@ -157,7 +157,7 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the 3 (in 2d) or 6 (in 3d) components of the shear stress "
                                                   "tensor, i.e., for the components of the tensor "
-                                                  "$2\\eta\\varepsilon(\\mathbf u)}$ "
+                                                  "$2\\eta\\varepsilon(\\mathbf u)$ "
                                                   "in the incompressible case and "
                                                   "$2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]$ "

@@ -56,11 +56,6 @@ namespace aspect
     public:
       /**
        * Constructor.
-       * @param split_vel_pressure Set to true if velocity and pressure should
-       * be in separate blocks.
-       * @param names_of_compositional_fields The names of compositional
-       * fields that will be used in this simulation. This is used in
-       * initializing the fields of this class.
        */
       Introspection (const Parameters<dim> &parameters);
 
@@ -296,17 +291,20 @@ namespace aspect
       compositional_name_exists (const std::string &name) const;
 
       /**
-       * Return the vector of finite element spaces used for the construction of the FESystem.
+       * Return the vector of finite element spaces used for the construction
+       * of the FESystem.
        */
       const std::vector<const dealii::FiniteElement<dim> *> &get_fes() const;
 
       /**
-       * Return the vector of multiplicities used for the construction of the FESystem.
+       * Return the vector of multiplicities used for the construction of the
+       * FESystem.
        */
       const std::vector<unsigned int> &get_multiplicities() const;
 
       /**
-       * Free memory allocated inside @p fes after it is used to construct the FESystem.
+       * Free memory allocated inside @p fes after it is used to construct the
+       * FESystem.
        */
       void free_finite_element_data();
 

@@ -421,7 +421,8 @@ namespace aspect
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *
-         * @param data_out The DataOut object that was used to write the solutions.
+         * @param data_out The DataOut object that was used to write the
+         * solutions.
          * @param solution_file_prefix The stem of the filename to be written.
          * @param filenames List of filenames for the current output from all
          * processors.

@@ -231,10 +231,10 @@ namespace aspect
         get_periodic_boundary_pairs () const;
 
         /**
-         * If true, the geometry contains cells with boundaries that are not straight
-         * and have a deal.II boundary object attached to it. If the return value is
-         * @p false, certain operation can be optimized.The default implementation of
-         * this function will return @p true.
+         * If true, the geometry contains cells with boundaries that are not
+         * straight and have a deal.II boundary object attached to it. If the
+         * return value is @p false, certain operation can be optimized.The
+         * default implementation of this function will return @p true.
          */
         virtual
         bool
