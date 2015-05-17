@@ -4,7 +4,7 @@
     are up to date in the manual
   . check that readme.html is okay and the links to the mailinglists are working (also in manual.pdf)
   . setup:
-      export OLDVER=1.1;export VER=1.2;export NEXTVER=1.3.pre
+      export OLDVER=1.2;export VER=1.3;export NEXTVER=1.4.pre
       export DEALSRCDIR=...
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/tests/scripts/checkdoxygen.py
@@ -15,15 +15,15 @@
       find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2015 by the authors of the ASPECT code./}' $file; done
       git status # check!
       git commit -a -m "doxygen formatting, astyle, comment wrapping" # or rather create a pull-request
-  . update changes.h in doc/modules:
+  . create branch for master PR to update changes.h in doc/modules:
+      git checkout -b post-release-$VER
       cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
       cd doc;./bump_version.sh $NEXTVER; cd ..
-      git commit -m "release task: update version and changes.h" # or rather create a pull-request
-  . create a branch:
-      git checkout master
-      git checkout -b aspect-$VER
-  . version update:
-      cd doc;./bump_version.sh $VER; cd ..
+      git commit -m "release task: update version and changes.h"
+  . create a branch, bump version:
+      git checkout post-release-$VER && \
+      git checkout -b aspect-$VER && \
+      cd doc && ./bump_version.sh $VER && cd .. && \
       git commit -m "release task: update version info"
   . remove from the branch:
       git rm -r data/material-model/table \
@@ -33,15 +33,17 @@
       cookbooks/future/table_model.prm \
       include/aspect/material_model/table.h \
       include/aspect/postprocess/table_velocity_statistics.h \
-      include/aspect/postprocess/table_heat_flux_statistics.h
+      include/aspect/postprocess/table_heat_flux_statistics.h && \
       git commit -m "release task: remove table model"
   . compile aspect, make sure you have a symlink in the main directory for the next step
   . update doc/manual/parameters.tex and documentation:
-      cd doc;./update_parameters.sh; make manual.pdf; cd ..
-      git add doc/manual/parameters.tex doc/manual.pdf
+      cd doc && ./update_parameters.sh && make manual.pdf && cd .. && \
+      git add doc/manual/parameters.tex doc/manual.pdf && \
       git commit -m "release task: update manual"
   . make sure the .prm and .xml files we ship match the default values of
     parameters
+  . create a RC tar file:
+      git archive --format=tar.gz --prefix=aspect-$VER-rc1/ HEAD >aspect-$VER-rc1.tar.gz
   . Tag the release:
       git tag -a v$VER -m "tag version $VER"
   . create a tar file:
@@ -58,6 +60,43 @@
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
+  . update manual on mainline: use .pdf from last release?!
+  
+
+Announcement for 1.3 (May 18, 2015)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 1.3. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   http://aspect.dealii.org/
+
+This release includes the following changes:
+- New: Averaging of material properties between the quadrature points of a
+  cell. This greatly increases the stability of solutions in simulations with
+  spatially varying coefficients, and also greatly accelerates the solution,
+  at times up to a factor of ten.
+- Corrections to the entropy stabilization scheme for compositional fields.
+- Fixed and extended: Removal of rigid body translations and rotations when
+  the simulation has a nullspace.
+- New: VTU visualization output can now be grouped into an arbitrary number of
+  files per time step.
+- Various fixes to the nonlinear solver residual computation.
+- New visualization postprocessors that can output the shear stress and full
+  stress tensors.
+- Fixes to the latent heat formulation.
+- New 'ascii data' plugins for boundary and initial conditions.
+- New mass flux statistics postprocessor.
+- Many other fixes and small improvements.
+
+A complete list of changes can be found at
+  http://aspect.dealii.org/doc/doxygen/changes_between_1_82_and_1_83.html
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
+
 
 
 Announcement for 1.2 (January 25rd, 2015)
