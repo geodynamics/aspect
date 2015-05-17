@@ -40,31 +40,31 @@ ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_FILENAME}
 
 
 #
-# finally do the work
+# Finally do the work.
 #
 
-rm -f ${DIFF_OUTPUT}.failed
-
-echo "HELLO ${DIFF_EXE}"
+rm -f ${DIFF_OUTPUT}.failed ${DIFF_OUTPUT}
 
 case ${DIFF_EXE} in
     *numdiff)
 	${DIFF_EXE} -a 1e-6 -r 1e-8 -s ' \t\n:<>=,;' \
-	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}
+	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
 	;;
     *)
 	"${DIFF_EXE}" \
-	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}
+	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
 esac
 
 if [ $? -ne 0 ]; then
-  mv ${DIFF_OUTPUT} ${DIFF_OUTPUT}.failed
+  mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}.failed
   echo "******* Error during diffing output results for ${PRETTY_FILENAME}"
   echo "******* Results are stored in ${DIFF_OUTPUT}.failed"
   echo "******* Check ${ORIGINAL_GEN_FULL_PATH} ${ORIGINAL_REF_FULL_PATH}"
   echo "******* 50 lines of diffs are:"
   head -n 50 ${DIFF_OUTPUT}.failed
   exit 1
+else
+  mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}
 fi
 
 exit 0
