@@ -18,7 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/particle.h>
+#include <aspect/particle/base_particle.h>
+#include <list>
 
 namespace aspect
 {
@@ -27,12 +28,13 @@ namespace aspect
     template <int dim>
     inline
     BaseParticle<dim>::BaseParticle (const Point<dim> &new_loc,
-                                     const double &new_id)
+                             const double &new_id)
       :
       location (new_loc),
       id (new_id),
       is_local (true),
-      check_vel (true)
+      check_vel (true),
+      val (0)
     {
     }
 
@@ -44,7 +46,8 @@ namespace aspect
       velocity (),
       id (0),
       is_local (true),
-      check_vel (true)
+      check_vel (true),
+      val(0)
     {
     }
 
@@ -63,6 +66,12 @@ namespace aspect
       location = new_loc;
     }
 
+    template <int dim>
+    void
+    BaseParticle<dim>::set_data_len (const unsigned int data_len)
+    {
+      val.resize(data_len - dim - dim - 1);
+    }
 
     template <int dim>
     void
@@ -78,11 +87,18 @@ namespace aspect
         {
           data.push_back(velocity(i));
         }
+
       data.push_back(id);
+
+      for (unsigned int i = 0; i < val.size(); i++)
+        {
+          data.push_back(val [i]);
+        }
     }
 
     template <int dim>
-    unsigned int BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
+    unsigned int
+    BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
     {
       unsigned int p = pos;
       // Read location data
@@ -96,14 +112,22 @@ namespace aspect
           velocity (i) = data[p++];
         }
       id = data[p++];
+
+      for (unsigned int i = 0; i < val.size(); i++)
+        {
+          val [i] = data[p++];
+        }
+
       return p;
     }
 
     template <int dim>
     unsigned int
-    BaseParticle<dim>::data_len ()
+    BaseParticle<dim>::data_len () const
     {
-      return (dim + dim + 1);
+      const unsigned int length = dim + dim + 1 + val.size();
+
+      return length;
     }
 
 
@@ -136,6 +160,28 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    BaseParticle<dim>::set_properties (const std::vector<double> new_properties)
+    {
+      val = new_properties;
+    }
+
+    template <int dim>
+    const
+    std::vector<double>
+    BaseParticle<dim>::get_properties () const
+    {
+      return val;
+    }
+
+    template <int dim>
+    std::vector<double>&
+    BaseParticle<dim>::get_properties ()
+    {
+      return val;
+    }
+
+    template <int dim>
     bool
     BaseParticle<dim>::local () const
     {
@@ -163,21 +209,6 @@ namespace aspect
       check_vel = new_vel_check;
     }
 
-    template <int dim>
-    void
-    BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo> &data_info)
-    {
-      // Add the position, velocity, ID
-      data_info.push_back (
-        MPIDataInfo ("pos", dim));
-      data_info.push_back (
-        MPIDataInfo ("velocity", dim));
-      data_info.push_back (MPIDataInfo ("id", 1));
-    }
-
-
-
-    // explicit instantiation
     template class BaseParticle<2>;
     template class BaseParticle<3>;
   }

@@ -31,6 +31,7 @@ namespace aspect
       integrator(NULL),
       output(NULL),
       generator(NULL),
+      property_manager(),
       initialized(false),
       next_data_output_time(std::numeric_limits<double>::quiet_NaN())
     {}
@@ -45,32 +46,24 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    PassiveTracers<dim>::initialize()
+    {
+
+    }
+
+    template <int dim>
     std::pair<std::string,std::string>
-    PassiveTracers<dim>::execute (TableHandler &)
+    PassiveTracers<dim>::execute (TableHandler &statistics)
     {
       if (!initialized)
         {
-          // Create a generator object using a random uniform distribution
-          generator = Particle::Generator::create_generator_object<dim,Particle::BaseParticle<dim> >
-                      ("random_uniform");
 
-          // Create an output object depending on what the parameters specify
-          output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> >
-                   (data_output_format,
-                    this->get_output_directory(),
-                    this->get_mpi_communicator());
-
-          // Create an integrator object depending on the specified parameter
-          integrator = Particle::Integrator::create_integrator_object<dim,Particle::BaseParticle<dim> >
-                       (integration_scheme);
+          next_data_output_time = this->get_time();
 
           // Set up the particle world with the appropriate simulation objects
-          world.set_mapping(&(this->get_mapping()));
-          world.set_triangulation(&(this->get_triangulation()));
-          world.set_dof_handler(&(this->get_dof_handler()));
           world.set_integrator(integrator);
-          world.set_solution(&(this->get_solution()));
-          world.set_mpi_comm(this->get_mpi_communicator());
+          world.set_manager(&property_manager);
 
           // And initialize the world
           world.init();
@@ -80,28 +73,37 @@ namespace aspect
           // Add the specified number of particles
           generator->generate_particles(world, n_initial_tracers);
           world.finished_adding_particles();
+          world.initialize_particles();
 
           initialized = true;
         }
 
-      std::string     result_string = "done", data_file_name;
+      const unsigned int num_particles = world.get_global_particle_count();
+      statistics.add_value ("Advected particles",num_particles);
+      std::ostringstream result_string;
+      result_string << num_particles;
 
       // If it's time to generate an output file, call the appropriate functions and reset the timer
       if (this->get_time() >= next_data_output_time)
         {
           set_next_data_output_time (this->get_time());
-          data_file_name = output->output_particle_data(world.get_particles(),
+
+          std::vector<aspect::Particle::MPIDataInfo>        data_info;
+          property_manager.add_mpi_types(data_info);
+
+          const std::string data_file_name = output->output_particle_data(world.get_particles(),
+                                                        data_info,
                                                         (this->convert_output_to_years() ?
                                                          this->get_time() / year_in_seconds :
                                                          this->get_time()));
-          result_string += ". Writing particle graphical output " + data_file_name;
+          result_string << ". Writing particle graphical output " + data_file_name;
         }
 
       // Advance the particles in the world by the current timestep
       world.advance_timestep (this->get_timestep(),
                               this->get_solution());
 
-      return std::make_pair("Advecting particles:", result_string);
+      return std::make_pair("Advected particles: ", result_string.str());
     }
 
 
@@ -147,16 +149,15 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-          prm.declare_entry("Data output format", "vtu",
-                            Patterns::Selection(Particle::Output::output_object_names()),
-                            "File format to output raw particle data in.");
-          prm.declare_entry("Integration scheme", "rk2",
-                            Patterns::Selection(Particle::Integrator::integrator_object_names()),
-                            "Integration scheme to move particles.");
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      Particle::Generator::declare_parameters<dim>(prm);
+      Particle::Output::declare_parameters<dim>(prm);
+      Particle::Integrator::declare_parameters<dim>(prm);
+      Particle::Property::Manager<dim>::declare_parameters(prm);
     }
 
 
@@ -170,18 +171,38 @@ namespace aspect
         {
           n_initial_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
           data_output_interval = prm.get_double ("Time between data output");
-          data_output_format   = prm.get("Data output format");
-#ifndef DEAL_II_HAVE_HDF5
-          AssertThrow (data_output_format != "hdf5",
-                       ExcMessage ("deal.ii was not compiled with HDF5 support, "
-                                   "so HDF5 output is not possible. Please "
-                                   "recompile deal.ii with HDF5 support turned on."));
-#endif
-          integration_scheme = prm.get("Integration scheme");
+
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
+
+      world.initialize(this->get_simulator());
+
+      // Create a generator object using a random uniform distribution
+      generator = Particle::Generator::create_particle_generator<dim>
+                  (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator))
+        sim->initialize (this->get_simulator());
+
+      // Create an output object depending on what the parameters specify
+      output = Particle::Output::create_particle_output<dim>
+               (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output))
+        sim->initialize (this->get_simulator());
+      output->initialize(this->get_output_directory(),
+                         this->get_mpi_communicator());
+
+      // Create an integrator object depending on the specified parameter
+      integrator = Particle::Integrator::create_particle_integrator<dim>
+                   (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator))
+        sim->initialize (this->get_simulator());
+
+      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&property_manager);
+      sim->initialize (this->get_simulator());
+      property_manager.parse_parameters(prm);
+      property_manager.initialize();
     }
   }
 }
