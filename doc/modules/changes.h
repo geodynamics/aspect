@@ -7,6 +7,10 @@
  *
  * <ol>
  *
+ * <li> New: A material model plugin for Drucker-Prager plasticity.
+ * <br>
+ * (Anne Glerum, 2015/08/03)
+ *
  * <li> Fixed: Quasi-implicit stabilization of a free surface had used the 
  * reference density instead of the density as evaluated by the material 
  * model.  Now it uses the actual density of at the surface.  This should 
