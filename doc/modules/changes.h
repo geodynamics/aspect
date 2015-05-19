@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> New: There are now parameter files and a section in the manual for 
+ * reproducing the benchmarks for free surface computations from Crameri et 
+ * al. (2012).
+ * <br>
+ * (Ian Rose, 2015/06/14)
+ *
  * <li> New: One can now prescribe the traction on a boundary instead of 
  * supplying velocity boundary conditions.
  * This is done in a similar way as for the prescribed velocity boundary conditions:
@@ -44,11 +50,13 @@
  * with the existing averaging schemes, except for the Q1 averaging schemes into
  * a compositing material model. The new averaging schemes are normalised weighted
  * distance versions of the arithmetic, harmonic and geometric averages.
+ * <br>
  * (Menno Fraters, 2015/05/28)
  *
  * <li> New: There are now postprocessors BoundaryDensities and
  * BoundaryPressures which calculate laterally averaged densities 
  * and pressures at the top and bottom of the domain.
+ * <br>
  * (Ian Rose, 2015/05/28)
  *
  * <li> New: Postprocessor and visualization postprocessor plugins can
