@@ -906,7 +906,7 @@ namespace aspect
         material_model_inputs.pressure);
 
     // only the viscosity in the material can depend on the strain_rate
-    // if this is not needed, we can same some time here. By setting the
+    // if this is not needed, we can save some time here. By setting the
     // length of the strain_rate vector to 0, we signal to evaluate()
     // that we do not need to access the viscosity.
     if (compute_strainrate)
