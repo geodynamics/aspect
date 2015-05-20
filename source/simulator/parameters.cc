@@ -659,7 +659,7 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    //Also declare the parameters that the FreeSurfaceHandler needs
+    // also declare the parameters that the FreeSurfaceHandler needs
     Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
 
     // then, finally, let user additions that do not go through the usual
