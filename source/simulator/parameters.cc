@@ -414,20 +414,23 @@ namespace aspect
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
                          "A comma separated list denoting those boundaries "
-                         "on which the a traction force is prescribed, i.e., where "
+                         "on which a traction force is prescribed, i.e., where "
                          "known external forces act, resulting in an unknown velocity. This is "
                          "often used to model ``open'' boundaries where we only know the pressure. "
                          "This pressure then produces a force that is normal to the boundary and "
                          "proportional to the pressure."
                          "\n\n"
                          "The format of valid entries for this parameter is that of a map "
-                         "given as ``key1 [selector]: value1, key2 : value2, key3 : value3, ...'' where "
-                         "each key must be a valid boundary indicator (which is an integer) "
+                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is either an "
+                         "integer or the symbolic name the geometry model in use may have "
+                         "provided for this part of the boundary) "
                          "and each value must be one of the currently implemented boundary "
-                         "traction models. As an example, '1: function' applies "
-                         "the traction boundary condition specified by the plugin 'function' to the "
-                         "boundary with indicator 1.");
-
+                         "traction models. ``selector'' is an optional string given as a subset "
+                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "only to the components listed. As an example, '1 y: function' applies "
+                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "it will affect all components of the traction.");
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
                                                      "net translation|linear momentum|"
@@ -1103,7 +1106,7 @@ namespace aspect
             }
 
           // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't see it yet
+          // make sure we haven't seen it yet
           types::boundary_id boundary_id;
           try
             {
@@ -1135,28 +1138,68 @@ namespace aspect
            p != x_prescribed_traction_boundary_indicators.end(); ++p)
         {
           // each entry has the format (white space is optional):
-          // <id> : <value (might have spaces)>
+          // <id> [x][y][z] : <value (might have spaces)>
           //
           // first tease apart the two halves
           const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for prescribed traction boundary indicators "
                                    "requires that each entry has the form `"
-                                   "<id> : <value>', but there does not "
+                                   "<id> [x][y][z] : <value>', but there does not "
                                    "appear to be a colon in the entry <"
                                    + *p
                                    + ">."));
 
-          // get the key and value
-          const std::string key   = split_parts[0];
+          // the easy part: get the value
           const std::string value = split_parts[1];
 
+          // now for the rest. since we don't know whether there is a
+          // component selector, start reading at the end and subtracting
+          // letters x, y and zs
+          std::string key_and_comp = split_parts[0];
+          std::string comp;
+          while ((key_and_comp.size()>0) &&
+                 ((key_and_comp[key_and_comp.size()-1] == 'x')
+                  ||
+                  (key_and_comp[key_and_comp.size()-1] == 'y')
+                  ||
+                  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+            {
+              comp += key_and_comp[key_and_comp.size()-1];
+              key_and_comp.erase (--key_and_comp.end());
+            }
+
+          // we've stopped reading component selectors now. there are three
+          // possibilities:
+          // - no characters are left. this means that key_and_comp only
+          //   consisted of a single word that only consisted of 'x', 'y'
+          //   and 'z's. then this would have been a mistake to classify
+          //   as a component selector, and we better undo it
+          // - the last character of key_and_comp is not a whitespace. this
+          //   means that the last word in key_and_comp ended in an 'x', 'y'
+          //   or 'z', but this was not meant to be a component selector.
+          //   in that case, put these characters back.
+          // - otherwise, we split successfully. eat spaces that may be at
+          //   the end of key_and_comp to get key
+          if (key_and_comp.size() == 0)
+            key_and_comp.swap (comp);
+          else if (key_and_comp[key_and_comp.size()-1] != ' ')
+            {
+              key_and_comp += comp;
+              comp = "";
+            }
+          else
+            {
+              while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+                key_and_comp.erase (--key_and_comp.end());
+            }
+
           // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't see it yet
+          // make sure we haven't seen it yet
           types::boundary_id boundary_id;
           try
             {
-              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key);
+              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
             }
           catch (const std::string &error)
             {
@@ -1170,11 +1213,13 @@ namespace aspect
                        == prescribed_traction_boundary_indicators.end(),
                        ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                    "> appears more than once in the list of indicators "
-                                   "for traction boundaries."));
+                                   "for nonzero traction boundaries."));
 
           // finally, put it into the list
-          prescribed_traction_boundary_indicators[boundary_id] = value;
+          prescribed_traction_boundary_indicators[boundary_id] =
+            std::pair<std::string,std::string>(comp,value);
         }
+
     }
     prm.leave_subsection ();
   }

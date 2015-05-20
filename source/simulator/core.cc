@@ -209,7 +209,7 @@ namespace aspect
         boundary_indicator_lists[3].insert (p->first);
 
       // do the same for the boundary indicators for traction boundary conditions
-      for (std::map<types::boundary_id,std::string>::const_iterator
+      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_traction_boundary_indicators.begin();
            p != parameters.prescribed_traction_boundary_indicators.end();
            ++p)
@@ -408,18 +408,18 @@ namespace aspect
         bv->initialize ();
       }
 
-    for (std::map<types::boundary_id, std::string>::const_iterator
+    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
          p = parameters.prescribed_traction_boundary_indicators.begin();
          p != parameters.prescribed_traction_boundary_indicators.end();
          ++p)
       {
         TractionBoundaryConditions::Interface<dim> *bv
           = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
-            (p->second);
+            (p->second.second);
         if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
-        bv->initialize();
+        bv->initialize ();
         traction_boundary_conditions[p->first].reset (bv);
       }
 
@@ -663,6 +663,7 @@ namespace aspect
     heating_model_manager.update();
     adiabatic_conditions->update();
 
+    // TODO: change std_cxx1x to std_cxx11?
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
