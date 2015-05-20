@@ -1247,7 +1247,13 @@ namespace aspect
     for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
       if (cell->at_boundary(f))
         if (traction_boundary_conditions
-            .find (cell->face(f)->boundary_indicator())
+            .find (
+#if DEAL_II_VERSION_GTE(8,3,0)
+                  cell->face(f)->boundary_id()
+#else
+                  cell->face(f)->boundary_indicator()
+#endif
+                  )
             !=
                 traction_boundary_conditions.end())
           {
@@ -1256,7 +1262,13 @@ namespace aspect
             for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
               {
                 const Tensor<1,dim> traction
-                = traction_boundary_conditions[cell->face(f)->boundary_indicator()]
+                = traction_boundary_conditions[
+#if DEAL_II_VERSION_GTE(8,3,0)
+                                               cell->face(f)->boundary_id()
+#else
+                                               cell->face(f)->boundary_indicator()
+#endif
+                                               ]
                                                ->traction (scratch.face_finite_element_values.quadrature_point(q),
                                                            scratch.face_finite_element_values.normal_vector(q));
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
