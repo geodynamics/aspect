@@ -435,7 +435,7 @@ namespace aspect
                          "the velocity field is not uniquely determined but contains free translations "
                          "and or rotations. Depending on what you specify here, these non-determined "
                          "modes will be removed from the velocity field at the end of the Stokes solve step.\n"
-                         "Note that while more than operation can be selected it only makes sense to "
+                         "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
     }
     prm.leave_subsection ();
