@@ -612,6 +612,7 @@ namespace aspect
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                  const double heating_model_output,
                                   const AdvectionField &advection_field,
                                   const unsigned int q) const;
 

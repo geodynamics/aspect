@@ -23,6 +23,7 @@
 #define __aspect__heating_model_interface_h
 
 #include <aspect/plugins.h>
+#include <aspect/material_model/interface.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
@@ -77,6 +78,19 @@ namespace aspect
         virtual
         void
         update ();
+
+        /**
+         * Function to compute the heating terms in @p heating_outputs given the
+         * inputs in @p material_model_inputs and the outputs of the material
+         * model in @p material_model_outputs.
+         * The default implementation calls specific_heating_rate to make
+         * this implementation backwards compatible.
+         */
+        virtual
+        void
+        execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                 const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                 std::vector<double> &heating_outputs);
 
         /**
          * Return the specific heating rate as a function of position.
