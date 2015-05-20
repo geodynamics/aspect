@@ -25,16 +25,21 @@
 FIND_PACKAGE(deal.II 8.2 REQUIRED HINTS @DEAL_II_PATH@)
 SET(ASPECT_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
 SET(ASPECT_USE_PETSC "@ASPECT_USE_PETSC@")
+# force our build type to the one that is used by ASPECT:
+SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
 
 MACRO(ASPECT_SETUP_PLUGIN _target)
-  MESSAGE("Setting up plugin <${_target}>")
+  MESSAGE("Setting up plugin:")
+  MESSAGE("  name <${_target}>")
+  MESSAGE("  using ASPECT_DIR=${ASPECT_DIR}")
+  MESSAGE("  in @CMAKE_BUILD_TYPE@ mode")
   DEAL_II_SETUP_TARGET(${_target})
   SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
     INCLUDE_DIRECTORIES "${ASPECT_INCLUDE_DIRS}"
   )
 
   IF(ASPECT_USE_PETSC)
-    MESSAGE("  (with PETSC=ON)")
+    MESSAGE("  with PETSC=ON")
     SET_PROPERTY(TARGET ${_target}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
   ENDIF()
