@@ -10,12 +10,12 @@
 DIFF_EXE=$1
 
 # 2. short name of the reference file: "testname/filename"
-PRETTY_FILENAME=$2
+PRETTY_TEST_AND_FILENAME=$2
 
-# 3.
+# 3. absolute cmake source directory
 CMAKE_CURRENT_SOURCE_DIR=$3
 
-# 4.
+# 4. absolute cmake binary directory
 CMAKE_CURRENT_BINARY_DIR=$4
 
 
@@ -24,19 +24,19 @@ CMAKE_CURRENT_BINARY_DIR=$4
 #
 
 # the reference file to compare with: "filename.cmp.notime"
-REF_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_FILENAME}.cmp.notime
+REF_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.cmp.notime
 
 # filename to compare: "filename.notime"
-GEN_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_FILENAME}.notime
+GEN_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.notime
 
 # filename to write the diff output into: "filename.diff"
-DIFF_OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_FILENAME}.diff
+DIFF_OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.diff
 
 # full path of the original (unprocessed reference file)
-ORIGINAL_REF_FULL_PATH=${CMAKE_CURRENT_SOURCE_DIR}/${PRETTY_FILENAME}
+ORIGINAL_REF_FULL_PATH=${CMAKE_CURRENT_SOURCE_DIR}/${PRETTY_TEST_AND_FILENAME}
 
 # full path of the generated filename (without .notime)
-ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_FILENAME}
+ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}
 
 
 #
@@ -57,7 +57,7 @@ esac
 
 if [ $? -ne 0 ]; then
   mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}.failed
-  echo "******* Error during diffing output results for ${PRETTY_FILENAME}"
+  echo "******* Error during diffing output results for ${PRETTY_TEST_AND_FILENAME}"
   echo "******* Results are stored in ${DIFF_OUTPUT}.failed"
   echo "******* Check ${ORIGINAL_GEN_FULL_PATH} ${ORIGINAL_REF_FULL_PATH}"
   echo "******* 50 lines of diffs are:"
