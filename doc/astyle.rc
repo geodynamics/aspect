@@ -1,17 +1,21 @@
-# astyle 2.02 indentation style for the Aspect program
-# Run astyle in a command like
+# astyle indentation style for ASPECT
+# Run astyle on all files with:
 #    astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
+#
+# Note: you NEED to use astyle version 2.04 for correct results (older
+# versions or 2.05 will not work)!
 
 --style=gnu
 
+# use spaces instead of tabs:
 --convert-tabs
 --indent-preprocessor
 --indent=spaces=2
 --indent-namespaces
 --indent-labels
-#--no-indent-col1-comments
 --min-conditional-indent=0
-#--no-break-blocks
+
+# add a space between if/for/while and following '(':
 --pad-header
 
 # indent the 'public/protected/private' specifiers, and further indent the
@@ -28,4 +32,3 @@
 --max-instatement-indent=80
 --suffix=none
 --quiet
-#--verbose
