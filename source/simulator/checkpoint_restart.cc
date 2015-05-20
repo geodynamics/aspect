@@ -128,7 +128,10 @@ namespace aspect
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
 #else
-#  error "You need to have deal.II configured with the 'libz' option to support checkpoint/restart, but deal.II did not detect its presence when you called 'cmake'."
+      AssertThrow (false,
+                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                               "option to support checkpoint/restart, but deal.II "
+                               "did not detect its presence when you called 'cmake'."));
 #endif
 
     }
@@ -233,7 +236,10 @@ namespace aspect
           ia >> (*this);
         }
 #else
-	// no need to repeat the #error directive from above -- the error is still the same
+        AssertThrow (false,
+                     ExcMessage ("You need to have deal.II configured with the 'libz' "
+                                 "option to support checkpoint/restart, but deal.II "
+                                 "did not detect its presence when you called 'cmake'."));
 #endif
       }
     catch (std::exception &e)
