@@ -72,6 +72,13 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
+
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
@@ -806,6 +813,15 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+
+#ifndef DEAL_II_WITH_ZLIB
+      AssertThrow ((checkpoint_time_secs == 0)
+                   &&
+                   (checkpoint_steps == 0),
+                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                               "option if you want to generate checkpoints, but deal.II "
+                               "did not detect its presence when you called 'cmake'."));
+#endif
     }
     prm.leave_subsection ();
 
