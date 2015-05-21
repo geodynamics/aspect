@@ -602,9 +602,7 @@ namespace aspect
 
       /**
        * Compute the heating term for the advection system index. Currently
-       * the heating term is 0 for compositional fields, but this can be
-       * changed in the future to allow for interactions between compositional
-       * fields.
+       * the heating term is 0 for compositional fields.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
@@ -612,7 +610,7 @@ namespace aspect
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                   typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                   typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                  const double heating_model_output,
+                                  const double specific_heating_rate,
                                   const AdvectionField &advection_field,
                                   const unsigned int q) const;
 

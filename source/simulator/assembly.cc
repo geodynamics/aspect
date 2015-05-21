@@ -610,9 +610,9 @@ namespace aspect
     const unsigned int n_q_points = scratch.old_field_values->size();
 
     std::vector<double> heating_model_outputs(n_q_points);
-    heating_model->execute(scratch.material_model_inputs,
-                           scratch.material_model_outputs,
-                           heating_model_outputs);
+    heating_model->evaluate(scratch.material_model_inputs,
+                            scratch.material_model_outputs,
+                            heating_model_outputs);
 
     for (unsigned int q=0; q < n_q_points; ++q)
       {
@@ -1360,7 +1360,7 @@ namespace aspect
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                       const double heating_model_output,
+                                       const double specific_heating_rate,
                                        const AdvectionField     &advection_field,
                                        const unsigned int q) const
   {
@@ -1388,7 +1388,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
     const double gamma
-      = (heating_model_output * density
+      = (specific_heating_rate * density
          +
          // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
          //
@@ -1580,9 +1580,9 @@ namespace aspect
                                                scratch.material_model_outputs);
 
     std::vector<double> heating_model_outputs(n_q_points);
-    heating_model->execute(scratch.material_model_inputs,
-                           scratch.material_model_outputs,
-                           heating_model_outputs);
+    heating_model->evaluate(scratch.material_model_inputs,
+                            scratch.material_model_outputs,
+                            heating_model_outputs);
 
     if (advection_field.is_temperature())
       {

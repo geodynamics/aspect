@@ -90,9 +90,9 @@ namespace aspect
          */
         virtual
         void
-        execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                 const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                 std::vector<double> &heating_outputs) const;
+        evaluate (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                  std::vector<double> &heating_outputs) const;
 
         /**
          * Return the specific heating rate as a function of position.

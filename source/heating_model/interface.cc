@@ -53,20 +53,18 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::execute (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                             const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                             std::vector<double> &heating_outputs) const
+    Interface<dim>::evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                              std::vector<double> &heating_outputs) const
     {
-      for (unsigned int i=0; i<heating_outputs.size(); ++i)
-        {
-          Assert(heating_outputs.size() == material_model_inputs.position.size(),
-                 ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+      Assert(heating_outputs.size() == material_model_inputs.position.size(),
+             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
-          heating_outputs[i] = specific_heating_rate(material_model_inputs.temperature[i],
-                                                     material_model_inputs.pressure[i],
-                                                     material_model_inputs.composition[i],
-                                                     material_model_inputs.position[i]);
-        }
+      for (unsigned int q=0; q<heating_outputs.size(); ++q)
+        heating_outputs[q] = specific_heating_rate(material_model_inputs.temperature[q],
+                                                   material_model_inputs.pressure[q],
+                                                   material_model_inputs.composition[q],
+                                                   material_model_inputs.position[q]);
     }
 
 
