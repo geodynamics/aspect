@@ -51,6 +51,7 @@ namespace aspect
       const double depth = this->get_geometry_model().depth(position);
       Point<1> dpoint(depth);
       depth_viscosity_prefactor = depth_dependence.value(dpoint);
+      Assert( depth_viscosity_prefactor > 0.0, ExcMessage("Depth viscosity prefactor must be greater than zero") );
 
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
@@ -363,9 +364,10 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Classic,
                                    "classic",
                                    "A material model that includes temperature and depth depence. "
-                                   "for all coefficients but the density and viscosity. The defaults for all "
-                                   "coefficients are chosen to be similar to what is believed to be correct "
-                                   "for Earth's mantle. All of the values that define this model are read "
+				   "Note that this material model extends the Simple material model. "
+                                   "The Classic model allows for temperature-, depth-, and composition-dependent"
+				   "viscosity." 
+				   " All of the values that define this model are read "
                                    "from a section ``Material model/Classic model'' in the input file, see "
                                    "Section~\\ref{parameters:Material_20model/Classic_20model}."
                                    "\n\n"
@@ -401,6 +403,9 @@ namespace aspect
                                    "if the model has compositional fields and equals one otherwise. $\\xi$ "
                                    "corresponds to the parameter ``Composition viscosity prefactor'' in the "
                                    "input file."
+				   "if the model has depth-dependent viscosity, the depth-dependence is specified"
+				   "in the input file using a ParsedFunction in the subsection to the Classic model:"
+				   "``Viscosity depth prefactor''" 
                                    "\n\n"
                                    "Finally, in the formula for the density, $\\Delta\\rho$ "
                                    "corresponds to the parameter ``Density differential for compositional field 1''."
