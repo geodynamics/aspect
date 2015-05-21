@@ -1,0 +1,134 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+4 iterations.
+
+Number of active cells: 493 (on 7 levels)
+Number of degrees of freedom: 7,441 (4,568+589+2,284)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+4 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             4e-05
+     Temperature contrast across model domain (K):  0
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     1e+20
+     Ra number:                                     0
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     RMS, max velocity: 0.381 m/year, 0.914 m/year
+
+*** Timestep 1:  t=4918.04 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.382 m/year, 0.917 m/year
+
+*** Timestep 2:  t=9775.68 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.382 m/year, 0.92 m/year
+
+*** Timestep 3:  t=14578.5 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.383 m/year, 0.922 m/year
+
+*** Timestep 4:  t=19332 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.923 m/year
+
+*** Timestep 5:  t=24041.2 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.924 m/year
+
+*** Timestep 6:  t=28711.2 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.925 m/year
+
+*** Timestep 7:  t=33346.3 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.926 m/year
+
+*** Timestep 8:  t=37951 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.925 m/year
+
+*** Timestep 9:  t=42529.1 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.925 m/year
+
+*** Timestep 10:  t=47084.3 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 0.384 m/year, 0.924 m/year
+
+Number of active cells: 433 (on 7 levels)
+Number of degrees of freedom: 6,769 (4,156+535+2,078)
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |         3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        12 |     0.331s |        11% |
+| Assemble temperature system     |        12 |     0.462s |        15% |
+| Build Stokes preconditioner     |         2 |     0.322s |        11% |
+| Build temperature preconditioner|        12 |    0.0407s |       1.4% |
+| Solve Stokes system             |        12 |      1.04s |        35% |
+| Solve temperature system        |        12 |    0.0374s |       1.2% |
+| Initialization                  |         3 |    0.0604s |         2% |
+| Postprocessing                  |        11 |    0.0207s |      0.69% |
+| Refine mesh structure, part 1   |         2 |     0.323s |        11% |
+| Refine mesh structure, part 2   |         2 |   0.00546s |      0.18% |
+| Setup dof systems               |         3 |     0.185s |       6.2% |
++---------------------------------+-----------+------------+------------+
+
