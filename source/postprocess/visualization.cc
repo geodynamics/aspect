@@ -530,7 +530,7 @@ namespace aspect
           if (tmp_filename == *filename)
             AssertThrow (false, ExcMessage(std::string("Trying to write to file <") +
                                            *filename +
-                                           " but the file can't be opened!"))
+                                           ">, but the file can't be opened!"))
             else
               {
                 tmp_filename = *filename;
