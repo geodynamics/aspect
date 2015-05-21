@@ -279,9 +279,8 @@ namespace aspect
       {
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
-
-        Assert (pressure >= min_p, ExcMessage ("ASPECT found a pressure less than min_p."));
-        Assert (pressure <= max_p, ExcMessage ("ASPECT found a pressure greater than max_p."));
+        Assert (pressure >= min_p, ExcMessage ("The pressure is not greater than the minimum value for pressure."));
+        Assert (pressure <= max_p, ExcMessage ("The pressure is not less than the maximum value for pressure."));
 
 // TODO: clamping into the valid range in all cases okay?
         const double temperature = std::max(min_T, std::min(T, max_T-delta_T));
@@ -314,10 +313,10 @@ namespace aspect
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
 
-        Assert (pressure >= min_p, ExcMessage ("Not in range"));
-        Assert (pressure <= max_p, ExcMessage ("Not in range"));
-        Assert (T >= min_T, ExcMessage ("Not in range"));
-        Assert (T <= max_T, ExcMessage ("Not in range"));
+        Assert (pressure >= min_p, ExcMessage ("The pressure is not greater than the minimum value for pressure."));
+        Assert (pressure <= max_p, ExcMessage ("The pressure is not less than the maximum value for pressure."));
+        Assert (T >= min_T, ExcMessage ("The temperature is not greater than the minimum value for temperature."));
+        Assert (T <= max_T, ExcMessage ("The temperature is not less than the maximum value for temperature."));
 
         const unsigned int i = static_cast<unsigned int>((pressure-min_p) / delta_p);
         const unsigned int j = static_cast<unsigned int>((T-min_T) / delta_T);
