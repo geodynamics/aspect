@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (years)
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.0000e+00  64  659  289 0 11 12  32 1.0000e+05 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 124 1279  563 0 21 22 105 1.0000e+05 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 190 1883  831 0 15 16  72 1.0000e+05 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 286 2821 1245 0 36 82  33 1.0000e+05 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 520 4994 2209 0 35 71  25 1.0000e+05 3.53304294e-05 1.10381308e-04 0.00000000e+00 5.00000000e+02 1.00000000e+03 5.00000000e-01 -1.86024625e-04 -1.86024629e-04 -6.58000000e+03 6.58000000e+03 
+1 1.0000e+05 520 4994 2209 6 28 29 118 3.0569e+08 4.11905701e-05 1.20122723e-04 0.00000000e+00 4.99999999e+02 1.00000000e+03 4.99999999e-01 -7.01954238e-05 -1.04273246e-04 -6.57999717e+03 6.58000103e+03 
