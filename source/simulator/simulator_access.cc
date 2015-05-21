@@ -339,6 +339,14 @@ namespace aspect
 
 
   template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_free_surface_boundary_indicators () const
+  {
+    return simulator->parameters.free_surface_boundary_indicators;
+  }
+
+
+  template <int dim>
   const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
   SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
   {

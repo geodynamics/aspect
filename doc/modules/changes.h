@@ -12,5 +12,11 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
+ * <li> New: There is now a mesh refinement criterion called Slope, intended
+ * for use with a free surface, which refines where the topography has a 
+ * large slope.
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
  * </ol>
  */

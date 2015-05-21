@@ -453,6 +453,13 @@ namespace aspect
       get_fixed_composition_boundary_indicators () const;
 
       /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a free surface boundary condition
+       */
+      const std::set<types::boundary_id> &
+      get_free_surface_boundary_indicators () const;
+
+      /**
        * Return the map of prescribed_velocity_boundary_conditions
        */
       const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
