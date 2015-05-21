@@ -24,7 +24,6 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -195,10 +194,6 @@ namespace aspect
         double k_value;
 
         double compositional_delta_rho;
-	/**
-	 * Functions used to define the depth-dependence of viscosity.
-	 */
-	Functions::ParsedFunction<1> depth_dependence;
     };
 
   }
