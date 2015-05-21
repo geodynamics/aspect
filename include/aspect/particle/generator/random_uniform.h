@@ -34,7 +34,7 @@ namespace aspect
     {
       // Generate random uniform distribution of particles over entire simulation domain
       template <int dim>
-      class RandomUniformGenerator : public Interface<dim>, public SimulatorAccess<dim>
+      class RandomUniform : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -42,7 +42,7 @@ namespace aspect
            *
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
-          RandomUniformGenerator();
+          RandomUniform();
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.

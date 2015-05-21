@@ -208,8 +208,19 @@ namespace aspect
     {
       check_vel = new_vel_check;
     }
-
-    template class BaseParticle<2>;
-    template class BaseParticle<3>;
   }
 }
+
+
+// explicit instantiation of the functions we implement in this file
+namespace aspect
+{
+  namespace Particle
+  {
+#define INSTANTIATE(dim) \
+    template class BaseParticle<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+  }
+}
+

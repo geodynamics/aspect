@@ -37,7 +37,7 @@ namespace aspect
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
         template <int dim>
-        RandomUniformGenerator<dim>::RandomUniformGenerator() {}
+        RandomUniform<dim>::RandomUniform() {}
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
@@ -45,7 +45,7 @@ namespace aspect
           // TODO: fix the particle system so it works even with processors assigned 0 cells
         template <int dim>
         void
-        RandomUniformGenerator<dim>::generate_particles(Particle::World<dim> &world,
+        RandomUniform<dim>::generate_particles(Particle::World<dim> &world,
                                                         const double total_num_particles)
         {
           double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
@@ -95,7 +95,7 @@ namespace aspect
            */
         template <int dim>
           void
-          RandomUniformGenerator<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
+          RandomUniform<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id)
           {
@@ -191,10 +191,10 @@ namespace aspect
   {
     namespace Generator
     {
-    ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniformGenerator,
-                                               "random uniform",
-                                               "Generate random uniform distribution of "
-                                               "particles over entire simulation domain.")
+    ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniform,
+                                       "random uniform",
+                                       "Generate random uniform distribution of "
+                                       "particles over entire simulation domain.")
     }
   }
 }
