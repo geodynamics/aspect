@@ -204,11 +204,12 @@ namespace aspect
     std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
 
     /**
-     * Map from boundary id to a "traction boundary type", where the
-     * velocity type is mapped to one of the plugins of traction boundary
-     * conditions (e.g. "function")
+     * Map from boundary id to a pair "components", "traction boundary type",
+     * where components is of the format "[x][y][z]" and the traction type is
+     * mapped to one of the plugins of traction boundary conditions (e.g.
+     * "function")
      */
-    std::map<types::boundary_id, std::string> prescribed_traction_boundary_indicators;
+    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
 
     /**
      * Selection of operations to perform to remove nullspace from velocity
