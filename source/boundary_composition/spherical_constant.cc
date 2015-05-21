@@ -57,7 +57,7 @@ namespace aspect
           case 1:
             return outer_composition;
           default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
+            Assert (false, ExcMessage ("Unknown boundary indicator. The given boundary indicator should be 0 or 1."));
             return std::numeric_limits<double>::quiet_NaN();
         }
     }

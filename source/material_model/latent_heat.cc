@@ -340,7 +340,7 @@ namespace aspect
             else if (dependence == NonlinearDependence::temperature)
               entropy_gradient -= PhaseFunctionDerivative * entropy_change * transition_slopes[phase];
             else
-              AssertThrow(false, ExcMessage("not implemented"));
+              AssertThrow(false, ExcMessage("Error in calculating the entropy gradient: not implemented"));
           }
 
       return entropy_gradient;
@@ -590,7 +590,7 @@ namespace aspect
                                    "phase transitions of up to two different materials "
                                    "(compositional fields). "
                                    "This model implements a standard approximation "
-                                   "of the latent heat terms following Christensen \\& Yuen, 1986. "
+                                   "of the latent heat terms following Christensen \\& Yuen, 1985. "
                                    "The change of entropy is calculated as "
                                    "$Delta S = \\gamma \\frac{\\Delta\\rho}{\\rho^2}$ with the "
                                    "Clapeyron slope $\\gamma$ and the density change $\\Delta\\rho$ "
