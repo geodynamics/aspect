@@ -82,6 +82,7 @@ subsection Model settings
   set Prescribed velocity boundary indicators = 0 y: function, 1 y: function
 end
 
+
 subsection Boundary traction model
   subsection Function
     set Variable names = x,z
@@ -91,12 +92,14 @@ subsection Boundary traction model
   end
 end
 
- subsection Boundary velocity model
-   subsection Function
-     set Variable names = x,z
-     set Function expression = 0;0 
-   end
- end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = 0;0 
+  end
+end
+
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics

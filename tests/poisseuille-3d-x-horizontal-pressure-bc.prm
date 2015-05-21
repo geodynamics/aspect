@@ -1,6 +1,5 @@
-# Like the poisseuille-3d.prm test, but instead of prescribing the
-# velocity at the left and right ends, prescribe the pressure. This
-# should yield the same answer, of course
+# Like the poisseuille-2d-horizontal-pressure-bc.prm test, 
+# but in 3d. 
 
 set Dimension = 3
 set CFL number                             = 1.0
@@ -72,10 +71,11 @@ subsection Model settings
   # Prescribe a horizontal traction on the vertical boundaries
   set Prescribed traction boundary indicators = 0 x: function, 1 x: function
   set Tangential velocity boundary indicators = 
-  # Prescribe a zero vertical velocity component on the vertical boundaries
+  # Prescribe zero y and z velocity components on the vertical boundaries
   set Prescribed velocity boundary indicators = 0 yz: function, 1 yz: function
   set Zero velocity boundary indicators       = 2, 3, 4, 5
 end
+
 
 subsection Boundary traction model
   subsection Function
@@ -86,12 +86,14 @@ subsection Boundary traction model
   end
 end
 
+
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z
     set Function expression = 0;0;0  
   end
 end
+
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics
