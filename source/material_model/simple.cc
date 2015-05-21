@@ -36,7 +36,7 @@ namespace aspect
                const double,
                const std::vector<double> &composition,
                const SymmetricTensor<2,dim> &,
-               const Point<dim> &) const
+               const Point<dim> &position) const
     {
       const double delta_temp = temperature-reference_T;
       const double temperature_dependence = (reference_T > 0
@@ -46,16 +46,22 @@ namespace aspect
                                                       1e-2)
                                              :
                                              1.0);
+      
+      double depth_viscosity_prefactor = 1.0;
+      const double depth = this->get_geometry_model().depth(position);
+      Point<1> dpoint(depth);
+      depth_viscosity_prefactor = depth_dependence.value(dpoint);
+      if( depth_viscosity_prefactor == 0.0 ) depth_viscosity_prefactor = 1.0;
 
       double composition_dependence = 1.0;
       if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
         {
           //geometric interpolation
-          return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
-                           + composition[0] * log10(eta*composition_viscosity_prefactor*temperature_dependence))));
+          return (pow(10, ((1-composition[0]) * log10(eta*depth_viscosity_prefactor*temperature_dependence)
+                           + composition[0] * log10(eta*depth_viscosity_prefactor*composition_viscosity_prefactor*temperature_dependence))));
         }
 
-      return composition_dependence * temperature_dependence * eta;
+      return depth_viscosity_prefactor * composition_dependence * temperature_dependence * eta;
     }
 
 
@@ -290,6 +296,11 @@ namespace aspect
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
                              "change in composition}$.");
+	  prm.enter_subsection("Viscosity depth prefactor");
+	  {
+	    Functions::ParsedFunction<1>::declare_parameters(prm,1);
+	  }
+	  prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -315,16 +326,34 @@ namespace aspect
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
-
+	  
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
-        }
-        prm.leave_subsection();
+	  
+	  prm.enter_subsection("Viscosity depth prefactor");
+	  {
+	    try
+	      {
+		depth_dependence.parse_parameters(prm);
+	      }
+	    catch (...)
+	      {
+		std::cerr << "FunctionParser failed to parse\n"
+		       << "\t'Viscosity depth prefactor.Function'\n"
+		       << "with expression\n"
+		       <<"\t'" << prm.get("Function expression") << "'";
+		throw;
+	      }
+	  }
+	  prm.leave_subsection();
+	}
+	prm.leave_subsection();
       }
       prm.leave_subsection();
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect
@@ -343,10 +372,12 @@ namespace aspect
                                    "This model uses the following set of equations for the two coefficients that "
                                    "are non-constant: "
                                    "\\begin{align}"
-                                   "  \\eta(p,T,\\mathfrak c) &= \\tau(T) \\zeta(\\mathfrak c) \\eta_0, \\\\"
-                                   "  \\rho(p,T,\\mathfrak c) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0 + \\Delta\\rho \\; c_0,"
+                                   "  \\eta(z,p,T,\\mathfrak c) &= \\eta_z(a) \\tau(T) \\zeta(\\mathfrak c) \\eta_0, \\\\"
+                                   "  \\rho(z.p,T,\\mathfrak c) &= \\left(1-\\alpha (T-T_0)\\right)\\rho_0 + \\Delta\\rho \\; c_0,"
                                    "\\end{align}"
-                                   "where $c_0$ is the first component of the compositional vector "
+                                   "where $z$ is depth, $\\eta_z$ is a depth-dependent viscosity prefactor defined "
+				   "by the user (assumed to be uniformly equal to 1.0 if not defined)."
+				   "$c_0$ is the first component of the compositional vector "
                                    "$\\mathfrak c$ if the model uses compositional fields, or zero otherwise. "
                                    "\n\n"
                                    "The temperature pre-factor for the viscosity formula above is "
@@ -380,7 +411,7 @@ namespace aspect
                                    "\n\n"
                                    "\\note{Despite its name, this material model is not exactly ``simple'', "
                                    "as indicated by the formulas above. While it was originally intended "
-                                   "to be simple, it has over time acquired all sorts of temperature "
+                                   "to be simple, it has over time acquired depth, temperature,  "
                                    "and compositional dependencies that weren't initially intended. "
                                    "Consequently, there is now a ``simpler'' material model that now fills "
                                    "the role the current model was originally intended to fill.}")
