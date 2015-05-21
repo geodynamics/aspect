@@ -82,7 +82,9 @@ namespace aspect
         /**
          * Function to compute the heating terms in @p heating_outputs given the
          * inputs in @p material_model_inputs and the outputs of the material
-         * model in @p material_model_outputs.
+         * model in @p material_model_outputs. The @p heating_outputs vector is
+         * filled with the value of the heating rate at each quadrature point as
+         * defined in @p material_model_inputs.
          * The default implementation calls specific_heating_rate to make
          * this implementation backwards compatible.
          */
@@ -90,7 +92,7 @@ namespace aspect
         void
         execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                 std::vector<double> &heating_outputs);
+                 std::vector<double> &heating_outputs) const;
 
         /**
          * Return the specific heating rate as a function of position.
@@ -100,7 +102,7 @@ namespace aspect
         specific_heating_rate (const double temperature,
                                const double pressure,
                                const std::vector<double> &compositional_fields,
-                               const Point<dim> &position) const = 0;
+                               const Point<dim> &position) const DEAL_II_DEPRECATED = 0;
 
         /**
          * Declare the parameters this class takes through input files. The

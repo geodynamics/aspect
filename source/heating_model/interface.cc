@@ -55,10 +55,13 @@ namespace aspect
     void
     Interface<dim>::execute (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                             std::vector<double> &heating_outputs)
+                             std::vector<double> &heating_outputs) const
     {
       for (unsigned int i=0; i<heating_outputs.size(); ++i)
         {
+          Assert(heating_outputs.size() == material_model_inputs.position.size(),
+                 ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+
           heating_outputs[i] = specific_heating_rate(material_model_inputs.temperature[i],
                                                      material_model_inputs.pressure[i],
                                                      material_model_inputs.composition[i],

@@ -89,15 +89,17 @@ namespace aspect
 
             this->get_material_model().evaluate(in, out);
 
+            std::vector<double> heating_model_outputs(n_q_points);
+            heating_model.execute(in,
+                                  out,
+                                  heating_model_outputs);
+
             for (unsigned int q=0; q<n_q_points; ++q)
               {
                 for (unsigned c=0; c<this->n_compositional_fields(); c++)
                   in.composition[q][c] = composition_values[c][q];
 
-                local_internal_heating_integrals += heating_model.specific_heating_rate(in.temperature[q],
-                                                                                        in.pressure[q],
-                                                                                        in.composition[q],
-                                                                                        in.position[q])
+                local_internal_heating_integrals += heating_model_outputs[q]
                                                     * out.densities[q] * fe_values.JxW(q);
 
                 local_mass += out.densities[q] * fe_values.JxW(q);
