@@ -1,8 +1,7 @@
 # Like the poisseuille-2d.prm test, but instead of prescribing the
-# velocity at the left and right ends, prescribe the pressure. This
-# should yield the same answer, of course.
-# In this case however, there will be pressure singularities
-# in the corners of the domain.
+# velocity at the left and right ends, prescribe the horizontal
+# component of the traction. At the same time, set the vertical
+# component of the velocity to zero. This should yield the same answer.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -75,10 +74,12 @@ end
 
 subsection Model settings
   set Fixed temperature boundary indicators   = 0, 1
-  set Prescribed traction boundary indicators = 0, 1
+  # Prescribe a horizontal traction on the vertical boundaries
+  set Prescribed traction boundary indicators = 0 x: function, 1 x: function
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       = 2, 3
-  set Prescribed velocity boundary indicators = 
+  # Prescribe a zero vertical velocity component on the vertical boundaries
+  set Prescribed velocity boundary indicators = 0 y: function, 1 y: function
 end
 
 subsection Boundary traction model
@@ -90,6 +91,12 @@ subsection Boundary traction model
   end
 end
 
+ subsection Boundary velocity model
+   subsection Function
+     set Variable names = x,z
+     set Function expression = 0;0 
+   end
+ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics
