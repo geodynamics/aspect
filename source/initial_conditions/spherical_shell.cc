@@ -46,8 +46,7 @@ namespace aspect
 
       // this initial condition only makes sense if a boundary temperature
       // is prescribed. verify that it is indeed
-      AssertThrow (&this->get_boundary_temperature()
-                   != 0,
+      AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
 
@@ -168,8 +167,7 @@ namespace aspect
 
       // this initial condition only makes sense if a boundary temperature
       // is prescribed. verify that it is indeed
-      AssertThrow (&this->get_boundary_temperature()
-                   != 0,
+      AssertThrow (this->has_boundary_temperature(),
                    ExcMessage ("This initial condition can only be used if a boundary "
                                "temperature is prescribed."));
       const double

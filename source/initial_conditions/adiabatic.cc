@@ -57,18 +57,18 @@ namespace aspect
       // This implementation assumes that the top and bottom boundaries have
       // prescribed temperatures and minimal_temperature() returns the value
       // at the surface and maximal_temperature() the value at the bottom.
-      const double T_surface = (&this->get_boundary_temperature() != 0)
+      const double T_surface = (this->has_boundary_temperature()
+                                ?
+                                this->get_boundary_temperature().minimal_temperature(
+                                  this->get_fixed_temperature_boundary_indicators())
+                                :
+                                adiabatic_surface_temperature);
+      const double T_bottom = (this->has_boundary_temperature()
                                ?
-                               this->get_boundary_temperature().minimal_temperature(
+                               this->get_boundary_temperature().maximal_temperature(
                                  this->get_fixed_temperature_boundary_indicators())
                                :
-                               adiabatic_surface_temperature;
-      const double T_bottom = (&this->get_boundary_temperature() != 0)
-                              ?
-                              this->get_boundary_temperature().maximal_temperature(
-                                this->get_fixed_temperature_boundary_indicators())
-                              :
-                              adiabatic_bottom_temperature;
+                               adiabatic_bottom_temperature);
 
       // get a representative profile of the compositional fields as an input
       // for the material model
