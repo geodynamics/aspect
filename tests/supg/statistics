@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Time step size (seconds)
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 14: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 15: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 16: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 17: Visualization file name
+0 0.0000e+00 64 659 81 0 1.7678e-01 8.16496581e-01 1.37436751e+00  0.00000000e+00 8.28225197e-02 1.00000000e+00  3.34936491e-07  0.00000000e+00 1.66666667e-06 1.00000000e-05 output-supg/solution-00000 
+1 1.7678e-01 64 659 81 6 1.7678e-01 8.16496581e-01 1.37436751e+00 -3.86304349e-02 8.35284750e-02 7.20250194e-01 -1.05434392e-07 -1.60942512e-07 1.50006920e-06 1.02297072e-05 output-supg/solution-00001 
+2 3.5355e-01 64 659 81 6 1.4645e-01 8.16496581e-01 1.37436751e+00 -5.52777604e-02 8.44967317e-02 5.74682457e-01  4.78391876e-07 -5.03785530e-07 9.55845704e-07 9.72534123e-06 output-supg/solution-00002 
+3 5.0000e-01 64 659 81 6 1.7678e-01 8.16496581e-01 1.37436751e+00 -7.10458766e-02 8.55672494e-02 5.57972724e-01  1.81230485e-06 -5.29506363e-07 5.30372154e-07 8.71933477e-06 output-supg/solution-00003 
