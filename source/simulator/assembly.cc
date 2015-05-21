@@ -609,7 +609,7 @@ namespace aspect
   {
     const unsigned int n_q_points = scratch.old_field_values->size();
 
-    std::vector<double> heating_model_outputs(n_q_points);
+    HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
     heating_model->evaluate(scratch.material_model_inputs,
                             scratch.material_model_outputs,
                             heating_model_outputs);
@@ -641,7 +641,7 @@ namespace aspect
           = compute_heating_term(scratch,
                                  scratch.explicit_material_model_inputs,
                                  scratch.explicit_material_model_outputs,
-                                 heating_model_outputs[q],
+                                 heating_model_outputs,
                                  advection_field,
                                  q);
 
@@ -1376,7 +1376,7 @@ namespace aspect
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                                        MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                       const double specific_heating_rate,
+                                       HeatingModel::HeatingModelOutputs &heating_model_outputs,
                                        const AdvectionField     &advection_field,
                                        const unsigned int q) const
   {
@@ -1404,7 +1404,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
     const double gamma
-      = (specific_heating_rate * density
+      = (heating_model_outputs.heating_source_terms[q] * density
          +
          // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
          //
@@ -1584,7 +1584,7 @@ namespace aspect
                                                scratch.material_model_inputs,
                                                scratch.material_model_outputs);
 
-    std::vector<double> heating_model_outputs(n_q_points);
+    HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
     heating_model->evaluate(scratch.material_model_inputs,
                             scratch.material_model_outputs,
                             heating_model_outputs);
@@ -1671,7 +1671,7 @@ namespace aspect
         const double gamma = compute_heating_term(scratch,
                                                   scratch.material_model_inputs,
                                                   scratch.material_model_outputs,
-                                                  heating_model_outputs[q],
+                                                  heating_model_outputs,
                                                   advection_field,
                                                   q);
         const double reaction_term =

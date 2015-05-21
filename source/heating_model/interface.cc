@@ -55,17 +55,17 @@ namespace aspect
     void
     Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                               const MaterialModel::MaterialModelOutputs<dim> & /*material_model_outputs*/,
-                              std::vector<double> &heating_outputs) const
+                              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      Assert(heating_outputs.size() == material_model_inputs.position.size(),
+      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-      for (unsigned int q=0; q<heating_outputs.size(); ++q)
-        heating_outputs[q] = specific_heating_rate(material_model_inputs.temperature[q],
-                                                   material_model_inputs.pressure[q],
-                                                   material_model_inputs.composition[q],
-                                                   material_model_inputs.position[q]);
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        heating_model_outputs.heating_source_terms[q] = specific_heating_rate(material_model_inputs.temperature[q],
+                                                                              material_model_inputs.pressure[q],
+                                                                              material_model_inputs.composition[q],
+                                                                              material_model_inputs.position[q]);
 #pragma GCC diagnostic pop
     }
 
@@ -162,6 +162,14 @@ namespace aspect
       prm.leave_subsection ();
 
       std_cxx11::get<dim>(registered_plugins).declare_parameters (prm);
+    }
+
+
+    HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
+                                             const unsigned int n_comp)
+    {
+      heating_source_terms.resize(n_points);
+      lhs_latent_heat_terms.resize(n_points);
     }
   }
 }

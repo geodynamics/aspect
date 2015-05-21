@@ -62,7 +62,7 @@ namespace aspect
 
         in.strain_rate.resize(0); // we do not need the viscosity
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
-        std::vector<double> heating_model_outputs(n_quadrature_points);
+        HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -79,7 +79,7 @@ namespace aspect
         heating_model.evaluate(in, out, heating_model_outputs);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = heating_model_outputs[q];
+          computed_quantities[q](0) = heating_model_outputs.heating_source_terms[q];
       }
     }
   }

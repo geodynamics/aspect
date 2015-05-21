@@ -41,6 +41,42 @@ namespace aspect
     using namespace dealii;
 
     /**
+     * A data structure with the output field of the
+     * HeatingModel::Interface::evaluate() function. The vectors are the
+     * values at the different positions given by
+     * MaterialModelInputs::position.
+     */
+    struct HeatingModelOutputs
+    {
+      /**
+       * Constructor. Initialize the various arrays of this structure with the
+       * given number of quadrature points and (finite element) components.
+       *
+       * @param n_points The number of quadrature points for which input
+       * quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in which
+       * the Introspection class reports them) for which input will be
+       * provided.
+       */
+      HeatingModelOutputs (const unsigned int n_points,
+                           const unsigned int n_comp);
+
+      /**
+       * All source terms of the temperature equation at the given position.
+       * This includes shear heating, adiabatic heating, radiogenic heat
+       * production, the right hand side part of latent heat or any other
+       * heating terms on the right hand side of the energy equation.
+       */
+      std::vector<double> heating_source_terms;
+
+      /**
+       * Left hand side contribution of latent heat; this is added to the
+       * \rho c_p term on the lef hand side of the energy equation.
+       */
+      std::vector<double> lhs_latent_heat_terms;
+    };
+
+    /**
      * A base class for parameterizations of heating models.
      *
      * @ingroup HeatingModels
@@ -92,7 +128,7 @@ namespace aspect
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  std::vector<double> &heating_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**
          * Return the specific heating rate as a function of position.
