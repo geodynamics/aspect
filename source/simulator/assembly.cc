@@ -609,6 +609,11 @@ namespace aspect
   {
     const unsigned int n_q_points = scratch.old_field_values->size();
 
+    std::vector<double> heating_model_outputs(n_q_points);
+    heating_model->evaluate(scratch.material_model_inputs,
+                            scratch.material_model_outputs,
+                            heating_model_outputs);
+
     for (unsigned int q=0; q < n_q_points; ++q)
       {
         const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
@@ -629,10 +634,12 @@ namespace aspect
 
         const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
 
+
         const double gamma
           = compute_heating_term(scratch,
                                  scratch.explicit_material_model_inputs,
                                  scratch.explicit_material_model_outputs,
+                                 heating_model_outputs[q],
                                  advection_field,
                                  q);
 
@@ -1353,6 +1360,7 @@ namespace aspect
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                       const double specific_heating_rate,
                                        const AdvectionField     &advection_field,
                                        const unsigned int q) const
   {
@@ -1369,10 +1377,6 @@ namespace aspect
     const double density              = material_model_outputs.densities[q];
     const double viscosity            = material_model_outputs.viscosities[q];
     const bool is_compressible        = material_model->is_compressible();
-    const double specific_radiogenic_heating_rate = heating_model->specific_heating_rate(material_model_inputs.temperature[q],
-                                                    material_model_inputs.pressure[q],
-                                                    material_model_inputs.composition[q],
-                                                    material_model_inputs.position[q]);
     const double compressibility      = (is_compressible
                                          ?
                                          material_model_outputs.compressibilities[q]
@@ -1384,7 +1388,7 @@ namespace aspect
     gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
     const double gamma
-      = (specific_radiogenic_heating_rate * density
+      = (specific_heating_rate * density
          +
          // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
          //
@@ -1575,6 +1579,11 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    std::vector<double> heating_model_outputs(n_q_points);
+    heating_model->evaluate(scratch.material_model_inputs,
+                            scratch.material_model_outputs,
+                            heating_model_outputs);
+
     if (advection_field.is_temperature())
       {
         for (unsigned int q=0; q<n_q_points; ++q)
@@ -1652,6 +1661,7 @@ namespace aspect
         const double gamma = compute_heating_term(scratch,
                                                   scratch.material_model_inputs,
                                                   scratch.material_model_outputs,
+                                                  heating_model_outputs[q],
                                                   advection_field,
                                                   q);
         const double reaction_term =

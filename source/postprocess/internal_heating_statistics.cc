@@ -56,6 +56,7 @@ namespace aspect
 
       in.strain_rate.resize(0); // we do not need the viscosity
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<double> heating_model_outputs(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -88,16 +89,11 @@ namespace aspect
             in.position = fe_values.get_quadrature_points();
 
             this->get_material_model().evaluate(in, out);
+            heating_model.evaluate(in, out, heating_model_outputs);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                for (unsigned c=0; c<this->n_compositional_fields(); c++)
-                  in.composition[q][c] = composition_values[c][q];
-
-                local_internal_heating_integrals += heating_model.specific_heating_rate(in.temperature[q],
-                                                                                        in.pressure[q],
-                                                                                        in.composition[q],
-                                                                                        in.position[q])
+                local_internal_heating_integrals += heating_model_outputs[q]
                                                     * out.densities[q] * fe_values.JxW(q);
 
                 local_mass += out.densities[q] * fe_values.JxW(q);

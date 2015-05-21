@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * <li> Changed: The specific heating plugin has a new interface now; it gets
+ * the material model inputs and outputs and fills a vector with heating
+ * model outputs for the whole cell.
+ * <br>
+ * (Juliane Dannberg, 2015/05/20)
  *
  * </ol>
  */

@@ -57,19 +57,29 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
 
+        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points, this->n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points, this->n_compositional_fields());
+
+        in.strain_rate.resize(0); // we do not need the viscosity
+        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
+        std::vector<double> heating_model_outputs(n_quadrature_points);
+
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            double temperature=uh[q][this->introspection().component_indices.temperature];
-            double pressure   =uh[q][this->introspection().component_indices.pressure];
-            std::vector<double> composition(this->n_compositional_fields());
+            in.temperature[q] = uh[q][this->introspection().component_indices.temperature];
+            in.pressure[q]    = uh[q][this->introspection().component_indices.pressure];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
-            computed_quantities[q](0) = heating_model.specific_heating_rate(temperature,
-                                                                            pressure,
-                                                                            composition,
-                                                                            evaluation_points[q]);
+              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
+
+        in.position = evaluation_points;
+
+        this->get_material_model().evaluate(in, out);
+        heating_model.evaluate(in, out, heating_model_outputs);
+
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          computed_quantities[q](0) = heating_model_outputs[q];
       }
     }
   }
