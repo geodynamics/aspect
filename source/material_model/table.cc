@@ -280,8 +280,8 @@ namespace aspect
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
 
-        Assert (pressure >= min_p, ExcMessage ("Not in range"));
-        Assert (pressure <= max_p, ExcMessage ("Not in range"));
+        Assert (pressure >= min_p, ExcMessage ("ASPECT found a pressure less than min_p."));
+        Assert (pressure <= max_p, ExcMessage ("ASPECT found a pressure greater than max_p."));
 
 // TODO: clamping into the valid range in all cases okay?
         const double temperature = std::max(min_T, std::min(T, max_T-delta_T));
