@@ -297,15 +297,27 @@ namespace aspect
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
   {
+    Assert (simulator->material_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
   }
 
 
 
   template <int dim>
+  bool
+  SimulatorAccess<dim>::has_boundary_temperature () const
+  {
+    return (simulator->boundary_temperature.get() != 0);
+  }
+
+
+  template <int dim>
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
+    Assert (simulator->boundary_temperature.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_temperature.get();
   }
 
@@ -338,6 +350,8 @@ namespace aspect
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
+    Assert (simulator->geometry_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->geometry_model.get();
   }
 
@@ -345,6 +359,8 @@ namespace aspect
   const GravityModel::Interface<dim> &
   SimulatorAccess<dim>::get_gravity_model () const
   {
+    Assert (simulator->gravity_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->gravity_model.get();
   }
 
@@ -353,6 +369,8 @@ namespace aspect
   const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
+    Assert (simulator->adiabatic_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->adiabatic_conditions.get();
   }
 
@@ -361,6 +379,8 @@ namespace aspect
   const InitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_initial_conditions () const
   {
+    Assert (simulator->initial_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_conditions.get();
   }
 
@@ -369,6 +389,8 @@ namespace aspect
   const CompositionalInitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_compositional_initial_conditions () const
   {
+    Assert (simulator->compositional_initial_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->compositional_initial_conditions.get();
   }
 
@@ -376,6 +398,8 @@ namespace aspect
   const HeatingModel::Interface<dim> &
   SimulatorAccess<dim>::get_heating_model () const
   {
+    Assert (simulator->heating_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->heating_model.get();
   }
 

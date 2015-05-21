@@ -407,6 +407,16 @@ namespace aspect
       get_adiabatic_conditions () const;
 
       /**
+       * Return whether the current model has a boundary temperature object
+       * set. This is useful because a simulation does not actually have to
+       * declare any boundary temperature model, for example if all
+       * boundaries are insulating. In such cases, there is no
+       * boundary temperature model that can provide, for example,
+       * a minimal and maximal temperature on the boundary.
+       */
+      bool has_boundary_temperature () const;
+
+      /**
        * Return a pointer to the object that describes the temperature
        * boundary values.
        */
