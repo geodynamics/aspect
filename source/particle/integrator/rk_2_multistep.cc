@@ -161,7 +161,7 @@ namespace aspect
     namespace Integrator
     {
     ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2IntegratorMultiStep,
-                                               "rk2",
+                                               "rk2 multistep",
                                                "Runge Kutta second order integrator, where "
                                                "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "
                                                "This scheme requires storing the original location, "

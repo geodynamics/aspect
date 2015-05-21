@@ -18,13 +18,13 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_random_uniform_h
-#define __aspect__particle_generator_random_uniform_h
+#ifndef __aspect__particle_generator_uniform_radial_h
+#define __aspect__particle_generator_uniform_radial_h
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <boost/random.hpp>
+#include <deal.II/base/std_cxx11/array.h>
 
 namespace aspect
 {
@@ -32,9 +32,9 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
+      // Generate uniform radial distribution of particles over entire simulation domain
       template <int dim>
-      class RandomUniformGenerator : public Interface<dim>, public SimulatorAccess<dim>
+      class UniformRadial : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -42,10 +42,12 @@ namespace aspect
            *
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
-          RandomUniformGenerator();
+          UniformRadial();
 
           /**
-           * Generate a uniformly randomly distributed set of particles in the current triangulation.
+           * TODO: Update comments
+           * Generate a uniformly distributed set of particles in the current circular or
+           * spherical domain
            */
           // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
@@ -60,22 +62,53 @@ namespace aspect
            * particles because the decomposition of the mesh may result in a highly
            * non-rectangular local mesh which makes uniform particle distribution difficult.
            *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
+           * @param[in] world The particle world the particles will exist in
+           * @param[in] start_id The starting ID to assign to generated particles
+           * @param[in] shell An array holding the shell at which to generate particles.
+           * @param[in] particlesPerRadius An array with the amount of particles per shell.
            */
-          void uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
+          void
+          uniform_radial_particles_in_subdomain (Particle::World<dim> &world,
+                                                      const unsigned int start_id,
+                                                      const std::vector<double> &shell,
+                                                      const std::vector<unsigned int> &particlesPerRadius);
+
+          void
+          generate_particle(Particle::World<dim> &world,
+                            const Point<dim> &position,
+                            const unsigned int id);
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
 
         private:
+
           /**
-           * Random number generator and an object that describes a
-           * uniform distribution on the interval [0,1]. These
-           * will be used to generate particle locations at random.
+           * The minimum coordinates of the tracer region.
            */
-          boost::mt19937            random_number_generator;
-          boost::uniform_01<double> uniform_distribution_01;
+          std_cxx11::array<double,dim> P_min;
+
+          /**
+           * The maximum coordinates of the tracer region.
+           */
+          std_cxx11::array<double,dim> P_max;
+
+          /**
+           * The number of radial layers of particles that will be generated.
+           */
+          unsigned int radial_layers;
+
       };
 
 

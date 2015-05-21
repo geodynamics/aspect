@@ -184,6 +184,7 @@ namespace aspect
                   (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator))
         sim->initialize (this->get_simulator());
+      generator->parse_parameters(prm);
 
       // Create an output object depending on what the parameters specify
       output = Particle::Output::create_particle_output<dim>

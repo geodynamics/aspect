@@ -18,9 +18,11 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/generator/random_uniform.h>
+#include <aspect/particle/generator/uniform_box.h>
 
 #include <boost/random.hpp>
+#include <deal.II/base/std_cxx11/array.h>
+#include <deal.II/grid/grid_tools.h>
 
 
 namespace aspect
@@ -37,148 +39,136 @@ namespace aspect
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
         template <int dim>
-        RandomUniformGenerator<dim>::RandomUniformGenerator() {}
+        UniformBox<dim>::UniformBox() {}
 
           /**
+           * TODO: Update comments
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
            */
           // TODO: fix the particle system so it works even with processors assigned 0 cells
         template <int dim>
         void
-        RandomUniformGenerator<dim>::generate_particles(Particle::World<dim> &world,
-                                                        const double total_num_particles)
-        {
-          double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
+        UniformBox<dim>::generate_particles(Particle::World<dim> &world,
+                                            const double total_num_particles)
+          {
+          unsigned int cur_id = 0;
+          const Tensor<1,dim> P_diff = P_max - P_min;
+          double totalDiff(0.0);
+          for (unsigned int i = 0; i < dim; ++i)
+            totalDiff += P_diff[i];
+          std_cxx11::array<double,dim> nParticles;
+          std_cxx11::array<double,dim> Particle_separation;
 
-          // Calculate the number of particles in this domain as a fraction of total volume
-          total_volume = local_volume = 0;
-          for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-               it=this->get_triangulation().begin_active();
-               it!=this->get_triangulation().end(); ++it)
+          ///Amount of particles is the total amount of particles, divided by length of each axis
+          for (unsigned int i = 0; i < dim; ++i)
             {
-              double cell_volume = it->measure();
-              AssertThrow (cell_volume != 0, ExcMessage ("Found cell with zero volume."));
+              nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
+              Particle_separation[i] = P_diff[i] / nParticles[i];
+            }
+
+          for (double x = P_min[0]; x < P_max[0]; x+= Particle_separation[0])
+            {
+              for (double y = P_min[1]; y < P_max[1]; y += Particle_separation[1])
+                {
+                  if (dim == 2)
+                    generate_particle(world,Point<dim> (x,y),cur_id++);
+                  if (dim == 3)
+                    for (double z = P_min[2]; z < P_max[2]; z += Particle_separation[2])
+                      generate_particle(world,Point<dim> (x,y,z),cur_id++);
+                }
+            }
+          }
+
+        template <int dim>
+        void
+        UniformBox<dim>::generate_particle(Particle::World<dim> &world,
+                                           const Point<dim> &position,
+                                           const unsigned int id)
+            {
+              typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+                  (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
 
               if (it->is_locally_owned())
-                local_volume += cell_volume;
+                {
+                  //Only try to add the point if the cell it is in, is on this processor
+                  BaseParticle<dim> new_particle(position, id);
+                  world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
+                }
             }
-          // Sum the local volumes over all nodes
-          MPI_Allreduce(&local_volume, &total_volume, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
 
-          // Assign this subdomain the appropriate fraction
-          subdomain_fraction = local_volume/total_volume;
 
-          // Sum the subdomain fractions so we don't miss particles from rounding and to create unique IDs
-          MPI_Scan(&subdomain_fraction, &end_fraction, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
-          start_fraction = end_fraction-subdomain_fraction;
-
-          // Calculate start and end IDs so there are no gaps
-          // TODO: this can create gaps for certain processor counts because of
-          // floating point imprecision, figure out how to fix it
-          const unsigned int  start_id = static_cast<unsigned int>(std::ceil(start_fraction*total_num_particles));
-          const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*total_num_particles), total_num_particles));
-          const unsigned int  subdomain_particles = end_id - start_id;
-
-          uniform_random_particles_in_subdomain(world, subdomain_particles, start_id);
+        template <int dim>
+        void
+        UniformBox<dim>::declare_parameters (ParameterHandler &prm)
+        {
+          prm.enter_subsection("Postprocess");
+          {
+            prm.enter_subsection("Tracers");
+            {
+              prm.enter_subsection("Generator");
+              {
+                prm.enter_subsection("Uniform box");
+                {
+                  prm.declare_entry ("Minimal x", "0",
+                                     Patterns::Double (),
+                                     "Minimal x coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal x", "1",
+                                     Patterns::Double (),
+                                     "Maximal x coordinate for the region of tracers.");
+                  prm.declare_entry ("Minimal y", "0",
+                                     Patterns::Double (),
+                                     "Minimal y coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal y", "1",
+                                     Patterns::Double (),
+                                     "Maximal y coordinate for the region of tracers.");
+                  prm.declare_entry ("Minimal z", "0",
+                                     Patterns::Double (),
+                                     "Minimal z coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal z", "1",
+                                     Patterns::Double (),
+                                     "Maximal z coordinate for the region of tracers.");
+                }
+                prm.leave_subsection();
+              }
+              prm.leave_subsection();
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
         }
 
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
+
         template <int dim>
-          void
-          RandomUniformGenerator<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id)
+        void
+        UniformBox<dim>::parse_parameters (ParameterHandler &prm)
+        {
+          prm.enter_subsection("Postprocess");
           {
-            unsigned int          i, d, v, num_tries, cur_id;
-            double                total_volume, roulette_spin;
-            std::map<double, LevelInd>        roulette_wheel;
-            const unsigned int n_vertices_per_cell = GeometryInfo<dim>::vertices_per_cell;
-            Point<dim>            pt, max_bounds, min_bounds;
-            LevelInd              select_cell;
-
-            // Create the roulette wheel based on volumes of local cells
-            total_volume = 0;
-            for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                 it=this->get_triangulation().begin_active(); it!=this->get_triangulation().end(); ++it)
+            prm.enter_subsection("Tracers");
+            {
+              prm.enter_subsection("Generator");
               {
-                if (it->is_locally_owned())
-                  {
-                    // Assign an index to each active cell for selection purposes
-                    total_volume += it->measure();
-                    // Save the cell index and level for later access
-                    roulette_wheel.insert(std::make_pair(total_volume, std::make_pair(it->level(), it->index())));
-                  }
+                prm.enter_subsection("Uniform box");
+                {
+                  P_min(0) = prm.get_double ("Minimal x");
+                  P_max(0) = prm.get_double ("Maximal x");
+                  P_min(1) = prm.get_double ("Minimal y");
+                  P_max(1) = prm.get_double ("Maximal y");
+
+                  if (dim ==3)
+                    {
+                      P_min(2) = prm.get_double ("Minimal z");
+                      P_max(2) = prm.get_double ("Maximal z");
+                    }
+                }
+                prm.leave_subsection();
               }
-
-            // Pick cells and assign particles at random points inside them
-            cur_id = start_id;
-            for (i=0; i<num_particles; ++i)
-              {
-                // Select a cell based on relative volume
-                roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
-                select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
-
-                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                it (&(this->get_triangulation()), select_cell.first, select_cell.second);
-
-                // Get the bounds of the cell defined by the vertices
-                for (d=0; d<dim; ++d)
-                  {
-                    min_bounds[d] = INFINITY;
-                    max_bounds[d] = -INFINITY;
-                  }
-                for (v=0; v<n_vertices_per_cell; ++v)
-                  {
-                    pt = it->vertex(v);
-                    for (d=0; d<dim; ++d)
-                      {
-                        min_bounds[d] = fmin(pt[d], min_bounds[d]);
-                        max_bounds[d] = fmax(pt[d], max_bounds[d]);
-                      }
-                  }
-
-                // Generate random points in these bounds until one is within the cell
-                num_tries = 0;
-                while (num_tries < 100)
-                  {
-                    for (d=0; d<dim; ++d)
-                      {
-                        pt[d] = uniform_distribution_01(random_number_generator) *
-                                (max_bounds[d]-min_bounds[d]) + min_bounds[d];
-                      }
-                    try
-                      {
-                        if (it->point_inside(pt)) break;
-                      }
-                    catch (...)
-                      {
-                        // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                        //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
-                        //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
-                        //std::cerr << std::endl;
-                        //***** MPI_Abort(communicator, 1);
-                      }
-                    num_tries++;
-                  }
-                AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
-
-                // Add the generated particle to the set
-                BaseParticle<dim> new_particle(pt, cur_id);
-                world.add_particle(new_particle, select_cell);
-
-                cur_id++;
-              }
+              prm.leave_subsection();
+            }
+            prm.leave_subsection();
           }
+          prm.leave_subsection();
+        }
     }
   }
 }
@@ -191,10 +181,10 @@ namespace aspect
   {
     namespace Generator
     {
-    ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniformGenerator,
-                                               "random uniform",
-                                               "Generate random uniform distribution of "
-                                               "particles over entire simulation domain.")
+      ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
+                                         "uniform box",
+                                         "Generate a uniform distribution of particles"
+                                         "over a rectangular domain in or or 3D.")
     }
   }
 }
