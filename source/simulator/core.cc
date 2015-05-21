@@ -1332,13 +1332,11 @@ namespace aspect
       freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
-    global_volume = GridTools::volume (triangulation, mapping);
     computing_timer.exit_section();
 
     setup_dofs ();
 
     computing_timer.enter_section ("Refine mesh structure, part 2");
-
     {
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
@@ -1383,27 +1381,29 @@ namespace aspect
           constraints.distribute (distributed_mesh_velocity);
           free_surface->mesh_velocity = distributed_mesh_velocity;
         }
+
+      // do the same as above also for the free surface solution
+      if (parameters.free_surface_enabled)
+        {
+          LinearAlgebra::Vector distributed_mesh_vertices;
+          distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
+                                           mpi_communicator);
+
+          std::vector<LinearAlgebra::Vector *> system_tmp (1);
+          system_tmp[0] = &distributed_mesh_vertices;
+
+          freesurface_trans->interpolate (system_tmp);
+          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
+          free_surface->mesh_vertices = distributed_mesh_vertices;
+
+          //make sure the mesh is consistent with mesh_vertices
+          free_surface->displace_mesh ();
+        }
     }
-
-    // do the same as above also for the free surface solution
-    if (parameters.free_surface_enabled)
-      {
-        LinearAlgebra::Vector distributed_mesh_vertices;
-        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
-                                         mpi_communicator);
-
-        std::vector<LinearAlgebra::Vector *> system_tmp (1);
-        system_tmp[0] = &distributed_mesh_vertices;
-
-        freesurface_trans->interpolate (system_tmp);
-        free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
-        free_surface->mesh_vertices = distributed_mesh_vertices;
-      }
-
-    if (parameters.free_surface_enabled)
-      free_surface->displace_mesh ();
-
     computing_timer.exit_section();
+
+    //calculate global volume after displacing mesh (if we have, in fact, displaced it)
+    global_volume = GridTools::volume (triangulation, mapping);
   }
 
   /**
