@@ -27,6 +27,7 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 
+
 namespace aspect
 {
   using namespace dealii;
@@ -196,13 +197,22 @@ namespace aspect
     std::set<types::boundary_id> fixed_composition_boundary_indicators;
     std::set<types::boundary_id> zero_velocity_boundary_indicators;
     std::set<types::boundary_id> tangential_velocity_boundary_indicators;
+
     /**
-     * map from boundary id to a pair "components", "velocity boundary type",
+     * Map from boundary id to a pair "components", "velocity boundary type",
      * where components is of the format "[x][y][z]" and the velocity type is
      * mapped to one of the plugins of velocity boundary conditions (e.g.
      * "function")
      */
     std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
+
+    /**
+     * Map from boundary id to a "traction boundary type", where the
+     * velocity type is mapped to one of the plugins of traction boundary
+     * conditions (e.g. "function")
+     */
+    std::map<types::boundary_id, std::string> prescribed_traction_boundary_indicators;
+
     /**
      * Selection of operations to perform to remove nullspace from velocity
      * field.

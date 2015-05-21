@@ -424,6 +424,23 @@ namespace aspect
                          "part of the boundary on which the velocity is to be zero with "
                          "the parameter ``Zero velocity boundary indicator'' in the "
                          "current parameter section.");
+      prm.declare_entry ("Prescribed traction boundary indicators", "",
+                         Patterns::Map (Patterns::Anything(),
+                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                         "A comma separated list denoting those boundaries "
+                         "on which the a traction force is prescribed, i.e., where "
+                         "known external forces act, resulting in an unknown velocity. This is "
+                         "often used to model ``open'' boundaries where we only know the pressure. "
+                         "This pressure then produces a force that is normal to the boundary and "
+                         "proportional to the pressure."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1 [selector]: value1, key2 : value2, key3 : value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is an integer) "
+                         "and each value must be one of the currently implemented boundary "
+                         "traction models. As an example, '1: function' applies "
+                         "the traction boundary condition specified by the plugin 'function' to the "
+                         "boundary with indicator 1.");
 
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
@@ -652,7 +669,7 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    //Also declare the parameters that the FreeSurfaceHandler needs
+    // also declare the parameters that the FreeSurfaceHandler needs
     Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
   }
 
@@ -1113,6 +1130,54 @@ namespace aspect
           prescribed_velocity_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
+
+      const std::vector<std::string> x_prescribed_traction_boundary_indicators
+        = Utilities::split_string_list
+          (prm.get ("Prescribed traction boundary indicators"));
+      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
+           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+        {
+          // each entry has the format (white space is optional):
+          // <id> : <value (might have spaces)>
+          //
+          // first tease apart the two halves
+          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          AssertThrow (split_parts.size() == 2,
+                       ExcMessage ("The format for prescribed traction boundary indicators "
+                                   "requires that each entry has the form `"
+                                   "<id> : <value>', but there does not "
+                                   "appear to be a colon in the entry <"
+                                   + *p
+                                   + ">."));
+
+          // get the key and value
+          const std::string key   = split_parts[0];
+          const std::string value = split_parts[1];
+
+          // finally, try to translate the key into a boundary_id. then
+          // make sure we haven't see it yet
+          types::boundary_id boundary_id;
+          try
+            {
+              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key);
+            }
+          catch (const std::string &error)
+            {
+              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                              "traction indicators>, there was an error. Specifically, "
+                                              "the conversion function complained as follows: "
+                                              + error));
+            }
+
+          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
+                       == prescribed_traction_boundary_indicators.end(),
+                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                   "> appears more than once in the list of indicators "
+                                   "for traction boundaries."));
+
+          // finally, put it into the list
+          prescribed_traction_boundary_indicators[boundary_id] = value;
+        }
     }
     prm.leave_subsection ();
   }
@@ -1137,6 +1202,7 @@ namespace aspect
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
+    TractionBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
 
