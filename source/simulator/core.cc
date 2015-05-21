@@ -712,12 +712,11 @@ namespace aspect
     heating_model_manager.update();
     adiabatic_conditions->update();
 
-    // TODO: change std_cxx1x to std_cxx11?
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
     // above
-    for (typename std::map<types::boundary_id,std_cxx1x::shared_ptr<TractionBoundaryConditions::Interface<dim> > >::iterator
+    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > >::iterator
          p = traction_boundary_conditions.begin();
          p != traction_boundary_conditions.end(); ++p)
       p->second->update ();
