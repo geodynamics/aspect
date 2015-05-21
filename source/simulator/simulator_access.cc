@@ -305,6 +305,14 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  SimulatorAccess<dim>::has_boundary_temperature () const
+  {
+    return (simulator->boundary_temperature.get() != 0);
+  }
+
+
+  template <int dim>
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
