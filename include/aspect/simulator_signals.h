@@ -91,5 +91,27 @@ namespace aspect
     static boost::signals2::signal<void (const Parameters<dim> &,
                                          ParameterHandler &)>  parse_additional_parameters;
   };
+
+
+/**
+ * A macro that is used to register a function that can be used to connect user
+ * extension functions to the parameter-related signals declared in SimulatorSignals.
+ *
+ * In essence, this function simply registers a (global) function that is called
+ * at the beginning of the program and that can be used to connect parameter
+ * declaration and parsing functions to the signals listed above.
+ */
+#define ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(connector_function) \
+    namespace ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR_ ## connector_function \
+    { \
+      int dummy_do_register ## classname () \
+      { \
+        connector_function (); \
+        return /* anything will do = */42; \
+      } \
+      \
+      const int dummy_variable_ ## classname = dummy_do_register ## classname (); \
+    }
+
 }
 #endif
