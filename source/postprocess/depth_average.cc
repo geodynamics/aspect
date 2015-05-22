@@ -212,7 +212,7 @@ namespace aspect
           prm.declare_entry ("Output format", "gnuplot",
                              Patterns::Selection(DataOutBase::get_output_format_names()),
                              "The format in which the output shall be produced. The "
-                             "format in which the output is generated also determiens "
+                             "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
         }
         prm.leave_subsection();
@@ -312,6 +312,12 @@ namespace aspect
                                   "is determined by the output format you select. In addition "
                                   "to the output format, a number of other parameters also influence "
                                   "this postprocessor, and they can be set in the section "
-                                  "\\texttt{Postprocess/Depth average} in the input file. ")
+                                  "\\texttt{Postprocess/Depth average} in the input file."
+                                  "\n\n"
+                                  "In the output files, the $x$-value of each data point corresponds "
+                                  "to the depth, whereas the $y$-value corresponds to the "
+                                  "simulation time. The time is provided in seconds or, if the "
+                                  "global ``Use years in output instead of seconds'' parameter is "
+                                  "set, in years.")
   }
 }
