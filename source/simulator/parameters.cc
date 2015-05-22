@@ -106,7 +106,9 @@ namespace aspect
                        "On the other hand, for non-dimensional computations, one wants "
                        "results in their natural unit system as used inside the code. "
                        "If this flag is set to 'true' conversion to years happens; if "
-                       "it is 'false', no such conversion happens.");
+                       "it is 'false', no such conversion happens. Note that when 'true', "
+                       "some input such as prescribed velocities should also use years "
+                       "instead of seconds.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0),
@@ -423,7 +425,10 @@ namespace aspect
                          "the boundary values. Alternatively, you can simply list the "
                          "part of the boundary on which the velocity is to be zero with "
                          "the parameter ``Zero velocity boundary indicator'' in the "
-                         "current parameter section.");
+                         "current parameter section."
+                         "\n\n"
+                         "Note that when ``Use years in output instead of seconds'' is set "
+                         "to true, velocity should be given in m/yr. ");
 
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
