@@ -38,7 +38,7 @@ namespace aspect
     Tensor<1,dim>
     Function<dim>::
     traction (const Point<dim> &p,
-        const Tensor<1,dim> &) const
+              const Tensor<1,dim> &) const
     {
       Tensor<1,dim> traction;
       for (unsigned int d=0; d<dim; ++d)
@@ -85,17 +85,17 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         try
-        {
-          boundary_traction_function.parse_parameters (prm);
-        }
+          {
+            boundary_traction_function.parse_parameters (prm);
+          }
         catch (...)
-        {
+          {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                << "\t'Boundary traction model.Function'\n"
-                << "with expression\n"
-                << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'Boundary traction model.Function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
             throw;
-        }
+          }
         prm.leave_subsection();
       }
       prm.leave_subsection();

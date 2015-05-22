@@ -1275,32 +1275,32 @@ namespace aspect
         if (traction_boundary_conditions
             .find (
 #if DEAL_II_VERSION_GTE(8,3,0)
-                  cell->face(f)->boundary_id()
+              cell->face(f)->boundary_id()
 #else
-                  cell->face(f)->boundary_indicator()
+              cell->face(f)->boundary_indicator()
 #endif
-                  )
+            )
             !=
-                traction_boundary_conditions.end())
+            traction_boundary_conditions.end())
           {
             scratch.face_finite_element_values.reinit (cell, f);
 
             for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
               {
                 const Tensor<1,dim> traction
-                = traction_boundary_conditions[
+                  = traction_boundary_conditions[
 #if DEAL_II_VERSION_GTE(8,3,0)
-                                               cell->face(f)->boundary_id()
+                      cell->face(f)->boundary_id()
 #else
-                                               cell->face(f)->boundary_indicator()
+                      cell->face(f)->boundary_indicator()
 #endif
-                                               ]
-                                               ->traction (scratch.face_finite_element_values.quadrature_point(q),
-                                                           scratch.face_finite_element_values.normal_vector(q));
+                    ]
+                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                scratch.face_finite_element_values.normal_vector(q));
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                  traction *
-                  scratch.face_finite_element_values.JxW(q);
+                                       traction *
+                                       scratch.face_finite_element_values.JxW(q);
               }
           }
 
