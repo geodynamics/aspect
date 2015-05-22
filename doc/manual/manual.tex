@@ -6781,9 +6781,10 @@ of results are listed in Table~\ref{tab:davies-et-al-results}.%
 \section{Extending \aspect}
 \label{sec:extending}
 
-\aspect{} is designed to be an extensible code. In particular, the program
-uses a plugin architecture in which it is trivial to replace
-or extend certain components of the program:
+\aspect{} is designed to be an extensible code. In particular, it
+uses both a plugin architecture and a set of signals through which it is
+trivial to replace or extend certain components of the program. Examples of
+things that are simple to extend are:
 \begin{itemize}
 \item the material description,
 \item the geometry,
@@ -6800,11 +6801,22 @@ or extend certain components of the program:
 \item the computation of refinement indicators,
 \item the determination of how long a computation should run.
 \end{itemize}
+This list may also have grown since this section was written.
 We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
 \ref{sec:plugins-concrete}. Changing the core functionality, i.e., the basic equations
 \eqref{eq:stokes-1}--\eqref{eq:temperature}, and how they are solved is
 arguably more involved. We will discuss this in Section
 \ref{sec:extending-solver}.
+
+\note{The purpose of coming up with ways to make extensibility simple is that if
+you want to extend \aspect{} for your own purposes, you can do this in a
+separate set of files that describe your situation, rather than by modifying
+the \aspect{} source files themselves. This is important, because (i) it makes
+it possible for you to update \aspect{} itself to a newer version without
+losing the functionality you added (because you did not make any changes to
+the \aspect{} files themselves), and (ii) because it makes it possible to keep
+unrelated changes separate in your own set of files, in a place where they are
+simple to find.}
 
 Since \aspect{} is written in C++ using the \dealii{} library, you
 will have to be proficient in C++. You will also likely have
@@ -8402,6 +8414,21 @@ The purpose
 of the last two functions has been discussed in the general overview of
 plugins above.
 
+
+
+\subsection{Extending \aspect{} through the signals mechanism}
+\label{sec:extending-signals}
+
+Not all things you may want to do fit neatly into the list of plugins of the
+previous sections. Rather, there are cases where you may want to change things
+that are more of the one-off kind and that require code that is at a lower level
+and requires more knowledge about \aspect{}'s internal workings. For such
+changes, we still want to stick with the general principle outlined at the
+beginning of Section~\ref{sec:extending}: You should be able to make all of your
+changes and extensions in your own files, without having to modify \aspect{}'s
+own sources.
+
+To support this, . . . to be finished.
 
 
 \subsection{Extending the basic solver}

@@ -455,6 +455,11 @@ namespace aspect
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
+
+    // the very last action is to let user-provided plugins let their slots
+    // connect to the signals we provide
+    internals::SimulatorSignals::call_connector_functions (signals);
+
     computing_timer.exit_section();
   }
 
@@ -769,6 +774,16 @@ namespace aspect
                                                       introspection.component_masks.compositional_fields[c]);
           }
     }
+
+
+    // let plugins add more constraints if they so choose, then close the
+    // constraints object
+    {
+      SimulatorAccess<dim> simulator_access;
+      simulator_access.initialize(*this);
+      signals.post_constraints_creation(simulator_access, current_constraints);
+    }
+
     current_constraints.close();
   }
 
@@ -1014,14 +1029,6 @@ namespace aspect
                                                        parameters.tangential_velocity_boundary_indicators,
                                                        constraints,
                                                        mapping);
-    }
-
-    // let plugins add more constraints if they so choose, then close the
-    // constraints object
-    {
-      SimulatorAccess<dim> simulator_access;
-      simulator_access.initialize(*this);
-      signals.add_additional_constraints(simulator_access, constraints);
     }
     constraints.close();
 

@@ -67,7 +67,7 @@ namespace aspect
      * argument that indicates the constraints to be computed.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
-                                  ConstraintMatrix &)>  add_additional_constraints;
+                                  ConstraintMatrix &)>  post_constraints_creation;
 
     /**
      * A signal that is called at the beginning of the program. It
@@ -93,25 +93,77 @@ namespace aspect
   };
 
 
-/**
- * A macro that is used to register a function that can be used to connect user
- * extension functions to the parameter-related signals declared in SimulatorSignals.
- *
- * In essence, this function simply registers a (global) function that is called
- * at the beginning of the program and that can be used to connect parameter
- * declaration and parsing functions to the signals listed above.
- */
-#define ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(connector_function) \
-    namespace ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR_ ## connector_function \
-    { \
-      int dummy_do_register ## classname () \
-      { \
-        connector_function (); \
-        return /* anything will do = */42; \
-      } \
-      \
-      const int dummy_variable_ ## classname = dummy_do_register ## classname (); \
+  namespace internals
+  {
+    /**
+     * A namespace for some internal functions that have to do with how plugins
+     * can register their slots with signals.
+     */
+    namespace SimulatorSignals
+    {
+      /**
+       * Two functions that (in 2d and 3d) put a user-provided function onto a list
+       * of functions that the Simulator object will later go through when
+       * letting plugins connect their slots to signals.
+       */
+      void register_connector_function_2d (const std_cxx11::function<void (aspect::SimulatorSignals<2> &)> &connector);
+      void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector);
+
+      /**
+       * Two functions that are called by the Simulator object and that go through
+       * the lists created by the previous pair of functions and call each of the
+       * user-provided connector functions to let them register their slots
+       * with the corresponding signals.
+       */
+      void call_connector_functions (aspect::SimulatorSignals<2> &signals);
+      void call_connector_functions (aspect::SimulatorSignals<3> &signals);
     }
+  }
+
+
+  /**
+   * A macro that is used in user-provided plugins to register a function that
+   * is called at the beginning of a simulation by a Simulator object. When called,
+   * the provided function will receive a SimulatorSignals object that contains
+   * signals to which one can subscribe.
+   *
+   * For technical reasons, the macro takes two arguments denoting functions for the
+   * 2d and 3d cases. These can, for example, be the names of 2d and 3d
+   * instantiations of the same template function.
+   */
+#define ASPECT_REGISTER_SIGNALS_CONNECTOR(connector_function_2d,connector_function_3d) \
+  namespace ASPECT_REGISTER_SIGNALS_CONNECTOR \
+  { \
+    int dummy_do_register () \
+    { \
+      aspect::internals::SimulatorSignals::register_connector_function_2d (connector_function_2d); \
+      aspect::internals::SimulatorSignals::register_connector_function_3d (connector_function_3d); \
+      return /* anything will do = */42; \
+    } \
+    \
+    const int dummy_variable = dummy_do_register (); \
+  }
+
+
+  /**
+   * A macro that is used to register a function that can be used to connect user
+   * extension functions to the parameter-related signals declared in SimulatorSignals.
+   *
+   * In essence, this function simply registers a (global) function that is called
+   * at the beginning of the program and that can be used to connect parameter
+   * declaration and parsing functions to the signals listed above.
+   */
+#define ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(connector_function) \
+  namespace ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR_ ## connector_function \
+  { \
+    int dummy_do_register_ ## connector_function () \
+    { \
+      connector_function (); \
+      return /* anything will do = */42; \
+    } \
+    \
+    const int dummy_variable_ ## classname = dummy_do_register_ ## connector_function (); \
+  }
 
 }
 #endif
