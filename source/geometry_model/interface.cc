@@ -216,6 +216,16 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      // If one sets the model name to an empty string in the input file,
+      // ParameterHandler produces an error while reading the file. However,
+      // if one omits specifying any model name at all (not even setting it to
+      // the empty string) then the value we get here is the empty string. If
+      // we don't catch this case here, we end up with awkward downstream
+      // errors because the value obviously does not conform to the Pattern.
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a Geometry model "
+                             "('set Model name' in 'subsection Geometry model')."));
+
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Geometry model::model name",
                                                                     prm);
