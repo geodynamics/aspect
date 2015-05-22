@@ -1941,6 +1941,12 @@ namespace aspect
             goto start_time_iteration;
           }
 
+        // as soon as the mesh starts deforming with a free surface, a manifold
+        // description and boundary shape are no longer guaranteed to be any good.
+        // Here we detach those manifolds and boundaries.
+        if ( timestep_number == 0 && parameters.free_surface_enabled == true )
+          free_surface->detach_manifolds();
+
         postprocess ();
 
         // see if this is a time step where additional refinement is requested
