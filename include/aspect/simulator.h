@@ -41,6 +41,7 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
@@ -1085,6 +1086,7 @@ namespace aspect
        */
       Parameters<dim>                     parameters;
       Introspection<dim>                  introspection;
+      SimulatorSignals<dim>               signals;
 
       MPI_Comm                            mpi_communicator;
 

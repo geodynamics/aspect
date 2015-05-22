@@ -1015,6 +1015,14 @@ namespace aspect
                                                        constraints,
                                                        mapping);
     }
+
+    // let plugins add more constraints if they so choose, then close the
+    // constraints object
+    {
+      SimulatorAccess<dim> simulator_access;
+      simulator_access.initialize(*this);
+      signals.add_additional_constraints(simulator_access, constraints);
+    }
     constraints.close();
 
     // finally initialize vectors, matrices, etc.
