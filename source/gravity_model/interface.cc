@@ -98,6 +98,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a Gravity model "
+                             "('set Model name' in 'subsection Gravity model')."));
+
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Gravity model::Model name");
     }

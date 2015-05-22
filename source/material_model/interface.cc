@@ -226,6 +226,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a material model "
+                             "('set Model name' in 'subsection Material model')."));
+
       Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Material model::Model name");
       return plugin;

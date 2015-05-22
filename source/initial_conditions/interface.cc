@@ -95,6 +95,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select initial conditions for the temperature "
+                             "('set Model name' in 'subsection Initial conditions')."));
+
       Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Initial conditions::Model name");
       return plugin;

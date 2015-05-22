@@ -100,6 +100,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a Boundary model for the temperature "
+                             "('set Model name' in 'subsection Boundary temperature model')."));
+
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Boundary temperature model::Model name");
     }

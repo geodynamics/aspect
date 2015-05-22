@@ -98,6 +98,10 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a boundary model for the composition "
+                             "('set Model name' in 'subsection Boundary composition model')."));
+
       return std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                     "Boundary composition model::Model name");
     }
