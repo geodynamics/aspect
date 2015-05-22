@@ -1,0 +1,48 @@
+#!/bin/bash
+## ---------------------------------------------------------------------
+##
+##  Copyright (C) 2015 by the ASPECT authors
+##
+##  This file is part of ASPECT.
+##
+##  ASPECT is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2, or (at your option)
+##  any later version.
+##
+##  ASPECT is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with ASPECT; see the file doc/COPYING.  If not see
+##  <http://www.gnu.org/licenses/>.
+##
+## ---------------------------------------------------------------------
+
+if test ! -d source -o ! -d include ; then
+  echo "*** This script must be run from the top-level directory of ASPECT."
+  exit
+fi
+
+if test ! -f doc/astyle.rc ; then
+  echo "*** No style file doc/astyle.rc found."
+  exit
+fi
+
+
+# loop over all directories in which we may have source files;
+# collect a list of files and then spawn a parallel process to
+# indent all of them
+echo "--- Indenting all ASPECT header and source files"
+for dir in include/aspect/* source/*  ; do
+  files=`find $dir | egrep '\.(cc|h)$'` ;
+  if test -n "$files" ; then
+    (astyle --options=doc/astyle.rc $files ) &
+  fi
+done
+
+# now wait for all of these processes to finish
+wait
+
