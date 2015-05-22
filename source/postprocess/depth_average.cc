@@ -212,7 +212,7 @@ namespace aspect
           prm.declare_entry ("Output format", "gnuplot",
                              Patterns::Selection(DataOutBase::get_output_format_names()),
                              "The format in which the output shall be produced. The "
-                             "format in which the output is generated also determiens "
+                             "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
         }
         prm.leave_subsection();
