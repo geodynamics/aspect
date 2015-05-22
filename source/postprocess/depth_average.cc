@@ -312,6 +312,12 @@ namespace aspect
                                   "is determined by the output format you select. In addition "
                                   "to the output format, a number of other parameters also influence "
                                   "this postprocessor, and they can be set in the section "
-                                  "\\texttt{Postprocess/Depth average} in the input file. ")
+                                  "\\texttt{Postprocess/Depth average} in the input file."
+                                  "\n\n"
+                                  "In the output files, the $x$-value of each data point corresponds "
+                                  "to the depth, whereas the $y$-value corresponds to the "
+                                  "simulation time. The time is provided in seconds or, if the "
+                                  "global ``Use years in output instead of seconds'' parameter is "
+                                  "set, in years.")
   }
 }
