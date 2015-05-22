@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/simple.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -30,32 +29,53 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     Simple<dim>::
-    viscosity (const double temperature,
-               const double,
-               const std::vector<double> &composition,
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      const double delta_temp = temperature-reference_T;
-      const double temperature_dependence = (reference_T > 0
-                                             ?
-                                             std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),
-                                                               1e2),
-                                                      1e-2)
-                                             :
-                                             1.0);
-
-      double composition_dependence = 1.0;
-      if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
+      for (unsigned int i=0; i < in.position.size(); ++i)
         {
-          //geometric interpolation
-          return (pow(10, ((1-composition[0]) * log10(eta*temperature_dependence)
-                           + composition[0] * log10(eta*composition_viscosity_prefactor*temperature_dependence))));
-        }
+          const double delta_temp = in.temperature[i]-reference_T;
+          const double temperature_dependence = (reference_T > 0
+                                                 ?
+                                                 std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),
+                                                                   1e2),
+                                                          1e-2)
+                                                 :
+                                                 1.0);
 
-      return composition_dependence * temperature_dependence * eta;
+          out.viscosities[i] = ((composition_viscosity_prefactor != 1.0) && (in.composition[i].size()>0))
+                               ?
+                               //Geometric interpolation
+                               pow(10.0, ((1-in.composition[i][0]) * log10(eta*temperature_dependence)
+                                          + in.composition[i][0] * log10(eta*composition_viscosity_prefactor*temperature_dependence)))
+                               :
+                               temperature_dependence * eta;
+
+          const double c = (in.composition[i].size()>0)
+                           ?
+                           std::max(0.0, in.composition[i][0])
+                           :
+                           0.0;
+
+          out.densities[i] = reference_rho * (1 - thermal_alpha * (in.temperature[i] - reference_T))
+                             + compositional_delta_rho * c;
+
+          out.thermal_expansion_coefficients[i] = thermal_alpha;
+          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_conductivities[i] = k_value;
+          out.compressibilities[i] = 0.0;
+          // Pressure derivative of entropy at the given positions.
+          out.entropy_derivative_pressure[i] = 0.0;
+          // Temperature derivative of entropy at the given positions.
+          out.entropy_derivative_temperature[i] = 0.0;
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+        }
     }
 
 
@@ -86,17 +106,6 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return reference_specific_heat;
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
     reference_cp () const
     {
       return reference_specific_heat;
@@ -105,60 +114,9 @@ namespace aspect
     template <int dim>
     double
     Simple<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return k_value;
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
     reference_thermal_diffusivity () const
     {
       return k_value/(reference_rho*reference_specific_heat);
-    }
-
-    template <int dim>
-    double
-    Simple<dim>::
-    density (const double temperature,
-             const double,
-             const std::vector<double> &compositional_fields, /*composition*/
-             const Point<dim> &) const
-    {
-      const double c = compositional_fields.size()>0?
-                       std::max(0.0, compositional_fields[0])
-                       :
-                       0.0;
-      return reference_rho * (1 - thermal_alpha * (temperature - reference_T))
-             + compositional_delta_rho * c;
-    }
-
-
-    template <int dim>
-    double
-    Simple<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return thermal_alpha;
-    }
-
-
-    template <int dim>
-    double
-    Simple<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0;
     }
 
     template <int dim>
