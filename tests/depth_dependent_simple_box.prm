@@ -66,8 +66,8 @@ end
 
 
 subsection Material model
-  set Model name = classic
-  subsection Classic model
+  set Model name = depth dependent simple
+  subsection Depth dependent simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
     set Reference temperature         = 0.0
