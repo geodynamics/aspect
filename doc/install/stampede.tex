@@ -60,11 +60,18 @@ May 23 2015
 \end{centering}
 \vskip 2mm
 
-Setting up ASPECT on TACC Stampede is much easier than on previous systems sincemost of the necessary libraries are already correctly installed and configured. Following allthe instructions in this document should allow you to start running ASPECT within 30minutes.
+Setting up ASPECT on TACC Stampede is much easier than on previous systems since
+most of the necessary libraries are already correctly installed and configured. Following all
+the instructions in this document should allow you to start running ASPECT within 30
+minutes.
 
-For further information on Stampede you canalso refer to the user guide at: 
+For further information on Stampede you can
+also refer to the user guide at: 
 
-http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guideAlso, please note that most parts of this document have changed since the previousversion. Even if you have set up ASPECT before, please follow all sections of this documentto make sure your current setup has all necessary updates.
+http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide
+Also, please note that most parts of this document have changed since the previous
+version. Even if you have set up ASPECT before, please follow all sections of this document
+to make sure your current setup has all necessary updates.
 
 
 \section{Account}
@@ -133,21 +140,33 @@ You will get a lot of warnings, but as long as you see the following you are rea
 -- Build files have been written to: /home1/02668/loginname/packages/aspect/build \\
 
 make -j8 \\
-cd ../ \\ 
 
-Check where you are located: \\
-git branch  \\
+\section{Running}
+When testing ASPECT, it can be useful to run in interactive mode on the cluster. This way you can use multiple processors for fast testing, but still make changes to files and test different options without needing to wait in the batch queue after each change. To start an interactive shell with multiple processors, use: \\
+srun -p development -t $<$maximum time$>$ -n $<$\#cores$>$ --pty /bin/bash -l \\
+For example: \\srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l \\
+Once logged in you can run ASPECT in parallel using the command:
+ 
+ ibrun ./build/aspect $<$parameter file$>$ \\
+ 
+ The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
+ 
+ 
+ \#!/bin/bash \\\#SBATCH -J aspect\_run   \# job name \\\#SBATCH -o aspect\_run.o\%j   \# output and error file name (\% expands to jobID) \\\#SBATCH -n 32  \# total number of mpi tasks requested \\\#SBATCH -p normal \# queue (partition) -- normal, development, etc. \\\#SBATCH -t 12:00:00 \# run time (hh:mm:ss) - 12 hours \\ibrun \$WORK/aspect/build/aspect \$WORK/cookbooks/shell\_simple\_3d.prm \\ 
 
-You should see:  \\
- $*$master  \\
- 
- Make a local branch for your work \\
- git branch myproject \\
- git checkout myproject \\
- 
- 
- 
+The script is submitted to the run queue using: \\
 
+sbatch $<$script file$>$ \\
+
+\section{File Transfer}
+Once a simulation is finished, you may wish to transfer the resulting output files to a local machine for further analysis. There are two common methods of doing so, scp or Globus. scp (secure copy) works best for smaller transfers (1GB or less). The syntax is similar to normal copies: \\
+scp user1@host1:file1 user2@host2:file2 \\
+
+To recursively copy the contents of a directory, use the -r option. For example, to copy the results of a computation from Stampede to the local directory: \\
+scp -r loginname@stampede.tacc.utexas.edu:/work/01766/loginname/aspect/output . \\
+For larger transfers, Globus is recommended since it optimizes transfer rates and toleratesfailures during the transfer. For details about using Globus with Stampede please refer to: \\
+
+https://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide\#transferring.
  
 
  
