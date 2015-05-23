@@ -29,15 +29,17 @@ FUNCTION(get_mpi_count _filename)
   endif()
 ENDFUNCTION()
 
-# extract from the prm if the test should be run with trilinos or
-# petsc. This is encoded in the .prm in form of line
-# '# LINEAR ALGEBRA: PETSC'
-# '# LINEAR ALGEBRA: PETSC TRILINOS'
-# If no line is there, Trilinos is assumed. 
-FUNCTION(check_linear_algebra _filename)
+# Analyze the .prm to decide if this test should be run or not. We are
+# checking for the following strings in the .prm:
+# 1. "LINEAR ALGEBRA: PETSC" - only run with PETSc, "LINEAR ALGEBRA: PETSC
+# TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
+# using Trilinos.
+# 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
+FUNCTION(SHOULD_ENABLE_TEST _filename)
+  SET(_use_test OFF PARENT_SCOPE)
+
   FILE(STRINGS ${_filename} _input_lines
        REGEX "LINEAR ALGEBRA:")
-  SET(_use_test OFF PARENT_SCOPE)
   IF("${_input_lines}" STREQUAL "")
     IF(ASPECT_USE_PETSC)
     ELSE()
@@ -52,6 +54,12 @@ FUNCTION(check_linear_algebra _filename)
         SET(_use_test ON PARENT_SCOPE)
       ENDIF()
     ENDFOREACH()
+  ENDIF()
+
+  FILE(STRINGS ${_filename} _input_lines
+       REGEX "QUICK_TEST")
+  IF(NOT ${ASPECT_RUN_ALL_TESTS} AND "${_input_lines}" STREQUAL "")
+    SET(_use_test OFF PARENT_SCOPE)
   ENDIF()
 ENDFUNCTION()
 
@@ -105,12 +113,8 @@ LIST(SORT _tests)
 FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
 
-  SET(_use_test OFF)
-  CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
-
-  IF (NOT ${ASPECT_RUN_ALL_TESTS} AND NOT "${_test}" STREQUAL "always_refine")
-    SET(_use_test OFF)
-  ENDIF()
+  SET(_use_test ON)
+  SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 
   IF(_use_test)
 
