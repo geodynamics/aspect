@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> New: There are now a set of global constants defined for physical
+ * properties and for radius and gravity parameters relevant to 
+ * Earth and Mars.
+ * <br>
+ * (Bob Myhill, 2015/05/22)
+ *
  * <li> Changed: The free surface handler now detaches internal manifolds
  * for cases when the domain has them, since they are not necessarily a 
  * good description of the geometry when there has been large mesh deformation.
