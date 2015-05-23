@@ -19,10 +19,10 @@
 */
 
 
-
-#include <aspect/postprocess/visualization/internal_heating.h>
+#include <aspect/postprocess/visualization/heating.h>
 #include <aspect/simulator_access.h>
 
+#include <algorithm>
 
 
 namespace aspect
@@ -32,26 +32,51 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      InternalHeating<dim>::
-      InternalHeating ()
+      Heating<dim>::
+      Heating ()
         :
-        DataPostprocessorScalar<dim> ("Internal heating rate",
-                                      update_values | update_gradients | update_q_points)
+        DataPostprocessor<dim> ()
       {}
 
+      template <int dim>
+      std::vector<std::string>
+      Heating<dim>::
+      get_names () const
+      {
+        return this->get_heating_model_manager().get_active_heating_model_names();
+      }
 
+      template <int dim>
+      std::vector<DataComponentInterpretation::DataComponentInterpretation>
+      Heating<dim>::
+      get_data_component_interpretation () const
+      {
+        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
+        for (unsigned int i=0; i<this->get_heating_model_manager().get_active_heating_model_names().size(); ++i)
+          interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+
+        return interpretation;
+      }
+
+      template <int dim>
+      UpdateFlags
+      Heating<dim>::
+      get_needed_update_flags () const
+      {
+        return update_gradients | update_values  | update_q_points;
+      }
 
       template <int dim>
       void
-      InternalHeating<dim>::
+      Heating<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-        const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
+
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
@@ -62,6 +87,8 @@ namespace aspect
 
         in.strain_rate.resize(0); // we do not need the viscosity
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
+
+        std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > heating_model_objects = this->get_heating_model_manager().get_heating_models();
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -76,11 +103,20 @@ namespace aspect
         in.position = evaluation_points;
 
         this->get_material_model().evaluate(in, out);
-        heating_model.evaluate(in, out, heating_model_outputs);
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = heating_model_outputs.heating_source_terms[q];
+        unsigned int index = 0;
+        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+             heating_model = heating_model_objects.begin();
+             heating_model != heating_model_objects.end(); ++heating_model, ++index)
+          {
+            (*heating_model)->evaluate(in, out, heating_model_outputs);
+
+            for (unsigned int q=0; q<n_quadrature_points; ++q)
+              computed_quantities[q][index] = heating_model_outputs.heating_source_terms[q];
+          }
+
       }
+
     }
   }
 }
@@ -93,10 +129,10 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(InternalHeating,
-                                                  "internal heating",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Heating,
+                                                  "heating",
                                                   "A visualization output object that generates output "
-                                                  "for the internal heating rate. Units: W/kg")
+                                                  "for all the heating terms used in the energy equation.")
     }
   }
 }

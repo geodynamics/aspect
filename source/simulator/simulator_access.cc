@@ -413,12 +413,13 @@ namespace aspect
   }
 
   template <int dim>
-  const HeatingModel::Interface<dim> &
-  SimulatorAccess<dim>::get_heating_model () const
+  const HeatingModel::Manager<dim> &
+  SimulatorAccess<dim>::get_heating_model_manager () const
   {
-    Assert (simulator->heating_model.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->heating_model.get();
+    Assert (simulator->heating_model_manager.get() != 0,
+            ExcMessage("You can not call this function if no such heating model manager "
+                       "is actually available."));
+    return simulator->heating_model_manager;
   }
 
   template <int dim>

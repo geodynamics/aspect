@@ -610,9 +610,9 @@ namespace aspect
     const unsigned int n_q_points = scratch.old_field_values->size();
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model->evaluate(scratch.material_model_inputs,
-                            scratch.material_model_outputs,
-                            heating_model_outputs);
+    heating_model_manager.execute(scratch.material_model_inputs,
+                                  scratch.material_model_outputs,
+                                  heating_model_outputs);
 
     for (unsigned int q=0; q < n_q_points; ++q)
       {
@@ -1585,9 +1585,9 @@ namespace aspect
                                                scratch.material_model_outputs);
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model->evaluate(scratch.material_model_inputs,
-                            scratch.material_model_outputs,
-                            heating_model_outputs);
+    heating_model_manager.execute(scratch.material_model_inputs,
+                                  scratch.material_model_outputs,
+                                  heating_model_outputs);
 
     // set up scratch.explicit_material_model_*
     {

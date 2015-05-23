@@ -93,6 +93,6 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = internal heating statistics
+  set List of postprocessors = heating statistics
 
 end

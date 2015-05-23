@@ -24,12 +24,14 @@
 
 #include <aspect/plugins.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
+  template <int dim> class SimulatorAccess;
   /**
    * A namespace in which we define everything that has to do with defining
    * the heating model.
@@ -162,67 +164,132 @@ namespace aspect
     };
 
 
-
-
     /**
-     * Register a heating model so that it can be selected from the parameter
-     * file.
+     * A class that manages all objects that provide functionality to the
+     * heating models.
      *
-     * @param name A string that identifies the heating model
-     * @param description A text description of what this model does and that
-     * will be listed in the documentation of the parameter file.
-     * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this heating model wants to read
-     * from input files.
-     * @param factory_function A pointer to a function that can create an
-     * object of this heating model.
-     *
-     * @ingroup HeatingModels
+     * @ingroup MeshRefinement
      */
     template <int dim>
-    void
-    register_heating_model (const std::string &name,
-                            const std::string &description,
-                            void (*declare_parameters_function) (ParameterHandler &),
-                            Interface<dim> *(*factory_function) ());
+    class Manager : public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Destructor. Made virtual since this class has virtual member
+         * functions.
+         */
+        virtual ~Manager ();
 
-    /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup HeatingModels
-     */
-    template <int dim>
-    Interface<dim> *
-    create_heating_model (ParameterHandler &prm);
+        /**
+         * Declare the parameters of all known mesh heating plugins, as
+         * well as of ones this class has itself.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-    /**
-     * Return a list of names of all implemented heating models, separated by
-     * '|' so that it can be used in an object of type Patterns::Selection.
-     */
-    template <int dim>
-    std::string
-    get_names ();
 
-    /**
-     * Declare the runtime parameters of the registered heating models.
-     *
-     * @ingroup HeatingModels
-     */
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm);
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * This determines which heating model objects will be created; then
+         * let these objects read their parameters as well.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
 
+        /**
+         * A function that is called at the beginning of each time step,
+         * calling the update function of the individual heating models.
+         */
+        void
+        update ();
+
+
+        /**
+         * A function that calls the evaluate function of all the individual
+         * heating models.
+         */
+        void
+        execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                 const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+
+
+        /**
+         * A function that is used to register heating model objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new mesh
+         * refinement class.
+         *
+         * @param name A string that identifies the heating model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this heating model wants to read
+         * from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this heating model.
+         *
+         * @ingroup HeatingModels
+         */
+        static
+        void
+        register_heating_model (const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> *(*factory_function) ());
+
+        /**
+         * Return a list of names of all implemented heating models, separated by
+         * '|' so that it can be used in an object of type Patterns::Selection.
+         */
+        std::string
+        get_all_heating_model_names () const;
+
+        /**
+         * Return a list of names of all heating models currently used in the
+         * computation, as specified in the input file.
+         */
+        std::vector<std::string>
+        get_active_heating_model_names () const;
+
+        /**
+         * Return a list of pointers to all heating models currently used in the
+         * computation, as specified in the input file.
+         */
+        std::list<std_cxx11::shared_ptr<Interface<dim> > >
+        get_heating_models () const;
+
+
+        /**
+         * Exception.
+         */
+        DeclException1 (ExcHeatingModelNameNotFound,
+                        std::string,
+                        << "Could not find entry <"
+                        << arg1
+                        << "> among the names of registered heating model objects.");
+      private:
+        /**
+         * A list of heating model objects that have been requested in the
+         * parameter file.
+         */
+        std::list<std_cxx11::shared_ptr<Interface<dim> > > heating_model_objects;
+
+        /**
+         * A list of names heating model objects that have been requested
+         * in the parameter file.
+         */
+        std::vector<std::string> model_names;
+    };
 
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a heating model, register it with the functions that can declare
-     * their parameters and create these objects.
+     * for a heating model, register it with the
+     * aspect::HeatingModel::Manager class.
      *
      * @ingroup HeatingModels
      */
@@ -232,10 +299,10 @@ namespace aspect
   namespace ASPECT_REGISTER_HEATING_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::HeatingModel::register_heating_model<2>, \
+    dummy_ ## classname ## _2d (&aspect::HeatingModel::Manager<2>::register_heating_model, \
                                 name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::HeatingModel::register_heating_model<3>, \
+    dummy_ ## classname ## _3d (&aspect::HeatingModel::Manager<3>::register_heating_model, \
                                 name, description); \
   }
   }

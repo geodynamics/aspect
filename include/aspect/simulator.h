@@ -1143,7 +1143,6 @@ namespace aspect
       const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
       const IntermediaryConstructorAction                            post_geometry_model_creation_action;
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
-      const std::auto_ptr<HeatingModel::Interface<dim> >             heating_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
@@ -1185,6 +1184,7 @@ namespace aspect
       double                                                    global_volume;
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
+      HeatingModel::Manager<dim>                                heating_model_manager;
 
       const MappingQ<dim>                                       mapping;
 

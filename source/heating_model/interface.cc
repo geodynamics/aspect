@@ -83,8 +83,12 @@ namespace aspect
     {}
 
 
-// -------------------------------- Deal with registering heating models and automating
-// -------------------------------- their setup and selection at run time
+    // ------------------------------ Manager -----------------------------
+
+    template <int dim>
+    Manager<dim>::~Manager()
+    {}
+
 
     namespace
     {
@@ -98,10 +102,10 @@ namespace aspect
 
     template <int dim>
     void
-    register_heating_model (const std::string &name,
-                            const std::string &description,
-                            void (*declare_parameters_function) (ParameterHandler &),
-                            Interface<dim> *(*factory_function) ())
+    Manager<dim>::register_heating_model (const std::string &name,
+                                          const std::string &description,
+                                          void (*declare_parameters_function) (ParameterHandler &),
+                                          Interface<dim> *(*factory_function) ())
     {
       std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -111,45 +115,143 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
-    create_heating_model (ParameterHandler &prm)
+    void
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
-      std::string model_name;
+      // find out which plugins are requested and the various other
+      // parameters we declare here
       prm.enter_subsection ("Heating model");
       {
-        model_name = prm.get ("Model name");
+        model_names
+          = Utilities::split_string_list(prm.get("List of model names"));
+
+        const std::string model_name = prm.get ("Model name");
+
+        Assert(model_name.empty() || model_names.size() == 0,
+               ExcMessage ("The parameter Model name is only used for reasons"
+                           "of backwards compatibility and can not be used together with "
+                           "the new functionality List of model names. Please add your "
+                           "heating model to the list instead."))
+
+        if (!model_name.empty())
+          model_names.push_back(model_name);
+
       }
       prm.leave_subsection ();
 
-      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Heating model::Model name");
-      return plugin;
+      // go through the list, create objects and let them parse
+      // their own parameters
+      for (unsigned int name=0; name<model_names.size(); ++name)
+        {
+          heating_model_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
+                                             (std_cxx11::get<dim>(registered_plugins)
+                                              .create_plugin (model_names[name],
+                                                              "Heating model::Model names")));
+
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
+            sim->initialize (this->get_simulator());
+
+          heating_model_objects.back()->parse_parameters (prm);
+          heating_model_objects.back()->initialize ();
+        }
     }
 
+
+    template <int dim>
+    void
+    Manager<dim>::update ()
+    {
+      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+           heating_model = heating_model_objects.begin();
+           heating_model != heating_model_objects.end(); ++heating_model)
+        {
+          (*heating_model)->update();
+        }
+    }
+
+    template <int dim>
+    void
+    Manager<dim>::execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                           const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                           HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    {
+      HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
+                                                                   this->n_compositional_fields());
+
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size();++q)
+        {
+          heating_model_outputs.heating_source_terms[q] = 0;
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0;
+        }
+
+      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+           heating_model = heating_model_objects.begin();
+           heating_model != heating_model_objects.end(); ++heating_model)
+        {
+          (*heating_model)->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
+          for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size();++q)
+            {
+              heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
+              heating_model_outputs.lhs_latent_heat_terms[q] += individual_heating_outputs.lhs_latent_heat_terms[q];
+            }
+        }
+    }
 
 
     template <int dim>
     std::string
-    get_names ()
+    Manager<dim>::get_all_heating_model_names () const
     {
       return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
     template <int dim>
+    std::vector<std::string>
+    Manager<dim>::get_active_heating_model_names () const
+    {
+      return model_names;
+    }
+
+
+    template <int dim>
+    std::list<std_cxx11::shared_ptr<Interface<dim> > >
+    Manager<dim>::get_heating_models () const
+    {
+      return heating_model_objects;
+    }
+
+
+    template <int dim>
     void
-    declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
       // declare the actual entry in the parameter file
       prm.enter_subsection ("Heating model");
       {
         const std::string pattern_of_names
           = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma separated list of heating models that "
+                          "will be used to calculate the heating terms in the energy"
+                          "equation. The results of each of these criteria , i.e., "
+                          "the heating source terms and the latent heat terms for the"
+                          "left hand side will be added.\n\n"
+                          "The following heating models are available:\n\n"
+                          +
+                          std_cxx11::get<dim>(registered_plugins).get_description_string());
+
         try
           {
-            prm.declare_entry ("Model name", "constant heating",
+            prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
+                               "Warning: This is the old formulation of specifying"
+                               "heating models and shouldn't be used. Please use List of"
+                               "model names instead."
                                +
                                std_cxx11::get<dim>(registered_plugins).get_description_string());
           }
@@ -171,6 +273,7 @@ namespace aspect
       heating_source_terms.resize(n_points);
       lhs_latent_heat_terms.resize(n_points);
     }
+
   }
 }
 
@@ -194,25 +297,7 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_heating_model<dim> (const std::string &, \
-                               const std::string &, \
-                               void ( *) (ParameterHandler &), \
-                               Interface<dim> *( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template  \
-  std::string \
-  get_names<dim> (); \
-  \
-  template \
-  Interface<dim> * \
-  create_heating_model<dim> (ParameterHandler &prm);
+  template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

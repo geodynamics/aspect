@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,9 +19,8 @@
 */
 
 
-
-#ifndef __aspect__postprocess_visualization_internal_heating_h
-#define __aspect__postprocess_visualization_internal_heating_h
+#ifndef __aspect__postprocess_visualization_heating_h
+#define __aspect__postprocess_visualization_heating_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
@@ -37,20 +36,36 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that takes an output vector
-       * and computes a variable that represents the internal heating rate at
-       * every point.
+       * and computes several scalar variables that represent the material
+       * model outputs for every point. The list of written variables can be
+       * chosen as input parameter. The principal functionality of this class
+       * is already implemented in some other visualization plugins, the
+       * purpose of this plugin is to efficiently compute all the wanted
+       * parameters in one call to the material model.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
       template <int dim>
-      class InternalHeating
-        : public DataPostprocessorScalar<dim>,
+      class Heating
+        : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-          InternalHeating ();
+          Heating ();
+
+          virtual
+          std::vector<std::string>
+          get_names () const;
+
+          virtual
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+          get_data_component_interpretation () const;
+
+          virtual
+          UpdateFlags
+          get_needed_update_flags () const;
 
           virtual
           void
@@ -60,6 +75,7 @@ namespace aspect
                                              const std::vector<Point<dim> >                  &normals,
                                              const std::vector<Point<dim> >                  &evaluation_points,
                                              std::vector<Vector<double> >                    &computed_quantities) const;
+
       };
     }
   }
