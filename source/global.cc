@@ -42,30 +42,42 @@ namespace aspect
 
     namespace earth
     {
+      // From Yoder (1995), masses are taken
+      namespace masses
+      {
+        // Planet mass [kg]
+        const double planet 5.9736e24;
+        // Mass of the whole core [kg]
+        const double core 1.932e24;
+        // Mass of the mantle [kg]
+        const double mantle 4.043e24;
+      }
+
+
       // Values taken from the IASP91 model
-      namespace iasp91
+      namespace iasp91_radii
       {
         // Inner core radius [m], equivalent of 5150 km depth
-        const double inner_core_radius = 1.2171e6;
+        const double inner_core = 1.2171e6;
         // Inner core radius [m], equivalent of 2889 km depth
-        const double core_radius = 3.482e6;
+        const double core = 3.482e6;
         // Lower mantle radius [m], equivalent of 660 km depth
-        const double lower_mantle_radius = 5.711e6;
+        const double lower_mantle = 5.711e6;
         // Radius [m], equivalent of 5150 km depth
-        const double radius = 6.371e6;
+        const double planet = 6.371e6;
       }
 
       // Gravity values taken from the PREM (Dziewonski and Anderson, 1981)
-      namespace prem
+      namespace prem_gravity
       {
         // Inner core boundary gravity [ms^-2]
-        const double gravity_icb = 4.4002;
+        const double icb = 4.4002;
         // Core-mantle boundary gravity [ms^-2]
-        const double gravity_cmb = 10.6823;
+        const double cmb = 10.6823;
         // Upper-lower mantle boundary gravity [ms^-2]
-        const double gravity_ulmb = 10.0143;
+        const double ulmb = 10.0143;
         // Surface gravity [ms^-2]
-        const double gravity_surface = 9.8156;
+        const double surface = 9.8156;
       }
 
       // NIST "Standard gravity" (average gravitational acceleration at surface [ms^-2]
@@ -75,10 +87,14 @@ namespace aspect
     // Constants for Mars
     namespace mars
     {
-      // Radius from Seidermann et al., 2007 [m]
-      const double radius = 3.3895e6;
-      // Core radius from Rivoldini et al., 2011 [m]
-      const double core_radius = 1.794e6;
+      namespace radii
+      {
+        // Radius from Seidermann et al., 2007 [m]
+        const double planet = 3.3895e6;
+        // Core radius from Rivoldini et al., 2011 [m]
+        const double core = 1.794e6;
+      }
+
       // Surface gravity from Lodders et al., 1998 [ms^-2]
       const double surface_gravity = 3.711;
     }
