@@ -299,14 +299,21 @@ namespace aspect
 
 
     template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+    }
+
+
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
       // declare the actual entry in the parameter file
       prm.enter_subsection ("Material model");
       {
-        const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = get_valid_model_names_pattern<dim>();
         try
           {
             prm.declare_entry ("Model name", "",
@@ -752,6 +759,10 @@ namespace aspect
                                 const std::string &, \
                                 void ( *) (ParameterHandler &), \
                                 Interface<dim> *( *) ()); \
+  \
+  template \
+  std::string \
+  get_valid_model_names_pattern<dim> (); \
   \
   template  \
   void \
