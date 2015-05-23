@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: There is now a SimulatorAccess::get_statistics_object() function
+ * that allows all users of this class to record information in the statistics
+ * file, whether they are postprocessors or not.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/22)
+ *
  * <li> New: ASPECT now also provides a signals mechanism to attach user-defined
  * functions to certain events over the course of a simulation. This allows more
  * fine-grained observation and intervention to user additions. A new section

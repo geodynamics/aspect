@@ -475,6 +475,19 @@ namespace aspect
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 
+      /**
+       * Return a writable reference to the statistics object into which
+       * you can store additional data that then shows up in the
+       * <code>output_dir/statistics</code> file.
+       *
+       * Postprocessor objects get a reference to this object automatically
+       * when called, but other plugins may not. They do not usually
+       * produce output anyway, but through this function they can still
+       * record information as necessary.
+       * @return
+       */
+      TableHandler &get_statistics_object() const;
+
 
       /**
        * Find a pointer to a certain postprocessor, if not return a NULL

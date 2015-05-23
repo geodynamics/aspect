@@ -413,6 +413,14 @@ namespace aspect
       composition_values_at_q_point[k] = composition_values[k][q];
   }
 
+
+  template <int dim>
+  TableHandler &
+  SimulatorAccess<dim>::get_statistics_object () const
+  {
+    return const_cast<TableHandler &>(simulator->statistics);
+  }
+
 }
 
 
