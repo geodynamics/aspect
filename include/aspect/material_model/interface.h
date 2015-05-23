@@ -1048,6 +1048,17 @@ namespace aspect
 
 
     /**
+     * Return a string that consists of the names of material models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
+     */
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ();
+
+
+    /**
      * Declare the runtime parameters of the registered material models.
      *
      * @ingroup MaterialModels
