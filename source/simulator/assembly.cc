@@ -1702,8 +1702,8 @@ namespace aspect
                 scratch.phi_field[i] *
                 gamma
                 +
-                scratch.phi_field[i]) *
-                reaction_term
+                scratch.phi_field[i] *
+                reaction_term)
 
                *
                scratch.finite_element_values.JxW(q);
