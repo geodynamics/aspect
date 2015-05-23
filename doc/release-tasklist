@@ -74,6 +74,10 @@ available from
 
                    https://aspect.dealii.org/
 
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v1.3
+
 This release includes the following changes:
 - New: Averaging of material properties between the quadrature points of a
   cell. This greatly increases the stability of solutions in simulations with
