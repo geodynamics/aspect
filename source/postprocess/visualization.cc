@@ -295,9 +295,9 @@ namespace aspect
               std::cerr << std::endl << std::endl
                         << "----------------------------------------------------"
                         << std::endl;
-              std::cerr << "Exception on MPI process <"
+              std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running visualization postprocessor <"
+                        << "> while running the visualization postprocessor <"
                         << typeid(**p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
@@ -313,9 +313,9 @@ namespace aspect
               std::cerr << std::endl << std::endl
                         << "----------------------------------------------------"
                         << std::endl;
-              std::cerr << "Exception on MPI process <"
+              std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running visualization postprocessor <"
+                        << "> while running the visualization postprocessor <"
                         << typeid(**p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
