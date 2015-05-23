@@ -1,4 +1,4 @@
-set Additional shared libraries            = ./case2.3_plugin/libVoT.so
+set Additional shared libraries            = ./case-2.3-plugin/libVoT.so
 
 
 ############### Global parameters
