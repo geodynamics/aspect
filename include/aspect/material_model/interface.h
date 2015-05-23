@@ -1006,6 +1006,22 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
+    create_material_model (const std::string &model_name);
+
+
+    /**
+     * A function that reads the name of a model from the parameter object
+     * and then returns a pointer to an
+     * object that describes this model. Ownership of the pointer is transferred to
+     * the caller.
+     *
+     * The material model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
+     *
+     * @ingroup MaterialModels
+     */
+    template <int dim>
+    Interface<dim> *
     create_material_model (ParameterHandler &prm);
 
 
