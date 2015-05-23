@@ -52,9 +52,19 @@ namespace aspect
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
+      const double depth = this->get_geometry_model().depth(position);
+      const double s = depth / this->get_geometry_model().maximal_depth();
 
-      const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+      double depth_perturbation = 0.0;
+      if( use_depth_range )
+        {
+          if ( depth < upper_depth && depth > lower_depth ) 
+            depth_perturbation = 1.0;
+        }
+      else
+        {
+          depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+        }
 
 
       double lateral_perturbation = 0.0;
@@ -165,6 +175,21 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the"
                              "harmonic function. Only used in incompressible models.");
+          prm.declare_entry ("Lower depth", "0.0",
+                             Patterns::Double (0),
+                             "If you choose to use a depth range rather than a vertical wave "
+                             "number then this is the lower bound of the depth range.");
+          prm.declare_entry ("Upper depth", "0.0",
+                             Patterns::Double (0),
+                             "If you choose to use a depth range rather than a vertical wave "
+                             "number then this is the upper bound of the depth range.");
+          prm.declare_entry ("Use depth range", "False",
+                             Patterns::Bool (),
+                             "The default behavior for these initial conditions is to produce "
+                             "a sinusoidal perturbation in depth. However, it can also be "
+                             "useful to perturb in a certain depth range. For instance, a narrow"
+                             "depth perturbation can be used to test geoid and topography "
+                             "response kernels.");
         }
         prm.leave_subsection ();
       }
@@ -185,6 +210,9 @@ namespace aspect
           lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
           magnitude = prm.get_double ("Magnitude");
           reference_temperature = prm.get_double ("Reference temperature");
+          lower_depth = prm.get_double("Lower depth");
+          upper_depth = prm.get_double("Upper depth");
+          use_depth_range = prm.get_bool("Use depth range");
         }
         prm.leave_subsection ();
       }
