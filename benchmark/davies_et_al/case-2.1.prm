@@ -16,6 +16,9 @@ subsection Checkpointing
   set Steps between checkpoint = 15
 end
 
+subsection Termination criteria
+  set Checkpoint on termination = true
+end
 
 ############### Parameters describing the model
 

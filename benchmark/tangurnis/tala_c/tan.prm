@@ -2,7 +2,7 @@
 # ---------------------
 
 
-set Additional shared libraries            = ./tangurnis/code/libtangurnis.so
+set Additional shared libraries            = ./code/libtangurnis.so
 
 # At the top, state that the program should be run for a two-dimensional 
 # simulation
