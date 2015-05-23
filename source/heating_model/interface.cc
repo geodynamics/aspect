@@ -54,17 +54,19 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                              const typename MaterialModel::Interface<dim>::MaterialModelOutputs & /*material_model_outputs*/,
                               std::vector<double> &heating_outputs) const
     {
       Assert(heating_outputs.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
       for (unsigned int q=0; q<heating_outputs.size(); ++q)
         heating_outputs[q] = specific_heating_rate(material_model_inputs.temperature[q],
                                                    material_model_inputs.pressure[q],
                                                    material_model_inputs.composition[q],
                                                    material_model_inputs.position[q]);
+#pragma GCC diagnostic pop
     }
 
 
