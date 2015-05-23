@@ -1,4 +1,4 @@
-# A simple Poisseuille flow example in which we prescribe the velocity to
+# A simple Poiseuille flow example in which we prescribe the velocity to
 # be (z*(z-1),0)^T and see what pressure we get. We switch off gravity
 # so the pressure is purely the dynamic pressure. It is only determined
 # up to a constant, and with a viscosity of eta=1, should be between
