@@ -53,8 +53,8 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                              const typename MaterialModel::Interface<dim>::MaterialModelOutputs & /*material_model_outputs*/,
+    Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                              const MaterialModel::MaterialModelOutputs & /*material_model_outputs*/,
                               std::vector<double> &heating_outputs) const
     {
       Assert(heating_outputs.size() == material_model_inputs.position.size(),

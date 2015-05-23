@@ -90,8 +90,8 @@ namespace aspect
          */
         virtual
         void
-        evaluate (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs &material_model_outputs,
                   std::vector<double> &heating_outputs) const;
 
         /**

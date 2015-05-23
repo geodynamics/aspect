@@ -79,11 +79,11 @@ namespace aspect
     {
       public:
 
-        typedef typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs MaterialModelInputs;
-        typedef typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs MaterialModelOutputs;
-
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const;
-
+        /**
+         * Evaluate material properties.
+         */
+        virtual void evaluate(const MaterialModelInputs<dim> &in,
+                              MaterialModelOutputs &out) const;
 
         /**
          * Return true if the viscosity() function returns something that may

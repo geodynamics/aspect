@@ -608,8 +608,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                  typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                  MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                  MaterialModel::MaterialModelOutputs &material_model_outputs,
                                   const double specific_heating_rate,
                                   const AdvectionField &advection_field,
                                   const unsigned int q) const;
@@ -680,8 +680,8 @@ namespace aspect
        *     void setup(const unsigned int q_points);
        *
        *     // fill @p output for each quadrature point
-       *     void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-       *        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+       *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+       *        const MaterialModel::MaterialModelOutputs &out,
        *        FEValues<dim> &fe_values,
        *        const LinearAlgebra::BlockVector &solution,
        *        std::vector<double> &output);
@@ -1020,7 +1020,7 @@ namespace aspect
                                            const FEValues<dim,dim>                                     &input_finite_element_values,
                                            const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
-                                           typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
+                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
 
       /**

@@ -75,8 +75,8 @@ namespace aspect
       const double depth = this->get_geometry_model().depth(position);
 
       // look up material properties
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs out(1, this->n_compositional_fields());
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);

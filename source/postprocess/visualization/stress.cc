@@ -47,10 +47,10 @@ namespace aspect
         Assert (uh[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (duh[0].size() == this->introspection().n_components,  ExcInternalError());
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                       this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                         this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
+                                                   this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs out(n_quadrature_points,
+                                                this->n_compositional_fields());
 
         // collect input information to compute the viscosity at every evaluation point
         in.position = evaluation_points;

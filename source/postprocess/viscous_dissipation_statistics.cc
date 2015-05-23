@@ -60,10 +60,10 @@ namespace aspect
       std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (n_q_points));
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                     this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                       this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs out(n_q_points,
+                                              this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
