@@ -8539,6 +8539,26 @@ Consequently, you could have multiple plugins each of which connect to the same
 slot, or the connector function above may just connect multiple slots (i.e.,
 functions in your program) to the same signal.
 
+So what could one do in a place like this? One option would be to just monitor
+what is going on, e.g., in code like this that simply outputs into the
+statistics file (see Section~\ref{sec:viz-stat}):
+\begin{lstlisting}[frame=single,language=c++]
+template <int dim>
+void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
+                                ConstraintMatrix &current_constraints)
+{
+  simulator_access.get_statistics_object()
+    .add_value ("number of constraints",
+		        current_constraints.n_constraints());
+}
+\end{lstlisting}
+This will produce, for every time step (because this is how often the signal is
+called) an entry in a new column in the statistics file that records the number
+of constraints. On the other hand, it is equally possible to also modify the
+constraints object at this point. An application would be if you wanted to run a
+simulation where you prescribe the velocity in a part of the domain, e.g., for a
+subducting slab.
+
 Signals exist for various waypoints in a simulation and you can consequently
 monitor and change what is happening inside a simulation by connecting your own
 functions to these signals. It would be pointless to list here what signals
