@@ -93,10 +93,10 @@ namespace aspect
         {
           prm.declare_entry ("Outer composition", "0",
                              Patterns::Double (),
-                             "Composition at the outer boundary (lithosphere water/air). Units: K.");
+                             "Composition at the outer boundary (lithosphere water/air). Units: none.");
           prm.declare_entry ("Inner composition", "1",
                              Patterns::Double (),
-                             "Composition at the inner boundary (core mantle boundary). Units: K.");
+                             "Composition at the inner boundary (core mantle boundary). Units: none.");
         }
         prm.leave_subsection ();
       }

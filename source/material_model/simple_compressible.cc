@@ -229,7 +229,7 @@ namespace aspect
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
+                             "The value of the thermal expansion coefficient $\\alpha$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0),
