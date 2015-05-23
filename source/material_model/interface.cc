@@ -217,6 +217,16 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
+    create_material_model (const std::string &model_name)
+    {
+      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
+                                                                                      "Material model::Model name");
+      return plugin;
+    }
+
+
+    template <int dim>
+    Interface<dim> *
     create_material_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -236,9 +246,7 @@ namespace aspect
                   ExcMessage("You need to select a material model "
                              "('set Model name' in 'subsection Material model')."));
 
-      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Material model::Model name");
-      return plugin;
+      return create_material_model<dim> (model_name);
     }
 
 
@@ -748,6 +756,10 @@ namespace aspect
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  Interface<dim> * \
+  create_material_model<dim> (const std::string &model_name); \
   \
   template \
   Interface<dim> * \
