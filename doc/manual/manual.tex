@@ -449,14 +449,15 @@ which it is in fact implemented:
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\
   &\quad
-  +\alpha T \left( \mathbf u \cdot \nabla p \right)
+  +\alpha \hat{T} \left( \mathbf u \cdot \nabla p \right)
   \notag
   \\
   &\quad
-  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
+  + \rho \hat{T} \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p
   & \quad & \textrm{in $\Omega$}.
   \notag
 \end{align}
+where $\hat{T}$ is an extrapolated temperature of the closest previous time steps.
 
 The last of the equations above, equation~\eqref{eq:compositional}, describes
 the evolution of additional fields that are transported along with the
@@ -465,6 +466,20 @@ features of the solution, but that do not diffuse. We call these fields $c_i$
 \textit{compositional fields}, although they can also be used for other
 purposes than just tracking chemical compositions. We will discuss this
 equation in more detail in Section~\ref{sec:compositional}.
+
+Starting with (\ref{eq:temperature-reformulated}) and multiplying on the left by a test function $\phi$ and integrating over the domain yields the weak form:
+\begin{align}
+  \label{eq:weak_form}
+  \left(\rho C_p - \rho T \Delta S \frac{\partial X}{\partial T}\right) 
+  \left( c \left( \phi, T \right) - \mathbf u \Delta t \left( \nabla \phi, T \right) 
+  \right) + k \Delta t \left( \nabla \phi , \nabla T \right)
+  &=
+  \left( \phi , \gamma \right) 
+  +  \left( \phi , q \right) 
+  \notag
+ \hspace{.5cm}  \forall \phi,
+\end{align}
+where $\Delta t$ is the current time step size, $c$ is a factor that depends on the old and current time step size, $\gamma$ is a combination of the internal heat production, friction heating, and adiabatic compression of material, and $q$ is the reaction term. Note that the entire equation was multiplied through by $\Delta t$ from what you would expect. 
 
 \subsubsection{A comment on adiabatic heating}
 Other codes and texts sometimes make a simplification to the adiabatic heating

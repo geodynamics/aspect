@@ -1697,12 +1697,14 @@ namespace aspect
         for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
           {
             data.local_rhs(i)
-            += (field_term_for_rhs * scratch.phi_field[i]
+            += (scratch.phi_field[i] * field_term_for_rhs
                 + time_step *
+                scratch.phi_field[i] *
                 gamma
-                * scratch.phi_field[i]
-                + reaction_term
-                * scratch.phi_field[i])
+                +
+                scratch.phi_field[i] *
+                reaction_term)
+
                *
                scratch.finite_element_values.JxW(q);
 
