@@ -85,7 +85,7 @@ namespace aspect
   }
 
   /// Number of seconds in a year [s] (deprecated)
-  using constants::year_in_seconds;
+  const double year_in_seconds = constants::year_in_seconds;
 
   /// Output parallel statistics [bool]
   const bool output_parallel_statistics = false;
