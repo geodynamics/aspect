@@ -277,7 +277,7 @@ namespace aspect
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
+                             "The value of the thermal expansion coefficient $\\alpha$. "
                              "Units: $1/K$.");
           prm.declare_entry ("Density differential for compositional field 1", "0",
                              Patterns::Double(),
@@ -371,12 +371,14 @@ namespace aspect
                                    "corresponds to the parameter ``Composition viscosity prefactor'' in the "
                                    "input file."
                                    "\n\n"
-                                   "Finally, in the formula for the density, $\\Delta\\rho$ "
+                                   "Finally, in the formula for the density, $\\alpha$ corresponds to the "
+                                   "``Thermal expansion coefficient'' and "
+                                   "$\\Delta\\rho$ "
                                    "corresponds to the parameter ``Density differential for compositional field 1''."
                                    "\n\n"
                                    "Note that this model uses the formulation that assumes an incompressible "
                                    "medium despite the fact that the density follows the law "
-                                   "$\\rho(T)=\\rho_0(1-\\beta(T-T_{\\text{ref}}))$. "
+                                   "$\\rho(T)=\\rho_0(1-\\alpha(T-T_{\\text{ref}}))$. "
                                    "\n\n"
                                    "\\note{Despite its name, this material model is not exactly ``simple'', "
                                    "as indicated by the formulas above. While it was originally intended "
