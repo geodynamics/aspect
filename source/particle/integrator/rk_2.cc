@@ -93,10 +93,10 @@ namespace aspect
           unsigned int
           RK2Integrator<dim>::read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num)
           {
-            unsigned int    i, p = pos;
+            unsigned int p = pos;
 
             // Read location data
-            for (i=0; i<dim; ++i)
+            for (unsigned int i=0; i<dim; ++i)
               {
                 loc0[id_num](i) = data[p++];
               }

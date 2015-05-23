@@ -52,6 +52,7 @@ namespace aspect
           void
           EulerIntegrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info)
           {}
+
         template <int dim>
           unsigned int
           EulerIntegrator<dim>::data_len() const

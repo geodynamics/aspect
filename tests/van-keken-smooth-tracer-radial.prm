@@ -113,10 +113,12 @@ subsection Postprocess
 
     subsection Generator
       subsection Uniform radial
-        set Minimal radius = 0.1
-        set Maximal radius = 0.5
-        set Minimal longitude = 0.5
-        set Maximal longitude = 1.0
+        set Minimal radius = 0.05
+        set Maximal radius = 0.15
+        set Minimal longitude = 0.0
+        set Maximal longitude = 4.5
+        set Center x = 0.4
+        set Center y = 0.2
         set Radial layers = 2
       end
     end

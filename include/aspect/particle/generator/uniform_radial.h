@@ -95,14 +95,19 @@ namespace aspect
         private:
 
           /**
-           * The minimum coordinates of the tracer region.
+           * The minimum spherical coordinates of the tracer region.
            */
           std_cxx11::array<double,dim> P_min;
 
           /**
-           * The maximum coordinates of the tracer region.
+           * The maximum spherical coordinates of the tracer region.
            */
           std_cxx11::array<double,dim> P_max;
+
+          /**
+           * The center of the tracer region. Defaults to the origin.
+           */
+          Point<dim> P_center;
 
           /**
            * The number of radial layers of particles that will be generated.

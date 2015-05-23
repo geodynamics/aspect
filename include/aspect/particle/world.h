@@ -32,6 +32,8 @@ namespace aspect
 {
   namespace Particle
   {
+    using namespace dealii;
+
     // TODO: in the future, upgrade multimap to ParticleMap typedef
     // with C++11 standard "using" syntax
 
@@ -40,10 +42,10 @@ namespace aspect
     {
       private:
         /// Integration scheme for moving particles in this world
-        Integrator::Interface<dim>   *integrator;
+        Integrator::Interface<dim>     *integrator;
 
         /// Integration scheme for moving particles in this world
-        Property::Manager<dim>   *property_manager;
+        Property::Manager<dim>         *property_manager;
 
         /// Whether the triangulation was changed (e.g. through refinement), in which
         /// case we must treat all recorded particle level/index values as invalid
@@ -63,15 +65,6 @@ namespace aspect
         /// Size and rank in the MPI communication world
         unsigned int                    world_size;
         unsigned int                    self_rank;
-
-        /// Buffers indicating how many particles to send/recv to each process
-        int                             *num_send, *num_recv;
-        /// Total number of particles to send/recv
-        int                             total_send, total_recv;
-        /// Send/recv offset into data buffer for each process
-        int                             *send_offset, *recv_offset;
-        /// MPI_Request object buffers to allow for non-blocking communication
-        MPI_Request                     *send_reqs, *recv_reqs;
 
         /*
          * Information about the data of particles

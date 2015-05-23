@@ -20,6 +20,8 @@
 
 #include <aspect/particle/output/hdf5.h>
 
+#include <deal.II/numerics/data_out.h>
+
 #ifdef DEAL_II_HAVE_HDF5
 #  include <hdf5.h>
 #endif
@@ -161,7 +163,7 @@ namespace aspect
             vel_data = new double[3*particles.size()];
             id_data = new double[particles.size()];
 
-            typename std::multimap<LevelInd, T>::const_iterator it;
+            typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator it;
             for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
               {
                 for (d=0; d<dim; ++d)

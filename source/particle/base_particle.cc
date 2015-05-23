@@ -34,7 +34,7 @@ namespace aspect
       id (new_id),
       is_local (true),
       check_vel (true),
-      val (0)
+      val ()
     {
     }
 
@@ -47,7 +47,7 @@ namespace aspect
       id (0),
       is_local (true),
       check_vel (true),
-      val(0)
+      val()
     {
     }
 
@@ -113,7 +113,7 @@ namespace aspect
         }
       id = data[p++];
 
-      for (unsigned int i = 0; i < val.size(); i++)
+      for (unsigned int i = 0; i < val.size(); ++i)
         {
           val [i] = data[p++];
         }
@@ -125,9 +125,7 @@ namespace aspect
     unsigned int
     BaseParticle<dim>::data_len () const
     {
-      const unsigned int length = dim + dim + 1 + val.size();
-
-      return length;
+      return dim + dim + 1 + val.size();
     }
 
 
