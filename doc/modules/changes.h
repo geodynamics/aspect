@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> The manual.pdf is no longer part of the git repository but you can
+ * find it online at http://aspect.dealii.org or you can build it yourself.
+ * <br>
+ * (Timo Heister, 2015/05/23)
+ *
  * <li> New: There are now a set of global constants defined for physical
  * properties and for radius and gravity parameters relevant to 
  * Earth and Mars.
