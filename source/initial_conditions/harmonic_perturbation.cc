@@ -183,7 +183,7 @@ namespace aspect
                              Patterns::Double (0),
                              "If you choose to use a depth range rather than a vertical wave "
                              "number then this is the upper bound of the depth range.");
-          prm.declare_entry ("Use depth range", "False",
+          prm.declare_entry ("Use depth range", "false",
                              Patterns::Bool (),
                              "The default behavior for these initial conditions is to produce "
                              "a sinusoidal perturbation in depth. However, it can also be "
