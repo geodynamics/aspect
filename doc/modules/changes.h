@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: ASPECT now also provides a signals mechanism to attach user-defined
+ * functions to certain events over the course of a simulation. This allows more
+ * fine-grained observation and intervention to user additions. A new section
+ * in the manual explains how to extend ASPECT this way.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/21)
  *
  * <li> Changed: The free surface handler now detaches internal manifolds
  * for cases when the domain has them, since they are not necessarily a 
