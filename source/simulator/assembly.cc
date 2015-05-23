@@ -1712,7 +1712,7 @@ namespace aspect
                 += (
                      (time_step * (conductivity + nu)
                       * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                     + ((time_step * (current_u * scratch.phi_field[i] * scratch.grad_phi_field[j]))
+                     + ((time_step * (current_u * scratch.grad_phi_field[j] * scratch.phi_field[i]))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                      (density_c_P + latent_heat_LHS)
                    )
