@@ -62,7 +62,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 3
+  set Initial global refinement          = 2
 end
 
 
@@ -96,6 +96,6 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, pressure statistics
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics
 end
 

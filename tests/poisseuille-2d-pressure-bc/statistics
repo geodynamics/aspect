@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal pressure (Pa)
+# 14: Average pressure (Pa)
+# 15: Maximal pressure (Pa)
+# 16: Outward mass flux through boundary with indicator 0 ("left") (kg/s)
+# 17: Outward mass flux through boundary with indicator 1 ("right") (kg/s)
+# 18: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
+# 19: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
+0 0.0000e+00 256 2467 1089 0 38 82 9 1.1559e-01 1.92607401e-01 2.70296488e-01 -2.41286170e+00 4.25066392e-09 2.41286169e+00 -1.75211631e-01 1.75211633e-01 0.00000000e+00 0.00000000e+00 
