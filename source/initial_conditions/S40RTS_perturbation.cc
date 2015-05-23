@@ -314,11 +314,17 @@ namespace aspect
       // vs_to_density is an input parameter
       const double density_perturbation = vs_to_density * perturbation;
 
-      // scale the density perturbation into a temperature perturbation
-      const double temperature_perturbation =  -1./thermal_alpha * density_perturbation;
-      const double temperature = background_temperature + temperature_perturbation;
-      return temperature;
+      const double depth = this->get_geometry_model().depth(position);
+      double temperature_perturbation;
+      if (depth > no_perturbation_depth)
+        // scale the density perturbation into a temperature perturbation
+        temperature_perturbation =  -1./thermal_alpha * density_perturbation;
+      else
+        // set heterogeneity to zero down to a specified depth
+        temperature_perturbation = 0.0;
 
+      // add the temperature perturbation to the background temperature
+      return background_temperature + temperature_perturbation;
     }
 
 
@@ -625,6 +631,14 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the spherical "
                              "harmonic functions. Only used in incompressible models.");
+          prm.declare_entry ("Remove temperature heterogeneity down to specified depth", boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                             Patterns::Double (),
+                             "This will set the heterogeneity prescribed by S20RTS or S40RTS to zero "
+                             "down to the specified depth (in meters).Note that your resolution has "
+                             "to be adquate to capture this cutoff. For example if you specify a depth "
+                             "of 660km, but your closest spherical depth layers are only at 500km and "
+                             "750km (due to a coarse resolution) it will only zero out heterogeneities "
+                             "down to 500km. Similar caution has to be taken when using adaptive meshing.");
         }
         prm.leave_subsection ();
       }
@@ -656,6 +670,7 @@ namespace aspect
           thermal_alpha           = prm.get_double ("Thermal expansion coefficient in initial temperature scaling");
           zero_out_degree_0       = prm.get_bool ("Remove degree 0 from perturbation");
           reference_temperature   = prm.get_double ("Reference temperature");
+          no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
         }
         prm.leave_subsection ();
       }
@@ -694,6 +709,9 @@ namespace aspect
                                        "expansion coefficient in initial temperature scaling' "
                                        "parameter. The temperature perturbation is added to an "
                                        "otherwise constant temperature (incompressible model) or "
-                                       "adiabatic reference profile (compressible model).")
+                                       "adiabatic reference profile (compressible model). If a depth "
+                                       "is specified in 'Remove temperature heterogeneity down to "
+                                       "specified depth', there is no temperature perturbation "
+                                       "prescribed down to that depth.")
   }
 }
