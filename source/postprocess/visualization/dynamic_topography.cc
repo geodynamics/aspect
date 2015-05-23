@@ -101,6 +101,8 @@ namespace aspect
                 fe_values[this->introspection().extractors.pressure]
                 .get_function_values (this->get_solution(), in.pressure);
                 fe_values[this->introspection().extractors.velocities]
+                .get_function_values (this->get_solution(), in.velocity);
+                fe_values[this->introspection().extractors.velocities]
                 .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
 
 

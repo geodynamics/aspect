@@ -112,7 +112,11 @@ namespace aspect
           {
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
+              {
+                grad_u[d] = duh[q][d];
+                in.velocity[q][d] = uh[q][this->introspection().component_indices.velocities[d]];
+              }
+
             in.strain_rate[q] = symmetrize (grad_u);
 
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];

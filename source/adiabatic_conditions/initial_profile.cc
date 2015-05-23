@@ -72,6 +72,7 @@ namespace aspect
           in.position[0] = representative_point;
           in.temperature[0] = temperatures[i-1];
           in.pressure[0] = pressures[i-1];
+          in.velocity[0] = Tensor <1,dim> ();
 
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);

@@ -80,6 +80,7 @@ namespace aspect
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
+      in.velocity[0]= Tensor<1,dim> ();
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
       in.strain_rate.resize(0); // adiabat has strain=0.

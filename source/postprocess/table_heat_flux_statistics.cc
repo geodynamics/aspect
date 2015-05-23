@@ -97,6 +97,8 @@ namespace aspect
                     in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                                                                in.pressure);
+                fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                    in.velocity);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);
@@ -108,6 +110,7 @@ namespace aspect
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                       in.composition[i][c] = composition_values[c][i];
                   }
+                in.cell = &cell;
 
                 this->get_material_model().evaluate(in, out);
 

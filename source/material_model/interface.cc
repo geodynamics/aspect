@@ -335,10 +335,12 @@ namespace aspect
       position.resize(n_points);
       temperature.resize(n_points);
       pressure.resize(n_points);
+      velocity.resize(n_points);
       composition.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
         composition[q].resize(n_comp);
       strain_rate.resize(n_points);
+      cell = 0;
     }
 
 

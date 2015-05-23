@@ -54,15 +54,11 @@ namespace aspect
                                this->get_fe(),
                                quadrature,
                                update_quadrature_points | update_values);
-      std::vector<double> pressure_values(quadrature.size());
-      std::vector<double> temperature_values(quadrature.size());
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (quadrature.size()));
-      std::vector<std::vector<double> > composition_values (quadrature.size(),
-                                                            std::vector<double> (this->n_compositional_fields()));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(), this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size(), this->n_compositional_fields());
@@ -75,9 +71,11 @@ namespace aspect
           {
             fe_values.reinit(cell);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                      pressure_values);
+                                                                                      in.pressure);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                         temperature_values);
+                                                                                         in.temperature);
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                        in.velocity);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);
@@ -87,11 +85,11 @@ namespace aspect
             in.strain_rate.resize(0);// we are not reading the viscosity
             for (unsigned int i=0; i<quadrature.size(); ++i)
               {
-                in.temperature[i] = temperature_values[i];
-                in.pressure[i] = pressure_values[i];
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
+            in.cell = &cell;
+
             this->get_material_model().evaluate(in, out);
 
             // for each temperature dof, write into the output
@@ -105,7 +103,7 @@ namespace aspect
 
                 vec_distributed(local_dof_indices[system_local_dof])
                   = out.densities[i]
-                    * temperature_values[i]
+                    * in.temperature[i]
                     * out.specific_heat[i];
               }
           }

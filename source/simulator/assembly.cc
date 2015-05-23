@@ -866,6 +866,7 @@ namespace aspect
 
         compute_material_model_input_values (current_linearization_point,
                                              scratch.finite_element_values,
+                                             cell,
                                              true,
                                              scratch.material_model_inputs);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
@@ -875,10 +876,14 @@ namespace aspect
             scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
             scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
             scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
+            scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
+        scratch.explicit_material_model_inputs.cell = &cell;
+
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
 
         viscosity_per_cell[cellidx] = compute_viscosity(scratch,
@@ -898,8 +903,9 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  compute_material_model_input_values (const LinearAlgebra::BlockVector                    &input_solution,
+  compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
                                        const FEValues<dim>                                         &input_finite_element_values,
+                                       const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                        const bool                                                   compute_strainrate,
                                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
   {
@@ -911,6 +917,8 @@ namespace aspect
         material_model_inputs.temperature);
     input_finite_element_values[introspection.extractors.pressure].get_function_values(input_solution,
         material_model_inputs.pressure);
+    input_finite_element_values[introspection.extractors.velocities].get_function_values(input_solution,
+        material_model_inputs.velocity);
 
     // only the viscosity in the material can depend on the strain_rate
     // if this is not needed, we can save some time here. By setting the
@@ -936,6 +944,8 @@ namespace aspect
     for (unsigned int q=0; q<n_q_points; ++q)
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
+
+    material_model_inputs.cell = &cell;
   }
 
 
@@ -955,6 +965,7 @@ namespace aspect
 
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
+                                         cell,
                                          true,
                                          scratch.material_model_inputs);
 
@@ -1148,6 +1159,7 @@ namespace aspect
     // which we only need when rebuilding the matrix
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
+                                         cell,
                                          rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
 
@@ -1569,6 +1581,7 @@ namespace aspect
 
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
+                                         cell,
                                          true,
                                          scratch.material_model_inputs);
     material_model->evaluate(scratch.material_model_inputs,
@@ -1591,10 +1604,14 @@ namespace aspect
             scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
             scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
             scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
+            scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
+        scratch.explicit_material_model_inputs.cell = &cell;
+
         material_model->evaluate(scratch.explicit_material_model_inputs,
                                  scratch.explicit_material_model_outputs);
         MaterialModel::MaterialAveraging::average (parameters.material_averaging,

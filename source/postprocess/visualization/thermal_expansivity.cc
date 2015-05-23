@@ -67,6 +67,8 @@ namespace aspect
             //in.strain_rate[q] =
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+            for (unsigned int i = 0; i < dim; ++i)
+              in.velocity[q][i]=uh[q][this->introspection().component_indices.velocities[i]];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];

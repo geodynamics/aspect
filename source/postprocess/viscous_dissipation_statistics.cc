@@ -78,6 +78,8 @@ namespace aspect
                                                                                       in.pressure);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          in.temperature);
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                        in.velocity);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values
               (this->get_solution(),prelim_composition_values[c]);
@@ -90,6 +92,7 @@ namespace aspect
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
+            in.cell = &cell;
 
             // get the viscosity from the material model
             this->get_material_model().evaluate(in, out);
