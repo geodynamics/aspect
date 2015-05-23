@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script compiles all plugins and run all prm files in the subdirectories
+# This script compiles all plugins and runs all prm files in the subdirectories
 # of the benchmark folder
 
 if [ "$#" -ne 1 ]; then
@@ -18,7 +18,7 @@ fi
 
 
 # run aspect on all .prm files in the current folder or any subdirectory
-run_prm ()
+run_all_prms ()
 {
     for prm in `find . -name "*prm"`;
     do
@@ -27,10 +27,10 @@ run_prm ()
 	continue;
     fi
     echo "Running '$prm' at `pwd` with '$BUILD' ..."
-    cp $prm tmp.prm~
-    echo "set End time=0" >> tmp.prm~
-    $BUILD/aspect tmp.prm~ >/dev/null || { rm -f tmp.prm~; return 2; }
-    rm -f tmp.prm~
+    cp $prm $prm.tmp
+    echo "set End time=0" >> $prm.tmp
+    $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
+    rm -f $prm.tmp
     done
     return 0;
 }
@@ -48,17 +48,17 @@ make_lib ()
 
 echo "Checking benchmarks using $BUILD/aspect ..."
 
-(cd burstedde; make_lib && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
-(cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
-(cd inclusion; make_lib && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
-(cd solcx; make_lib && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
-(cd solkz; make_lib && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
-(cd tangurnis; cd code; make_lib && cd .. && run_prm ) || { echo "FAILED"; exit 1; } 
+(cd tangurnis; cd code; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
 echo "all good! :-)"
 exit 0
