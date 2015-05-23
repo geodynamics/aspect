@@ -778,11 +778,7 @@ namespace aspect
 
     // let plugins add more constraints if they so choose, then close the
     // constraints object
-    {
-      SimulatorAccess<dim> simulator_access;
-      simulator_access.initialize(*this);
-      signals.post_constraints_creation(simulator_access, current_constraints);
-    }
+    signals.post_constraints_creation(*this, current_constraints);
 
     current_constraints.close();
   }
