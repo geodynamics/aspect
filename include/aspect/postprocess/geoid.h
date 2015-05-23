@@ -109,14 +109,7 @@ namespace aspect
          */
         bool include_topography_contribution;
 
-        /**
-         * The geoid contribution is added on a per-layer basis. This parameter
-         * sets the number of layers. Similar to the depth-average
-         * postprocessor, the number of layers should correspond roughly to
-         * the available model resolution.
-         */
-        unsigned int number_of_layers;
-
+        double core_mass;
         double density_below;
         double density_above;
         unsigned int max_degree;
@@ -126,8 +119,7 @@ namespace aspect
          * coefficients for each layer, which will be finally added to a
          * combined contribution at the surface.
          */
-        std::vector <std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > > buoyancy_expansions;
-
+        std::vector <std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > > internal_density_expansion;
         std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
         std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;
     };

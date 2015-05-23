@@ -104,15 +104,13 @@ namespace aspect
 
       // TODO AssertThrow (no_free_surface);
 
-      buoyancy_expansions.resize(number_of_layers);
+      internal_density_expansions.resize(number_of_layers);
       for (unsigned int i = 0; i < number_of_layers; ++i)
-        buoyancy_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+        internal_density_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
       surface_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
       bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
-      //TODO: remove this when finished, it is only there for benchmark purposes
-      internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -173,7 +171,7 @@ namespace aspect
               bool surface_cell = false;
               bool bottom_cell = false;
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+      /*        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 {
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                   {
@@ -185,7 +183,7 @@ namespace aspect
                     bottom_cell = true;
                     break;
                   }
-                }
+                }*/
               // for each of the quadrature points, evaluate the
               // density and add its contribution to the spherical harmonics
 
@@ -200,14 +198,10 @@ namespace aspect
                   const double density   = out.densities[q];
                   const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
 
-                  buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
+                  internal_density_expansions[layer_id]->add_data_point(location,buoyancy);
 
-                  //TODO: remove this when finished, it is only there for benchmark purposes
-                  const std_cxx1x::array<double,dim> spherical_position =
-                      Utilities::spherical_coordinates(location);
-                  example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
 
-                  // if this is a cell at the surface, add the topography to
+    /*              // if this is a cell at the surface, add the topography to
                   // the topography expansion
                   if (surface_cell)
                     {
@@ -241,7 +235,7 @@ namespace aspect
 
                       // Add topography contribution
                       bottom_topography_expansion->add_data_point(location,dynamic_topography);
-                    }
+                    }*/
                 }
             }
 
@@ -257,8 +251,8 @@ namespace aspect
 
       for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
         {
-          buoyancy_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
-          const internal::HarmonicCoefficients layer_coefficients = buoyancy_expansions[layer_id]->get_coefficients();
+          internal_density_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients layer_coefficients = internal_density_expansions[layer_id]->get_coefficients();
 
           const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
 
@@ -283,7 +277,7 @@ namespace aspect
                 }
             }
         }
-
+/*
 
       internal::HarmonicCoefficients topography_contribution(max_degree);
       if (include_topography_contribution)
@@ -330,7 +324,7 @@ namespace aspect
             }
         }
 
-
+*/
       const std::string filename = this->get_output_directory() +
                                    "surface_geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
@@ -379,21 +373,24 @@ namespace aspect
                              Patterns::Bool (),
                              "Option to include the contribution of dynamic "
                              "topography to the geoid.");
-          prm.declare_entry ("Number of layers", "20",
-                             Patterns::Integer (1),
-                             "The geoid contribution is added on a per-layer basis. This parameter "
-                             "sets the number of layers. Similar to the depth-average "
-                             "postprocessor, the number of layers should correspond roughly to "
-                             "the available model resolution.");
           prm.declare_entry ("Density below", "8000",
                              Patterns::Double(0),
-                             "");
+                             "Density of the fluid beneath the domain, "
+                             "most likely that of the iron-alloy core, ");
           prm.declare_entry ("Density above", "0",
                              Patterns::Double(),
-                             "");
+                             "Density of the fluid above the domain, "
+                             "most likely either air or water.");
           prm.declare_entry ("Maximum degree of expansion", "7",
                              Patterns::Integer (1),
-                             "");
+                             "Degree of the spherical harmonic expansion. "
+                             "The expansion into spherical harmonics can be "
+                             "expensive, especially for high degrees.");
+          prm.declare_entry("Core mass", "1.932e24",
+                            "Mass of the core.  Used for the degree-zero "
+                            "expansion, but not in any others. Feel free to "
+                            "ignore if you do not care about the degree-zero "
+                            "term."
         }
         prm.leave_subsection();
       }
@@ -409,9 +406,9 @@ namespace aspect
         prm.enter_subsection("Geoid");
         {
           include_topography_contribution   = prm.get_bool("Include topography contribution");
-          number_of_layers                  = prm.get_integer("Number of layers");
           density_below                     = prm.get_double("Density below");
           density_above                     = prm.get_double("Density above");
+          core_mass                         = prm.get_double("Core mass");
           max_degree                        = prm.get_integer("Maximum degree of expansion");
         }
         prm.leave_subsection();
