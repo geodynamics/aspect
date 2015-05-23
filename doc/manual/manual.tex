@@ -457,7 +457,7 @@ which it is in fact implemented:
   & \quad & \textrm{in $\Omega$},
   \notag
 \end{align}
-where $\hat{T}$ is an extrapolated temperature of the previous time steps.
+
 
 The last of the equations above, equation~\eqref{eq:compositional}, describes
 the evolution of additional fields that are transported along with the
@@ -470,16 +470,16 @@ equation in more detail in Section~\ref{sec:compositional}.
 Starting with (\ref{eq:temperature-reformulated}) and multiplying on the left by a test function $\phi$ and integrating over the domain yields the weak form:
 \begin{align}
   \label{eq:weak_form}
-  \left(\rho C_p - \rho T \Delta S \frac{\partial X}{\partial T}\right) 
-  \left( c \left( \phi, T \right) - \mathbf u \Delta t \left( \nabla \phi, T \right) 
-  \right) + k \Delta t \left( \nabla \phi , \nabla T \right)
+  \left(\rho C_p - \rho \hat{T} \Delta S \frac{\partial X}{\partial T}\right) 
+  \left( c \left( \phi, T \right) - \Delta t \left( \nabla \phi, \mathbf u T \right) 
+  \right) +  \Delta t \left( \nabla \phi , k \nabla T \right)
   &=
-  \left( \phi , \gamma \right) 
+  \Delta t \left( \phi , \gamma \right) 
   +  \left( \phi , q \right) 
   \notag
  \hspace{.5cm}  \forall \phi,
 \end{align}
-where $\Delta t$ is the current time step size, $c$ is a factor that depends on the old and current time step size, $\gamma$ is a combination of the internal heat production, friction heating, and adiabatic compression of material, and $q$ is the reaction term. Note that the entire equation was multiplied through by $\Delta t$ from what you would expect. 
+where $\Delta t$ is the current time step size, $c$ is a factor that depends on the old and current time step size, $\gamma$ is a combination of the internal heat production, friction heating, and adiabatic compression of material, and $q$ is the reaction term. Note that the entire equation was multiplied through by $\Delta t$ from what you would expect. Also, $\hat{T}$ is an extrapolated temperature of the previous time steps.
 
 \subsubsection{A comment on adiabatic heating}
 Other codes and texts sometimes make a simplification to the adiabatic heating
