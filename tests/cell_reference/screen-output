@@ -8,324 +8,60 @@
 
 Loading shared library <./libcell_reference.so>
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 948 (578+81+289)
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
 
 *** Timestep 0:  t=0 seconds
-Level: 3 Index: 0
-Level: 3 Index: 0
-Level: 3 Index: 1
-Level: 3 Index: 1
-Level: 3 Index: 2
-Level: 3 Index: 2
-Level: 3 Index: 3
-Level: 3 Index: 3
-Level: 3 Index: 4
-Level: 3 Index: 4
-Level: 3 Index: 5
-Level: 3 Index: 5
-Level: 3 Index: 6
-Level: 3 Index: 6
-Level: 3 Index: 7
-Level: 3 Index: 7
-Level: 3 Index: 8
-Level: 3 Index: 8
-Level: 3 Index: 9
-Level: 3 Index: 9
-Level: 3 Index: 10
-Level: 3 Index: 10
-Level: 3 Index: 11
-Level: 3 Index: 11
-Level: 3 Index: 12
-Level: 3 Index: 12
-Level: 3 Index: 13
-Level: 3 Index: 13
-Level: 3 Index: 14
-Level: 3 Index: 14
-Level: 3 Index: 15
-Level: 3 Index: 15
-Level: 3 Index: 16
-Level: 3 Index: 16
-Level: 3 Index: 17
-Level: 3 Index: 17
-Level: 3 Index: 18
-Level: 3 Index: 18
-Level: 3 Index: 19
-Level: 3 Index: 19
-Level: 3 Index: 20
-Level: 3 Index: 20
-Level: 3 Index: 21
-Level: 3 Index: 21
-Level: 3 Index: 22
-Level: 3 Index: 22
-Level: 3 Index: 23
-Level: 3 Index: 23
-Level: 3 Index: 24
-Level: 3 Index: 24
-Level: 3 Index: 25
-Level: 3 Index: 25
-Level: 3 Index: 26
-Level: 3 Index: 26
-Level: 3 Index: 27
-Level: 3 Index: 27
-Level: 3 Index: 28
-Level: 3 Index: 28
-Level: 3 Index: 29
-Level: 3 Index: 29
-Level: 3 Index: 30
-Level: 3 Index: 30
-Level: 3 Index: 31
-Level: 3 Index: 31
-Level: 3 Index: 32
-Level: 3 Index: 32
-Level: 3 Index: 33
-Level: 3 Index: 33
-Level: 3 Index: 34
-Level: 3 Index: 34
-Level: 3 Index: 35
-Level: 3 Index: 35
-Level: 3 Index: 36
-Level: 3 Index: 36
-Level: 3 Index: 37
-Level: 3 Index: 37
-Level: 3 Index: 38
-Level: 3 Index: 38
-Level: 3 Index: 39
-Level: 3 Index: 39
-Level: 3 Index: 40
-Level: 3 Index: 40
-Level: 3 Index: 41
-Level: 3 Index: 41
-Level: 3 Index: 42
-Level: 3 Index: 42
-Level: 3 Index: 43
-Level: 3 Index: 43
-Level: 3 Index: 44
-Level: 3 Index: 44
-Level: 3 Index: 45
-Level: 3 Index: 45
-Level: 3 Index: 46
-Level: 3 Index: 46
-Level: 3 Index: 47
-Level: 3 Index: 47
-Level: 3 Index: 48
-Level: 3 Index: 48
-Level: 3 Index: 49
-Level: 3 Index: 49
-Level: 3 Index: 50
-Level: 3 Index: 50
-Level: 3 Index: 51
-Level: 3 Index: 51
-Level: 3 Index: 52
-Level: 3 Index: 52
-Level: 3 Index: 53
-Level: 3 Index: 53
-Level: 3 Index: 54
-Level: 3 Index: 54
-Level: 3 Index: 55
-Level: 3 Index: 55
-Level: 3 Index: 56
-Level: 3 Index: 56
-Level: 3 Index: 57
-Level: 3 Index: 57
-Level: 3 Index: 58
-Level: 3 Index: 58
-Level: 3 Index: 59
-Level: 3 Index: 59
-Level: 3 Index: 60
-Level: 3 Index: 60
-Level: 3 Index: 61
-Level: 3 Index: 61
-Level: 3 Index: 62
-Level: 3 Index: 62
-Level: 3 Index: 63
-Level: 3 Index: 63
+Level: 1 Index: 0
+Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 2
+Level: 1 Index: 3
+Level: 1 Index: 3
    Solving temperature system... 0 iterations.
-Level: 3 Index: 0
-Level: 3 Index: 1
-Level: 3 Index: 2
-Level: 3 Index: 3
-Level: 3 Index: 4
-Level: 3 Index: 5
-Level: 3 Index: 6
-Level: 3 Index: 7
-Level: 3 Index: 8
-Level: 3 Index: 9
-Level: 3 Index: 10
-Level: 3 Index: 11
-Level: 3 Index: 12
-Level: 3 Index: 13
-Level: 3 Index: 14
-Level: 3 Index: 15
-Level: 3 Index: 16
-Level: 3 Index: 17
-Level: 3 Index: 18
-Level: 3 Index: 19
-Level: 3 Index: 20
-Level: 3 Index: 21
-Level: 3 Index: 22
-Level: 3 Index: 23
-Level: 3 Index: 24
-Level: 3 Index: 25
-Level: 3 Index: 26
-Level: 3 Index: 27
-Level: 3 Index: 28
-Level: 3 Index: 29
-Level: 3 Index: 30
-Level: 3 Index: 31
-Level: 3 Index: 32
-Level: 3 Index: 33
-Level: 3 Index: 34
-Level: 3 Index: 35
-Level: 3 Index: 36
-Level: 3 Index: 37
-Level: 3 Index: 38
-Level: 3 Index: 39
-Level: 3 Index: 40
-Level: 3 Index: 41
-Level: 3 Index: 42
-Level: 3 Index: 43
-Level: 3 Index: 44
-Level: 3 Index: 45
-Level: 3 Index: 46
-Level: 3 Index: 47
-Level: 3 Index: 48
-Level: 3 Index: 49
-Level: 3 Index: 50
-Level: 3 Index: 51
-Level: 3 Index: 52
-Level: 3 Index: 53
-Level: 3 Index: 54
-Level: 3 Index: 55
-Level: 3 Index: 56
-Level: 3 Index: 57
-Level: 3 Index: 58
-Level: 3 Index: 59
-Level: 3 Index: 60
-Level: 3 Index: 61
-Level: 3 Index: 62
-Level: 3 Index: 63
-   Rebuilding Stokes preconditioner...Level: 3 Index: 0
-Level: 3 Index: 1
-Level: 3 Index: 2
-Level: 3 Index: 3
-Level: 3 Index: 4
-Level: 3 Index: 5
-Level: 3 Index: 6
-Level: 3 Index: 7
-Level: 3 Index: 8
-Level: 3 Index: 9
-Level: 3 Index: 10
-Level: 3 Index: 11
-Level: 3 Index: 12
-Level: 3 Index: 13
-Level: 3 Index: 14
-Level: 3 Index: 15
-Level: 3 Index: 16
-Level: 3 Index: 17
-Level: 3 Index: 18
-Level: 3 Index: 19
-Level: 3 Index: 20
-Level: 3 Index: 21
-Level: 3 Index: 22
-Level: 3 Index: 23
-Level: 3 Index: 24
-Level: 3 Index: 25
-Level: 3 Index: 26
-Level: 3 Index: 27
-Level: 3 Index: 28
-Level: 3 Index: 29
-Level: 3 Index: 30
-Level: 3 Index: 31
-Level: 3 Index: 32
-Level: 3 Index: 33
-Level: 3 Index: 34
-Level: 3 Index: 35
-Level: 3 Index: 36
-Level: 3 Index: 37
-Level: 3 Index: 38
-Level: 3 Index: 39
-Level: 3 Index: 40
-Level: 3 Index: 41
-Level: 3 Index: 42
-Level: 3 Index: 43
-Level: 3 Index: 44
-Level: 3 Index: 45
-Level: 3 Index: 46
-Level: 3 Index: 47
-Level: 3 Index: 48
-Level: 3 Index: 49
-Level: 3 Index: 50
-Level: 3 Index: 51
-Level: 3 Index: 52
-Level: 3 Index: 53
-Level: 3 Index: 54
-Level: 3 Index: 55
-Level: 3 Index: 56
-Level: 3 Index: 57
-Level: 3 Index: 58
-Level: 3 Index: 59
-Level: 3 Index: 60
-Level: 3 Index: 61
-Level: 3 Index: 62
-Level: 3 Index: 63
+Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 3
+   Rebuilding Stokes preconditioner...Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 3
 
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system... 12 iterations.
 
    Postprocessing:
-Level: 3 Index: 0
-Level: 3 Index: 0
-Level: 3 Index: 1
-Level: 3 Index: 2
-Level: 3 Index: 4
-Level: 3 Index: 5
-Level: 3 Index: 8
-Level: 3 Index: 10
-Level: 3 Index: 16
-Level: 3 Index: 17
-Level: 3 Index: 20
-Level: 3 Index: 21
-Level: 3 Index: 21
-Level: 3 Index: 23
-Level: 3 Index: 29
-Level: 3 Index: 31
-Level: 3 Index: 32
-Level: 3 Index: 34
-Level: 3 Index: 40
-Level: 3 Index: 42
-Level: 3 Index: 42
-Level: 3 Index: 43
-Level: 3 Index: 46
-Level: 3 Index: 47
-Level: 3 Index: 53
-Level: 3 Index: 55
-Level: 3 Index: 58
-Level: 3 Index: 59
-Level: 3 Index: 61
-Level: 3 Index: 62
-Level: 3 Index: 63
-Level: 3 Index: 63
+Level: 1 Index: 0
+Level: 1 Index: 0
+Level: 1 Index: 1
+Level: 1 Index: 1
+Level: 1 Index: 2
+Level: 1 Index: 2
+Level: 1 Index: 3
+Level: 1 Index: 3
      Writing graphical output:           output-cell_reference/solution-00000
-     RMS, max velocity:                  1.96e-08 m/s, 7.74e-08 m/s
-     Temperature min/avg/max:            0 K, 1.02 K, 1.1 K
-     Heat fluxes through boundary parts: 1.688e-07 W, 2.017e-05 W, 2.43e-07 W, 2.43e-07 W
+     RMS, max velocity:                  5.88e-08 m/s, 1.41e-07 m/s
+     Temperature min/avg/max:            0 K, 0.9574 K, 1.1 K
+     Heat fluxes through boundary parts: 1.944e-07 W, 5.194e-06 W, 2.8e-07 W, 2.8e-07 W
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.094s |            |
+| Total wallclock time elapsed since start    |    0.0294s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |    0.0116s |        12% |
-| Assemble temperature system     |         1 |   0.00594s |       6.3% |
-| Build Stokes preconditioner     |         1 |    0.0174s |        19% |
-| Build temperature preconditioner|         1 |  0.000696s |      0.74% |
-| Solve Stokes system             |         1 |    0.0113s |        12% |
-| Solve temperature system        |         1 |   0.00034s |      0.36% |
-| Initialization                  |         2 |    0.0223s |        24% |
-| Postprocessing                  |         1 |   0.00905s |       9.6% |
-| Setup dof systems               |         1 |      0.01s |        11% |
+| Assemble Stokes system          |         1 |  0.000718s |       2.4% |
+| Assemble temperature system     |         1 |   0.00143s |       4.9% |
+| Build Stokes preconditioner     |         1 |    0.0033s |        11% |
+| Build temperature preconditioner|         1 |  0.000215s |      0.73% |
+| Solve Stokes system             |         1 |   0.00136s |       4.6% |
+| Solve temperature system        |         1 |  0.000197s |      0.67% |
+| Initialization                  |         2 |    0.0164s |        56% |
+| Postprocessing                  |         1 |   0.00199s |       6.8% |
+| Setup dof systems               |         1 |   0.00243s |       8.3% |
 +---------------------------------+-----------+------------+------------+
 

@@ -424,8 +424,6 @@ namespace aspect
     //Vectors for evaluating the finite element solution
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
-    std::vector< Tensor<1,dim> > velocities( n_q_points );
-
 
     //loop over all local cells
     for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
@@ -434,19 +432,19 @@ namespace aspect
           fe.reinit (cell);
           const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
-          //Get the velocity at each quadrature point
-          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
-
           // get the density at each quadrature point if necessary
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                          parameters.n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                            parameters.n_compositional_fields);
+
+          //Get the velocity at each quadrature point
+          fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
+
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
-              in.velocity=velocities;
 
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
@@ -477,7 +475,7 @@ namespace aspect
                   cross_product(r_perp, r_vec);
 
                   // calculate a signed scalar angular momentum
-                  local_scalar_angular_momentum += velocities[k] * r_perp * rho * fe.JxW(k);
+                  local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * fe.JxW(k);
                   // calculate a scalar moment of inertia
                   local_scalar_moment += r_vec.norm_square() * rho * fe.JxW(k);
                 }
@@ -485,7 +483,7 @@ namespace aspect
                 {
                   //calculate angular momentum vector
                   Tensor<1,dim> r_cross_v;
-                  cross_product( r_cross_v, r_vec, velocities[k]);
+                  cross_product( r_cross_v, r_vec, in.velocity[k]);
                   for (unsigned int i=0; i<dim; ++i)
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 

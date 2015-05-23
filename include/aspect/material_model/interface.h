@@ -153,7 +153,9 @@ namespace aspect
       /**
        * Velocity values at the points given in the #position vector.
        * This value is mostly important in the case of determining
-       * whether material crossed a certain region (e.g. a phase boundary)
+       * whether material crossed a certain region (e.g. a phase boundary).
+       * The timestep that is needed for this check can be requested from
+       * SimulatorAccess.
        */
       std::vector<Tensor<1,dim> > velocity;
 
@@ -181,10 +183,12 @@ namespace aspect
       /**
        * Optional reference to the cell that contains these quadrature
        * points. This allows for evaluating properties at the cell vertices
-       * and interpolating to the quadrature points. Note that not all
-       * calling functions can set this reference, so make sure that
-       * your material model either fails with a proper error message in
-       * these cases or provide an alternative calculation for these cases.
+       * and interpolating to the quadrature points, or to query the cell for
+       * material ids, neighbors, or other information that is not available
+       * solely from the locations. Note that not all calling functions can set
+       * this reference. In these cases it will be a NULL pointer, so make sure
+       * that your material model either fails with a proper error message
+       * or provide an alternative calculation for these cases.
        */
       const typename DoFHandler<dim>::active_cell_iterator *cell;
     };

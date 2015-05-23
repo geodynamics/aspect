@@ -71,7 +71,6 @@ namespace aspect
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
 
-      std::vector<Tensor<1,dim> > velocities (quadrature_formula.size());
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
@@ -99,7 +98,7 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    velocities);
+                    in.velocity);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                     in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
@@ -133,7 +132,7 @@ namespace aspect
                     local_normal_flux
                     +=
                       out.densities[q]
-                      * (velocities[q] * fe_face_values.normal_vector(q))
+                      * (in.velocity[q] * fe_face_values.normal_vector(q))
                       * fe_face_values.JxW(q);
                   }
 
