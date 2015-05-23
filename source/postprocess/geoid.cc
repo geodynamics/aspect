@@ -35,15 +35,7 @@ namespace aspect
     {
       HarmonicCoefficients::HarmonicCoefficients(const unsigned int max_degree)
       {
-        unsigned int k=0;
-        for (unsigned int i=0;i<=max_degree;i++)
-          {
-          for (unsigned int j=0; j<=i; ++j)
-            {
-              ++k;
-            }
-          }
-
+        unsigned int k= max_degree*(max_degree+1)/2;
         sine_coefficients.resize(k);
         cosine_coefficients.resize(k);
       }
