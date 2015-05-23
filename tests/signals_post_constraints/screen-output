@@ -1,0 +1,78 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libsignals_post_constraints.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  17.9 m/s, 25.3 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -5.912e-06 W, 5.912e-06 W, -4.884 W, 4.884 W
+
+*** Timestep 1:  t=0.00061685 seconds
+   Solving temperature system... 29 iterations.
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  17.9 m/s, 25.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -2.651e-06 W, 2.674e-06 W, -4.834 W, 4.834 W
+
+*** Timestep 2:  t=0.00122985 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  18 m/s, 25.7 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.051e-06 W, 6.049e-06 W, -4.727 W, 4.728 W
+
+*** Timestep 3:  t=0.00183783 seconds
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 25 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  18 m/s, 26 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.346e-06 W, 6.341e-06 W, -4.553 W, 4.554 W
+
+*** Timestep 4:  t=0.002 seconds
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 22 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  18.1 m/s, 26.1 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: -6.552e-06 W, 6.548e-06 W, -4.496 W, 4.496 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      1.26s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         5 |     0.197s |        16% |
+| Assemble temperature system     |         5 |     0.282s |        22% |
+| Build Stokes preconditioner     |         1 |     0.176s |        14% |
+| Build temperature preconditioner|         5 |    0.0243s |       1.9% |
+| Solve Stokes system             |         5 |     0.324s |        26% |
+| Solve temperature system        |         5 |    0.0347s |       2.7% |
+| Initialization                  |         2 |    0.0344s |       2.7% |
+| Postprocessing                  |         5 |    0.0309s |       2.4% |
+| Setup dof systems               |         1 |    0.0634s |         5% |
++---------------------------------+-----------+------------+------------+
+
