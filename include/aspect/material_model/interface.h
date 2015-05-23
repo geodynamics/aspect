@@ -778,8 +778,8 @@ namespace aspect
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModelInputs &in,
-                              MaterialModelOutputs &out) const = 0;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs &out) const = 0;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -989,8 +989,8 @@ namespace aspect
          * @param in
          * @param out
          */
-        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                      typename Interface<dim>::MaterialModelOutputs &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs &out) const;
     };
 
 

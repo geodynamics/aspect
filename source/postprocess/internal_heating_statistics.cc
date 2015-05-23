@@ -51,8 +51,8 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       in.strain_rate.resize(0); // we do not need the viscosity
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));

@@ -57,8 +57,8 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points, this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs out(n_quadrature_points, this->n_compositional_fields());
 
         in.strain_rate.resize(0); // we do not need the viscosity
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));

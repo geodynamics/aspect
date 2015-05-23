@@ -192,8 +192,8 @@ namespace aspect
          */
         virtual
         void
-        evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                 typename Interface<dim>::MaterialModelOutputs &out) const;
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs &out) const;
 
         /**
          * @name Functions used in dealing with run-time parameters

@@ -62,7 +62,7 @@ namespace aspect
     template <int dim>
     void
     MorencyDoin<dim>::
-    evaluate(const MaterialModelInputs &in,
+    evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs &out) const
     {
       const double R = 8.32; // J mol-1 K-1

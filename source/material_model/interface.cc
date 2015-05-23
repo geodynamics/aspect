@@ -412,8 +412,8 @@ namespace aspect
 
     template <int dim>
     void
-    InterfaceCompatibility<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                          typename Interface<dim>::MaterialModelOutputs &out) const
+    InterfaceCompatibility<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                          MaterialModel::MaterialModelOutputs &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {

@@ -68,8 +68,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
       // for every surface face on which it makes sense to compute a
       // heat flux and that is owned by this processor,

@@ -67,10 +67,10 @@ namespace aspect
         = this->get_geometry_model().get_used_boundary_indicators ();
       std::map<types::boundary_id, double> local_boundary_fluxes;
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-                                                                     this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size(),
-                                                                       this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs out(quadrature.size(),
+                                              this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),

@@ -55,8 +55,8 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values);
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-                                                                     this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
+                                                 this->n_compositional_fields());
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure

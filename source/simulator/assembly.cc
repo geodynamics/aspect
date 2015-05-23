@@ -64,8 +64,8 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > strain_rates;
           std::vector<std::vector<double> >     composition_values;
 
-          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
+          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
+          MaterialModel::MaterialModelOutputs material_model_outputs;
         };
 
 
@@ -233,11 +233,11 @@ namespace aspect
           std::vector<Tensor<1,dim> > current_pressure_gradients;
           std::vector<std::vector<double> > current_composition_values;
 
-          typename MaterialModel::Interface<dim>::MaterialModelInputs material_model_inputs;
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs material_model_outputs;
+          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
+          MaterialModel::MaterialModelOutputs material_model_outputs;
 
-          typename MaterialModel::Interface<dim>::MaterialModelInputs explicit_material_model_inputs;
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs explicit_material_model_outputs;
+          MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
+          MaterialModel::MaterialModelOutputs explicit_material_model_outputs;
         };
 
 
@@ -907,7 +907,7 @@ namespace aspect
                                        const FEValues<dim>                                         &input_finite_element_values,
                                        const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                        const bool                                                   compute_strainrate,
-                                       typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const
+                                       MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
   {
     const unsigned int n_q_points = material_model_inputs.temperature.size();
 
@@ -1370,8 +1370,8 @@ namespace aspect
   template <int dim>
   double
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                       typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                                       typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                       MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                       MaterialModel::MaterialModelOutputs &material_model_outputs,
                                        const double specific_heating_rate,
                                        const AdvectionField     &advection_field,
                                        const unsigned int q) const

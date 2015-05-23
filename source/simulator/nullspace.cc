@@ -320,10 +320,10 @@ namespace aspect
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
 
           // get the density at each quadrature point if necessary
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                         parameters.n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                           parameters.n_compositional_fields);
+          MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                     parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs out(n_q_points,
+                                                  parameters.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
@@ -433,10 +433,10 @@ namespace aspect
           const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
           // get the density at each quadrature point if necessary
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                         parameters.n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                           parameters.n_compositional_fields);
+          MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                     parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs out(n_q_points,
+                                                  parameters.n_compositional_fields);
 
           //Get the velocity at each quadrature point
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);

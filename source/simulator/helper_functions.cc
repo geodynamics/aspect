@@ -322,8 +322,8 @@ namespace aspect
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
-              typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
-              typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
 
               in.strain_rate.resize(0);// we are not reading the viscosity
 
@@ -962,10 +962,10 @@ namespace aspect
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
 
-    typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                   parameters.n_compositional_fields);
-    typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                     parameters.n_compositional_fields);
+    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                               parameters.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs out(n_q_points,
+                                            parameters.n_compositional_fields);
 
     fctr.setup(quadrature_formula.size());
 
@@ -1038,8 +1038,8 @@ namespace aspect
         {
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1081,8 +1081,8 @@ namespace aspect
         void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs &out,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
@@ -1119,8 +1119,8 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1163,8 +1163,8 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1211,8 +1211,8 @@ namespace aspect
         void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs &,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
