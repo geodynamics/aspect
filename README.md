@@ -15,7 +15,7 @@ More information
 
 For more information see:
  - [readme](readme.html)
- - [the manual under doc/manual.pdf](doc/manual.pdf)
+ - [the manual](http://www.math.clemson.edu/~heister/manual.pdf)
  - the official website at http://aspect.dealii.org
 
 
