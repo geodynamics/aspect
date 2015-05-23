@@ -562,7 +562,7 @@ namespace aspect
        */
       virtual
       double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const unsigned int                   boundary_indicator,
+                          const types::boundary_id                   boundary_indicator,
                           const Point<dim>                    &location) const;
 
       /**
@@ -590,7 +590,7 @@ namespace aspect
   double
   TanGurnisBoundary<dim>::
   temperature (const GeometryModel::Interface<dim> &geometry_model,
-               const unsigned int                   boundary_indicator,
+               const types::boundary_id                   boundary_indicator,
                const Point<dim>                    &location) const
   {
     // verify that the geometry is in fact a box since only
