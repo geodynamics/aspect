@@ -6,6 +6,18 @@
  *
  *
  * <ol>
+ *
+ * <li> Changed: The free surface handler now detaches internal manifolds
+ * for cases when the domain has them, since they are not necessarily a 
+ * good description of the geometry when there has been large mesh deformation.
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
+ * <li> Changed: The documentation for nullspace removal is now more 
+ * descriptive of what Aspect is actually doing. 
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
  * <li> Changed: The specific heating plugin has a new interface now; it gets
  * the material model inputs and outputs and fills a vector with heating
  * model outputs for the whole cell.
