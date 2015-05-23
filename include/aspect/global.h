@@ -78,50 +78,70 @@ namespace aspect
      */
     namespace earth
     {
+
+      /**
+       * Masses are taken from Yoder (1995)
+       */
+      namespace masses
+      {
+        /**
+         * Planet mass [kg]
+         */
+        extern const double planet;
+        /**
+         * Mass of the whole core [kg]
+         */
+        extern const double core;
+        /**
+         * Mass of the mantle [kg]
+         */
+        extern const double mantle;
+      }
+
       /**
        * Earth structure radii taken from the IASP91 model:
        */
-      namespace iasp91
+      namespace iasp91_radii
       {
         /**
         * Inner core radius [m], equivalent of 5150 km depth
         */
-        extern const double inner_core_radius;
+        extern const double inner_core;
         /**
         * Inner core radius [m], equivalent of 2889 km depth
         */
-        extern const double core_radius;
+        extern const double core;
         /**
         * Lower mantle radius [m], equivalent of 660 km depth
         */
-        extern const double lower_mantle_radius;
+        extern const double lower_mantle;
         /**
         * Radius [m], equivalent of 5150 km depth
         */
-        extern const double radius;
+        extern const double planet;
       }
 
       /**
        *  Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
        */
-      namespace prem
+      namespace prem_gravity
       {
         /**
         * Inner core boundary gravity [ms^-2]
         */
-        extern const double gravity_icb;
+        extern const double icb;
         /**
         * Core-mantle boundary gravity [ms^-2]
         */
-        extern const double gravity_cmb;
+        extern const double cmb;
         /**
         * Upper-lower mantle boundary gravity [ms^-2]
         */
-        extern const double gravity_ulmb;
+        extern const double ulmb;
         /**
         * Surface gravity [ms^-2]
         */
-        extern const double gravity_surface;
+        extern const double surface;
       }
 
       /**
@@ -135,14 +155,21 @@ namespace aspect
      */
     namespace mars
     {
+
       /**
-       * Radius [m]
+       * Mars structure radii
        */
-      extern const double radius;
-      /**
-       * Core radius [m]
-       */
-      extern const double core_radius;
+      namespace radii
+      {
+        /**
+         * Planetary radius [m]
+         */
+        extern const double planet;
+        /**
+         * Core radius [m]
+         */
+        extern const double core;
+      }
       /**
        * Surface gravity [ms^-2]
        */
