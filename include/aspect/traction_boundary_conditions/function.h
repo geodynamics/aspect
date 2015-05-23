@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__velocity_boundary_conditions_function_h
-#define __aspect__velocity_boundary_conditions_function_h
+#ifndef __aspect__traction_boundary_conditions_function_h
+#define __aspect__traction_boundary_conditions_function_h
 
 #include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
@@ -37,7 +37,7 @@ namespace aspect
      * A class that implements traction boundary conditions based on a
      * functional description provided in the input file.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     class Function : public Interface<dim>, public SimulatorAccess<dim>
@@ -90,7 +90,7 @@ namespace aspect
 
       private:
         /**
-         * A function object representing the components of the velocity.
+         * A function object representing the components of the traction.
          */
         Functions::ParsedFunction<dim> boundary_traction_function;
     };

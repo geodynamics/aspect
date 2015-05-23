@@ -35,7 +35,7 @@ namespace aspect
      * is equivalent to an open boundary condition in domains where
      * hydrostatic pressure is irrelevant.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     class ZeroTraction : public Interface<dim>

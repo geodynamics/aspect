@@ -41,9 +41,9 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A base class for parameterizations of velocity boundary conditions.
+     * A base class for parameterizations of traction boundary conditions.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     class Interface
@@ -70,10 +70,10 @@ namespace aspect
          * derived classes that need more elaborate setups for a given time
          * step may overload the function.
          *
-         * The point of this function is to allow complex boundary velocity
+         * The point of this function is to allow complex boundary traction
          * models to do an initialization step once at the beginning of each
          * time step. An example would be a model that needs to call an
-         * external program to compute positions for a set of plates.
+         * external program to compute stresses for a set of plates.
          */
         virtual
         void
@@ -120,20 +120,20 @@ namespace aspect
 
 
     /**
-     * Register a velocity boundary conditions model so that it can be
+     * Register a traction boundary conditions model so that it can be
      * selected from the parameter file.
      *
-     * @param name A string that identifies the velocity boundary conditions
+     * @param name A string that identifies the traction boundary conditions
      * model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this velocity boundary conditions
+     * used to declare the parameters that this traction boundary conditions
      * model wants to read from input files.
      * @param factory_function A pointer to a function that can create an
-     * object of this velocity boundary conditions model.
+     * object of this traction boundary conditions model.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     void
@@ -150,14 +150,14 @@ namespace aspect
      * The model object returned is not yet initialized and has not
      * read its runtime parameters yet.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     Interface<dim> *
     create_traction_boundary_conditions (const std::string &name);
 
     /**
-     * Return a list of names of all implemented boundary velocity models,
+     * Return a list of names of all implemented boundary traction models,
      * separated by '|' so that it can be used in an object of type
      * Patterns::Selection.
      */
@@ -166,10 +166,10 @@ namespace aspect
     get_names ();
 
     /**
-     * Declare the runtime parameters of the registered velocity boundary
+     * Declare the runtime parameters of the registered traction boundary
      * conditions models.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
     void
@@ -179,10 +179,10 @@ namespace aspect
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a velocity boundary conditions model, register it with the
+     * for a traction boundary conditions model, register it with the
      * functions that can declare their parameters and create these objects.
      *
-     * @ingroup VelocityBoundaryConditionsModels
+     * @ingroup TractionBoundaryConditionsModels
      */
 #define ASPECT_REGISTER_TRACTION_BOUNDARY_CONDITIONS(classname,name,description) \
   template class classname<2>; \
