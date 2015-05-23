@@ -335,9 +335,11 @@ namespace aspect
                   in.position[q] = fe_values.quadrature_point(q);
                   in.temperature[q] = temperature_values[q];
                   in.pressure[q] = pressure_values[q];
+                  in.velocity[q] = velocity_values[q];
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
+              in.cell = &cell;
 
               material_model->evaluate(in, out);
 
@@ -977,6 +979,8 @@ namespace aspect
                                                                                 in.pressure);
               fe_values[introspection.extractors.temperature].get_function_values (this->solution,
                                                                                    in.temperature);
+              fe_values[introspection.extractors.velocities].get_function_values (this->solution,
+                                                                                  in.velocity);
               fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
                   in.strain_rate);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -989,6 +993,8 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
+              in.cell = &cell;
+
               material_model->evaluate(in, out);
             }
 

@@ -446,6 +446,8 @@ namespace aspect
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              in.velocity=velocities;
+
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -456,6 +458,8 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
+              in.cell = &cell;
+
               material_model->evaluate(in, out);
             }
 

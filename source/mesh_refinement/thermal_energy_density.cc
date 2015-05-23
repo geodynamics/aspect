@@ -56,6 +56,7 @@ namespace aspect
                                update_quadrature_points | update_values);
       std::vector<double> pressure_values(quadrature.size());
       std::vector<double> temperature_values(quadrature.size());
+      std::vector<Tensor<1,dim> > velocity_values(quadrature.size());
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
@@ -78,6 +79,8 @@ namespace aspect
                                                                                       pressure_values);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          temperature_values);
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                        velocity_values);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);
@@ -92,6 +95,8 @@ namespace aspect
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
+            in.cell = &cell;
+
             this->get_material_model().evaluate(in, out);
 
             // for each temperature dof, write into the output

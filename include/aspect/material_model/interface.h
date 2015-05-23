@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2013, 2014, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,6 +28,7 @@
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/dofs/dof_handler.h>
+#include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/fe/mapping.h>
 
 namespace aspect
@@ -150,6 +151,13 @@ namespace aspect
       std::vector<double> pressure;
 
       /**
+       * Velocity values at the points given in the #position vector.
+       * This value is mostly important in the case of determining
+       * whether material crossed a certain region (e.g. a phase boundary)
+       */
+      std::vector<Tensor<1,dim> > velocity;
+
+      /**
        * Values of the compositional fields at the points given in the
        * #position vector: composition[i][c] is the compositional field c at
        * point i.
@@ -169,6 +177,16 @@ namespace aspect
        * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
        */
       std::vector<SymmetricTensor<2,dim> > strain_rate;
+
+      /**
+       * Optional reference to the cell that contains these quadrature
+       * points. This allows for evaluating properties at the cell vertices
+       * and interpolating to the quadrature points. Note that not all
+       * calling functions can set this reference, so make sure that
+       * your material model either fails with a proper error message in
+       * these cases or provide an alternative calculation for these cases.
+       */
+      const typename DoFHandler<dim>::active_cell_iterator *cell;
     };
 
 
