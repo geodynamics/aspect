@@ -96,7 +96,6 @@ namespace aspect
        */
       virtual void initialize (const Simulator<dim> &simulator);
 
-    protected:
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
 
