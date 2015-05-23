@@ -165,10 +165,10 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} IMPES
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The 'iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The 'iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The 'Stokes only' scheme only solves the Stokes system and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature; mostly useful for Stokes benchmarks).
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. 'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme in which ones solves the temperatures and Stokes equations exactly once per time step, one after the other. The 'iterated IMPES' scheme iterates this decoupled approach by alternating the solution of the temperature and Stokes systems. The 'iterated Stokes' scheme solves the temperature equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The 'Stokes only' scheme only solves the Stokes system and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature; mostly useful for Stokes benchmarks). The 'Advection only'scheme only solves the temperature and other advection systems and instead of solving for the Stokes system, a prescribed velocity and pressure is used
 
 
-{\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes|Stokes only ]
+{\it Possible values:} [Selection IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only ]
 \item {\it Parameter name:} {\tt Nonlinear solver tolerance}
 \phantomsection\label{parameters:Nonlinear solver tolerance}
 
@@ -359,7 +359,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} true
 
 
-{\it Description:} When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to 'true' conversion to years happens; if it is 'false', no such conversion happens.
+{\it Description:} When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to 'true' conversion to years happens; if it is 'false', no such conversion happens. Note that when 'true', some input such as prescribed velocities should also use years instead of seconds.
 
 
 {\it Possible values:} [Bool]
@@ -409,19 +409,139 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Select one of the following models:
 
+`ascii data': Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'composition1', 'composition2', etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+
 `box': A model in which the composition is chosen constant on all the sides of a box.
 
 `initial composition': A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in postprocessing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section ``Boundary composition model/Initial composition''.
 
-`spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Sherical constant'.
+`spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection box|initial composition|spherical constant ]
+{\it Possible values:} [Selection ascii data|box|initial composition|spherical constant ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Boundary composition model/Ascii data model}
+\label{parameters:Boundary_20composition_20model/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Boundary composition model!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/boundary-composition/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-composition/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Boundary composition model!Ascii data model!Data file name}
+{\it Value:} box\_2d\_\%s.\%d.txt
+
+
+{\it Default:} box\_2d\_\%s.\%d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Data file time step}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/Data file time step}
+
+
+\index[prmindex]{Data file time step}
+\index[prmindexfull]{Boundary composition model!Ascii data model!Data file time step}
+{\it Value:} 1e6
+
+
+{\it Default:} 1e6
+
+
+{\it Description:} Time step between following velocity files. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Decreasing file order}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/Decreasing file order}
+
+
+\index[prmindex]{Decreasing file order}
+\index[prmindexfull]{Boundary composition model!Ascii data model!Decreasing file order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True' the plugin will first load the file with the number 'First velocity file number' and decrease the file number during the model run.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt First data file model time}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/First data file model time}
+
+
+\index[prmindex]{First data file model time}
+\index[prmindexfull]{Boundary composition model!Ascii data model!First data file model time}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Time from which on the velocity file with number 'First velocity file number' is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt First data file number}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/First data file number}
+
+
+\index[prmindex]{First data file number}
+\index[prmindexfull]{Boundary composition model!Ascii data model!First data file number}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of the first velocity file to be loaded when the model time is larger than 'First velocity file model time'.
+
+
+{\it Possible values:} [Integer range -2147483648...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Boundary composition model/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Boundary composition model!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Boundary composition model/Box}
 \label{parameters:Boundary_20composition_20model/Box}
@@ -547,7 +667,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Default:} 1
 
 
-{\it Description:} Composition at the inner boundary (core mantle boundary). Units: K.
+{\it Description:} Composition at the inner boundary (core mantle boundary). Units: none.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -563,7 +683,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Default:} 0
 
 
-{\it Description:} Composition at the outer boundary (lithosphere water/air). Units: K.
+{\it Description:} Composition at the outer boundary (lithosphere water/air). Units: none.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -587,6 +707,8 @@ Because this class simply takes what the initial composition had described, this
 
 {\it Description:} Select one of the following models:
 
+`ascii data': Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'Temperature [K]' in a 2d model and  'x', 'y', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+
 `box': A model in which the temperature is chosen constant on all the sides of a box.
 
 `constant': A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection 'Constant'.
@@ -606,10 +728,128 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection box|constant|function|initial temperature|spherical constant ]
+{\it Possible values:} [Selection ascii data|box|constant|function|initial temperature|spherical constant ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Boundary temperature model/Ascii data model}
+\label{parameters:Boundary_20temperature_20model/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/boundary-temperature/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-temperature/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!Data file name}
+{\it Value:} box\_2d\_\%s.\%d.txt
+
+
+{\it Default:} box\_2d\_\%s.\%d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Data file time step}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/Data file time step}
+
+
+\index[prmindex]{Data file time step}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!Data file time step}
+{\it Value:} 1e6
+
+
+{\it Default:} 1e6
+
+
+{\it Description:} Time step between following velocity files. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Decreasing file order}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/Decreasing file order}
+
+
+\index[prmindex]{Decreasing file order}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!Decreasing file order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True' the plugin will first load the file with the number 'First velocity file number' and decrease the file number during the model run.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt First data file model time}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/First data file model time}
+
+
+\index[prmindex]{First data file model time}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!First data file model time}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Time from which on the velocity file with number 'First velocity file number' is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt First data file number}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/First data file number}
+
+
+\index[prmindex]{First data file number}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!First data file number}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of the first velocity file to be loaded when the model time is larger than 'First velocity file model time'.
+
+
+{\it Possible values:} [Integer range -2147483648...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Boundary temperature model/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Boundary temperature model!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Boundary temperature model/Box}
 \label{parameters:Boundary_20temperature_20model/Box}
@@ -872,6 +1112,124 @@ If the function you are describing represents a vector-valued function with mult
 \subsection{Parameters in section \tt Boundary velocity model}
 \label{parameters:Boundary_20velocity_20model}
 
+
+\subsection{Parameters in section \tt Boundary velocity model/Ascii data model}
+\label{parameters:Boundary_20velocity_20model/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/velocity-boundary-conditions/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!Data file name}
+{\it Value:} box\_2d\_\%s.\%d.txt
+
+
+{\it Default:} box\_2d\_\%s.\%d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Data file time step}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/Data file time step}
+
+
+\index[prmindex]{Data file time step}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!Data file time step}
+{\it Value:} 1e6
+
+
+{\it Default:} 1e6
+
+
+{\it Description:} Time step between following velocity files. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Decreasing file order}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/Decreasing file order}
+
+
+\index[prmindex]{Decreasing file order}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!Decreasing file order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True' the plugin will first load the file with the number 'First velocity file number' and decrease the file number during the model run.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt First data file model time}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/First data file model time}
+
+
+\index[prmindex]{First data file model time}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!First data file model time}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Time from which on the velocity file with number 'First velocity file number' is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt First data file number}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/First data file number}
+
+
+\index[prmindex]{First data file number}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!First data file number}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of the first velocity file to be loaded when the model time is larger than 'First velocity file model time'.
+
+
+{\it Possible values:} [Integer range -2147483648...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Boundary velocity model/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Boundary velocity model!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Boundary velocity model/Function}
 \label{parameters:Boundary_20velocity_20model/Function}
@@ -1175,13 +1533,69 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Select one of the following models:
 
+`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 
-{\it Possible values:} [Selection function ]
+{\it Possible values:} [Selection ascii data|function ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Compositional initial conditions/Ascii data model}
+\label{parameters:Compositional_20initial_20conditions/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Compositional initial conditions!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/compositional-initial-conditions/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Compositional initial conditions!Ascii data model!Data file name}
+{\it Value:} box\_2d.txt
+
+
+{\it Default:} box\_2d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Compositional initial conditions/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Compositional initial conditions!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Compositional initial conditions/Function}
 \label{parameters:Compositional_20initial_20conditions/Function}
@@ -1417,7 +1831,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 `sphere': Geometry model for sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in the input file is ``0''. It can also be referenced by the symbolic name ``surface'' in input files.
 
-`spherical shell': A geometry representing a spherical shell or a pice of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
+`spherical shell': A geometry representing a spherical shell or a piece of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
 
 The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. These boundaries can also be referenced using the symbolic names 'inner', 'outer' and (if applicable) 'left', 'right'.
 
@@ -2154,6 +2568,8 @@ If the function you are describing represents a vector-valued function with mult
 
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
+`ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'y', 'Temperature [K]' in a 2d model and  'x', 'y', 'z', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+
 `function': Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `harmonic perturbation': An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
@@ -2173,7 +2589,7 @@ If the function you are describing represents a vector-valued function with mult
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
 
-{\it Possible values:} [Selection S40RTS perturbation|adiabatic|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
+{\it Possible values:} [Selection S40RTS perturbation|adiabatic|ascii data|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
 \end{itemize}
 
 
@@ -2340,6 +2756,60 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial conditions/Ascii data model}
+\label{parameters:Initial_20conditions/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial conditions/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial conditions!Ascii data model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial conditions/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial conditions!Ascii data model!Data file name}
+{\it Value:} box\_2d.txt
+
+
+{\it Default:} box\_2d.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial conditions/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial conditions!Ascii data model!Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Initial conditions/Function}
@@ -3020,6 +3490,24 @@ In order to facilitate placing input files in locations relative to the ASPECT s
 \label{parameters:Material_20model}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Material averaging}
+\phantomsection\label{parameters:Material model/Material averaging}
+
+
+\index[prmindex]{Material averaging}
+\index[prmindexfull]{Material model!Material averaging}
+{\it Value:} none
+
+
+{\it Default:} none
+
+
+{\it Description:} Whether or not (and in the first case, how) to do any averaging of material model output data when constructing the linear systems for velocity/pressure, temperature, and compositions in each time step, as well as their corresponding preconditioners.
+
+The process of averaging, and where it may be used, is discussed in more detail in Section~\ref{sec:sinker-with-averaging}.
+
+
+{\it Possible values:} [Selection none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1 ]
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Material model/Model name}
 
@@ -3064,9 +3552,9 @@ The temperature pre-factor for the viscosity formula above is defined as \begin{
 
 The compositional pre-factor for the viscosity is defined as \begin{align}  \zeta(\mathfrak c) &= \xi^{c_0}\end{align} if the model has compositional fields and equals one otherwise. $\xi$ corresponds to the parameter ``Composition viscosity prefactor'' in the input file.
 
-Finally, in the formula for the density, $\Delta\rho$ corresponds to the parameter ``Density differential for compositional field 1''.
+Finally, in the formula for the density, $\alpha$ corresponds to the ``Thermal expansion coefficient'' and $\Delta\rho$ corresponds to the parameter ``Density differential for compositional field 1''.
 
-Note that this model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}}))$. 
+Note that this model uses the formulation that assumes an incompressible medium despite the fact that the density follows the law $\rho(T)=\rho_0(1-\alpha(T-T_{\text{ref}}))$. 
 
 \note{Despite its name, this material model is not exactly ``simple'', as indicated by the formulas above. While it was originally intended to be simple, it has over time acquired all sorts of temperature and compositional dependencies that weren't initially intended. Consequently, there is now a ``simpler'' material model that now fills the role the current model was originally intended to fill.}
 
@@ -3288,22 +3776,6 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 \label{parameters:Material_20model/Latent_20heat}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Activation enthalpies}
-\phantomsection\label{parameters:Material model/Latent heat/Activation enthalpies}
-
-
-\index[prmindex]{Activation enthalpies}
-\index[prmindexfull]{Material model!Latent heat!Activation enthalpies}
-{\it Value:} 
-
-
-{\it Default:} 
-
-
-{\it Description:} A list of activation enthalpies for the temperature dependence of the viscosity of each phase. List must have one more entry than Phase transition depths. Units: $1/K$.
-
-
-{\it Possible values:} [List list of [Double 0...1.79769e+308 (inclusive)] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Composition viscosity prefactor}
 \phantomsection\label{parameters:Material model/Latent heat/Composition viscosity prefactor}
 
@@ -3892,10 +4364,10 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 \index[prmindex]{Peridotite melting entropy change}
 \index[prmindexfull]{Material model!Latent heat melt!Peridotite melting entropy change}
-{\it Value:} 300
+{\it Value:} -300
 
 
-{\it Default:} 300
+{\it Default:} -300
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: $J/(kg K)$.
@@ -3908,10 +4380,10 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 \index[prmindex]{Pyroxenite melting entropy change}
 \index[prmindexfull]{Material model!Latent heat melt!Pyroxenite melting entropy change}
-{\it Value:} 400
+{\it Value:} -400
 
 
-{\it Default:} 400
+{\it Default:} -400
 
 
 {\it Description:} The entropy change for the phase transition from solid to melt of pyroxenite. Units: $J/(kg K)$.
@@ -4604,7 +5076,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Default:} 2e-5
 
 
-{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+{\it Description:} The value of the thermal expansion coefficient $\alpha$. Units: $1/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -4738,7 +5210,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 {\it Default:} 2e-5
 
 
-{\it Description:} The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+{\it Description:} The value of the thermal expansion coefficient $\alpha$. Units: $1/K$.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -5771,6 +6243,10 @@ If the list of indicators given in this parameter is empty, then this indicates 
 
 The following criteria are available:
 
+`boundary': A class that implements a mesh refinement criterion which always flags all cells on specified boundaries for refinement. This is useful to provide high accuracy for processes at or close to the edge of the model domain.
+
+To use this refinement criterion, you may want to combine it with other refinement criteria, setting the 'Normalize individual refinement criteria' flag and using the 'max' setting for 'Refinement criteria merge operation'.
+
 `composition': A mesh refinement criterion that computes refinement indicators from the compositional fields. If there is more than one compositional field, then it simply takes the sum of the indicators computed from each of the compositional field.
 
 `density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
@@ -5798,7 +6274,7 @@ To use this refinement criterion, you may want to combine it with other refineme
 `viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 
-{\it Possible values:} [MultipleSelection composition|density|maximum refinement function|minimum refinement function|nonadiabatic temperature|temperature|thermal energy density|topography|velocity|viscosity ]
+{\it Possible values:} [MultipleSelection boundary|composition|density|maximum refinement function|minimum refinement function|nonadiabatic temperature|temperature|thermal energy density|topography|velocity|viscosity ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 
@@ -5818,6 +6294,30 @@ To use this refinement criterion, you may want to combine it with other refineme
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Mesh refinement/Boundary}
+\label{parameters:Mesh_20refinement/Boundary}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Boundary refinement indicators}
+\phantomsection\label{parameters:Mesh refinement/Boundary/Boundary refinement indicators}
+
+
+\index[prmindex]{Boundary refinement indicators}
+\index[prmindexfull]{Mesh refinement!Boundary!Boundary refinement indicators}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of names denoting those boundaries where there should be mesh refinement.
+
+The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+
+
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
+\end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement/Composition}
 \label{parameters:Mesh_20refinement/Composition}
@@ -6119,8 +6619,10 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 
 Note that the no-slip boundary condition is a special case of the current one where the prescribed velocity happens to be zero. It can thus be implemented by indicating that a particular boundary is part of the ones selected using the current parameter and using ``zero velocity'' as the boundary values. Alternatively, you can simply list the part of the boundary on which the velocity is to be zero with the parameter ``Zero velocity boundary indicator'' in the current parameter section.
 
+Note that when ``Use years in output instead of seconds'' is set to true, velocity should be given in m/yr. 
 
-{\it Possible values:} [Map map of [Anything]:[Selection function|gplates|zero velocity ] of length 0...4294967295 (inclusive)]
+
+{\it Possible values:} [Map map of [Anything]:[Selection ascii data|function|gplates|zero velocity ] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Remove nullspace}
 \phantomsection\label{parameters:Model settings/Remove nullspace}
 
@@ -6133,8 +6635,16 @@ Note that the no-slip boundary condition is a special case of the current one wh
 {\it Default:} 
 
 
-{\it Description:} A selection of operations to remove certain parts of the nullspace from the velocity after solving. For some geometries and certain boundary conditions the velocity field is not uniquely determined but contains free translations and or rotations. Depending on what you specify here, these non-determined modes will be removed from the velocity field at the end of the Stokes solve step.
-Note that while more than operation can be selected it only makes sense to pick one rotational and one translational operation.
+{\it Description:} Choose none, one or several from 
+
+\begin{itemize} \item net rotation \item angular momentum \item net translation \item linear momentum \item net x translation \item net y translation \item net z translation \item linear x momentum \item linear y momentum \item linear z momentum \end{itemize}
+
+These are a selection of operations to remove certain parts of the nullspace from the velocity after solving. For some geometries and certain boundary conditions the velocity field is not uniquely determined but contains free translations and/or rotations. Depending on what you specify here, these non-determined modes will be removed from the velocity field at the end of the Stokes solve step.
+
+
+The ``angular momentum'' option removes a rotation such that the net angular momentum is zero. The ``linear * momentum'' options remove translations such that the net momentum in the relevant direction is zero.  The ``net rotation'' option removes the net rotation of the domain, and the ``net * translation'' options remove the net translations in the relevant directions.  For most problems there should not be a significant difference between the momentum and rotation/translation versions of nullspace removal, although the momentum versions are more physically motivated. They are equivalent for constant density simulations, and approximately equivalent when the density variations are small.
+
+Note that while more than one operation can be selected it only makes sense to pick one rotational and one translational operation.
 
 
 {\it Possible values:} [MultipleSelection net rotation|angular momentum|net translation|linear momentum|net x translation|net y translation|net z translation|linear x momentum|linear y momentum|linear z momentum ]
@@ -6200,11 +6710,14 @@ The following postprocessors are available:
 
 `composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; dx$.
 
-`depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file. 
+`depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
 
-`dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface. The data is written into a file named 'dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
+In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
+
+`dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface. The data is written into text files named 'dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
 
 The exact approach works as follows: At the centers of all cells that sit along the top surface, we evaluate the stress and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)- \frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{\|\mathbf g\| \rho}$ where $\rho$ is the density at the cell center.
+The file format then consists of lines with Euclidiean coordinates followed by the corresponding topography value.
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
@@ -6215,6 +6728,10 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 `heat flux statistics for the table model': A postprocessor that computes some statistics about the heat flux across boundaries.
 
 `internal heating statistics': A postprocessor that computes some statistics about internal heating, averaged by volume. 
+
+`mass flux statistics': A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal. 
+
+As stated, this postprocessor computes the \textit{outbound} mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
 `pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
@@ -6237,7 +6754,7 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection basic statistics|composition statistics|depth average|dynamic topography|heat flux statistics|heat flux statistics for the table model|internal heating statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|velocity statistics for the table model|viscous dissipation statistics|visualization ]
+{\it Possible values:} [MultipleSelection basic statistics|composition statistics|depth average|dynamic topography|heat flux statistics|heat flux statistics for the table model|internal heating statistics|mass flux statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|velocity statistics for the table model|viscous dissipation statistics|visualization ]
 \end{itemize}
 
 
@@ -6274,7 +6791,7 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 {\it Default:} gnuplot
 
 
-{\it Description:} The format in which the output shall be produced. The format in which the output is generated also determiens the extension of the file into which data is written.
+{\it Description:} The format in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written.
 
 
 {\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|hdf5|svg|deal.II intermediate ]
@@ -6466,9 +6983,13 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `seismic vs': A visualization output object that generates output for the seismic S-wave speed.
 
+`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. The shear stress differs from the full stress tensor by the absence of the pressure.
+
 `specific heat': A visualization output object that generates output for the specific heat $C_p$.
 
 `strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+
+`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
 
 `thermal expansivity': A visualization output object that generates output for the thermal expansivity.
 
@@ -6479,7 +7000,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|gravity|internal heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|specific heat|strain rate|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|density|dynamic topography|error indicator|friction heating|gravity|internal heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|shear stress|specific heat|strain rate|stress|thermal expansivity|thermodynamic phase|viscosity|viscosity ratio ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -6492,7 +7013,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 {\it Default:} 0
 
 
-{\it Description:} VTU file output supports grouping files from several CPUs into one file using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor in a background thread. A value of 1 will generate one big file containing the whole solution.
+{\it Description:} VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor in a background thread. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are mpi ranks).
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
@@ -6870,6 +7391,30 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|compres
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Prescribed Stokes solution}
+\label{parameters:Prescribed_20Stokes_20solution}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}
+\phantomsection\label{parameters:Prescribed Stokes solution/Model name}
+
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Prescribed Stokes solution!Model name}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Select one of the following models:
+
+`circle': This value describes a vector field that rotates around the z-axis with constant angular velocity (i.e., with a velocity that increases with distance from the axis). The pressure is set to zero.
+
+
+{\it Possible values:} [Selection circle ]
 \end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria}
