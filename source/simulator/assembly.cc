@@ -975,6 +975,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs,
                                                scratch.material_model_outputs);
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1169,6 +1170,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs,
                                                scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
@@ -1590,6 +1592,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs,
                                                scratch.material_model_outputs);
 
     std::vector<double> heating_model_outputs(n_q_points);
@@ -1618,6 +1621,7 @@ namespace aspect
                                                    cell,
                                                    scratch.finite_element_values.get_quadrature(),
                                                    scratch.finite_element_values.get_mapping(),
+                                                   scratch.explicit_material_model_inputs,
                                                    scratch.explicit_material_model_outputs);
       }
 
