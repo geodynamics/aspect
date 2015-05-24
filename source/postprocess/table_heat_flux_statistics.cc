@@ -190,7 +190,7 @@ namespace aspect
           const double h = R1-R0;
 
           // dT is only meaningful if boundary temperatures are prescribed, otherwise it is 0
-          const double dT = (&this->get_boundary_temperature())
+          const double dT = (this->has_boundary_temperature())
                             ?
                             this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
                             - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
