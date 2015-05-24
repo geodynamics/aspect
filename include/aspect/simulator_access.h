@@ -79,6 +79,20 @@ namespace aspect
   {
     public:
       /**
+       * Default constructor. Initialize the SimulatorAccess object without
+       * a reference to a particular Simulator object. You will later have
+       * to call initialize() to provide this reference to the Simulator
+       * object.
+       */
+      SimulatorAccess ();
+
+      /**
+       * Create a SimulatorAccess object that is already initialized for
+       * a particular Simulator.
+       */
+      SimulatorAccess (const Simulator<dim> &simulator_object);
+
+      /**
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
@@ -92,11 +106,10 @@ namespace aspect
        * classes should call this function from the base class as well,
        * however.
        *
-       * @param simulator A reference to the main simulator object.
+       * @param simulator_object A reference to the main simulator object.
        */
-      virtual void initialize (const Simulator<dim> &simulator);
+      virtual void initialize (const Simulator<dim> &simulator_object);
 
-    protected:
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
 
@@ -474,6 +487,19 @@ namespace aspect
       get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
+
+      /**
+       * Return a writable reference to the statistics object into which
+       * you can store additional data that then shows up in the
+       * <code>output_dir/statistics</code> file.
+       *
+       * Postprocessor objects get a reference to this object automatically
+       * when called, but other plugins may not. They do not usually
+       * produce output anyway, but through this function they can still
+       * record information as necessary.
+       * @return
+       */
+      TableHandler &get_statistics_object() const;
 
 
       /**

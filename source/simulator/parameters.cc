@@ -658,7 +658,12 @@ namespace aspect
     prm.leave_subsection ();
 
     //Also declare the parameters that the FreeSurfaceHandler needs
-    Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
+    Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::declare_additional_parameters (prm);
   }
 
 
@@ -931,6 +936,12 @@ namespace aspect
           (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
+
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::parse_additional_parameters (*this, prm);
   }
 
 

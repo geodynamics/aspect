@@ -23,6 +23,16 @@
 
 namespace aspect
 {
+  template <int dim>
+  SimulatorAccess<dim>::SimulatorAccess ()
+  {}
+
+
+  template <int dim>
+  SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
+    :
+    simulator (&simulator_object)
+  {}
 
 
   template <int dim>
@@ -411,6 +421,14 @@ namespace aspect
   {
     for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
       composition_values_at_q_point[k] = composition_values[k][q];
+  }
+
+
+  template <int dim>
+  TableHandler &
+  SimulatorAccess<dim>::get_statistics_object () const
+  {
+    return const_cast<TableHandler &>(simulator->statistics);
   }
 
 }
