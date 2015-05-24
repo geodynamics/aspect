@@ -18,14 +18,16 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <boost/math/special_functions/legendre.hpp>
+#include <boost/math/special_functions/gamma.hpp>
+
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
 
 #include <aspect/postprocess/geoid.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
@@ -41,7 +43,7 @@ namespace aspect
       }
 
       template <int dim>
-      SphericalHarmonicsExpansion<dim>::SphericalHarmonicsExpansion(const unsigned int max_degree)
+      MultipoleExpansion<dim>::MultipoleExpansion(const unsigned int max_degree)
       :
       max_degree(max_degree),
       coefficients(max_degree)
@@ -49,36 +51,56 @@ namespace aspect
 
       template <int dim>
       void
-      SphericalHarmonicsExpansion<dim>::add_data_point (const Point<dim> &position,
-                                                        const double value)
+      MultipoleExpansion<dim>::add_quadrature_point (const Point<dim> &position,
+                                                              const double value, 
+                                                              const double JxW,
+                                                              const bool is_external)
       {
-        const std_cxx11::array<double,dim> spherical_position =
-            Utilities::spherical_coordinates(position);
+        const double r = position.norm();
+        const double phi = std::atan2(position[1],position[0]);
+        const double cos_theta = position[2]/r;
 
-        for (unsigned int i = 0, k = 0; i < max_degree; ++i)
-          for (unsigned int j = 0; j <= i; ++j, ++k)
+        if( is_external )
           {
-              coefficients.sine_coefficients[k] += value
-                                                  * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1]);
-                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
-                                                  // * cos(j*spherical_position[1]);
-              coefficients.cosine_coefficients[k] += value
-                                                  * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
-                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
-                                                  // * sin(j*spherical_position[1]);
+            for (unsigned int l = 0, k = 0; l < max_degree; ++l)
+              for (unsigned int m = 0; m <= l; ++m, ++k)
+                {
+                  const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
+                  const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+
+                  coefficients.cosine_coefficients[k] += value*std::pow(r,static_cast<double>(l))*std::cos(static_cast<double>(m)*phi) *
+                                                         (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                  coefficients.sine_coefficients[k] += value*std::pow(r,static_cast<double>(l))*std::sin(static_cast<double>(m)*phi) *
+                                                         2.0 * prefix * plm * JxW;
+                }
           }
+        else
+          {
+            for (unsigned int l = 0, k = 0; l < max_degree; ++l)
+              for (unsigned int m = 0; m <= l; ++m, ++k)
+                {
+                  const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
+                  const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+
+                  coefficients.cosine_coefficients[k] += value/std::pow(r,static_cast<double>(l+1))*std::cos(static_cast<double>(m)*phi) *
+                                                           (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                  coefficients.sine_coefficients[k] += value/std::pow(r,static_cast<double>(l+1))*std::sin(static_cast<double>(m)*phi) *
+                                                           2.0 * prefix * plm * JxW;
+                }
+          }
+           
       }
 
       template <int dim>
       HarmonicCoefficients
-      SphericalHarmonicsExpansion<dim>::get_coefficients () const
+      MultipoleExpansion<dim>::get_coefficients () const
       {
         return coefficients;
       }
 
       template <int dim>
       void
-      SphericalHarmonicsExpansion<dim>::mpi_sum_coefficients (MPI_Comm mpi_communicator)
+      MultipoleExpansion<dim>::mpi_sum_coefficients (MPI_Comm mpi_communicator)
       {
         dealii::Utilities::MPI::sum(coefficients.sine_coefficients,mpi_communicator,coefficients.sine_coefficients);
         dealii::Utilities::MPI::sum(coefficients.cosine_coefficients,mpi_communicator,coefficients.cosine_coefficients);
@@ -91,7 +113,6 @@ namespace aspect
     {
       // create a quadrature formula based on the temperature element alone.
       const QMidpoint<dim> quadrature_formula;
-      const unsigned int n_q_points = quadrature_formula.size();
 
       Assert(quadrature_formula.size()==1, ExcInternalError());
 
@@ -104,34 +125,23 @@ namespace aspect
 
       // TODO AssertThrow (no_free_surface);
 
-      internal_density_expansions.resize(number_of_layers);
-      for (unsigned int i = 0; i < number_of_layers; ++i)
-        internal_density_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
-
-      surface_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
-      bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
-
-
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,
                                update_values |
                                update_gradients |
-                               update_q_points);
+                               update_q_points |
+                               update_JxW_values);
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-      std::vector<double> average_densities(number_of_layers);
-      this->get_depth_average_density(average_densities);
-
       // Some constant that are used several times
-      const double inner_radius = geometry_model->inner_radius();
-      const double outer_radius = geometry_model->outer_radius();
-      const double layer_thickness = geometry_model->maximal_depth() / number_of_layers;
-      const double gravitational_constant = 6.67384e-11;
+      //const double inner_radius = geometry_model->inner_radius();
+      //const double outer_radius = geometry_model->outer_radius();
+      //const double gravitational_constant = 6.67384e-11;
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -168,8 +178,8 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
 
               // see if the cell is at the *top* or *bottom* boundary
-              bool surface_cell = false;
-              bool bottom_cell = false;
+       //       bool surface_cell = false;
+       //       bool bottom_cell = false;
 
       /*        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 {
@@ -191,15 +201,15 @@ namespace aspect
                 {
                   const Point<dim> location = fe_values.quadrature_point(q);
 
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
-                  const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-                  const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
+//                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
+//                  const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
 
                   const double density   = out.densities[q];
-                  const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
-
-                  internal_density_expansions[layer_id]->add_data_point(location,buoyancy);
-
+ 
+                  internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), true );
+                  internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), false );
+                  
+                  
 
     /*              // if this is a cell at the surface, add the topography to
                   // the topography expansion
@@ -240,43 +250,15 @@ namespace aspect
             }
 
       // From here on we consider the gravity constant at the value of the surface
-      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));
+//      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));
 
-      const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
+//      const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
 
-      internal::HarmonicCoefficients buoyancy_contribution(max_degree);
+//      internal::HarmonicCoefficients buoyancy_contribution(max_degree);
 
-      internal::HarmonicCoefficients surface_geoid_expansion(max_degree);
-      internal::HarmonicCoefficients bottom_geoid_expansion(max_degree);
+ //     internal::HarmonicCoefficients surface_geoid_expansion(max_degree);
+//      internal::HarmonicCoefficients bottom_geoid_expansion(max_degree);
 
-      for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
-        {
-          internal_density_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
-          const internal::HarmonicCoefficients layer_coefficients = internal_density_expansions[layer_id]->get_coefficients();
-
-          const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
-
-          for (unsigned int i = 0, k = 0; i < max_degree; ++i)
-            {
-              const double con1 = scaling * layer_thickness / (2 * i + 1.0);
-              const double cont = pow (layer_radius/outer_radius,i+2);
-              const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
-
-              for (unsigned int j = 0; j <= i; ++j, ++k)
-                {
-                  surface_geoid_expansion.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
-                  surface_geoid_expansion.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
-
-                  buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
-                  buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
-
-                  //TODO: bottom_geoid
-                  //bottom_geoid_expansion.sine_coefficients[index] += con1 * conb * layer_coefficients.sine_coefficients[index];
-                  //bottom_geoid_expansion.cosine_coefficients[index] += con1 * conb * layer_coefficients.cosine_coefficients[index];
-
-                }
-            }
-        }
 /*
 
       internal::HarmonicCoefficients topography_contribution(max_degree);
@@ -325,6 +307,10 @@ namespace aspect
         }
 
 */
+
+      internal_density_expansion_surface->mpi_sum_coefficients( this->get_mpi_communicator() );
+      internal_density_expansion_bottom->mpi_sum_coefficients( this->get_mpi_communicator() );
+
       const std::string filename = this->get_output_directory() +
                                    "surface_geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
@@ -346,12 +332,8 @@ namespace aspect
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
                   file << i << " " << j << " "
-                       << surface_geoid_expansion.sine_coefficients[k] << " "
-                       << surface_geoid_expansion.cosine_coefficients[k] << " "
-                       << buoyancy_contribution.sine_coefficients[k] << " "
-                       << buoyancy_contribution.cosine_coefficients[k] << " "
-                       << topography_contribution.sine_coefficients[k] << " "
-                       << topography_contribution.cosine_coefficients[k] << std::endl;
+                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] << std::endl;
                 }
             }
         }
@@ -378,7 +360,7 @@ namespace aspect
                              "Density of the fluid beneath the domain, "
                              "most likely that of the iron-alloy core, ");
           prm.declare_entry ("Density above", "0",
-                             Patterns::Double(),
+                             Patterns::Double(0),
                              "Density of the fluid above the domain, "
                              "most likely either air or water.");
           prm.declare_entry ("Maximum degree of expansion", "7",
@@ -387,10 +369,11 @@ namespace aspect
                              "The expansion into spherical harmonics can be "
                              "expensive, especially for high degrees.");
           prm.declare_entry("Core mass", "1.932e24",
+                             Patterns::Double(0),
                             "Mass of the core.  Used for the degree-zero "
                             "expansion, but not in any others. Feel free to "
                             "ignore if you do not care about the degree-zero "
-                            "term."
+                            "term.");
         }
         prm.leave_subsection();
       }
@@ -414,8 +397,15 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-    }
 
+      internal_density_expansion_surface.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+      internal_density_expansion_bottom.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+      surface_topography_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+      bottom_topography_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+
+      surface_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+      bottom_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
+    }
   }
 }
 

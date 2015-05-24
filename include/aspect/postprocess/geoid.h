@@ -50,13 +50,13 @@ namespace aspect
        * coefficients
        */
       template <int dim>
-      class SphericalHarmonicsExpansion
+      class MultipoleExpansion
       {
         public:
-          SphericalHarmonicsExpansion(const unsigned int max_degree);
+          MultipoleExpansion(const unsigned int max_degree);
 
-          void add_data_point (const Point<dim> &position,
-                         const double value);
+          void add_quadrature_point (const Point<dim> &position, const double value, 
+                                     const double JxW, const bool is_external );
 
           HarmonicCoefficients
           get_coefficients () const;
@@ -119,9 +119,13 @@ namespace aspect
          * coefficients for each layer, which will be finally added to a
          * combined contribution at the surface.
          */
-        std::vector <std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > > internal_density_expansion;
-        std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
-        std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_bottom;
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_surface;
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_topography_expansion;
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_topography_expansion;
+
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_potential_expansion;
+        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_potential_expansion;
     };
   }
 }
