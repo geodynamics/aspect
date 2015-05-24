@@ -37,7 +37,7 @@ namespace aspect
     {
       HarmonicCoefficients::HarmonicCoefficients(const unsigned int max_degree)
       {
-        unsigned int k= max_degree*(max_degree+1)/2;
+        unsigned int k= (max_degree+1)*(max_degree+2)/2;
         sine_coefficients.resize(k);
         cosine_coefficients.resize(k);
       }
@@ -62,29 +62,31 @@ namespace aspect
 
         if( is_external )
           {
-            for (unsigned int l = 0, k = 0; l < max_degree; ++l)
+            for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
+                  const double a = 6371.e3;
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
-                  coefficients.cosine_coefficients[k] += value*std::pow(r,static_cast<double>(l))*std::cos(static_cast<double>(m)*phi) *
+                  coefficients.cosine_coefficients[k] += value*std::pow(r/a,static_cast<double>(l))*std::cos(static_cast<double>(m)*phi) *
                                                          (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
-                  coefficients.sine_coefficients[k] += value*std::pow(r,static_cast<double>(l))*std::sin(static_cast<double>(m)*phi) *
+                  coefficients.sine_coefficients[k] += value*std::pow(r/a,static_cast<double>(l))*std::sin(static_cast<double>(m)*phi) *
                                                          2.0 * prefix * plm * JxW;
                 }
           }
         else
           {
-            for (unsigned int l = 0, k = 0; l < max_degree; ++l)
+            for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
+                  const double a = 6371.e3*0.54;
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
-                  coefficients.cosine_coefficients[k] += value/std::pow(r,static_cast<double>(l+1))*std::cos(static_cast<double>(m)*phi) *
+                  coefficients.cosine_coefficients[k] += value/std::pow(r/a,static_cast<double>(l+1))*std::cos(static_cast<double>(m)*phi) *
                                                            (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
-                  coefficients.sine_coefficients[k] += value/std::pow(r,static_cast<double>(l+1))*std::sin(static_cast<double>(m)*phi) *
+                  coefficients.sine_coefficients[k] += value/std::pow(r/a,static_cast<double>(l+1))*std::sin(static_cast<double>(m)*phi) *
                                                            2.0 * prefix * plm * JxW;
                 }
           }
@@ -325,14 +327,16 @@ namespace aspect
 
           file << "# Timestep Maximum_degree Time" << std::endl;
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
-          file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
+          file << "# degree order density_surface_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
           // Write the solution to an output file
-          for (unsigned int i=0, k=0; i < max_degree; ++i)
+          for (unsigned int l=0, k=0; l <= max_degree; ++l)
             {
-              for (unsigned int j = 0; j <= i; ++j, ++k)
+              for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  file << i << " " << j << " "
+                  file << l << " " << m << " "
                        << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
+                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
+                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
                        << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] << std::endl;
                 }
             }
@@ -363,8 +367,8 @@ namespace aspect
                              Patterns::Double(0),
                              "Density of the fluid above the domain, "
                              "most likely either air or water.");
-          prm.declare_entry ("Maximum degree of expansion", "7",
-                             Patterns::Integer (1),
+          prm.declare_entry ("Expansion degree", "7",
+                             Patterns::Integer (0),
                              "Degree of the spherical harmonic expansion. "
                              "The expansion into spherical harmonics can be "
                              "expensive, especially for high degrees.");
@@ -392,7 +396,7 @@ namespace aspect
           density_below                     = prm.get_double("Density below");
           density_above                     = prm.get_double("Density above");
           core_mass                         = prm.get_double("Core mass");
-          max_degree                        = prm.get_integer("Maximum degree of expansion");
+          max_degree                        = prm.get_integer("Expansion degree");
         }
         prm.leave_subsection();
       }
