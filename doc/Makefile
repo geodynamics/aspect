@@ -20,7 +20,11 @@ default:
 
 all: aspect.tag manual.pdf
 
-# generate .prm.out from .prm using the annotate.pl script:
+# Generate .prm.out from .prm using the annotate.pl script and then process
+# index entries to contain at most three levels (by replacing the fourth
+# separator marker ! by /). This is repeated 10 times because only one nesting
+# level is removed in each call to sed. The replacement is necessary as
+# makeindex only allows for three levels of nesting.
 %.prm.out: %.prm Makefile
 	@echo "generating '$@' from '$<'..."
 	@perl manual/cookbooks/annotate.pl $< >$@
