@@ -18,8 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include <aspect/material_model/simple_compressible.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -29,19 +27,37 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
     template <int dim>
-    double
+    void
     SimpleCompressible<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &) const
+    evaluate(const MaterialModelInputs<dim> &in,
+             MaterialModelOutputs &out) const
     {
-      return eta;
-    }
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          const Point<dim> position = in.position[i];
+          const double temperature = in.temperature[i];
+          const double pressure = in.pressure[i];
 
+          out.viscosities[i] = eta;
+          out.specific_heat[i] = reference_specific_heat;
+          out.thermal_conductivities[i] = k_value;
+          out.thermal_expansion_coefficients[i] = thermal_alpha;
+
+          double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
+          if (this->get_adiabatic_conditions().is_initialized())
+            rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
+          out.densities[i] = rho;
+          out.compressibilities[i] = reference_compressibility; // 1/rho drho/dp
+          out.entropy_derivative_pressure[i] = 0.0;
+          out.entropy_derivative_temperature[i] = 0.0;
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+        }
+    }
 
     template <int dim>
     double
@@ -70,31 +86,9 @@ namespace aspect
     template <int dim>
     double
     SimpleCompressible<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return reference_specific_heat;
-    }
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
     reference_cp () const
     {
       return reference_specific_heat;
-    }
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return k_value;
     }
 
     template <int dim>
@@ -106,54 +100,12 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    SimpleCompressible<dim>::
-    density (const double temperature,
-             const double pressure,
-             const std::vector<double> &,
-             const Point<dim> &position) const
-    {
-      double rho = reference_rho * std::exp(reference_compressibility * (pressure - this->get_surface_pressure()));
-
-      if (this->get_adiabatic_conditions().is_initialized())
-        rho *= (1 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
-
-      return rho;
-    }
-
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &,
-                                   const Point<dim> &) const
-    {
-      return thermal_alpha;
-    }
-
-
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &,
-                     const Point<dim> &) const
-    {
-      // compressibility = 1/rho drho/dp
-      return reference_compressibility;
-    }
-
-    template <int dim>
     bool
     SimpleCompressible<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence) const
     {
       return false;
     }
-
 
     template <int dim>
     bool
