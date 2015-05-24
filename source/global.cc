@@ -46,11 +46,11 @@ namespace aspect
       namespace masses
       {
         // Planet mass [kg]
-        const double planet 5.9736e24;
+        const double planet = 5.9736e24;
         // Mass of the whole core [kg]
-        const double core 1.932e24;
+        const double core = 1.932e24;
         // Mass of the mantle [kg]
-        const double mantle 4.043e24;
+        const double mantle = 4.043e24;
       }
 
 
