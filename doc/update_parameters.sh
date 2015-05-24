@@ -21,6 +21,14 @@ sed -i 's/box_2d_%s.%d/box\\_2d\\_\\%s.\\%d/g' parameters.tex
 sed -i 's/box_2d\.txt/box\\_2d\.txt/g' parameters.tex
 sed -i 's/#/\\#/g' parameters.tex
 
+# Process index entries to contain at most three levels (by replacing the
+# fourth separator marker ! by /). This is repeated 10 times because only one
+# nesting level is removed in each call to sed. The replacement is necessary
+# as makeindex only allows for three levels of nesting.
+for i in `seq 1 10`; do
+  sed -i 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' parameters.tex
+done
+
 grep '[^\\]%' parameters.tex
 
 cd ..

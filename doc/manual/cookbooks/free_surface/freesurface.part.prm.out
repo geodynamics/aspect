@@ -24,6 +24,6 @@ end
 subsection %%\hyperref[parameters:Initial_20conditions/Postprocess]{Postprocess}%
   set %%\hyperref[parameters:Initial conditions/Postprocess/List of postprocessors]{List of postprocessors}% = visualization,topography,velocity statistics,%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Initial conditions!Postprocess!List of postprocessors} %
   subsection %%\hyperref[parameters:Initial_20conditions/Postprocess/Visualization]{Visualization}%
-    set %%\hyperref[parameters:Initial conditions/Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 1.e6%% \index[prmindex]{Time between graphical output} \index[prmindexfull]{Initial conditions!Postprocess!Visualization!Time between graphical output} %
+    set %%\hyperref[parameters:Initial conditions/Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 1.e6%% \index[prmindex]{Time between graphical output} \index[prmindexfull]{Initial conditions!Postprocess!Visualization/Time between graphical output} %
   end
 end
