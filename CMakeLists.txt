@@ -108,6 +108,20 @@ CONFIGURE_FILE(
 
 
 # Next, set up the testsuite
+
+SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/tests/CTestCustom.ctest.in
+  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
+  @ONLY
+)
+
+ADD_CUSTOM_TARGET(setup_tests
+  COMMAND echo "Enabling all tests ..."
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON .
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   ENABLE_TESTING()
   ADD_SUBDIRECTORY(tests)

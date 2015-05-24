@@ -29,30 +29,37 @@ FUNCTION(get_mpi_count _filename)
   endif()
 ENDFUNCTION()
 
-# extract from the prm if the test should be run with trilinos or
-# petsc. This is encoded in the .prm in form of line
-# '# LINEAR ALGEBRA: PETSC'
-# '# LINEAR ALGEBRA: PETSC TRILINOS'
-# If no line is there, Trilinos is assumed. 
-FUNCTION(check_linear_algebra _filename)
+# Analyze the .prm to decide if this test should be run or not. We are
+# checking for the following strings in the .prm:
+# 1. "LINEAR ALGEBRA: PETSC" - only run with PETSc, "LINEAR ALGEBRA: PETSC
+# TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
+# using Trilinos.
+# 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
+FUNCTION(SHOULD_ENABLE_TEST _filename)
+  SET(_use_test OFF PARENT_SCOPE)
+
   FILE(STRINGS ${_filename} _input_lines
        REGEX "LINEAR ALGEBRA:")
   IF("${_input_lines}" STREQUAL "")
     IF(ASPECT_USE_PETSC)
-      SET(_use_test 0 PARENT_SCOPE)
     ELSE()
-      SET(_use_test 1 PARENT_SCOPE)
+      SET(_use_test ON PARENT_SCOPE)
     ENDIF()
   ELSE()
-    SET(_use_test 0 PARENT_SCOPE)
     FOREACH(_input_line ${_input_lines})
       IF (${_input_line} MATCHES "PETSC" AND ASPECT_USE_PETSC)
-        SET(_use_test 1 PARENT_SCOPE)
+        SET(_use_test ON PARENT_SCOPE)
       ENDIF()
       IF (${_input_line} MATCHES "TRILINOS" AND NOT ASPECT_USE_PETSC)
-        SET(_use_test 1 PARENT_SCOPE)
+        SET(_use_test ON PARENT_SCOPE)
       ENDIF()
     ENDFOREACH()
+  ENDIF()
+
+  FILE(STRINGS ${_filename} _input_lines
+       REGEX "QUICK_TEST")
+  IF(NOT ${ASPECT_RUN_ALL_TESTS} AND "${_input_lines}" STREQUAL "")
+    SET(_use_test OFF PARENT_SCOPE)
   ENDIF()
 ENDFUNCTION()
 
@@ -106,9 +113,10 @@ LIST(SORT _tests)
 FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
 
-  CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
+  SET(_use_test ON)
+  SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 
-  IF("${_use_test}" STREQUAL "1")
+  IF(_use_test)
 
     # main target for this test:
     ADD_CUSTOM_TARGET(tests.${_test})
