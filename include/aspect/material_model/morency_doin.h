@@ -83,7 +83,7 @@ namespace aspect
          * Evaluate material properties.
          */
         virtual void evaluate(const MaterialModelInputs<dim> &in,
-                              MaterialModelOutputs &out) const;
+                              MaterialModelOutputs<dim> &out) const;
 
         /**
          * Return true if the viscosity() function returns something that may

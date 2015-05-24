@@ -51,7 +51,7 @@ namespace aspect
                                         update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 

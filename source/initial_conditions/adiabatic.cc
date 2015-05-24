@@ -76,7 +76,7 @@ namespace aspect
 
       // look up material properties
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs out(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);

@@ -66,8 +66,8 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs out(quadrature.size(),
-                                              this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
+                                                   this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),

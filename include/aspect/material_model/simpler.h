@@ -67,7 +67,7 @@ namespace aspect
         virtual double reference_density () const;
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs &out) const;
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
 
         /**

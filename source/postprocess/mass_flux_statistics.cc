@@ -80,7 +80,7 @@ namespace aspect
       endc = this->get_dof_handler().end();
 
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
       // for every surface face on which it makes sense to compute a
       // mass flux and that is owned by this processor,

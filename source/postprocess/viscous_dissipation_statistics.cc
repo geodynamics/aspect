@@ -62,8 +62,8 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                  this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs out(n_q_points,
-                                              this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                   this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),

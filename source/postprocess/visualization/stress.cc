@@ -49,8 +49,8 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
                                                    this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs out(n_quadrature_points,
-                                                this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
+                                                     this->n_compositional_fields());
 
         // collect input information to compute the viscosity at every evaluation point
         in.position = evaluation_points;

@@ -610,7 +610,7 @@ namespace aspect
        */
       double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                   MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                  MaterialModel::MaterialModelOutputs &material_model_outputs,
+                                  MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                                   const double specific_heating_rate,
                                   const AdvectionField &advection_field,
                                   const unsigned int q) const;
@@ -682,7 +682,7 @@ namespace aspect
        *
        *     // fill @p output for each quadrature point
        *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-       *        const MaterialModel::MaterialModelOutputs &out,
+       *        const MaterialModel::MaterialModelOutputs<dim> &out,
        *        FEValues<dim> &fe_values,
        *        const LinearAlgebra::BlockVector &solution,
        *        std::vector<double> &output);

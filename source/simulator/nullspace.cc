@@ -322,8 +322,8 @@ namespace aspect
           // get the density at each quadrature point if necessary
           MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                      parameters.n_compositional_fields);
-          MaterialModel::MaterialModelOutputs out(n_q_points,
-                                                  parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                       parameters.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
@@ -435,8 +435,8 @@ namespace aspect
           // get the density at each quadrature point if necessary
           MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                      parameters.n_compositional_fields);
-          MaterialModel::MaterialModelOutputs out(n_q_points,
-                                                  parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                       parameters.n_compositional_fields);
 
           //Get the velocity at each quadrature point
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
