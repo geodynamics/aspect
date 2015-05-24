@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx,pifont,float,lscape,longtable}
+
+% define margins
+\addtolength{\textwidth}{1.4in}
+\addtolength{\oddsidemargin}{-0.7in}
+\addtolength{\evensidemargin}{-0.7in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.2in}
+
+% no paragraph indentation
+\setlength{\parskip}{2mm}
+\setlength{\parindent}{0em}
+
+% allow different caption styles and placements
+\usepackage[small,sf]{caption}
+
+% wrap text around figures
+\usepackage{wrapfig}
+
+% redefine style of section headers
+\makeatletter
+\renewcommand{\section}{\@startsection
+  {section}{1}{0mm}{3mm}{0.5mm}{\bfseries\large}}
+\renewcommand{\subsection}{\@startsection
+  {subsection}{2}{0mm}{3mm}{0.5mm}{\bfseries\normalsize}}
+\renewcommand{\subsubsection}{\@startsection
+  {subsubsection}{3}{0mm}{3mm}{0.5mm}{\bfseries\normalsize}}
+\makeatother
+
+% tight list
+\newenvironment{tightlist}{\begin{list}{}
+        {\setlength{\topsep}{-1.5mm}\setlength{\rightmargin}{\leftmargin}
+        \setlength{\itemsep}{-1.5mm}\setlength{\itemindent}{-\leftmargin}}
+        \rm}{\end{list}}
+
+% biblio list
+\newenvironment{mybiblist}{\begin{list}{}
+   {\setlength{\topsep}{-1.0mm}
+   \setlength{\itemsep}{-1.0mm}
+   \setlength{\itemindent}{-10mm}
+   %\addtolength{\leftmargin}{-10mm}
+   }
+   \rm}{\end{list}\vspace{3mm}}
+
+\begin{document}
+
+\begin{centering}
+{\Large Compiling and Running ASPECT on TACC Stampede}
+\par
+\vskip 3mm
+D. Sarah Stamps $<$dstamps@ucla.edu$>$ \\
+Jonathan Perry-Houts $<$jperryh2@uoregon.edu$>$ \\
+updated from previous document by Eric Heien published on October 9, 2014 \\
+
+May 23 2015
+
+
+\vskip 0.1mm
+\end{centering}
+\vskip 2mm
+
+Setting up ASPECT on TACC Stampede is much easier than on previous systems since
+most of the necessary libraries are already correctly installed and configured. Following all
+the instructions in this document should allow you to start running ASPECT within 30
+minutes.
+
+For further information on Stampede you can
+also refer to the user guide at: 
+
+http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide
+Also, please note that most parts of this document have changed since the previous
+version. Even if you have set up ASPECT before, please follow all sections of this document
+to make sure your current setup has all necessary updates.
+
+
+\section{Account}
+You first need to obtain an XSEDE account at http://portal.xsede.org/. If you need one send an email to cig-help@geodynamics.org.  
+
+\section{Setup}
+\begin{enumerate}
+\item To start edit your $\sim$/.bashrc file to load the correct modules. Update the file with the following in the 
+section that says PLACE MODULE COMMANDS HERE and ONLY HERE: \\
+
+  module load git \\
+  module load gcc/4.7.1 \\
+  module load mkl/13.0.2.146 \\
+  module load cmake \\
+
+
+\item Get trilinos on Stampede for compiling locally. 
+
+mkdir \$HOME/Downloads/ \\
+Download a copy of trilinos from trilinos.org. When creating this document we used 
+ trilinos-11.12.1-Source.tar because it's a known working version for the dealii-8.2.1 
+ version we install. \\
+ 
+ scp trilinos-11.12.1-Source.tar  loginname@stampede.tacc.utexas.edu:/work/02668/loginname/Downloads/  \\
+ 
+ \item Obtain and run currently working script for installing trilinos, p4est, and deal.ii  aspect-setup\_stampede.sh 
+ 
+ 
+Script is located in doc/install/aspect-setup\_stampede.sh \\
+ 
+ \end{enumerate}
+
+ \section{Install trilinos, p4est, and deal.ii}
+ 
+Since some of these libraries require a long time to compile, it may take a long time to
+finish if it is done on a login node (which is shared with dozens or hundreds of other users).
+It is recommended you log onto a compute node when compiling. To do so, use the following
+command: \\
+
+srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l \\
+
+
+You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
+ 
+ aspect-setup.sh trilinos \\
+ aspect-setup.sh p4est \\
+ aspect-setup.sh deal.ii    \\
+ 
+ You should now have the following directory structure in \$HOME/packages: \\
+  
+  build  deal.II  p4est  trilinos
+
+ \section{Configure and build ASPECT}
+ Here we assume you have a cloned version of ASPECT on github.  
+ cd \$HOME/packages \\
+ git clone https://github.com/your\_github\_account\_name/aspect.git \\
+ cd aspect \\
+ git remote add upstream https://github.com/geodynamics/aspect.git \\
+ git pull upstream master  \\
+ mkdir build \\
+ cd build \\
+ cmake ..  \\
+
+You will get a lot of warnings, but as long as you see the following you are ready to compile. \\
+-- Generating done \\
+-- Build files have been written to: /home1/02668/loginname/packages/aspect/build \\
+
+make -j8 \\
+
+\section{Running}
+When testing ASPECT, it can be useful to run in interactive mode on the cluster. This way you can use multiple processors for fast testing, but still make changes to files and test different options without needing to wait in the batch queue after each change. To start an interactive shell with multiple processors, use: \\
+srun -p development -t $<$maximum time$>$ -n $<$\#cores$>$ --pty /bin/bash -l \\
+For example: \\srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l \\
+Once logged in you can run ASPECT in parallel using the command:
+ 
+ ibrun ./build/aspect $<$parameter file$>$ \\
+ 
+ The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
+ 
+ 
+ \#!/bin/bash \\\#SBATCH -J aspect\_run   \# job name \\\#SBATCH -o aspect\_run.o\%j   \# output and error file name (\% expands to jobID) \\\#SBATCH -n 32  \# total number of mpi tasks requested \\\#SBATCH -p normal \# queue (partition) -- normal, development, etc. \\\#SBATCH -t 12:00:00 \# run time (hh:mm:ss) - 12 hours \\ibrun \$WORK/aspect/build/aspect \$WORK/cookbooks/shell\_simple\_3d.prm \\ 
+
+The script is submitted to the run queue using: \\
+
+sbatch $<$script file$>$ \\
+
+\section{File Transfer}
+Once a simulation is finished, you may wish to transfer the resulting output files to a local machine for further analysis. There are two common methods of doing so, scp or Globus. scp (secure copy) works best for smaller transfers (1GB or less). The syntax is similar to normal copies: \\
+scp user1@host1:file1 user2@host2:file2 \\
+
+To recursively copy the contents of a directory, use the -r option. For example, to copy the results of a computation from Stampede to the local directory: \\
+scp -r loginname@stampede.tacc.utexas.edu:/work/01766/loginname/aspect/output . \\
+For larger transfers, Globus is recommended since it optimizes transfer rates and toleratesfailures during the transfer. For details about using Globus with Stampede please refer to: \\
+
+https://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide\#transferring.
+ 
+
+ 
+
+
+
+\end{document}
