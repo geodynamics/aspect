@@ -1763,7 +1763,7 @@ namespace aspect
               pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
               if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
-                  break; // convergence reached, exist nonlinear iteration.
+                  break; // convergence reached, exit nonlinear iterations.
                 }
 
               current_linearization_point.block(introspection.block_indices.velocities)
