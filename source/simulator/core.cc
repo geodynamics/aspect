@@ -1754,17 +1754,16 @@ namespace aspect
 
               assemble_stokes_system();
               build_stokes_preconditioner();
-              const double stokes_residual = solve_stokes();
 
               if (i==0)
-                initial_stokes_residual = stokes_residual;
-              else
+                initial_stokes_residual = compute_initial_stokes_residual();
+
+              const double stokes_residual = solve_stokes();
+
+              pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
+              if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
-                  pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
-                  if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
-                    {
-                      break; // convergence reached, exist nonlinear iteration.
-                    }
+                  break; // convergence reached, exist nonlinear iteration.
                 }
 
               current_linearization_point.block(introspection.block_indices.velocities)
