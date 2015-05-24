@@ -1631,11 +1631,11 @@ namespace aspect
           do
             {
               assemble_advection_system(AdvectionField::temperature());
+              build_advection_preconditioner(AdvectionField::temperature(),
+                                             T_preconditioner);
 
               if (iteration == 0)
                 {
-                  build_advection_preconditioner(AdvectionField::temperature(),
-                                                 T_preconditioner);
                   initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
                 }
 
@@ -1649,11 +1649,11 @@ namespace aspect
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
                   assemble_advection_system (AdvectionField::composition(c));
+                  build_advection_preconditioner(AdvectionField::composition(c),
+                                                 C_preconditioner);
 
                   if (iteration == 0)
                     {
-                      build_advection_preconditioner(AdvectionField::composition(c),
-                                                     C_preconditioner);
                       initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
                     }
 
@@ -1676,8 +1676,6 @@ namespace aspect
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
-
-              // rebuild the Stokes preconditioner every nonlinear iteration
               build_stokes_preconditioner();
 
               if (iteration == 0)
