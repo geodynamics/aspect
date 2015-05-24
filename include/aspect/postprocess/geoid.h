@@ -56,7 +56,8 @@ namespace aspect
           MultipoleExpansion(const unsigned int max_degree);
 
           void add_quadrature_point (const Point<dim> &position, const double value, 
-                                     const double JxW, const bool is_external );
+                                     const double JxW, const double evaluation_radius,
+                                     const bool is_external );
 
           HarmonicCoefficients
           get_coefficients () const;

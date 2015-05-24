@@ -54,6 +54,7 @@ namespace aspect
       MultipoleExpansion<dim>::add_quadrature_point (const Point<dim> &position,
                                                               const double value, 
                                                               const double JxW,
+                                                              const double evaluation_radius,
                                                               const bool is_external)
       {
         const double r = position.norm();
@@ -65,14 +66,15 @@ namespace aspect
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  const double a = 6371.e3;
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
-                  coefficients.cosine_coefficients[k] += value*std::pow(r/a,static_cast<double>(l))*std::cos(static_cast<double>(m)*phi) *
+                  coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                         * std::cos(static_cast<double>(m)*phi) *
                                                          (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
-                  coefficients.sine_coefficients[k] += value*std::pow(r/a,static_cast<double>(l))*std::sin(static_cast<double>(m)*phi) *
-                                                         2.0 * prefix * plm * JxW;
+                  coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                       * std::sin(static_cast<double>(m)*phi)
+                                                       * 2.0 * prefix * plm * JxW;
                 }
           }
         else
@@ -80,14 +82,15 @@ namespace aspect
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  const double a = 6371.e3*0.54;
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
-                  coefficients.cosine_coefficients[k] += value/std::pow(r/a,static_cast<double>(l+1))*std::cos(static_cast<double>(m)*phi) *
-                                                           (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
-                  coefficients.sine_coefficients[k] += value/std::pow(r/a,static_cast<double>(l+1))*std::sin(static_cast<double>(m)*phi) *
-                                                           2.0 * prefix * plm * JxW;
+                  coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
+                                                         * std::cos(static_cast<double>(m)*phi)
+                                                         * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                  coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r 
+                                                       * std::sin(static_cast<double>(m)*phi)
+                                                       * 2.0 * prefix * plm * JxW;
                 }
           }
            
@@ -114,7 +117,11 @@ namespace aspect
     Geoid<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula based on the temperature element alone.
-      const QMidpoint<dim> quadrature_formula;
+//      const QMidpoint<dim> quadrature_formula;
+//      const QGauss<dim> quadrature_formula(3);
+      const QGauss<dim> quadrature_formula (this->get_fe()
+                                            .base_element(this->introspection().base_elements.temperature)
+                                            .degree+1);
 
       Assert(quadrature_formula.size()==1, ExcInternalError());
 
@@ -141,9 +148,14 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       // Some constant that are used several times
-      //const double inner_radius = geometry_model->inner_radius();
-      //const double outer_radius = geometry_model->outer_radius();
-      //const double gravitational_constant = 6.67384e-11;
+      const double inner_radius = geometry_model->inner_radius();
+      const double outer_radius = geometry_model->outer_radius();
+      const double gravitational_constant = 6.67384e-11;
+      const double surface_gravity = this->get_gravity_model().gravity_vector( 
+                                     ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
+      const double bottom_gravity = this->get_gravity_model().gravity_vector( 
+                                    this->get_geometry_model().representative_point( 
+                                    this->get_geometry_model().maximal_depth() )  ).norm();
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -180,22 +192,22 @@ namespace aspect
               this->get_material_model().evaluate(in, out);
 
               // see if the cell is at the *top* or *bottom* boundary
-       //       bool surface_cell = false;
-       //       bool bottom_cell = false;
+              bool surface_cell = false;
+              bool bottom_cell = false;
 
-      /*        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                 {
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                  {
-                    surface_cell = true;
-                    break;
-                  }
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
-                  {
-                    bottom_cell = true;
-                    break;
-                  }
-                }*/
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                    {
+                      surface_cell = true;
+                      break;
+                    }
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
+                    {
+                      bottom_cell = true;
+                      break;
+                    }
+                }
               // for each of the quadrature points, evaluate the
               // density and add its contribution to the spherical harmonics
 
@@ -208,8 +220,8 @@ namespace aspect
 
                   const double density   = out.densities[q];
  
-                  internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), true );
-                  internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), false );
+                  internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius, true );
+                  internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius, false );
                   
                   
 
@@ -334,10 +346,10 @@ namespace aspect
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   file << l << " " << m << " "
-                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
-                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
-                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
-                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] << std::endl;
+                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] * (-gravitational_constant/surface_gravity) << " "
+                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/surface_gravity) << " "
+                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] * (-gravitational_constant/bottom_gravity)<<" "
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/bottom_gravity)<< std::endl;
                 }
             }
         }
