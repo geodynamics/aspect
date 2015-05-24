@@ -186,9 +186,6 @@ namespace aspect
      * @name Parameters that have to do with terms in the model
      * @{
      */
-    bool                           include_shear_heating;
-    bool                           include_adiabatic_heating;
-    bool                           include_latent_heat;
     bool                           include_melt_transport;
     double                         melt_transport_threshold;
     double                         radiogenic_heating_rate;

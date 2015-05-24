@@ -92,13 +92,15 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                    temperature_gradients);
+                                                                                                     temperature_gradients);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                    in.temperature);
+                                                                                                  in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                                                                in.pressure);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    in.velocity);
+                                                                                                 in.velocity);
+                fe_face_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                                  in.pressure_gradient);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);

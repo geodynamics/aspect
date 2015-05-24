@@ -601,20 +601,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-      /**
-       * Compute the heating term for the advection system index. Currently
-       * the heating term is 0 for compositional fields.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                  MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                  MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                  HeatingModel::HeatingModelOutputs &heating_model_outputs,
-                                  const AdvectionField &advection_field,
-                                  const unsigned int q) const;
-
 
       /**
        * Copy the contribution to the advection system from a single cell into

@@ -285,6 +285,7 @@ namespace aspect
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
     std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
+    std::vector<Tensor<1,dim> > pressure_gradients(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
@@ -318,6 +319,8 @@ namespace aspect
                                                                                 pressure_values);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
                                                                                    temperature_values);
+              fe_values[introspection.extractors.pressure].get_function_gradients (solution,
+                                                                                   pressure_gradients);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
@@ -336,6 +339,7 @@ namespace aspect
                   in.temperature[q] = temperature_values[q];
                   in.pressure[q] = pressure_values[q];
                   in.velocity[q] = velocity_values[q];
+                  in.pressure_gradient[q] = pressure_gradients[q];
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
@@ -923,6 +927,8 @@ namespace aspect
                                                                                   in.velocity);
               fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
                   in.strain_rate);
+              fe_values[introspection.extractors.pressure].get_function_gradients (this->solution,
+                                                                                   in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                                                 composition_values[c]);

@@ -46,6 +46,7 @@ namespace aspect
                                this->get_fe(),
                                quadrature_formula,
                                update_values   |
+                               update_gradients |
                                update_quadrature_points |
                                update_JxW_values);
 
@@ -89,6 +90,12 @@ namespace aspect
                 fe_values[this->introspection().extractors.pressure]
                 .get_function_values (this->get_solution(),
                                       in.pressure);
+                fe_values[this->introspection().extractors.velocities]
+                .get_function_values (this->get_solution(),
+                                      in.velocity);
+                fe_values[this->introspection().extractors.pressure]
+                .get_function_gradients (this->get_solution(),
+                                         in.pressure_gradient);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_values[this->introspection().extractors.compositional_fields[c]]
                   .get_function_values(this->get_solution(),

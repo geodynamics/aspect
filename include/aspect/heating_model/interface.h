@@ -140,7 +140,7 @@ namespace aspect
         specific_heating_rate (const double temperature,
                                const double pressure,
                                const std::vector<double> &compositional_fields,
-                               const Point<dim> &position) const DEAL_II_DEPRECATED = 0;
+                               const Point<dim> &position) const DEAL_II_DEPRECATED;
 
         /**
          * Declare the parameters this class takes through input files. The

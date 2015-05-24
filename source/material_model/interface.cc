@@ -256,6 +256,7 @@ namespace aspect
       temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
       pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
       velocity.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
+      pressure_gradient.resize(n_points);
       composition.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
         composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());

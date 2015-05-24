@@ -637,20 +637,17 @@ namespace aspect
         const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
 
 
-        const double gamma
-          = compute_heating_term(scratch,
-                                 scratch.explicit_material_model_inputs,
-                                 scratch.explicit_material_model_outputs,
-                                 heating_model_outputs,
-                                 advection_field,
-                                 q);
+        const double gamma =
+          ((advection_field.is_temperature())
+           ?
+           heating_model_outputs.heating_source_terms[q]
+           :
+           0.0);
 
         const double latent_heat_LHS =
-          ((parameters.include_latent_heat && advection_field.is_temperature())
+          ((advection_field.is_temperature())
            ?
-           - scratch.explicit_material_model_outputs.densities[q] *
-           scratch.explicit_material_model_inputs.temperature[q] *
-           scratch.explicit_material_model_outputs.entropy_derivative_temperature[q]
+           heating_model_outputs.lhs_latent_heat_terms[q]
            :
            0.0);
 
@@ -921,6 +918,8 @@ namespace aspect
         material_model_inputs.pressure);
     input_finite_element_values[introspection.extractors.velocities].get_function_values(input_solution,
         material_model_inputs.velocity);
+    input_finite_element_values[introspection.extractors.pressure].get_function_gradients (input_solution,
+        material_model_inputs.pressure_gradient);
 
     // only the viscosity in the material can depend on the strain_rate
     // if this is not needed, we can save some time here. By setting the
@@ -1309,7 +1308,7 @@ namespace aspect
                           std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
-                            (update_values    |
+                            (update_values    | update_gradients |
                              update_quadrature_points  |
                              update_JxW_values |
                              (rebuild_stokes_matrix == true
@@ -1368,103 +1367,6 @@ namespace aspect
     preconditioner.reset (new LinearAlgebra::PreconditionILU());
     preconditioner->initialize (system_matrix.block(block_idx, block_idx));
     computing_timer.exit_section();
-  }
-
-
-  template <int dim>
-  double
-  Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                       MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                       MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                       HeatingModel::HeatingModelOutputs &heating_model_outputs,
-                                       const AdvectionField     &advection_field,
-                                       const unsigned int q) const
-  {
-
-    if (advection_field.field_type == AdvectionField::compositional_field)
-      return 0.0;
-
-    const double current_T = material_model_inputs.temperature[q];
-    const SymmetricTensor<2,dim> current_strain_rate = material_model_inputs.strain_rate[q];
-    const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-    const Tensor<1,dim> current_grad_p = scratch.current_pressure_gradients[q];
-
-    const double alpha                = material_model_outputs.thermal_expansion_coefficients[q];
-    const double density              = material_model_outputs.densities[q];
-    const double viscosity            = material_model_outputs.viscosities[q];
-    const bool is_compressible        = material_model->is_compressible();
-    const double compressibility      = (is_compressible
-                                         ?
-                                         material_model_outputs.compressibilities[q]
-                                         :
-                                         std::numeric_limits<double>::quiet_NaN() );
-    const double entropy_gradient     = material_model_outputs.entropy_derivative_pressure[q];
-
-    const Tensor<1,dim>
-    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
-
-    const double gamma
-      = (heating_model_outputs.heating_source_terms[q] * density
-         +
-         // add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
-         //
-         // we can multiply this out to obtain
-         //   2*eta*(eps:eps - 1/3*(tr eps)^2)
-         // and can then use that in the compressible case we have
-         //   tr eps = div u
-         //          = -1/rho u . grad rho
-         // and by the usual approximation we make,
-         //   tr eps = -1/rho drho/dp u . grad p
-         //          = -1/rho drho/dp rho (u . g)
-         //          = - drho/dp (u . g)
-         //          = - compressibility rho (u . g)
-         // to yield the final form of the term:
-         //   2*eta [eps:eps - 1/3 (compressibility * rho * (u.g))^2]
-         (parameters.include_shear_heating
-          ?
-          2 * viscosity *
-          current_strain_rate * current_strain_rate
-          -
-          (is_compressible
-           ?
-           2./3.*viscosity*std::pow(compressibility * density * (current_u * gravity),
-                                    2)
-           :
-           0)
-          :
-          0)
-         +
-         // add the term from adiabatic compression heating
-         //   + alpha T (u . nabla p)
-         // where we use the definition of
-         //   alpha = - 1/rho drho/dT
-         // Note: this term is often simplified using the relationship
-         //   rho g = -nabla p
-         // to yield
-         //   - alpha rho T (u . g)
-         // However, we do not use this simplification here, see the
-         // comment in the manual in the section on the governing
-         // equations
-         (parameters.include_adiabatic_heating
-          ?
-          (current_u * current_grad_p) * alpha * current_T
-          :
-          0)
-         +
-         // finally add the right-hand side term from latent heating
-         //   DeltaS dLambda/dpi T rho (v . grad p)
-         // DeltaS:      change of entropy across phase transition
-         // dLambda/dpi: derivative of the phase function
-         // pi:          excess pressure (argument of the phase function)
-         // formulation modified after Christensen & Yuen, 1985
-         (parameters.include_latent_heat
-          ?
-          current_T * density * entropy_gradient * (current_u * current_grad_p)
-          :
-          0)
-        );
-
-    return gamma;
   }
 
 
@@ -1658,22 +1560,22 @@ namespace aspect
            :
            0.0);
         const double latent_heat_LHS =
-          ((parameters.include_latent_heat && advection_field.is_temperature())
+          ((advection_field.is_temperature())
            ?
-           - scratch.material_model_outputs.densities[q] *
-           scratch.material_model_inputs.temperature[q] *
-           scratch.material_model_outputs.entropy_derivative_temperature[q]
+           heating_model_outputs.lhs_latent_heat_terms[q]
            :
            0.0);
         Assert (density_c_P + latent_heat_LHS >= 0,
                 ExcMessage ("The sum of density times c_P and the latent heat contribution "
                             "to the left hand side needs to be a non-negative quantity."));
-        const double gamma = compute_heating_term(scratch,
-                                                  scratch.material_model_inputs,
-                                                  scratch.material_model_outputs,
-                                                  heating_model_outputs,
-                                                  advection_field,
-                                                  q);
+
+        const double gamma =
+          ((advection_field.is_temperature())
+           ?
+           heating_model_outputs.heating_source_terms[q]
+           :
+           0.0);
+
         const double reaction_term =
           ((advection_field.is_temperature())
            ?

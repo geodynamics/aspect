@@ -43,7 +43,10 @@ namespace aspect
       Heating<dim>::
       get_names () const
       {
-        return this->get_heating_model_manager().get_active_heating_model_names();
+        std::vector<std::string> names = this->get_heating_model_manager().get_active_heating_model_names();
+        for (unsigned int i=0; i<names.size(); ++i)
+          std::replace(names[i].begin(), names[i].end(), ' ', '_');
+        return names;
       }
 
       template <int dim>
@@ -78,8 +81,10 @@ namespace aspect
       {
 
         const unsigned int n_quadrature_points = uh.size();
+        std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > heating_model_objects = this->get_heating_model_manager().get_heating_models();
+
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
+        Assert (computed_quantities[0].size() == heating_model_objects.size(), ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
@@ -88,13 +93,18 @@ namespace aspect
         in.strain_rate.resize(0); // we do not need the viscosity
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
-        std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > heating_model_objects = this->get_heating_model_manager().get_heating_models();
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             in.temperature[q] = uh[q][this->introspection().component_indices.temperature];
             in.pressure[q]    = uh[q][this->introspection().component_indices.pressure];
+
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                in.velocity[q][d]=uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+              }
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
