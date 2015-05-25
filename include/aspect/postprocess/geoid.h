@@ -105,6 +105,15 @@ namespace aspect
 
       private:
         /**
+         * A function for calculating the laterally averaged pressure 
+         * at the top and bottom boundaries.
+         */
+        std::pair<double, double> compute_laterally_averaged_boundary_pressure();
+        void compute_internal_density_expansions();
+        void compute_topography_expansions();
+        void output_geoid_information(TableHandler &statistics);
+          
+        /**
          * A parameter that we read from the input file that denotes whether
          * we should include the contribution by dynamic topography.
          */
