@@ -122,10 +122,9 @@ namespace aspect
       return std::pair<std::string,std::string>("Writing geoid:", "");
     }
   
-    
     template <int dim>
-    void 
-    Geoid<dim>::compute_topography_expansions()
+    std::pair<double, double>
+    Geoid<dim>::compute_laterally_averaged_boundary_pressure()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
                                                     (&this->get_geometry_model());
@@ -133,45 +132,23 @@ namespace aspect
                    ExcMessage("The geoid postprocessor is currently only implemented for "
                        "the spherical shell geometry model."));
 
-  /*    const std::pair<double, double> surface_bottom_pressure = compute_laterally_averaged_boundary_pressure();
-      const double surface_pressure = surface_bottom_pressure.first;
-      const double bottom_pressure = surface_bottom_pressure.second;
-
-      const QMidpoint<dim> stress_quadrature_formula;  //Need to retrieve stress here
-      const QMidpoint<dim-1> face_quadrature_formula;  //need to retrieve pressure here
-     
-      FEValues<dim> fe_stress_values (this->get_mapping(),
-                                      this->get_fe(),
-                                      stress_quadrature_formula,
-                                      update_values |
-                                      update_gradients |
-                                      update_q_points |
-                                      update_JxW_values);
+      const QGauss<dim-1> quadrature_formula_face (this->get_fe()
+                                            .base_element(this->introspection().base_elements.pressure)
+                                            .degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
-                                        face_quadrature_formula,
-                                        update_values |
-                                        update_gradients |
-                                        update_q_points |
-                                        update_JxW_values);
- 
-      AssertThrow( fe_stress_values.n_quadrature_points == fe_face_values.n_quadrature_points == 1,
-                   ExcInternalError() ); 
+                                        quadrature_formula_face,
+                                        update_values | update_JxW_values);
 
-      //Material model in/out for the gauss quadrature rule evaluations
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, this->n_compositional_fields());
-
-      const double inner_radius = geometry_model->inner_radius();
       const double outer_radius = geometry_model->outer_radius();
-      const double gravitational_constant = 6.67384e-11;
-      const double gravity_at_surface = this->get_gravity_model().gravity_vector( 
-                                     ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
-      const double bottom_gravity = this->get_gravity_model().gravity_vector( 
-                                    this->get_geometry_model().representative_point( 
-                                    this->get_geometry_model().maximal_depth() )  ).norm();
 
+      double local_surface_pressure;
+      double local_bottom_pressure;
+      double local_surface_area;
+      double local_bottom_area;
+
+      std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -181,63 +158,43 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-            {
-              fe_face_values.reinit (cell);
+          if (cell->at_boundary())
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              {
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
+                  {
+                    //handle surface cells
+                    fe_face_values.reinit (cell, f);
+                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_surface_pressure += pressure_vals[q] * fe_face_values.JxW(q);
+                        local_surface_area += fe_face_values.JxW(q);
+                      }
 
-              // see if the cell is at the *top* or *bottom* boundary
-              bool surface_cell = false;
-              bool bottom_cell = false;
+                    break; //no need to do the rest of the faces
+                  }
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3.))
+                  {
+                    //handle surface cells
+                    fe_face_values.reinit (cell, f);
+                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
+                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                      {
+                        local_bottom_pressure += pressure_vals[q] * fe_face_values.JxW(q);
+                        local_bottom_area += fe_face_values.JxW(q);
+                      }
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                    {
-                      surface_cell = true;
-                      break;
-                    }
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
-                    {
-                      bottom_cell = true;
-                      break;
-                    }
-                }
-*/
-                  // if this is a cell at the surface, add the topography to
-                  // the topography expansion
-/*                  if (surface_cell)
-                    {
-                      const double viscosity = out.viscosities[q];
-
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
-
-                      // Subtract the adiabatic pressure
-                      const double dynamic_pressure   = in.pressure[q] - surface_pressure;
-                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
-
-                      // Add topography contribution
-                      surface_topography_expansion->add_quadtrature_point(location/location.norm(),dynamic_topography, fe.JxW(q), 1.0, true);
-                    }
-
-                  // if this is a cell at the bottom, add the topography to
-                  // the bottom expansion
-                  if (bottom_cell)
-                    {
-                      const double viscosity = out.viscosities[q];
-
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
-
-                      // Subtract the adiabatic pressure
-                      const double dynamic_pressure   = in.pressure[q] - bottom_pressure;
-                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
-
-                      // Add topography contribution
-                      bottom_topography_expansion->add_quadtrature_point(location/location.norm(), dynamic_topography, fe.JxW(q), 1.0, true);
-                    }*/
-//                }
+                    break; //no need to do the rest of the faces
+                  }
+              }
+      const double surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() )
+                                      / Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
+      const double bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() )
+                                      / Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
+      this->get_pcout()<<"Surface pressure: "<<surface_pressure<<"\tBottom pressure: "<<bottom_pressure<<std::endl;
+     
+      return std::make_pair( surface_pressure, bottom_pressure );
     }
 
     template <int dim>
@@ -275,12 +232,6 @@ namespace aspect
       // Some constant that are used several times
       const double inner_radius = geometry_model->inner_radius();
       const double outer_radius = geometry_model->outer_radius();
-      const double gravitational_constant = 6.67384e-11;
-      const double gravity_at_surface = this->get_gravity_model().gravity_vector( 
-                                     ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
-      const double gravity_at_bottom = this->get_gravity_model().gravity_vector( 
-                                    this->get_geometry_model().representative_point( 
-                                    this->get_geometry_model().maximal_depth() )  ).norm();
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -322,10 +273,6 @@ namespace aspect
               for (unsigned int q=0; q<cell_quadrature_formula.size(); ++q)
                 {
                   const Point<dim> location = fe_values.quadrature_point(q);
-
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
-                  const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-
                   const double density   = out.densities[q];
  
                   internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius, true );
@@ -337,6 +284,179 @@ namespace aspect
       internal_density_expansion_surface->mpi_sum_coefficients( this->get_mpi_communicator() );
       internal_density_expansion_bottom->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
+    
+    template <int dim>
+    void 
+    Geoid<dim>::compute_topography_expansions()
+    {
+      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
+                                                    (&this->get_geometry_model());
+      AssertThrow (geometry_model != 0,
+                   ExcMessage("The geoid postprocessor is currently only implemented for "
+                       "the spherical shell geometry model."));
+
+      const std::pair<double, double> surface_bottom_pressure = compute_laterally_averaged_boundary_pressure();
+      const double surface_pressure = surface_bottom_pressure.first;
+      const double bottom_pressure = surface_bottom_pressure.second;
+
+      const QMidpoint<dim> center_quadrature_formula;  //Need to retrieve stress here
+      const QMidpoint<dim-1> face_quadrature_formula;  //need to retrieve pressure here
+     
+      FEValues<dim> fe_center_values (this->get_mapping(),
+                                      this->get_fe(),
+                                      center_quadrature_formula,
+                                      update_values |
+                                      update_gradients |
+                                      update_q_points |
+                                      update_JxW_values);
+
+      FEFaceValues<dim> fe_face_values (this->get_mapping(),
+                                        this->get_fe(),
+                                        face_quadrature_formula,
+                                        update_values |
+                                        update_gradients |
+                                        update_q_points |
+                                        update_JxW_values);
+ 
+      AssertThrow( fe_center_values.n_quadrature_points == fe_face_values.n_quadrature_points == 1,
+                   ExcInternalError() ); 
+
+      //Material model in/out for the gauss quadrature rule evaluations
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in_face(1, this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in_center(1, this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out_face(1, this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out_center(1, this->n_compositional_fields());
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (1 /*q_point*/));
+
+      const double outer_radius = geometry_model->outer_radius();
+
+      Tensor<1,dim> gravity;
+      Tensor<1,dim> gravity_direction;
+
+      // loop over all of the surface cells and if one less than h/3 away from
+      // the top surface, evaluate the stress at its center
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+            {
+
+              // see if the cell is at the *top* or *bottom* boundary
+              bool surface_cell = false;
+              bool bottom_cell = false;
+              unsigned int q = 0;
+
+              unsigned int f = 0;
+              for (; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                {
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+                    {
+                      surface_cell = true;
+                      break;
+                    }
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
+                    {
+                      bottom_cell = true;
+                      break;
+                    }
+                }
+
+                if (surface_cell || bottom_cell)
+                  {
+                    fe_face_values.reinit (cell, f);
+                    Point<dim> location = fe_face_values.get_quadrature_points()[q];
+
+                    // get the various components of the solution, then
+                    // evaluate the material properties there
+                    fe_face_values[this->introspection().extractors.temperature]
+                    .get_function_values (this->get_solution(), in_face.temperature);
+                    fe_face_values[this->introspection().extractors.pressure]
+                    .get_function_values (this->get_solution(), in_face.pressure);
+                    fe_face_values[this->introspection().extractors.velocities]
+                    .get_function_symmetric_gradients (this->get_solution(), in_face.strain_rate);
+
+                    in_face.position = fe_face_values.get_quadrature_points();
+
+                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      fe_face_values[this->introspection().extractors.compositional_fields[c]]
+                      .get_function_values(this->get_solution(),
+                                           composition_values[c]);
+                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+                      {
+                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                          in_face.composition[i][c] = composition_values[c][i];
+                      }
+
+                    this->get_material_model().evaluate(in_face, out_face);
+
+                    fe_center_values.reinit(cell);
+
+                    // get the various components of the solution, then
+                    // evaluate the material properties there
+                    fe_center_values[this->introspection().extractors.temperature]
+                    .get_function_values (this->get_solution(), in_center.temperature);
+                    fe_center_values[this->introspection().extractors.pressure]
+                    .get_function_values (this->get_solution(), in_center.pressure);
+                    fe_center_values[this->introspection().extractors.velocities]
+                    .get_function_symmetric_gradients (this->get_solution(), in_center.strain_rate);
+
+                    in_center.position = fe_center_values.get_quadrature_points();
+
+                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      fe_center_values[this->introspection().extractors.compositional_fields[c]]
+                      .get_function_values(this->get_solution(),
+                                           composition_values[c]);
+                    for (unsigned int i=0; i<fe_center_values.n_quadrature_points; ++i)
+                      {
+                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                          in_face.composition[i][c] = composition_values[c][i];
+                      }
+
+                    this->get_material_model().evaluate(in_center, out_face);
+
+                    gravity = this->get_gravity_model().gravity_vector(fe_face_values.quadrature_point(q));
+                    gravity_direction = gravity/gravity.norm();
+
+                    const double viscosity = out_center.viscosities[q];
+                    const double density = out_face.densities[q];
+
+                    const SymmetricTensor<2,dim> strain_rate = in_center.strain_rate[q] - 1./3 * trace(in_center.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+
+                    // if this is a cell at the surface, add the topography to
+                    // the topography expansion
+                    if (surface_cell)
+                      {
+                        // Subtract the adiabatic pressure
+                        const double dynamic_pressure   = in_face.pressure[q] - surface_pressure;
+                        const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+
+                        // Add topography contribution
+                        surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+                      }
+
+                    // if this is a cell at the bottom, add the topography to
+                    // the bottom expansion
+                    if (bottom_cell)
+                      {
+                        // Subtract the adiabatic pressure
+                        const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
+                        const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+
+                        // Add topography contribution
+                        bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+                      }
+                  }
+              }
+      surface_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
+      bottom_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
+    }
+
+
 
     template <int dim>
     void 
@@ -352,9 +472,6 @@ namespace aspect
                                    "surface_geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
-      const double inner_radius = geometry_model->inner_radius();
-      const double outer_radius = geometry_model->outer_radius();
-      const double gravitational_constant = 6.67384e-11;
       const double gravity_at_surface = this->get_gravity_model().gravity_vector( 
                                      ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
       const double gravity_at_bottom = this->get_gravity_model().gravity_vector( 
@@ -454,81 +571,6 @@ namespace aspect
       bottom_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
     }
 
-    template <int dim>
-    std::pair<double, double>
-    Geoid<dim>::compute_laterally_averaged_boundary_pressure()
-    {
-      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
-      AssertThrow (geometry_model != 0,
-                   ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
-
-      const QGauss<dim-1> quadrature_formula_face (this->get_fe()
-                                            .base_element(this->introspection().base_elements.pressure)
-                                            .degree+1);
-
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula_face,
-                                        update_values | update_JxW_values);
-
-      const double inner_radius = geometry_model->inner_radius();
-      const double outer_radius = geometry_model->outer_radius();
-
-      double local_surface_pressure;
-      double local_bottom_pressure;
-      double local_surface_area;
-      double local_bottom_area;
-
-      std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
-
-      // loop over all of the surface cells and if one less than h/3 away from
-      // the top surface, evaluate the stress at its center
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              {
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
-                  {
-                    //handle surface cells
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
-                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                      {
-                        local_surface_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                        local_surface_area += fe_face_values.JxW(q);
-                      }
-
-                    break; //no need to do the rest of the faces
-                  }
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3.))
-                  {
-                    //handle surface cells
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
-                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                      {
-                        local_bottom_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                        local_bottom_area += fe_face_values.JxW(q);
-                      }
-
-                    break; //no need to do the rest of the faces
-                  }
-              }
-      const double surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() )
-                                      / Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
-      const double bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() )
-                                      / Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      this->get_pcout()<<"Surface pressure: "<<surface_pressure<<"\tBottom pressure: "<<bottom_pressure<<std::endl;
-     
-      return std::make_pair( surface_pressure, bottom_pressure );
-    }
   }
 }
 
