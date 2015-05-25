@@ -44,11 +44,19 @@
   . make sure the .prm and .xml files we ship match the default values of
     parameters
   . create a RC tar file:
-      git archive --format=tar.gz --prefix=aspect-$VER-rc1/ HEAD >aspect-$VER-rc1.tar.gz
+      export PREFIX=aspect-$VER-rc1 && rm -rf $PREFIX.tar.gz && \
+      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
+      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
+      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
+      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . Tag the release:
       git tag -a v$VER -m "tag version $VER"
   . create a tar file:
-      git archive --format=tar.gz --prefix=aspect-$VER/ v$VER >aspect-$VER.tar.gz
+      export PREFIX=aspect-$VER && rm -rf $PREFIX.tar.gz && \
+      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
+      rm -rf $PREFIX && tar xf $PREFIX.tar.gz && \
+      rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
+      tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . make public (branch and tag):
       git push cig aspect-$VER
       git push cig v$VER
