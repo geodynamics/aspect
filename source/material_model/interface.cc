@@ -467,23 +467,24 @@ namespace aspect
         return none;
       }
 
-
       namespace
       {
         // Do the requested averaging operation for one array. The
         // projection matrix argument is only used if the operation
         // chosen is project_to_Q1
+        template <int dim>
         void average (const AveragingOperation  operation,
-                      const FullMatrix<double> &projection_matrix,
-                      const FullMatrix<double> &expansion_matrix,
-                      std::vector<double>      &values)
+                      const FullMatrix<double>      &projection_matrix,
+                      const FullMatrix<double>      &expansion_matrix,
+                      const std::vector<Point<dim> >    &position,
+                      std::vector<double>           &values_out)
         {
           // if an output field has not been filled (because it was
           // not requested), then simply do nothing -- no harm no foul
-          if (values.size() == 0)
+          if (values_out.size() == 0)
             return;
 
-          const unsigned int N = values.size();
+          const unsigned int N = values_out.size();
           const unsigned int P = expansion_matrix.n();
           Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
                   ExcInternalError());
@@ -509,11 +510,11 @@ namespace aspect
               {
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
-                  sum += values[i];
+                  sum += values_out[i];
 
                 const double average = sum/N;
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
@@ -521,11 +522,11 @@ namespace aspect
               {
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
-                  sum += 1./values[i];
+                  sum += 1./values_out[i];
 
                 const double average = 1./(sum/N);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
@@ -534,16 +535,16 @@ namespace aspect
                 double prod = 1;
                 for (unsigned int i=0; i<N; ++i)
                   {
-                    Assert (values[i] >= 0,
+                    Assert (values_out[i] >= 0,
                             ExcMessage ("Computing the geometric average "
                                         "only makes sense for non-negative "
                                         "quantities."));
-                    prod *= values[i];
+                    prod *= values_out[i];
                   }
 
                 const double average = std::pow (prod, 1./N);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
@@ -551,10 +552,10 @@ namespace aspect
               {
                 double max = -std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values[i]);
+                  max = std::max(max, values_out[i]);
 
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = max;
+                  values_out[i] = max;
                 break;
               }
 
@@ -564,11 +565,11 @@ namespace aspect
                 // after the projection operation
                 double min = std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  min = std::min(min, values[i]);
+                  min = std::min(min, values_out[i]);
 
                 double max = -std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values[i]);
+                  max = std::max(max, values_out[i]);
 
                 // take the projection matrix and apply it to the
                 // values. as explained in the documentation of the
@@ -576,7 +577,7 @@ namespace aspect
                 // we want in the current context
                 Vector<double> x (N), z(P), y(N);
                 for (unsigned int i=0; i<N; ++i)
-                  y(i) = values[i];
+                  y(i) = values_out[i];
                 projection_matrix.vmult (z, y);
 
                 // now that we have the Q1 values, restrict them to
@@ -589,7 +590,7 @@ namespace aspect
                 // then expand back to the quadrature points
                 expansion_matrix.vmult (x, z);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = x(i);
+                  values_out[i] = x(i);
 
                 break;
               }
@@ -686,13 +687,13 @@ namespace aspect
       }
 
 
-
       template <int dim>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>   &quadrature_formula,
-                    const Mapping<dim>      &mapping,
-                    MaterialModelOutputs<dim>    &values)
+                    const Quadrature<dim>         &quadrature_formula,
+                    const Mapping<dim>            &mapping,
+                    const MaterialModelInputs<dim>  &values_in,
+                    MaterialModelOutputs<dim>          &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
@@ -709,19 +710,19 @@ namespace aspect
           }
 
         average (operation, projection_matrix, expansion_matrix,
-                 values.viscosities);
+                 values_in.position,values_out.viscosities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.densities);
+                 values_in.position,values_out.densities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.thermal_expansion_coefficients);
+                 values_in.position,values_out.thermal_expansion_coefficients);
         average (operation, projection_matrix, expansion_matrix,
-                 values.specific_heat);
+                 values_in.position,values_out.specific_heat);
         average (operation, projection_matrix, expansion_matrix,
-                 values.compressibilities);
+                 values_in.position,values_out.compressibilities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.entropy_derivative_pressure);
+                 values_in.position,values_out.entropy_derivative_pressure);
         average (operation, projection_matrix, expansion_matrix,
-                 values.entropy_derivative_temperature);
+                 values_in.position,values_out.entropy_derivative_temperature);
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should
@@ -788,9 +789,10 @@ namespace aspect
     template                \
     void average (const AveragingOperation operation, \
                   const DoFHandler<dim>::active_cell_iterator &cell, \
-                  const Quadrature<dim>   &quadrature_formula, \
-                  const Mapping<dim>      &mapping, \
-                  MaterialModelOutputs<dim>    &values); \
+                  const Quadrature<dim>     &quadrature_formula, \
+                  const Mapping<dim>        &mapping, \
+                  const MaterialModelInputs<dim>  &values_in,\
+                  MaterialModelOutputs<dim>      &values_out); \
   }
 
 
