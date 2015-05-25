@@ -73,6 +73,31 @@ namespace aspect
     bool fexists(const std::string &filename);
 
 
+    /**
+     * Extract the compositional values at a single quadrature point with
+     * index @p q from @p composition_values, which is indexed by
+     * compositional index and quadrature point, and write them into @p
+     * composition_values_at_q_point. In other words,
+     * this extracts @p composition_values[i][q] for all @p i.
+     */
+    inline
+    void
+    extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+                                           const unsigned int q,
+                                           std::vector<double> &composition_values_at_q_point)
+    {
+      Assert(q<composition_values.size(), ExcInternalError());
+      Assert(composition_values_at_q_point.size() > 0,
+             ExcInternalError());
+
+      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+        {
+          Assert(composition_values[k].size() == composition_values_at_q_point.size(),
+                 ExcInternalError());
+          composition_values_at_q_point[k] = composition_values[k][q];
+        }
+    }
+
 
     /**
      * AsciiDataLookup reads in files containing input data in ascii format.

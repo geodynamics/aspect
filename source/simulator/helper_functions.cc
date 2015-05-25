@@ -386,18 +386,6 @@ namespace aspect
   }
 
 
-  namespace
-  {
-    void
-    extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
-                                           const unsigned int                      q,
-                                           std::vector<double>                    &composition_values_at_q_point)
-    {
-      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-        composition_values_at_q_point[k] = composition_values[k][q];
-    }
-  }
-
 
   template <int dim>
   std::pair<double,double>
