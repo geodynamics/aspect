@@ -31,7 +31,7 @@ namespace aspect
     void
     SimpleCompressible<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
-             MaterialModelOutputs &out) const
+             MaterialModelOutputs<dim> &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
