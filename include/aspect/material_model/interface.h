@@ -200,6 +200,7 @@ namespace aspect
      * values at the different positions given by
      * MaterialModelInputs::position.
      */
+    template <int dim>
     struct MaterialModelOutputs
     {
       /**
@@ -383,7 +384,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>   &quadrature_formula,
                     const Mapping<dim>      &mapping,
-                    MaterialModelOutputs    &values);
+                    MaterialModelOutputs<dim>    &values);
     }
 
 
@@ -427,7 +428,7 @@ namespace aspect
          * measure given that the referenced structure used to be a member of
          * the current class.
          */
-        typedef MaterialModel::MaterialModelOutputs MaterialModelOutputs;
+        typedef MaterialModel::MaterialModelOutputs<dim> MaterialModelOutputs;
 
         /**
          * Destructor. Made virtual to enforce that derived classes also have
@@ -779,7 +780,7 @@ namespace aspect
          * 0, then the viscosity does not need to be computed.
          */
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs &out) const = 0;
+                              MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -990,7 +991,7 @@ namespace aspect
          * @param out
          */
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs &out) const;
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
     };
 
 

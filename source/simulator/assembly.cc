@@ -65,7 +65,7 @@ namespace aspect
           std::vector<std::vector<double> >     composition_values;
 
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs material_model_outputs;
+          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
         };
 
 
@@ -234,10 +234,10 @@ namespace aspect
           std::vector<std::vector<double> > current_composition_values;
 
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs material_model_outputs;
+          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
-          MaterialModel::MaterialModelOutputs explicit_material_model_outputs;
+          MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
         };
 
 
@@ -1371,7 +1371,7 @@ namespace aspect
   double
   Simulator<dim>::compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                       MaterialModel::MaterialModelOutputs &material_model_outputs,
+                                       MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                                        const double specific_heating_rate,
                                        const AdvectionField     &advection_field,
                                        const unsigned int q) const

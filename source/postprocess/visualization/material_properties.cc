@@ -104,8 +104,8 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
                                                    this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs out(n_quadrature_points,
-                                                this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
+                                                     this->n_compositional_fields());
 
         in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)

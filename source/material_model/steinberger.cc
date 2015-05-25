@@ -851,7 +851,7 @@ namespace aspect
     template <int dim>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                               MaterialModel::MaterialModelOutputs &out) const
+                               MaterialModel::MaterialModelOutputs<dim> &out) const
     {
 
       Assert ((n_material_data <= in.composition[0].size()) || (n_material_data == 1),

@@ -352,8 +352,9 @@ namespace aspect
 
 
 
-    MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
-                                               const unsigned int n_comp)
+    template <int dim>
+    MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
+                                                    const unsigned int n_comp)
     {
       viscosities.resize(n_points);
       densities.resize(n_points);
@@ -413,7 +414,7 @@ namespace aspect
     template <int dim>
     void
     InterfaceCompatibility<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                                          MaterialModel::MaterialModelOutputs &out) const
+                                          MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -691,7 +692,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>   &quadrature_formula,
                     const Mapping<dim>      &mapping,
-                    MaterialModelOutputs    &values)
+                    MaterialModelOutputs<dim>    &values)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
@@ -780,6 +781,8 @@ namespace aspect
   \
   template struct MaterialModelInputs<dim>; \
   \
+  template struct MaterialModelOutputs<dim>; \
+  \
   namespace MaterialAveraging \
   { \
     template                \
@@ -787,7 +790,7 @@ namespace aspect
                   const DoFHandler<dim>::active_cell_iterator &cell, \
                   const Quadrature<dim>   &quadrature_formula, \
                   const Mapping<dim>      &mapping, \
-                  MaterialModelOutputs    &values); \
+                  MaterialModelOutputs<dim>    &values); \
   }
 
 

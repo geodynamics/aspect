@@ -323,7 +323,7 @@ namespace aspect
                     composition_values[c]);
 
               MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
 
               in.strain_rate.resize(0);// we are not reading the viscosity
 
@@ -952,8 +952,8 @@ namespace aspect
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                parameters.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs out(n_q_points,
-                                            parameters.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                 parameters.n_compositional_fields);
 
     fctr.setup(quadrature_formula.size());
 
@@ -1027,7 +1027,7 @@ namespace aspect
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1070,7 +1070,7 @@ namespace aspect
         {}
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs &out,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
@@ -1108,7 +1108,7 @@ namespace aspect
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1152,7 +1152,7 @@ namespace aspect
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1200,7 +1200,7 @@ namespace aspect
         {}
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)

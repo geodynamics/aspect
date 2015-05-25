@@ -98,7 +98,7 @@ namespace aspect
     void
     Simpler<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs &out) const
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
