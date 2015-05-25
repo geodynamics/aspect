@@ -82,7 +82,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class SimulatorSignals<dim>;
+  template struct SimulatorSignals<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
