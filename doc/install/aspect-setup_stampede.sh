@@ -1,7 +1,7 @@
 #!/bin/bash
 # script originated from Jonathan Perry-Houts May 2015
-# Updated for installation on Stampede by D. Sarah Stamps 
-# at 2015 ASPECT Hackathon. Refer to stampede.pdf for 
+# Updated for installation on Stampede by D. Sarah Stamps
+# at 2015 ASPECT Hackathon. Refer to stampede.pdf for
 # further information.
 
 set -x
