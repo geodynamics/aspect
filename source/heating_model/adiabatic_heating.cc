@@ -29,17 +29,28 @@ namespace aspect
     template <int dim>
     void
     AdiabaticHeating<dim>::
-    evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
-        heating_model_outputs.heating_source_terms[q] = (material_model_inputs.velocity[q] * material_model_inputs.pressure_gradient[q])
-                                                        * material_model_outputs.thermal_expansion_coefficients[q]
-                                                        * material_model_inputs.temperature[q];
+        {
+          if (!simplified_adiabatic_heating)
+            heating_model_outputs.heating_source_terms[q] = (material_model_inputs.velocity[q] * material_model_inputs.pressure_gradient[q])
+                                                            * material_model_outputs.thermal_expansion_coefficients[q]
+                                                            * material_model_inputs.temperature[q];
+          else
+            heating_model_outputs.heating_source_terms[q] = (material_model_inputs.velocity[q]
+                                                             * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
+                                                            * material_model_outputs.thermal_expansion_coefficients[q]
+                                                            * material_model_inputs.temperature[q]
+                                                            * material_model_outputs.densities[q];
+
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
     }
 
     template <int dim>
@@ -53,7 +64,8 @@ namespace aspect
           prm.declare_entry ("Use simplified adiabatic heating", "false",
                              Patterns::Bool (),
                              "A flag indicating whether the adiabatic heating should be simplified "
-                             "from alpha T (u . nabla p) to -alpha rho T (u . g).");
+                             "from $\\alpha T (\\mathbf u \\cdot \\nabla p)$ to "
+                             "$ \\alpha \\rho T (\\mathbf u \\cdot \\mathbf g) $.");
         }
         prm.leave_subsection();
       }

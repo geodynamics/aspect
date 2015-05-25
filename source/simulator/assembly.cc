@@ -610,9 +610,9 @@ namespace aspect
     const unsigned int n_q_points = scratch.old_field_values->size();
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model_manager.execute(scratch.material_model_inputs,
-                                  scratch.material_model_outputs,
-                                  heating_model_outputs);
+    heating_model_manager.evaluate(scratch.explicit_material_model_inputs,
+                                   scratch.explicit_material_model_outputs,
+                                   heating_model_outputs);
 
     for (unsigned int q=0; q < n_q_points; ++q)
       {
@@ -841,6 +841,11 @@ namespace aspect
         scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
             scratch.current_velocity_values);
 
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
+            scratch.old_pressure_gradients);
+        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
+            scratch.old_old_pressure_gradients);
+
 
         scratch.old_field_values = (advection_field.is_temperature()
                                     ?
@@ -876,6 +881,7 @@ namespace aspect
             scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
             scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
             scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+            scratch.explicit_material_model_inputs.pressure_gradient[q] = (scratch.old_pressure_gradients[q] + scratch.old_old_pressure_gradients[q]) / 2;
 
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
@@ -1487,9 +1493,9 @@ namespace aspect
                                                scratch.material_model_outputs);
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model_manager.execute(scratch.material_model_inputs,
-                                  scratch.material_model_outputs,
-                                  heating_model_outputs);
+    heating_model_manager.evaluate(scratch.material_model_inputs,
+                                   scratch.material_model_outputs,
+                                   heating_model_outputs);
 
     // set up scratch.explicit_material_model_*
     {
@@ -1499,6 +1505,7 @@ namespace aspect
           scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
           scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
           scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+          scratch.explicit_material_model_inputs.pressure_gradient[q] = (scratch.old_pressure_gradients[q] + scratch.old_old_pressure_gradients[q]) / 2;
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;

@@ -44,8 +44,11 @@ namespace aspect
       get_names () const
       {
         std::vector<std::string> names = this->get_heating_model_manager().get_active_heating_model_names();
+
+        // make the names valid names for output variables via DataOut
         for (unsigned int i=0; i<names.size(); ++i)
           std::replace(names[i].begin(), names[i].end(), ' ', '_');
+
         return names;
       }
 
@@ -54,11 +57,9 @@ namespace aspect
       Heating<dim>::
       get_data_component_interpretation () const
       {
-        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
-        for (unsigned int i=0; i<this->get_heating_model_manager().get_active_heating_model_names().size(); ++i)
-          interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-
-        return interpretation;
+        return std::vector<DataComponentInterpretation::DataComponentInterpretation>
+               (this->get_heating_model_manager().get_active_heating_model_names().size(),
+                DataComponentInterpretation::component_is_scalar);
       }
 
       template <int dim>
@@ -79,24 +80,35 @@ namespace aspect
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-
         const unsigned int n_quadrature_points = uh.size();
-        std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > heating_model_objects = this->get_heating_model_manager().get_heating_models();
+        const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
 
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        // we do not want to write any output if there are no heating models
+        // used in the computation
+        if (heating_model_objects.size() == 0)
+          return;
+
+        Assert (computed_quantities.size() == n_quadrature_points,
+                ExcMessage("The length of the vector of quantities that are computed in the "
+                           "postprocessor (" + std::to_string(computed_quantities.size()) + ") has to match the "
+                           "number of quadrature points (" + std::to_string(n_quadrature_points) + ")!"));
         Assert (computed_quantities[0].size() == heating_model_objects.size(), ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
-        in.strain_rate.resize(0); // we do not need the viscosity
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = duh[q][d];
+            in.strain_rate[q] = symmetrize (grad_u);
+
             in.temperature[q] = uh[q][this->introspection().component_indices.temperature];
             in.pressure[q]    = uh[q][this->introspection().component_indices.pressure];
 

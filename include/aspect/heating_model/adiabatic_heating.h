@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #define __aspect__heating_model_adiabatic_heating_h
 
 #include <aspect/heating_model/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -32,22 +33,24 @@ namespace aspect
 
     /**
      * A class that implements a standard adiabatic heating rate.
+     *
      * This adds the term from adiabatic compression heating
-     *    + alpha T (u . nabla p)
+     *    $ \alpha T (\mathbf u \cdot \nabla p) $
      * where we use the definition of
-     *    alpha = - 1/rho drho/dT
+     *    $ \alpha = - \frac{1}{\rho} \frac{\partial \rho}{\partial T}
      * Note: this term is often simplified using the relationship
-     *    rho g = -nabla p
+     *    $ \rho \mathbf g = - \nabla p
      * to yield
-     *    - alpha rho T (u . g)
-     * However, we do not use this simplification here, see the
-     * comment in the manual in the section on the governing
-     * equations.
+     *    $ - \alpha \rho T (\mathbf u \cdot \mathbf g) $
+     *
+     * The user can specify if the simplification should be used
+     * by setting the corresponding flag in the input file.
+     * Also see the Equations section in the manual.
      *
      * @ingroup HeatingModels
      */
     template <int dim>
-    class AdiabaticHeating : public Interface<dim>
+    class AdiabaticHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -55,8 +58,8 @@ namespace aspect
          */
         virtual
         void
-        evaluate (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**

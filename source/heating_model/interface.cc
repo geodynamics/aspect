@@ -54,20 +54,23 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                              const MaterialModel::MaterialModelOutputs<dim> & /*material_model_outputs*/,
+                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
-        heating_model_outputs.heating_source_terms[q] = specific_heating_rate(material_model_inputs.temperature[q],
-                                                                              material_model_inputs.pressure[q],
-                                                                              material_model_inputs.composition[q],
-                                                                              material_model_inputs.position[q])
-                                                        * material_model_outputs.densities[q];
+          heating_model_outputs.heating_source_terms[q] = specific_heating_rate(material_model_inputs.temperature[q],
+                                                                                material_model_inputs.pressure[q],
+                                                                                material_model_inputs.composition[q],
+                                                                                material_model_inputs.position[q])
+                                                          * material_model_outputs.densities[q];
 #pragma GCC diagnostic pop
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
     }
 
 
@@ -79,7 +82,7 @@ namespace aspect
                                            const Point<dim> &position) const
     {
       Assert(false,
-             ExcMessage ("There is no evaluate or specific heat function implemented in the heating model!"));
+             ExcMessage ("There is no 'evaluate()' or 'specific_heating_rate()' function implemented in the heating model!"));
       return 0.0;
     }
 
@@ -172,7 +175,7 @@ namespace aspect
                            "can not be used together with the new functionality 'List "
                            "of model names'. Please remove the 'Include adiabatic heating'"
                            "setting."));
-        if (include_shear_heating)
+        if (include_adiabatic_heating)
           model_names.push_back("adiabatic heating");
 
         const bool include_latent_heat = prm.get_bool ("Include latent heat");
@@ -182,7 +185,7 @@ namespace aspect
                            "can not be used together with the new functionality 'List "
                            "of model names'. Please remove the 'Include latent heat'"
                            "setting."));
-        if (include_shear_heating)
+        if (include_latent_heat)
           model_names.push_back("latent heat");
       }
       prm.leave_subsection ();
@@ -194,9 +197,9 @@ namespace aspect
       for (unsigned int name=0; name<model_names.size(); ++name)
         {
           heating_model_objects.push_back (std_cxx11::shared_ptr<Interface<dim> >
-                                             (std_cxx11::get<dim>(registered_plugins)
-                                              .create_plugin (model_names[name],
-                                                              "Heating model::Model names")));
+                                           (std_cxx11::get<dim>(registered_plugins)
+                                            .create_plugin (model_names[name],
+                                                            "Heating model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
             sim->initialize (this->get_simulator());
@@ -221,25 +224,21 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                           const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                           HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    Manager<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                            const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                            HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
+      // the heating outputs are initialized with zeros, so there is no heating if they are not set
+      // in the individual plugins
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
                                                                    this->n_compositional_fields());
-
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size();++q)
-        {
-          heating_model_outputs.heating_source_terms[q] = 0;
-          heating_model_outputs.lhs_latent_heat_terms[q] = 0;
-        }
 
       for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
            heating_model = heating_model_objects.begin();
            heating_model != heating_model_objects.end(); ++heating_model)
         {
           (*heating_model)->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
-          for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size();++q)
+          for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
             {
               heating_model_outputs.heating_source_terms[q] += individual_heating_outputs.heating_source_terms[q];
               heating_model_outputs.lhs_latent_heat_terms[q] += individual_heating_outputs.lhs_latent_heat_terms[q];
@@ -249,15 +248,7 @@ namespace aspect
 
 
     template <int dim>
-    std::string
-    Manager<dim>::get_all_heating_model_names () const
-    {
-      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-    }
-
-
-    template <int dim>
-    std::vector<std::string>
+    const std::vector<std::string> &
     Manager<dim>::get_active_heating_model_names () const
     {
       return model_names;
@@ -265,8 +256,8 @@ namespace aspect
 
 
     template <int dim>
-    std::list<std_cxx11::shared_ptr<Interface<dim> > >
-    Manager<dim>::get_heating_models () const
+    const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+    Manager<dim>::get_active_heating_models () const
     {
       return heating_model_objects;
     }
@@ -299,7 +290,7 @@ namespace aspect
             prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
-                               "Warning: This is the old formulation of specifying"
+                               "Warning: This is the old formulation of specifying "
                                "heating models and shouldn't be used. Please use 'List of"
                                "model names' instead."
                                +
@@ -349,9 +340,18 @@ namespace aspect
 
     HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
                                              const unsigned int n_comp)
+      :
+      heating_source_terms(n_points),
+      lhs_latent_heat_terms(n_points)
     {
-      heating_source_terms.resize(n_points);
-      lhs_latent_heat_terms.resize(n_points);
+    }
+
+
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
   }
@@ -377,7 +377,11 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  template class Manager<dim>;
+  template class Manager<dim>; \
+  \
+  template \
+  std::string \
+  get_valid_model_names_pattern<dim> ();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

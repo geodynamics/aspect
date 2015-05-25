@@ -29,8 +29,8 @@ namespace aspect
     template <int dim>
     void
     LatentHeat<dim>::
-    evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),

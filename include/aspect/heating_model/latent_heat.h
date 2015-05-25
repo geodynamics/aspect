@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,12 +36,22 @@ namespace aspect
      *
      * The left hand side is
      *   $ -\rho T frac{\partial S}{\partial T} \frac{D T}{D t}$
-     * and is added to the rho cp term.
+     * so that we can add
+     *   $ -\rho T frac{\partial S}{\partial T} $
+     * to the $\rho c_p$ term.
      *
      * The right-hand side term from latent heating is
-     *   $\frac{\partial S}{\partial p} T \rho (v \dot \nabla p)$.
+     *   $\frac{\partial S}{\partial p} T \rho (u \dot \nabla p)$.
      *
-     * Formulation modified after Christensen & Yuen, 1985.
+     * T, u, and p are the solutions from the previous time step or
+     * are extrapolated from there, depending on what is provided
+     * in the input arguments of this function.
+     *
+     * Formulation modified after Christensen, Ulrich R. & Yuen,
+     * David A.: Layered convection induced by phase transitions,
+     * Journal of Geophysical Research: Solid Earth (1985).
+     *
+     * Also see the Equations section in the manual.
      *
      * @ingroup HeatingModels
      */
@@ -54,8 +64,8 @@ namespace aspect
          */
         virtual
         void
-        evaluate (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**

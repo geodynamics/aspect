@@ -29,12 +29,15 @@ namespace aspect
     template <int dim>
     void
     ShearHeating<dim>::
-    evaluate (const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-              const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+
+      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.strain_rate.size(),
+             ExcMessage ("The shear heating plugin needs the strain rate!"));
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -45,12 +48,14 @@ namespace aspect
                                                           - (this->get_material_model().is_compressible()
                                                              ?
                                                              2./3. * material_model_outputs.viscosities[q]
-                                                               * std::pow(material_model_outputs.compressibilities[q]
-                                                                          * material_model_outputs.densities[q]
-                                                                          * (material_model_inputs.velocity[q] * gravity),
-                                                                          2)
+                                                             * std::pow(material_model_outputs.compressibilities[q]
+                                                                        * material_model_outputs.densities[q]
+                                                                        * (material_model_inputs.velocity[q] * gravity),
+                                                                        2)
                                                              :
                                                              0.0);
+
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
 

@@ -12,6 +12,14 @@
  * <br>
  * (Jacqueline Austermann, 2015/05/28)
  *
+ * <li> Changed: The heating models have a new straucture now:
+ * Instead of the implementation in the assembly, there is a heating
+ * plugin for each model now that can be used both in the assembly 
+ * and the postprocessors, and a new heating model manager that
+ * combines the plugins by adding the individual heating terms.
+ * <br>
+ * (Juliane Dannberg, 2015/05/27)
+ *
  * <li> Fixed: There was a bug in the make pressure rhs compatibility
  * function that caused the linear solver to fail in models with a
  * significant in- or outflux of material. This is fixed now.

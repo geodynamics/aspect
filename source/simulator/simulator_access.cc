@@ -157,7 +157,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
-    std::vector<std::string> heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
     return (std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end());
   }
 
@@ -165,7 +165,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_latent_heat () const
   {
-    std::vector<std::string> heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
     return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
   }
 

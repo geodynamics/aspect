@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,7 +73,7 @@ namespace aspect
 
       /**
        * Left hand side contribution of latent heat; this is added to the
-       * \rho c_p term on the lef hand side of the energy equation.
+       * $\\rho c_p$ term on the left hand side of the energy equation.
        */
       std::vector<double> lhs_latent_heat_terms;
     };
@@ -118,11 +118,17 @@ namespace aspect
         update ();
 
         /**
-         * Function to compute the heating terms in @p heating_outputs given the
-         * inputs in @p material_model_inputs and the outputs of the material
-         * model in @p material_model_outputs. The @p heating_outputs vector is
-         * filled with the value of the heating rate at each quadrature point as
-         * defined in @p material_model_inputs.
+         * Function to compute the heating terms in @p heating_model_outputs
+         * given the inputs in @p material_model_inputs and the outputs of the
+         * material model in @p material_model_outputs.
+         * All parts of the @p heating_model_outputs structure have to be
+         * filled, heating_source_terms with the value of the heating rate and
+         * lhs_latent_heat_terms with the part of the latent heat that depends
+         * on the temperature change (and thus ends up on the left hand side of
+         * the temperature equation) at each quadrature point as defined in
+         * @p material_model_inputs, setting them to zero if they are not to
+         * be used in the computation.
+         *
          * The default implementation calls specific_heating_rate to make
          * this implementation backwards compatible.
          */
@@ -168,7 +174,7 @@ namespace aspect
      * A class that manages all objects that provide functionality to the
      * heating models.
      *
-     * @ingroup MeshRefinement
+     * @ingroup HeatingModels
      */
     template <int dim>
     class Manager : public ::aspect::SimulatorAccess<dim>
@@ -181,7 +187,7 @@ namespace aspect
         virtual ~Manager ();
 
         /**
-         * Declare the parameters of all known mesh heating plugins, as
+         * Declare the parameters of all known heating plugins, as
          * well as of ones this class has itself.
          */
         static
@@ -207,12 +213,13 @@ namespace aspect
 
         /**
          * A function that calls the evaluate function of all the individual
-         * heating models.
+         * heating models and adds up the values of the individual heating
+         * model outputs.
          */
         void
-        execute (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                 const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                 HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
 
         /**
@@ -220,8 +227,8 @@ namespace aspect
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
-         * having to modify the Manager class by adding the new mesh
-         * refinement class.
+         * having to modify the Manager class by adding the new heating plugin
+         * class.
          *
          * @param name A string that identifies the heating model
          * @param description A text description of what this model does and that
@@ -241,26 +248,20 @@ namespace aspect
                                 void (*declare_parameters_function) (ParameterHandler &),
                                 Interface<dim> *(*factory_function) ());
 
-        /**
-         * Return a list of names of all implemented heating models, separated by
-         * '|' so that it can be used in an object of type Patterns::Selection.
-         */
-        std::string
-        get_all_heating_model_names () const;
 
         /**
          * Return a list of names of all heating models currently used in the
          * computation, as specified in the input file.
          */
-        std::vector<std::string>
+        const std::vector<std::string> &
         get_active_heating_model_names () const;
 
         /**
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > >
-        get_heating_models () const;
+        const std::list<std_cxx11::shared_ptr<Interface<dim> > > &
+        get_active_heating_models () const;
 
 
         /**
@@ -279,11 +280,22 @@ namespace aspect
         std::list<std_cxx11::shared_ptr<Interface<dim> > > heating_model_objects;
 
         /**
-         * A list of names heating model objects that have been requested
+         * A list of names of heating model objects that have been requested
          * in the parameter file.
          */
         std::vector<std::string> model_names;
     };
+
+
+    /**
+     * Return a string that consists of the names of heating models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
+     */
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ();
 
 
     /**

@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Minimal temperature (K)
+# 12: Average temperature (K)
+# 13: Maximal temperature (K)
+# 14: Average nondimensional temperature (K)
+# 15: Average adiabatic heating rate (W/kg) 
+# 16: Total adiabatic heating rate (W) 
+0 0.0000e+00 1280 12363 5457  0 26 27 27 5.7356e+12 1.72315000e+03 1.75516666e+03 1.78757747e+03 8.48573063e-03 -3.51031949e-11 -1.94510114e+02 
+1 5.7356e+12 1280 12363 5457  8  0  0  0 5.7356e+12 1.72316920e+03 1.75516667e+03 1.78757747e+03 8.48064338e-03 -3.51031950e-11 -1.94510114e+02 
+2 1.1471e+13 1280 12363 5457 12  0  0  0 5.7356e+12 1.72315661e+03 1.75516665e+03 1.78757747e+03 8.48397694e-03 -3.51031947e-11 -1.94510113e+02 
+3 1.7207e+13 1280 12363 5457 11  0  0  0 5.7356e+12 1.72314909e+03 1.75516665e+03 1.78757747e+03 8.48596859e-03 -3.51031946e-11 -1.94510112e+02 
+4 2.2942e+13 1280 12363 5457 11  0  0  0 2.0575e+12 1.72314878e+03 1.75516665e+03 1.78757747e+03 8.48605114e-03 -3.51031946e-11 -1.94510112e+02 
+5 2.5000e+13 1280 12363 5457  7  0  0  0 5.7356e+12 1.72314947e+03 1.75516665e+03 1.78757747e+03 8.48586609e-03 -3.51031946e-11 -1.94510112e+02 

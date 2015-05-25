@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,20 +34,11 @@ namespace aspect
     /**
      * A class that implements a standard shear heating rate.
      *
-     * Add the term 2*eta*(eps - 1/3*(tr eps)1):(eps - 1/3*(tr eps)1)
+     * Add the term
+     *      $ 2 \eta \left[\varepsilon:\varepsilon - \frac{1}{3}
+     *          \left( \kappa \rho (u \cdot g) \right)^2 \right] $
      *
-     * we can multiply this out to obtain
-     *      2*eta*(eps:eps - 1/3*(tr eps)^2)
-     * and can then use that in the compressible case we have
-     *      tr eps = div u
-     *             = -1/rho u . grad rho
-     * and by the usual approximation we make,
-     *      tr eps = -1/rho drho/dp u . grad p
-     *             = -1/rho drho/dp rho (u . g)
-     *             = - drho/dp (u . g)
-     *             = - compressibility rho (u . g)
-     * to yield the final form of the term:
-     *      2*eta [eps:eps - 1/3 (compressibility * rho * (u.g))^2]
+     * Also see the Equations section in the manual.
      *
      * @ingroup HeatingModels
      */
@@ -60,8 +51,8 @@ namespace aspect
          */
         virtual
         void
-        evaluate (const typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                  const typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**
