@@ -1,0 +1,137 @@
+# check strain rate based refinement
+
+############### Global parameters
+# We use a 3d setup. Since we are only interested
+# in a steady state solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+
+############### Parameters describing the model
+# The setup is a 3d box with edge length 2890000 in which
+# all 6 sides have free slip boundary conditions. Because
+# the temperature plays no role in this model we need not
+# bother to describe temperature boundary conditions or
+# the material parameters that pertain to the temperature.
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 2890000
+    set Y extent  = 2890000
+  end
+end
+
+
+subsection Model settings
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# This, however, is the more important part: We need to describe
+# the compositional field and its influence on the density
+# function. The following blocks say that we want to
+# advect a single compositional field and that we give it an
+# initial value that is zero outside a sphere of radius
+# r=200000m and centered at the point (p,p,p) with
+# p=1445000 (which is half the diameter of the box) and one inside.
+# The last block re-opens the material model and sets the
+# density differential per unit change in compositional field to
+# 100.
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = r=250000,p=1445000
+    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)) > r, 0, 1)
+  end
+end
+
+subsection Material model
+  subsection Simple model
+    set Density differential for compositional field 1 = 100
+  end
+end
+
+
+
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively.
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Initial global refinement          = 3
+  set Refinement fraction                = 0.2
+  set Coarsening fraction                = 0.
+  set Strategy                           = strain rate 
+end
+
+
+############### Parameters describing the what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. We select to generate graphical
+# output that will consist of the primary variables (velocity, pressure,
+# temperature and the compositional fields) as well as the density and
+# viscosity. We also select to compute some statistics about the
+# velocity field.
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics
+
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+    set Output format = gnuplot
+  end
+end

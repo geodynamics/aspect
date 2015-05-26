@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * <li> New: There is now a refinement plugin based on strain rate which
+ * will come handy to capture shear bands when combined with plasticity.
+ * <br>
+ * (Cedric Thieulot, 2015/05/26)
+ * 
  * <li> New: There is now a Material model called Depth dependent that implements
  * depth-dependent viscosity through the modification of any other Material model.
  * <br>
