@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/utilities.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 #include <deal.II/fe/fe_values.h>
@@ -351,14 +352,15 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
     {
-      position.resize(n_points);
-      temperature.resize(n_points);
-      pressure.resize(n_points);
-      velocity.resize(n_points);
+      position.resize(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >()));
+      temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      velocity.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
       composition.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
-        composition[q].resize(n_comp);
-      strain_rate.resize(n_points);
+        composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
+
+      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<Tensor<2,dim> >());
       cell = 0;
     }
 
