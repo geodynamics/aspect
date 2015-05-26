@@ -131,6 +131,8 @@ namespace aspect
         double bottom_density;
         double surface_pressure;
         double bottom_pressure;
+        double surface_area;
+        double bottom_area;
         unsigned int max_degree;
 
         /**
