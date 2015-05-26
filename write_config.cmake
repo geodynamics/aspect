@@ -16,7 +16,6 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-#  $Id$
 
 SET(_log_detailed "${CMAKE_BINARY_DIR}/detailed.log")
 FILE(REMOVE ${_log_detailed})
