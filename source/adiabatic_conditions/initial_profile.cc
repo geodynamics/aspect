@@ -86,13 +86,15 @@ namespace aspect
           // approximation here.
           const double density = out.densities[0];
           const double alpha = out.thermal_expansion_coefficients[0];
-          const double cp = out.specific_heat[0];
+          // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
+          // 1/cp = 0.0 we will have a constant temperature profile with depth.
+          const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
 
           pressures[i] = pressures[i-1]
                          + density * gravity * delta_z;
           temperatures[i] = temperatures[i-1] * (1 +
-                                                 alpha * gravity * delta_z / cp);
+                                                 alpha * gravity * delta_z * one_over_cp);
         }
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=
