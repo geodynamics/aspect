@@ -377,8 +377,10 @@ int main (int argc, char *argv[])
   // as deemed useful by TBB
   Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
 
+#ifdef DEBUG
   // enable floating point exceptions
   feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
 
   try
     {
