@@ -370,17 +370,17 @@ namespace aspect
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
     {
-      viscosities.resize(n_points);
-      densities.resize(n_points);
-      thermal_expansion_coefficients.resize(n_points);
-      specific_heat.resize(n_points);
-      thermal_conductivities.resize(n_points);
-      compressibilities.resize(n_points);
-      entropy_derivative_pressure.resize(n_points);
-      entropy_derivative_temperature.resize(n_points);
+      viscosities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      densities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_expansion_coefficients.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      specific_heat.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_conductivities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      compressibilities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
       reaction_terms.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
-        reaction_terms[q].resize(n_comp);
+        reaction_terms[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
     }
 
 
