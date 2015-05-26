@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * <li> New: There is now a Material model called Depth dependent that implements
+ * depth-dependent viscosity through the modification of any other Material model.
+ * <br>
+ * (Jacqueline Austermann and Max Rudolph, 2015/05/24)
+ *
  * <li> New: There is now a SimulatorAccess::get_statistics_object() function
  * that allows all users of this class to record information in the statistics
  * file, whether they are postprocessors or not.
