@@ -167,7 +167,7 @@ namespace aspect
       compute_geoid_expansions();
 
       output_geoid_information(statistics);
-      return std::pair<std::string,std::string>("Writing geoid:", "");
+      return std::pair<std::string,std::string>("Writing geoid file", "");
     }
   
     template <int dim>
@@ -590,7 +590,7 @@ namespace aspect
 
     template <int dim>
     void 
-    Geoid<dim>::output_geoid_information( TableHandler &statistics)
+    Geoid<dim>::output_geoid_information()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
                                                     (&this->get_geometry_model());
