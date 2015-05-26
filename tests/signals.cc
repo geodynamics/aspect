@@ -8,7 +8,8 @@ using namespace aspect;
 
 // create a function that is run upon loading the plugin
 // when declaring parameters, and that produces some output
-void declare_parameters(ParameterHandler &prm)
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
 {
   std::cout << "declaring parameters" << std::endl;
   prm.declare_entry("abc", "42", Patterns::Integer(21,43));

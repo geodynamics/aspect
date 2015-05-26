@@ -75,8 +75,14 @@ namespace aspect
      * parameters via the provided argument. User extensions connected to
      * this signal will likely also want to connect to the
      * parse_additional_parameters signal.
+     *
+     * The first argument to functions that connect to this signal
+     * denotes the dimension in which ASPECT will be run. Functions
+     * connected to this signal can declare additional runtime
+     * parameters in the second argument.
      */
-    static boost::signals2::signal<void (ParameterHandler &)>  declare_additional_parameters;
+    static boost::signals2::signal<void (const unsigned int aspect_dim,
+                                         ParameterHandler &prm)>  declare_additional_parameters;
 
     /**
      * A signal that is called at the beginning of the program, after reading

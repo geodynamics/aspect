@@ -663,7 +663,7 @@ namespace aspect
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
-    SimulatorSignals<dim>::declare_additional_parameters (prm);
+    SimulatorSignals<dim>::declare_additional_parameters (dim, prm);
   }
 
 
