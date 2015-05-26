@@ -318,7 +318,19 @@ namespace aspect
           {
             prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
+                               "The name of the material model to be used in "
+                               "this simulation. There are many material models "
+                               "you can choose from, as listed below. They generally "
+                               "fall into two category: (i) models that implement "
+                               "a particular case of material behavior, (ii) models "
+                               "that modify other models in some way. We sometimes "
+                               "call the latter ``compositing models''. An example "
+                               "of a compositing model is the ``depth dependent'' model "
+                               "below in that it takes another, freely choosable "
+                               "model as its base and then modifies that model's "
+                               "output in some way."
+                               "\n\n"
+                               "You can select one of the following models:\n\n"
                                +
                                std_cxx11::get<dim>(registered_plugins).get_description_string());
           }

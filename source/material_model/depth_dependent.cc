@@ -368,7 +368,9 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(DepthDependent,
                                    "depth dependent",
                                    "The ``depth dependent'' Material model applies a depth-dependent scaling "
-                                   "to any of the other available material models. "
+                                   "to any of the other available material models. In other words, it "
+                                   "is a ``compositing material model''."
+                                   "\n\n"
                                    "Parameters related to the depth dependent model are read from a subsection "
                                    "``Material model/Depth dependent model''. "
                                    "The user must specify a ``Base model'' from which material properties are "
