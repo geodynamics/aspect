@@ -116,6 +116,11 @@ CONFIGURE_FILE(
   ${CMAKE_BINARY_DIR}/CTestCustom.ctest
   @ONLY
 )
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/tests/print_test_info.sh
+  ${CMAKE_BINARY_DIR}/print_test_info.sh
+  @ONLY
+)
 
 ADD_CUSTOM_TARGET(setup_tests
   COMMAND echo "Enabling all tests ..."
