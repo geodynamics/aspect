@@ -61,14 +61,18 @@ namespace aspect
 
           HarmonicCoefficients
           get_coefficients () const;
+  
+          void clear();
+          void sadd( double s, double a, const MultipoleExpansion &M);
+          void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
 
           void
           mpi_sum_coefficients (MPI_Comm mpi_communicator);
 
         private:
           const unsigned int max_degree;
-
           HarmonicCoefficients coefficients;
+
       };
     }
 
@@ -108,9 +112,10 @@ namespace aspect
          * A function for calculating the laterally averaged pressure 
          * at the top and bottom boundaries.
          */
-        std::pair<double, double> compute_laterally_averaged_boundary_pressure();
+        void compute_laterally_averaged_boundary_properties();
         void compute_internal_density_expansions();
         void compute_topography_expansions();
+        void compute_geoid_expansions();
         void output_geoid_information(TableHandler &statistics);
           
         /**
@@ -122,6 +127,10 @@ namespace aspect
         double core_mass;
         double density_below;
         double density_above;
+        double surface_density;
+        double bottom_density;
+        double surface_pressure;
+        double bottom_pressure;
         unsigned int max_degree;
 
         /**
