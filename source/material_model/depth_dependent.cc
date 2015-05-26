@@ -41,7 +41,7 @@ namespace aspect
                    ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
 
       double min_depth=std::numeric_limits<double>::max();
-      double max_depth=std::numeric_limits<double>::lowest();
+      double max_depth=-std::numeric_limits<double>::max();
 
       /* The input viscosity file has two columns that are the viscosity and Depth */
       std::string header;
