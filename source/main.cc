@@ -25,6 +25,8 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
+#include <cfenv>
+
 #if ASPECT_USE_SHARED_LIBS==1
 #  include <dlfcn.h>
 #  ifdef ASPECT_HAVE_LINK_H
@@ -374,6 +376,9 @@ int main (int argc, char *argv[])
   // use numbers::invalid_unsigned_int instead of 1 to use as many threads
   // as deemed useful by TBB
   Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
+
+  // enable floating point exceptions
+  feenableexcept(FE_DIVBYZERO|FE_INVALID);
 
   try
     {
