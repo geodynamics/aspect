@@ -1143,7 +1143,7 @@ namespace aspect
 
         bool need_material_properties() const
         {
-          return false;
+          return true;
         }
 
         void setup(const unsigned int q_points)

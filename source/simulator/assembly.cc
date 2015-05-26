@@ -619,8 +619,10 @@ namespace aspect
         const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
                                  scratch.old_old_velocity_values[q]) / 2;
 
-        const double dField_dt = ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
-                                 / old_time_step;
+        const double dField_dt = (old_time_step == 0.0) ? 0 :
+                                 (
+                                   ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
+                                   / old_time_step);
         const double u_grad_field = u * (scratch.old_field_grads[q] +
                                          scratch.old_old_field_grads[q]) / 2;
 
@@ -653,12 +655,12 @@ namespace aspect
            0.0);
 
         const double dreaction_term_dt =
-          (advection_field.is_temperature()
-           ?
-           0.0
-           :
-           scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable])
-          / old_time_step;
+          (advection_field.is_temperature() || old_time_step == 0)
+          ?
+          0.0
+          :
+          (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+           / old_time_step);
 
         double residual
           = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
