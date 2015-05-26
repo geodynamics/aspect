@@ -8459,8 +8459,12 @@ respective signals.
 In the first case, code that registers slots with global signals would look like
 this:
 \begin{lstlisting}[frame=single,language=c++]
-// A function that will be called at the time when parameters are declared
-void declare_parameters(ParameterHandler &prm)
+// A function that will be called at the time when parameters are declared.
+// It receives the dimension in which ASPECT will be run as the first argument,
+// and the ParameterHandler object that holds the runtime parameter
+// declarations as second argument.
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
 {
   prm.declare_entry("My parameter", ...);
 }
