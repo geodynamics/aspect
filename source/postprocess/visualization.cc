@@ -28,7 +28,6 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <math.h>
 #include <stdio.h>
