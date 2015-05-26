@@ -191,6 +191,7 @@ namespace aspect
          */
 
       private:
+        bool use_depth;
         double reference_rho;
         double reference_T;
         double eta;
@@ -230,11 +231,13 @@ namespace aspect
                                    const double pressure,
                                    const int phase) const;
 
-        // list of depth, width and Clapeyron slopes for the different phase
-        // transitions
+        // list of depth (or pressure), width and Clapeyron slopes
+        // for the different phase transitions
         std::vector<double> transition_depths;
+        std::vector<double> transition_pressures;
         std::vector<double> transition_temperatures;
         std::vector<double> transition_widths;
+        std::vector<double> transition_pressure_widths;
         std::vector<double> transition_slopes;
         std::vector<double> density_jumps;
         std::vector<int> transition_phases;
