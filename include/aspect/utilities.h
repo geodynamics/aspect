@@ -118,6 +118,30 @@ namespace aspect
 
     template <>
     inline
+    SymmetricTensor<2,2>
+    signaling_nan<SymmetricTensor<2,2> >()
+    {
+      const unsigned int dim = 2;
+      SymmetricTensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    SymmetricTensor<2,3>
+    signaling_nan<SymmetricTensor<2,3> >()
+    {
+      const unsigned int dim = 3;
+      SymmetricTensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
     Tensor<2,2>
     signaling_nan<Tensor<2,2> >()
     {

@@ -360,7 +360,7 @@ namespace aspect
       for (unsigned int q=0; q<n_points; ++q)
         composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
 
-      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<Tensor<2,dim> >());
+      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >());
       cell = 0;
     }
 
