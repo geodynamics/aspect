@@ -234,8 +234,8 @@ namespace aspect
             const double np = get_np(pressure);
             const unsigned int inp = static_cast<unsigned int>(np);
 
-            Assert(inT<values.n_rows(), ExcMessage("not in range"));
-            Assert(inp<values.n_cols(), ExcMessage("not in range"));
+            Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
+            Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
 
             if (!interpol)
               return values[inT][inp];
@@ -266,8 +266,8 @@ namespace aspect
           {
             temperature=std::max(min_temp, temperature);
             temperature=std::min(temperature, max_temp-delta_temp);
-            Assert(temperature>=min_temp, ExcMessage("not in range"));
-            Assert(temperature<=max_temp, ExcMessage("not in range"));
+            Assert(temperature>=min_temp, ExcMessage("ASPECT found a temperature less than min_T."));
+            Assert(temperature<=max_temp, ExcMessage("ASPECT found a temperature greater than max_T."));
             return (temperature-min_temp)/delta_temp;
           }
 
@@ -275,8 +275,8 @@ namespace aspect
           {
             pressure=std::max(min_press, pressure);
             pressure=std::min(pressure, max_press-delta_press);
-            Assert(pressure>=min_press, ExcMessage("not in range"));
-            Assert(pressure<=max_press, ExcMessage("not in range"));
+            Assert(pressure>=min_press, ExcMessage("ASPECT found a pressure less than min_p."));
+            Assert(pressure<=max_press, ExcMessage("ASPECT found a pressure greater than max_p."));
             return (pressure-min_press)/delta_press;
           }
 
@@ -338,10 +338,10 @@ namespace aspect
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("not in range"));
-            Assert(depth<=max_depth, ExcMessage("not in range"));
+            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
             const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("not in range"));
+            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
             return values[idx];
           }
 
@@ -394,10 +394,10 @@ namespace aspect
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("not in range"));
-            Assert(depth<=max_depth, ExcMessage("not in range"));
+            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
             const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("not in range"));
+            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
             return values[idx];
           }
 

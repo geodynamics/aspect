@@ -56,7 +56,7 @@ namespace aspect
           case 1:
             return outer_temperature;
           default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
+            Assert (false, ExcMessage ("Unknown boundary indicator. The boundary indicator should be 0 or 1."));
             return std::numeric_limits<double>::quiet_NaN();
         }
     }

@@ -264,7 +264,7 @@ namespace aspect
           else if (dependence == NonlinearDependence::pressure)
             melt_fraction_derivative = melt_fraction_derivative_pressure;
           else
-            AssertThrow(false, ExcMessage("not implemented"));
+            AssertThrow(false, ExcMessage("Error in calculating melt fraction derivative: not implemented"));
 
           entropy_gradient += melt_fraction_derivative * peridotite_melting_entropy_change * peridotite_fraction;
         }
@@ -291,7 +291,7 @@ namespace aspect
               else if (dependence == NonlinearDependence::pressure)
                 melt_fraction_derivative = (dT_melting_dp)/(2*E2 * sqrt(discriminant));
               else
-                AssertThrow(false, ExcMessage("not implemented"));
+                AssertThrow(false, ExcMessage("Error in calculating melt fraction derivative: not implemented"));
             }
 
           entropy_gradient += melt_fraction_derivative * pyroxenite_melting_entropy_change * compositional_fields[0];

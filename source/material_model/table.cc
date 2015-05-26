@@ -312,7 +312,6 @@ namespace aspect
       {
 // TODO: clamping into the valid range in all cases okay?
         const double pressure = std::max(min_p, std::min(p, max_p-delta_p));
-
         Assert (pressure >= min_p, ExcMessage ("The pressure is not greater than the minimum value for pressure."));
         Assert (pressure <= max_p, ExcMessage ("The pressure is not less than the maximum value for pressure."));
         Assert (T >= min_T, ExcMessage ("The temperature is not greater than the minimum value for temperature."));
