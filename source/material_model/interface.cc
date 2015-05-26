@@ -488,7 +488,7 @@ namespace aspect
         void average (const AveragingOperation  operation,
                       const FullMatrix<double>      &projection_matrix,
                       const FullMatrix<double>      &expansion_matrix,
-                      const std::vector<Point<dim> >    &position,
+                      const std::vector<Point<dim> > &,
                       std::vector<double>           &values_out)
         {
           // if an output field has not been filled (because it was

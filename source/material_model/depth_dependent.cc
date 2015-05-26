@@ -239,12 +239,11 @@ namespace aspect
               Assert( depth_values.size() == viscosity_values.size() ,
                       ExcMessage("Depth list must be same size as Viscosity list"));
               /* check that list is in ascending order */
-              for ( int i=1; i<depth_values.size(); i++)
+              for (unsigned int i=1; i<depth_values.size(); i++)
                 Assert(depth_values[i] > depth_values[i-1],
                        ExcMessage("Viscosity depth values must be strictly ascending"));
               /* check that last layer includes base of model */
-              const double maximal_depth = this->get_geometry_model().maximal_depth();
-              Assert( *(depth_values.end()-1) >= maximal_depth,
+              Assert( *(depth_values.end()-1) >= this->get_geometry_model().maximal_depth(),
                       ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
             }
 
