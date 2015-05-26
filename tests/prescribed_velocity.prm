@@ -1,0 +1,54 @@
+## First we set up a unit length box model with uniform everything.
+set Dimension                              = 2
+set End time                               = 0
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+end
+
+subsection Model settings
+  set Zero velocity boundary indicators = top
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 3
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end
+
+## Turn prescribed velocities on
+set Prescribe internal velocities = true
+
+subsection Prescribed velocities
+  subsection Indicator function
+    set Variable names = x,y,t
+    # Return where to prescribe u_x; u_y; u_z (last one only used if dimeneion = 3)
+    # 1 if velocity should be prescribed, 0 otherwise
+    set Function expression = if(((x>.1)&(x<.9))&(abs(x-(1-y))<.05),1,0); \
+                                if(((x>.1)&(x<.9))&(abs(x-(1-y))<.05),1,0)
+  end
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function expression = (exp(-1*abs(x-(1-y))/.05)); \
+                                -(exp(-1*abs(x-(1-y))/.05))
+  end
+end
