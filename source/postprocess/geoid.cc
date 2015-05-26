@@ -269,8 +269,8 @@ namespace aspect
                   }
               }
 
-      double bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      double surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
+      bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
+      surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
 
       surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() ) / surface_area;
       bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
@@ -519,7 +519,7 @@ namespace aspect
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
                         // Add topography contribution
-                        surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+                        surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
 
         const double r = location.norm();
         const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
@@ -538,7 +538,7 @@ namespace aspect
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
 
                         // Add topography contribution
-                        bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+                        bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
 
         const double r = location.norm();
         const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
@@ -622,7 +622,7 @@ namespace aspect
 
           file << "# Timestep Maximum_degree Time" << std::endl;
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
-          file << "# degree order density_surface_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
+          file << "# degree order surface_geoid_sine surface_geoid_cosine bottom_geoid_sine bottom_geoid_cosine density_surface_sine density_surface_cosine density_bottom_sine density_bottom_cosine surface_topography_sine surface_topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
           // Write the solution to an output file
           for (unsigned int l=0, k=0; l <= max_degree; ++l)
             {
@@ -632,15 +632,15 @@ namespace aspect
                        << surface_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_surface << " "
                        << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface << " "
                        << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom << " "
-                       << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom << " "<<std::endl;
-                     //  << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
-                    //   << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
-                     //  << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
-                     //  << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
-                     //  << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
-                     //  << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
-                     //  << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
-                     //  << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
+                       << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom << " "
+                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
+                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
+                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
+                       << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
+                       << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
+                       << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
+                       << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
                 }
             }
         }
