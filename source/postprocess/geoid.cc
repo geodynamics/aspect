@@ -116,7 +116,7 @@ namespace aspect
     Geoid<dim>::execute (TableHandler &statistics)
     {
       compute_internal_density_expansions();
-      //compute_topography_expansions();
+      compute_topography_expansions();
 
       output_geoid_information(statistics);
       return std::pair<std::string,std::string>("Writing geoid:", "");
@@ -142,11 +142,12 @@ namespace aspect
                                         update_values | update_JxW_values);
 
       const double outer_radius = geometry_model->outer_radius();
+      const double inner_radius = geometry_model->inner_radius();
 
-      double local_surface_pressure;
-      double local_bottom_pressure;
-      double local_surface_area;
-      double local_bottom_area;
+      double local_surface_pressure = 0.;
+      double local_bottom_pressure = 0.;
+      double local_surface_area = 0.;
+      double local_bottom_area = 0.;
 
       std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
 
@@ -174,7 +175,7 @@ namespace aspect
 
                     break; //no need to do the rest of the faces
                   }
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3.))
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3.))
                   {
                     //handle surface cells
                     fe_face_values.reinit (cell, f);
@@ -329,6 +330,7 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (1 /*q_point*/));
 
       const double outer_radius = geometry_model->outer_radius();
+      const double inner_radius = geometry_model->inner_radius();
 
       Tensor<1,dim> gravity;
       Tensor<1,dim> gravity_direction;
@@ -356,7 +358,7 @@ namespace aspect
                       surface_cell = true;
                       break;
                     }
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
+                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3))
                     {
                       bottom_cell = true;
                       break;
@@ -365,6 +367,7 @@ namespace aspect
 
                 if (surface_cell || bottom_cell)
                   {
+                    this->get_pcout()<<"Found boundary cell!"<<std::endl;
                     fe_face_values.reinit (cell, f);
                     Point<dim> location = fe_face_values.get_quadrature_points()[q];
 
@@ -429,10 +432,12 @@ namespace aspect
                     // the topography expansion
                     if (surface_cell)
                       {
+                        this->get_pcout()<<"It is surface!"<<std::endl;
                         // Subtract the adiabatic pressure
                         const double dynamic_pressure   = in_face.pressure[q] - surface_pressure;
                         const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+                        this->get_pcout()<<"pressure: "<<dynamic_pressure<<"\tsigma: "<<sigma_rr<<"\tTOPO: "<<dynamic_topography<<std::endl;
 
                         // Add topography contribution
                         surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q), 1.0, true);
@@ -442,16 +447,19 @@ namespace aspect
                     // the bottom expansion
                     if (bottom_cell)
                       {
+                        this->get_pcout()<<"It is bottom!"<<std::endl;
                         // Subtract the adiabatic pressure
                         const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
                         const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+                        this->get_pcout()<<"pressure: "<<dynamic_pressure<<"\tsigma: "<<sigma_rr<<"\tTOPO: "<<dynamic_topography<<std::endl;
 
                         // Add topography contribution
                         bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q), 1.0, true);
                       }
                   }
               }
+      this->get_pcout()<<"SURF: "<<surface_pressure<<"\t"<<bottom_pressure<<std::endl;
       surface_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
       bottom_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
@@ -500,7 +508,11 @@ namespace aspect
                        << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] * (-gravitational_constant/gravity_at_surface) << " "
                        << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/gravity_at_surface) << " "
                        << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] * (-gravitational_constant/gravity_at_bottom)<<" "
-                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/gravity_at_bottom)<< std::endl;
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/gravity_at_bottom)<<" " 
+                       << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
+                       << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
+                       << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
+                       << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
                 }
             }
         }
