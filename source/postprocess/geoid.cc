@@ -101,6 +101,52 @@ namespace aspect
       {
         return coefficients;
       }
+ 
+      template <int dim>
+      void MultipoleExpansion<dim>::clear()
+      {
+        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              coefficients.sine_coefficients[k] = 0.0;
+              coefficients.cosine_coefficients[k] = 0.0;
+            }
+      }
+
+      template <int dim>
+      void MultipoleExpansion<dim>::sadd( double s, double a, const MultipoleExpansion &M )
+      {
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+                     ExcInternalError() );
+
+        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              coefficients.sine_coefficients[k] = s * coefficients.sine_coefficients[k] +
+                                                  a * M.get_coefficients().sine_coefficients[k];
+              coefficients.cosine_coefficients[k] = s * coefficients.cosine_coefficients[k] + 
+                                                    a * M.get_coefficients().cosine_coefficients[k];
+            }
+      }
+
+      template <int dim>
+      void MultipoleExpansion<dim>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
+      {
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+                     ExcInternalError() );
+
+        AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
+        AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
+
+        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              coefficients.sine_coefficients[k] = s[l] * coefficients.sine_coefficients[k] +
+                                                  a[l] * M.get_coefficients().sine_coefficients[k];
+              coefficients.cosine_coefficients[k] = s[l] * coefficients.cosine_coefficients[k] + 
+                                                    a[l] * M.get_coefficients().cosine_coefficients[k];
+            }
+      }
 
       template <int dim>
       void
@@ -115,16 +161,18 @@ namespace aspect
     std::pair<std::string,std::string>
     Geoid<dim>::execute (TableHandler &statistics)
     {
+      compute_laterally_averaged_boundary_properties();
       compute_internal_density_expansions();
       compute_topography_expansions();
+      compute_geoid_expansions();
 
       output_geoid_information(statistics);
       return std::pair<std::string,std::string>("Writing geoid:", "");
     }
   
     template <int dim>
-    std::pair<double, double>
-    Geoid<dim>::compute_laterally_averaged_boundary_pressure()
+    void
+    Geoid<dim>::compute_laterally_averaged_boundary_properties()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
                                                     (&this->get_geometry_model());
@@ -139,17 +187,26 @@ namespace aspect
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula_face,
-                                        update_values | update_JxW_values);
+                                        update_values |
+                                        update_gradients |
+                                        update_q_points |
+                                        update_JxW_values);
 
       const double outer_radius = geometry_model->outer_radius();
       const double inner_radius = geometry_model->inner_radius();
 
       double local_surface_pressure = 0.;
       double local_bottom_pressure = 0.;
+      double local_surface_density = 0.;
+      double local_bottom_density = 0.;
       double local_surface_area = 0.;
       double local_bottom_area = 0.;
 
       std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
+
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -162,40 +219,66 @@ namespace aspect
           if (cell->at_boundary())
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
+                bool cell_at_top = false;
+                bool cell_at_bottom = false;
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
-                  {
-                    //handle surface cells
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
-                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                      {
-                        local_surface_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                        local_surface_area += fe_face_values.JxW(q);
-                      }
-
-                    break; //no need to do the rest of the faces
-                  }
+                  cell_at_top = true;
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3.))
+                  cell_at_bottom = true;
+            
+                if( cell_at_top || cell_at_bottom )
                   {
                     //handle surface cells
                     fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
-                    for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                    fe_face_values[this->introspection().extractors.temperature]
+                    .get_function_values (this->get_solution(), in.temperature);
+                    fe_face_values[this->introspection().extractors.pressure]
+                    .get_function_values (this->get_solution(), in.pressure);
+                    fe_face_values[this->introspection().extractors.velocities]
+                    .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+
+                    in.position = fe_face_values.get_quadrature_points();
+
+                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      fe_face_values[this->introspection().extractors.compositional_fields[c]]
+                      .get_function_values(this->get_solution(),
+                                           composition_values[c]);
+                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
                       {
-                        local_bottom_pressure += pressure_vals[q] * fe_face_values.JxW(q);
-                        local_bottom_area += fe_face_values.JxW(q);
+                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                          in.composition[i][c] = composition_values[c][i];
                       }
 
-                    break; //no need to do the rest of the faces
+                    this->get_material_model().evaluate(in, out);
+
+                    //calculate the top properties
+                    if (cell_at_top) 
+                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                        {
+                          local_surface_pressure += in.pressure[q] * fe_face_values.JxW(q);
+                          local_surface_density += out.densities[q] * fe_face_values.JxW(q);
+                          local_surface_area += fe_face_values.JxW(q);
+                        }
+                    if (cell_at_bottom)
+                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
+                        {
+                          local_bottom_pressure += in.pressure[q] * fe_face_values.JxW(q);
+                          local_bottom_density += out.densities[q] * fe_face_values.JxW(q);
+                          local_bottom_area += fe_face_values.JxW(q);
+                        }
                   }
               }
-      const double surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() )
-                                      / Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
-      const double bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() )
-                                      / Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
+
+      double bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
+      double surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
+
+      surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() ) / surface_area;
+      bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
+
+      surface_density = Utilities::MPI::sum( local_surface_density, this->get_mpi_communicator() ) / surface_area;
+      bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
+
       this->get_pcout()<<"Surface pressure: "<<surface_pressure<<"\tBottom pressure: "<<bottom_pressure<<std::endl;
-     
-      return std::make_pair( surface_pressure, bottom_pressure );
     }
 
     template <int dim>
@@ -296,10 +379,6 @@ namespace aspect
                    ExcMessage("The geoid postprocessor is currently only implemented for "
                        "the spherical shell geometry model."));
 
-      const std::pair<double, double> surface_bottom_pressure = compute_laterally_averaged_boundary_pressure();
-      const double surface_pressure = surface_bottom_pressure.first;
-      const double bottom_pressure = surface_bottom_pressure.second;
-
       const QMidpoint<dim> center_quadrature_formula;  //Need to retrieve stress here
       const QMidpoint<dim-1> face_quadrature_formula;  //need to retrieve pressure here
      
@@ -341,6 +420,9 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
+      std::ofstream bfile ("bottom.out");
+      std::ofstream sfile ("surface.out");
+
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
             {
@@ -367,7 +449,6 @@ namespace aspect
 
                 if (surface_cell || bottom_cell)
                   {
-                    this->get_pcout()<<"Found boundary cell!"<<std::endl;
                     fe_face_values.reinit (cell, f);
                     Point<dim> location = fe_face_values.get_quadrature_points()[q];
 
@@ -417,7 +498,7 @@ namespace aspect
                           in_face.composition[i][c] = composition_values[c][i];
                       }
 
-                    this->get_material_model().evaluate(in_center, out_face);
+                    this->get_material_model().evaluate(in_center, out_center);
 
                     gravity = this->get_gravity_model().gravity_vector(fe_face_values.quadrature_point(q));
                     gravity_direction = gravity/gravity.norm();
@@ -432,39 +513,83 @@ namespace aspect
                     // the topography expansion
                     if (surface_cell)
                       {
-                        this->get_pcout()<<"It is surface!"<<std::endl;
                         // Subtract the adiabatic pressure
                         const double dynamic_pressure   = in_face.pressure[q] - surface_pressure;
                         const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
-                        this->get_pcout()<<"pressure: "<<dynamic_pressure<<"\tsigma: "<<sigma_rr<<"\tTOPO: "<<dynamic_topography<<std::endl;
 
                         // Add topography contribution
                         surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+
+        const double r = location.norm();
+        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
+        const double theta = std::acos(location[2]/r)*180.0/M_PI;
+                        sfile<<phi<<" "<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+                        
                       }
 
                     // if this is a cell at the bottom, add the topography to
                     // the bottom expansion
                     if (bottom_cell)
                       {
-                        this->get_pcout()<<"It is bottom!"<<std::endl;
                         // Subtract the adiabatic pressure
                         const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
                         const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                         const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
-                        this->get_pcout()<<"pressure: "<<dynamic_pressure<<"\tsigma: "<<sigma_rr<<"\tTOPO: "<<dynamic_topography<<std::endl;
 
                         // Add topography contribution
                         bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q), 1.0, true);
+
+        const double r = location.norm();
+        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
+        const double theta = std::acos(location[2]/r)*180.0/M_PI;
+                        bfile<<phi<<" "<<theta<<" "<<bottom_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
                       }
                   }
               }
-      this->get_pcout()<<"SURF: "<<surface_pressure<<"\t"<<bottom_pressure<<std::endl;
+      this->get_pcout()<<"SURF: "<<surface_pressure<<"\t"<<bottom_pressure<<"\t"<<surface_density<<"\t"<<bottom_density<<std::endl;
       surface_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
       bottom_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
 
 
+    template <int dim>
+    void 
+    Geoid<dim>::compute_geoid_expansions()
+    {
+      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
+                                                    (&this->get_geometry_model());
+      AssertThrow (geometry_model != 0,
+                   ExcMessage("The geoid postprocessor is currently only implemented for "
+                       "the spherical shell geometry model."));
+
+      const double outer_radius = geometry_model->outer_radius();
+      const double inner_radius = geometry_model->inner_radius();
+      const double G = constants::big_g;
+      const double delta_rho_top = surface_density-density_above;
+      const double delta_rho_bottom = density_below-bottom_density;
+
+      std::vector<double> s(max_degree+1);
+      std::vector<double> a_surface(max_degree+1);
+      std::vector<double> a_bottom(max_degree+1);
+      for( unsigned int l = 0; l <= max_degree; ++l)
+        {
+          s[l] = 1.0;
+          a_surface[l] = G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
+          a_bottom[l] = G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+        }
+
+
+      surface_potential_expansion->clear();
+      surface_potential_expansion->sadd( 1.0, G , *internal_density_expansion_surface );
+      surface_potential_expansion->sadd( 1.0, G * outer_radius * delta_rho_top, *surface_topography_expansion );
+      surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
+
+      bottom_potential_expansion->clear();
+      bottom_potential_expansion->sadd( 1.0, G , *internal_density_expansion_bottom );
+      bottom_potential_expansion->sadd( 1.0, G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+      bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
+    }
 
     template <int dim>
     void 
@@ -490,7 +615,6 @@ namespace aspect
       // On process 0 write output file
       if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          const double gravitational_constant = 6.67384e-11;
           const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                    this->get_time() / year_in_seconds :
                                                    this->get_time());
@@ -505,14 +629,18 @@ namespace aspect
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   file << l << " " << m << " "
-                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] * (-gravitational_constant/gravity_at_surface) << " "
-                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/gravity_at_surface) << " "
-                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] * (-gravitational_constant/gravity_at_bottom)<<" "
-                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] * (-gravitational_constant/gravity_at_bottom)<<" " 
-                       << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
-                       << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
-                       << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
-                       << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
+                       << surface_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_surface << " "
+                       << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface << " "
+                       << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom << " "
+                       << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom << " "<<std::endl;
+                     //  << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
+                    //   << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
+                     //  << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
+                     //  << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
+                     //  << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
+                     //  << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
+                     //  << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
+                     //  << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
                 }
             }
         }
