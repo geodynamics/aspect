@@ -116,7 +116,7 @@ namespace aspect
         void compute_internal_density_expansions();
         void compute_topography_expansions();
         void compute_geoid_expansions();
-        void output_geoid_information(TableHandler &statistics);
+        void output_geoid_information();
           
         /**
          * A parameter that we read from the input file that denotes whether

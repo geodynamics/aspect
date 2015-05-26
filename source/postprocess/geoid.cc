@@ -17,9 +17,11 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
+#include <complex>
 
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -65,15 +67,18 @@ namespace aspect
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
+                  std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
                   coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                         * std::cos(static_cast<double>(m)*phi) *
-                                                         (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                                                         * sph_harm.real() * JxW;
+      //                                                   * std::cos(static_cast<double>(m)*phi) *
+       //                                                  (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
                   coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                       * std::sin(static_cast<double>(m)*phi)
-                                                       * 2.0 * prefix * plm * JxW;
+                                                         * sph_harm.imag() * JxW;
+         //                                              * std::sin(static_cast<double>(m)*phi)
+           //                                            * 2.0 * prefix * plm * JxW;
                 }
           }
         else
@@ -81,15 +86,18 @@ namespace aspect
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
+                  std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
                   const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
                   coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                         * std::cos(static_cast<double>(m)*phi)
-                                                         * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                                                      //   * std::cos(static_cast<double>(m)*phi)
+                                                    //     * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                                                         * sph_harm.real() * JxW;
                   coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r 
-                                                       * std::sin(static_cast<double>(m)*phi)
-                                                       * 2.0 * prefix * plm * JxW;
+                                                  //     * std::sin(static_cast<double>(m)*phi)
+                                                //       * 2.0 * prefix * plm * JxW;
+                                                         * sph_harm.imag() * JxW;
                 }
           }
            
@@ -166,7 +174,7 @@ namespace aspect
       compute_topography_expansions();
       compute_geoid_expansions();
 
-      output_geoid_information(statistics);
+      output_geoid_information();
       return std::pair<std::string,std::string>("Writing geoid file", "");
     }
   
