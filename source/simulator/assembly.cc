@@ -1602,30 +1602,30 @@ namespace aspect
                             scratch.material_model_outputs,
                             heating_model_outputs);
 
-    if (advection_field.is_temperature())
-      {
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
-            scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
-            scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
-            scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+    // set up scratch.explicit_material_model_*
+    {
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
+          scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
+          scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
+          scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
 
-            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-              scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
-            scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
-          }
-        scratch.explicit_material_model_inputs.cell = &cell;
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
+          scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
+        }
+      scratch.explicit_material_model_inputs.cell = &cell;
 
-        material_model->evaluate(scratch.explicit_material_model_inputs,
-                                 scratch.explicit_material_model_outputs);
-        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                                   cell,
-                                                   scratch.finite_element_values.get_quadrature(),
-                                                   scratch.finite_element_values.get_mapping(),
-                                                   scratch.explicit_material_model_inputs,
-                                                   scratch.explicit_material_model_outputs);
-      }
+      material_model->evaluate(scratch.explicit_material_model_inputs,
+                               scratch.explicit_material_model_outputs);
+      MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                 cell,
+                                                 scratch.finite_element_values.get_quadrature(),
+                                                 scratch.finite_element_values.get_mapping(),
+                                                 scratch.explicit_material_model_inputs,
+                                                 scratch.explicit_material_model_outputs);
+    }
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
