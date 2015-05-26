@@ -277,8 +277,6 @@ namespace aspect
 
       surface_density = Utilities::MPI::sum( local_surface_density, this->get_mpi_communicator() ) / surface_area;
       bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
-
-      this->get_pcout()<<"Surface pressure: "<<surface_pressure<<"\tBottom pressure: "<<bottom_pressure<<std::endl;
     }
 
     template <int dim>
@@ -547,7 +545,6 @@ namespace aspect
                       }
                   }
               }
-      this->get_pcout()<<"SURF: "<<surface_pressure<<"\t"<<bottom_pressure<<"\t"<<surface_density<<"\t"<<bottom_density<<std::endl;
       surface_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
       bottom_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
