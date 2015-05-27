@@ -612,6 +612,9 @@ namespace aspect
 
                         // Add topography contribution
                         surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
+        const double r = location.norm();
+        const double theta = std::atan2(location[1],location[0]);
+        sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
@@ -627,11 +630,14 @@ namespace aspect
                         // Subtract the adiabatic pressure
                         const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
                         const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density-density_below);
 
                         // Add topography contribution
                         bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
 
+        const double r = location.norm();
+        const double theta = std::atan2(location[1],location[0]);
+        bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
 //        const double theta = std::acos(location[2]/r)*180.0/M_PI;
