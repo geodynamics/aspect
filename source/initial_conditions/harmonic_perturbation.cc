@@ -80,7 +80,7 @@ namespace aspect
               // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
               // This way the perturbation is alway 0 at the model boundaries.
               const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
-              lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
+              lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*2.0*numbers::PI/opening_angle);
             }
 
           else if (dim==3)
