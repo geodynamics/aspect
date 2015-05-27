@@ -6155,7 +6155,7 @@ error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in Table~\ref{tab:burstedde-table} and can be deduced from equations \eqref{eq:burstedde-velocity} and
 \eqref{eq:burstedde-pressure}.
-Figure \ref{figure} shows that the analytical solution is indeed retrieved by the model.
+Figure~\ref{fig:burstedde-benchmark} shows that the analytical solution is indeed retrieved by the model.
 
 \begin{table}[h!]
 \caption{Analytical solutions \label{tab:burstedde-table}}
@@ -6170,7 +6170,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
 
 \begin{figure}[t!]
   \centering
-  \subfigure[b]{
+  \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
   ~ 
   \subfigure[]{
@@ -6181,7 +6181,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
   ~
   \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
-  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{figure}
+  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{fig:burstedde-benchmark}
 \end{figure}
 
 The convergence of the numerical error of this benchmark has been analysed by
