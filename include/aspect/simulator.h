@@ -1008,6 +1008,8 @@ namespace aspect
        * describes the finite element space in use and that is used to
        * evaluate the solution values at the quadrature points of the current
        * cell.
+       * @param[in] cell The cell on which we are currently evaluating
+       * the material model.
        * @param[in] compute_strainrate A flag determining whether the strain
        * rate should be computed or not in the output structure.
        * @param[out] material_model_inputs The output structure that contains
