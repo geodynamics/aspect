@@ -128,13 +128,17 @@ namespace aspect
                                                       std::exp((activation_energies_diffusion[j]+activation_volumes_diffusion[j]*pressure)
                                                                /(constants::gas_constant*temperature)));
 
-          const double viscosity_dislocation = std::min(1e22,std::pow(prefactors_dislocation[j],-1e0/stress_exponents_dislocation[j])*
-                                                        std::pow(e2inv,(1e0-stress_exponents_dislocation[j])/
-                                                                 stress_exponents_dislocation[j])*
-                                                        std::exp((activation_energies_dislocation[j]+
-                                                                  activation_volumes_dislocation[j]*pressure)/(stress_exponents_dislocation[j]
-                                                                      *constants::gas_constant*temperature)));
-          composition_viscosities[j] = std::min(std::max(std::pow((1.0/viscosity_diffusion + 1.0/viscosity_dislocation), -1.0), min_visc), max_visc);
+          double one_over_viscosity_dislocation = 0.0;
+          if (e2inv > 2.0*std::numeric_limits<double>::min())
+            one_over_viscosity_dislocation = (constants::gas_constant*temperature)
+                                             /
+                                             std::min(1e22,std::pow(prefactors_dislocation[j],-1e0/stress_exponents_dislocation[j])*
+                                                      std::pow(e2inv,(1e0-stress_exponents_dislocation[j])/
+                                                               stress_exponents_dislocation[j])*
+                                                      std::exp((activation_energies_dislocation[j]+
+                                                                activation_volumes_dislocation[j]*pressure)/(stress_exponents_dislocation[j])));
+
+          composition_viscosities[j] = std::min(std::max(std::pow((1.0/viscosity_diffusion + one_over_viscosity_dislocation), -1.0), min_visc), max_visc);
         }
       return composition_viscosities;
     }
