@@ -34,8 +34,8 @@ namespace aspect
     namespace internal
     {
       /**
-       * A struct that contains the representation of the coefficients of a
-       * spherical harmonic expansion.
+       * A struct that contains a representation of the coefficients of a
+       * harmonic expansion.
        */
       template <int dim>
       struct HarmonicCoefficients
@@ -47,32 +47,68 @@ namespace aspect
       };
 
       /**
-       * A class to expand arbitrary fields of doubles into spherical harmonic
-       * coefficients
+       * A class to expand arbitrary fields of doubles into multipole
+       * moments.  In 3D this is spherical multipole moments, and in
+       * 2D it is cylindrical multipole moments.
        */
       template <int dim>
       class MultipoleExpansion
       {
         public:
           MultipoleExpansion(const unsigned int max_degree);
-
+      
+          /**
+           *Do the multipole expansion at a particular quadrature point.  
+           *
+           *@param position The location of the quadrature point.
+           *
+           *@param value  The value of the function being expanded.
+           * 
+           *@param JxW The Jacobian and weight given to the quadrature point
+           *
+           *@param evaluation_radius The radius at which we expand the multipole.
+           *
+           *@param is_external Whether to do an internal or external multipole expansion.
+           */
           void add_quadrature_point (const Point<dim> &position, const double value, 
                                      const double JxW, const double evaluation_radius,
                                      const bool is_external );
 
+          /**
+           * Return a reference to the internal representation of the mulipole expansion.
+           */
           HarmonicCoefficients<dim>
           get_coefficients () const;
   
+          /*
+           * Set all the multipole coefficients to zero.
+           */
           void clear();
+
+          /*
+           * Scalar add another multipole expansion to this one.
+           * Computes this = s*this + a*M for each coefficient.
+           */
           void sadd( double s, double a, const MultipoleExpansion &M);
+
+          /*
+           * Scalar add another multipole expansion to this one.
+           * Each degree can have a different scalar factor, so 
+           * the size of s and a are expected to be max_degree+1.
+           * Computes this = s[l]*this + a[l]*M for each coefficient.
+           */
           void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
 
           void
+ 
+          /**
+           * Perform an MPI sum on the coefficents.
+           */
           mpi_sum_coefficients (MPI_Comm mpi_communicator);
 
         private:
-          const unsigned int max_degree;
-          HarmonicCoefficients<dim> coefficients;
+          const unsigned int max_degree;  //expansion degree
+          HarmonicCoefficients<dim> coefficients; //sine and cosine coefficients
 
       };
     }
