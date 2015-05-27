@@ -1517,45 +1517,32 @@ namespace aspect
     data.local_matrix = 0;
     data.local_rhs = 0;
 
-    if (advection_field.is_temperature())
+    scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
+        scratch.old_temperature_values);
+    scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
+        scratch.old_old_temperature_values);
+
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
+        scratch.old_strain_rates);
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
+        scratch.old_old_strain_rates);
+    scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
+        scratch.old_pressure);
+    scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
+        scratch.old_old_pressure);
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
-            scratch.old_temperature_values);
-        scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
-            scratch.old_old_temperature_values);
-
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
-            scratch.old_strain_rates);
-        scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
-            scratch.old_old_strain_rates);
-
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
-            scratch.old_pressure);
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
-            scratch.old_old_pressure);
-
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
-            scratch.old_pressure_gradients);
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
-            scratch.old_old_pressure_gradients);
-        scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
-            scratch.current_pressure_gradients);
-
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          {
-            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
-                scratch.old_composition_values[c]);
-            scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
-                scratch.old_old_composition_values[c]);
-          }
+        scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
+            scratch.old_composition_values[c]);
+        scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
+            scratch.old_old_composition_values[c]);
       }
-    else
-      {
-        scratch.finite_element_values[introspection.extractors.compositional_fields[advection_field.compositional_variable]].get_function_values(old_solution,
-            scratch.old_composition_values[advection_field.compositional_variable]);
-        scratch.finite_element_values[introspection.extractors.compositional_fields[advection_field.compositional_variable]].get_function_values(old_old_solution,
-            scratch.old_old_composition_values[advection_field.compositional_variable]);
-      }
+    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
+        scratch.old_pressure_gradients);
+    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
+        scratch.old_old_pressure_gradients);
+    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
+        scratch.current_pressure_gradients);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
         scratch.old_velocity_values);
