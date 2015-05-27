@@ -81,12 +81,6 @@ namespace aspect
        * @endcode
        * Here, <code>any_variable</code> is a value that has its bits set for
        * all possible dependencies.
-       *
-       * On the other hand, in functions such as
-       * MaterialModel::viscosity_derivative, only a single variable may be
-       * identified in a variable of this type since it only makes sense to,
-       * for example, query the derivative of the density with respect to
-       * temperature, not with respect to temperature or pressure.
        */
       enum Dependence
       {
@@ -574,116 +568,6 @@ namespace aspect
          * @}
          */
 
-
-        /**
-         * @name Partial derivatives of physical parameters
-         * @{
-         */
-
-        /**
-         * Return the partial derivative of the viscosity function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * viscosity_depends_on() returns false for the given dependence and
-         * throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        viscosity_derivative (const double              temperature,
-                              const double              pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim>         &position,
-                              const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the density function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * density_depends_on() returns false for the given dependence and
-         * throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        density_derivative (const double              temperature,
-                            const double              pressure,
-                            const std::vector<double> &compositional_fields,
-                            const Point<dim>         &position,
-                            const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the compressibility function on
-         * the variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * compressibility_depends_on() returns false for the given dependence
-         * and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        compressibility_derivative (const double              temperature,
-                                    const double              pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim>         &position,
-                                    const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the specific heat function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * specific_heat_depends_on() returns false for the given dependence
-         * and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        specific_heat_derivative (const double              temperature,
-                                  const double              pressure,
-                                  const std::vector<double> &compositional_fields,
-                                  const Point<dim>         &position,
-                                  const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the thermal conductivity function
-         * on the variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * thermal_conductivity_depends_on() returns false for the given
-         * dependence and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        thermal_conductivity_derivative (const double              temperature,
-                                         const double              pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim>         &position,
-                                         const NonlinearDependence::Dependence dependence) const;
-        /**
-         * @}
-         */
-
-
         /**
          * @name Reference quantities
          * @{
@@ -886,10 +770,6 @@ namespace aspect
          * The thermal expansion coefficient can equivalently be computed as
          * $\frac 1V \frac{\partial V}{\partial T}$. Note the difference in
          * sign.
-         *
-         * This function has a default implementation that computes $\alpha$
-         * through its definition above, using the density() and
-         * density_derivative() functions.
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,

@@ -74,106 +74,6 @@ namespace aspect
       return 1.0;
     }
 
-
-    template <int dim>
-    double
-    Interface<dim>::viscosity_derivative (const double,
-                                          const double,
-                                          const std::vector<double> &, /*composition*/
-                                          const Point<dim> &,
-                                          const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (viscosity_depends_on(dependence) == false,
-              ExcMessage ("For a viscosity model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    Interface<dim>::density_derivative (const double,
-                                        const double,
-                                        const std::vector<double> &, /*composition*/
-                                        const Point<dim> &,
-                                        const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (density_depends_on(dependence) == false,
-              ExcMessage ("For a density model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::compressibility_derivative (const double,
-                                                const double,
-                                                const std::vector<double> &, /*composition*/
-                                                const Point<dim> &,
-                                                const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (compressibility_depends_on(dependence) == false,
-              ExcMessage ("For a compressibility model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::specific_heat_derivative (const double,
-                                              const double,
-                                              const std::vector<double> &, /*composition*/
-                                              const Point<dim> &,
-                                              const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (specific_heat_depends_on(dependence) == false,
-              ExcMessage ("For a specific heat model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::thermal_conductivity_derivative (const double,
-                                                     const double,
-                                                     const std::vector<double> &, /*composition*/
-                                                     const Point<dim> &,
-                                                     const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (thermal_conductivity_depends_on(dependence) == false,
-              ExcMessage ("For a thermal conductivity model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
     template <int dim>
     void
     Interface<dim>::
@@ -379,21 +279,6 @@ namespace aspect
       reaction_terms.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
         reaction_terms[q].resize(n_comp);
-    }
-
-
-
-    template <int dim>
-    double
-    InterfaceCompatibility<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const
-    {
-      return (-1./density(temperature, pressure, compositional_fields, position)
-              *
-              this->density_derivative(temperature, pressure, compositional_fields, position, NonlinearDependence::temperature));
     }
 
 
