@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> Fixed: There was a bug in the make pressure rhs compatibility
+ * function that caused the linear solver to fail in models with a
+ * significant in- or outflux of material. This is fixed now.
+ * <br>
+ * (Juliane Dannberg, 2015/05/27)
+ *
  * <li> New: Added cookbook for prescribed internal velocity values.
  * <br>
  * (Jonathan Perry-Houts, 2015/05/26)
