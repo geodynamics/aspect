@@ -36,9 +36,12 @@ namespace aspect
   {
     namespace internal
     {
-      HarmonicCoefficients::HarmonicCoefficients(const unsigned int max_degree)
+      template <int dim>
+      HarmonicCoefficients<dim>::HarmonicCoefficients(const unsigned int max_degree)
       {
-        unsigned int k= (max_degree+1)*(max_degree+2)/2;
+        unsigned int k= (dim == 2 ? 
+                         2 * (max_degree + 1 ) :                      //cylindrical harmonics
+                         (max_degree+1)*(max_degree+2)/2 ) ; //spherical harmonics
         sine_coefficients.resize(k);
         cosine_coefficients.resize(k);
       }
@@ -50,9 +53,46 @@ namespace aspect
       coefficients(max_degree)
       {}
 
-      template <int dim>
+      template <>
       void
-      MultipoleExpansion<dim>::add_quadrature_point (const Point<dim> &position,
+      MultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
+                                                              const double value, 
+                                                              const double JxW,
+                                                              const double evaluation_radius,
+                                                              const bool is_external)
+      {
+        const double r = position.norm();
+        const double theta = std::atan2(position[1],position[0]);
+        
+        if( is_external && evaluation_radius > 0.)
+          {
+            coefficients.cosine_coefficients[0] += std::log(evaluation_radius) * 2.0 * value * JxW;
+
+            for (unsigned int n = 1; n <= max_degree; ++n)
+              {
+                const double factor = value * std::pow( r / evaluation_radius, static_cast<double>(n) )
+                                      / static_cast<double>(n) * JxW;
+                coefficients.cosine_coefficients[n] += factor * static_cast<double>(n) * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * static_cast<double>(n) * std::sin( static_cast<double>(n) * theta);
+              }
+          }
+        else if ( !is_external && r > 0. )
+          {
+            coefficients.cosine_coefficients[0] += std::log(r) * 2.0 * value * JxW;
+
+            for (unsigned int n = 1; n <= max_degree; ++n)
+              {
+                const double factor = value * std::pow( evaluation_radius/r, static_cast<double>(n) )
+                                      / static_cast<double>(n) * JxW;
+                coefficients.cosine_coefficients[n] += factor * static_cast<double>(n) * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * static_cast<double>(n) * std::sin( static_cast<double>(n) * theta);
+              }
+          }
+      }
+
+      template <>
+      void
+      MultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
                                                               const double value, 
                                                               const double JxW,
                                                               const double evaluation_radius,
@@ -62,7 +102,7 @@ namespace aspect
         const double phi = std::atan2(position[1],position[0]);
         const double cos_theta = position[2]/r;
 
-        if( is_external )
+        if( is_external && evaluation_radius > 0.)
           {
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
@@ -81,7 +121,7 @@ namespace aspect
            //                                            * 2.0 * prefix * plm * JxW;
                 }
           }
-        else
+        else if ( !is_external && r > 0. )
           {
             for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
@@ -104,14 +144,24 @@ namespace aspect
       }
 
       template <int dim>
-      HarmonicCoefficients
+      HarmonicCoefficients<dim>
       MultipoleExpansion<dim>::get_coefficients () const
       {
         return coefficients;
       }
  
-      template <int dim>
-      void MultipoleExpansion<dim>::clear()
+      template <>
+      void MultipoleExpansion<2>::clear()
+      {
+        for (unsigned int n = 0; n <= max_degree; ++n)
+          {
+            coefficients.sine_coefficients[n] = 0.0;
+            coefficients.cosine_coefficients[n] = 0.0;
+          }
+      }
+
+      template <>
+      void MultipoleExpansion<3>::clear()
       {
         for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
@@ -121,8 +171,23 @@ namespace aspect
             }
       }
 
-      template <int dim>
-      void MultipoleExpansion<dim>::sadd( double s, double a, const MultipoleExpansion &M )
+      template <>
+      void MultipoleExpansion<2>::sadd( double s, double a, const MultipoleExpansion &M )
+      {
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+                     ExcInternalError() );
+        
+        for (unsigned int n = 0; n <= max_degree; ++n)
+          {
+            coefficients.sine_coefficients[n] = s * coefficients.sine_coefficients[n] +
+                                                a * M.get_coefficients().sine_coefficients[n];
+            coefficients.cosine_coefficients[n] = s * coefficients.cosine_coefficients[n] + 
+                                                  a * M.get_coefficients().cosine_coefficients[n];
+          }
+      }
+
+      template <>
+      void MultipoleExpansion<3>::sadd( double s, double a, const MultipoleExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
                      ExcInternalError() );
@@ -137,8 +202,26 @@ namespace aspect
             }
       }
 
-      template <int dim>
-      void MultipoleExpansion<dim>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
+      template <>
+      void MultipoleExpansion<2>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
+      {
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+                     ExcInternalError() );
+
+        AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
+        AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
+
+        for (unsigned int n = 0; n <= max_degree; ++n)
+          {
+            coefficients.sine_coefficients[n] = s[n] * coefficients.sine_coefficients[n] +
+                                                a[n] * M.get_coefficients().sine_coefficients[n];
+            coefficients.cosine_coefficients[n] = s[n] * coefficients.cosine_coefficients[n] + 
+                                                  a[n] * M.get_coefficients().cosine_coefficients[n];
+          }
+      }
+
+      template <>
+      void MultipoleExpansion<3>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
                      ExcInternalError() );
@@ -169,6 +252,13 @@ namespace aspect
     std::pair<std::string,std::string>
     Geoid<dim>::execute (TableHandler &statistics)
     {
+      internal_density_expansion_surface->clear();
+      internal_density_expansion_bottom->clear();
+      surface_topography_expansion->clear();
+      bottom_topography_expansion->clear();
+      surface_potential_expansion->clear();
+      bottom_potential_expansion->clear();
+
       compute_laterally_averaged_boundary_properties();
       compute_internal_density_expansions();
       compute_topography_expansions();
@@ -527,10 +617,10 @@ namespace aspect
                         // Add topography contribution
                         surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
 
-        const double r = location.norm();
-        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
-        const double theta = std::acos(location[2]/r)*180.0/M_PI;
-                        sfile<<phi<<" "<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+//        const double r = location.norm();
+//        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
+//        const double theta = std::acos(location[2]/r)*180.0/M_PI;
+//                        sfile<<phi<<" "<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
                         
                       }
 
@@ -546,10 +636,10 @@ namespace aspect
                         // Add topography contribution
                         bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
 
-        const double r = location.norm();
-        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
-        const double theta = std::acos(location[2]/r)*180.0/M_PI;
-                        bfile<<phi<<" "<<theta<<" "<<bottom_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+//        const double r = location.norm();
+//        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
+//        const double theta = std::acos(location[2]/r)*180.0/M_PI;
+//                        bfile<<phi<<" "<<theta<<" "<<bottom_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
                       }
                   }
               }
@@ -577,22 +667,33 @@ namespace aspect
       std::vector<double> s(max_degree+1);
       std::vector<double> a_surface(max_degree+1);
       std::vector<double> a_bottom(max_degree+1);
-      for( unsigned int l = 0; l <= max_degree; ++l)
-        {
-          s[l] = 1.0;
-          a_surface[l] = G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
-          a_bottom[l] = G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
-        }
+      const double gravity_constant = (dim == 2 ? 4./3. * G : G );
+
+      if( dim == 3)
+        for( unsigned int l = 0; l <= max_degree; ++l)
+          {
+            s[l] = 1.0;
+            a_surface[l] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
+            a_bottom[l] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+          }
+      else
+        for( unsigned int n = 0; n <= max_degree; ++n)
+          {
+            s[n] = 1.0;
+            a_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_bottom / static_cast<double>(n);
+            a_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_top / static_cast<double>(n);
+          }
+
 
 
       surface_potential_expansion->clear();
-      surface_potential_expansion->sadd( 1.0, G , *internal_density_expansion_surface );
-      surface_potential_expansion->sadd( 1.0, G * outer_radius * delta_rho_top, *surface_topography_expansion );
+      surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
+      surface_potential_expansion->sadd( 1.0, -gravity_constant * outer_radius * delta_rho_top, *surface_topography_expansion );
       surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
 
       bottom_potential_expansion->clear();
-      bottom_potential_expansion->sadd( 1.0, G , *internal_density_expansion_bottom );
-      bottom_potential_expansion->sadd( 1.0, G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+      bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
+      bottom_potential_expansion->sadd( 1.0, -gravity_constant * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
       bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
     }
 
@@ -607,7 +708,7 @@ namespace aspect
                        "the spherical shell geometry model."));
 
       const std::string filename = this->get_output_directory() +
-                                   "surface_geoid." +
+                                   "geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
       const double gravity_at_surface = this->get_gravity_model().gravity_vector( 
@@ -627,25 +728,47 @@ namespace aspect
 
           file << "# Timestep Maximum_degree Time" << std::endl;
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
-          file << "# degree order surface_geoid_sine surface_geoid_cosine bottom_geoid_sine bottom_geoid_cosine density_surface_sine density_surface_cosine density_bottom_sine density_bottom_cosine surface_topography_sine surface_topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
-          // Write the solution to an output file
-          for (unsigned int l=0, k=0; l <= max_degree; ++l)
+          if( dim == 3 )
             {
-              for (unsigned int m = 0; m <= l; ++m, ++k)
+              file << "# degree order surface_geoid_sine surface_geoid_cosine bottom_geoid_sine bottom_geoid_cosine density_surface_sine density_surface_cosine density_bottom_sine density_bottom_cosine surface_topography_sine surface_topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
+              // Write the solution to an output file
+              for (unsigned int l=0, k=0; l <= max_degree; ++l)
                 {
-                  file << l << " " << m << " "
-                       << surface_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_surface << " "
-                       << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface << " "
-                       << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom << " "
-                       << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom << " "
-                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
-                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
-                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
-                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
-                       << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
-                       << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
-                       << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
-                       << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
+                  for (unsigned int m = 0; m <= l; ++m, ++k)
+                    {
+                      file << l << " " << m << " "
+                           << surface_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_surface << " "
+                           << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface << " "
+                           << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom << " "
+                           << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom << " "
+                           << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
+                           << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
+                           << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
+                           << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
+                           << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
+                           << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
+                           << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
+                           << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
+                    }
+                }
+            }
+          else
+            {
+              for (unsigned int n=0; n <= max_degree; ++n)
+                {
+                  file << n << " "
+                       << surface_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_surface << " "
+                       << surface_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_surface << " "
+                       << bottom_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_bottom << " "
+                       << bottom_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_bottom << " "
+                       << internal_density_expansion_surface->get_coefficients().sine_coefficients[n] << " "
+                       << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n] << " "
+                       << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n] <<" "
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n] <<" " 
+                       << surface_topography_expansion->get_coefficients().sine_coefficients[n] <<" "
+                       << surface_topography_expansion->get_coefficients().cosine_coefficients[n] <<" "
+                       << bottom_topography_expansion->get_coefficients().sine_coefficients[n]  <<" "
+                       << bottom_topography_expansion->get_coefficients().cosine_coefficients[n] << std::endl;
                 }
             }
         }
