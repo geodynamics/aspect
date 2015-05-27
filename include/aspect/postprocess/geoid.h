@@ -37,6 +37,7 @@ namespace aspect
        * A struct that contains the representation of the coefficients of a
        * spherical harmonic expansion.
        */
+      template <int dim>
       struct HarmonicCoefficients
       {
           HarmonicCoefficients(const unsigned int max_degree);
@@ -59,7 +60,7 @@ namespace aspect
                                      const double JxW, const double evaluation_radius,
                                      const bool is_external );
 
-          HarmonicCoefficients
+          HarmonicCoefficients<dim>
           get_coefficients () const;
   
           void clear();
@@ -71,7 +72,7 @@ namespace aspect
 
         private:
           const unsigned int max_degree;
-          HarmonicCoefficients coefficients;
+          HarmonicCoefficients<dim> coefficients;
 
       };
     }
