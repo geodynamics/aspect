@@ -52,13 +52,13 @@ namespace aspect
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double depth = this->get_geometry_model().depth(position);
-      const double s = depth / this->get_geometry_model().maximal_depth();
+      const double d = this->get_geometry_model().depth(position);
+      const double s = d / this->get_geometry_model().maximal_depth();
 
       double depth_perturbation = 0.0;
       if( use_depth_range )
         {
-          if ( depth < upper_depth && depth > lower_depth ) 
+          if ( std::abs( depth - d) < thickness/2. ) 
             depth_perturbation = 1.0;
         }
       else
@@ -175,14 +175,14 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the"
                              "harmonic function. Only used in incompressible models.");
-          prm.declare_entry ("Lower depth", "0.0",
+          prm.declare_entry ("Depth", "0.0",
                              Patterns::Double (0),
                              "If you choose to use a depth range rather than a vertical wave "
-                             "number then this is the lower bound of the depth range.");
-          prm.declare_entry ("Upper depth", "0.0",
+                             "number then this is the center of the depth range.");
+          prm.declare_entry ("Thickness", "0.0",
                              Patterns::Double (0),
                              "If you choose to use a depth range rather than a vertical wave "
-                             "number then this is the upper bound of the depth range.");
+                             "number then this is the thickness of the depth range.");
           prm.declare_entry ("Use depth range", "false",
                              Patterns::Bool (),
                              "The default behavior for these initial conditions is to produce "
@@ -210,8 +210,8 @@ namespace aspect
           lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
           magnitude = prm.get_double ("Magnitude");
           reference_temperature = prm.get_double ("Reference temperature");
-          lower_depth = prm.get_double("Lower depth");
-          upper_depth = prm.get_double("Upper depth");
+          depth = prm.get_double("Depth");
+          thickness = prm.get_double("Thickness");
           use_depth_range = prm.get_bool("Use depth range");
         }
         prm.leave_subsection ();

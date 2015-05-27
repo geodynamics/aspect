@@ -78,15 +78,15 @@ namespace aspect
 
         /**
          * If you choose to use a depth range rather than a vertical wave 
-         * number then this is the lower bound of the depth range.
+         * number then this is the thickness of the range.
          */
-        double lower_depth;
+        double thickness;
 
         /**
          * If you choose to use a depth range rather than a vertical wave 
-         * number then this is the upper bound of the depth range.
+         * number then this is the center of the depth range.
          */
-        double upper_depth;
+        double depth;
 
         /**
          * The lateral wave number  of the harmonic perturbation in the first
