@@ -1143,6 +1143,7 @@ namespace aspect
 
         bool need_material_properties() const
         {
+          // this is needed because we want to access in.position in operator()
           return true;
         }
 
