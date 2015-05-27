@@ -171,6 +171,35 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    void
+    Manager<dim>::initialize_property_map (const std::vector<aspect::Particle::MPIDataInfo> &data_info)
+    {
+      unsigned int component = 0;
+      // Only store the data components in the property map, because we
+      for (unsigned int i = 3; i < data_info.size(); ++i)
+        {
+          property_component_map.insert(std::make_pair(data_info[i].name,component));
+          component += data_info[i].n_elements;
+        }
+    }
+
+    template <int dim>
+    unsigned int
+    Manager<dim>::get_property_component_by_name(const std::string &name) const
+    {
+      // see if the given name is defined
+      if (property_component_map.find (name) != property_component_map.end())
+        return property_component_map.find(name)->second;
+      else
+        {
+          Assert(false,ExcMessage("The particle property manager was asked for "
+                                  "the property called: " + name +". This property does not exist "
+                                  "in this model."));
+          return 0;
+        }
+    }
+
     namespace
     {
       std_cxx1x::tuple

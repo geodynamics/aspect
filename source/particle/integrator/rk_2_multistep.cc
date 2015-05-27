@@ -19,6 +19,8 @@
  */
 
 #include <aspect/particle/integrator/rk_2_multistep.h>
+#include <aspect/postprocess/tracer.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -38,26 +40,34 @@ namespace aspect
       RK2IntegratorMultiStep<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
                                                   const double dt)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it;
-        Point<dim> loc, lastLoc, vel, lastVel;
-        double id_num;
-
         //Set a machine zero to cause particles which should not move, to not move; ensures particles are not lost in 2d case
-        double eps = .00000001;
+        const double eps = .00000001;
 
-        for (it=particles.begin(); it!=particles.end(); ++it)
+        const Postprocess::PassiveTracers<dim> * tracer_postprocess =
+                this->template find_postprocessor<const Postprocess::PassiveTracers<dim> >();
+        Assert(tracer_postprocess!=NULL,
+               ExcMessage("The RK2IntegratorMultiStep queried the tracer postprocessor, "
+                   "but did not find it."));
+
+        const Property::Manager<dim> manager = tracer_postprocess->get_particle_world().get_manager();
+
+        const unsigned int old_velocity_component = manager.get_property_component_by_name("velocity_0");
+        const unsigned int old_position_component = manager.get_property_component_by_name("position_0");
+
+        for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
+             it=particles.begin(); it!=particles.end(); ++it)
           {
-            id_num = it->second.get_id();
-            loc = it->second.get_location();
-            std::vector<double> data;
-            vel = it->second.get_velocity();
-            it->second.write_data(data);
+            const double id_num = it->second.get_id();
+            const Point<dim> loc = it->second.get_location();
+            const std::vector<double> data = it->second.get_properties();
+            Point<dim> vel = it->second.get_velocity();
 
             // TODO: this needs to work with arbitrary property numbers
+            Point<dim> lastLoc, lastVel;
             for (unsigned int i = 0; i < dim; ++i)
               {
-                lastLoc(i) = data[dim+dim+1+i];
-                lastVel(i) = data[dim+dim+1+dim+i];
+                lastLoc(i) = data[old_position_component + i];
+                lastVel(i) = data[old_velocity_component + i];
               }
 
             if (abs(vel[0]) < eps)

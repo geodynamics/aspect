@@ -144,6 +144,11 @@ namespace aspect
         std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
 
         /**
+         * A map between names of properties and their data component.
+         */
+        std::map<std::string,unsigned int> property_component_map;
+
+        /**
          * The number of doubles needed to represent a typical tracer
          */
         unsigned int data_len;
@@ -215,6 +220,21 @@ namespace aspect
          */
         void
         add_mpi_types (std::vector<aspect::Particle::MPIDataInfo> &data_info) const;
+
+        /**
+         * Initialize the property map from the given vector of MPIDataInfo.
+         * This map will be used to query the position of a particular property
+         * in the property vector of each particle.
+         */
+        void
+        initialize_property_map (const std::vector<aspect::Particle::MPIDataInfo> &data_info);
+
+        /**
+         * Get the position of the property specified by name in the property
+         * vector of the particles.
+         */
+        unsigned int
+        get_property_component_by_name(const std::string &name) const;
 
         /**
          * A function that is used to register visualization postprocessor

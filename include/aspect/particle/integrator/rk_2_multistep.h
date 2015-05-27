@@ -22,6 +22,7 @@
 #define __aspect__particle_integrator_rk_2_multistep_h
 
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -35,7 +36,7 @@ namespace aspect
       * This version is different in that particle movement "lags" behind by one timestep, and there
       */
       template <int dim>
-      class RK2IntegratorMultiStep : public Interface<dim>
+      class RK2IntegratorMultiStep : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           RK2IntegratorMultiStep();
@@ -57,7 +58,6 @@ namespace aspect
         private:
           unsigned int                    step;
           std::map<double, Point<dim> >   loc0;
-
       };
     }
   }

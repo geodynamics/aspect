@@ -97,6 +97,13 @@ namespace aspect
     }
 
     template <int dim>
+    const Property::Manager<dim> &
+    World<dim>::get_manager() const
+    {
+      return *property_manager;
+    }
+
+    template <int dim>
     void
     World<dim>::finished_adding_particles()
     {
@@ -264,6 +271,7 @@ namespace aspect
 
       // Construct MPI data type for this particle
       property_manager->add_mpi_types(data_info);
+      property_manager->initialize_property_map(data_info);
 
       // And data associated with the integration scheme
       integrator->add_mpi_types(data_info);

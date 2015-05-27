@@ -122,6 +122,15 @@ namespace aspect
         void set_manager(Property::Manager<dim> *new_manager);
 
         /**
+         * Get the particle property manager for this particle world.
+         *
+         * @param return manager The new property manager for this
+         * world.
+         */
+        const Property::Manager<dim> &
+        get_manager() const;
+
+        /**
          * All processes must call this function when finished adding
          * particles to the world. This function will determine the total
          * number of particles.
