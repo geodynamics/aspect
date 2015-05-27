@@ -16,6 +16,16 @@
  */
 
 /**
+ * @defgroup Visualization Visualizing solutions
+ *
+ * This group contains all classes, namespaces and functions that have to do
+ * with visualizing the solution of the simulation at the end of each time
+ * step. Visualization is a part of postprocessing solutions.
+ *
+ * @ingroup Postprocessing
+ */
+
+/**
  * @defgroup MaterialModels Describing the properties of the fluid
  *
  * This group contains all classes, namespaces and functions that have to do
@@ -47,10 +57,40 @@
  */
 
 /**
+ * @defgroup HeatingModels Describing terms on the right hand side of the temperature equation
+ *
+ * A module for the definition of terms that appear as heating or cooling terms
+ * on the right hand side of the temperature equation. This includes, in
+ * particular, terms such as shear and adiabatic heating, phase changes,
+ * and radiogenic sources.
+ */
+
+/**
+ * @defgroup MeshRefinement Describing how to refine the mesh
+ *
+ * A module for the definition of algorithms and methods to refine the
+ * mesh adaptively.
+ */
+
+/**
+ * @defgroup TerminationCriteria Describing when to terminate a simulation
+ *
+ * A module for the definition of algorithms and methods that determine
+ * when to stop a simulation.
+ */
+
+/**
  * @defgroup InitialConditionsModels Describing initial conditions
  *
  * A module for the definition of functions and classes that have to do with
- * initial conditions for the temperature and, if necessary, other quantities.
+ * initial conditions for the temperature.
+ */
+
+/**
+ * @defgroup CompositionalInitialConditionsModels Describing initial conditions
+ *
+ * A module for the definition of functions and classes that have to do with
+ * initial conditions for the temperature.
  */
 
 /**
@@ -58,4 +98,32 @@
  *
  * A module for the definition of functions and classes that have to do with
  * describing boundary values for the temperature.
+ */
+
+/**
+ * @defgroup BoundaryCompositions Describing boundary conditions for compositional fields
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing boundary values for compositional fields.
+ */
+
+/**
+ * @defgroup VelocityBoundaryConditions Describing boundary conditions for the velocity field
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing boundary values for the velocity field.
+ */
+
+/**
+ * @defgroup AdiabaticConditions Adiabatic conditions
+ *
+ * A group for all things that have to do with adiabatic conditions.
+ */
+
+/**
+ * @defgroup PrescribedStokesSolution Describing prescribed velocity fields
+ *
+ * A group for all things that have to do with prescribing a velocity
+ * field for simulations that only compute advected temperature and
+ * compositional fields, but do not compute a Stokes solution.
  */
