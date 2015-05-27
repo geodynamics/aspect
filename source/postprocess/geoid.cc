@@ -677,12 +677,16 @@ namespace aspect
             a_bottom[l] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
           }
       else
-        for( unsigned int n = 0; n <= max_degree; ++n)
-          {
-            s[n] = 1.0;
-            a_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_bottom / static_cast<double>(n);
-            a_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_top / static_cast<double>(n);
-          }
+        {
+          a_surface[0] = gravity_constant*std::log(outer_radius);
+          a_bottom[0] = gravity_constant;
+          for( unsigned int n = 1; n <= max_degree; ++n)
+            {
+              s[n] = 1.0;
+              a_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_bottom / static_cast<double>(n);
+              a_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_top / static_cast<double>(n);
+            }
+        }
 
 
 
@@ -716,7 +720,6 @@ namespace aspect
       const double gravity_at_bottom = this->get_gravity_model().gravity_vector( 
                                     this->get_geometry_model().representative_point( 
                                     this->get_geometry_model().maximal_depth() )  ).norm();
-
 
       // On process 0 write output file
       if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
