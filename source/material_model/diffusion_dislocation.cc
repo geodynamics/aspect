@@ -152,7 +152,6 @@ namespace aspect
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-          const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
 
           // Averaging composition-field dependent properties
 
@@ -172,11 +171,13 @@ namespace aspect
             thermal_expansivity += volume_fractions[j] * thermal_expansivities[j];
 
           // calculate effective viscosity
-          const std::vector<double> composition_viscosities = calculate_viscosities(volume_fractions, pressure, temperature, strain_rate);
-          const double veff = average_value(composition, composition_viscosities, viscosity_averaging);
+          if (in.strain_rate.size())
+            {
+              const std::vector<double> composition_viscosities = calculate_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i]);
+              const double veff = average_value(composition, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = veff;
+            }
 
-          // Output variables
-          out.viscosities[i] = veff;
           out.densities[i] = density;
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           // Specific heat at the given positions.
