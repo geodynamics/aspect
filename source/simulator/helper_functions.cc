@@ -804,65 +804,17 @@ namespace aspect
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
 
-    // In the following we integrate the normal velocity over every surface
-    // of the model. This integral is part of the correction term that needs
-    // to be added to the pressure right hand side. To calculate the normal
-    // velocity we need the positions and normals of every quadrature point on
-    // the surface.
+    // In the following we integrate the right hand side. This integral is the
+    // correction term that needs to be added to the pressure right hand side.
+    // (so that the integral of right hand side is set to zero).
 
-    const QGauss<dim-1> quadrature_formula (parameters.stokes_velocity_degree+1);
-    FEFaceValues<dim> fe_face_values (mapping,
-                                      finite_element,
-                                      quadrature_formula,
-                                      update_normal_vectors |
-                                      update_q_points |
-                                      update_JxW_values);
-
-    double local_normal_velocity_integral = 0;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    // for every surface face that is part of a geometry boundary with
-    // prescribed velocity and that is owned by this processor,
-    // integrate the normal velocity magnitude.
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            {
-              const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
-                = cell->face(f)->boundary_id();
-#else
-                = cell->face(f)->boundary_indicator();
-#endif
-
-              if (parameters.prescribed_velocity_boundary_indicators.find(boundary_indicator)==
-                  parameters.prescribed_velocity_boundary_indicators.end())
-                continue;
-
-              fe_face_values.reinit (cell, f);
-
-              // for each of the quadrature points, evaluate the
-              // normal velocity by calling the boundary conditions and add
-              // it to the integral
-              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                {
-                  const Tensor<1,dim> velocity =
-                    velocity_boundary_conditions.find(boundary_indicator)->second->boundary_velocity(fe_face_values.quadrature_point(q));
-
-                  const double normal_velocity = velocity * fe_face_values.normal_vector(q);
-                  local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
-                }
-            }
-
-    const double global_normal_velocity_integral =
-      Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
+    // We do not have to integrate over the normal velocity at the
+    // boundaries with a prescribed velocity because the constraints
+    // are already distributed to the right hand side in
+    // current_constraints.distribute.
 
     const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-    const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+    const double correction = ( - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
 
     vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
   }

@@ -1,0 +1,129 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
+     Pressure min/avg/max:               -0.002229 Pa, 0.5 Pa, 0.998 Pa
+     Temperature min/avg/max:            0 K, 0.8632 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 1:  t=6.25 seconds
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
+     Pressure min/avg/max:               0.001019 Pa, 0.5 Pa, 0.9644 Pa
+     Temperature min/avg/max:            0 K, 0.8967 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 2:  t=12.5 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     Pressure min/avg/max:               0.004677 Pa, 0.5 Pa, 0.9323 Pa
+     Temperature min/avg/max:            0 K, 0.9283 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 3:  t=18.75 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
+     Pressure min/avg/max:               0.009151 Pa, 0.5 Pa, 0.904 Pa
+     Temperature min/avg/max:            0 K, 0.9584 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 4:  t=25 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
+     Pressure min/avg/max:               0.01432 Pa, 0.5 Pa, 0.8809 Pa
+     Temperature min/avg/max:            0 K, 0.9857 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 5:  t=31.25 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     Pressure min/avg/max:               0.01999 Pa, 0.5 Pa, 0.8633 Pa
+     Temperature min/avg/max:            0 K, 1.009 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 6:  t=37.5 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     Pressure min/avg/max:               0.02611 Pa, 0.5 Pa, 0.8483 Pa
+     Temperature min/avg/max:            0 K, 1.031 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 7:  t=43.75 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     Pressure min/avg/max:               0.03245 Pa, 0.5 Pa, 0.8354 Pa
+     Temperature min/avg/max:            0 K, 1.05 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+*** Timestep 8:  t=50 seconds
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     Pressure min/avg/max:               0.03889 Pa, 0.5 Pa, 0.8245 Pa
+     Temperature min/avg/max:            0 K, 1.067 K, 2 K
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |         1s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         9 |      0.41s |        41% |
+| Assemble temperature system     |         9 |       0.1s |        10% |
+| Build Stokes preconditioner     |         9 |     0.258s |        26% |
+| Build temperature preconditioner|         9 |   0.00367s |      0.37% |
+| Solve Stokes system             |         9 |    0.0216s |       2.2% |
+| Solve temperature system        |         9 |   0.00484s |      0.48% |
+| Initialization                  |         2 |    0.0481s |       4.8% |
+| Postprocessing                  |         9 |    0.0191s |       1.9% |
+| Setup dof systems               |         1 |    0.0131s |       1.3% |
++---------------------------------+-----------+------------+------------+
+
