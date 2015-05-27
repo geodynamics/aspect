@@ -39,7 +39,7 @@ namespace aspect
       template <int dim>
       HarmonicCoefficients<dim>::HarmonicCoefficients(const unsigned int max_degree)
       {
-        unsigned int k= (dim == 2 ? 
+        unsigned int k= (dim == 2 ?
                          2 * (max_degree + 1 ) :                      //cylindrical harmonics
                          (max_degree+1)*(max_degree+2)/2 ) ; //spherical harmonics
         sine_coefficients.resize(k);
@@ -48,23 +48,23 @@ namespace aspect
 
       template <int dim>
       MultipoleExpansion<dim>::MultipoleExpansion(const unsigned int max_degree)
-      :
-      max_degree(max_degree),
-      coefficients(max_degree)
+        :
+        max_degree(max_degree),
+        coefficients(max_degree)
       {}
 
       template <>
       void
       MultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
-                                                              const double value, 
-                                                              const double JxW,
-                                                              const double evaluation_radius,
-                                                              const bool is_external)
+                                                   const double value,
+                                                   const double JxW,
+                                                   const double evaluation_radius,
+                                                   const bool is_external)
       {
         const double r = position.norm();
         const double theta = std::atan2(position[1],position[0]);
-        
-        if( is_external && evaluation_radius > 0.)
+
+        if ( is_external && evaluation_radius > 0.)
           {
             for (unsigned int n = 2; n <= max_degree; ++n)
               {
@@ -89,16 +89,16 @@ namespace aspect
       template <>
       void
       MultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
-                                                              const double value, 
-                                                              const double JxW,
-                                                              const double evaluation_radius,
-                                                              const bool is_external)
+                                                   const double value,
+                                                   const double JxW,
+                                                   const double evaluation_radius,
+                                                   const bool is_external)
       {
         const double r = position.norm();
         const double phi = std::atan2(position[1],position[0]);
         const double cos_theta = position[2]/r;
 
-        if( is_external && evaluation_radius > 0.)
+        if ( is_external && evaluation_radius > 0.)
           {
             for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
@@ -109,12 +109,12 @@ namespace aspect
 
                   coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
                                                          * sph_harm.real() * JxW;
-      //                                                   * std::cos(static_cast<double>(m)*phi) *
-       //                                                  (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                  //                                                   * std::cos(static_cast<double>(m)*phi) *
+                  //                                                  (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
                   coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                         * sph_harm.imag() * JxW;
-         //                                              * std::sin(static_cast<double>(m)*phi)
-           //                                            * 2.0 * prefix * plm * JxW;
+                                                       * sph_harm.imag() * JxW;
+                  //                                              * std::sin(static_cast<double>(m)*phi)
+                  //                                            * 2.0 * prefix * plm * JxW;
                 }
           }
         else if ( !is_external && r > 0. )
@@ -127,16 +127,16 @@ namespace aspect
                   const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
                   coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                      //   * std::cos(static_cast<double>(m)*phi)
-                                                    //     * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                                                         //   * std::cos(static_cast<double>(m)*phi)
+                                                         //     * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
                                                          * sph_harm.real() * JxW;
-                  coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r 
-                                                  //     * std::sin(static_cast<double>(m)*phi)
-                                                //       * 2.0 * prefix * plm * JxW;
-                                                         * sph_harm.imag() * JxW;
+                  coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
+                                                       //     * std::sin(static_cast<double>(m)*phi)
+                                                       //       * 2.0 * prefix * plm * JxW;
+                                                       * sph_harm.imag() * JxW;
                 }
           }
-           
+
       }
 
       template <int dim>
@@ -145,7 +145,7 @@ namespace aspect
       {
         return coefficients;
       }
- 
+
       template <>
       void MultipoleExpansion<2>::clear()
       {
@@ -170,14 +170,14 @@ namespace aspect
       template <>
       void MultipoleExpansion<2>::sadd( double s, double a, const MultipoleExpansion &M )
       {
-        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
-        
+
         for (unsigned int n = 2; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = s * coefficients.sine_coefficients[n] +
                                                 a * M.get_coefficients().sine_coefficients[n];
-            coefficients.cosine_coefficients[n] = s * coefficients.cosine_coefficients[n] + 
+            coefficients.cosine_coefficients[n] = s * coefficients.cosine_coefficients[n] +
                                                   a * M.get_coefficients().cosine_coefficients[n];
           }
       }
@@ -185,7 +185,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<3>::sadd( double s, double a, const MultipoleExpansion &M )
       {
-        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
 
         for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
@@ -193,7 +193,7 @@ namespace aspect
             {
               coefficients.sine_coefficients[k] = s * coefficients.sine_coefficients[k] +
                                                   a * M.get_coefficients().sine_coefficients[k];
-              coefficients.cosine_coefficients[k] = s * coefficients.cosine_coefficients[k] + 
+              coefficients.cosine_coefficients[k] = s * coefficients.cosine_coefficients[k] +
                                                     a * M.get_coefficients().cosine_coefficients[k];
             }
       }
@@ -201,7 +201,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<2>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
       {
-        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
 
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
@@ -211,7 +211,7 @@ namespace aspect
           {
             coefficients.sine_coefficients[n] = s[n] * coefficients.sine_coefficients[n] +
                                                 a[n] * M.get_coefficients().sine_coefficients[n];
-            coefficients.cosine_coefficients[n] = s[n] * coefficients.cosine_coefficients[n] + 
+            coefficients.cosine_coefficients[n] = s[n] * coefficients.cosine_coefficients[n] +
                                                   a[n] * M.get_coefficients().cosine_coefficients[n];
           }
       }
@@ -219,7 +219,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<3>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
       {
-        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
+        AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
 
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
@@ -230,7 +230,7 @@ namespace aspect
             {
               coefficients.sine_coefficients[k] = s[l] * coefficients.sine_coefficients[k] +
                                                   a[l] * M.get_coefficients().sine_coefficients[k];
-              coefficients.cosine_coefficients[k] = s[l] * coefficients.cosine_coefficients[k] + 
+              coefficients.cosine_coefficients[k] = s[l] * coefficients.cosine_coefficients[k] +
                                                     a[l] * M.get_coefficients().cosine_coefficients[k];
             }
       }
@@ -263,20 +263,20 @@ namespace aspect
       output_geoid_information();
       return std::pair<std::string,std::string>("Writing geoid file", "");
     }
-  
+
     template <int dim>
     void
     Geoid<dim>::compute_laterally_averaged_boundary_properties()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       const QGauss<dim-1> quadrature_formula_face (this->get_fe()
-                                            .base_element(this->introspection().base_elements.pressure)
-                                            .degree+1);
+                                                   .base_element(this->introspection().base_elements.pressure)
+                                                   .degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
@@ -319,8 +319,8 @@ namespace aspect
                   cell_at_top = true;
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3.))
                   cell_at_bottom = true;
-            
-                if( cell_at_top || cell_at_bottom )
+
+                if ( cell_at_top || cell_at_bottom )
                   {
                     //handle surface cells
                     fe_face_values.reinit (cell, f);
@@ -346,7 +346,7 @@ namespace aspect
                     this->get_material_model().evaluate(in, out);
 
                     //calculate the top properties
-                    if (cell_at_top) 
+                    if (cell_at_top)
                       for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                         {
                           local_surface_pressure += in.pressure[q] * fe_face_values.JxW(q);
@@ -374,19 +374,19 @@ namespace aspect
     }
 
     template <int dim>
-    void 
+    void
     Geoid<dim>::compute_internal_density_expansions()
     {
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> cell_quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.temperature)
-                                            .degree+1); //Need to do the volume integration with this quadrature
+                                                 .base_element(this->introspection().base_elements.temperature)
+                                                 .degree+1); //Need to do the volume integration with this quadrature
 
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       // TODO AssertThrow (no_free_surface);
 
@@ -417,63 +417,63 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
+          {
+            fe_values.reinit (cell);
 
-              // get the various components of the solution, then
-              // evaluate the material properties there
-              fe_values[this->introspection().extractors.temperature]
-              .get_function_values (this->get_solution(), in.temperature);
-              fe_values[this->introspection().extractors.pressure]
-              .get_function_values (this->get_solution(), in.pressure);
-              fe_values[this->introspection().extractors.velocities]
-              .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+            // get the various components of the solution, then
+            // evaluate the material properties there
+            fe_values[this->introspection().extractors.temperature]
+            .get_function_values (this->get_solution(), in.temperature);
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_values (this->get_solution(), in.pressure);
+            fe_values[this->introspection().extractors.velocities]
+            .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
 
-              in.position = fe_values.get_quadrature_points();
+            in.position = fe_values.get_quadrature_points();
 
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                fe_values[this->introspection().extractors.compositional_fields[c]]
-                .get_function_values(this->get_solution(),
-                                     composition_values[c]);
-              for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-                {
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              fe_values[this->introspection().extractors.compositional_fields[c]]
+              .get_function_values(this->get_solution(),
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
 
-              this->get_material_model().evaluate(in, out);
+            this->get_material_model().evaluate(in, out);
 
-              // for each of the quadrature points, evaluate the
-              // density and add its contribution to the spherical harmonics
+            // for each of the quadrature points, evaluate the
+            // density and add its contribution to the spherical harmonics
 
-              for (unsigned int q=0; q<cell_quadrature_formula.size(); ++q)
-                {
-                  const Point<dim> location = fe_values.quadrature_point(q);
-                  const double density   = out.densities[q];
- 
-                  internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius, true );
-                  internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius, false );
-                }
+            for (unsigned int q=0; q<cell_quadrature_formula.size(); ++q)
+              {
+                const Point<dim> location = fe_values.quadrature_point(q);
+                const double density   = out.densities[q];
 
-            }
+                internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius, true );
+                internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius, false );
+              }
+
+          }
 
       internal_density_expansion_surface->mpi_sum_coefficients( this->get_mpi_communicator() );
       internal_density_expansion_bottom->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
-    
+
     template <int dim>
-    void 
+    void
     Geoid<dim>::compute_topography_expansions()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       const QMidpoint<dim> center_quadrature_formula;  //Need to retrieve stress here
       const QMidpoint<dim-1> face_quadrature_formula;  //need to retrieve pressure here
-     
+
       FEValues<dim> fe_center_values (this->get_mapping(),
                                       this->get_fe(),
                                       center_quadrature_formula,
@@ -489,9 +489,9 @@ namespace aspect
                                         update_gradients |
                                         update_q_points |
                                         update_JxW_values);
- 
+
       AssertThrow( fe_center_values.n_quadrature_points == fe_face_values.n_quadrature_points == 1,
-                   ExcInternalError() ); 
+                   ExcInternalError() );
 
       //Material model in/out for the gauss quadrature rule evaluations
       typename MaterialModel::Interface<dim>::MaterialModelInputs in_face(1, this->n_compositional_fields());
@@ -517,148 +517,148 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-            {
+          {
 
-              // see if the cell is at the *top* or *bottom* boundary
-              bool surface_cell = false;
-              bool bottom_cell = false;
-              unsigned int q = 0;
+            // see if the cell is at the *top* or *bottom* boundary
+            bool surface_cell = false;
+            bool bottom_cell = false;
+            unsigned int q = 0;
 
-              unsigned int f = 0;
-              for (; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
-                    {
-                      surface_cell = true;
-                      break;
-                    }
-                  if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3))
-                    {
-                      bottom_cell = true;
-                      break;
-                    }
-                }
-
-                if (surface_cell || bottom_cell)
+            unsigned int f = 0;
+            for (; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              {
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                   {
-                    fe_face_values.reinit (cell, f);
-                    Point<dim> location = fe_face_values.get_quadrature_points()[q];
+                    surface_cell = true;
+                    break;
+                  }
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3))
+                  {
+                    bottom_cell = true;
+                    break;
+                  }
+              }
 
-                    // get the various components of the solution, then
-                    // evaluate the material properties there
-                    fe_face_values[this->introspection().extractors.temperature]
-                    .get_function_values (this->get_solution(), in_face.temperature);
-                    fe_face_values[this->introspection().extractors.pressure]
-                    .get_function_values (this->get_solution(), in_face.pressure);
-                    fe_face_values[this->introspection().extractors.velocities]
-                    .get_function_symmetric_gradients (this->get_solution(), in_face.strain_rate);
+            if (surface_cell || bottom_cell)
+              {
+                fe_face_values.reinit (cell, f);
+                Point<dim> location = fe_face_values.get_quadrature_points()[q];
 
-                    in_face.position = fe_face_values.get_quadrature_points();
+                // get the various components of the solution, then
+                // evaluate the material properties there
+                fe_face_values[this->introspection().extractors.temperature]
+                .get_function_values (this->get_solution(), in_face.temperature);
+                fe_face_values[this->introspection().extractors.pressure]
+                .get_function_values (this->get_solution(), in_face.pressure);
+                fe_face_values[this->introspection().extractors.velocities]
+                .get_function_symmetric_gradients (this->get_solution(), in_face.strain_rate);
 
+                in_face.position = fe_face_values.get_quadrature_points();
+
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  fe_face_values[this->introspection().extractors.compositional_fields[c]]
+                  .get_function_values(this->get_solution(),
+                                       composition_values[c]);
+                for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+                  {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_face_values[this->introspection().extractors.compositional_fields[c]]
-                      .get_function_values(this->get_solution(),
-                                           composition_values[c]);
-                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in_face.composition[i][c] = composition_values[c][i];
-                      }
+                      in_face.composition[i][c] = composition_values[c][i];
+                  }
 
-                    this->get_material_model().evaluate(in_face, out_face);
+                this->get_material_model().evaluate(in_face, out_face);
 
-                    fe_center_values.reinit(cell);
+                fe_center_values.reinit(cell);
 
-                    // get the various components of the solution, then
-                    // evaluate the material properties there
-                    fe_center_values[this->introspection().extractors.temperature]
-                    .get_function_values (this->get_solution(), in_center.temperature);
-                    fe_center_values[this->introspection().extractors.pressure]
-                    .get_function_values (this->get_solution(), in_center.pressure);
-                    fe_center_values[this->introspection().extractors.velocities]
-                    .get_function_symmetric_gradients (this->get_solution(), in_center.strain_rate);
+                // get the various components of the solution, then
+                // evaluate the material properties there
+                fe_center_values[this->introspection().extractors.temperature]
+                .get_function_values (this->get_solution(), in_center.temperature);
+                fe_center_values[this->introspection().extractors.pressure]
+                .get_function_values (this->get_solution(), in_center.pressure);
+                fe_center_values[this->introspection().extractors.velocities]
+                .get_function_symmetric_gradients (this->get_solution(), in_center.strain_rate);
 
-                    in_center.position = fe_center_values.get_quadrature_points();
+                in_center.position = fe_center_values.get_quadrature_points();
 
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  fe_center_values[this->introspection().extractors.compositional_fields[c]]
+                  .get_function_values(this->get_solution(),
+                                       composition_values[c]);
+                for (unsigned int i=0; i<fe_center_values.n_quadrature_points; ++i)
+                  {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_center_values[this->introspection().extractors.compositional_fields[c]]
-                      .get_function_values(this->get_solution(),
-                                           composition_values[c]);
-                    for (unsigned int i=0; i<fe_center_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in_face.composition[i][c] = composition_values[c][i];
-                      }
+                      in_face.composition[i][c] = composition_values[c][i];
+                  }
 
-                    this->get_material_model().evaluate(in_center, out_center);
+                this->get_material_model().evaluate(in_center, out_center);
 
-                    gravity = this->get_gravity_model().gravity_vector(fe_face_values.quadrature_point(q));
-                    gravity_direction = gravity/gravity.norm();
+                gravity = this->get_gravity_model().gravity_vector(fe_face_values.quadrature_point(q));
+                gravity_direction = gravity/gravity.norm();
 
-                    const double viscosity = out_center.viscosities[q];
-                    const double density = out_face.densities[q];
+                const double viscosity = out_center.viscosities[q];
+                const double density = out_face.densities[q];
 
-                    const SymmetricTensor<2,dim> strain_rate = in_center.strain_rate[q] - 1./3 * trace(in_center.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+                const SymmetricTensor<2,dim> strain_rate = in_center.strain_rate[q] - 1./3 * trace(in_center.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
-                    // if this is a cell at the surface, add the topography to
-                    // the topography expansion
-                    if (surface_cell)
-                      {
-                        // Subtract the adiabatic pressure
-                        const double dynamic_pressure   = in_face.pressure[q] - surface_pressure;
-                        const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+                // if this is a cell at the surface, add the topography to
+                // the topography expansion
+                if (surface_cell)
+                  {
+                    // Subtract the adiabatic pressure
+                    const double dynamic_pressure   = in_face.pressure[q] - surface_pressure;
+                    const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
-                        // Add topography contribution
-                        surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
-        const double r = location.norm();
-        const double theta = std::atan2(location[1],location[0]);
-        sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+                    // Add topography contribution
+                    surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
+                    const double r = location.norm();
+                    const double theta = std::atan2(location[1],location[0]);
+                    sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
 //        const double theta = std::acos(location[2]/r)*180.0/M_PI;
 //                        sfile<<phi<<" "<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
-                        
-                      }
 
-                    // if this is a cell at the bottom, add the topography to
-                    // the bottom expansion
-                    if (bottom_cell)
-                      {
-                        // Subtract the adiabatic pressure
-                        const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
-                        const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                        const double dynamic_topography = - sigma_rr / gravity.norm() / (density-density_below);
+                  }
 
-                        // Add topography contribution
-                        bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
+                // if this is a cell at the bottom, add the topography to
+                // the bottom expansion
+                if (bottom_cell)
+                  {
+                    // Subtract the adiabatic pressure
+                    const double dynamic_pressure   = in_face.pressure[q] - bottom_pressure;
+                    const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density-density_below);
 
-        const double r = location.norm();
-        const double theta = std::atan2(location[1],location[0]);
-        bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+                    // Add topography contribution
+                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
+
+                    const double r = location.norm();
+                    const double theta = std::atan2(location[1],location[0]);
+                    bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
 //        const double theta = std::acos(location[2]/r)*180.0/M_PI;
 //                        bfile<<phi<<" "<<theta<<" "<<bottom_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
-                      }
                   }
               }
+          }
       surface_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
       bottom_topography_expansion->mpi_sum_coefficients( this->get_mpi_communicator() );
     }
 
 
     template <int dim>
-    void 
+    void
     Geoid<dim>::compute_geoid_expansions()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       const double outer_radius = geometry_model->outer_radius();
       const double inner_radius = geometry_model->inner_radius();
@@ -670,8 +670,8 @@ namespace aspect
       std::vector<double> a_surface(max_degree+1);
       std::vector<double> a_bottom(max_degree+1);
 
-      if( dim == 3)
-        for( unsigned int l = 2; l <= max_degree; ++l)
+      if ( dim == 3)
+        for ( unsigned int l = 2; l <= max_degree; ++l)
           {
             s[l] = 1.0;
             a_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
@@ -689,7 +689,7 @@ namespace aspect
           }
       else
         {
-          for( unsigned int n = 2; n <= max_degree; ++n)
+          for ( unsigned int n = 2; n <= max_degree; ++n)
             {
               const double gravity_constant = 4./3. * G;
 
@@ -714,24 +714,24 @@ namespace aspect
     }
 
     template <int dim>
-    void 
+    void
     Geoid<dim>::output_geoid_information()
     {
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       const std::string filename = this->get_output_directory() +
                                    "geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
 
-      const double gravity_at_surface = this->get_gravity_model().gravity_vector( 
-                                     ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
-      const double gravity_at_bottom = this->get_gravity_model().gravity_vector( 
-                                    this->get_geometry_model().representative_point( 
-                                    this->get_geometry_model().maximal_depth() )  ).norm();
+      const double gravity_at_surface = this->get_gravity_model().gravity_vector(
+                                          ( this->get_geometry_model().representative_point( 0.0 ) ) ).norm();
+      const double gravity_at_bottom = this->get_gravity_model().gravity_vector(
+                                         this->get_geometry_model().representative_point(
+                                           this->get_geometry_model().maximal_depth() )  ).norm();
 
       // On process 0 write output file
       if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -743,7 +743,7 @@ namespace aspect
 
           file << "# Timestep Maximum_degree Time" << std::endl;
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
-          if( dim == 3 )
+          if ( dim == 3 )
             {
               file << "# degree order surface_geoid_sine surface_geoid_cosine bottom_geoid_sine bottom_geoid_cosine density_surface_sine density_surface_cosine density_bottom_sine density_bottom_cosine surface_topography_sine surface_topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
               // Write the solution to an output file
@@ -759,7 +759,7 @@ namespace aspect
                            << internal_density_expansion_surface->get_coefficients().sine_coefficients[k] << " "
                            << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k] << " "
                            << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k] <<" "
-                           << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" " 
+                           << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k] <<" "
                            << surface_topography_expansion->get_coefficients().sine_coefficients[k] <<" "
                            << surface_topography_expansion->get_coefficients().cosine_coefficients[k] <<" "
                            << bottom_topography_expansion->get_coefficients().sine_coefficients[k]  <<" "
@@ -779,7 +779,7 @@ namespace aspect
                        << internal_density_expansion_surface->get_coefficients().sine_coefficients[n] << " "
                        << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n] << " "
                        << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n] <<" "
-                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n] <<" " 
+                       << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n] <<" "
                        << surface_topography_expansion->get_coefficients().sine_coefficients[n] <<" "
                        << surface_topography_expansion->get_coefficients().cosine_coefficients[n] <<" "
                        << bottom_topography_expansion->get_coefficients().sine_coefficients[n]  <<" "
@@ -816,7 +816,7 @@ namespace aspect
                              "The expansion into spherical harmonics can be "
                              "expensive, especially for high degrees.");
           prm.declare_entry("Core mass", "1.932e24",
-                             Patterns::Double(0),
+                            Patterns::Double(0),
                             "Mass of the core.  Used for the degree-zero "
                             "expansion, but not in any others. Feel free to "
                             "ignore if you do not care about the degree-zero "
