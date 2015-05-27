@@ -53,5 +53,11 @@
  * <br>
  * (Ian Rose, 2015/05/21)
  *
+ * <li> New: Three new material averaging schemes are added. These are combined
+ * with the existing averaging schemes, except for the Q1 averaging schemes into
+ * a compositing material model. The new averaging schemes are normalised weighted
+ * distance versions of the arithmetic, harmonic and geometric averages.
+ * (Menno Fraters, 2015/05/28)
+ *
  * </ol>
  */
