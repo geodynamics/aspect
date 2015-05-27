@@ -7,6 +7,10 @@
  *
  * <ol>
  *
+ * <li> New: Added cookbook for prescribed internal velocity values.
+ * <br>
+ * (Jonathan Perry-Houts, 2015/05/26)
+ *
  * <li> New: There is now a Material model called diffusion dislocation that 
  * implements diffusion and dislocation creep viscosity.
  * <br>
