@@ -153,7 +153,6 @@ namespace aspect
 
                     // Subtract the dynamic pressure
                     const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
-                    std::cout<<this->get_adiabatic_conditions().pressure(location)<<" "<<in.pressure[q]<<std::endl;
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / (gravity_direction_binary*gravity.norm()) / (density - density_above);
 
