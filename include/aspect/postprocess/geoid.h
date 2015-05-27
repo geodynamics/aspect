@@ -40,10 +40,10 @@ namespace aspect
       template <int dim>
       struct HarmonicCoefficients
       {
-          HarmonicCoefficients(const unsigned int max_degree);
+        HarmonicCoefficients(const unsigned int max_degree);
 
-          std::vector<double> sine_coefficients;
-          std::vector<double> cosine_coefficients;
+        std::vector<double> sine_coefficients;
+        std::vector<double> cosine_coefficients;
       };
 
       /**
@@ -56,21 +56,21 @@ namespace aspect
       {
         public:
           MultipoleExpansion(const unsigned int max_degree);
-      
+
           /**
-           *Do the multipole expansion at a particular quadrature point.  
+           *Do the multipole expansion at a particular quadrature point.
            *
            *@param position The location of the quadrature point.
            *
            *@param value  The value of the function being expanded.
-           * 
+           *
            *@param JxW The Jacobian and weight given to the quadrature point
            *
            *@param evaluation_radius The radius at which we expand the multipole.
            *
            *@param is_external Whether to do an internal or external multipole expansion.
            */
-          void add_quadrature_point (const Point<dim> &position, const double value, 
+          void add_quadrature_point (const Point<dim> &position, const double value,
                                      const double JxW, const double evaluation_radius,
                                      const bool is_external );
 
@@ -79,7 +79,7 @@ namespace aspect
            */
           HarmonicCoefficients<dim>
           get_coefficients () const;
-  
+
           /*
            * Set all the multipole coefficients to zero.
            */
@@ -93,14 +93,14 @@ namespace aspect
 
           /*
            * Scalar add another multipole expansion to this one.
-           * Each degree can have a different scalar factor, so 
+           * Each degree can have a different scalar factor, so
            * the size of s and a are expected to be max_degree+1.
            * Computes this = s[l]*this + a[l]*M for each coefficient.
            */
           void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
 
           void
- 
+
           /**
            * Perform an MPI sum on the coefficents.
            */
@@ -146,7 +146,7 @@ namespace aspect
 
       private:
         /**
-         * A function for calculating the laterally averaged pressure 
+         * A function for calculating the laterally averaged pressure
          * at the top and bottom boundaries.
          */
         void compute_laterally_averaged_boundary_properties();
@@ -154,7 +154,7 @@ namespace aspect
         void compute_topography_expansions();
         void compute_geoid_expansions();
         void output_geoid_information();
-          
+
         /**
          * A parameter that we read from the input file that denotes whether
          * we should include the contribution by dynamic topography.

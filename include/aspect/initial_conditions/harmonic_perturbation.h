@@ -77,13 +77,13 @@ namespace aspect
         int vertical_wave_number;
 
         /**
-         * If you choose to use a depth range rather than a vertical wave 
+         * If you choose to use a depth range rather than a vertical wave
          * number then this is the thickness of the range.
          */
         double thickness;
 
         /**
-         * If you choose to use a depth range rather than a vertical wave 
+         * If you choose to use a depth range rather than a vertical wave
          * number then this is the center of the depth range.
          */
         double depth;
@@ -115,11 +115,11 @@ namespace aspect
          */
         double reference_temperature;
 
-       /**
-        * Whether to use a sinusoidal perturbation in depth, or to perturb
-        * within a specific depth range.
-        */
-       bool use_depth_range;
+        /**
+         * Whether to use a sinusoidal perturbation in depth, or to perturb
+         * within a specific depth range.
+         */
+        bool use_depth_range;
 
     };
   }

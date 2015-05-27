@@ -56,9 +56,9 @@ namespace aspect
       const double s = d / this->get_geometry_model().maximal_depth();
 
       double depth_perturbation = 0.0;
-      if( use_depth_range )
+      if ( use_depth_range )
         {
-          if ( std::abs( depth - d) < thickness/2. ) 
+          if ( std::abs( depth - d) < thickness/2. )
             depth_perturbation = 1.0;
         }
       else
