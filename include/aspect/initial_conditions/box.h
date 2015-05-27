@@ -68,7 +68,7 @@ namespace aspect
     /**
      * A field that describes a fractal initial temperature field
      *
-     * @ingroup InitialCOnditionsModels
+     * @ingroup InitialConditionsModels
      */
     template <int dim>
     class MandelBox : public Interface<dim>, public SimulatorAccess<dim>
