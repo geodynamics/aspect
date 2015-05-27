@@ -39,8 +39,8 @@ namespace aspect
      * effective viscosity functions describing diffusion and dislocation creep:
      * \\[v_{eff} = \\left( \\frac{1}{v_{eff}^{diff}} + \\frac{1}{v_{eff}^{dis} \\right)^{-1}\\]
      * where
-     * \\[v_{eff}^{diff} = A_{diff}^-1 \\exp\\left(\frac{E_{diff} + PV_{diff}}{RT}\\right)\\]
-     * \\[v_{eff}^{dis} =  A_{dis}^{\\frac{-1}{n_dis}} \\dot{\\varepsilon}^{\frac{1-n}{n}} \\exp\\left(\frac{E_{diff} + PV_{diff}}{n_{dis}RT}\\right)\\]
+     * \\[v_{eff}^{diff} = A_{diff}^-1 \\exp\\left(\\frac{E_{diff} + PV_{diff}}{RT}\\right)\\]
+     * \\[v_{eff}^{dis} =  A_{dis}^{\\frac{-1}{n_dis}} \\dot{\\varepsilon}^{\\frac{1-n}{n}} \\exp\\left(\\frac{E_{diff} + PV_{diff}}{n_{dis}RT}\\right)\\]
      *
      * where $\\dot{\\varepsilon}$ is the second invariant of the strain rate tensor,
      * $A_i$ are prefactors where $i$ corresponds to diffusion or dislocation creep,
