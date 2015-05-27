@@ -30,7 +30,8 @@ namespace aspect
       void
       Velocity<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
-                                         const Vector<double> &solution)
+                                         const Vector<double> &solution,
+                                         const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(solution[this->introspection().component_indices.velocities[i]]);
@@ -41,7 +42,8 @@ namespace aspect
       Velocity<dim>::update_particle(unsigned int data_position,
                                    std::vector<double> &data,
                                    const Point<dim> &position,
-                                   const Vector<double> &solution)
+                                   const Vector<double> &solution,
+                                   const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position++] = solution[this->introspection().component_indices.velocities[i]];

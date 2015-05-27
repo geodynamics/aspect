@@ -36,7 +36,8 @@ namespace aspect
       void
       Interface<dim>::initialize_particle (std::vector<double> &,
                                            const Point<dim> &,
-                                           const Vector<double> &)
+                                           const Vector<double> &,
+                                           const std::vector<Tensor<1,dim> > &)
       {}
 
       template <int dim>
@@ -44,7 +45,8 @@ namespace aspect
       Interface<dim>::update_particle (unsigned int ,
                                        std::vector<double> &,
                                        const Point<dim> &,
-                                       const Vector<double> &)
+                                       const Vector<double> &,
+                                       const std::vector<Tensor<1,dim> > &)
       {}
 
       template <int dim>
@@ -102,7 +104,8 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::initialize_particle (BaseParticle<dim> &particle,
-                                       const Vector<double> &solution)
+                                       const Vector<double> &solution,
+                                       const std::vector<Tensor<1,dim> > &gradients)
     {
       std::vector<double> particle_properties (0);
       particle.set_data_len(data_len);
@@ -111,7 +114,8 @@ namespace aspect
         {
           (*p)->initialize_particle(particle_properties,
                                     particle.get_location(),
-                                    solution);
+                                    solution,
+                                    gradients);
         }
       particle.set_properties(particle_properties);
     }
@@ -119,7 +123,8 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::update_particle (BaseParticle<dim> &particle,
-                                   const Vector<double> &solution)
+                                   const Vector<double> &solution,
+                                   const std::vector<Tensor<1,dim> > &gradients)
     {
       unsigned int data_position = 0;
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
@@ -128,7 +133,8 @@ namespace aspect
           (*p)->update_particle(data_position,
                                 particle.get_properties(),
                                 particle.get_location(),
-                                solution);
+                                solution,
+                                gradients);
           data_position += (*p)->data_len();
         }
     }

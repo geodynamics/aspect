@@ -127,8 +127,11 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
-      Vector<double>                single_res(dim+2+this->n_compositional_fields());
-      std::vector<Vector<double> >  result(50,single_res);
+      const unsigned int solution_components = this->introspection().n_components;
+      Vector<double> value(solution_components);
+      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
+      std::vector<Vector<double> >  values(50,value);
+      std::vector<std::vector<Tensor<1,dim> > > gradients(50,gradient);
       std::vector<Point<dim> >      particle_points(50);
 
       const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
@@ -157,16 +160,17 @@ namespace aspect
               particle_points[i++] = it->second.get_location();
               it++;
             }
-          result.resize(i, single_res);
+          values.resize(i, value);
+          gradients.resize(i,gradient);
           particle_points.resize(i);
 
           // Get the cell the particle is in
-          const typename DoFHandler<dim>::active_cell_iterator found_cell =
-              typename DoFHandler<dim>::active_cell_iterator(triangulation, cur_cell.first, cur_cell.second, dof_handler);
+          const typename DoFHandler<dim>::active_cell_iterator found_cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
 
           // Interpolate the velocity field for each of the particles
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, result);
+          fe_value.vector_value_list(particle_points, values);
+          fe_value.vector_gradient_list(particle_points, gradients);
 
           // Copy the resulting velocities to the appropriate vector
           it = sit;
@@ -174,7 +178,8 @@ namespace aspect
           while (it != particles.end() && it->first == cur_cell)
             {
               property_manager->initialize_particle(it->second,
-                  result[i]);
+                  values[i],
+                  gradients[i]);
               i++;
               it++;
             }
@@ -185,8 +190,11 @@ namespace aspect
     void
     World<dim>::update_particles()
     {
-      Vector<double>                single_res(dim+2+this->n_compositional_fields());
-      std::vector<Vector<double> >  result(50,single_res);
+      const unsigned int solution_components = this->introspection().n_components;
+      Vector<double> value(solution_components);
+      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
+      std::vector<Vector<double> >  values(50,value);
+      std::vector<std::vector<Tensor<1,dim> > > gradients(50,gradient);
       std::vector<Point<dim> >      particle_points(50);
 
       const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
@@ -216,7 +224,8 @@ namespace aspect
               particle_points[i++] = it->second.get_location();
               it++;
             }
-          result.resize(i, single_res);
+          values.resize(i, value);
+          gradients.resize(i,gradient);
           particle_points.resize(i);
 
           // Get the cell the particle is in
@@ -225,7 +234,8 @@ namespace aspect
 
           // Interpolate the velocity field for each of the particles
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, result);
+          fe_value.vector_value_list(particle_points, values);
+          fe_value.vector_gradient_list(particle_points, gradients);
 
           // Copy the resulting velocities to the appropriate vector
           it = sit;
@@ -233,7 +243,8 @@ namespace aspect
           while (it != particles.end() && it->first == cur_cell)
             {
               property_manager->update_particle(it->second,
-                  result[i]);
+                  values[i],
+                  gradients[i]);
               i++;
               it++;
             }

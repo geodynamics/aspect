@@ -63,7 +63,8 @@ namespace aspect
            void
            initialize_particle (std::vector<double> &/*data*/,
                                 const Point<dim> &/*position*/,
-                                const Vector<double> &/*solution*/);
+                                const Vector<double> &/*solution*/,
+                                const std::vector<Tensor<1,dim> > &/*gradients*/);
 
            /**
             * Update function. This function is called every timestep for
@@ -75,7 +76,8 @@ namespace aspect
            update_particle (unsigned int data_position,
                             std::vector<double> &/*particle_properties*/,
                             const Point<dim> &/*position*/,
-                            const Vector<double> &/*solution*/);
+                            const Vector<double> &/*solution*/,
+                            const std::vector<Tensor<1,dim> > &/*gradients*/);
 
            /**
             * Returns a bool, which is false in the default implementation,
@@ -181,7 +183,8 @@ namespace aspect
         virtual
         void
         initialize_particle (BaseParticle<dim> &particle,
-                             const Vector<double> &solution);
+                             const Vector<double> &solution,
+                             const std::vector<Tensor<1,dim> > &gradients);
 
         /**
          * Update function for particle properties. This function is
@@ -190,7 +193,8 @@ namespace aspect
         virtual
         void
         update_particle (BaseParticle<dim> &particle,
-                         const Vector<double> &solution);
+                         const Vector<double> &solution,
+                         const std::vector<Tensor<1,dim> > &gradients);
 
         /**
          * Returns a bool, which is false if no selected plugin needs to

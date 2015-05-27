@@ -56,24 +56,32 @@ namespace aspect
           double totalDiff(0.0);
           for (unsigned int i = 0; i < dim; ++i)
             totalDiff += P_diff[i];
-          std_cxx11::array<double,dim> nParticles;
+          std_cxx11::array<unsigned int ,dim> nParticles;
           std_cxx11::array<double,dim> Particle_separation;
 
+          if (dim == 2)
+            {
+              nParticles[1] = round(sqrt(total_num_particles*P_diff[1]/P_diff[0]));
+              nParticles[0] = round(total_num_particles / nParticles[1]);
+            }
+          else
+            {
+              ///Amount of particles is the total amount of particles, divided by length of each axis
+              for (unsigned int i = 0; i < dim; ++i)
+                nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
+            }
           ///Amount of particles is the total amount of particles, divided by length of each axis
           for (unsigned int i = 0; i < dim; ++i)
-            {
-              nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
-              Particle_separation[i] = P_diff[i] / nParticles[i];
-            }
+            Particle_separation[i] = P_diff[i] / (nParticles[i]-1);
 
-          for (double x = P_min[0]; x < P_max[0]; x+= Particle_separation[0])
+          for (double x = P_min[0]; x <= P_max[0]; x+= Particle_separation[0])
             {
-              for (double y = P_min[1]; y < P_max[1]; y += Particle_separation[1])
+              for (double y = P_min[1]; y <= P_max[1]; y += Particle_separation[1])
                 {
                   if (dim == 2)
                     generate_particle(world,Point<dim> (x,y),cur_id++);
                   if (dim == 3)
-                    for (double z = P_min[2]; z < P_max[2]; z += Particle_separation[2])
+                    for (double z = P_min[2]; z <= P_max[2]; z += Particle_separation[2])
                       generate_particle(world,Point<dim> (x,y,z),cur_id++);
                 }
             }
@@ -183,8 +191,11 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
                                          "uniform box",
-                                         "Generate a uniform distribution of particles"
-                                         "over a rectangular domain in or or 3D.")
+                                         "Generate a uniform distribution of particles "
+                                         "over a rectangular domain in 2D or 3D. Note that in order "
+                                         "to produce a regular distribution the number of generated "
+                                         "tracers might not exactly match the one specified in the "
+                                         "input file.")
     }
   }
 }

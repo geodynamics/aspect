@@ -36,7 +36,8 @@ namespace aspect
       void
       Function<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
-                                         const Vector<double> &)
+                                         const Vector<double> &,
+                                         const std::vector<Tensor<1,dim> > &)
       {
         data.push_back(function.value(position));
       }

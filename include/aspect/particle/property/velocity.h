@@ -44,7 +44,8 @@ namespace aspect
         void
         initialize_particle (std::vector<double> &,
                              const Point<dim> &,
-                             const Vector<double> &);
+                             const Vector<double> &,
+                             const std::vector<Tensor<1,dim> > &);
 
         /**
          * Update function. This function is called once every timestep
@@ -54,7 +55,8 @@ namespace aspect
         update_particle (unsigned int data_position,
                          std::vector<double> &data,
                          const Point<dim> &,
-                         const Vector<double> &solution);
+                         const Vector<double> &solution,
+                         const std::vector<Tensor<1,dim> > &);
 
         /**
          * This implementation tells the particle manager that

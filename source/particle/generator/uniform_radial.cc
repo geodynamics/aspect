@@ -53,13 +53,12 @@ namespace aspect
                                                         const double total_num_particles)
         {
            unsigned int startID = 0;
-           double radiusTotal;
 
            // Create the array of shell to deal with
            std::vector<double> shell_radius(radial_layers);
-           const double shell_seperation = (P_max[0] - P_min[0]) / radial_layers;
+           const double shell_seperation = (P_max[0] - P_min[0]) / (radial_layers-1);
            std::vector<unsigned int> ppr(radial_layers);
-           radiusTotal = 0;
+           double radiusTotal = 0;
 
            for (unsigned int i = 0; i < radial_layers; ++i)
              {
@@ -98,7 +97,7 @@ namespace aspect
                   const int phiParticles = particlesPerRadius[i] / thetaParticles;
                   const double phiSeperation = (P_max[1] - P_min[1]) / phiParticles;
 
-                  int *ppPh = new int[phiParticles];
+                  std::vector<int> ppPh(phiParticles);
                   int j = 0;
 
                   for (double phi = P_min[1]; phi < P_max[1]; phi += phiSeperation, j++)
@@ -130,7 +129,6 @@ namespace aspect
                             }
                         }
                     }
-                  delete ppPh;
                 }
             }
           else if (dim == 2)
@@ -267,7 +265,10 @@ namespace aspect
     ASPECT_REGISTER_PARTICLE_GENERATOR(UniformRadial,
                                                "uniform radial",
                                                "Generate a uniform distribution of particles"
-                                               "over a spherical domain in 2D or 3D.")
+                                               "over a spherical domain in 2D or 3D. Note that in order "
+                                               "to produce a regular distribution the number of generated "
+                                               "tracers might not exactly match the one specified in the "
+                                               "input file.")
     }
   }
 }

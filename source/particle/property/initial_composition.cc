@@ -30,7 +30,8 @@ namespace aspect
       void
       InitialComposition<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
-                                         const Vector<double> &solution)
+                                         const Vector<double> &solution,
+                                         const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < data_len(); i++)
         data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);

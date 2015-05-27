@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
   <UnstructuredGrid>
-    <Piece NumberOfPoints="10" NumberOfCells="10">
+    <Piece NumberOfPoints="11" NumberOfCells="11">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.298055 0.137268 0.0
-          0.27985 0.200634 0.0
+          0.272003 0.0953542 0.0
+          0.232355 0.173329 0.0
           0.331007 0.21157 0.0
           0.39134 0.249475 0.0
           0.428475 0.199628 0.0
-          0.305822 0.259762 0.0
-          0.360348 0.297786 0.0
-          0.423097 0.29579 0.0
-          0.479073 0.19739 0.0
-          0.469378 0.255868 0.0
+          0.248628 0.257775 0.0
+          0.304654 0.324913 0.0
+          0.383998 0.351393 0.0
+          0.530229 0.195301 0.0
+          0.519435 0.274042 0.0
+          0.464034 0.332507 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -28,6 +29,7 @@
           7
           8
           9
+          10
         </DataArray>
         <DataArray type="Int32" Name="offsets" Format="ascii">
           1
@@ -40,8 +42,10 @@
           8
           9
           10
+          11
         </DataArray>
         <DataArray type="UInt8" Name="types" Format="ascii">
+          1
           1
           1
           1
@@ -56,28 +60,30 @@
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          -0.000378162 4.10123e-05 0 
-          -0.000291637 0.000112811 0 
+          -0.00032931 3.61291e-05 0 
+          -0.000310174 0.000114609 0 
           -0.000278484 6.44788e-05 0 
           -0.000174242 -5.70781e-06 0 
           -0.000307507 -5.31778e-06 0 
-          -0.000142813 8.26379e-05 0 
-          -6.61797e-05 5.88273e-05 0 
-          -7.18033e-05 -2.4874e-06 0 
-          -0.000298952 -3.7289e-05 0 
-          -0.000152293 -5.82901e-05 0 
+          -0.000134601 0.000132817 0 
+          -1.59943e-05 0.000117172 0 
+          2.09094e-05 3.44742e-05 0 
+          -0.000282448 -6.7129e-05 0 
+          -0.000106484 -8.50512e-05 0 
+          -9.17442e-06 -4.04688e-05 0 
         </DataArray>
         <DataArray type="Float64" Name="id" NumberOfComponents="1" Format="ascii">
+          10 
           9 
-          8 
           2 
           1 
           0 
+          8 
           7 
           6 
-          5 
           3 
           4 
+          5 
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
           1 
@@ -90,30 +96,33 @@
           0 
           0 
           0 
+          0 
         </DataArray>
         <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
-          1.00838 
-          0.782427 
+          0.999994 
+          0.983112 
           0.42939 
           0.00934975 
           0.46503 
-          0.0139437 
-          -0.00101389 
-          -0.000729182 
-          0.411806 
-          0.00341504 
+          0.0336214 
+          2.87369e-05 
+          -5.78121e-07 
+          0.360367 
+          0.000270852 
+          2.61026e-06 
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.324527 0.134397 0 
-          0.300264 0.192737 0 
+          0.295054 0.0928252 0 
+          0.254067 0.165306 0 
           0.3505 0.207056 0 
           0.403537 0.249875 0 
           0.45 0.2 0 
-          0.315819 0.253977 0 
-          0.364981 0.293668 0 
-          0.428124 0.295964 0 
-          0.5 0.2 0 
-          0.480039 0.259948 0 
+          0.25805 0.248478 0 
+          0.305774 0.316711 0 
+          0.382534 0.34898 0 
+          0.55 0.2 0 
+          0.526889 0.279995 0 
+          0.464676 0.33534 0 
         </DataArray>
       </PointData>
     </Piece>
