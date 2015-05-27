@@ -159,7 +159,7 @@ namespace aspect
      * for a prescribed Stokes solution model, register it with the functions
      * that can declare their parameters and create these objects.
      *
-     * @ingroup PrescribedStokesSolutionModels
+     * @ingroup PrescribedStokesSolution
      */
 #define ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION(classname,name,description) \
   template class classname<2>; \
