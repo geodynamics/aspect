@@ -534,6 +534,15 @@ namespace aspect
 
               case harmonic_average:
               {
+                // if one of the values is zero, the average is 0.0
+                for (unsigned int i=0; i<N; ++i)
+                  if (values_out[i] == 0.0)
+                    {
+                      for (unsigned int j=0; j<N; ++j)
+                        values_out[j] = 0.0;
+                      return;
+                    }
+
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
                   sum += 1./values_out[i];
