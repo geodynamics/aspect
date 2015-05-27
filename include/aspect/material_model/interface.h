@@ -84,13 +84,60 @@ namespace aspect
        */
       enum Dependence
       {
-        none                 = 0,
-        temperature          = 1,
-        pressure             = 2,
-        strain_rate          = 4,
-        compositional_fields = 8,
+        uninitialized        = 0,
 
-        any_variable         = 0xffff
+        none                 = 1,
+        temperature          = 2,
+        pressure             = 4,
+        strain_rate          = 8,
+        compositional_fields = 16,
+
+        any_variable         = temperature | pressure | strain_rate | compositional_fields
+      };
+
+
+      /**
+       * A structure that, for every output variable of a material model,
+       * describes which input variable it depends on.
+       */
+      struct ModelDependence
+      {
+        /**
+         * A field that describes which input variable the viscosity
+         * of a material model depends on.
+         */
+        Dependence viscosity;
+
+        /**
+         * A field that describes which input variable the density
+         * of a material model depends on.
+         */
+        Dependence density;
+
+        /**
+         * A field that describes which input variable the compressibility
+         * of a material model depends on.
+         */
+        Dependence compressibility;
+
+        /**
+         * A field that describes which input variable the specific heat
+         * of a material model depends on.
+         */
+        Dependence specific_heat;
+
+        /**
+         * A field that describes which input variable the thermal conductivity
+         * of a material model depends on.
+         */
+        Dependence thermal_conductivity;
+
+        /**
+         * Default constructor. Sets all dependencies to invalid values in
+         * order to ensure that material models really correctly specify
+         * which input variables their output variables depend on.
+         */
+        ModelDependence ();
       };
 
       /**
@@ -476,6 +523,15 @@ namespace aspect
          */
 
         /**
+         * Return a structure that describes how each of the model's
+         * output variables (such as viscosity, density, etc) depend
+         * on the input variables pressure, temperature, strain rate,
+         * and compositional fields.
+         */
+        const NonlinearDependence::ModelDependence &
+        get_model_dependence () const;
+
+        /**
          * Return true if the viscosity() function returns something that may
          * depend on the variable identified by the argument.
          *
@@ -698,6 +754,24 @@ namespace aspect
         /**
          * @}
          */
+
+      protected:
+        /**
+         * A structure that describes how each of the model's
+         * output variables (such as viscosity, density, etc) depend
+         * on the input variables pressure, temperature, strain rate,
+         * and compositional fields.
+         *
+         * The constructor of this class calls the default
+         * constructor of this member variable which in turn
+         * initializes the object to invalid values. Derived classes
+         * then need to fill it either in their constructor (if they
+         * already know the correct dependences at that time) or
+         * at the end of their parse_parameter() functions where
+         * they know the correct material parameters they will
+         * use.
+         */
+        NonlinearDependence::ModelDependence model_dependence;
     };
 
 

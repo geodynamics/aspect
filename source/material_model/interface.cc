@@ -40,6 +40,8 @@ namespace aspect
       bool
       identifies_single_variable(const Dependence dependence)
       {
+        Assert (dependence != uninitialized,
+                ExcMessage ("You cannot call this function on an uninitialized dependence value!"));
         return ((dependence == temperature)
                 ||
                 (dependence == pressure)
@@ -49,7 +51,17 @@ namespace aspect
                 (dependence == compositional_fields));
       }
 
+
+      ModelDependence::ModelDependence ()
+        :
+        viscosity (uninitialized),
+        density (uninitialized),
+        compressibility (uninitialized),
+        specific_heat (uninitialized),
+        thermal_conductivity (uninitialized)
+      {}
     }
+
 
     template <int dim>
     Interface<dim>::~Interface ()
@@ -161,6 +173,16 @@ namespace aspect
                      const Point<dim> &) const
     {
       return 1.0;
+    }
+
+
+
+    template <int dim>
+    const NonlinearDependence::ModelDependence &
+    Interface<dim>::
+    get_model_dependence() const
+    {
+      return model_dependence;
     }
 
 
