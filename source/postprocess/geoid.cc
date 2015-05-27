@@ -66,26 +66,22 @@ namespace aspect
         
         if( is_external && evaluation_radius > 0.)
           {
-            coefficients.cosine_coefficients[0] += std::log(evaluation_radius) * 2.0 * value * JxW;
-
-            for (unsigned int n = 1; n <= max_degree; ++n)
+            for (unsigned int n = 2; n <= max_degree; ++n)
               {
                 const double factor = value * std::pow( r / evaluation_radius, static_cast<double>(n) )
                                       / static_cast<double>(n) * JxW;
-                coefficients.cosine_coefficients[n] += factor * static_cast<double>(n) * std::cos( static_cast<double>(n) * theta);
-                coefficients.sine_coefficients[n] +=   factor * static_cast<double>(n) * std::sin( static_cast<double>(n) * theta);
+                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
               }
           }
         else if ( !is_external && r > 0. )
           {
-            coefficients.cosine_coefficients[0] += std::log(r) * 2.0 * value * JxW;
-
-            for (unsigned int n = 1; n <= max_degree; ++n)
+            for (unsigned int n = 2; n <= max_degree; ++n)
               {
                 const double factor = value * std::pow( evaluation_radius/r, static_cast<double>(n) )
                                       / static_cast<double>(n) * JxW;
-                coefficients.cosine_coefficients[n] += factor * static_cast<double>(n) * std::cos( static_cast<double>(n) * theta);
-                coefficients.sine_coefficients[n] +=   factor * static_cast<double>(n) * std::sin( static_cast<double>(n) * theta);
+                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
               }
           }
       }
@@ -104,7 +100,7 @@ namespace aspect
 
         if( is_external && evaluation_radius > 0.)
           {
-            for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
@@ -123,7 +119,7 @@ namespace aspect
           }
         else if ( !is_external && r > 0. )
           {
-            for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
@@ -153,7 +149,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<2>::clear()
       {
-        for (unsigned int n = 0; n <= max_degree; ++n)
+        for (unsigned int n = 2; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = 0.0;
             coefficients.cosine_coefficients[n] = 0.0;
@@ -163,7 +159,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<3>::clear()
       {
-        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = 0.0;
@@ -177,7 +173,7 @@ namespace aspect
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
                      ExcInternalError() );
         
-        for (unsigned int n = 0; n <= max_degree; ++n)
+        for (unsigned int n = 2; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = s * coefficients.sine_coefficients[n] +
                                                 a * M.get_coefficients().sine_coefficients[n];
@@ -192,7 +188,7 @@ namespace aspect
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() , 
                      ExcInternalError() );
 
-        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = s * coefficients.sine_coefficients[k] +
@@ -211,7 +207,7 @@ namespace aspect
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
         AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
 
-        for (unsigned int n = 0; n <= max_degree; ++n)
+        for (unsigned int n = 2; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = s[n] * coefficients.sine_coefficients[n] +
                                                 a[n] * M.get_coefficients().sine_coefficients[n];
@@ -229,7 +225,7 @@ namespace aspect
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
         AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
 
-        for (unsigned int l = 0, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = s[l] * coefficients.sine_coefficients[k] +
@@ -667,38 +663,48 @@ namespace aspect
       std::vector<double> s(max_degree+1);
       std::vector<double> a_surface(max_degree+1);
       std::vector<double> a_bottom(max_degree+1);
-      const double gravity_constant = (dim == 2 ? 4./3. * G : G );
 
       if( dim == 3)
-        for( unsigned int l = 0; l <= max_degree; ++l)
+        for( unsigned int l = 2; l <= max_degree; ++l)
           {
             s[l] = 1.0;
-            a_surface[l] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
-            a_bottom[l] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+            a_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
+            a_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+
+            surface_potential_expansion->clear();
+            surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
+            surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
+            surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
+
+            bottom_potential_expansion->clear();
+            bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
+            bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+            bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
           }
       else
         {
-          a_surface[0] = gravity_constant*std::log(outer_radius);
-          a_bottom[0] = gravity_constant;
-          for( unsigned int n = 1; n <= max_degree; ++n)
+          for( unsigned int n = 2; n <= max_degree; ++n)
             {
+              const double gravity_constant = 4./3. * G;
+
               s[n] = 1.0;
               a_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_bottom / static_cast<double>(n);
               a_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_top / static_cast<double>(n);
+
+              surface_potential_expansion->clear();
+              surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
+              surface_potential_expansion->sadd( 1.0, -gravity_constant * outer_radius * delta_rho_top, *surface_topography_expansion );
+              surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
+
+              bottom_potential_expansion->clear();
+              bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
+              bottom_potential_expansion->sadd( 1.0, -gravity_constant * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+              bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
             }
         }
 
 
 
-      surface_potential_expansion->clear();
-      surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
-      surface_potential_expansion->sadd( 1.0, -gravity_constant * outer_radius * delta_rho_top, *surface_topography_expansion );
-      surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
-
-      bottom_potential_expansion->clear();
-      bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
-      bottom_potential_expansion->sadd( 1.0, -gravity_constant * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-      bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
     }
 
     template <int dim>
@@ -735,7 +741,7 @@ namespace aspect
             {
               file << "# degree order surface_geoid_sine surface_geoid_cosine bottom_geoid_sine bottom_geoid_cosine density_surface_sine density_surface_cosine density_bottom_sine density_bottom_cosine surface_topography_sine surface_topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
               // Write the solution to an output file
-              for (unsigned int l=0, k=0; l <= max_degree; ++l)
+              for (unsigned int l=2, k=0; l <= max_degree; ++l)
                 {
                   for (unsigned int m = 0; m <= l; ++m, ++k)
                     {
@@ -757,7 +763,7 @@ namespace aspect
             }
           else
             {
-              for (unsigned int n=0; n <= max_degree; ++n)
+              for (unsigned int n=2; n <= max_degree; ++n)
                 {
                   file << n << " "
                        << surface_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_surface << " "
