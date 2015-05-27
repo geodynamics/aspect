@@ -31,7 +31,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes the laterally averaged density 
+     * A postprocessor that computes the laterally averaged density
      * at the top and bottom boundaries of the solution.  This is useful
      * for calculating the geoid at those surfaces.
      *

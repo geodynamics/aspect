@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * 
+ * <li> New: There are now postprocessors BoundaryDensities and
+ * BoundaryPressures which calculate laterally averaged densities 
+ * and pressures at the top and bottom of the domain.
+ * (Ian Rose, 2015/05/27)
  *
  * <li> Fixed: There was a bug in the make pressure rhs compatibility
  * function that caused the linear solver to fail in models with a

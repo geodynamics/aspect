@@ -71,21 +71,21 @@ namespace aspect
                 bool cell_at_bottom = false;
 
                 //Test for top or bottom surface cell faces
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) 
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
                     < cell->face(f)->minimum_vertex_distance()/3.)
                   cell_at_top = true;
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) 
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
                     > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
                   cell_at_bottom = true;
-            
-                if( cell_at_top || cell_at_bottom )
+
+                if ( cell_at_top || cell_at_bottom )
                   {
                     //evaluate the pressure on the face
                     fe_face_values.reinit (cell, f);
                     fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_vals);
 
                     //calculate the top properties
-                    if (cell_at_top) 
+                    if (cell_at_top)
                       for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                         {
                           local_top_pressure += pressure_vals[q] * fe_face_values.JxW(q);
@@ -134,14 +134,14 @@ namespace aspect
     }
 
     template <int dim>
-    double 
+    double
     BoundaryPressures<dim>::pressure_at_top() const
     {
       return top_pressure;
     }
 
     template <int dim>
-    double 
+    double
     BoundaryPressures<dim>::pressure_at_bottom() const
     {
       return bottom_pressure;
