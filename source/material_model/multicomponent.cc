@@ -238,50 +238,6 @@ namespace aspect
     template <int dim>
     bool
     Multicomponent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
     is_compressible () const
     {
       return false;

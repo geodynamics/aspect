@@ -176,7 +176,6 @@ namespace aspect
     }
 
 
-
     template <int dim>
     const NonlinearDependence::ModelDependence &
     Interface<dim>::

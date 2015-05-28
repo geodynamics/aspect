@@ -75,34 +75,6 @@ namespace aspect
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
-         * Method to determine density dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine compressibility dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine specific heat capacity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine thermal conductivity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */
