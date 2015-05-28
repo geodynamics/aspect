@@ -116,8 +116,6 @@ namespace aspect
                           spherical_coordinates[2] = theta;
                           const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
 
-                          cur_id++;
-
                           typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
                               (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), newPoint)).first;
 
@@ -127,6 +125,8 @@ namespace aspect
                               BaseParticle<dim> new_particle(newPoint, cur_id);
                               world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
                             }
+
+                          cur_id++;
                         }
                     }
                 }
@@ -150,9 +150,11 @@ namespace aspect
                       if (it->is_locally_owned())
                         {
                           //Only try to add the point if the cell it is in, is on this processor
-                          BaseParticle<dim> new_particle(newPoint, cur_id++);
+                          BaseParticle<dim> new_particle(newPoint, cur_id);
                           world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
                         }
+
+                      cur_id++;
                     }
                 }
             }

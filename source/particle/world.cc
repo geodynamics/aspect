@@ -464,28 +464,8 @@ namespace aspect
         }
 
       // Determine the total number of particles we will send to other processors
-      const int total_send = send_particles.size();
-
-      // Initialize send structures, currently we send all particles to all
-      // processors, except ourself
-      std::vector<int> num_send(world_size,total_send);
-      num_send[self_rank] = 0;
-
-      std::vector<int> send_offset (world_size,0);
-
-      // Initialize recv structures
-      std::vector<int> num_recv (world_size,0);
-      std::vector<int> recv_offset (world_size,0);
-
-      // Notify other processors how many particles we will be sending
-      MPI_Alltoall(&(num_send[0]), 1, MPI_INT, &(num_recv[0]), 1, MPI_INT, this->get_mpi_communicator());
-
-      int total_recv = 0;
-      for (unsigned int rank=0; rank<world_size; ++rank)
-        {
-          recv_offset[rank] = total_recv;
-          total_recv += num_recv[rank];
-        }
+      int total_send_particles = send_particles.size();
+      const int total_recv_particles = Utilities::MPI::sum (total_send_particles, this->get_mpi_communicator());
 
       // Allocate space for sending and receiving particle data
       std::vector<double> send_data;
@@ -497,18 +477,36 @@ namespace aspect
           integrator->write_data(send_data, particle->get_id());
         }
 
+      int num_send_data = send_data.size();
+
+      // Notify other processors how many particles we will be sending
+      std::vector<int> num_recv_data(world_size,0);
+      std::vector<int> recv_offset(world_size,0);
+
+      MPI_Allgather(&num_send_data, 1, MPI_INT, &(num_recv_data[0]), 1, MPI_INT, this->get_mpi_communicator());
+
+      int total_recv_data = 0;
+      for (unsigned int rank=0; rank<world_size; ++rank)
+        {
+          recv_offset[rank] = total_recv_data;
+          total_recv_data += num_recv_data[rank];
+        }
+
       // Set up the space for the received particle data
-      std::vector<double> recv_data(total_recv * (integrator->data_len()+property_manager->get_data_len()));
+      std::vector<double> recv_data(total_recv_data);
+
+      AssertThrow(send_data.size() == total_send_particles * (integrator->data_len()+property_manager->get_data_len()),
+             ExcMessage("The amount of data written into the array that is send to other processes "
+                 "is inconsistent with the number and size of particles."));
 
       // Exchange the particle data between domains
-      MPI_Alltoallv(&(send_data[0]), &(num_send[0]), &(send_offset[0]), particle_type,
-                    &(recv_data[0]), &(num_recv[0]), &(recv_offset[0]), particle_type,
+      MPI_Allgatherv (&(send_data[0]), num_send_data, MPI_DOUBLE,
+                    &(recv_data[0]), &(num_recv_data[0]), &(recv_offset[0]), MPI_DOUBLE,
                     this->get_mpi_communicator());
 
-      unsigned int put_in_domain = 0;
       unsigned int pos = 0;
       // Put the received particles into the domain if they are in the triangulation
-      for (int i=0; i<total_recv; ++i)
+      for (int i=0; i<total_recv_particles; ++i)
         {
           BaseParticle<dim>       recv_particle;
           recv_particle.set_data_len(property_manager->get_data_len());
@@ -519,10 +517,13 @@ namespace aspect
           const LevelInd found_cell = find_cell(recv_particle, std::make_pair(-1,-1));
           if (recv_particle.local())
             {
-              put_in_domain++;
               particles.insert(std::make_pair(found_cell, recv_particle));
             }
         }
+
+      AssertThrow(pos == recv_data.size(),
+                  ExcMessage("The amount of data that was read into new particles "
+                      "does not match the amount of data sent around."));
     }
 
     template <int dim>

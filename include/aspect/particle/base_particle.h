@@ -47,16 +47,20 @@ namespace aspect
 
         /**
          * Current particle velocity
+         * TODO: Remove, if possible
          */
         Point<dim>      velocity;
 
         /**
          * Globally unique ID of particle
+         * TODO: Integer?
          */
         double          id;
 
         /**
-         * Whether this particle is in the local subdomain or not
+         * Whether this particle is in the local subdomain or not. This variable
+         * is only needed during that part of the algorithm that transfers
+         * particles between processors.
          */
         bool            is_local;
 
@@ -64,6 +68,7 @@ namespace aspect
          * Whether to check the velocity of this particle This is used for
          * integration schemes which require multiple integration steps for
          * some particles, but not for others
+         * TODO: this is not needed and should be stored in the integrator
          */
         bool            check_vel;
 
