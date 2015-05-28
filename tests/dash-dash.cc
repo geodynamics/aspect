@@ -16,13 +16,13 @@ int f()
   //   consequently, remove the directory if it existed before
   //   and re-create it as an empty directory
   system ("cd output-dash-dash ; "
-	  "(cat " ASPECT_SOURCE_DIR "/tests/box-origin.prm "
-	  " ; "
-	  " echo 'set Output directory = output.tmp' "
-	  " ; "
-	  " rm -rf output.tmp ; mkdir output.tmp "
-	  ") "
-	  "| ../../aspect -- ");
+          "(cat " ASPECT_SOURCE_DIR "/tests/box-origin.prm "
+          " ; "
+          " echo 'set Output directory = output.tmp' "
+          " ; "
+          " rm -rf output.tmp ; mkdir output.tmp "
+          ") "
+          "| ../../aspect -- ");
   exit (0);
 }
 

@@ -11,7 +11,7 @@ namespace aspect
 
     template <int dim>
     class CellMaterial :
-        public aspect::MaterialModel::Simpler<dim>, aspect::SimulatorAccess<dim>
+      public aspect::MaterialModel::Simpler<dim>, aspect::SimulatorAccess<dim>
     {
       public:
         void
