@@ -7,53 +7,53 @@
 
 namespace aspect
 {
-  namespace PrescribedStokesSolution
-  {
-    using namespace dealii;
+namespace PrescribedStokesSolution
+{
+using namespace dealii;
+
+/**
+ * A class that implements a prescribed velocity field determined from
+ * a AsciiData input file.
+ *
+ * @ingroup PrescribedStokesSolution
+ */
+template <int dim>
+class AsciiData : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
+{
+public:
+    /**
+     * Empty Constructor.
+     */
+    AsciiData ();
 
     /**
-     * A class that implements a prescribed velocity field determined from
-     * a AsciiData input file.
-     *
-     * @ingroup PrescribedStokesSolution
+     * Initialization function. This function is called once at the
+     * beginning of the program. Checks preconditions.
      */
-    template <int dim>
-    class AsciiData : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
-    {
-      public:
-        /**
-         * Empty Constructor.
-         */
-        AsciiData ();
+    void
+    initialize ();
 
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program. Checks preconditions.
-         */
-        void
-        initialize ();
+    /**
+     For the current class, this function returns value from the text files.
+     */
+    virtual
+    void
+    stokes_solution (const Point<dim> &position, Vector<double> &value) const;
 
-        /**
-         For the current class, this function returns value from the text files.
-         */
-        virtual
-        void 
-        stokes_solution (const Point<dim> &position, Vector<double> &value) const;
+    /**
+     * Declare the parameters this class takes through input files.
+     */
+    static
+    void
+    declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-  }
+    /**
+     * Read the parameters this class declares from the parameter file.
+     */
+    void
+    parse_parameters (ParameterHandler &prm);
+};
+}
 }
 
 
