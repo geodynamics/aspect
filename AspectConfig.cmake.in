@@ -45,4 +45,14 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
   ENDIF()
 
+
+# workarounds for MAC OS
+IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # avoid linker errors about missing functions inside ASPECT:
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+
+  # make shared libraries end on .so not .dylib
+  SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
+ENDIF()
+
 ENDMACRO()
