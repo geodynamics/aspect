@@ -107,8 +107,7 @@ namespace aspect
         }
 
       // Advance the particles in the world by the current timestep
-      world.advance_timestep (this->get_timestep(),
-                              this->get_solution());
+      world.advance_timestep (this->get_timestep());
 
       return std::make_pair("Advected particles: ", result_string.str());
     }

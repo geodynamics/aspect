@@ -342,7 +342,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::advance_timestep(const double timestep, const LinearAlgebra::BlockVector &solution)
+    World<dim>::advance_timestep(const double timestep)
     {
       bool        continue_integrator = true;
 
@@ -355,18 +355,21 @@ namespace aspect
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
 
-      // Mark all particles to be checked for velocity based on position
-      mark_particles_for_check();
-
       // Keep calling the integrator until it indicates it is finished
       while (continue_integrator)
         {
           // Starting out, particles must know which cells they belong to
           // Using this we can quickly interpolate the velocities
-          get_particle_velocities(solution);
+          std::vector<Tensor<1,dim> > old_velocities(particles.size());
+          std::vector<Tensor<1,dim> > velocities(particles.size());
+
+          get_particle_velocities(old_velocities,velocities);
 
           // Call the integrator
-          continue_integrator = integrator->integrate_step(particles, timestep);
+          continue_integrator = integrator->integrate_step(particles,
+                                                           old_velocities,
+                                                           velocities,
+                                                           timestep);
 
           // Find the cells that the particles moved to
           find_all_cells();
@@ -391,14 +394,6 @@ namespace aspect
     World<dim>::move_particles_back_in_mesh()
     {
       // TODO: fix this to work with arbitrary meshes
-    }
-
-    template <int dim>
-    void
-    World<dim>::mark_particles_for_check()
-    {
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator  it;
-      for (it=particles.begin(); it!=particles.end(); ++it) it->second.set_vel_check(true);
     }
 
     template <int dim>
@@ -528,25 +523,26 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::get_particle_velocities(const LinearAlgebra::BlockVector &solution)
+    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &velocities,
+                                        std::vector<Tensor<1,dim> > &old_velocities)
     {
       Vector<double>                single_res(dim);
       std::vector<Vector<double> >  result(50,single_res);
+      std::vector<Vector<double> >  old_result(50,single_res);
       std::vector<Point<dim> >      particle_points(50);
 
       const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
       const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
 
       // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, solution, this->get_mapping());
+      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
+      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> old_fe_value(*dof_handler, this->get_old_solution(), this->get_mapping());
 
+      unsigned int particle_idx = 0;
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
       for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
           it=particles.begin(); it!=particles.end();)
         {
-          // Save a pointer to the first particle in this cell
-          const typename std::multimap<LevelInd, BaseParticle<dim> >::iterator sit = it;
-
           // Get the current cell
           const LevelInd cur_cell = it->first;
 
@@ -555,37 +551,39 @@ namespace aspect
           particle_points.resize(num_cell_particles);
 
           // Get a vector of the particle locations in this cell
-          unsigned int i = 0;
+          unsigned int n_particles_in_cell = 0;
           while (it != particles.end() && it->first == cur_cell)
             {
-              if (it->second.vel_check())
-                particle_points[i++] = it->second.get_location();
+              particle_points[n_particles_in_cell++] = it->second.get_location();
               it++;
             }
-          result.resize(i, single_res);
-          particle_points.resize(i);
+
+          result.resize(n_particles_in_cell, single_res);
+          old_result.resize(n_particles_in_cell, single_res);
+          particle_points.resize(n_particles_in_cell);
 
           // Get the cell the particle is in
           const typename DoFHandler<dim>::active_cell_iterator found_cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
 
           // Interpolate the velocity field for each of the particles
+          old_fe_value.set_active_cell(found_cell);
+          old_fe_value.vector_value_list(particle_points, result);
+
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, result);
+          fe_value.vector_value_list(particle_points, old_result);
 
           // Copy the resulting velocities to the appropriate vector
-          it = sit;
-          i = 0;
-          while (it != particles.end() && it->first == cur_cell)
+          for (typename std::vector<Vector<double> >::iterator particle = result.begin(); particle != result.end(); ++particle)
             {
-              if (it->second.vel_check())
-                {
-                  Point<dim> velocity;
-                  for (int d=0; d<dim; ++d)
-                    velocity(d) = result[i](d);
-                  it->second.set_velocity(velocity);
-                  i++;
-                }
-              it++;
+              Tensor<1,dim> velocity;
+              for (int d=0; d<dim; ++d)
+                velocity[d] = (*particle)[d];
+              velocities[particle_idx] = velocity;
+
+              for (int d=0; d<dim; ++d)
+                velocity[d] = (*particle)[d];
+              old_velocities[particle_idx] = velocity;
+              particle_idx++;
             }
         }
     }

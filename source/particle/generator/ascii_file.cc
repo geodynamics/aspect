@@ -47,7 +47,7 @@ namespace aspect
         template <int dim>
         void
         AsciiFile<dim>::generate_particles(Particle::World<dim> &world,
-                                            const double total_num_particles)
+                                            const double )
           {
           const std::string filename = data_directory+data_filename;
           std::ifstream in(filename.c_str(), std::ios::in);

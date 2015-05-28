@@ -182,7 +182,7 @@ namespace aspect
          * movement
          * @param [in] solution Current Aspect solution vector
          */
-        void advance_timestep(const double timestep, const LinearAlgebra::BlockVector &solution);
+        void advance_timestep(const double timestep);
 
         void move_particles_back_in_mesh();
 
@@ -227,10 +227,14 @@ namespace aspect
          * the input solution velocity field. The calculated velocities are
          * stored in the Particle objects for this world.
          *
-         * @param [in] solution The current solution vector for this
+         * @param [inout] velocities The current solution vector for this
          * simulation.
+         * @param [inout] old_velocities A vector of velocities evaluated at
+         * the particle positions according to the given solution.
          */
-        void get_particle_velocities(const LinearAlgebra::BlockVector &solution);
+        void
+        get_particle_velocities(std::vector<Tensor<1,dim> > &velocities,
+                                std::vector<Tensor<1,dim> > &old_velocities);
 
         /**
          * Calculates the global sum of particles over all processes. This is

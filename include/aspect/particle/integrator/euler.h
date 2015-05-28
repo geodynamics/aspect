@@ -37,11 +37,15 @@ namespace aspect
       class EulerIntegrator : public Interface<dim>
       {
         public:
-          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles, const double dt);
-          virtual void add_mpi_types(std::vector<MPIDataInfo> &data_info);
+          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                      const std::vector<Tensor<1,dim> > &old_velocities,
+                                      const std::vector<Tensor<1,dim> > &,
+                                      const double dt);
+
+          virtual void add_mpi_types(std::vector<MPIDataInfo> &);
           virtual unsigned int data_len() const;
-          virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num);
-          virtual void write_data(std::vector<double> &data, const double &id_num) const;
+          virtual unsigned int read_data(const std::vector<double> &, const unsigned int &pos, const double &);
+          virtual void write_data(std::vector<double> &, const double &) const;
       };
     }
   }

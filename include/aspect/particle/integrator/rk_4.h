@@ -40,15 +40,20 @@ namespace aspect
       {
         public:
         RK4Integrator();
-          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles, const double dt);
+          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                      const std::vector<Tensor<1,dim> > &old_velocities,
+                                      const std::vector<Tensor<1,dim> > &velocities,
+                                      const double dt);
+
           virtual void add_mpi_types(std::vector<MPIDataInfo> &data_info);
           virtual unsigned int data_len() const;
           virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num);
           virtual void write_data(std::vector<double> &data, const double &id_num) const;
 
         private:
-          unsigned int                    step;
-          std::map<double, Point<dim> >   loc0, k1, k2, k3;
+          unsigned int                     step;
+          std::map<double, Point<dim> >    loc0;
+          std::map<double, Tensor<1,dim> > k1, k2, k3;
 
       };
     }

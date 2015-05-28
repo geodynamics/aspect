@@ -41,25 +41,26 @@ namespace aspect
         template <int dim>
           bool
           RK2Integrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                             const std::vector<Tensor<1,dim> > &old_velocities,
+                                             const std::vector<Tensor<1,dim> > &velocities,
                                              const double dt)
           {
-            typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it;
-            Point<dim>                          loc, vel;
-            double                              id_num;
+            typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it = particles.begin();
+            typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
+            typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
-            for (it=particles.begin(); it!=particles.end(); ++it)
+            for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
               {
-                id_num = it->second.get_id();
-                loc = it->second.get_location();
-                vel = it->second.get_velocity();
+                double id_num = it->second.get_id();
+                Point<dim> loc = it->second.get_location();
                 if (step == 0)
                   {
                     loc0[id_num] = loc;
-                    it->second.set_location(loc + 0.5*dt*vel);
+                    it->second.set_location(loc + 0.5*dt*(*old_vel));
                   }
                 else if (step == 1)
                   {
-                    it->second.set_location(loc0[id_num] + dt*vel);
+                    it->second.set_location(loc0[id_num] + dt*(*old_vel + *vel)/2.0);
                   }
                 else
                   {

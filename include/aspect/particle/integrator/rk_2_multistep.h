@@ -42,6 +42,8 @@ namespace aspect
           RK2IntegratorMultiStep();
 
           virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                      const std::vector<Tensor<1,dim> > &old_velocities,
+                                      const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt);
 
           virtual void add_mpi_types(std::vector<MPIDataInfo> &data_info);

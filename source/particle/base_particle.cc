@@ -33,7 +33,6 @@ namespace aspect
       location (new_loc),
       id (new_id),
       is_local (true),
-      check_vel (true),
       val ()
     {
     }
@@ -43,10 +42,8 @@ namespace aspect
     BaseParticle<dim>::BaseParticle ()
       :
       location (),
-      velocity (),
       id (0),
       is_local (true),
-      check_vel (true),
       val()
     {
     }
@@ -70,7 +67,7 @@ namespace aspect
     void
     BaseParticle<dim>::set_data_len (const unsigned int data_len)
     {
-      val.resize(data_len - dim - dim - 1);
+      val.resize(data_len - dim - 1);
     }
 
     template <int dim>
@@ -81,11 +78,6 @@ namespace aspect
       for (unsigned int i = 0; i < dim; ++i)
         {
           data.push_back(location(i));
-        }
-      // Write velocity data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          data.push_back(velocity(i));
         }
 
       data.push_back(id);
@@ -106,11 +98,7 @@ namespace aspect
         {
           location (i) = data[p++];
         }
-      // Write velocity data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          velocity (i) = data[p++];
-        }
+
       id = data[p++];
 
       for (unsigned int i = 0; i < val.size(); ++i)
@@ -125,7 +113,7 @@ namespace aspect
     unsigned int
     BaseParticle<dim>::data_len () const
     {
-      return dim + dim + 1 + val.size();
+      return dim + 1 + val.size();
     }
 
 
@@ -134,20 +122,6 @@ namespace aspect
     BaseParticle<dim>::get_location () const
     {
       return location;
-    }
-
-    template <int dim>
-    void
-    BaseParticle<dim>::set_velocity (Point<dim> new_vel)
-    {
-      velocity = new_vel;
-    }
-
-    template <int dim>
-    Point<dim>
-    BaseParticle<dim>::get_velocity () const
-    {
-      return velocity;
     }
 
     template <int dim>
@@ -191,20 +165,6 @@ namespace aspect
     BaseParticle<dim>::set_local (bool new_local)
     {
       is_local = new_local;
-    }
-
-    template <int dim>
-    bool
-    BaseParticle<dim>::vel_check () const
-    {
-      return check_vel;
-    }
-
-    template <int dim>
-    void
-    BaseParticle<dim>::set_vel_check (bool new_vel_check)
-    {
-      check_vel = new_vel_check;
     }
   }
 }

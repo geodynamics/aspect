@@ -38,6 +38,8 @@ namespace aspect
       template <int dim>
       bool
       RK2IntegratorMultiStep<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                                  const std::vector<Tensor<1,dim> > &old_velocities,
+                                                  const std::vector<Tensor<1,dim> > &velocities,
                                                   const double dt)
       {
         //Set a machine zero to cause particles which should not move, to not move; ensures particles are not lost in 2d case
@@ -51,49 +53,52 @@ namespace aspect
 
         const Property::Manager<dim> manager = tracer_postprocess->get_particle_world().get_manager();
 
-        const unsigned int old_velocity_component = manager.get_property_component_by_name("velocity_0");
-        const unsigned int old_position_component = manager.get_property_component_by_name("position_0");
+        const unsigned int last_velocity_component = manager.get_property_component_by_name("velocity_0");
+        const unsigned int last_position_component = manager.get_property_component_by_name("position_0");
 
-        for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
-             it=particles.begin(); it!=particles.end(); ++it)
+        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it=particles.begin();
+        typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
+        typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
+
+        for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const double id_num = it->second.get_id();
-            const Point<dim> loc = it->second.get_location();
             const std::vector<double> data = it->second.get_properties();
-            Point<dim> vel = it->second.get_velocity();
 
             // TODO: this needs to work with arbitrary property numbers
             Point<dim> lastLoc, lastVel;
             for (unsigned int i = 0; i < dim; ++i)
               {
-                lastLoc(i) = data[old_position_component + i];
-                lastVel(i) = data[old_velocity_component + i];
+                lastLoc(i) = data[last_position_component + i];
+                lastVel(i) = data[last_velocity_component + i];
               }
 
-            if (abs(vel[0]) < eps)
-              vel[0] = 0;
-            if (abs(vel[1]) < eps)
-              vel[1] = 0;
-            if (abs(lastVel[0]) < eps)
-              lastVel[0] = 0;
-            if (abs(lastVel[1]) < eps)
-              lastVel[1] = 0;
-            if (dim == 3)
-              {
-                if (abs(vel[2]) < eps)
-                  vel[2] = 0;
-                if (abs(lastVel[2]) < eps)
-                  lastVel[2] = 0;
-              }
+            Tensor<1,dim> velocity = ((*vel).norm() < eps)
+                    ?
+                        Tensor<1,dim>()
+            :
+                        *vel;
+
+            Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
+                    ?
+                        Tensor<1,dim>()
+            :
+                        *vel;
+
+            Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
+                    ?
+                        Tensor<1,dim>()
+            :
+                        *vel;
+
             if (step == 0)
               {
                 //vel = midNewVel; loc = lastLoc + dt * (midOldVel + midNewVel)/2
-                it->second.set_location(lastLoc + dt*(lastVel + vel)/2);
+                it->second.set_location(lastLoc + 0.5 * dt * last_velocity);
               }
             else if (step == 1)
               {
                 //lastLoc = oldPos, loc = pos + 1/2 vel
-                it->second.set_location(loc + dt*vel);
+                it->second.set_location(lastLoc + dt*((velocity + old_velocity) / 2));
               }
             else if (step == 2)
               {

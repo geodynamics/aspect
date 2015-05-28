@@ -31,12 +31,12 @@ namespace aspect
     {
       template <int dim>
       void
-      Interface<dim>::declare_parameters (ParameterHandler &prm)
+      Interface<dim>::declare_parameters (ParameterHandler &)
       {}
 
       template <int dim>
       void
-      Interface<dim>::parse_parameters (ParameterHandler &prm)
+      Interface<dim>::parse_parameters (ParameterHandler &)
       {}
 
 

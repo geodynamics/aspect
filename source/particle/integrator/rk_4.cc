@@ -45,36 +45,37 @@ namespace aspect
         template <int dim>
           bool
           RK4Integrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                                             const double                                          dt)
+                                             const std::vector<Tensor<1,dim> > &old_velocities,
+                                             const std::vector<Tensor<1,dim> > &velocities,
+                                             const double dt)
           {
-            typename std::multimap<LevelInd, BaseParticle<dim> >::iterator       it;
-            Point<dim>                          loc, vel, k4;
-            double                              id_num;
+            typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it=particles.begin();
+            typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
+            typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
-            for (it=particles.begin(); it!=particles.end(); ++it)
+            for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
               {
-                id_num = it->second.get_id();
-                loc = it->second.get_location();
-                vel = it->second.get_velocity();
+                const double id_num = it->second.get_id();
+                const Point<dim> loc = it->second.get_location();
                 if (step == 0)
                   {
                     loc0[id_num] = loc;
-                    k1[id_num] = dt*vel;
+                    k1[id_num] = dt*(*vel);
                     it->second.set_location(loc + 0.5*k1[id_num]);
                   }
                 else if (step == 1)
                   {
-                    k2[id_num] = dt*vel;
+                    k2[id_num] = dt*(*vel);
                     it->second.set_location(loc0[id_num] + 0.5*k2[id_num]);
                   }
                 else if (step == 2)
                   {
-                    k3[id_num] = dt*vel;
+                    k3[id_num] = dt*(*vel);
                     it->second.set_location(loc0[id_num] + k3[id_num]);
                   }
                 else if (step == 3)
                   {
-                    k4 = dt*vel;
+                    const Tensor<1,dim> k4 = dt*(*vel);
                     it->second.set_location(loc0[id_num] + (k1[id_num]+2.0*k2[id_num]+2.0*k3[id_num]+k4)/6.0);
                   }
                 else
@@ -128,15 +129,15 @@ namespace aspect
             // Read k1, k2 and k3
             for (i=0; i<dim; ++i)
               {
-                k1[id_num](i) = data[p++];
+                k1[id_num][i] = data[p++];
               }
             for (i=0; i<dim; ++i)
               {
-                k2[id_num](i) = data[p++];
+                k2[id_num][i] = data[p++];
               }
             for (i=0; i<dim; ++i)
               {
-                k3[id_num](i) = data[p++];
+                k3[id_num][i] = data[p++];
               }
 
             return p;
@@ -146,28 +147,25 @@ namespace aspect
           void
           RK4Integrator<dim>::write_data(std::vector<double> &data, const double &id_num) const
           {
-            typename std::map<double, Point<dim> >::const_iterator it;
-            unsigned int  i;
-
             // Write location data
-            it = loc0.find(id_num);
-            for (i=0; i<dim; ++i)
+            typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
+            for (unsigned int i=0; i<dim; ++i)
               {
                 data.push_back(it->second(i));
               }
             // Write k1, k2 and k3
-            it = k1.find(id_num);
-            for (i=0; i<dim; ++i)
+            typename std::map<double, Tensor<1,dim> >::const_iterator it_k = k1.find(id_num);
+            for (unsigned int i=0; i<dim; ++i)
               {
                 data.push_back(it->second(i));
               }
-            it = k2.find(id_num);
-            for (i=0; i<dim; ++i)
+            it_k = k2.find(id_num);
+            for (unsigned int i=0; i<dim; ++i)
               {
                 data.push_back(it->second(i));
               }
-            it = k3.find(id_num);
-            for (i=0; i<dim; ++i)
+            it_k = k3.find(id_num);
+            for (unsigned int i=0; i<dim; ++i)
               {
                 data.push_back(it->second(i));
               }

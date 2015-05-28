@@ -49,7 +49,7 @@ namespace aspect
           virtual
           void
           generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles);
+                             const double);
 
           void
           generate_particle(Particle::World<dim> &world,

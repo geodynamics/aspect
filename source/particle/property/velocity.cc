@@ -29,7 +29,7 @@ namespace aspect
       template <int dim>
       void
       Velocity<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &position,
+                                         const Point<dim> &,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &)
       {
@@ -41,7 +41,7 @@ namespace aspect
       void
       Velocity<dim>::update_particle(unsigned int data_position,
                                    std::vector<double> &data,
-                                   const Point<dim> &position,
+                                   const Point<dim> &,
                                    const Vector<double> &solution,
                                    const std::vector<Tensor<1,dim> > &)
       {

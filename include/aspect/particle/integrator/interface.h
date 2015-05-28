@@ -59,7 +59,7 @@ namespace aspect
            * at the updated particle positions is evaluated and passed to
            * integrate_step during the next call.
            *
-           * @param [in,out] world The world to integrate particles in. The
+           * @param [in,out] particles The map of particles to move. The
            * particle positions will be changed in this function based on the
            * integration scheme.
            * @param [in] dt The timestep length to perform the integration.
@@ -69,10 +69,12 @@ namespace aspect
            */
           virtual bool integrate_step(typename std::multimap<LevelInd,
                                       BaseParticle<dim> > &particles,
+                                      const std::vector<Tensor<1,dim> > &old_velocities,
+                                      const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt) = 0;
 
           /**
-           * Secify the MPI types and data sizes involved in transferring
+           * Specify the MPI types and data sizes involved in transferring
            * integration related information between processes. If the
            * integrator samples velocities at different locations and the
            * particle moves between processes during the integration step, the

@@ -91,7 +91,7 @@ namespace aspect
     void
     Manager<dim>::initialize ()
     {
-      data_len = dim + dim + 1;
+      data_len = dim + 1;
 
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
            p = property_list.begin(); p!=property_list.end(); ++p)
@@ -166,8 +166,6 @@ namespace aspect
       // Add the position, velocity, ID
       data_info.push_back (
         aspect::Particle::MPIDataInfo ("pos", dim));
-      data_info.push_back (
-        aspect::Particle::MPIDataInfo ("velocity", dim));
       data_info.push_back (aspect::Particle::MPIDataInfo ("id", 1));
 
       for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator

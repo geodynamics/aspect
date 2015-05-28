@@ -44,7 +44,7 @@ namespace aspect
         void
         initialize_particle (std::vector<double> &,
                              const Point<dim> &,
-                             const Vector<double> &,
+                             const Vector<double> &solution,
                              const std::vector<Tensor<1,dim> > &);
 
         /**

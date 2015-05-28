@@ -46,12 +46,6 @@ namespace aspect
         Point<dim>      location;
 
         /**
-         * Current particle velocity
-         * TODO: Remove, if possible
-         */
-        Point<dim>      velocity;
-
-        /**
          * Globally unique ID of particle
          * TODO: Integer?
          */
@@ -63,14 +57,6 @@ namespace aspect
          * particles between processors.
          */
         bool            is_local;
-
-        /**
-         * Whether to check the velocity of this particle This is used for
-         * integration schemes which require multiple integration steps for
-         * some particles, but not for others
-         * TODO: this is not needed and should be stored in the integrator
-         */
-        bool            check_vel;
 
         /**
          * The serialized vector of all tracer properties

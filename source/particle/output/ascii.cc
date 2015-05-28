@@ -58,7 +58,7 @@ namespace aspect
           std::string
           ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
                                std::vector<MPIDataInfo> &data_info,
-                               const double &current_time)
+                               const double &)
           {
             typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator  it;
             unsigned int                            i;

@@ -62,7 +62,7 @@ namespace aspect
         template <int dim>
           std::string
           HDF5Output<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                               std::vector<MPIDataInfo> &data_info,
+                               std::vector<MPIDataInfo> &,
                                const double &current_time)
           {
             // avoid warnings about unused variables

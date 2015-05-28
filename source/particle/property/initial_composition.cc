@@ -29,7 +29,7 @@ namespace aspect
       template <int dim>
       void
       InitialComposition<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &position,
+                                         const Point<dim> &,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &)
       {
