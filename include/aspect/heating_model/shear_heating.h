@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,13 +19,11 @@
 */
 
 
-#ifndef __aspect__heating_model_function_h
-#define __aspect__heating_model_function_h
+#ifndef __aspect__heating_model_shear_heating_h
+#define __aspect__heating_model_shear_heating_h
 
-#include <aspect/simulator_access.h>
 #include <aspect/heating_model/interface.h>
-
-#include <deal.II/base/parsed_function.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -34,40 +32,33 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a heating model based on a functional
-     * description provided in the input file.
+     * A class that implements a standard shear heating rate.
+     *
+     * Add the term
+     *      $ 2 \eta \left[\varepsilon:\varepsilon - \frac{1}{3}
+     *          \left( \kappa \rho (u \cdot g) \right)^2 \right] $
+     *
+     * Also see the Equations section in the manual.
      *
      * @ingroup HeatingModels
      */
     template <int dim>
-    class Function : public Interface<dim>, public SimulatorAccess<dim>
+    class ShearHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
-         * Constructor.
-         */
-        Function ();
-
-        /**
-         * Return the specific heating rate as calculated by the function
-         * object.
-         */
-        virtual
-        double
-        specific_heating_rate (const double,
-                               const double,
-                               const std::vector<double> &,
-                               const Point<dim> &) const;
-
-        /**
-         * A function that is called at the beginning of each time step to
-         * allow the model to do whatever necessary. In this case the time of
-         * the function object is updated.
+         * Compute the heating model outputs for this class.
          */
         virtual
         void
-        update ();
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -81,12 +72,10 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-      private:
         /**
-         * A function object representing the components of the velocity.
+         * @}
          */
-        Functions::ParsedFunction<dim> heating_model_function;
+
     };
   }
 }

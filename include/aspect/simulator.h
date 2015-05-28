@@ -601,20 +601,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-      /**
-       * Compute the heating term for the advection system index. Currently
-       * the heating term is 0 for compositional fields.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                  MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                  MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                  const double specific_heating_rate,
-                                  const AdvectionField &advection_field,
-                                  const unsigned int q) const;
-
 
       /**
        * Copy the contribution to the advection system from a single cell into
@@ -1143,7 +1129,6 @@ namespace aspect
       const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
       const IntermediaryConstructorAction                            post_geometry_model_creation_action;
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
-      const std::auto_ptr<HeatingModel::Interface<dim> >             heating_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
@@ -1185,6 +1170,7 @@ namespace aspect
       double                                                    global_volume;
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
+      HeatingModel::Manager<dim>                                heating_model_manager;
 
       const MappingQ<dim>                                       mapping;
 

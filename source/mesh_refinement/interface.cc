@@ -285,7 +285,7 @@ namespace aspect
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of mesh refinement criteria that "
                           "will be run whenever mesh refinement is required. The "
-                          "results of each of these criteria will, i.e., the refinement "
+                          "results of each of these criteria, i.e., the refinement "
                           "indicators they produce for all the cells of the mesh "
                           "will then be normalized to a range between zero and one "
                           "and the results of different criteria will then be "
