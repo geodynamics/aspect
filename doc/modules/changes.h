@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * 
+ * <li> New: There are now postprocessors BoundaryDensities and
+ * BoundaryPressures which calculate laterally averaged densities 
+ * and pressures at the top and bottom of the domain.
+ * (Ian Rose, 2015/05/27)
  *
  * <li> New: Added cookbook to prescribe initial condition from shear
  * wave velocity model.
