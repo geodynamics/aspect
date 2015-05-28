@@ -42,15 +42,15 @@ namespace
       {
         case 2:
         {
-          output_vertex[0] = input_vertex[1]*std::sin(input_vertex[0]);
-          output_vertex[1] = input_vertex[1]*std::cos(input_vertex[0]);
+          output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
+          output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
           break;
         }
         case 3:
         {
-          output_vertex[0] = input_vertex[2]*std::cos(input_vertex[1])*std::sin(input_vertex[0]);
-          output_vertex[1] = input_vertex[2]*std::sin(input_vertex[1]);
-          output_vertex[2] = input_vertex[2]*std::cos(input_vertex[1])*std::cos(input_vertex[0]);
+          output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
+          output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
+          output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
           break;
         }
         default:
@@ -69,16 +69,16 @@ namespace
       {
         case 2:
         {
-          output_vertex[0] = std::atan2(v[0], v[1]);
-          output_vertex[1] = v.norm();
+          output_vertex[1] = std::atan2(v[1], v[0]);
+          output_vertex[0] = v.norm();
           break;
         }
         case 3:
         {
           const double radius=v.norm();
-          output_vertex[0] = std::atan2(v[0], v[2]);
-          output_vertex[1] = std::asin(v[1]/radius);
-          output_vertex[2] = radius;
+          output_vertex[0] = radius;
+          output_vertex[1] = std::atan2(v[1], v[0]);
+          output_vertex[2] = std::asin(v[2]/radius);
           break;
         }
         default:
@@ -152,10 +152,10 @@ namespace aspect
           case 2:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("bottom", 2),
-                  std::pair<std::string,types::boundary_id>("top",    3)
+              = { std::pair<std::string,types::boundary_id>("inner",  0),
+                  std::pair<std::string,types::boundary_id>("outer",  1),
+                  std::pair<std::string,types::boundary_id>("west",   2),
+                  std::pair<std::string,types::boundary_id>("east",   3)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -165,12 +165,12 @@ namespace aspect
           case 3:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("front",  2),
-                  std::pair<std::string,types::boundary_id>("back",   3),
-                  std::pair<std::string,types::boundary_id>("bottom", 4),
-                  std::pair<std::string,types::boundary_id>("top",    5)
+              = { std::pair<std::string,types::boundary_id>("inner",  0),
+                  std::pair<std::string,types::boundary_id>("outer",  1),
+                  std::pair<std::string,types::boundary_id>("west",   2),
+                  std::pair<std::string,types::boundary_id>("east",   3),
+                  std::pair<std::string,types::boundary_id>("south",  4),
+                  std::pair<std::string,types::boundary_id>("north",  5)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -201,7 +201,7 @@ namespace aspect
     double
     Chunk<dim>::depth(const Point<dim> &position) const
     {
-      return std::min (std::max (point2[dim-1]-position.norm(), 0.), maximal_depth());
+      return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
     }
 
 
@@ -217,7 +217,7 @@ namespace aspect
       // Choose a point at the mean longitude (and latitude)
       Point<dim> p = 0.5*(point2+point1);
       // at a depth beneath the top surface
-      p[dim-1] = point2[dim-1]-depth;
+      p[0] = point2[0]-depth;
 
       // Now convert to Cartesian coordinates
       return manifold.push_forward(p);
@@ -227,7 +227,7 @@ namespace aspect
     double
     Chunk<dim>::start_longitude () const
     {
-      return point1[0];
+      return point1[1];
     }
 
 
@@ -235,35 +235,35 @@ namespace aspect
     double
     Chunk<dim>::end_longitude () const
     {
-      return point2[0];
+      return point2[1];
     }
 
     template <int dim>
     double
     Chunk<dim>::longitude_range () const
     {
-      return point2[0] - point1[0];
+      return point2[1] - point1[1];
     }
 
     template <int dim>
     double
     Chunk<dim>::maximal_depth() const
     {
-      return point2[dim-1]-point1[dim-1];
+      return point2[0]-point1[0];
     }
 
     template <int dim>
     double
     Chunk<dim>::inner_radius () const
     {
-      return point1[dim-1];
+      return point1[0];
     }
 
     template <int dim>
     double
     Chunk<dim>::outer_radius () const
     {
-      return point2[dim-1];
+      return point2[0];
     }
 
     template <int dim>
@@ -300,28 +300,28 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-          prm.declare_entry ("Chunk bottom radius", "0",
+          prm.declare_entry ("Chunk inner radius", "0",
                              Patterns::Double (0),
                              "Radius at the bottom surface of the chunk. Units: m.");
-          prm.declare_entry ("Chunk top radius", "1",
+          prm.declare_entry ("Chunk outer radius", "1",
                              Patterns::Double (0),
                              "Radius at the top surface of the chunk. Units: m.");
 
           prm.declare_entry ("Chunk minimum longitude", "0",
                              Patterns::Double (-180, 360), // enables crossing of either hemisphere
-                             "Minimum longitude of the chunk. Units: m.");
+                             "Minimum longitude of the chunk. Units: degrees.");
           prm.declare_entry ("Chunk maximum longitude", "1",
                              Patterns::Double (-180, 360), // enables crossing of either hemisphere
-                             "Maximum longitude of the chunk. Units: m.");
+                             "Maximum longitude of the chunk. Units: degrees.");
 
           prm.declare_entry ("Chunk minimum latitude", "0",
                              Patterns::Double (-90, 90),
                              "Minimum latitude of the chunk. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: degrees.");
           prm.declare_entry ("Chunk maximum latitude", "1",
                              Patterns::Double (-90, 90),
                              "Maximum latitude of the chunk. This value is ignored "
-                             "if the simulation is in 2d. Units: m.");
+                             "if the simulation is in 2d. Units: degrees.");
 
           prm.declare_entry ("Radius repetitions", "1",
                              Patterns::Integer (1),
@@ -356,27 +356,31 @@ namespace aspect
           Assert (dim >= 2, ExcInternalError());
           Assert (dim <= 3, ExcInternalError());
 
-          if (dim == 2)
+          if (dim >= 2)
             {
-              point1[0] = prm.get_double ("Chunk minimum longitude") * degtorad;
-              point2[0] = prm.get_double ("Chunk maximum longitude") * degtorad;
-              repetitions[0] = prm.get_integer ("Longitude repetitions");
-              point1[1] = prm.get_double ("Chunk bottom radius");
-              point2[1] = prm.get_double ("Chunk top radius");
-              repetitions[1] = prm.get_integer ("Radius repetitions");
+              point1[0] = prm.get_double ("Chunk inner radius");
+              point2[0] = prm.get_double ("Chunk outer radius");
+              repetitions[0] = prm.get_integer ("Radius repetitions");
+              point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
+              point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
+              repetitions[1] = prm.get_integer ("Longitude repetitions");
+
+              Assert (point1[0] < point2[0],
+                      ExcMessage ("Inner radius must be less than outer radius."));
+              Assert (point1[1] < point2[1],
+                      ExcMessage ("Minimum longitude must be less than maximum longitude."));
+              Assert (point2[1] - point1[1] < 2.*numbers::PI,
+                      ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
 
           if (dim == 3)
             {
-              point1[0] = prm.get_double ("Chunk minimum longitude") * degtorad;
-              point2[0] = prm.get_double ("Chunk maximum longitude") * degtorad;
-              repetitions[0] = prm.get_integer ("Longitude repetitions");
-              point1[1] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[1] = prm.get_double ("Chunk maximum latitude") * degtorad;
-              repetitions[1] = prm.get_integer ("Latitude repetitions");
-              point1[2] = prm.get_double ("Chunk bottom radius");
-              point2[2] = prm.get_double ("Chunk top radius");
-              repetitions[2] = prm.get_integer ("Radius repetitions");
+              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
+              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
+              repetitions[2] = prm.get_integer ("Latitude repetitions");
+
+              Assert (point1[2] < point2[2],
+                      ExcMessage ("Minimum latitude must be less than maximum latitude."));
             }
 
         }
@@ -404,7 +408,7 @@ namespace aspect
                                    "Names in the parameter files are as follows: "
                                    "Chunk (minimum || maximum) (longitude || latitude): "
                                    "edges of geographical quadrangle (in degrees)"
-                                   "Chunk (bottom || top) radius: Radii at bottom and top of box"
+                                   "Chunk (inner || outer) radius: Radii at bottom and top of box"
                                    "(Longitude || Latitude || Radius) repetitions: "
                                    "number of cells in each coordinate direction "
                                    "Longitude periodic: Boolean")
