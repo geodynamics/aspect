@@ -60,7 +60,17 @@ namespace aspect
         double pressure_at_bottom() const;
 
       private:
+
+        /**
+         * Pressure at the top of the domain.
+         * Filled when execute() is called.
+         */
         double top_pressure;
+
+        /**
+         * Pressure at the bottom of the domain.
+         * Filled when execute() is called.
+         */
         double bottom_pressure;
     };
   }

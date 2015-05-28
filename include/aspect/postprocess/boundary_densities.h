@@ -60,7 +60,17 @@ namespace aspect
         double density_at_bottom() const;
 
       private:
+
+        /**
+         * Density at the top of the domain.
+         * Filled when execute() is called.
+         */
         double top_density;
+
+        /**
+         * Density at the bottom of the domain.
+         * Filled when execute() is called.
+         */
         double bottom_density;
     };
   }
