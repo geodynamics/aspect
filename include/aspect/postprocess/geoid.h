@@ -23,6 +23,8 @@
 #define __aspect__postprocess_geoid_h
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/postprocess/boundary_pressures.h>
+#include <aspect/postprocess/boundary_densities.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
