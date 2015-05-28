@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: Added cookbook to prescribe initial condition from shear
+ * wave velocity model.
+ * <br>
+ * (Jacqueline Austermann, 2015/05/28)
+ *
  * <li> Fixed: There was a bug in the make pressure rhs compatibility
  * function that caused the linear solver to fail in models with a
  * significant in- or outflux of material. This is fixed now.
