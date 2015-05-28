@@ -689,24 +689,32 @@ namespace aspect
           }
       else
         {
+          std::vector<double> surface_potential_at_surface(max_degree+1);
+          std::vector<double> surface_potential_at_bottom(max_degree+1);
+          std::vector<double> bottom_potential_at_bottom(max_degree+1);
+          std::vector<double> bottom_potential_at_surface(max_degree+1);
+          const double gravity_constant = 4./3. * G;
           for ( unsigned int n = 2; n <= max_degree; ++n)
             {
-              const double gravity_constant = 4./3. * G;
 
               s[n] = 1.0;
-              a_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_bottom / static_cast<double>(n);
-              a_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * delta_rho_top / static_cast<double>(n);
+              bottom_potential_at_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * 
+                                               delta_rho_bottom * inner_radius / static_cast<double>(n);
+              surface_potential_at_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * 
+                                               delta_rho_top * outer_radius / static_cast<double>(n);
+              bottom_potential_at_bottom[n] = -gravity_constant * inner_radius * delta_rho_bottom / static_cast<double>(n);
+              surface_potential_at_surface[n] = -gravity_constant * outer_radius * delta_rho_top / static_cast<double>(n);
+            }
 
               surface_potential_expansion->clear();
               surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
-              surface_potential_expansion->sadd( 1.0, -gravity_constant * outer_radius * delta_rho_top, *surface_topography_expansion );
-              surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
+              surface_potential_expansion->sadd( s, surface_potential_at_surface, *surface_topography_expansion );
+              surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
 
               bottom_potential_expansion->clear();
               bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
-              bottom_potential_expansion->sadd( 1.0, -gravity_constant * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-              bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
-            }
+              bottom_potential_expansion->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
+              bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
         }
 
 
@@ -815,12 +823,6 @@ namespace aspect
                              "Degree of the spherical harmonic expansion. "
                              "The expansion into spherical harmonics can be "
                              "expensive, especially for high degrees.");
-          prm.declare_entry("Core mass", "1.932e24",
-                            Patterns::Double(0),
-                            "Mass of the core.  Used for the degree-zero "
-                            "expansion, but not in any others. Feel free to "
-                            "ignore if you do not care about the degree-zero "
-                            "term.");
         }
         prm.leave_subsection();
       }
@@ -838,7 +840,6 @@ namespace aspect
           include_topography_contribution   = prm.get_bool("Include topography contribution");
           density_below                     = prm.get_double("Density below");
           density_above                     = prm.get_double("Density above");
-          core_mass                         = prm.get_double("Core mass");
           max_degree                        = prm.get_integer("Expansion degree");
         }
         prm.leave_subsection();
