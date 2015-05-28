@@ -542,319 +542,319 @@ namespace aspect
 
 
 
-    /**
-     * The exact solution for the SolKz benchmark.
-     */
-    template <int dim>
-    class FunctionSolKz : public Function<dim>
-    {
-      public:
-        FunctionSolKz () : Function<dim>() {}
+      /**
+       * The exact solution for the SolKz benchmark.
+       */
+      template <int dim>
+      class FunctionSolKz : public Function<dim>
+      {
+        public:
+          FunctionSolKz () : Function<dim>() {}
 
-        virtual void vector_value (const Point< dim >   &p,
-                                   Vector< double >   &values) const
-        {
-          double pos[2]= {p(0),p(1)};
-          double total_stress[3], strain_rate[3];
-          static const double B = 0.5 * std::log(1e6);
-          AnalyticSolutions::_Velic_solKz
-          (pos,
-           1.0, 2, 3,
-           B,
-           &values[0], &values[2], total_stress, strain_rate );
-        }
-    };
+          virtual void vector_value (const Point< dim >   &p,
+                                     Vector< double >   &values) const
+          {
+            double pos[2]= {p(0),p(1)};
+            double total_stress[3], strain_rate[3];
+            static const double B = 0.5 * std::log(1e6);
+            AnalyticSolutions::_Velic_solKz
+            (pos,
+             1.0, 2, 3,
+             B,
+             &values[0], &values[2], total_stress, strain_rate );
+          }
+      };
 
 
     }
 
 
 
-  template <int dim>
-  class SolKzMaterial : public MaterialModel::InterfaceCompatibility<dim>
-  {
-    public:
-      /**
-       * @name Physical parameters used in the basic equations
-       * @{
-       */
-      virtual double viscosity (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Point<dim>             &position) const;
+    template <int dim>
+    class SolKzMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    {
+      public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const;
 
-      virtual double compressibility (const double temperature,
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const;
+
+        virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
-      virtual double specific_heat (const double temperature,
-                                    const double pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position) const;
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const;
 
-      virtual double thermal_expansion_coefficient (const double      temperature,
-                                                    const double      pressure,
-                                                    const std::vector<double> &compositional_fields,
-                                                    const Point<dim> &position) const;
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
-      virtual double thermal_conductivity (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const;
-      /**
-       * @}
-       */
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
 
-      /**
-       * @name Qualitative properties one can ask a material model
-       * @{
-       */
+        /**
+         * Return true if the viscosity() function returns something that
+         * may depend on the variable identifies by the argument.
+         */
+        virtual bool
+        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-      /**
-       * Return true if the viscosity() function returns something that
-       * may depend on the variable identifies by the argument.
-       */
-      virtual bool
-      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the density() function returns something that may
+         * depend on the variable identifies by the argument.
+         */
+        virtual bool
+        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-      /**
-       * Return true if the density() function returns something that may
-       * depend on the variable identifies by the argument.
-       */
-      virtual bool
-      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the compressibility() function returns something
+         * that may depend on the variable identifies by the argument.
+         *
+         * This function must return false for all possible arguments if the
+         * is_compressible() function returns false.
+         */
+        virtual bool
+        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-      /**
-       * Return true if the compressibility() function returns something
-       * that may depend on the variable identifies by the argument.
-       *
-       * This function must return false for all possible arguments if the
-       * is_compressible() function returns false.
-       */
-      virtual bool
-      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the specific_heat() function returns something
+         * that may depend on the variable identifies by the argument.
+         */
+        virtual bool
+        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-      /**
-       * Return true if the specific_heat() function returns something
-       * that may depend on the variable identifies by the argument.
-       */
-      virtual bool
-      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return true if the thermal_conductivity() function returns
+         * something that may depend on the variable identifies by the
+         * argument.
+         */
+        virtual bool
+        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
-      /**
-       * Return true if the thermal_conductivity() function returns
-       * something that may depend on the variable identifies by the
-       * argument.
-       */
-      virtual bool
-      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
+        /**
+         * Return whether the model is compressible or not.
+         * Incompressibility does not necessarily imply that the density is
+         * constant; rather, it may still depend on temperature or pressure.
+         * In the current context, compressibility means whether we should
+         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+         * (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
 
-      /**
-       * Return whether the model is compressible or not.
-       * Incompressibility does not necessarily imply that the density is
-       * constant; rather, it may still depend on temperature or pressure.
-       * In the current context, compressibility means whether we should
-       * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
-       * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
-       * (incompressible Stokes).
-       */
-      virtual bool is_compressible () const;
-      /**
-       * @}
-       */
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
 
-      /**
-       * @name Reference quantities
-       * @{
-       */
-      virtual double reference_viscosity () const;
+        virtual double reference_density () const;
 
-      virtual double reference_density () const;
-
-      virtual double reference_thermal_expansion_coefficient () const;
+        virtual double reference_thermal_expansion_coefficient () const;
 
 //TODO: should we make this a virtual function as well? where is it used?
-      double reference_thermal_diffusivity () const;
+        double reference_thermal_diffusivity () const;
 
-      double reference_cp () const;
-      /**
-       * @}
-       */
-  };
-
-
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  viscosity (const double,
-             const double,
-             const std::vector<double> &,       /*composition*/
-             const SymmetricTensor<2,dim> &,
-             const Point<dim> &p) const
-  {
-    // defined as given in the Duretz et al. paper
-    static const double B = 0.5 * std::log(1e6);
-    return std::exp(2*B*p[1]);
-  }
+        double reference_cp () const;
+        /**
+         * @}
+         */
+    };
 
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_viscosity () const
-  {
-    return 1;
-  }
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_density () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_thermal_expansion_coefficient () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  specific_heat (const double,
-                 const double,
-                 const std::vector<double> &, /*composition*/
-                 const Point<dim> &) const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_cp () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  thermal_conductivity (const double,
-                        const double,
-                        const std::vector<double> &, /*composition*/
-                        const Point<dim> &) const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_thermal_diffusivity () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  density (const double,
-           const double,
-           const std::vector<double> &, /*composition*/
-           const Point<dim> &p) const
-  {
-    // defined as given in the paper
-    return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    viscosity (const double,
+               const double,
+               const std::vector<double> &,       /*composition*/
+               const SymmetricTensor<2,dim> &,
+               const Point<dim> &p) const
+    {
+      // defined as given in the Duretz et al. paper
+      static const double B = 0.5 * std::log(1e6);
+      return std::exp(2*B*p[1]);
+    }
 
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  thermal_expansion_coefficient (const double temperature,
-                                 const double,
-                                 const std::vector<double> &, /*composition*/
-                                 const Point<dim> &) const
-  {
-    return 0;
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_viscosity () const
+    {
+      return 1;
+    }
 
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_density () const
+    {
+      return 0;
+    }
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  compressibility (const double,
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_thermal_expansion_coefficient () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    specific_heat (const double,
                    const double,
                    const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
-  {
-    return 0.0;
-  }
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_cp () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    thermal_conductivity (const double,
+                          const double,
+                          const std::vector<double> &, /*composition*/
+                          const Point<dim> &) const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_thermal_diffusivity () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    density (const double,
+             const double,
+             const std::vector<double> &, /*composition*/
+             const Point<dim> &p) const
+    {
+      // defined as given in the paper
+      return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+    }
+
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    thermal_expansion_coefficient (const double temperature,
+                                   const double,
+                                   const std::vector<double> &, /*composition*/
+                                   const Point<dim> &) const
+    {
+      return 0;
+    }
+
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    compressibility (const double,
+                     const double,
+                     const std::vector<double> &, /*composition*/
+                     const Point<dim> &) const
+    {
+      return 0.0;
+    }
 
 
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
 
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
+    {
+      return false;
+    }
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
+    {
+      return false;
+    }
 
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  is_compressible () const
-  {
-    return false;
-  }
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    is_compressible () const
+    {
+      return false;
+    }
 
 
 

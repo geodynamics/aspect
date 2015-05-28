@@ -10,7 +10,7 @@
 int f()
 {
   std::cout << typeid(dealii::Triangulation<2>).name() << " "
-	    << typeid(aspect::Simulator<2>).name() << std::endl;
+            << typeid(aspect::Simulator<2>).name() << std::endl;
   return 42;
 }
 

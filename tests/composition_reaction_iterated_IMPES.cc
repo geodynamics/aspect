@@ -1,6 +1,6 @@
 #include <aspect/material_model/composition_reaction.h>
 
-/** 
+/**
  * This material model assumes three compositional fields
  * where the reaction rate of the first and the third one
  * depend on the second one. Thus, an iterated scheme is
@@ -45,9 +45,9 @@ namespace aspect
                    const Point<dim> &position,
                    const unsigned int compositional_variable) const
     {
-      Assert(compositional_fields.size() > 1, 
-            ExcMessage ("Material model iterated reaction can only be used with "
-                        "at least two compositial fields."));
+      Assert(compositional_fields.size() > 1,
+             ExcMessage ("Material model iterated reaction can only be used with "
+                         "at least two compositial fields."));
       double delta_C = 0.0;
       switch (compositional_variable)
         {
@@ -77,7 +77,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(IteratedReaction,
                                    "iterated reaction",
                                    "A simple material model that is like the "
-				   "'composition reaction' model, but requires an "
+                                   "'composition reaction' model, but requires an "
                                    "iterated IMPES scheme to converge to the correct "
                                    "solution.")
   }

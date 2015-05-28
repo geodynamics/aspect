@@ -21,10 +21,10 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
-      /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
+        /**
+          * Return true if the viscosity() function returns something that
+          * may depend on the variable identifies by the argument.
+          */
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
     };
@@ -51,8 +51,8 @@ namespace aspect
       // this happened when computing the adiabatic conditions, but we don't
       // need the viscosity there, so why compute it?
       Assert (temperature != 0, ExcMessage ("We can't evaluate the viscosity if the "
-					    "temperature has not been initialized!"));
-	
+                                            "temperature has not been initialized!"));
+
       return 1;
     }
 
@@ -74,7 +74,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(ReallySimple,
                                    "really simple",
                                    "A simple material model that is like the "
-				   "'Simple' model, but aborts when the temperature has not been set.")
+                                   "'Simple' model, but aborts when the temperature has not been set.")
   }
 }
 
