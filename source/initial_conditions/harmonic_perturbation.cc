@@ -58,8 +58,8 @@ namespace aspect
       double depth_perturbation = 0.0;
       if ( use_depth_range )
         {
-          if ( std::abs( depth - d) < thickness/2. )
-            depth_perturbation = 1.0;
+          const double x = depth-d;
+          depth_perturbation = std::exp( -x*x/2./thickness/thickness); /// std::sqrt( M_PI * 2.0 * thickness * thickness );
         }
       else
         {
