@@ -901,97 +901,10 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
 
-    // In the following we integrate the normal velocity over every surface
-    // of the model. This integral is part of the correction term that needs
-    // to be added to the pressure right hand side. To calculate the normal
-    // velocity we need the positions and normals of every quadrature point on
-    // the surface.
-
-    const QGauss<dim-1> quadrature_formula (parameters.stokes_velocity_degree+1);
-    FEFaceValues<dim> fe_face_values (mapping,
-                                      finite_element,
-                                      quadrature_formula,
-                                      update_normal_vectors |
-                                      update_q_points |
-                                      update_JxW_values);
-
-    double local_normal_velocity_integral = 0;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    // for every surface face that is part of a geometry boundary with
-    // prescribed velocity and that is owned by this processor,
-    // integrate the normal velocity magnitude.
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          {
-            if (!cell->face(f)->at_boundary())
-              continue;
-
-            fe_face_values.reinit (cell, f);
-
-            if (parameters.prescribed_velocity_boundary_indicators.find(cell->face(f)->boundary_indicator())!=
-                parameters.prescribed_velocity_boundary_indicators.end())
-              {
-                                // for each of the quadrature points, evaluate the
-                                // normal velocity by calling the boundary conditions and add
-                                // it to the integral
-                                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                                      {
-                                        const Tensor<1,dim> velocity =
-                                              velocity_boundary_conditions.find(cell->face(f)->boundary_indicator())->second->boundary_velocity(fe_face_values.quadrature_point(q));
-
-                                        const double normal_velocity = velocity * fe_face_values.normal_vector(q);
-                                        local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
-                                      }
-               }
-
-            // correct u by -K_D grad p_f = -K_D f
-            if (parameters.include_melt_transport)
-              {
-                typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(quadrature_formula.size(), parameters.n_compositional_fields);
-                typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(quadrature_formula.size(), parameters.n_compositional_fields);
-
-                compute_material_model_input_values (current_linearization_point,
-                                                     fe_face_values,
-                                                     rebuild_stokes_matrix,
-                                                     melt_inputs);
-                // TODO: fill other inputs
-                melt_inputs.cell = cell;
-                typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
-                AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-                melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
-
-                std::vector<Tensor<1,dim> > grad_p_f(quadrature_formula.size());
-                fluid_pressure_boundary_conditions->fluid_pressure_gradient(melt_inputs,
-                    melt_outputs,
-                    grad_p_f);
-
-                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                  {
-                    const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-                    const double porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
-                    const double K_D = (porosity > parameters.melt_transport_threshold
-                                      ?
-                                      melt_outputs.permeabilities[q] / melt_outputs.fluid_viscosities[q]
-                                      :
-                                      0.0);
-                    const double K_D_grad_p_f = - K_D * grad_p_f[q] * fe_face_values.normal_vector(q);
-                    local_normal_velocity_integral += K_D_grad_p_f * fe_face_values.JxW(q);
-                  }
-                }
-            }
-
-    const double global_normal_velocity_integral =
-      Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
-
     if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
       {
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-        const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+        const double correction = (- mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
 
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
@@ -1007,7 +920,7 @@ namespace aspect
            }
 
         const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
-        const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
+        const double correction = - global_pressure_sum / global_volume;
 
         for (unsigned int i=0; i < introspection.index_sets.locally_owned_fluid_pressure_dofs.n_elements(); ++i)
            {
