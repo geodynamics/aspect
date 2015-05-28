@@ -161,7 +161,6 @@ namespace aspect
          */
         bool include_topography_contribution;
 
-        double core_mass;
         double density_below;
         double density_above;
         double surface_density;
