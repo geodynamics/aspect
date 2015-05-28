@@ -25,7 +25,9 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
-#include <cfenv>
+#ifdef ASPECT_HAVE_FPE_EXCEPTIONS
+#include <fenv.h>
+#endif
 
 #if ASPECT_USE_SHARED_LIBS==1
 #  include <dlfcn.h>
@@ -378,8 +380,10 @@ int main (int argc, char *argv[])
   Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
 
 #ifdef DEBUG
+#ifdef ASPECT_HAVE_FPE_EXCEPTIONS
   // enable floating point exceptions
   feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
 #endif
 
   try

@@ -165,6 +165,16 @@ IF (_HAVE_LINK_H)
   ENDFOREACH()
 ENDIF()
 
+INCLUDE (CheckCXXSymbolExists)
+CHECK_CXX_SYMBOL_EXISTS("feenableexcept" "fenv.h" _HAVE_FPE_EXCEPTIONS)
+IF (_HAVE_FPE_EXCEPTIONS)
+  FOREACH(_source_file ${TARGET_SRC})
+    SET_PROPERTY(SOURCE ${_source_file}
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_HAVE_FPE_EXCEPTIONS=1)
+  ENDFOREACH()
+ELSE()
+  MESSAGE(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks...")
+ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
 
