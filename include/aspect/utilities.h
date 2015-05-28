@@ -98,6 +98,95 @@ namespace aspect
         }
     }
 
+    /**
+     * Provide an object of type T filled with a signaling NaN that will cause an exception
+     * when used in a computation. This basically serves the purpose of creating an object
+     * that is initialized to invalid values.
+     **/
+    template <class T>
+    inline
+    T
+    signaling_nan();
+
+    template <>
+    inline
+    double
+    signaling_nan<double>()
+    {
+      return std::numeric_limits<double>::signaling_NaN();
+    }
+
+    template <>
+    inline
+    SymmetricTensor<2,2>
+    signaling_nan<SymmetricTensor<2,2> >()
+    {
+      const unsigned int dim = 2;
+      SymmetricTensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    SymmetricTensor<2,3>
+    signaling_nan<SymmetricTensor<2,3> >()
+    {
+      const unsigned int dim = 3;
+      SymmetricTensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    Tensor<2,2>
+    signaling_nan<Tensor<2,2> >()
+    {
+      const unsigned int dim = 2;
+      Tensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    Tensor<2,3>
+    signaling_nan<Tensor<2,3> >()
+    {
+      const unsigned int dim = 3;
+      Tensor<2,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=0; j<dim; ++j)
+          nan_tensor[i][j] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    Tensor<1,2>
+    signaling_nan<Tensor<1,2> >()
+    {
+      const unsigned int dim = 2;
+      Tensor<1,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        nan_tensor[i] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+    template <>
+    inline
+    Tensor<1,3>
+    signaling_nan<Tensor<1,3> >()
+    {
+      const unsigned int dim = 3;
+      Tensor<1,dim> nan_tensor;
+      for (unsigned int i=0; i<dim; ++i)
+        nan_tensor[i] = std::numeric_limits<double>::signaling_NaN();
+      return nan_tensor;
+    }
+
 
     /**
      * AsciiDataLookup reads in files containing input data in ascii format.

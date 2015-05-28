@@ -128,13 +128,17 @@ namespace aspect
                                                       std::exp((activation_energies_diffusion[j]+activation_volumes_diffusion[j]*pressure)
                                                                /(constants::gas_constant*temperature)));
 
-          const double viscosity_dislocation = std::min(1e22,std::pow(prefactors_dislocation[j],-1e0/stress_exponents_dislocation[j])*
-                                                        std::pow(e2inv,(1e0-stress_exponents_dislocation[j])/
-                                                                 stress_exponents_dislocation[j])*
-                                                        std::exp((activation_energies_dislocation[j]+
-                                                                  activation_volumes_dislocation[j]*pressure)/(stress_exponents_dislocation[j]
-                                                                      *constants::gas_constant*temperature)));
-          composition_viscosities[j] = std::min(std::max(std::pow((1.0/viscosity_diffusion + 1.0/viscosity_dislocation), -1.0), min_visc), max_visc);
+          double one_over_viscosity_dislocation = 0.0;
+          if (e2inv > 2.0*std::numeric_limits<double>::min())
+            one_over_viscosity_dislocation = (constants::gas_constant*temperature)
+                                             /
+                                             std::min(1e22,std::pow(prefactors_dislocation[j],-1e0/stress_exponents_dislocation[j])*
+                                                      std::pow(e2inv,(1e0-stress_exponents_dislocation[j])/
+                                                               stress_exponents_dislocation[j])*
+                                                      std::exp((activation_energies_dislocation[j]+
+                                                                activation_volumes_dislocation[j]*pressure)/(stress_exponents_dislocation[j])));
+
+          composition_viscosities[j] = std::min(std::max(std::pow((1.0/viscosity_diffusion + one_over_viscosity_dislocation), -1.0), min_visc), max_visc);
         }
       return composition_viscosities;
     }
@@ -152,7 +156,6 @@ namespace aspect
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-          const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
 
           // Averaging composition-field dependent properties
 
@@ -172,11 +175,13 @@ namespace aspect
             thermal_expansivity += volume_fractions[j] * thermal_expansivities[j];
 
           // calculate effective viscosity
-          const std::vector<double> composition_viscosities = calculate_viscosities(volume_fractions, pressure, temperature, strain_rate);
-          const double veff = average_value(composition, composition_viscosities, viscosity_averaging);
+          if (in.strain_rate.size())
+            {
+              const std::vector<double> composition_viscosities = calculate_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i]);
+              const double veff = average_value(composition, composition_viscosities, viscosity_averaging);
+              out.viscosities[i] = veff;
+            }
 
-          // Output variables
-          out.viscosities[i] = veff;
           out.densities[i] = density;
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           // Specific heat at the given positions.

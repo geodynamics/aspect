@@ -17,6 +17,8 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
+set Nonlinear solver scheme                = Stokes only
+
 set Output directory                       = output
 
 set Pressure normalization                 = volume

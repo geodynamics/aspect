@@ -1095,7 +1095,8 @@ namespace aspect
 
         bool need_material_properties() const
         {
-          return false;
+          // this is needed because we want to access in.position in operator()
+          return true;
         }
 
         void setup(const unsigned int q_points)
@@ -1113,7 +1114,7 @@ namespace aspect
           for (unsigned int q=0; q<output.size(); ++q)
             {
               Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
-              output[q] = std::fabs(std::min(-1e-16,g*velocity_values[q]/g.norm()))*year_in_seconds;
+              output[q] = std::fabs(std::min(0.0, g*velocity_values[q]/g.norm()))*year_in_seconds;
             }
         }
 

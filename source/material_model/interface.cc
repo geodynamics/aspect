@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/utilities.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 #include <deal.II/fe/fe_values.h>
@@ -251,14 +252,15 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
     {
-      position.resize(n_points);
-      temperature.resize(n_points);
-      pressure.resize(n_points);
-      velocity.resize(n_points);
+      position.resize(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >()));
+      temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      velocity.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
       composition.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
-        composition[q].resize(n_comp);
-      strain_rate.resize(n_points);
+        composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
+
+      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >());
       cell = 0;
     }
 
@@ -268,17 +270,17 @@ namespace aspect
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
     {
-      viscosities.resize(n_points);
-      densities.resize(n_points);
-      thermal_expansion_coefficients.resize(n_points);
-      specific_heat.resize(n_points);
-      thermal_conductivities.resize(n_points);
-      compressibilities.resize(n_points);
-      entropy_derivative_pressure.resize(n_points);
-      entropy_derivative_temperature.resize(n_points);
+      viscosities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      densities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_expansion_coefficients.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      specific_heat.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_conductivities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      compressibilities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
       reaction_terms.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
-        reaction_terms[q].resize(n_comp);
+        reaction_terms[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
     }
 
 
@@ -417,6 +419,15 @@ namespace aspect
 
               case harmonic_average:
               {
+                // if one of the values is zero, the average is 0.0
+                for (unsigned int i=0; i<N; ++i)
+                  if (values_out[i] == 0.0)
+                    {
+                      for (unsigned int j=0; j<N; ++j)
+                        values_out[j] = 0.0;
+                      return;
+                    }
+
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
                   sum += 1./values_out[i];

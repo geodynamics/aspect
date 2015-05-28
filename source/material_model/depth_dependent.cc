@@ -132,11 +132,14 @@ namespace aspect
                                   typename Interface<dim>::MaterialModelOutputs &out) const
     {
       base_model -> evaluate(in,out);
-      /* Scale the base model viscosity value by the depth dependent prefactor */
-      for (unsigned int i=0; i < out.viscosities.size(); ++i)
+      if (in.strain_rate.size())
         {
-          const double depth = this->get_geometry_model().depth(in.position[i]);
-          out.viscosities[i] *= calculate_depth_dependent_prefactor( depth );
+          // Scale the base model viscosity value by the depth dependent prefactor
+          for (unsigned int i=0; i < out.viscosities.size(); ++i)
+            {
+              const double depth = this->get_geometry_model().depth(in.position[i]);
+              out.viscosities[i] *= calculate_depth_dependent_prefactor( depth );
+            }
         }
     }
 

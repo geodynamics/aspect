@@ -1,5 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -11,25 +12,31 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17 iterations.
+      Nonlinear Stokes residual: 0.0667217
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 4.40627e-09
 
 Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 392 (238+35+119)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28 iterations.
+      Nonlinear Stokes residual: 0.0972383
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 8.84825e-09
 
 Number of active cells: 46 (on 5 levels)
 Number of degrees of freedom: 791 (482+68+241)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29 iterations.
+      Nonlinear Stokes residual: 0.097189
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 9.004e-09
 
    Postprocessing:
 
@@ -37,6 +44,17 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.559s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |     0.175s |        31% |
+| Build Stokes preconditioner     |         3 |     0.131s |        23% |
+| Solve Stokes system             |         6 |    0.0636s |        11% |
+| Initialization                  |         4 |    0.0689s |        12% |
+| Postprocessing                  |         1 |  8.61e-05s |     0.015% |
+| Refine mesh structure, part 1   |         2 |    0.0139s |       2.5% |
+| Refine mesh structure, part 2   |         2 |   0.00269s |      0.48% |
+| Setup dof systems               |         3 |    0.0634s |        11% |
 +---------------------------------+-----------+------------+------------+
 

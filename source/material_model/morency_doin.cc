@@ -73,7 +73,9 @@ namespace aspect
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-          const SymmetricTensor<2,dim> strain_rate = in.strain_rate[i];
+          SymmetricTensor<2,dim> strain_rate;
+          if (in.strain_rate.size())
+            strain_rate = in.strain_rate[i];
 
           const double z = this->get_geometry_model().depth(position); // units: m
 
@@ -89,10 +91,13 @@ namespace aspect
 
           const double tauy = tau_0 + gamma*reference_density()*g*z;
           const double e2inv = std::sqrt(std::pow(second_invariant(strain_rate),2) + std::pow(min_strain_rate,2));
-          const double veffv = B * std::pow(e2inv/ref_strain_rate, -1.0+1.0/nv) * std::exp((activation_energy+activation_volume*reference_density()*g*z)/(nv*R*temperature));
+          double one_over_veffv = 0.0;
+          if (temperature != 0.0)
+            one_over_veffv = 1.0 /
+                             (B * std::pow(e2inv/ref_strain_rate, -1.0+1.0/nv) * std::exp((activation_energy+activation_volume*reference_density()*g*z)/(nv*R*temperature)));
           const double veffp = tauy * (std::pow(e2inv, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np));
           // Effective viscosity = harmonic mean of diffusion and dislocation creep. Range is limited to 1e17-1e28 for stability.
-          const double veff = std::min(std::max(veff_coefficient * std::pow((1.0/veffp + 1.0/veffv), -1.0), min_visc), max_visc);
+          const double veff = std::min(std::max(veff_coefficient * std::pow((1.0/veffp + one_over_veffv), -1.0), min_visc), max_visc);
           out.viscosities[i] = veff;
 
           double density = 0.0;
