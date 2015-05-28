@@ -100,11 +100,13 @@ namespace aspect
                   }
               }
 
-      const double bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      const double top_area = Utilities::MPI::sum( local_top_area, this->get_mpi_communicator() );
+      //vector for packing local values before mpi summing them
+      double values[4] = {local_bottom_area, local_top_area, local_bottom_pressure, local_top_pressure};
 
-      top_pressure = Utilities::MPI::sum( local_top_pressure, this->get_mpi_communicator() ) / top_area;
-      bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
+      Utilities::MPI::sum<double, 4>( values, this->get_mpi_communicator(), values );
+
+      top_pressure = values[3] / values[1]; //density over area
+      bottom_pressure = values[2] / values[0]; //density over area
 
       statistics.add_value ("Pressure at top (Pa)",
                             top_pressure);

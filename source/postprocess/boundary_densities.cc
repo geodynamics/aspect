@@ -121,11 +121,13 @@ namespace aspect
                   }
               }
 
-      const double bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      const double top_area = Utilities::MPI::sum( local_top_area, this->get_mpi_communicator() );
+      //vector for packing local values before mpi summing them
+      double values[4] = {local_bottom_area, local_top_area, local_bottom_density, local_top_density};
 
-      top_density = Utilities::MPI::sum( local_top_density, this->get_mpi_communicator() ) / top_area;
-      bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
+      Utilities::MPI::sum<double, 4>( values, this->get_mpi_communicator(), values );
+
+      top_density = values[3] / values[1]; //density over area
+      bottom_density = values[2] / values[0]; //density over area
 
       statistics.add_value ("Density at top (kg/m^3)",
                             top_density);
