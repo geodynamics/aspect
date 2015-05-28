@@ -25,6 +25,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/postprocess/boundary_pressures.h>
 #include <aspect/postprocess/boundary_densities.h>
+#include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -165,13 +166,16 @@ namespace aspect
 
         double density_below;
         double density_above;
-        double surface_density;
-        double bottom_density;
-        double surface_pressure;
-        double bottom_pressure;
-        double surface_area;
-        double bottom_area;
+//        double surface_density;
+//        double bottom_density;
+ //       double surface_pressure;
+//        double bottom_pressure;
+//        double surface_area;
+//        double bottom_area;
         unsigned int max_degree;
+
+        BoundaryPressures<dim>* boundary_pressure_postprocessor;
+        BoundaryDensities<dim>* boundary_density_postprocessor;
 
         /**
          * The geoid contribution is added on a per-layer basis. These are the

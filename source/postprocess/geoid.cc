@@ -255,7 +255,9 @@ namespace aspect
       surface_potential_expansion->clear();
       bottom_potential_expansion->clear();
 
-      compute_laterally_averaged_boundary_properties();
+      boundary_pressure_postprocessor = this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
+      boundary_density_postprocessor = this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >(); 
+
       compute_internal_density_expansions();
       compute_topography_expansions();
       compute_geoid_expansions();
@@ -363,14 +365,14 @@ namespace aspect
                   }
               }
 
-      bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
+      //bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
+      //surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
 
-      surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() ) / surface_area;
-      bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
+      //surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() ) / surface_area;
+      //bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
 
-      surface_density = Utilities::MPI::sum( local_surface_density, this->get_mpi_communicator() ) / surface_area;
-      bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
+      //surface_density = Utilities::MPI::sum( local_surface_density, this->get_mpi_communicator() ) / surface_area;
+      //bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
     }
 
     template <int dim>
@@ -503,6 +505,12 @@ namespace aspect
       const double outer_radius = geometry_model->outer_radius();
       const double inner_radius = geometry_model->inner_radius();
 
+      const double scale_surface_area = (dim == 2 ? outer_radius : outer_radius * outer_radius );
+      const double scale_bottom_area = (dim == 2 ? inner_radius : inner_radius * inner_radius );
+
+      const double surface_pressure = boundary_pressure_postprocessor->pressure_at_top();
+      const double bottom_pressure = boundary_pressure_postprocessor->pressure_at_bottom();
+
       Tensor<1,dim> gravity;
       Tensor<1,dim> gravity_direction;
 
@@ -611,7 +619,7 @@ namespace aspect
                     const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
                     // Add topography contribution
-                    surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/surface_area, 1.0, true);
+                    surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/scale_surface_area, 1.0, true);
                     const double r = location.norm();
                     const double theta = std::atan2(location[1],location[0]);
                     sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
@@ -633,7 +641,7 @@ namespace aspect
                     const double dynamic_topography = - sigma_rr / gravity.norm() / (density-density_below);
 
                     // Add topography contribution
-                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/bottom_area, 1.0, true);
+                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/scale_bottom_area, 1.0, true);
 
                     const double r = location.norm();
                     const double theta = std::atan2(location[1],location[0]);
@@ -663,6 +671,9 @@ namespace aspect
       const double outer_radius = geometry_model->outer_radius();
       const double inner_radius = geometry_model->inner_radius();
       const double G = constants::big_g;
+      const double surface_density = boundary_density_postprocessor->density_at_top();
+      const double bottom_density = boundary_density_postprocessor->density_at_bottom();
+      
       const double delta_rho_top = surface_density-density_above;
       const double delta_rho_bottom = density_below-bottom_density;
 
