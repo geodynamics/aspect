@@ -1,0 +1,14 @@
+subsection Initial conditions
+  set Model name = S40RTS perturbation
+  subsection S40RTS perturbation
+    set Data directory                    = $ASPECT_SOURCE_DIR/data/initial-conditions/S40RTS/
+    set Initial condition file name       = S20RTS.sph
+    set Spline knots depth file name      = Spline_knots.txt
+    set Remove degree 0 from perturbation = false
+    set vs to density scaling             = 0.2 
+    set Thermal expansion coefficient in initial temperature scaling = 3e-5
+    set Reference temperature             = 1600
+    set Remove temperature heterogeneity down to specified depth = 200000
+  end
+end
+
