@@ -50,18 +50,6 @@ namespace aspect
         virtual bool
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
         virtual bool is_compressible () const;
 
         virtual double reference_viscosity () const;
@@ -109,39 +97,6 @@ namespace aspect
     bool
     SimplerWithCrust<dim>::
     viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    SimplerWithCrust<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimplerWithCrust<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimplerWithCrust<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimplerWithCrust<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
     {
       return false;
     }

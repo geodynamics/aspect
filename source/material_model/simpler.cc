@@ -36,40 +36,6 @@ namespace aspect
       return false;
     }
 
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
     template <int dim>
     bool
     Simpler<dim>::

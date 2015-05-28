@@ -385,47 +385,6 @@ namespace aspect
         return false;
     }
 
-
-    template <int dim>
-    bool
-    LatentHeat<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeat<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeat<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeat<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
     template <int dim>
     bool
     LatentHeat<dim>::

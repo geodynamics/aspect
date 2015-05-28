@@ -301,38 +301,6 @@ namespace aspect
     template <int dim>
     bool
     DepthDependent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->density_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->compressibility_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->specific_heat_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->thermal_conductivity_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
     is_compressible () const
     {
       return base_model->is_compressible();

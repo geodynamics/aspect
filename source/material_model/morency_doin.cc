@@ -193,50 +193,6 @@ namespace aspect
     template <int dim>
     bool
     MorencyDoin<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
     is_compressible () const
     {
       return false;

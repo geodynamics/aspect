@@ -63,6 +63,7 @@ namespace aspect
         viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
+<<<<<<< HEAD
          * Return true if the density returns something that may
          * depend on the variable identifies by the argument.
          */
@@ -95,6 +96,8 @@ namespace aspect
         thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
+=======
+>>>>>>> removed x_depends_on functions, except for viscosity_depends_on.
          * Return whether the model is compressible or not.  Incompressibility
          * does not necessarily imply that the density is constant; rather, it
          * may still depend on temperature or pressure. In the current

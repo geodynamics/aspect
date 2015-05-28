@@ -110,46 +110,6 @@ namespace aspect
     template <int dim>
     bool
     SimpleCompressible<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return (thermal_alpha != 0);
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return (reference_compressibility != 0);
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0);
