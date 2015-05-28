@@ -125,7 +125,7 @@ namespace aspect
 
       template <int dim>
       std::list<std::string>
-      Interface<dim>::requires_other_postprocessors () const
+      Interface<dim>::required_other_postprocessors () const
       {
         return std::list<std::string>();
       }
@@ -871,7 +871,7 @@ namespace aspect
 
     template <int dim>
     std::list<std::string>
-    Visualization<dim>::requires_other_postprocessors () const
+    Visualization<dim>::required_other_postprocessors () const
     {
       std::list<std::string> requirements;
 
@@ -882,7 +882,7 @@ namespace aspect
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
-          const std::list<std::string> this_requirements = (*p)->requires_other_postprocessors();
+          const std::list<std::string> this_requirements = (*p)->required_other_postprocessors();
           requirements.insert (requirements.end(),
                                this_requirements.begin(), this_requirements.end());
         }

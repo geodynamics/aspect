@@ -56,7 +56,7 @@ namespace aspect
 
     template <int dim>
     std::list<std::string>
-    Interface<dim>::requires_other_postprocessors() const
+    Interface<dim>::required_other_postprocessors() const
     {
       return std::list<std::string>();
     }
@@ -244,7 +244,7 @@ namespace aspect
           // go through the list of the ones we already have and if the required
           // ones are new, add them to the end of the list we work through
           const std::list<std::string> additional_postprocessors
-            = postprocessors.back()->requires_other_postprocessors ();
+            = postprocessors.back()->required_other_postprocessors ();
 
           for (std::list<std::string>::const_iterator p = additional_postprocessors.begin();
                p != additional_postprocessors.end(); ++p)

@@ -153,7 +153,7 @@ namespace aspect
            */
           virtual
           std::list<std::string>
-          requires_other_postprocessors () const;
+          required_other_postprocessors () const;
 
 
           /**
@@ -307,7 +307,7 @@ namespace aspect
          */
         virtual
         std::list<std::string>
-        requires_other_postprocessors () const;
+        required_other_postprocessors () const;
 
         /**
          * Declare the parameters this class takes through input files.

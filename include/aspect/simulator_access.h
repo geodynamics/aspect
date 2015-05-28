@@ -516,7 +516,7 @@ namespace aspect
        * returns a pointer to the postprocessor object of this type. If
        * no postprocessor of this type has been selected in the input
        * file (or, has been required by another postprocessor using the
-       * Postprocess::Interface::requires_other_postprocessors()
+       * Postprocess::Interface::required_other_postprocessors()
        * mechanism), then the function returns a NULL pointer.
        */
       template <typename PostprocessorType>

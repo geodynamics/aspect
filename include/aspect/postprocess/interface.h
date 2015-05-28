@@ -150,7 +150,7 @@ namespace aspect
          */
         virtual
         std::list<std::string>
-        requires_other_postprocessors () const;
+        required_other_postprocessors () const;
 
         /**
          * Save the state of this object to the argument given to this

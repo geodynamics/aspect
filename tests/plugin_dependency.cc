@@ -13,7 +13,7 @@ namespace aspect
      public:
        virtual
        std::list<std::string>
-       requires_other_postprocessors () const
+       required_other_postprocessors () const
        {
 	 // select a postprocessor that is not selected in the .prm file
 	 std::list<std::string> deps;
