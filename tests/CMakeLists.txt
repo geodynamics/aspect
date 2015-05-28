@@ -7,6 +7,11 @@ MACRO(SET_IF_EMPTY _variable _value)
   ENDIF()
 ENDMACRO()
 
+# suppress mac os warning
+IF(APPLE AND NOT DEFINED CMAKE_MACOSX_RPATH)
+  SET(CMAKE_MACOSX_RPATH 0) # see policy CMP0042
+ENDIF()
+
 # A function that extracts from a file (presumably a .prm file)
 # the number of MPI processes this test is to be invoked as.
 # This is encoded in .prm files through lines of the form
