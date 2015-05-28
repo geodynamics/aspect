@@ -10,7 +10,17 @@
  * <li> New: There are now postprocessors BoundaryDensities and
  * BoundaryPressures which calculate laterally averaged densities 
  * and pressures at the top and bottom of the domain.
- * (Ian Rose, 2015/05/27)
+ * (Ian Rose, 2015/05/28)
+ *
+ * <li> New: Postprocessor and visualization postprocessor plugins can
+ * now state that they require other postprocessors to run as well,
+ * for example because they want to query information computed
+ * by these other postprocessors in computing their own information.
+ * This is done using the
+ * aspect::Postprocess::Interface::requires_other_postprocessors()
+ * function.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/28)
  *
  * <li> New: Added cookbook to prescribe initial condition from shear
  * wave velocity model.
