@@ -13,6 +13,7 @@ set End time                               = 0
 set Output directory                       = output
 
 set Pressure normalization                 = volume
+set Nonlinear solver scheme                = Stokes only
 
 
 ############### Parameters describing the model
