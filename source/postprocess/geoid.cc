@@ -760,6 +760,16 @@ namespace aspect
       bottom_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
     }
 
+    template <int dim>
+    std::list<std::string>
+    Geoid<dim>::required_other_postprocessors() const
+    {
+      std::list<std::string> deps;
+      deps.push_back("boundary pressures");
+      deps.push_back("boundary densities");
+      return deps;
+    }
+
   }
 }
 
