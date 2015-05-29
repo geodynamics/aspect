@@ -45,9 +45,6 @@ namespace aspect
     {
       public:
 
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
         virtual bool is_compressible () const;
 
         virtual double reference_viscosity () const;

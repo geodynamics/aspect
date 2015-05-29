@@ -15,12 +15,6 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-      /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
     };
 
   }

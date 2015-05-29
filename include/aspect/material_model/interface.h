@@ -51,21 +51,18 @@ namespace aspect
     namespace NonlinearDependence
     {
       /**
+      *
+      *   NOTE/UPDATE: functionality of x_depends_on functions have been replaced by get_model_dependence();
+      *
+      *
        * An enum whose members are used in querying the nonlinear dependence
        * of physical parameters on other solution variables.
        *
        * The values of this enum are used in the
-       * MaterialModel::Interface::viscosity_depends_on and similar functions
-       * to query if a coefficient, here the viscosity, depends on the
+       * MaterialModel::NonlinearDependence::model_dependence, queried by get_model_dependence()
+       * to see if a coefficient like the viscosity, depends on the
        * temperature, pressure, strain rate, or compositional field value.
-       * While these functions can be queried multiple times with each
-       * possible dependence repeatedly, for efficiency, these functions may
-       * also be called with a combination of flags, for example as in
-       * @code
-       *   material_model.viscosity_depends_on (temperature | strain_rate);
-       * @endcode
-       * where the operation in passing the argument concatenates the two
-       * values by performing a bitwise 'or' operation. Because the values of
+       * Because the values of
        * the enum are chosen so that they represent single bits in an integer,
        * the result here is a number that can be represented in base-2 as 101
        * (the number 100=4 for the strain rate and 001=1 for the temperature).
@@ -77,10 +74,8 @@ namespace aspect
        * To query nonlinear dependence of a coefficient on any other variable,
        * you can use
        * @code
-       *   material_model.viscosity_depends_on (any_variable);
+       *   material_model.get_model_dependence();
        * @endcode
-       * Here, <code>any_variable</code> is a value that has its bits set for
-       * all possible dependencies.
        */
       enum Dependence
       {
@@ -95,6 +90,22 @@ namespace aspect
         any_variable         = temperature | pressure | strain_rate | compositional_fields
       };
 
+
+      /**
+       * Provide an operator that or's two Dependence variables.
+       */
+      inline Dependence operator | (const Dependence d1,
+                             const Dependence d2)
+      {
+        return Dependence((int)d1 | (int)d2);
+      }
+
+      inline Dependence operator |= (Dependence &d1,
+                             const Dependence d2)
+      {
+        d1 = (d1 | d2);
+        return d1;
+      }
 
       /**
        * A structure that, for every output variable of a material model,
@@ -453,7 +464,7 @@ namespace aspect
      * The second option is more efficient in general, but it is okay to use
      * option one for simple material models.
      *
-     * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
+     * In all cases, model_dependence values, is_compressible(), reference_viscosity(),
      * reference_density() need to be implemented.
      *
      * @ingroup MaterialModels
@@ -530,22 +541,6 @@ namespace aspect
          */
         const NonlinearDependence::ModelDependence &
         get_model_dependence () const;
-
-        /**
-         * Return true if the viscosity() function returns something that may
-         * depend on the variable identified by the argument.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the viscosity depends on <i>any</i> of the variables
-         * identified in @p dependence.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility

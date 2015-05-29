@@ -195,24 +195,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    bool
-    CompositionReaction<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_viscosity_exponent != 0))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-               &&
-               (composition_viscosity_prefactor_1 != 1.0 || composition_viscosity_prefactor_2 != 1.0))
-        return true;
-      else
-        return false;
-    }
 
     template <int dim>
     bool
@@ -328,6 +310,43 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+//dependencies
+//viscosity
+// depends on temperature
+      if ( (thermal_viscosity_exponent != 0))
+            this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+// doesn't depend on temperature
+      else
+            this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+
+//density dependencies
+//depends on temperature
+      if (         (thermal_alpha != 0))
+        {
+          //also depends on composition
+          if (               (compositional_delta_rho_1 != 0 || compositional_delta_rho_2 != 0))
+            this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+
+          //doesn't depend on composition
+          else
+            this->model_dependence.density = NonlinearDependence::temperature;
+        }
+//doesn't depend on temperature
+      else
+        {
+          // depends on composition
+          if ( (compositional_delta_rho_1 != 0 || compositional_delta_rho_2 != 0))
+            this->model_dependence.density = NonlinearDependence::compositional_fields;
+          // doesn't depend on anything
+          this->model_dependence.density = NonlinearDependence::none;
+        }
+
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
+
     }
   }
 }

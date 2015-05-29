@@ -210,13 +210,6 @@ namespace aspect
          */
 
         /**
-         * Return true if the viscosity() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Return whether the model is compressible or not.
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
@@ -384,15 +377,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
     template <int dim>
     bool
     BursteddeMaterial<dim>::
@@ -429,6 +413,11 @@ namespace aspect
         beta = prm.get_double ("Viscosity parameter");
       }
       prm.leave_subsection();
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
     }
 
 

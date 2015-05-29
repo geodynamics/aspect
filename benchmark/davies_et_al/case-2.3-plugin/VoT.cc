@@ -45,9 +45,6 @@ namespace aspect
     {
       public:
 
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
         virtual bool is_compressible () const;
 
         virtual double reference_viscosity () const;
@@ -87,19 +84,6 @@ namespace aspect
         double reference_specific_heat;
         double k_value;
     };
-
-
-
-    template <int dim>
-    bool
-    VoT<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
 
 
     template <int dim>
@@ -202,6 +186,14 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      //declare dependences
+          this->model_dependence.viscosity = NonlinearDependence::temperature;       
+          this->model_dependence.density = NonlinearDependence::none;
+          this->model_dependence.compressibility = NonlinearDependence::none;
+          this->model_dependence.specific_heat = NonlinearDependence::none;
+          this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
     }
   }
 }

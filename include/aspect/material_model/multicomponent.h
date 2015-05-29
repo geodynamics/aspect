@@ -78,9 +78,6 @@ namespace aspect
          * @{
          */
 
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
         /**
          * This model is not compressible, so this returns false.
          */

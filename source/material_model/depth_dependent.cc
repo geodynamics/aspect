@@ -288,14 +288,7 @@ namespace aspect
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->viscosity_depends_on(dependence);
+     this-> model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>
