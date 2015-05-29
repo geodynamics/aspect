@@ -26,16 +26,6 @@
       git checkout -b aspect-$VER && \
       cd doc && ./bump_version.sh $VER && cd .. && \
       git commit -m "release task: update version info"
-  . remove from the branch:
-      git rm -r data/material-model/table \
-      source/material_model/table.cc \
-      source/postprocess/table_velocity_statistics.cc \
-      source/postprocess/table_heat_flux_statistics.cc \
-      cookbooks/future/table_model.prm \
-      include/aspect/material_model/table.h \
-      include/aspect/postprocess/table_velocity_statistics.h \
-      include/aspect/postprocess/table_heat_flux_statistics.h && \
-      git commit -m "release task: remove table model"
   . compile aspect, make sure you have a symlink in the main directory for the next step
   . update doc/manual/parameters.tex and documentation:
       cd doc && ./update_parameters.sh && make manual.pdf && cd .. && \
