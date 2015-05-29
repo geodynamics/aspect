@@ -7,6 +7,11 @@ MACRO(SET_IF_EMPTY _variable _value)
   ENDIF()
 ENDMACRO()
 
+# suppress mac os warning
+IF(APPLE AND NOT DEFINED CMAKE_MACOSX_RPATH)
+  SET(CMAKE_MACOSX_RPATH 0) # see policy CMP0042
+ENDIF()
+
 # A function that extracts from a file (presumably a .prm file)
 # the number of MPI processes this test is to be invoked as.
 # This is encoded in .prm files through lines of the form
@@ -125,6 +130,14 @@ FOREACH(_test ${_tests})
 
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
       ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
+      IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        # avoid linker errors about missing functions inside ASPECT:
+        SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+
+        # make shared libraries end on .so not .dylib
+        SET_TARGET_PROPERTIES(${_test} PROPERTIES SUFFIX ".so")
+      ENDIF()
+
       SET_PROPERTY(SOURCE ${_test}.cc
                    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
       IF (ASPECT_USE_PETSC)

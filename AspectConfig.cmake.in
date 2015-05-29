@@ -24,6 +24,7 @@
 
 FIND_PACKAGE(deal.II 8.2 REQUIRED HINTS @DEAL_II_PATH@)
 SET(ASPECT_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
+SET(ASPECT_DIR "@CMAKE_BINARY_DIR@")
 SET(ASPECT_USE_PETSC "@ASPECT_USE_PETSC@")
 # force our build type to the one that is used by ASPECT:
 SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
@@ -43,5 +44,15 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
     SET_PROPERTY(TARGET ${_target}
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
   ENDIF()
+
+
+# workarounds for MAC OS
+IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # avoid linker errors about missing functions inside ASPECT:
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+
+  # make shared libraries end on .so not .dylib
+  SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
+ENDIF()
 
 ENDMACRO()
