@@ -13,11 +13,11 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
-      Nonlinear Stokes residual: 0.0158179
+   Solving Stokes system... 13 iterations.
+      Nonlinear Stokes residual: 0.00882742
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5 iterations.
-      Nonlinear Stokes residual: 9.05876e-10
+   Solving Stokes system... 3 iterations.
+      Nonlinear Stokes residual: 2.96991e-10
 
    Postprocessing:
 viscosity depends on pressure temperature strainrate composition 
@@ -31,15 +31,15 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0427s |            |
+| Total wallclock time elapsed since start    |    0.0556s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |   0.00505s |        12% |
-| Build Stokes preconditioner     |         2 |    0.0109s |        26% |
-| Solve Stokes system             |         2 |   0.00319s |       7.5% |
-| Initialization                  |         2 |    0.0187s |        44% |
-| Postprocessing                  |         1 |  9.01e-05s |      0.21% |
-| Setup dof systems               |         1 |   0.00299s |         7% |
+| Assemble Stokes system          |         2 |   0.00778s |        14% |
+| Build Stokes preconditioner     |         2 |    0.0149s |        27% |
+| Solve Stokes system             |         2 |   0.00323s |       5.8% |
+| Initialization                  |         2 |    0.0228s |        41% |
+| Postprocessing                  |         1 |  0.000101s |      0.18% |
+| Setup dof systems               |         1 |   0.00406s |       7.3% |
 +---------------------------------+-----------+------------+------------+
 

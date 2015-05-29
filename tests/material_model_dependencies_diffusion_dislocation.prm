@@ -1,4 +1,6 @@
 # Evaluate the nonlinear dependencies of the material model used here
+# This parameter file implements an initial temperature of 293 K + x,
+# where x is the fraction of the box width, in a 2D box of size 1x1.
 
 subsection Material model
   set Model name = diffusion dislocation
@@ -9,22 +11,16 @@ end
 
 
 #############################
-# Otherwise use the setup of SolCX
 
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
 set Resume computation                     = false
 set Start time                             = 0
-set Adiabatic surface temperature          = 0
+set Adiabatic surface temperature          = 293
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = Stokes only
-
-subsection Boundary temperature model
-  set Model name = box
-end
-
 
 subsection Discretization
   set Stokes velocity polynomial degree       = 2
@@ -64,8 +60,16 @@ end
 
 
 subsection Initial conditions
-  set Model name = perturbed box
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 293 + x 
+  end
+end
 
+
+subsection Boundary temperature model
+  set Model name = initial temperature
 end
 
 
