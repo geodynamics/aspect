@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -39,14 +39,13 @@ namespace aspect
       class RK4Integrator : public Interface<dim>
       {
         public:
-        RK4Integrator();
+          RK4Integrator();
           virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt);
 
-          virtual void add_mpi_types(std::vector<MPIDataInfo> &data_info);
-          virtual unsigned int data_len() const;
+          virtual unsigned int data_length() const;
           virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num);
           virtual void write_data(std::vector<double> &data, const double &id_num) const;
 

@@ -39,11 +39,11 @@ namespace aspect
 
       template <int dim>
       void
-      Position<dim>::update_particle(unsigned int data_position,
-                                   std::vector<double> &data,
-                                   const Point<dim> &position,
-                                   const Vector<double> &,
-                                   const std::vector<Tensor<1,dim> > &)
+      Position<dim>::update_particle(unsigned int &data_position,
+                                     std::vector<double> &data,
+                                     const Point<dim> &position,
+                                     const Vector<double> &,
+                                     const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position++] = position[i];
@@ -57,10 +57,10 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      Position<dim>::data_len() const
+      void
+      Position<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return dim;
+        length.push_back(dim);
       }
 
       /**
@@ -70,14 +70,9 @@ namespace aspect
        */
       template <int dim>
       void
-      Position<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      Position<dim>::data_names(std::vector<std::string> &names) const
       {
-        for (unsigned int i = 0; i < data_len(); i++)
-          {
-            std::ostringstream field_name;
-            field_name << "position_" << i;
-            data_info.push_back(aspect::Particle::MPIDataInfo(field_name.str(), 1));
-          }
+        names.push_back("position");
       }
     }
   }

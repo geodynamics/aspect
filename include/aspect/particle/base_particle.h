@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
 
     /**
      * Base class of particles - represents a particle with position,
-     * velocity, an ID number and an unknown number of properties. This class
+     * velocity, an ID number and an variable number of properties. This class
      * can be extended to include data related to a particle by the property
      * manager
      */
@@ -91,7 +91,8 @@ namespace aspect
 
         /**
          * Get the number of doubles required to represent this particle for
-         * communication.
+         * communication. This includes the base properties like position
+         * and id as well as the additional user requested properties.
          *
          * @return Number of doubles required to represent this particle
          */
@@ -99,10 +100,11 @@ namespace aspect
         data_len () const;
 
         /**
-          * Get the number of doubles required to represent this particle for
-          * communication.
+          * Set the number of doubles required to represent this particle for
+          * communication. This includes the base properties like position
+          * and id as well as the additional user requested properties.
           *
-          * @return Number of doubles required to represent this particle
+          * @param [in] data_len Number of doubles to represent this particle
           */
         void
         set_data_len (const unsigned int data_len);
@@ -115,7 +117,7 @@ namespace aspect
          * from.
          * @return The position in the vector of the next unread double.
          */
-        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos);
+        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int pos);
 
         /**
          * Write particle data to a vector of doubles.
@@ -139,7 +141,7 @@ namespace aspect
          *
          * @return The location of this particle.
          */
-        Point<dim>
+        const Point<dim> &
         get_location () const;
 
         /**
@@ -148,14 +150,14 @@ namespace aspect
          * @param [in] new_vel The new velocity for this particle.
          */
         void
-        set_velocity (Point<dim> new_vel);
+        set_velocity (const Tensor<1,dim> &new_vel);
 
         /**
          * Get the velocity of this particle.
          *
          * @return The velocity of this particle.
          */
-        Point<dim>
+        Tensor<1,dim> &
         get_velocity () const;
 
         /**
@@ -172,24 +174,23 @@ namespace aspect
          * @param [in] new_properties The new properties for this particle.
          */
         void
-        set_properties (std::vector<double> new_properties);
+        set_properties (const std::vector<double> &new_properties);
 
         /**
          * Get the properties of this particle.
          *
          * @return The properties of this particle.
          */
-        const
-        std::vector<double>
-        get_properties () const;
+        std::vector<double> &
+        get_properties ();
 
         /**
          * Get write-access to properties of this particle.
          *
          * @return The properties of this particle.
          */
-        std::vector<double>&
-        get_properties ();
+        const std::vector<double> &
+        get_properties () const;
 
         /**
          * Check whether the particle is marked as being local to this

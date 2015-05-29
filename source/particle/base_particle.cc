@@ -28,7 +28,7 @@ namespace aspect
     template <int dim>
     inline
     BaseParticle<dim>::BaseParticle (const Point<dim> &new_loc,
-                             const double &new_id)
+                                     const double &new_id)
       :
       location (new_loc),
       id (new_id),
@@ -90,7 +90,7 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
+    BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int pos)
     {
       unsigned int p = pos;
       // Read location data
@@ -118,7 +118,7 @@ namespace aspect
 
 
     template <int dim>
-    Point<dim>
+    const Point<dim> &
     BaseParticle<dim>::get_location () const
     {
       return location;
@@ -133,21 +133,20 @@ namespace aspect
 
     template <int dim>
     void
-    BaseParticle<dim>::set_properties (const std::vector<double> new_properties)
+    BaseParticle<dim>::set_properties (const std::vector<double> &new_properties)
     {
       val = new_properties;
     }
 
     template <int dim>
-    const
-    std::vector<double>
+    const std::vector<double> &
     BaseParticle<dim>::get_properties () const
     {
       return val;
     }
 
     template <int dim>
-    std::vector<double>&
+    std::vector<double> &
     BaseParticle<dim>::get_properties ()
     {
       return val;
@@ -176,7 +175,7 @@ namespace aspect
   namespace Particle
   {
 #define INSTANTIATE(dim) \
-    template class BaseParticle<dim>;
+  template class BaseParticle<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

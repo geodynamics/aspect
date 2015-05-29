@@ -53,7 +53,7 @@ namespace aspect
     }
 
     template <int dim>
-    const Particle::World<dim>&
+    const Particle::World<dim> &
     PassiveTracers<dim>::get_particle_world() const
     {
       return world;
@@ -65,7 +65,6 @@ namespace aspect
     {
       if (!initialized)
         {
-
           next_data_output_time = this->get_time();
 
           // Set up the particle world with the appropriate simulation objects
@@ -78,7 +77,7 @@ namespace aspect
           next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          generator->generate_particles(world, n_initial_tracers);
+          generator->generate_particles(n_initial_tracers, world);
           world.finished_adding_particles();
           world.initialize_particles();
 
@@ -86,7 +85,7 @@ namespace aspect
         }
 
       const unsigned int num_particles = world.get_global_particle_count();
-      statistics.add_value ("Advected particles",num_particles);
+      statistics.add_value("Advected particles",num_particles);
       std::ostringstream result_string;
       result_string << num_particles;
 
@@ -95,14 +94,19 @@ namespace aspect
         {
           set_next_data_output_time (this->get_time());
 
-          std::vector<aspect::Particle::MPIDataInfo>        data_info;
-          property_manager.add_mpi_types(data_info);
+          std::vector<std::string> names;
+          std::vector<unsigned int> length;
+
+          property_manager.get_data_info(names,
+                                         length);
 
           const std::string data_file_name = output->output_particle_data(world.get_particles(),
-                                                        data_info,
-                                                        (this->convert_output_to_years() ?
-                                                         this->get_time() / year_in_seconds :
-                                                         this->get_time()));
+                                                                          names,
+                                                                          length,
+                                                                          (this->convert_output_to_years() ?
+                                                                           this->get_time() / year_in_seconds :
+                                                                           this->get_time()));
+
           result_string << ". Writing particle graphical output " + data_file_name;
         }
 

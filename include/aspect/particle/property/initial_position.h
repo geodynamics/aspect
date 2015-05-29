@@ -29,33 +29,33 @@ namespace aspect
   {
     namespace Property
     {
-    /**
-     * A class that initializes tracer properties based on the
-     * initial position of the tracers.
-     */
-    template <int dim>
-    class InitialPosition : public Interface<dim>
-    {
-      public:
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run.
-         */
-        void
-        initialize_particle (std::vector<double> &data,
-                             const Point<dim> &position,
-                             const Vector<double> &,
-                             const std::vector<Tensor<1,dim> > &);
+      /**
+       * A class that initializes tracer properties based on the
+       * initial position of the tracers.
+       */
+      template <int dim>
+      class InitialPosition : public Interface<dim>
+      {
+        public:
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run.
+           */
+          void
+          initialize_particle (std::vector<double> &data,
+                               const Point<dim> &position,
+                               const Vector<double> &,
+                               const std::vector<Tensor<1,dim> > &);
 
-        unsigned int data_len() const;
+          void data_length(std::vector<unsigned int> &length) const;
 
-        /**
-         * Set up the MPI data type information for the DataParticle type
-         *
-         * @param [in,out] data_info Vector to append MPIDataInfo objects to
-         */
-        void add_mpi_types(std::vector<MPIDataInfo> &data_info) const;
-    };
+          /**
+           * Set up the MPI data type information for the DataParticle type
+           *
+           * @param [in,out] data_info Vector to append MPIDataInfo objects to
+           */
+          void data_names(std::vector<std::string> &names) const;
+      };
     }
   }
 }

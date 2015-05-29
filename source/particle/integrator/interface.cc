@@ -44,58 +44,58 @@ namespace aspect
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
 
-    namespace
-    {
-      std_cxx1x::tuple
-      <void *,
-      void *,
-      internal::Plugins::PluginList<Interface<2> >,
-      internal::Plugins::PluginList<Interface<3> > > registered_plugins;
-    }
-
-
-
-    template <int dim>
-    void
-    register_particle_integrator (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ())
-    {
-      std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
-                                                               description,
-                                                               declare_parameters_function,
-                                                               factory_function);
-    }
-
-
-    template <int dim>
-    Interface<dim> *
-    create_particle_integrator (ParameterHandler &prm)
-    {
-      std::string name;
-      prm.enter_subsection ("Postprocess");
+      namespace
       {
-        prm.enter_subsection ("Tracers");
+        std_cxx1x::tuple
+        <void *,
+        void *,
+        internal::Plugins::PluginList<Interface<2> >,
+        internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      }
+
+
+
+      template <int dim>
+      void
+      register_particle_integrator (const std::string &name,
+                                    const std::string &description,
+                                    void (*declare_parameters_function) (ParameterHandler &),
+                                    Interface<dim> *(*factory_function) ())
+      {
+        std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
+                                                                 description,
+                                                                 declare_parameters_function,
+                                                                 factory_function);
+      }
+
+
+      template <int dim>
+      Interface<dim> *
+      create_particle_integrator (ParameterHandler &prm)
+      {
+        std::string name;
+        prm.enter_subsection ("Postprocess");
         {
-          name = prm.get ("Integration scheme");
+          prm.enter_subsection ("Tracers");
+          {
+            name = prm.get ("Integration scheme");
+          }
+          prm.leave_subsection ();
         }
         prm.leave_subsection ();
+
+        return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+                                                                      "Particle::Integrator name");
       }
-      prm.leave_subsection ();
 
-      return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                    "Particle::Integrator name");
-    }
-
-    template <int dim>
-    void
-    declare_parameters (ParameterHandler &prm)
-    {
-      // declare the entry in the parameter file
-      prm.enter_subsection ("Postprocess");
+      template <int dim>
+      void
+      declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection ("Tracers");
+        // declare the entry in the parameter file
+        prm.enter_subsection ("Postprocess");
+        {
+          prm.enter_subsection ("Tracers");
           {
             const std::string pattern_of_names
               = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
@@ -106,12 +106,12 @@ namespace aspect
                                +
                                std_cxx1x::get<dim>(registered_plugins).get_description_string());
           }
+          prm.leave_subsection ();
+        }
         prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
 
-      std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
-    }
+        std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
+      }
     }
   }
 }
@@ -142,9 +142,9 @@ namespace aspect
   template \
   void \
   register_particle_integrator<dim> (const std::string &, \
-                                      const std::string &, \
-                                      void ( *) (ParameterHandler &), \
-                                      Interface<dim> *( *) ()); \
+                                     const std::string &, \
+                                     void ( *) (ParameterHandler &), \
+                                     Interface<dim> *( *) ()); \
   \
   template  \
   void \
@@ -154,7 +154,7 @@ namespace aspect
   Interface<dim> * \
   create_particle_integrator<dim> (ParameterHandler &prm);
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -56,16 +56,17 @@ namespace aspect
            * using the type of generation function implemented by this
            * Generator.
            *
-           * @param [in] world The particle world the particles will exist in
            * @param [in] total_num_particles Total number of particles to
            * generate. The actual number of generated particles may differ,
            * for example if the generator reads particles from a file this
-           * parameter may be ignored. @return
+           * parameter may be ignored.
+           * @param [inout] world The particle world the particles will exist in
+           *
            */
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles) = 0;
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world) = 0;
 
 
           /**
@@ -76,7 +77,7 @@ namespace aspect
            */
           static
           void
-          declare_parameters (ParameterHandler &);
+          declare_parameters (ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -86,76 +87,76 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &);
+          parse_parameters (ParameterHandler &prm);
       };
 
-/**
- * Register a particle generator so that it can be selected from
- * the parameter file.
- *
- * @param name A string that identifies the particle generator
- * @param description A text description of what this generator does and that
- * will be listed in the documentation of the parameter file.
- * @param declare_parameters_function A pointer to a function that can be
- * used to declare the parameters that this particle generator wants to read
- * from input files.
- * @param factory_function A pointer to a function that can create an
- * object of this particle generator.
- *
- * @ingroup ParticleGenerators
- */
-template <int dim>
-void
-register_particle_generator (const std::string &name,
-                               const std::string &description,
-                               void (*declare_parameters_function) (ParameterHandler &),
-                               Interface<dim> *(*factory_function) ());
+      /**
+       * Register a particle generator so that it can be selected from
+       * the parameter file.
+       *
+       * @param name A string that identifies the particle generator
+       * @param description A text description of what this generator does and that
+       * will be listed in the documentation of the parameter file.
+       * @param declare_parameters_function A pointer to a function that can be
+       * used to declare the parameters that this particle generator wants to read
+       * from input files.
+       * @param factory_function A pointer to a function that can create an
+       * object of this particle generator.
+       *
+       * @ingroup ParticleGenerators
+       */
+      template <int dim>
+      void
+      register_particle_generator (const std::string &name,
+                                   const std::string &description,
+                                   void (*declare_parameters_function) (ParameterHandler &),
+                                   Interface<dim> *(*factory_function) ());
 
-/**
- * A function that given the name of a model returns a pointer to an
- * object that describes it. Ownership of the pointer is transferred to
- * the caller.
- *
- * The model object returned is not yet initialized and has not
- * read its runtime parameters yet.
- *
- * @ingroup ParticleGenerators
- */
-template <int dim>
-Interface<dim> *
-create_particle_generator (ParameterHandler &prm);
+      /**
+       * A function that given the name of a model returns a pointer to an
+       * object that describes it. Ownership of the pointer is transferred to
+       * the caller.
+       *
+       * The model object returned is not yet initialized and has not
+       * read its runtime parameters yet.
+       *
+       * @ingroup ParticleGenerators
+       */
+      template <int dim>
+      Interface<dim> *
+      create_particle_generator (ParameterHandler &prm);
 
-/**
- * Declare the runtime parameters of the registered particle generators.
- *
- * @ingroup ParticleGenerators
- */
-template <int dim>
-void
-declare_parameters (ParameterHandler &prm);
+      /**
+       * Declare the runtime parameters of the registered particle generators.
+       *
+       * @ingroup ParticleGenerators
+       */
+      template <int dim>
+      void
+      declare_parameters (ParameterHandler &prm);
 
 
-/**
- * Given a class name, a name, and a description for the parameter file
- * for a particle generator, register it with the functions that
- * can declare their parameters and create these objects.
- *
- * @ingroup ParticleGenerators
- */
+      /**
+       * Given a class name, a name, and a description for the parameter file
+       * for a particle generator, register it with the functions that
+       * can declare their parameters and create these objects.
+       *
+       * @ingroup ParticleGenerators
+       */
 #define ASPECT_REGISTER_PARTICLE_GENERATOR(classname, name, description) \
-template class classname<2>; \
-template class classname<3>; \
-namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
-{ \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 > > \
-dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
-                            name, description); \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3> > \
-dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
-                            name, description); \
-}
-}
-}
+  template class classname<2>; \
+  template class classname<3>; \
+  namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 > > \
+    dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
+                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
+                                name, description); \
+  }
+    }
+  }
 }
 
 #endif

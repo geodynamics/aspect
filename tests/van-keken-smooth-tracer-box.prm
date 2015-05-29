@@ -102,7 +102,7 @@ subsection Postprocess
     set Number of tracers = 10
     set Time between data output = 70
     set Data output format = vtu
-    set List of tracer properties = function, initial composition, initial position
+    set List of tracer properties = velocity,function, initial composition, initial position
 
     subsection Function
       set Variable names      = x,z

@@ -29,24 +29,24 @@ namespace aspect
       template <int dim>
       void
       PTPath<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &,
-                                         const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim> > &)
+                                       const Point<dim> &,
+                                       const Vector<double> &solution,
+                                       const std::vector<Tensor<1,dim> > &)
       {
-          data.push_back(solution[this->introspection().component_indices.pressure]);
-          data.push_back(solution[this->introspection().component_indices.temperature]);
+        data.push_back(solution[this->introspection().component_indices.pressure]);
+        data.push_back(solution[this->introspection().component_indices.temperature]);
       }
 
       template <int dim>
       void
-      PTPath<dim>::update_particle(unsigned int data_position,
+      PTPath<dim>::update_particle(unsigned int &data_position,
                                    std::vector<double> &data,
                                    const Point<dim> &,
                                    const Vector<double> &solution,
                                    const std::vector<Tensor<1,dim> > &)
       {
-          data[data_position++] = solution[this->introspection().component_indices.pressure];
-          data[data_position++] = solution[this->introspection().component_indices.temperature];
+        data[data_position++] = solution[this->introspection().component_indices.pressure];
+        data[data_position++] = solution[this->introspection().component_indices.temperature];
       }
 
       template <int dim>
@@ -57,10 +57,11 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      PTPath<dim>::data_len() const
+      void
+      PTPath<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return 2;
+        length.push_back(1);
+        length.push_back(1);
       }
 
       /**
@@ -70,10 +71,10 @@ namespace aspect
        */
       template <int dim>
       void
-      PTPath<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      PTPath<dim>::data_names(std::vector<std::string> &names) const
       {
-        data_info.push_back(aspect::Particle::MPIDataInfo("p", 1));
-        data_info.push_back(aspect::Particle::MPIDataInfo("T", 1));
+        names.push_back("p");
+        names.push_back("T");
       }
     }
   }

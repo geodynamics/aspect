@@ -30,31 +30,27 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
+      /**
+       *  Generate a distribution of particles that is determined by the
+       *  coordinates given in an ascii data file.
+       */
       template <int dim>
       class AsciiFile : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The MPI communicator for synchronizing particle generation.
            */
           AsciiFile();
 
           /**
-           * Generate a uniformly randomly distributed set of particles in the current triangulation.
+           * Reads in a file and generate a set of particles at the prescribed
+           * positions.
            */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double);
-
-          void
-          generate_particle(Particle::World<dim> &world,
-                            const Point<dim> &position,
-                            const unsigned int id);
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -73,8 +69,16 @@ namespace aspect
         private:
           std::string data_directory;
           std::string data_filename;
-      };
 
+          /**
+           * Generate a single particle at the specified position with the
+           * specified id.
+           */
+          void
+          generate_particle(const Point<dim> &position,
+                            const unsigned int id,
+                            Particle::World<dim> &world);
+      };
 
     }
   }

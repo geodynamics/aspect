@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -34,42 +34,38 @@ namespace aspect
   {
     using namespace dealii;
 
-    // TODO: in the future, upgrade multimap to ParticleMap typedef
-    // with C++11 standard "using" syntax
-
     template <int dim>
     class World : public SimulatorAccess<dim>
     {
       private:
-        /// Integration scheme for moving particles in this world
+        /**
+         * Integration scheme for moving particles in this world
+         */
         Integrator::Interface<dim>     *integrator;
 
-        /// Integration scheme for moving particles in this world
+        /**
+         * The property manager stores information about the additional
+         * particle properties and handles the initialization and update of
+         * these properties.
+         */
         Property::Manager<dim>         *property_manager;
 
-        /// Whether the triangulation was changed (e.g. through refinement), in which
-        /// case we must treat all recorded particle level/index values as invalid
+        /**
+         * Whether the triangulation was changed (e.g. through refinement), in which
+         * case we must treat all recorded particle level/index values as invalid
+         */
         bool                            triangulation_changed;
 
-        /// Set of particles currently in the local domain, organized by
-        /// the level/index of the cell they are in
+        /**
+         * Set of particles currently in the local domain, organized by
+         * the level/index of the cell they are in
+         */
         std::multimap<LevelInd, BaseParticle<dim> >      particles;
 
-        // Total number of particles in simulation
-        unsigned int                    global_num_particles;
-
-        // MPI related variables
-        /// MPI registered datatype encapsulating the MPI_Particle struct
-        MPI_Datatype                    particle_type;
-
-        /// Size and rank in the MPI communication world
-        unsigned int                    world_size;
-        unsigned int                    self_rank;
-
-        /*
-         * Information about the data of particles
+        /**
+         * Total number of particles in simulation
          */
-        std::vector<MPIDataInfo>        data_info;
+        unsigned int                    global_num_particles;
 
         /**
          * Recursively determines which cell the given particle belongs to.
@@ -143,8 +139,14 @@ namespace aspect
          */
         void add_particle(const BaseParticle<dim> &particle, const LevelInd &cell);
 
+        /**
+         * Initialize the particle properties.
+         */
         void initialize_particles();
 
+        /**
+         * Update the particle properties if necessary.
+         */
         void update_particles();
 
         /**
@@ -160,7 +162,9 @@ namespace aspect
         /**
          * Const access to particles in this world.
          */
-        const std::vector<MPIDataInfo> &get_mpi_datainfo() const;
+        void
+        get_data_info(std::vector<std::string> &names,
+                      std::vector<unsigned int> &length) const;
 
         /**
          * Initialize the particle world by creating appropriate MPI data
@@ -180,7 +184,6 @@ namespace aspect
          *
          * @param [in] timestep Length of timestep to integrate particle
          * movement
-         * @param [in] solution Current Aspect solution vector
          */
         void advance_timestep(const double timestep);
 

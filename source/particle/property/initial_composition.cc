@@ -29,19 +29,20 @@ namespace aspect
       template <int dim>
       void
       InitialComposition<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &,
-                                         const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim> > &)
+                                                   const Point<dim> &,
+                                                   const Vector<double> &solution,
+                                                   const std::vector<Tensor<1,dim> > &)
       {
-        for (unsigned int i = 0; i < data_len(); i++)
-        data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
+        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+          data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
       }
 
       template <int dim>
-      unsigned int
-      InitialComposition<dim>::data_len() const
+      void
+      InitialComposition<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return this->n_compositional_fields();
+        for (unsigned i = 0; i < this->n_compositional_fields(); ++i)
+          length.push_back(1);
       }
 
       /**
@@ -51,13 +52,14 @@ namespace aspect
        */
       template <int dim>
       void
-      InitialComposition<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      InitialComposition<dim>::data_names(std::vector<std::string> &names) const
       {
-        for (unsigned int i = 0; i < data_len(); i++)
+        std::string data_info;
+        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
             std::ostringstream field_name;
             field_name << "initial C_" << i;
-            data_info.push_back(aspect::Particle::MPIDataInfo(field_name.str(), 1));
+            names.push_back(field_name.str());
           }
       }
     }

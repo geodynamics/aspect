@@ -51,17 +51,6 @@
         </DataArray>
       </Cells>
       <PointData Scalars="scalars">
-        <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-          0 0 0 
-        </DataArray>
         <DataArray type="Float64" Name="id" NumberOfComponents="1" Format="ascii">
           0 
           3 

@@ -46,9 +46,7 @@ namespace aspect
                                       const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt);
 
-          virtual void add_mpi_types(std::vector<MPIDataInfo> &data_info);
-
-          virtual unsigned int data_len() const;
+          virtual unsigned int data_length() const;
 
           virtual unsigned int read_data(const std::vector<double> &data,
                                          const unsigned int &pos,

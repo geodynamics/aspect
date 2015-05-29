@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -32,51 +32,28 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate uniform radial distribution of particles over entire simulation domain
+      using namespace dealii;
+
+      /**
+       * Generate uniform radial distribution of particles over entire simulation domain.
+       */
       template <int dim>
       class UniformRadial : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The MPI communicator for synchronizing particle generation.
            */
           UniformRadial();
 
           /**
-           * TODO: Update comments
            * Generate a uniformly distributed set of particles in the current circular or
            * spherical domain
            */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles);
-
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param[in] world The particle world the particles will exist in
-           * @param[in] start_id The starting ID to assign to generated particles
-           * @param[in] shell An array holding the shell at which to generate particles.
-           * @param[in] particlesPerRadius An array with the amount of particles per shell.
-           */
-          void
-          uniform_radial_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int start_id,
-                                                      const std::vector<double> &shell,
-                                                      const std::vector<unsigned int> &particlesPerRadius);
-
-          void
-          generate_particle(Particle::World<dim> &world,
-                            const Point<dim> &position,
-                            const unsigned int id);
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -113,9 +90,7 @@ namespace aspect
            * The number of radial layers of particles that will be generated.
            */
           unsigned int radial_layers;
-
       };
-
 
     }
   }

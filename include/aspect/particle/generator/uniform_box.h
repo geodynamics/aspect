@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,47 +30,26 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
+      /**
+       *  Generate an uniform distribution of particles in a box region in the
+       *  model domain.
+       */
       template <int dim>
       class UniformBox : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The MPI communicator for synchronizing particle generation.
            */
           UniformBox();
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
            */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles);
-
-          /**
-           * TODO: Update comments
-           * Generate a set of particles uniformly distributed within the
-           * specified triangulation.
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
-          void uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
-
-          void
-          generate_particle(Particle::World<dim> &world,
-                            const Point<dim> &position,
-                            const unsigned int id);
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -87,10 +66,25 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+          /**
+           * The minimum coordinates of the tracer region.
+           */
           Point<dim> P_min;
-          Point<dim> P_max;
-      };
 
+          /**
+           * The maximum coordinates of the tracer region.
+           */
+          Point<dim> P_max;
+
+          /**
+           * Generate a particle at the specified position and with the
+           * specified id.
+           */
+          void
+          generate_particle(const Point<dim> &position,
+                            const unsigned int id,
+                            Particle::World<dim> &world);
+      };
 
     }
   }

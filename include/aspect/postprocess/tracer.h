@@ -41,27 +41,27 @@ namespace aspect
         /**
          * The world holding the particles
          */
-      Particle::World<dim>              world;
+        Particle::World<dim>              world;
 
         /**
          * The integrator to use in moving the particles
          */
-      Particle::Integrator::Interface<dim>  *integrator;
+        Particle::Integrator::Interface<dim>  *integrator;
 
         /**
          * Pointer to an output object
          */
-      Particle::Output::Interface<dim>      *output;
+        Particle::Output::Interface<dim>      *output;
 
         /**
          * Pointer to a generator object
          */
-      Particle::Generator::Interface<dim>   *generator;
+        Particle::Generator::Interface<dim>   *generator;
 
         /**
          * Pointer to a properties object
          */
-      Particle::Property::Manager<dim>   property_manager;
+        Particle::Property::Manager<dim>   property_manager;
 
         /**
          * Whether this set has been initialized yet or not
@@ -123,7 +123,7 @@ namespace aspect
          * Returns a reference to the particle world, in case anyone wants to
          * query something about tracers.
          */
-        const Particle::World<dim>&
+        const Particle::World<dim> &
         get_particle_world() const;
 
         /**

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,49 +31,44 @@ namespace aspect
        * This requires only one step per integration, and doesn't involve any extra data.
        */
       template <int dim>
-          bool
-          EulerIntegrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                                               const std::vector<Tensor<1,dim> > &old_velocities,
-                                               const std::vector<Tensor<1,dim> > &,
-                                               const double dt)
-          {
+      bool
+      EulerIntegrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                                           const std::vector<Tensor<1,dim> > &old_velocities,
+                                           const std::vector<Tensor<1,dim> > &,
+                                           const double dt)
+      {
         typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it = particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = old_velocities.begin();
 
-            for (; it!=particles.end(), vel!=old_velocities.end(); ++it,++vel)
-              {
-                const Point<dim> loc = it->second.get_location();
-                it->second.set_location(loc + dt*(*vel));
-              }
-
-            return false;
+        for (; it!=particles.end(), vel!=old_velocities.end(); ++it,++vel)
+          {
+            const Point<dim> loc = it->second.get_location();
+            it->second.set_location(loc + dt*(*vel));
           }
 
-        template <int dim>
-          void
-          EulerIntegrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &)
-          {}
+        return false;
+      }
 
-        template <int dim>
-          unsigned int
-          EulerIntegrator<dim>::data_len() const
-          {
-            return 0;
-          }
-        template <int dim>
-          unsigned int
-          EulerIntegrator<dim>::read_data(const std::vector<double> &,
-                                          const unsigned int &pos,
-                                          const double &)
-          {
-            return pos;
-          }
-        template <int dim>
-          void
-          EulerIntegrator<dim>::write_data(std::vector<double> &,
-                                           const double &) const
-          {
-          }
+      template <int dim>
+      unsigned int
+      EulerIntegrator<dim>::data_length() const
+      {
+        return 0;
+      }
+      template <int dim>
+      unsigned int
+      EulerIntegrator<dim>::read_data(const std::vector<double> &,
+                                      const unsigned int &pos,
+                                      const double &)
+      {
+        return pos;
+      }
+      template <int dim>
+      void
+      EulerIntegrator<dim>::write_data(std::vector<double> &,
+                                       const double &) const
+      {
+      }
     }
   }
 }
@@ -86,11 +81,11 @@ namespace aspect
   {
     namespace Integrator
     {
-    ASPECT_REGISTER_PARTICLE_INTEGRATOR(EulerIntegrator,
-                                               "euler",
-                                               "Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
-                                               "This requires only one step per integration, and doesn't "
-                                               "involve any extra data.")
+      ASPECT_REGISTER_PARTICLE_INTEGRATOR(EulerIntegrator,
+                                          "euler",
+                                          "Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
+                                          "This requires only one step per integration, and doesn't "
+                                          "involve any extra data.")
     }
   }
 }

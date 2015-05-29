@@ -31,56 +31,57 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-       class VTUOutput : public Interface<dim>
-       {
-         public:
-           /**
-            * Constructor.
-            *
-            * @param[in] The directory into which output files shall be placed.
-            * @param[in] The MPI communicator that describes this simulation.
-            */
-           VTUOutput();
+      class VTUOutput : public Interface<dim>
+      {
+        public:
+          /**
+           * Constructor.
+           *
+           * @param[in] The directory into which output files shall be placed.
+           * @param[in] The MPI communicator that describes this simulation.
+           */
+          VTUOutput();
 
-           /**
-            * Write data about the particles specified in the first argument
-            * to a file. If possible, encode the current simulation time
-            * into this file using the data provided in the second argument.
-            *
-            * @param[in] particles The set of particles to generate a graphical
-            *   representation for
-            * @param[in] current_time Current time of the simulation, given as either
-            *   years or seconds, as selected in the input file. In other words,
-            *   output writers do not need to know the units in which time is
-            *   described.
-            * @return The name of the file that was written, or any other
-            *   information that describes what output was produced if for example
-            *   multiple files were created.
-            */
-           virtual
-           std::string
-           output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                                std::vector<MPIDataInfo> &data_info,
-                                const double &current_time);
+          /**
+           * Write data about the particles specified in the first argument
+           * to a file. If possible, encode the current simulation time
+           * into this file using the data provided in the second argument.
+           *
+           * @param[in] particles The set of particles to generate a graphical
+           *   representation for
+           * @param[in] current_time Current time of the simulation, given as either
+           *   years or seconds, as selected in the input file. In other words,
+           *   output writers do not need to know the units in which time is
+           *   described.
+           * @return The name of the file that was written, or any other
+           *   information that describes what output was produced if for example
+           *   multiple files were created.
+           */
+          virtual
+          std::string
+          output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+                               const std::vector<std::string> &names,
+                               const std::vector<unsigned int> &lengths,
+                               const double &current_time);
 
-         private:
+        private:
 
-           /**
-            * A list of pairs (time, pvtu_filename) that have so far been written
-            * and that we will pass to DataOutInterface::write_pvd_record
-            * to create a master file that can make the association
-            * between simulation time and corresponding file name (this
-            * is done because there is no way to store the simulation
-            * time inside the .pvtu or .vtu files).
-            */
- //TODO: This needs to be serialized
-           std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
+          /**
+           * A list of pairs (time, pvtu_filename) that have so far been written
+           * and that we will pass to DataOutInterface::write_pvd_record
+           * to create a master file that can make the association
+           * between simulation time and corresponding file name (this
+           * is done because there is no way to store the simulation
+           * time inside the .pvtu or .vtu files).
+           */
+//TODO: This needs to be serialized
+          std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
 
-           /**
-            * Like the previous variable, but for the .visit file.
-            */
-           std::vector<std::string>                    vtu_file_names;
-       };
+          /**
+           * Like the previous variable, but for the .visit file.
+           */
+          std::vector<std::string>                    vtu_file_names;
+      };
     }
   }
 }

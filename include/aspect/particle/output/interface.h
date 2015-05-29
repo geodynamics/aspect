@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -108,7 +108,8 @@ namespace aspect
           virtual
           std::string
           output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                               std::vector<MPIDataInfo> &data_info,
+                               const std::vector<std::string>  &data_names,
+                               const std::vector<unsigned int> &data_components,
                                const double &current_time) = 0;
 
           /**
@@ -161,9 +162,9 @@ namespace aspect
       template <int dim>
       void
       register_particle_output (const std::string &name,
-                                     const std::string &description,
-                                     void (*declare_parameters_function) (ParameterHandler &),
-                                     Interface<dim> *(*factory_function) ());
+                                const std::string &description,
+                                void (*declare_parameters_function) (ParameterHandler &),
+                                Interface<dim> *(*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -188,27 +189,27 @@ namespace aspect
       void
       declare_parameters (ParameterHandler &prm);
 
-/**
- * Given a class name, a name, and a description for the parameter file
- * for a particle output, register it with the functions that
- * can declare their parameters and create these objects.
- *
- * @ingroup ParticleOutputs
- */
+      /**
+       * Given a class name, a name, and a description for the parameter file
+       * for a particle output, register it with the functions that
+       * can declare their parameters and create these objects.
+       *
+       * @ingroup ParticleOutputs
+       */
 #define ASPECT_REGISTER_PARTICLE_OUTPUT(classname, name, description) \
-template class classname<2>; \
-template class classname<3>; \
-namespace ASPECT_REGISTER_PARTICLE_OUTPUT_ ## classname \
-{ \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Output::Interface<2>,classname<2> > \
-dummy_ ## classname ## _2d (&aspect::Particle::Output::register_particle_output<2>, \
-                            name, description); \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Output::Interface<3>,classname<3> > \
-dummy_ ## classname ## _3d (&aspect::Particle::Output::register_particle_output<3>, \
-                            name, description); \
-}
-}
-}
+  template class classname<2>; \
+  template class classname<3>; \
+  namespace ASPECT_REGISTER_PARTICLE_OUTPUT_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Output::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::Particle::Output::register_particle_output<2>, \
+                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Output::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::Particle::Output::register_particle_output<3>, \
+                                name, description); \
+  }
+    }
+  }
 }
 
 #endif

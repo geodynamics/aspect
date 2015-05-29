@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -55,12 +55,12 @@ namespace aspect
 
       // If we still can't find it, return false
       return LevelInd(-1, -1);
-   }
+    }
 
-        /**
-         * Called by listener functions to indicate that the mesh of this
-         * subdomain has changed.
-         */
+    /**
+     * Called by listener functions to indicate that the mesh of this
+     * subdomain has changed.
+     */
     template <int dim>
     void
     World<dim>::mesh_changed()
@@ -72,15 +72,12 @@ namespace aspect
     World<dim>::World()
     {
       triangulation_changed = true;
-      world_size = self_rank = 0;
       integrator = NULL;
     }
 
     template <int dim>
     World<dim>::~World()
-    {
-      if (world_size) MPI_Type_free(&particle_type);
-    }
+    {}
 
     template <int dim>
     void
@@ -178,8 +175,8 @@ namespace aspect
           while (it != particles.end() && it->first == cur_cell)
             {
               property_manager->initialize_particle(it->second,
-                  values[i],
-                  gradients[i]);
+                                                    values[i],
+                                                    gradients[i]);
               i++;
               it++;
             }
@@ -206,7 +203,7 @@ namespace aspect
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
       typename std::multimap<LevelInd, BaseParticle<dim> >::iterator  sit;
       for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
-          it=particles.begin(); it!=particles.end();)
+           it=particles.begin(); it!=particles.end();)
         {
           // Save a pointer to the first particle in this cell
           sit = it;
@@ -230,7 +227,7 @@ namespace aspect
 
           // Get the cell the particle is in
           const typename DoFHandler<dim>::active_cell_iterator found_cell =
-              typename DoFHandler<dim>::active_cell_iterator(triangulation, cur_cell.first, cur_cell.second, dof_handler);
+            typename DoFHandler<dim>::active_cell_iterator(triangulation, cur_cell.first, cur_cell.second, dof_handler);
 
           // Interpolate the velocity field for each of the particles
           fe_value.set_active_cell(found_cell);
@@ -243,8 +240,8 @@ namespace aspect
           while (it != particles.end() && it->first == cur_cell)
             {
               property_manager->update_particle(it->second,
-                  values[i],
-                  gradients[i]);
+                                                values[i],
+                                                gradients[i]);
               i++;
               it++;
             }
@@ -266,52 +263,18 @@ namespace aspect
     }
 
     template <int dim>
-    const std::vector<MPIDataInfo> &
-    World<dim>::get_mpi_datainfo() const
+    void
+    World<dim>::get_data_info(std::vector<std::string> &names,
+                              std::vector<unsigned int> &length) const
     {
-      return data_info;
+      property_manager->get_data_info(names,length);
     }
 
     template <int dim>
     void
     World<dim>::init()
     {
-      // Assert that all necessary parameters have been set
-      AssertThrow (integrator != NULL, ExcMessage ("Particle world integrator must be set before calling init()."));
-      AssertThrow (property_manager != NULL, ExcMessage ("Particle world property manager must be set before calling init()."));
-
-      // Construct MPI data type for this particle
-      property_manager->add_mpi_types(data_info);
-      property_manager->initialize_property_map(data_info);
-
-      // And data associated with the integration scheme
-      integrator->add_mpi_types(data_info);
-
       this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
-
-      // Set up the block lengths, indices and internal types
-      const int num_entries = data_info.size();
-      std::vector<int> block_lens         (num_entries);
-      std::vector<MPI_Aint> indices       (num_entries);
-      std::vector<MPI_Datatype> old_types (num_entries);
-
-      for (unsigned int i=0; i<num_entries; ++i)
-        {
-          block_lens[i] = data_info[i].n_elements;
-          indices[i] = (i == 0 ? 0 : indices[i-1]+sizeof(double)*data_info[i-1].n_elements);
-          old_types[i] = MPI_DOUBLE;
-        }
-
-      // Create and commit the MPI type
-      int res = MPI_Type_struct(num_entries, &block_lens[0], &indices[0], &old_types[0], &particle_type);
-      if (res != MPI_SUCCESS) exit(-1);
-
-      res = MPI_Type_commit(&particle_type);
-      if (res != MPI_SUCCESS) exit(-1);
-
-      // Determine the size of the MPI comm world
-      world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-      self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -416,7 +379,7 @@ namespace aspect
 
       // Check all the cells on level 0 and recurse down
       for (typename parallel::distributed::Triangulation<dim>::cell_iterator
-          it=triangulation->begin(0); it!=triangulation->end(0); ++it)
+           it=triangulation->begin(0); it!=triangulation->end(0); ++it)
         {
           const LevelInd res = recursive_find_cell(particle, std::make_pair(it->level(), it->index()));
           if (res.first != -1 && res.second != -1) return res;
@@ -425,8 +388,8 @@ namespace aspect
       // If we couldn't find it there, we need to check the active cells
       // since the particle could be on a curved boundary not included in the
       // coarse grid
-      for (typename parallel::distributed::Triangulation<dim>::cell_iterator
-          ait=triangulation->begin_active(); ait!=triangulation->end(); ++ait)
+      for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+           ait=triangulation->begin_active(); ait!=triangulation->end(); ++ait)
         {
           if (ait->point_inside(particle.get_location()))
             {
@@ -444,6 +407,10 @@ namespace aspect
     void
     World<dim>::send_recv_particles()
     {
+      // Determine the size of the MPI comm world
+      const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+      const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+
       std::list<BaseParticle<dim> > send_particles;
 
       // Go through the particles and take out those which need to be moved to another processor
@@ -490,14 +457,14 @@ namespace aspect
       // Set up the space for the received particle data
       std::vector<double> recv_data(total_recv_data);
 
-      AssertThrow(send_data.size() == total_send_particles * (integrator->data_len()+property_manager->get_data_len()),
-             ExcMessage("The amount of data written into the array that is send to other processes "
-                 "is inconsistent with the number and size of particles."));
+      AssertThrow(send_data.size() == total_send_particles * (integrator->data_length()+property_manager->get_data_len()),
+                  ExcMessage("The amount of data written into the array that is send to other processes "
+                             "is inconsistent with the number and size of particles."));
 
       // Exchange the particle data between domains
       MPI_Allgatherv (&(send_data[0]), num_send_data, MPI_DOUBLE,
-                    &(recv_data[0]), &(num_recv_data[0]), &(recv_offset[0]), MPI_DOUBLE,
-                    this->get_mpi_communicator());
+                      &(recv_data[0]), &(num_recv_data[0]), &(recv_offset[0]), MPI_DOUBLE,
+                      this->get_mpi_communicator());
 
       unsigned int pos = 0;
       // Put the received particles into the domain if they are in the triangulation
@@ -518,7 +485,7 @@ namespace aspect
 
       AssertThrow(pos == recv_data.size(),
                   ExcMessage("The amount of data that was read into new particles "
-                      "does not match the amount of data sent around."));
+                             "does not match the amount of data sent around."));
     }
 
     template <int dim>
@@ -541,7 +508,7 @@ namespace aspect
       unsigned int particle_idx = 0;
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
       for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
-          it=particles.begin(); it!=particles.end();)
+           it=particles.begin(); it!=particles.end();)
         {
           // Get the current cell
           const LevelInd cur_cell = it->first;
@@ -609,9 +576,9 @@ namespace aspect
     void
     World<dim>::serialize(Archive &ar, const unsigned int version)
     {
-        ar &particles
-        &global_num_particles
-        ;
+      ar &particles
+      &global_num_particles
+      ;
     }
   }
 }
@@ -624,7 +591,7 @@ namespace aspect
   namespace Particle
   {
 #define INSTANTIATE(dim) \
-    template class World<dim>;
+  template class World<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }

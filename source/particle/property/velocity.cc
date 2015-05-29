@@ -39,11 +39,11 @@ namespace aspect
 
       template <int dim>
       void
-      Velocity<dim>::update_particle(unsigned int data_position,
-                                   std::vector<double> &data,
-                                   const Point<dim> &,
-                                   const Vector<double> &solution,
-                                   const std::vector<Tensor<1,dim> > &)
+      Velocity<dim>::update_particle(unsigned int &data_position,
+                                     std::vector<double> &data,
+                                     const Point<dim> &,
+                                     const Vector<double> &solution,
+                                     const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position++] = solution[this->introspection().component_indices.velocities[i]];
@@ -57,10 +57,10 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      Velocity<dim>::data_len() const
+      void
+      Velocity<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return dim;
+        length.push_back(dim);
       }
 
       /**
@@ -70,14 +70,9 @@ namespace aspect
        */
       template <int dim>
       void
-      Velocity<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      Velocity<dim>::data_names(std::vector<std::string> &names) const
       {
-        for (unsigned int i = 0; i < data_len(); i++)
-          {
-            std::ostringstream field_name;
-            field_name << "velocity_" << i;
-            data_info.push_back(aspect::Particle::MPIDataInfo(field_name.str(), 1));
-          }
+        names.push_back("velocity");
       }
     }
   }

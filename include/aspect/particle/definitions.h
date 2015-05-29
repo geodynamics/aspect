@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -25,29 +25,10 @@ namespace aspect
 {
   namespace Particle
   {
-    // TODO: in the future, upgrade multimap to ParticleMap typedef
-    // with C++11 standard "using" syntax
-
-    /// MPI tag for particle transfers
-    const int           PARTICLE_XFER_TAG = 382;
-
     /**
      * Typedef of cell level/index pair
      */
     typedef std::pair<int, int> LevelInd;
-
-    class MPIDataInfo
-    {
-      public:
-        std::string     name;
-        unsigned int    n_elements;
-
-        MPIDataInfo(std::string name,
-                    unsigned int num_elems)
-          :
-          name(name),
-          n_elements(num_elems) {};
-    };
   }
 }
 

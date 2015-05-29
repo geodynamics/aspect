@@ -28,8 +28,8 @@ namespace aspect
     {
       template <int dim>
       Function<dim>::Function()
-      :
-      function (1)
+        :
+        function (1)
       {}
 
       template <int dim>
@@ -43,10 +43,10 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      Function<dim>::data_len() const
+      void
+      Function<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return 1;
+        length.push_back(1);
       }
 
       /**
@@ -56,10 +56,10 @@ namespace aspect
        */
       template <int dim>
       void
-      Function<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      Function<dim>::data_names(std::vector<std::string> &names) const
       {
         // Then add our own
-        data_info.push_back(aspect::Particle::MPIDataInfo("function", data_len()));
+        names.push_back("function");
       }
 
 
@@ -93,17 +93,17 @@ namespace aspect
           {
             prm.enter_subsection("Function");
             try
-            {
+              {
                 function.parse_parameters (prm);
-            }
+              }
             catch (...)
-            {
+              {
                 std::cerr << "ERROR: FunctionParser failed to parse\n"
-                    << "\t'Postprocess.Tracers.Function'\n"
-                    << "with expression\n"
-                    << "\t'" << prm.get("Function expression") << "'";
+                          << "\t'Postprocess.Tracers.Function'\n"
+                          << "with expression\n"
+                          << "\t'" << prm.get("Function expression") << "'";
                 throw;
-            }
+              }
             prm.leave_subsection();
           }
           prm.leave_subsection();
