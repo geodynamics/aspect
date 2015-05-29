@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Time step size (years)
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Minimal pressure (Pa)
+# 16: Average pressure (Pa)
+# 17: Maximal pressure (Pa)
+# 18: Visualization file name
+0 0.0000e+00 2048 18915 8385 8385 0 0 39 440 10 1.2499e+05 4.39146966e-03 1.00895776e-02 -7.94922477e+05 9.86287370e+09 1.97604325e+10 output-lithosphere_boundary_indicator/solution-00000 
