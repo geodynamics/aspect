@@ -148,11 +148,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
-        /**
-         * A function for calculating the laterally averaged pressure
-         * at the top and bottom boundaries.
-         */
-        void compute_laterally_averaged_boundary_properties();
+
         void compute_internal_density_expansions();
         void compute_topography_expansions();
         void compute_geoid_expansions();
@@ -166,12 +162,6 @@ namespace aspect
 
         double density_below;
         double density_above;
-//        double surface_density;
-//        double bottom_density;
- //       double surface_pressure;
-//        double bottom_pressure;
-//        double surface_area;
-//        double bottom_area;
         unsigned int max_degree;
 
         BoundaryPressures<dim>* boundary_pressure_postprocessor;
