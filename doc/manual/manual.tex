@@ -5690,7 +5690,7 @@ a period of no-slip boundary conditions before starting the use of the GPlates p
 This is a comfort implementation, which could also be achieved by using the checkpointing
 possibility described in section~\ref{sec:checkpoint-restart}. 
 
-\subsubsection{Reproducing Rheology of Morency and Doin, 2004}
+\subsubsection{Reproducing rheology of Morency and Doin, 2004}
 \label{sec:cookbooks-morency-doin}
 \textit{This section was contributed by Jonathan Perry-Houts}
 
@@ -5700,14 +5700,16 @@ will assign very high viscosities at low temperature thermal boundary layers. Th
 pseudo-brittle rheology described in \cite{MD04} was developed to limit the strength of
 lithosphere at low temperature. The effective rheology can be described as the harmonic mean
 of two non-Newtonian rheologies:
-\[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\]
+\[v_\text{eff} = \left(\frac{1}{v_\text{eff}^v}+\frac{1}{v_\text{eff}^p}\right)^{-1}\]
 where
-\[v_{eff}^v = B \left(\frac{\dot{\varepsilon}}{\dot{\varepsilon}_{ref}}\right)^{-1+1/n_v}
-    exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right)
-    \text{ and  }
-    v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\varepsilon}^{-1+1/n_p}}
-    {\dot{\varepsilon}_{ref}^{1/n_p}} \right), \]
-where $v_{eff}$ is the effective viscosity, $B$ is a scaling constant, $\dot{\varepsilon}$ is
+\begin{align*}
+  v_\text{eff}^v = B \left(\frac{\dot{\varepsilon}}{\dot{\varepsilon}_{ref}}\right)^{-1+1/n_v}
+  \exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right),
+  \\
+  v_\text{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\varepsilon}^{-1+1/n_p}}
+  {\dot{\varepsilon}_{ref}^{1/n_p}} \right),
+\end{align*}
+where $v_\text{eff}$ is the effective viscosity, $B$ is a scaling constant, $\dot{\varepsilon}$ is
 related to the second invariant of the strain rate tensor, $\dot{\varepsilon}_{ref}$ is a
 reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,
 $V_a$ is the activation volume, $\rho_m$ is the mantle density, $R$ is the gas constant, $T$
@@ -5764,7 +5766,8 @@ The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of f
 (see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
 and the effective viscosity is then computed as follows:
 \[
-\mu_{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+ \mu_{min}}  + \frac{1}{\mu_{max}}  \right)^{-1}
+\mu_\text{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
+\mu_\text{min}} + \frac{1}{\mu_\text{max}}  \right)^{-1}
 \]
 where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
 The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
@@ -5813,8 +5816,8 @@ $35^\circ$ in compression, both of which correspond to the reported Arthur angle
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both}
-  \caption{Finite Element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions 
-  (top) and compressive boundary conditions (bottom) at t=500kyr.}
+  \caption{\it Finite element mesh, velocity, viscosity and strain rate fields
+  in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.}
   \label{fig:extcompr}
 \end{figure}
 
@@ -5838,7 +5841,7 @@ fault which connects them.
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2}
-  \caption{Basal velocity boundary conditions and corresponding 
+  \caption{\it Basal velocity boundary conditions and corresponding 
   strain rate field for the 3D model.} 
   \label{fig:bottombc}
 \end{figure}
@@ -5851,8 +5854,8 @@ of their initial offset \cite{alht11,alht12,alhf13}.
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/all3D.png}
-\caption{FE mesh, velocity, viscosity and strain rate fields at the end of the first 
-time step after one level of strain rate-based adaptive mesh refinement.} 
+\caption{\it Finite element mesh, velocity, viscosity and strain rate fields at
+the end of the first time step after one level of strain rate-based adaptive mesh refinement.} 
 \label{fig:ext3D}
 \end{figure}
 
