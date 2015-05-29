@@ -76,10 +76,10 @@ namespace aspect
 
     template <int dim>
     double
-    Interface<dim>::specific_heating_rate (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const
+    Interface<dim>::specific_heating_rate (const double,
+                                           const double,
+                                           const std::vector<double> &,
+                                           const Point<dim> &) const
     {
       Assert(false,
              ExcMessage ("There is no 'evaluate()' or 'specific_heating_rate()' function implemented in the heating model!"));
@@ -339,7 +339,7 @@ namespace aspect
 
 
     HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
-                                             const unsigned int n_comp)
+                                             const unsigned int)
       :
       heating_source_terms(n_points),
       lhs_latent_heat_terms(n_points)
