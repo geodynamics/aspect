@@ -285,7 +285,7 @@ namespace aspect
                                      geometry_model->translate_id_to_symbol_name (*intersection.begin())
                                      +
                                      "> is listed as having more "
-                                     "than one type of velocity boundary condition in the input file."));
+                                     "than one type of velocity or traction boundary condition in the input file."));
           }
 
       const std::set<types::boundary_id> all_boundary_indicators

@@ -1066,7 +1066,7 @@ namespace aspect
 
           // now for the rest. since we don't know whether there is a
           // component selector, start reading at the end and subtracting
-          // letters x, y and zs
+          // letters x, y and z
           std::string key_and_comp = split_parts[0];
           std::string comp;
           while ((key_and_comp.size()>0) &&
@@ -1155,7 +1155,7 @@ namespace aspect
 
           // now for the rest. since we don't know whether there is a
           // component selector, start reading at the end and subtracting
-          // letters x, y and zs
+          // letters x, y and z
           std::string key_and_comp = split_parts[0];
           std::string comp;
           while ((key_and_comp.size()>0) &&
