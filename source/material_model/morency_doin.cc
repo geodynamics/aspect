@@ -290,11 +290,11 @@ namespace aspect
       prm.leave_subsection();
 //define dependencies
 //viscosity dependence
-                    this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
 
 //density dependence
 //density depends on temperature
-                this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 
 // other dependencies
       this->model_dependence.compressibility = NonlinearDependence::none;
@@ -302,37 +302,37 @@ namespace aspect
 
 //thermal conductivity dependence
 //depends on composition
-        this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
 
     }
-  //}
+    //}
 
-  ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
-                                 "Morency and Doin",
-                                 "An implementation of the visco-plastic rheology described by (Morency"
-                                 " and Doin, 2004). Compositional fields can each be assigned individual"
-                                 " activation energies, reference densities, thermal expansivities,"
-                                 " and stress exponents. The effective viscosity is defined as"
-                                 "\n\n"
-                                 " \\[v_{eff} = \\left(\\frac{1}{v_{eff}^v}+\\frac{1}{v_{eff}^p}\\right)^{-1}\\]"
-                                 " where"
-                                 " \\[v_{eff}^v = B \\left(\\frac{\\dot{\\varepsilon}}{\\dot{\\varepsilon}_{ref}}\\right)^{-1+1/n_v}"
-                                 " exp\\left(\\frac{E_a +V_a \\rho_m g z}{n_v R T}\\right) \\]"
-                                 " \\[v_{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\varepsilon}^{-1+1/n_p}}"
-                                 " {\\dot{\\varepsilon}_{ref}^{1/n_p}} \\right) \\]"
-                                 "\n\n"
-                                 " Where $B$ is a scaling constant, $\\dot{\\varepsilon}$ is"
-                                 " related to the second invariant of the strain rate tensor, $\\dot{\\varepsilon}_{ref}$ is a"
-                                 " reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,"
-                                 " $V_a$ is the activation volume, $\\rho_m$ is the mantle density, $R$ is the gas constant, $T$"
-                                 " is temperature, $\\tau_0$ is the cohestive strength of rocks at the surface, $\\gamma$ is a"
-                                 " coefficient of yield stress increase with depth, and $z$ is depth."
-                                 " \n\n"
-                                 " Morency, C., and M‐P. Doin. \"Numerical simulations of the mantle lithosphere delamination.\""
-                                 " Journal of Geophysical Research: Solid Earth (1978–2012) 109.B3 (2004)."
-                                 "\n\n"
-                                 " The value for the components of this formula and additional"
-                                 " parameters are read from the parameter file in subsection"
-                                 " 'Material model/Morency and Doin'.")
-}
+    ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
+                                   "Morency and Doin",
+                                   "An implementation of the visco-plastic rheology described by (Morency"
+                                   " and Doin, 2004). Compositional fields can each be assigned individual"
+                                   " activation energies, reference densities, thermal expansivities,"
+                                   " and stress exponents. The effective viscosity is defined as"
+                                   "\n\n"
+                                   " \\[v_{eff} = \\left(\\frac{1}{v_{eff}^v}+\\frac{1}{v_{eff}^p}\\right)^{-1}\\]"
+                                   " where"
+                                   " \\[v_{eff}^v = B \\left(\\frac{\\dot{\\varepsilon}}{\\dot{\\varepsilon}_{ref}}\\right)^{-1+1/n_v}"
+                                   " exp\\left(\\frac{E_a +V_a \\rho_m g z}{n_v R T}\\right) \\]"
+                                   " \\[v_{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\varepsilon}^{-1+1/n_p}}"
+                                   " {\\dot{\\varepsilon}_{ref}^{1/n_p}} \\right) \\]"
+                                   "\n\n"
+                                   " Where $B$ is a scaling constant, $\\dot{\\varepsilon}$ is"
+                                   " related to the second invariant of the strain rate tensor, $\\dot{\\varepsilon}_{ref}$ is a"
+                                   " reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,"
+                                   " $V_a$ is the activation volume, $\\rho_m$ is the mantle density, $R$ is the gas constant, $T$"
+                                   " is temperature, $\\tau_0$ is the cohestive strength of rocks at the surface, $\\gamma$ is a"
+                                   " coefficient of yield stress increase with depth, and $z$ is depth."
+                                   " \n\n"
+                                   " Morency, C., and M‐P. Doin. \"Numerical simulations of the mantle lithosphere delamination.\""
+                                   " Journal of Geophysical Research: Solid Earth (1978–2012) 109.B3 (2004)."
+                                   "\n\n"
+                                   " The value for the components of this formula and additional"
+                                   " parameters are read from the parameter file in subsection"
+                                   " 'Material model/Morency and Doin'.")
+  }
 }

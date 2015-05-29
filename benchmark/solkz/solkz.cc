@@ -648,7 +648,14 @@ namespace aspect
         /**
          * @}
          */
-    };
+    
+void
+    parse_parameters (ParameterHandler &prm);
+
+
+
+
+};
 
 
 
@@ -867,6 +874,25 @@ namespace aspect
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
+template <int dim>
+    void
+   SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      Simple<dim>::parse_parameters(prm);
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.compressibility= NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+    }
+
+
+
+
+
+
+
+
 
   }
 }

@@ -315,10 +315,10 @@ namespace aspect
 //viscosity
 // depends on temperature
       if ( (thermal_viscosity_exponent != 0))
-            this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+        this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
 // doesn't depend on temperature
       else
-            this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+        this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
 
 //density dependencies
 //depends on temperature

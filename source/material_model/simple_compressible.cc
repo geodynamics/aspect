@@ -174,7 +174,7 @@ namespace aspect
 
 //density dependence
 // if density depends on temperature
-        this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
       if ( (thermal_alpha != 0))
         {
           //if it also depends on pressure
@@ -196,27 +196,27 @@ namespace aspect
 
 
     }
- }
+  }
 }
 // explicit instantiations
-  namespace aspect
+namespace aspect
+{
+  namespace MaterialModel
   {
-    namespace MaterialModel
-    {
-      ASPECT_REGISTER_MATERIAL_MODEL(SimpleCompressible,
-                                     "simple compressible",
-                                     "A material model that has constant values "
-                                     "for all coefficients but the density. The defaults for all "
-                                     "coefficients are chosen to be similar to what is believed to be correct "
-                                     "for Earth's mantle. All of the values that define this model are read "
-                                     "from a section ``Material model/Simple compressible model'' in the input file, see "
-                                     "Section~\\ref{parameters:Material_20model/Simple_20compressible_20model}."
-                                     "\n\n"
-                                     "This model uses the following equations for the density: "
-                                     "\\begin{align}"
-                                     "  \\rho(p,T) = \\rho_0"
-                                     "              \\left(1-\\alpha (T-T_a)\\right) "
-                                     "              \\exp{\\beta (P-P_0))}"
-                                     "\\end{align}")
-    }
+    ASPECT_REGISTER_MATERIAL_MODEL(SimpleCompressible,
+                                   "simple compressible",
+                                   "A material model that has constant values "
+                                   "for all coefficients but the density. The defaults for all "
+                                   "coefficients are chosen to be similar to what is believed to be correct "
+                                   "for Earth's mantle. All of the values that define this model are read "
+                                   "from a section ``Material model/Simple compressible model'' in the input file, see "
+                                   "Section~\\ref{parameters:Material_20model/Simple_20compressible_20model}."
+                                   "\n\n"
+                                   "This model uses the following equations for the density: "
+                                   "\\begin{align}"
+                                   "  \\rho(p,T) = \\rho_0"
+                                   "              \\left(1-\\alpha (T-T_a)\\right) "
+                                   "              \\exp{\\beta (P-P_0))}"
+                                   "\\end{align}")
   }
+}

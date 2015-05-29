@@ -15,6 +15,12 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                       MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+
+
+    void
+    parse_parameters (ParameterHandler &prm);
+
+
     };
 
   }
@@ -37,12 +43,12 @@ namespace aspect
           out.viscosities[i] = 1./(1+in.strain_rate[i].norm());
     }
 
-    template <int dim>
-    bool
-    ShearThinning<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
+template <int dim>
+    void
+   ShearThinning<dim>::parse_parameters (ParameterHandler &prm)
     {
-      return ((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none);
+      Simple<dim>::parse_parameters(prm);
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::strain_rate;
     }
   }
 }
