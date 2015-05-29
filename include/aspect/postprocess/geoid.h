@@ -22,11 +22,11 @@
 #ifndef __aspect__postprocess_geoid_h
 #define __aspect__postprocess_geoid_h
 
+#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/postprocess/boundary_pressures.h>
 #include <aspect/postprocess/boundary_densities.h>
-#include <aspect/simulator.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -147,15 +147,38 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Let the postprocessor manager know about the other postprocessors
+         * which this one depends on.  Specifically, BoundaryPressures and 
+         * BoundaryDensities.
+         */
         virtual
         std::list<std::string>
         required_other_postprocessors() const;
 
       private:
 
+        /**
+         * Compute the multipole expansion of the internal density structure.
+         */
         void compute_internal_density_expansions();
+
+        /**
+         * Compute the harmonic expansion of the dynamic topography on the 
+         * top and bottom boundaries.
+         */
         void compute_topography_expansions();
+
+        /** 
+         * Compute the geoid at the top and bottom of the domain.  This has 
+         * contributions from internal density structure, the bottom topography,
+         * and the top topography.
+         */
         void compute_geoid_expansions();
+ 
+        /** 
+         * Write the geoid and associated information to an output file.
+         */
         void output_geoid_information();
 
         /**
@@ -164,24 +187,63 @@ namespace aspect
          */
         bool include_topography_contribution;
 
+        /** 
+         * The density below the bottom boundary (typically the density of 
+         * liquid iron).
+         */
         double density_below;
+
+        /**
+         * The density above the top boundary (typically the density of 
+         * air or water).
+         */
         double density_above;
+
+        /**
+         * The maximum harmonic degree for the expansion.
+         */
         unsigned int max_degree;
 
+        /**
+         * A pointer to the postprocessor for computing boundary
+         * pressures.
+         */
         BoundaryPressures<dim>* boundary_pressure_postprocessor;
+
+        /**
+         * A pointer to the postprocessor for computing boundary
+         * densities.
+         */
         BoundaryDensities<dim>* boundary_density_postprocessor;
 
         /**
-         * The geoid contribution is added on a per-layer basis. These are the
-         * coefficients for each layer, which will be finally added to a
-         * combined contribution at the surface.
+         * The multipole expansion of internal density anomalies, evaluated at the bottom.
          */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_bottom;
+
+        /**
+         * The multipole expansion of internal density anomalies, evaluated at the surface.
+         */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_surface;
+
+        /**
+         * The harmonic expansion of surface topography.
+         */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_topography_expansion;
+
+        /**
+         * The harmonic expansion of bottom topography.
+         */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_topography_expansion;
 
+        /**
+         * The harmonic expansion of the gravitational potential at the bottom.
+         */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_potential_expansion;
+
+        /**
+         * The harmonic expansion of the gravitational potential at the surface.
+         */
         std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_potential_expansion;
     };
   }
