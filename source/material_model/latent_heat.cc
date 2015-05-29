@@ -591,10 +591,10 @@ namespace aspect
 
 //dependences
 //viscosity
-            this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
 
 //density dependence
-                this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 
 //other dependences
       this->model_dependence.compressibility = NonlinearDependence::none;

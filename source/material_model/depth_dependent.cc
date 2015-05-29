@@ -288,7 +288,7 @@ namespace aspect
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-     this-> model_dependence = base_model->get_model_dependence();
+      this-> model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>

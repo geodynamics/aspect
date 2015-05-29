@@ -931,15 +931,15 @@ namespace aspect
         //declare dependencies
 
 //viscosity dependence
-          this->model_dependence.viscosity = NonlinearDependence::temperature;
+        this->model_dependence.viscosity = NonlinearDependence::temperature;
 
 //density dependence
-                  this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 //compressibility dependence
-                  this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 
 //specific_heat dependence
-                  this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 
 //thermal conductivity dependence
         this->model_dependence.thermal_conductivity = NonlinearDependence::none;

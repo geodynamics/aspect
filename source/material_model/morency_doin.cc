@@ -304,17 +304,22 @@ namespace aspect
       prm.leave_subsection();
 //define dependencies
 //viscosity dependence
-                    this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
 
 //density dependence
 //density depends on temperature
-                this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
 
 // other dependencies
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
+
+//thermal conductivity dependence
+//depends on composition
       this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
+
     }
+    //}
 
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
                                    "Morency and Doin",

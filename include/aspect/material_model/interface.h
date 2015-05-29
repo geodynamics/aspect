@@ -95,13 +95,13 @@ namespace aspect
        * Provide an operator that or's two Dependence variables.
        */
       inline Dependence operator | (const Dependence d1,
-                             const Dependence d2)
+                                    const Dependence d2)
       {
         return Dependence((int)d1 | (int)d2);
       }
 
       inline Dependence operator |= (Dependence &d1,
-                             const Dependence d2)
+                                     const Dependence d2)
       {
         d1 = (d1 | d2);
         return d1;

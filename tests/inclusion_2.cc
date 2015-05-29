@@ -400,11 +400,11 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
     template <int dim>
