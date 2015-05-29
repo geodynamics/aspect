@@ -1371,13 +1371,9 @@ namespace aspect
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
                             face_quadrature_formula,
                             (update_values    | 
+                             update_gradients |
                              update_quadrature_points  |
-                             update_JxW_values |
-                             (rebuild_stokes_matrix == true
-                              ?
-                              update_gradients
-                              :
-                              UpdateFlags(0))),
+                             update_JxW_values),
                             // see if we need to assemble traction boundary conditions.
                             // only if so do we actually need to have an FEFaceValues object
                             (parameters.prescribed_traction_boundary_indicators.size() > 0
