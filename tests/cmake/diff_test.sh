@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Script for diffing a certain output file of a test and printing nice output
 #
 # While we could put this code into CMakeLists.txt, cmake prints the whole

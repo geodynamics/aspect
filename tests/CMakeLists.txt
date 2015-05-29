@@ -195,7 +195,7 @@ FOREACH(_test ${_tests})
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
         SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/default.sh")
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default.sh")
     ENDIF()
 
     IF("${_mpi_count}" STREQUAL "1")
@@ -280,7 +280,7 @@ FOREACH(_test ${_tests})
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	COMMAND
-	    ${CMAKE_CURRENT_SOURCE_DIR}/diff_test.sh 
+	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
 		${TEST_DIFF}
 		${_test}/${_output}
 		${CMAKE_CURRENT_SOURCE_DIR}

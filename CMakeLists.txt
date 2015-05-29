@@ -101,7 +101,7 @@ ENDFOREACH()
 # set up compiler flags, include paths, etc to compile an
 # Aspect plugin
 CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/AspectConfig.cmake.in
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
   ${CMAKE_BINARY_DIR}/AspectConfig.cmake
   @ONLY
 )
@@ -112,12 +112,12 @@ CONFIGURE_FILE(
 SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
 
 CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/tests/CTestCustom.ctest.in
+  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
   ${CMAKE_BINARY_DIR}/CTestCustom.ctest
   @ONLY
 )
 CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/tests/print_test_info.sh
+  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
   ${CMAKE_BINARY_DIR}/print_test_info.sh
   @ONLY
 )
@@ -183,5 +183,5 @@ LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
   )
 
-INCLUDE(write_config)
+INCLUDE(cmake/write_config)
 
