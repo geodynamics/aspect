@@ -384,7 +384,6 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    const MaterialModelInputs<dim>  &values_in,
                     MaterialModelOutputs<dim>          &values_out);
     }
 
