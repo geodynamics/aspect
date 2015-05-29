@@ -96,7 +96,7 @@ subsection Compositional initial conditions
 
   subsection Function
     set Variable names      = x,y,z
-    set Function constants  = r=200000,p=1445000
+    set Function constants  = r=2e5, p=1.445e6
     set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)+(z-p)*(z-p)) > r, 0, 1)
   end
 end
