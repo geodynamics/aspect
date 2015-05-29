@@ -1,5 +1,0 @@
- 1000 1000 #n_pressure,nisotherms
-     0.10000000000000E-02 #press1gpa         (minimum pressure)
-     0.20000000000000E+03 #temper1kelvin     (minimum temperature)
-     0.12012002002002E+01 #deltapressgpa     (equid. grid step pressure)
-     0.98098098098098E+01 #deltatemperkelvin (equid. grid step temperat.)
