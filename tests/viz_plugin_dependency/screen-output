@@ -19,22 +19,22 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 4.40627e-09
 
    Postprocessing:
-     Writing graphical output: output-viz_plugin_dependency/solution-00000
      RMS, max velocity:        0.00125 m/s, 0.00345 m/s
+     Writing graphical output: output-viz_plugin_dependency/solution-00000
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0345s |            |
+| Total wallclock time elapsed since start    |    0.0392s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |   0.00278s |         8% |
-| Build Stokes preconditioner     |         1 |    0.0057s |        17% |
-| Solve Stokes system             |         2 |   0.00246s |       7.1% |
-| Initialization                  |         2 |    0.0179s |        52% |
-| Postprocessing                  |         1 |   0.00126s |       3.7% |
-| Setup dof systems               |         1 |   0.00279s |       8.1% |
+| Assemble Stokes system          |         2 |   0.00359s |       9.2% |
+| Build Stokes preconditioner     |         1 |   0.00614s |        16% |
+| Solve Stokes system             |         2 |   0.00287s |       7.3% |
+| Initialization                  |         2 |    0.0205s |        52% |
+| Postprocessing                  |         1 |   0.00109s |       2.8% |
+| Setup dof systems               |         1 |   0.00313s |         8% |
 +---------------------------------+-----------+------------+------------+
 

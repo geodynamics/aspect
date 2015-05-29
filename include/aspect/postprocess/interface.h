@@ -303,7 +303,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > postprocessors;
+        std::vector<std_cxx11::shared_ptr<Interface<dim> > > postprocessors;
     };
 
 
@@ -317,7 +317,7 @@ namespace aspect
       // let all the postprocessors save their data in a map and then
       // serialize that
       std::map<std::string,std::string> saved_text;
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->save (saved_text);
@@ -338,7 +338,7 @@ namespace aspect
       std::map<std::string,std::string> saved_text;
       ar &saved_text;
 
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->load (saved_text);
@@ -357,7 +357,7 @@ namespace aspect
     PostprocessorType *
     Manager<dim>::find_postprocessor () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )
