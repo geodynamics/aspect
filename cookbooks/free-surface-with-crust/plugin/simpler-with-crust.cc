@@ -47,9 +47,6 @@ namespace aspect
     {
       public:
 
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
         virtual bool is_compressible () const;
 
         virtual double reference_viscosity () const;
@@ -96,15 +93,6 @@ namespace aspect
     template <int dim>
     bool
     SimplerWithCrust<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    SimplerWithCrust<dim>::
     is_compressible () const
     {
       return false;
@@ -117,8 +105,6 @@ namespace aspect
     {
       return eta_L;
     }
-
-
 
     template <int dim>
     double
@@ -215,6 +201,12 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
     }
   }
 }

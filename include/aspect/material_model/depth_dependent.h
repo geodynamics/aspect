@@ -68,13 +68,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Method to determine viscosity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */

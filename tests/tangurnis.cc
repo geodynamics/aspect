@@ -96,13 +96,6 @@ namespace aspect
        */
 
       /**
-       * Return true if the viscosity() function returns something that may
-       * depend on the variable identifies by the argument.
-       */
-      virtual bool
-      viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-      /**
        * Return whether the model is compressible or not.  Incompressibility
        * does not necessarily imply that the density is constant; rather, it
        * may still depend on temperature or pressure. In the current
@@ -332,15 +325,6 @@ namespace aspect
     template <int dim>
     bool
     TanGurnis<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
     is_compressible () const
     {
       return true;
@@ -460,6 +444,12 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+     this->model_dependence.viscosity =NonlinearDependence::none;
+     this->model_dependence.density = NonlinearDependence::none;
+     this->model_dependence.compressibility = NonlinearDependence::none;
+     this->model_dependence.specific_heat = NonlinearDependence::none;
+     this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
     }
   }
 

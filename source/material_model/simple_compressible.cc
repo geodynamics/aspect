@@ -102,14 +102,6 @@ namespace aspect
     template <int dim>
     bool
     SimpleCompressible<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0);
@@ -173,29 +165,58 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+//declare dependencies
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
+//density dependence
+// if density depends on temperature
+        this->model_dependence.density = NonlinearDependence::none;
+      if ( (thermal_alpha != 0))
+        {
+          //if it also depends on pressure
+          if ( (reference_compressibility != 0))
+            this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure;
+          //if it only depends on temperature
+          else
+            this->model_dependence.density = NonlinearDependence::temperature;
+        }
+//if it only depends on pressure
+      else if ((reference_compressibility != 0))
+        this->model_dependence.density = NonlinearDependence::pressure;
+//no dependencies
+      else
+        this->model_dependence.density = NonlinearDependence::none;
+
+
+
+
+
+    }
+ }
+}
+// explicit instantiations
+  namespace aspect
+  {
+    namespace MaterialModel
+    {
+      ASPECT_REGISTER_MATERIAL_MODEL(SimpleCompressible,
+                                     "simple compressible",
+                                     "A material model that has constant values "
+                                     "for all coefficients but the density. The defaults for all "
+                                     "coefficients are chosen to be similar to what is believed to be correct "
+                                     "for Earth's mantle. All of the values that define this model are read "
+                                     "from a section ``Material model/Simple compressible model'' in the input file, see "
+                                     "Section~\\ref{parameters:Material_20model/Simple_20compressible_20model}."
+                                     "\n\n"
+                                     "This model uses the following equations for the density: "
+                                     "\\begin{align}"
+                                     "  \\rho(p,T) = \\rho_0"
+                                     "              \\left(1-\\alpha (T-T_a)\\right) "
+                                     "              \\exp{\\beta (P-P_0))}"
+                                     "\\end{align}")
     }
   }
-}
-
-// explicit instantiations
-namespace aspect
-{
-  namespace MaterialModel
-  {
-    ASPECT_REGISTER_MATERIAL_MODEL(SimpleCompressible,
-                                   "simple compressible",
-                                   "A material model that has constant values "
-                                   "for all coefficients but the density. The defaults for all "
-                                   "coefficients are chosen to be similar to what is believed to be correct "
-                                   "for Earth's mantle. All of the values that define this model are read "
-                                   "from a section ``Material model/Simple compressible model'' in the input file, see "
-                                   "Section~\\ref{parameters:Material_20model/Simple_20compressible_20model}."
-                                   "\n\n"
-                                   "This model uses the following equations for the density: "
-                                   "\\begin{align}"
-                                   "  \\rho(p,T) = \\rho_0"
-                                   "              \\left(1-\\alpha (T-T_a)\\right) "
-                                   "              \\exp{\\beta (P-P_0))}"
-                                   "\\end{align}")
-  }
-}

@@ -174,25 +174,6 @@ namespace aspect
     template <int dim>
     bool
     MorencyDoin<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
     is_compressible () const
     {
       return false;
@@ -321,6 +302,18 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+//define dependencies
+//viscosity dependence
+                    this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+
+//density dependence
+//density depends on temperature
+                this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+
+// other dependencies
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
     }
 
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,

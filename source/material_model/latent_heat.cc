@@ -372,18 +372,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    bool
-    LatentHeat<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
 
     template <int dim>
     bool
@@ -599,6 +587,19 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+
+//dependences
+//viscosity
+            this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+
+//density dependence
+                this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+
+//other dependences
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
     }
   }
 }
