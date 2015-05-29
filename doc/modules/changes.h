@@ -22,6 +22,11 @@
  * <br>
  * (Wolfgang Bangerth, 2015/05/28)
  *
+ * <li> New: Added the ability to prescribe internal velocities with an ascii
+ * file. 
+ * <br>
+ * (Scott Tarlow, 2015/05/29)
+ *
  * <li> New: Added cookbook to prescribe initial condition from shear
  * wave velocity model.
  * <br>
