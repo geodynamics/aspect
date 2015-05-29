@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/heating.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/base/utilities.h>
 
 #include <algorithm>
 
@@ -90,8 +91,8 @@ namespace aspect
 
         Assert (computed_quantities.size() == n_quadrature_points,
                 ExcMessage("The length of the vector of quantities that are computed in the "
-                           "postprocessor (" + std::to_string(computed_quantities.size()) + ") has to match the "
-                           "number of quadrature points (" + std::to_string(n_quadrature_points) + ")!"));
+                           "postprocessor (" + dealii::Utilities::int_to_string(computed_quantities.size()) + ") has to match the "
+                           "number of quadrature points (" + dealii::Utilities::int_to_string(n_quadrature_points) + ")!"));
         Assert (computed_quantities[0].size() == heating_model_objects.size(), ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components, ExcInternalError());
 
