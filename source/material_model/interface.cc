@@ -372,11 +372,9 @@ namespace aspect
         // Do the requested averaging operation for one array. The
         // projection matrix argument is only used if the operation
         // chosen is project_to_Q1
-        template <int dim>
         void average (const AveragingOperation  operation,
                       const FullMatrix<double>      &projection_matrix,
                       const FullMatrix<double>      &expansion_matrix,
-                      const std::vector<Point<dim> > &,
                       std::vector<double>           &values_out)
         {
           // if an output field has not been filled (because it was
@@ -601,7 +599,6 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    const MaterialModelInputs<dim>  &values_in,
                     MaterialModelOutputs<dim>          &values_out)
       {
         FullMatrix<double> projection_matrix;
@@ -618,20 +615,19 @@ namespace aspect
                                        expansion_matrix);
           }
 
+        average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.viscosities);
+                 values_out.densities);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.densities);
+                 values_out.thermal_expansion_coefficients);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.thermal_expansion_coefficients);
+                 values_out.specific_heat);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.specific_heat);
+                 values_out.compressibilities);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.compressibilities);
+                 values_out.entropy_derivative_pressure);
         average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.entropy_derivative_pressure);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_in.position,values_out.entropy_derivative_temperature);
+                 values_out.entropy_derivative_temperature);
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should
@@ -700,7 +696,6 @@ namespace aspect
                   const DoFHandler<dim>::active_cell_iterator &cell, \
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
-                  const MaterialModelInputs<dim>  &values_in,\
                   MaterialModelOutputs<dim>      &values_out); \
   }
 
