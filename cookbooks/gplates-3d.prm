@@ -1,5 +1,7 @@
-# A simple setup for for using the GPlates interface in a 2d shell. See the
-# manual for more information.
+# A simple setup for for using the GPlates interface in a 3d shell.
+# This model has more than 1 million unknowns, so you will most likely want to 
+# compile aspect in release mode, and run this model on a powerful machine.
+# See the manual for more information.
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
