@@ -15,7 +15,8 @@ namespace aspect
     {
       public:
         void
-        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           Simpler<dim>::evaluate(in,out);
 
