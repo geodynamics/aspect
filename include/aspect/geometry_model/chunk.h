@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,6 +30,29 @@
 namespace
 {
   using namespace dealii;
+
+  /**
+   * A geometry model class that describes a chunk of a spherical shell.
+   * In 2D, this class simulates a sector with inner and outer radius, and
+   * minimum and maximum longitude. Longitude increases anticlockwise
+   * from the positive x-axis, as per the mathematical convention of phi.
+   * In 3D, the class simulates a chunk of a sphere, bounded by arbitrary
+   * lines of longitude, latitude and radius. Boundary indicator names are
+   * west, east, south, north, inner and outer.
+   *
+   * The parameters that describe this geometry and that are read from the
+   * input file are the inner and outer radii of the shell, the minimum
+   * and maximum longitude, minimum and maximum longitude, and the
+   * number of cells initialised in each dimension.
+   */
+
+  /**
+   * ChunkGeometry is a class that implements the interface of
+   * ChartManifold. The function push_forward takes a point
+   * in the reference (lat,long,radius) domain and transforms
+   * it into real space (cartesian). The inverse function
+   * pull_back reverses this operation.
+   */
 
   template <int dim>
   class ChunkGeometry : public ChartManifold<dim,dim>
@@ -102,7 +125,11 @@ namespace aspect
          * Return the typical length scale one would expect of features in
          * this geometry, assuming realistic parameters.
          *
-         * We return 1/100th of the diameter of the box.
+        * As described in the first ASPECT paper, a length scale of
+        * 10km = 1e4m works well for the pressure scaling for earth
+        * sized spherical shells. use a length scale that
+        * yields this value for the R0,R1 corresponding to earth
+        * but otherwise scales like (R1-R0)
          */
         virtual
         double length_scale () const;
@@ -168,11 +195,6 @@ namespace aspect
          * longitude-latitude-depth point
                */
         Point<dim> point2;
-
-        /**
-         * Flag whether the box is periodic in longitude. TODO MAKE SURE THIS WORKS!
-         */
-        bool periodic;
 
         /**
          * The number of cells in each coordinate direction

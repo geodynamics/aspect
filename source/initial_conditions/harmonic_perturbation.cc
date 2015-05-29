@@ -90,8 +90,8 @@ namespace aspect
       else if (const GeometryModel::Chunk<dim> *
                chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
         {
-          Assert ( dim == 2,
-                   ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
+          AssertThrow ( dim == 2,
+                        ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
           const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);

@@ -7,6 +7,15 @@
  *
  * <ol>
  * 
+ * <li> New: There is now a new geometry model called chunk, which
+ * takes radius, longitude (and latitude) pairs and creates a regional
+ * chunk of a spherical shell. Spherical boundary and initial conditions 
+ * have been updated to accept this new model. The conversion conventions
+ * between [longitude, latitude and radius], [phi, theta and radius] and
+ * Cartesian [x, y, z] are consistent with mathematical convention and 
+ * other models in dealii/ASPECT.
+ * (Bob Myhill, 2015/05/29)
+ *
  * <li> New: There are now postprocessors BoundaryDensities and
  * BoundaryPressures which calculate laterally averaged densities 
  * and pressures at the top and bottom of the domain.

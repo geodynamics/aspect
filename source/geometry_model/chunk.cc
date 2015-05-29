@@ -188,7 +188,7 @@ namespace aspect
     Chunk<dim>::
     length_scale () const
     {
-      // as described in the first ASPECT paper, a length scale of
+      // As described in the first ASPECT paper, a length scale of
       // 10km = 1e4m works well for the pressure scaling for earth
       // sized spherical shells. use a length scale that
       // yields this value for the R0,R1 corresponding to earth
@@ -365,12 +365,12 @@ namespace aspect
               point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
               repetitions[1] = prm.get_integer ("Longitude repetitions");
 
-              Assert (point1[0] < point2[0],
-                      ExcMessage ("Inner radius must be less than outer radius."));
-              Assert (point1[1] < point2[1],
-                      ExcMessage ("Minimum longitude must be less than maximum longitude."));
-              Assert (point2[1] - point1[1] < 2.*numbers::PI,
-                      ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
+              AssertThrow (point1[0] < point2[0],
+                           ExcMessage ("Inner radius must be less than outer radius."));
+              AssertThrow (point1[1] < point2[1],
+                           ExcMessage ("Minimum longitude must be less than maximum longitude."));
+              AssertThrow (point2[1] - point1[1] < 2.*numbers::PI,
+                           ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
 
           if (dim == 3)
@@ -379,8 +379,8 @@ namespace aspect
               point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
               repetitions[2] = prm.get_integer ("Latitude repetitions");
 
-              Assert (point1[2] < point2[2],
-                      ExcMessage ("Minimum latitude must be less than maximum latitude."));
+              AssertThrow (point1[2] < point2[2],
+                           ExcMessage ("Minimum latitude must be less than maximum latitude."));
             }
 
         }
@@ -410,8 +410,7 @@ namespace aspect
                                    "edges of geographical quadrangle (in degrees)"
                                    "Chunk (inner || outer) radius: Radii at bottom and top of box"
                                    "(Longitude || Latitude || Radius) repetitions: "
-                                   "number of cells in each coordinate direction "
-                                   "Longitude periodic: Boolean")
+                                   "number of cells in each coordinate direction.")
   }
 }
 
