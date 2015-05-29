@@ -1,0 +1,69 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmaterial_model_dependencies_steinberger.so>
+
+Number of active cells: 48 (on 3 levels)
+Number of degrees of freedom: 740 (450+65+225)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+80 iterations.
+      Nonlinear Stokes residual: 5.10347e+15
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+79 iterations.
+      Nonlinear Stokes residual: 8.27533e+13
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+39 iterations.
+      Nonlinear Stokes residual: 1.26805e+14
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+27 iterations.
+      Nonlinear Stokes residual: 4.39125e+11
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+14 iterations.
+      Nonlinear Stokes residual: 8.20759e+09
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+      Nonlinear Stokes residual: 5.42426e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+
+   Postprocessing:
+viscosity depends on temperature 
+density depends on pressure temperature composition 
+compressibility depends on pressure temperature composition 
+specific_heat depends on pressure temperature composition 
+thermal_conductivity depends on 
+model is compressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.439s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        10 |    0.0922s |        21% |
+| Build Stokes preconditioner     |        10 |     0.122s |        28% |
+| Solve Stokes system             |        10 |     0.167s |        38% |
+| Initialization                  |         2 |    0.0382s |       8.7% |
+| Postprocessing                  |         1 |  0.000113s |     0.026% |
+| Setup dof systems               |         1 |   0.00538s |       1.2% |
++---------------------------------+-----------+------------+------------+
+
