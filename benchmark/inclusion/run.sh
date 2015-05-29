@@ -10,11 +10,11 @@ cp global.prm.base temp.prm
 echo "subsection Mesh refinement" >>temp.prm
 echo "set Initial global refinement = $r" >> temp.prm
 echo "end" >> temp.prm
-../../aspect temp.prm | grep Error
+aspect temp.prm | grep Error
 rm -f temp.prm
 done
 
 
 
 # adaptive ref:
-../../aspect adaptive.prm | egrep "freedom|Error"
+aspect adaptive.prm | egrep "freedom|Error"
