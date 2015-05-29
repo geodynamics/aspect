@@ -124,6 +124,15 @@ namespace aspect
 
 
       template <int dim>
+      std::list<std::string>
+      Interface<dim>::required_other_postprocessors () const
+      {
+        return std::list<std::string>();
+      }
+
+
+
+      template <int dim>
       void
       Interface<dim>::save (std::map<std::string,std::string> &) const
       {}
@@ -857,6 +866,30 @@ namespace aspect
                                                                declare_parameters_function,
                                                                factory_function);
     }
+
+
+
+    template <int dim>
+    std::list<std::string>
+    Visualization<dim>::required_other_postprocessors () const
+    {
+      std::list<std::string> requirements;
+
+      // loop over all of the viz postprocessors and collect what
+      // they want. don't worry about duplicates, the postprocessor
+      // manager will filter them out
+      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        {
+          const std::list<std::string> this_requirements = (*p)->required_other_postprocessors();
+          requirements.insert (requirements.end(),
+                               this_requirements.begin(), this_requirements.end());
+        }
+
+      return requirements;
+    }
+
 
   }
 }

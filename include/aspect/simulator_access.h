@@ -510,8 +510,14 @@ namespace aspect
 
 
       /**
-       * Find a pointer to a certain postprocessor, if not return a NULL
-       * pointer.
+       * This function can be used to find out whether the list of
+       * postprocessors that are run at the end of each time step
+       * contains an object of the given template type. If so, the function
+       * returns a pointer to the postprocessor object of this type. If
+       * no postprocessor of this type has been selected in the input
+       * file (or, has been required by another postprocessor using the
+       * Postprocess::Interface::required_other_postprocessors()
+       * mechanism), then the function returns a NULL pointer.
        */
       template <typename PostprocessorType>
       PostprocessorType *

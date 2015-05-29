@@ -137,6 +137,24 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * A function that is used to indicate to the postprocessor manager which
+           * other postprocessor(s) the current one depends upon. The returned
+           * list contains the names (as strings, as you would write them in
+           * the input file) of the postprocessors it requires. The manager
+           * will ensure that these postprocessors are indeed used, even if
+           * they were not explicitly listed in the input file, and are indeed
+           * run <i>before</i> this postprocessor everytime they are executed.
+           *
+           * The postprocessors you can nominate here are of the general
+           * postprocessor class, not visualization postprocessors.
+           *
+           * The default implementation of this function returns an empty list.
+           */
+          virtual
+          std::list<std::string>
+          required_other_postprocessors () const;
+
 
           /**
            * Save the state of this object to the argument given to this
@@ -279,6 +297,17 @@ namespace aspect
                                               const std::string &description,
                                               void (*declare_parameters_function) (ParameterHandler &),
                                               VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
+
+        /**
+         * A function that is used to indicate to the postprocessor manager which
+         * other postprocessor(s) the current one depends upon.
+         *
+         * For the current class, we simply loop over all of the visualization
+         * postprocessors and collect what they want.
+         */
+        virtual
+        std::list<std::string>
+        required_other_postprocessors () const;
 
         /**
          * Declare the parameters this class takes through input files.

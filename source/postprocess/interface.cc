@@ -55,6 +55,15 @@ namespace aspect
 
 
     template <int dim>
+    std::list<std::string>
+    Interface<dim>::required_other_postprocessors() const
+    {
+      return std::list<std::string>();
+    }
+
+
+
+    template <int dim>
     void
     Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
@@ -230,6 +239,34 @@ namespace aspect
 
           postprocessors.back()->parse_parameters (prm);
           postprocessors.back()->initialize ();
+
+          // now see if the newly created postprocessor relies on others. if so,
+          // go through the list of the ones we already have and if the required
+          // ones are new, add them to the end of the list we work through
+          const std::list<std::string> additional_postprocessors
+            = postprocessors.back()->required_other_postprocessors ();
+
+          for (std::list<std::string>::const_iterator p = additional_postprocessors.begin();
+               p != additional_postprocessors.end(); ++p)
+            {
+              AssertThrow (Patterns::Selection(std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ())
+                           .match (*p) == true,
+                           ExcMessage ("Postprocessor <" + postprocessor_names[name] +
+                                       "> states that it depends on another postprocessor, <"
+                                       + *p +
+                                       ">, but the latter is not a valid name."));
+
+              bool already_present = false;
+              for (unsigned int n=0; n<postprocessor_names.size(); ++n)
+                if (postprocessor_names[n] == *p)
+                  {
+                    already_present = true;
+                    break;
+                  }
+
+              if (already_present == false)
+                postprocessor_names.push_back (*p);
+            }
         }
     }
 
