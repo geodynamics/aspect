@@ -121,7 +121,6 @@ namespace aspect
                                                           std_cxx11::ref(prm),
                                                           std_cxx11::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
-    heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     // create a boundary temperature model, but only if we actually need
     // it. otherwise, allow the user to simply specify nothing at all
@@ -290,10 +289,8 @@ namespace aspect
     material_model->parse_parameters (prm);
     material_model->initialize ();
 
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
-      sim->initialize (*this);
-    heating_model->parse_parameters (prm);
-    heating_model->initialize ();
+    heating_model_manager.initialize (*this);
+    heating_model_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
@@ -639,7 +636,7 @@ namespace aspect
     // Temperature BC are currently updated in compute_current_constraints
     material_model->update();
     gravity_model->update();
-    heating_model->update();
+    heating_model_manager.update();
     adiabatic_conditions->update();
   }
 

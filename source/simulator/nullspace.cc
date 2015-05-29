@@ -298,7 +298,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     Tensor<1,dim> local_momentum;
     double local_mass = 0.0;
@@ -328,6 +328,8 @@ namespace aspect
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              in.velocity = velocities;
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -409,7 +411,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     typename DoFHandler<dim>::active_cell_iterator cell;
 
@@ -445,7 +447,7 @@ namespace aspect
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
-
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);

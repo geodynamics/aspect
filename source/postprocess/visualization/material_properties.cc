@@ -115,6 +115,7 @@ namespace aspect
               {
                 grad_u[d] = duh[q][d];
                 in.velocity[q][d] = uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
               }
 
             in.strain_rate[q] = symmetrize (grad_u);

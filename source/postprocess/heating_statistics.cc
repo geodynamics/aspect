@@ -20,7 +20,7 @@
 
 
 
-#include <aspect/postprocess/internal_heating_statistics.h>
+#include <aspect/postprocess/heating_statistics.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -36,10 +36,8 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    InternalHeatingStatistics<dim>::execute (TableHandler &statistics)
+    HeatingStatistics<dim>::execute (TableHandler &statistics)
     {
-      const HeatingModel::Interface<dim> &heating_model=this->get_heating_model();
-
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
@@ -48,27 +46,38 @@ namespace aspect
                                this->get_fe(),
                                quadrature_formula,
                                update_values   |
+                               update_gradients |
                                update_quadrature_points |
                                update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
-      in.strain_rate.resize(0); // we do not need the viscosity
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
-      std::vector<double> heating_model_outputs(n_q_points);
+
+      const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+      const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
+
+      HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->n_compositional_fields());
+
+      std::ostringstream output;
+      output.precision(4);
+
+      double average_heating_integral = 0.0;
+      double total_heating_integral = 0.0;
+
+      std::vector<double> local_heating_integrals (heating_model_objects.size());
+      double local_mass = 0.0;
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      double local_internal_heating_integrals = 0;
-      double local_mass = 0;
-
       // compute the integral quantities by quadrature
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
+
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.temperature]
             .get_function_values (this->get_solution(),
@@ -79,6 +88,9 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities]
             .get_function_values (this->get_solution(),
                                   in.velocity);
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_gradients (this->get_solution(),
+                                     in.pressure_gradient);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]]
               .get_function_values(this->get_solution(),
@@ -89,57 +101,66 @@ namespace aspect
                   in.composition[i][c] = composition_values[c][i];
               }
 
+            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+                in.strain_rate);
             in.position = fe_values.get_quadrature_points();
-            in.cell = &cell;
 
             this->get_material_model().evaluate(in, out);
-            heating_model.evaluate(in, out, heating_model_outputs);
 
             for (unsigned int q=0; q<n_q_points; ++q)
-              {
-                local_internal_heating_integrals += heating_model_outputs[q]
-                                                    * out.densities[q] * fe_values.JxW(q);
+              local_mass += out.densities[q] * fe_values.JxW(q);
 
-                local_mass += out.densities[q] * fe_values.JxW(q);
+            unsigned int index = 0;
+            for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+                 heating_model = heating_model_objects.begin();
+                 heating_model != heating_model_objects.end(); ++heating_model, ++index)
+              {
+                (*heating_model)->evaluate(in, out, heating_model_outputs);
+
+                for (unsigned int q=0; q<n_q_points; ++q)
+                  local_heating_integrals[index] += heating_model_outputs.heating_source_terms[q]
+                                                    * fe_values.JxW(q);
               }
           }
 
+      std::vector<double> global_heating_integrals (heating_model_objects.size());
+      double global_mass = 0.0;
+
       // compute the sum over all processors
-      std::vector<double> local_value;
-      std::vector<double> global_value;
-      local_value.push_back(local_internal_heating_integrals);
-      local_value.push_back(local_mass);
-
-      Utilities::MPI::sum (local_value,
+      Utilities::MPI::sum (local_heating_integrals,
                            this->get_mpi_communicator(),
-                           global_value);
-      const double global_internal_heating_integrals = global_value[0];
-      const double global_mass = global_value[1];
+                           global_heating_integrals);
+      global_mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
 
-      // finally produce something for the statistics file
-      const std::string name1("Average internal heating rate (W/kg) ");
-      statistics.add_value (name1, global_internal_heating_integrals/global_mass);
-      // also make sure that the other columns filled by the this object
-      // all show up with sufficient accuracy and in scientific notation
-      statistics.set_precision (name1, 8);
-      statistics.set_scientific (name1, true);
+      unsigned int index = 0;
+      for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+           heating_model = heating_model_objects.begin();
+           heating_model != heating_model_objects.end(); ++heating_model, ++index)
+        {
+          // finally produce something for the statistics file
+          const std::string name1("Average " + heating_model_names[index] + " rate (W/kg) ");
+          statistics.add_value (name1, global_heating_integrals[index]/global_mass);
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision (name1, 8);
+          statistics.set_scientific (name1, true);
 
-      // TODO:
-      // Total internal heating rate is not making sense in 2D at the moment,
-      // need to put a scale factor to transfer it to 3D.
-      const std::string name2("Total internal heating rate (W) ");
-      statistics.add_value (name2, global_internal_heating_integrals);
-      // also make sure that the other columns filled by the this object
-      // all show up with sufficient accuracy and in scientific notation
-      statistics.set_precision (name2, 8);
-      statistics.set_scientific (name2, true);
+          const std::string name2("Total " + heating_model_names[index] + " rate (W) ");
+          statistics.add_value (name2, global_heating_integrals[index]);
+          // also make sure that the other columns filled by the this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision (name2, 8);
+          statistics.set_scientific (name2, true);
 
-      std::ostringstream output;
-      output.precision(4);
-      output << global_internal_heating_integrals/global_mass << " W/kg, "
-             << global_internal_heating_integrals << " W";
+          total_heating_integral += global_heating_integrals[index];
+        }
 
-      return std::pair<std::string, std::string> ("Internal heating rate (average/total): ",
+      average_heating_integral = total_heating_integral/global_mass;
+
+      output << average_heating_integral << " W/kg, "
+             << total_heating_integral << " W";
+
+      return std::pair<std::string, std::string> ("Heating rate (average/total): ",
                                                   output.str());
     }
   }
@@ -151,9 +172,9 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(InternalHeatingStatistics,
-                                  "internal heating statistics",
+    ASPECT_REGISTER_POSTPROCESSOR(HeatingStatistics,
+                                  "heating statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "internal heating, averaged by volume. ")
+                                  "heating, averaged by volume. ")
   }
 }

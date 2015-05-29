@@ -157,14 +157,16 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
-    return simulator->parameters.include_adiabatic_heating;
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    return (std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end());
   }
 
   template <int dim>
   bool
   SimulatorAccess<dim>::include_latent_heat () const
   {
-    return simulator->parameters.include_latent_heat;
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
   }
 
   template <int dim>
@@ -413,12 +415,10 @@ namespace aspect
   }
 
   template <int dim>
-  const HeatingModel::Interface<dim> &
-  SimulatorAccess<dim>::get_heating_model () const
+  const HeatingModel::Manager<dim> &
+  SimulatorAccess<dim>::get_heating_model_manager () const
   {
-    Assert (simulator->heating_model.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->heating_model.get();
+    return simulator->heating_model_manager;
   }
 
   template <int dim>

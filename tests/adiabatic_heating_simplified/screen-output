@@ -1,0 +1,84 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,280 (on 4 levels)
+Number of degrees of freedom: 17,820 (10,914+1,449+5,457)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+*** Timestep 1:  t=5.73562e+12 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+*** Timestep 2:  t=1.14712e+13 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+*** Timestep 3:  t=1.72069e+13 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+*** Timestep 4:  t=2.29425e+13 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+*** Timestep 5:  t=2.5e+13 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
+     Heating rate (average/total):  -3.51e-11 W/kg, -194.5 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      19.5s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      8.83s |        45% |
+| Assemble temperature system     |         6 |      1.88s |       9.6% |
+| Build Stokes preconditioner     |         6 |      5.93s |        30% |
+| Build temperature preconditioner|         6 |    0.0609s |      0.31% |
+| Solve Stokes system             |         6 |     0.194s |      0.99% |
+| Solve temperature system        |         6 |    0.0559s |      0.29% |
+| Initialization                  |         2 |     0.415s |       2.1% |
+| Postprocessing                  |         6 |     0.291s |       1.5% |
+| Setup dof systems               |         1 |     0.276s |       1.4% |
++---------------------------------+-----------+------------+------------+
+

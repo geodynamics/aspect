@@ -101,7 +101,7 @@ namespace aspect
     /**
      * Provide an object of type T filled with a signaling NaN that will cause an exception
      * when used in a computation. This basically serves the purpose of creating an object
-     * that is initialized to invalid values.
+     * that is not initialized.
      **/
     template <class T>
     inline

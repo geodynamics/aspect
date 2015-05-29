@@ -67,7 +67,7 @@ namespace aspect
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
                                         quadrature_formula,
-                                        update_values |
+                                        update_values         | update_gradients |
                                         update_normal_vectors |
                                         update_q_points       | update_JxW_values);
 
@@ -103,6 +103,8 @@ namespace aspect
                     in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
                                                                                                in.pressure);
+                fe_face_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                    in.pressure_gradient);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);

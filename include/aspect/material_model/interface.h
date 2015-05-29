@@ -145,6 +145,12 @@ namespace aspect
       std::vector<double> pressure;
 
       /**
+       * Pressure gradients at the points given in the #position vector.
+       * This is important for the heating models.
+       */
+      std::vector<Tensor<1,dim> > pressure_gradient;
+
+      /**
        * Velocity values at the points given in the #position vector.
        * This value is mostly important in the case of determining
        * whether material crossed a certain region (e.g. a phase boundary).

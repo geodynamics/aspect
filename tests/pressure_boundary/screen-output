@@ -30,99 +30,99 @@ Number of degrees of freedom: 12,427 (7,624+991+3,812)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.26e-09 m/s, 3.74e-09 m/s
+     RMS, max velocity:                1.26e-09 m/s, 3.73e-09 m/s
      Pressure at top/bottom of domain: -4.353e+10 Pa, 5.287e+10 Pa, 
 
-*** Timestep 2:  t=2.33241e+13 seconds
+*** Timestep 2:  t=2.33299e+13 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.29e-09 m/s, 3.79e-09 m/s
+     RMS, max velocity:                1.29e-09 m/s, 3.78e-09 m/s
      Pressure at top/bottom of domain: -4.353e+10 Pa, 5.287e+10 Pa, 
 
-Number of active cells: 951 (on 6 levels)
-Number of degrees of freedom: 13,447 (8,250+1,072+4,125)
+Number of active cells: 957 (on 6 levels)
+Number of degrees of freedom: 13,545 (8,310+1,080+4,155)
 
-*** Timestep 3:  t=3.08714e+13 seconds
+*** Timestep 3:  t=3.08858e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.32e-09 m/s, 3.83e-09 m/s
-     Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
+     RMS, max velocity:                1.31e-09 m/s, 3.83e-09 m/s
+     Pressure at top/bottom of domain: -4.352e+10 Pa, 5.287e+10 Pa, 
 
-*** Timestep 4:  t=3.8364e+13 seconds
+*** Timestep 4:  t=3.83898e+13 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.35e-09 m/s, 3.87e-09 m/s
+     RMS, max velocity:                1.34e-09 m/s, 3.87e-09 m/s
      Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
 
-Number of active cells: 1,029 (on 6 levels)
-Number of degrees of freedom: 14,588 (8,950+1,163+4,475)
+Number of active cells: 1,032 (on 6 levels)
+Number of degrees of freedom: 14,660 (8,994+1,169+4,497)
 
-*** Timestep 5:  t=4.58154e+13 seconds
+*** Timestep 5:  t=4.58556e+13 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.38e-09 m/s, 3.92e-09 m/s
+     RMS, max velocity:                1.37e-09 m/s, 3.9e-09 m/s
      Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
 
-*** Timestep 6:  t=5.32369e+13 seconds
+*** Timestep 6:  t=5.32951e+13 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.41e-09 m/s, 3.95e-09 m/s
+     RMS, max velocity:                1.4e-09 m/s, 3.94e-09 m/s
      Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
 
-Number of active cells: 1,107 (on 6 levels)
-Number of degrees of freedom: 15,677 (9,618+1,250+4,809)
+Number of active cells: 1,113 (on 6 levels)
+Number of degrees of freedom: 15,765 (9,672+1,257+4,836)
 
-*** Timestep 7:  t=6.05959e+13 seconds
+*** Timestep 7:  t=6.06751e+13 seconds
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.44e-09 m/s, 3.99e-09 m/s
+     RMS, max velocity:                1.43e-09 m/s, 3.98e-09 m/s
      Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
 
-*** Timestep 8:  t=6.7723e+13 seconds
+*** Timestep 8:  t=6.78298e+13 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 30+4 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                1.46e-09 m/s, 4.02e-09 m/s
-     Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
-
-Number of active cells: 1,206 (on 6 levels)
-Number of degrees of freedom: 17,133 (10,512+1,365+5,256)
-
-*** Timestep 9:  t=7.48018e+13 seconds
-   Solving temperature system... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+5 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                1.49e-09 m/s, 4.06e-09 m/s
-     Pressure at top/bottom of domain: -4.351e+10 Pa, 5.285e+10 Pa, 
-
-*** Timestep 10:  t=8.1819e+13 seconds
-   Solving temperature system... 13 iterations.
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.52e-09 m/s, 4.09e-09 m/s
-     Pressure at top/bottom of domain: -4.351e+10 Pa, 5.285e+10 Pa, 
+     RMS, max velocity:                1.46e-09 m/s, 4e-09 m/s
+     Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
 
-Number of active cells: 1,320 (on 6 levels)
-Number of degrees of freedom: 18,709 (11,480+1,489+5,740)
+Number of active cells: 1,209 (on 6 levels)
+Number of degrees of freedom: 17,172 (10,536+1,368+5,268)
+
+*** Timestep 9:  t=7.49402e+13 seconds
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                1.48e-09 m/s, 4.04e-09 m/s
+     Pressure at top/bottom of domain: -4.352e+10 Pa, 5.286e+10 Pa, 
+
+*** Timestep 10:  t=8.19947e+13 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 30+4 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                1.51e-09 m/s, 4.06e-09 m/s
+     Pressure at top/bottom of domain: -4.351e+10 Pa, 5.286e+10 Pa, 
+
+Number of active cells: 1,314 (on 6 levels)
+Number of degrees of freedom: 18,621 (11,426+1,482+5,713)
 
 Termination requested by criterion: end step
 *** Snapshot created!

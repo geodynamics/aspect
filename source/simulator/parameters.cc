@@ -291,25 +291,6 @@ namespace aspect
     // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
-      prm.declare_entry ("Include shear heating", "true",
-                         Patterns::Bool (),
-                         "Whether to include shear heating into the model or not. From a "
-                         "physical viewpoint, shear heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include adiabatic heating", "false",
-                         Patterns::Bool (),
-                         "Whether to include adiabatic heating into the model or not. From a "
-                         "physical viewpoint, adiabatic heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include latent heat", "false",
-                         Patterns::Bool (),
-                         "Whether to include the generation of latent heat at phase transitions "
-                         "into the model or not. From a physical viewpoint, latent heat should "
-                         "always be used but may be undesirable when comparing results with known "
-                         "benchmarks that do not include this term in the temperature equation "
-                         "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -786,10 +767,6 @@ namespace aspect
 
     prm.enter_subsection ("Model settings");
     {
-      include_shear_heating = prm.get_bool ("Include shear heating");
-      include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
-      include_latent_heat = prm.get_bool ("Include latent heat");
-
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -1143,7 +1120,7 @@ namespace aspect
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
-    HeatingModel::declare_parameters<dim> (prm);
+    HeatingModel::Manager<dim>::declare_parameters (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);

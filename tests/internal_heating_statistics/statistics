@@ -11,7 +11,7 @@
 # 11: Minimal temperature (K)
 # 12: Average temperature (K)
 # 13: Maximal temperature (K)
-# 14: Average internal heating rate (W/kg) 
-# 15: Total internal heating rate (W) 
+# 14: Average constant heating rate (W/kg) 
+# 15: Total constant heating rate (W) 
 0 0.0000e+00 1024 9539 4225 0 26 27 27 1.0000e+03 1.00000000e+03 1.00000000e+03 1.00000000e+03 1.00000000e+00 3.40000000e+15 
 1 1.0000e+03 1024 9539 4225 8  0  0  0 1.5625e+04 1.00000000e+03 1.00099559e+03 1.00109308e+03 1.00000000e+00 3.40000000e+15 
