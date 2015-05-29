@@ -5570,7 +5570,7 @@ the approximate reproduction of that figure).
 material model written by Anne Glerum and the free surface plugin by Ian Rose.}
 
 This is a simple example of an upper-crust undergoing compression or extension.
-It is characterised by a single layer of visco-plastic material subjected to basal 
+It is characterized by a single layer of visco-plastic material subjected to basal 
 kinematical boundary conditions. In compression, this setup is somewhat analogous 
 to \cite{will99}, and in extension to \cite{alht11}.
 
@@ -5581,10 +5581,23 @@ Drucker Prager yield criterion  and we therefore make use of the Drucker-Prager
 material model (see Section \ref{parameters:Material_20model}) in the 
 {\tt cookbooks/crustal\_model\_2D.prm}.
 
-The layer is assumed to have dimensions 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
+The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
 The plasticity parameters are specified as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm}
+
+The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of friction 
+(see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
+and the effective viscosity is then computed as follows:
+\[
+\mu_{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+ \mu_{min}}  + \frac{1}{\mu_{max}}  \right)^{-1}
+\]
+where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
+The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
+
+During the first iteration of the first timestep, the strain rate is zero, so
+we avoid dividing by zero by setting the strain rate to {\tt Reference strain rate}.
+
 
 The top boundary is a free surface while the left, right and bottom boundaries are subjected 
 to the following boundary conditions:
@@ -5601,10 +5614,10 @@ Setting
 {\tt   set Initial adaptive refinement        = 4}
 yields a series of meshes as shown in Fig. (\ref{fig:meshes}), all produced during the 
 first timestep. As expected, we see that the location of the highest mesh refinement
-corresponds to the location of set of conjugated shear bands.
+corresponds to the location of a set of conjugated shear bands.
 
 If we now set this parameter to 1 and allow the simulation to evolve
-for $500kyr$, a central graben or plateau (depending on the nature
+for 500kyr, a central graben or plateau (depending on the nature
 of the boundary conditions) develops and deepens/thickens over time, nicely showcasing 
 the unique capabilities of the code to handle free surface large deformation, localised
 strain rates through visco-plasticity and adaptive mesh refinement as
@@ -5653,7 +5666,7 @@ fault which connects them.
   \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2}
   \caption{Basal velocity boundary conditions and corresponding 
   strain rate field for the 3D model.} 
-  \label{bottombc}
+  \label{fig:bottombc}
 \end{figure}
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are shown 
