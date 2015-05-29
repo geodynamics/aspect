@@ -257,122 +257,18 @@ namespace aspect
 
       boundary_pressure_postprocessor = this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
       boundary_density_postprocessor = this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >(); 
-
+      
+      AssertThrow(boundary_pressure_postprocessor != NULL,
+                  ExcMessage("Could not find BoundaryPressures postprocessor"));
+      AssertThrow(boundary_density_postprocessor != NULL,
+                  ExcMessage("Could not find BoundaryDensities postprocessor"));
+      
       compute_internal_density_expansions();
       compute_topography_expansions();
       compute_geoid_expansions();
 
       output_geoid_information();
       return std::pair<std::string,std::string>("Writing geoid file", "");
-    }
-
-    template <int dim>
-    void
-    Geoid<dim>::compute_laterally_averaged_boundary_properties()
-    {
-      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                 (&this->get_geometry_model());
-      AssertThrow (geometry_model != 0,
-                   ExcMessage("The geoid postprocessor is currently only implemented for "
-                              "the spherical shell geometry model."));
-
-      const QGauss<dim-1> quadrature_formula_face (this->get_fe()
-                                                   .base_element(this->introspection().base_elements.pressure)
-                                                   .degree+1);
-
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula_face,
-                                        update_values |
-                                        update_gradients |
-                                        update_q_points |
-                                        update_JxW_values);
-
-      const double outer_radius = geometry_model->outer_radius();
-      const double inner_radius = geometry_model->inner_radius();
-
-      double local_surface_pressure = 0.;
-      double local_bottom_pressure = 0.;
-      double local_surface_density = 0.;
-      double local_bottom_density = 0.;
-      double local_surface_area = 0.;
-      double local_bottom_area = 0.;
-
-      std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
-
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
-
-      // loop over all of the surface cells and if one less than h/3 away from
-      // the top surface, evaluate the stress at its center
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          if (cell->at_boundary())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              {
-                bool cell_at_top = false;
-                bool cell_at_bottom = false;
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3.)
-                  cell_at_top = true;
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3.))
-                  cell_at_bottom = true;
-
-                if ( cell_at_top || cell_at_bottom )
-                  {
-                    //handle surface cells
-                    fe_face_values.reinit (cell, f);
-                    fe_face_values[this->introspection().extractors.temperature]
-                    .get_function_values (this->get_solution(), in.temperature);
-                    fe_face_values[this->introspection().extractors.pressure]
-                    .get_function_values (this->get_solution(), in.pressure);
-                    fe_face_values[this->introspection().extractors.velocities]
-                    .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
-
-                    in.position = fe_face_values.get_quadrature_points();
-
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_face_values[this->introspection().extractors.compositional_fields[c]]
-                      .get_function_values(this->get_solution(),
-                                           composition_values[c]);
-                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
-                      }
-
-                    this->get_material_model().evaluate(in, out);
-
-                    //calculate the top properties
-                    if (cell_at_top)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_surface_pressure += in.pressure[q] * fe_face_values.JxW(q);
-                          local_surface_density += out.densities[q] * fe_face_values.JxW(q);
-                          local_surface_area += fe_face_values.JxW(q);
-                        }
-                    if (cell_at_bottom)
-                      for ( unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
-                        {
-                          local_bottom_pressure += in.pressure[q] * fe_face_values.JxW(q);
-                          local_bottom_density += out.densities[q] * fe_face_values.JxW(q);
-                          local_bottom_area += fe_face_values.JxW(q);
-                        }
-                  }
-              }
-
-      //bottom_area = Utilities::MPI::sum( local_bottom_area, this->get_mpi_communicator() );
-      //surface_area = Utilities::MPI::sum( local_surface_area, this->get_mpi_communicator() );
-
-      //surface_pressure = Utilities::MPI::sum( local_surface_pressure, this->get_mpi_communicator() ) / surface_area;
-      //bottom_pressure = Utilities::MPI::sum( local_bottom_pressure, this->get_mpi_communicator() ) / bottom_area;
-
-      //surface_density = Utilities::MPI::sum( local_surface_density, this->get_mpi_communicator() ) / surface_area;
-      //bottom_density = Utilities::MPI::sum( local_bottom_density, this->get_mpi_communicator() ) / bottom_area;
     }
 
     template <int dim>
@@ -678,32 +574,33 @@ namespace aspect
       const double delta_rho_bottom = density_below-bottom_density;
 
       std::vector<double> s(max_degree+1);
-      std::vector<double> a_surface(max_degree+1);
-      std::vector<double> a_bottom(max_degree+1);
+
+      std::vector<double> surface_potential_at_surface(max_degree+1);
+      std::vector<double> surface_potential_at_bottom(max_degree+1);
+      std::vector<double> bottom_potential_at_bottom(max_degree+1);
+      std::vector<double> bottom_potential_at_surface(max_degree+1);
 
       if ( dim == 3)
+        {
         for ( unsigned int l = 2; l <= max_degree; ++l)
           {
             s[l] = 1.0;
-            a_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
-            a_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+            bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
+            surface_potential_at_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
 
             surface_potential_expansion->clear();
             surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
             surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
-            surface_potential_expansion->sadd( s, a_surface, *bottom_topography_expansion );
+            surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
 
             bottom_potential_expansion->clear();
             bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
             bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-            bottom_potential_expansion->sadd( s, a_bottom, *surface_topography_expansion );
+            bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
           }
+        }
       else
         {
-          std::vector<double> surface_potential_at_surface(max_degree+1);
-          std::vector<double> surface_potential_at_bottom(max_degree+1);
-          std::vector<double> bottom_potential_at_bottom(max_degree+1);
-          std::vector<double> bottom_potential_at_surface(max_degree+1);
           const double gravity_constant = 4./3. * G;
           for ( unsigned int n = 2; n <= max_degree; ++n)
             {
@@ -727,9 +624,6 @@ namespace aspect
               bottom_potential_expansion->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
               bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
         }
-
-
-
     }
 
     template <int dim>
