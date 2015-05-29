@@ -1269,7 +1269,7 @@ namespace aspect
       free_surface->apply_stabilization(cell, data.local_matrix);
 
     // see if any of the faces are traction boundaries for which
-    // we need to assembly force terms for the right hand side
+    // we need to assemble force terms for the right hand side
     for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
       if (cell->at_boundary(f))
         if (traction_boundary_conditions

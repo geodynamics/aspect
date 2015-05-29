@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
 {
   /**
    * A namespace in which we define everything that has to do with defining
-   * traction boundary boundary conditions for the Stokes equations.
+   * traction boundary conditions for the Stokes equations.
    *
    * @ingroup TractionBoundaryConditionsModels
    */
@@ -97,7 +97,7 @@ namespace aspect
          */
         static
         void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters (ParameterHandler &);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -107,7 +107,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &);
 
       protected:
         /**
