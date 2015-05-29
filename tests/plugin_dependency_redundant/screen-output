@@ -19,22 +19,22 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 4.40627e-09
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 7.964441e-05, 1.174943e-01, 1.069688e-04, 1.192654e-01
      RMS, max velocity:             0.00125 m/s, 0.00345 m/s
+     Errors u_L1, p_L1, u_L2, p_L2: 7.964441e-05, 1.174943e-01, 1.069688e-04, 1.192654e-01
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0386s |            |
+| Total wallclock time elapsed since start    |    0.0437s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |   0.00297s |       7.7% |
-| Build Stokes preconditioner     |         1 |   0.00557s |        14% |
-| Solve Stokes system             |         2 |   0.00261s |       6.8% |
-| Initialization                  |         2 |    0.0186s |        48% |
-| Postprocessing                  |         1 |   0.00426s |        11% |
-| Setup dof systems               |         1 |   0.00299s |       7.7% |
+| Assemble Stokes system          |         2 |   0.00333s |       7.6% |
+| Build Stokes preconditioner     |         1 |   0.00639s |        15% |
+| Solve Stokes system             |         2 |   0.00294s |       6.7% |
+| Initialization                  |         2 |    0.0211s |        48% |
+| Postprocessing                  |         1 |    0.0047s |        11% |
+| Setup dof systems               |         1 |   0.00319s |       7.3% |
 +---------------------------------+-----------+------------+------------+
 
