@@ -1370,7 +1370,7 @@ namespace aspect
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
                             face_quadrature_formula,
-                            (update_values    | 
+                            (update_values    |
                              update_gradients |
                              update_quadrature_points  |
                              update_JxW_values),
