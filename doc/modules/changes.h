@@ -11,7 +11,7 @@
  * file. 
  * <br>
  * (Scott Tarlow, 2015/05/29)
- 
+ *
  * <li> New: Added cookbook to prescribe initial condition from shear
  * wave velocity model.
  * <br>
