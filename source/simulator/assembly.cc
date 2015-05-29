@@ -1369,7 +1369,8 @@ namespace aspect
                           std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
-                            (update_values    | update_gradients |
+                            face_quadrature_formula,
+                            (update_values    | 
                              update_quadrature_points  |
                              update_JxW_values |
                              (rebuild_stokes_matrix == true
