@@ -6,6 +6,8 @@
 --     . using Trilinos
 -----------------------------------------------------------------------------
 
+Loading shared library <./libterminate_user_request.so>
+
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
