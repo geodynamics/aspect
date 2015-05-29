@@ -1635,7 +1635,7 @@ namespace aspect
                                              T_preconditioner);
 
               if (iteration == 0)
-                  initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+                initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
 
@@ -1651,7 +1651,7 @@ namespace aspect
                                                  C_preconditioner);
 
                   if (iteration == 0)
-                      initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+                    initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
@@ -1675,7 +1675,7 @@ namespace aspect
               build_stokes_preconditioner();
 
               if (iteration == 0)
-                  initial_stokes_residual = compute_initial_stokes_residual();
+                initial_stokes_residual = compute_initial_stokes_residual();
 
               const double stokes_residual = solve_stokes();
 
