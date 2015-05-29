@@ -118,5 +118,12 @@
  * distance versions of the arithmetic, harmonic and geometric averages.
  * (Menno Fraters, 2015/05/28)
  *
+ * <li> New: One can now prescribe the traction on a boundary instead of 
+ * supplying velocity boundary conditions.
+ * This is done in a similar way as for the prescribed velocity boundary conditions:
+ * For a given boundary indicator, one can prescribe all or a selection of the
+ * traction components.
+ * <br>
+ * (Wolfgang Bangerth, Anne Glerum, 2015/05/29)
  * </ol>
  */
