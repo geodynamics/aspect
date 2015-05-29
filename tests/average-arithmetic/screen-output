@@ -22,21 +22,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.86s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |       1.8s |        31% |
-| Assemble composition system     |         1 |     0.376s |       6.4% |
-| Assemble temperature system     |         1 |     0.442s |       7.5% |
-| Build Stokes preconditioner     |         1 |      1.05s |        18% |
-| Build composition preconditioner|         1 |    0.0098s |      0.17% |
-| Build temperature preconditioner|         1 |    0.0107s |      0.18% |
-| Solve Stokes system             |         1 |     0.494s |       8.4% |
-| Solve composition system        |         1 |   0.00428s |     0.073% |
-| Solve temperature system        |         1 |   0.00493s |     0.084% |
-| Initialization                  |         2 |     0.321s |       5.5% |
-| Postprocessing                  |         1 |     0.021s |      0.36% |
-| Setup dof systems               |         1 |      1.15s |        20% |
 +---------------------------------+-----------+------------+------------+
 

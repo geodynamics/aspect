@@ -634,7 +634,11 @@ namespace aspect
                          "\n\n"
                          "The process of averaging, and where it may be used, is "
                          "discussed in more detail in "
-                         "Section~\\ref{sec:sinker-with-averaging}.");
+                         "Section~\\ref{sec:sinker-with-averaging}."
+                         "\n\n"
+                         "More averaging schemes are available in the averaging material "
+                         "model. This material model is a ``compositing material model'' "
+                         "which can be used in combination with other material models.");
     }
     prm.leave_subsection ();
 
