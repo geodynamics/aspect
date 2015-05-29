@@ -7,7 +7,7 @@
 -----------------------------------------------------------------------------
 
 Number of active cells: 256 (on 5 levels)
-Number of degrees of freedom: 4645 (2178+289+1089+1089)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -16,27 +16,12 @@ Number of degrees of freedom: 4645 (2178+289+1089+1089)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Pressure min/avg/max: -1.59 Pa, 7.961e-14 Pa, 1.59 Pa
+     Pressure min/avg/max: -1.59 Pa, 8.714e-14 Pa, 1.59 Pa
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.07s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.308s |        29% |
-| Assemble composition system     |         1 |     0.103s |       9.6% |
-| Assemble temperature system     |         1 |     0.155s |        14% |
-| Build Stokes preconditioner     |         1 |     0.225s |        21% |
-| Build composition preconditioner|         1 |   0.00227s |      0.21% |
-| Build temperature preconditioner|         1 |   0.00186s |      0.17% |
-| Solve Stokes system             |         1 |    0.0704s |       6.6% |
-| Solve composition system        |         1 |   0.00102s |     0.096% |
-| Solve temperature system        |         1 |  0.000946s |     0.089% |
-| Initialization                  |         2 |    0.0565s |       5.3% |
-| Postprocessing                  |         1 |   0.00273s |      0.26% |
-| Setup dof systems               |         1 |     0.115s |        11% |
 +---------------------------------+-----------+------------+------------+
 
