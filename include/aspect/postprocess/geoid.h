@@ -147,6 +147,10 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        virtual
+        std::list<std::string>
+        required_other_postprocessors() const;
+
       private:
 
         void compute_internal_density_expansions();
