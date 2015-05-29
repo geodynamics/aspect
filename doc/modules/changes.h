@@ -6,6 +6,14 @@
  *
  *
  * <ol>
+ *
+ * <li> Changed: We now use the exact formulation with the 
+ * compressible strain rate instead of an approximation 
+ * using the right hand side of the mass conservation equation
+ * to calculate the shear heating. This is more accurate in
+ * compressible models.
+ * <br>
+ * (Juliane Dannberg, 2015/05/29)
  * 
  * <li> New: There are now postprocessors BoundaryDensities and
  * BoundaryPressures which calculate laterally averaged densities 

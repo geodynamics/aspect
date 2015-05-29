@@ -28,7 +28,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 8.689 K, 34.44 K
+     Temperature min/avg/max:            0 K, 8.689 K, 34.39 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 *** Timestep 2:  t=3.71373e-05 seconds
@@ -39,7 +39,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 16.86 K, 67.79 K
+     Temperature min/avg/max:            0 K, 16.86 K, 67.7 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 *** Timestep 3:  t=5e-05 seconds
@@ -50,25 +50,25 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity:                  488 m/s, 839 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
-     Temperature min/avg/max:            0 K, 22.52 K, 90.61 K
+     Temperature min/avg/max:            0 K, 22.52 K, 90.49 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.26s |            |
+| Total wallclock time elapsed since start    |      9.84s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         4 |      2.93s |        40% |
-| Assemble temperature system     |         4 |     0.605s |       8.3% |
-| Build Stokes preconditioner     |         4 |      1.69s |        23% |
-| Build temperature preconditioner|         4 |    0.0201s |      0.28% |
-| Solve Stokes system             |         4 |     0.423s |       5.8% |
-| Solve temperature system        |         4 |     0.021s |      0.29% |
-| Initialization                  |         2 |     0.282s |       3.9% |
-| Postprocessing                  |         4 |    0.0757s |         1% |
-| Setup dof systems               |         1 |     0.138s |       1.9% |
+| Assemble Stokes system          |         4 |      3.89s |        40% |
+| Assemble temperature system     |         4 |     0.842s |       8.6% |
+| Build Stokes preconditioner     |         4 |      2.29s |        23% |
+| Build temperature preconditioner|         4 |    0.0269s |      0.27% |
+| Solve Stokes system             |         4 |     0.605s |       6.1% |
+| Solve temperature system        |         4 |    0.0279s |      0.28% |
+| Initialization                  |         2 |     0.395s |         4% |
+| Postprocessing                  |         4 |     0.108s |       1.1% |
+| Setup dof systems               |         1 |     0.191s |       1.9% |
 +---------------------------------+-----------+------------+------------+
 

@@ -35,8 +35,9 @@ namespace aspect
      * A class that implements a standard shear heating rate.
      *
      * Add the term
-     *      $ 2 \eta \left[\varepsilon:\varepsilon - \frac{1}{3}
-     *          \left( \kappa \rho (u \cdot g) \right)^2 \right] $
+     *    $  2 \eta \left( \varepsilon - \frac{1}{3} \text{tr}
+     *       \varepsilon \mathbf 1 \right) : \left( \varepsilon - \frac{1}{3}
+     *       \text{tr} \varepsilon \mathbf 1 \right) $
      *
      * Also see the Equations section in the manual.
      *
@@ -75,7 +76,6 @@ namespace aspect
         /**
          * @}
          */
-
     };
   }
 }

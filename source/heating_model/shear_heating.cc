@@ -41,19 +41,15 @@ namespace aspect
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);
+          const SymmetricTensor<2,dim> compressible_strain_rate
+            = (this->get_material_model().is_compressible()
+               ?
+               material_model_inputs.strain_rate[q] - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
+               :
+               material_model_inputs.strain_rate[q]);
 
           heating_model_outputs.heating_source_terms[q] = 2.0 * material_model_outputs.viscosities[q] *
-                                                          material_model_inputs.strain_rate[q] * material_model_inputs.strain_rate[q]
-                                                          - (this->get_material_model().is_compressible()
-                                                             ?
-                                                             2./3. * material_model_outputs.viscosities[q]
-                                                             * std::pow(material_model_outputs.compressibilities[q]
-                                                                        * material_model_outputs.densities[q]
-                                                                        * (material_model_inputs.velocity[q] * gravity),
-                                                                        2)
-                                                             :
-                                                             0.0);
+                                                          compressible_strain_rate * compressible_strain_rate;
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
@@ -67,7 +63,6 @@ namespace aspect
       {
         prm.enter_subsection("Shear heating");
         {
-
         }
         prm.leave_subsection();
       }
