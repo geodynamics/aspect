@@ -39,13 +39,17 @@ namespace aspect
       template <int dim>
       HarmonicCoefficients<dim>::HarmonicCoefficients(const unsigned int max_degree)
       {
+        // Allocate vectors of the appropriate size for 2D and 3D.  For 2D we
+        // need cylindrical harmonics, for 3D we need spherical harmonics.
+
         unsigned int k= (dim == 2 ?
-                         2 * (max_degree + 1 ) :                      //cylindrical harmonics
+                         2 * (max_degree + 1 ) :             //cylindrical harmonics
                          (max_degree+1)*(max_degree+2)/2 ) ; //spherical harmonics
         sine_coefficients.resize(k);
         cosine_coefficients.resize(k);
       }
 
+      // Constructor.  Just need the initialize the coefficients struct.
       template <int dim>
       MultipoleExpansion<dim>::MultipoleExpansion(const unsigned int max_degree)
         :
@@ -53,16 +57,19 @@ namespace aspect
         coefficients(max_degree)
       {}
 
+      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
+      // multipole moments. It will also expand in internal or external harmonics, 
+      //depending upon whether the position vector is at a larger radius than evaluation_radius.
       template <>
       void
       MultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
                                                    const double value,
                                                    const double JxW,
-                                                   const double evaluation_radius,
-                                                   const bool is_external)
+                                                   const double evaluation_radius)
       {
         const double r = position.norm();
         const double theta = std::atan2(position[1],position[0]);
+        const bool is_external = ( r<= evaluation_radius);  //determine whether external or internal
 
         if ( is_external && evaluation_radius > 0.)
           {
@@ -86,17 +93,20 @@ namespace aspect
           }
       }
 
+      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
+      // multipole moments. It will also expand in internal or external harmonics, 
+      //depending upon whether the position vector is at a larger radius than evaluation_radius.
       template <>
       void
       MultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
                                                    const double value,
                                                    const double JxW,
-                                                   const double evaluation_radius,
-                                                   const bool is_external)
+                                                   const double evaluation_radius)
       {
         const double r = position.norm();
         const double phi = std::atan2(position[1],position[0]);
         const double cos_theta = position[2]/r;
+        const bool is_external = ( r<= evaluation_radius);  //determine whether external or internal
 
         if ( is_external && evaluation_radius > 0.)
           {
@@ -139,13 +149,15 @@ namespace aspect
 
       }
 
+      //Return a reference to the internal representation of the multipole expansion 
       template <int dim>
-      HarmonicCoefficients<dim>
+      const HarmonicCoefficients<dim>&
       MultipoleExpansion<dim>::get_coefficients () const
       {
         return coefficients;
       }
 
+      //Zero out the expansion in 2D
       template <>
       void MultipoleExpansion<2>::clear()
       {
@@ -156,6 +168,7 @@ namespace aspect
           }
       }
 
+      //Zero out the expansion in 3D
       template <>
       void MultipoleExpansion<3>::clear()
       {
@@ -198,6 +211,7 @@ namespace aspect
             }
       }
 
+      //Version of sadd which has a different factor for each degree.  As such, s and a should have sizes of (max_degree+1)
       template <>
       void MultipoleExpansion<2>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
       {
@@ -216,6 +230,7 @@ namespace aspect
           }
       }
 
+      //Version of sadd which has a different factor for each degree.  As such, s and a should have sizes of (max_degree+1)
       template <>
       void MultipoleExpansion<3>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
       {
@@ -349,8 +364,8 @@ namespace aspect
                 const Point<dim> location = fe_values.quadrature_point(q);
                 const double density   = out.densities[q];
 
-                internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius, true );
-                internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius, false );
+                internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius );
+                internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius );
               }
 
           }
@@ -416,8 +431,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      std::ofstream bfile ("bottom.out");
-      std::ofstream sfile ("surface.out");
+ //     std::ofstream bfile ("bottom.out");
+ //     std::ofstream sfile ("surface.out");
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
@@ -515,10 +530,10 @@ namespace aspect
                     const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
                     // Add topography contribution
-                    surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/scale_surface_area, 1.0, true);
-                    const double r = location.norm();
-                    const double theta = std::atan2(location[1],location[0]);
-                    sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+                    surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/scale_surface_area, 1.0);
+//                    const double r = location.norm();
+//                    const double theta = std::atan2(location[1],location[0]);
+//                    sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
@@ -537,11 +552,11 @@ namespace aspect
                     const double dynamic_topography = - sigma_rr / gravity.norm() / (density-density_below);
 
                     // Add topography contribution
-                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/scale_bottom_area, 1.0, true);
+                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/scale_bottom_area, 1.0);
 
-                    const double r = location.norm();
-                    const double theta = std::atan2(location[1],location[0]);
-                    bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
+//                    const double r = location.norm();
+//                    const double theta = std::atan2(location[1],location[0]);
+//                    bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
 //        const double r = location.norm();
 //        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
 //        const double theta = std::acos(location[2]/r)*180.0/M_PI;
