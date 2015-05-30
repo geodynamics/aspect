@@ -46,9 +46,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      reference_cp:                                  1
      reference_thermal_diffusivity:                 1e-06
 
-     Temperature min/avg/max:  0 K, 0 K, 0 K
-     RMS, max velocity:        1.05 m/s, 1.1 m/s
-     Writing graphical output: output-no_adiabatic_heating_03/solution-00000
+     Temperature min/avg/max: 0 K, 0 K, 0 K
+     RMS, max velocity:       1.05 m/s, 1.1 m/s
+     Writing depth average    output-no_adiabatic_heating_03/depth_average.gnuplot
 
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 17 iterations.
@@ -151,26 +151,13 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max:  0 K, 0.01093 K, 0.01215 K
-     RMS, max velocity:        1.05 m/s, 1.1 m/s
-     Writing graphical output: output-no_adiabatic_heating_03/solution-00001
+     Temperature min/avg/max: 0 K, 0.01093 K, 0.01215 K
+     RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.91s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        25 |      4.53s |        57% |
-| Assemble temperature system     |         5 |     0.193s |       2.4% |
-| Build Stokes preconditioner     |        25 |      2.71s |        34% |
-| Build temperature preconditioner|         5 |   0.00672s |     0.085% |
-| Solve Stokes system             |        25 |     0.102s |       1.3% |
-| Solve temperature system        |         5 |   0.00835s |      0.11% |
-| Initialization                  |         2 |    0.0626s |      0.79% |
-| Postprocessing                  |         5 |    0.0657s |      0.83% |
-| Setup dof systems               |         1 |    0.0373s |      0.47% |
 +---------------------------------+-----------+------------+------------+
 
