@@ -59,7 +59,23 @@ namespace aspect
       if ( use_depth_range )
         {
           const double x = depth-d;
-          depth_perturbation = std::exp( -x*x/2./thickness/thickness); /// std::sqrt( M_PI * 2.0 * thickness * thickness );
+          const double r = position.norm();
+          const double r0 = (r - x);
+          const double h = thickness;
+          const double normalization = (dim == 3 
+                                        ? 
+                                        1./( 7./6.*h*h*h/r0/r0 + 3.*h)
+                                        :
+                                        1./( 3.*h) );
+                                         
+         // depth_perturbation = std::exp( -x*x/2./thickness/thickness)/normalization;
+         if( std::abs(r-r0) < h )
+           {
+            if( r > r0)
+              depth_perturbation = (1.-(r-r0)/h)*normalization;
+            else
+              depth_perturbation = (1.+(r-r0)/h)*normalization;
+           }
         }
       else
         {

@@ -70,18 +70,14 @@ namespace aspect
            *@param JxW The Jacobian and weight given to the quadrature point
            *
            *@param evaluation_radius The radius at which we expand the multipole.
-           *
-           *@param is_external Whether to do an internal or external multipole expansion.
            */
           void add_quadrature_point (const Point<dim> &position, const double value,
-                                     const double JxW, const double evaluation_radius,
-                                     const bool is_external );
+                                     const double JxW, const double evaluation_radius);
 
           /**
            * Return a reference to the internal representation of the mulipole expansion.
            */
-          HarmonicCoefficients<dim>
-          get_coefficients () const;
+          const HarmonicCoefficients<dim>& get_coefficients () const;
 
           /*
            * Set all the multipole coefficients to zero.
