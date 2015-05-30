@@ -415,9 +415,9 @@ namespace aspect
     // We need to do the rhs compatibility modification, if the model is
     // compressible or compactible (in the case of melt transport), and
     // there is no open boundary to balance the pressure.
-    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible())
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
     		                                 ||
-    		                                 (parameters.include_melt_transport))
+    		                                 (parameters.include_melt_transport && !material_model->is_compressible()))
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
