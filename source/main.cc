@@ -382,7 +382,7 @@ int main (int argc, char *argv[])
 #ifdef DEBUG
 #ifdef ASPECT_HAVE_FPE_EXCEPTIONS
   // enable floating point exceptions
-  feenableexcept(FE_DIVBYZERO|FE_INVALID);
+  // feenableexcept(FE_DIVBYZERO|FE_INVALID);
 #endif
 #endif
 
