@@ -13,12 +13,13 @@ updated from previous document by Eric Heien published on October 9, 2014}
 
 
 
-\noindent Setting up ASPECT on TACC Stampede is much easier than on previous systems since
+Setting up ASPECT on TACC Stampede is much easier than on previous systems since
 most of the necessary libraries are already correctly installed and configured. Following all
 the instructions in this document should allow you to start running ASPECT within 30
-minutes. For further information on Stampede you can also refer to the user guide at \\\url{http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide} \\
+minutes. For further information on Stampede you can also refer to the user guide at \\ 
+\url{http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide} 
 
-\noindent Also, please note that most parts of this document have changed since the previous
+Also, please note that most parts of this document have changed since the previous
 version. Even if you have set up ASPECT before, please follow all sections of this document
 to make sure your current setup has all necessary updates.
 
@@ -39,10 +40,12 @@ section that says PLACE MODULE COMMANDS HERE and ONLY HERE:
   module load cmake 
 \end{alltt}
 
-To ensure the setup is correct log out, log in again, and run the following:
+To ensure the setup is correct, type source your $\sim$/.bashrc file and list the currently loaded modules \\
 
 \begin{alltt}
-\footnotesize	login1.stampede$ module list
+\footnotesize
+source ~/.bashrc 
+login1.stampede$ module list
 \end{alltt}
 The result should include all the modules above as well as some default modules:
 
@@ -71,8 +74,8 @@ Download a copy of trilinos from trilinos.org. When creating this document we us
  
  
 Obtain the script with: 
- \begin{alltt}\footnotesize
-wget https://github.com/geodynamics/aspect/blob/master/doc/install/aspect-setup_stampede.sh
+ \begin{alltt}\scriptsize
+wget https://raw.githubusercontent.com/geodynamics/aspect/master/doc/install/aspect-setup_stampede.sh
  \end{alltt}  
  
  \end{enumerate}
@@ -89,7 +92,7 @@ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
 \end{alltt}
 
 
-\noindent You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
+You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
  
  \begin{alltt}\footnotesize
  aspect-setup_stampede.sh trilinos 
@@ -97,9 +100,16 @@ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
  aspect-setup_stampede.sh deal.ii    
  \end{alltt}
  
- \noindent You should now have the following directory structure in  \begin{alltt}\footnotesize \$HOME/packages:  \\
+ You should now have the following directory structure in  \begin{alltt}\footnotesize \$HOME/packages:  \\
   
   build  deal.II  p4est  trilinos
+\end{alltt}
+
+At this point you have automatically linked to these directories in your .bashrc file. Source your .bashrc file again before configuring and building ASPECT to ensure you can access to the deal.ii directory.
+
+ \begin{alltt}\footnotesize
+source ~/.bashrc 
+echo $DEAL_II_DIR
 \end{alltt}
 
  \section{Configure and build ASPECT}
@@ -115,7 +125,7 @@ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
  cmake ..  
  \end{alltt}
 
-\noindent You will get a lot of warnings, but as long as you see the following you are ready to compile. \\
+You will get a lot of warnings, but as long as you see the following you are ready to compile. \\
 -- Generating done \\
 -- Build files have been written to: \begin{alltt}\footnotesize /home1/02668/login/packages/aspect/build \end{alltt}
 
@@ -129,19 +139,19 @@ When testing ASPECT, it can be useful to run in interactive mode on the cluster.
  \begin{alltt}\footnotesize
 srun -p development -t <maximum time> -n <\#cores> --pty /bin/bash -l 
  \end{alltt}
- 
-\noindent For example: 
+
+For example: 
  \begin{alltt}\footnotesize
 srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l 
  \end{alltt}
  
-\noindent Once logged in you can run ASPECT in parallel using the command:
+Once logged in you can run ASPECT in parallel using the command:
  
   \begin{alltt}\footnotesize
 ibrun ./build/aspect <parameter file> 
   \end{alltt}
  
-\noindent The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
+The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
  
    \begin{alltt}\footnotesize
 \#!/bin/bash 
