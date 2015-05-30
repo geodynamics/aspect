@@ -92,9 +92,9 @@ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
 \noindent You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
  
  \begin{alltt}\footnotesize
- aspect-setup.sh trilinos 
- aspect-setup.sh p4est 
- aspect-setup.sh deal.ii    
+ aspect-setup_stampede.sh trilinos 
+ aspect-setup_stampede.sh p4est 
+ aspect-setup_stampede.sh deal.ii    
  \end{alltt}
  
  \noindent You should now have the following directory structure in  \begin{alltt}\footnotesize \$HOME/packages:  \\
