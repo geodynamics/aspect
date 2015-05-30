@@ -7,7 +7,7 @@
 -----------------------------------------------------------------------------
 
 Number of active cells: 512 (on 5 levels)
-Number of degrees of freedom: 9141 (4290+561+2145+2145)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -21,8 +21,8 @@ Number of degrees of freedom: 9141 (4290+561+2145+2145)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... 0 iterations.
-      Nonlinear residuals: 1.00594e-09, 9.00346e-10, 8.93253e-06
-      Total relative nonlinear residual: 9.93804e-14
+      Nonlinear residuals: 1.00594e-09, 9.00346e-10, 8.8648e-06
+      Total relative nonlinear residual: 9.86269e-14
 
 
 
