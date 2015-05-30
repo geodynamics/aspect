@@ -122,18 +122,23 @@ namespace aspect
         // We derive the StokesSystem scratch array from the
         // StokesPreconditioner array. We do this because all the objects that
         // are necessary for the assembly of the preconditioner are also
-        // needed for the actual matrix system and right hand side, plus some
-        // extra data that we need for the time stepping right hand side.
+        // needed for the actual system matrix and right hand side, plus some
+        // extra data that we need for the time stepping and traction boundaries
+        // on the right hand side.
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
           StokesSystem (const FiniteElement<dim> &finite_element,
                         const Mapping<dim>       &mapping,
                         const Quadrature<dim>    &quadrature,
+                        const Quadrature<dim-1>  &face_quadrature,
                         const UpdateFlags         update_flags,
+                        const UpdateFlags         face_update_flags,
                         const unsigned int        n_compositional_fields);
 
           StokesSystem (const StokesSystem<dim> &data);
+
+          FEFaceValues<dim>               face_finite_element_values;
 
           std::vector<Tensor<1,dim> >          phi_u;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
@@ -148,12 +153,20 @@ namespace aspect
         StokesSystem (const FiniteElement<dim> &finite_element,
                       const Mapping<dim>       &mapping,
                       const Quadrature<dim>    &quadrature,
+                      const Quadrature<dim-1>  &face_quadrature,
                       const UpdateFlags         update_flags,
+                      const UpdateFlags         face_update_flags,
                       const unsigned int        n_compositional_fields)
           :
           StokesPreconditioner<dim> (finite_element, quadrature,
                                      mapping,
                                      update_flags, n_compositional_fields),
+
+          face_finite_element_values (mapping,
+                                      finite_element,
+                                      face_quadrature,
+                                      face_update_flags),
+
           phi_u (finite_element.dofs_per_cell),
           grads_phi_u (finite_element.dofs_per_cell),
           div_phi_u (finite_element.dofs_per_cell),
@@ -167,6 +180,12 @@ namespace aspect
         StokesSystem (const StokesSystem<dim> &scratch)
           :
           StokesPreconditioner<dim> (scratch),
+
+          face_finite_element_values (scratch.face_finite_element_values.get_mapping(),
+                                      scratch.face_finite_element_values.get_fe(),
+                                      scratch.face_finite_element_values.get_quadrature(),
+                                      scratch.face_finite_element_values.get_update_flags()),
+
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
@@ -1239,14 +1258,51 @@ namespace aspect
                                     0)
                                )
                                * scratch.finite_element_values.JxW(q);
+
         if (do_pressure_rhs_compatibility_modification)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
 
-    //Add stabilization terms if necessary.
+    // add stabilization terms for free boundaries if necessary.
     if (parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
+
+    // see if any of the faces are traction boundaries for which
+    // we need to assemble force terms for the right hand side
+    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+      if (cell->at_boundary(f))
+        if (traction_boundary_conditions
+            .find (
+#if DEAL_II_VERSION_GTE(8,3,0)
+              cell->face(f)->boundary_id()
+#else
+              cell->face(f)->boundary_indicator()
+#endif
+            )
+            !=
+            traction_boundary_conditions.end())
+          {
+            scratch.face_finite_element_values.reinit (cell, f);
+
+            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+              {
+                const Tensor<1,dim> traction
+                  = traction_boundary_conditions[
+#if DEAL_II_VERSION_GTE(8,3,0)
+                      cell->face(f)->boundary_id()
+#else
+                      cell->face(f)->boundary_indicator()
+#endif
+                    ]
+                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                scratch.face_finite_element_values.normal_vector(q));
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                       traction *
+                                       scratch.face_finite_element_values.JxW(q);
+              }
+          }
 
     cell->get_dof_indices (data.local_dof_indices);
   }
@@ -1289,7 +1345,8 @@ namespace aspect
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals = 0;
 
-    const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
+    const QGauss<dim>   quadrature_formula(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1312,14 +1369,21 @@ namespace aspect
                           std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula,
-                            (update_values    | update_gradients |
+                            face_quadrature_formula,
+                            (update_values    |
+                             update_gradients |
                              update_quadrature_points  |
-                             update_JxW_values |
-                             (rebuild_stokes_matrix == true
-                              ?
-                              update_gradients
-                              :
-                              UpdateFlags(0))),
+                             update_JxW_values),
+                            // see if we need to assemble traction boundary conditions.
+                            // only if so do we actually need to have an FEFaceValues object
+                            (parameters.prescribed_traction_boundary_indicators.size() > 0
+                             ?
+                             update_values |
+                             update_quadrature_points |
+                             update_normal_vectors |
+                             update_JxW_values
+                             :
+                             UpdateFlags(0)),
                             parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          StokesSystem<dim> (finite_element,

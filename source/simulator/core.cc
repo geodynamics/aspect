@@ -193,18 +193,75 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[4]
+      std::set<types::boundary_id> boundary_indicator_lists[6]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
             parameters.free_surface_boundary_indicators,
-            std::set<types::boundary_id>()
+            std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
           };
 
+      std::set<types::boundary_id> velocity_bi;
+      std::set<types::boundary_id> traction_bi;
+
+      // copy the used boundary indicators of prescribed velocity and prescribed traction
+      // into a set while checking whether selectors of the same boundary indicator
+      // are duplicate
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
-        boundary_indicator_lists[3].insert (p->first);
+        {
+          for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
+               r = parameters.prescribed_traction_boundary_indicators.begin();
+               r != parameters.prescribed_traction_boundary_indicators.end();
+               ++r)
+            {
+              if (p->first != r->first)
+                {
+                  velocity_bi.insert(p->first);
+                  traction_bi.insert(r->first);
+                }
+              else
+                {
+                  std::set<char> velocity_selector;
+                  std::set<char> traction_selector;
+
+                  for (std::string::const_iterator it=p->second.first.begin(); it!=p->second.first.end(); ++it)
+                    {
+                      velocity_selector.insert(*it);
+                    }
+
+                  for (std::string::const_iterator it=r->second.first.begin(); it!=r->second.first.end(); ++it)
+                    {
+                      traction_selector.insert(*it);
+                    }
+
+                  std::set<char> intersection;
+                  std::set_intersection (velocity_selector.begin(),
+                                         velocity_selector.end(),
+                                         traction_selector.begin(),
+                                         traction_selector.end(),
+                                         std::inserter(intersection, intersection.end()));
+
+                  AssertThrow(intersection.empty(), ExcMessage ("Prescribed velocity/traction boundary indicator and selector occur more than once."));
+
+                  velocity_bi.insert(p->first);
+                  traction_bi.insert(r->first);
+                }
+            }
+        }
+
+      // remove boundary indicators that have different selectors
+      // but occur in both the velocity and the traction set
+      std::set<types::boundary_id> union_set;
+      std::set_union (velocity_bi.begin(),
+                      velocity_bi.end(),
+                      traction_bi.begin(),
+                      traction_bi.end(),
+                      std::inserter(union_set, union_set.end()));
+      // Assign the prescribed boundary indicator list to the boundary_indicator_lists
+      boundary_indicator_lists[3] = union_set;
+
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
@@ -217,6 +274,7 @@ namespace aspect
                                    boundary_indicator_lists[j].begin(),
                                    boundary_indicator_lists[j].end(),
                                    std::inserter(intersection, intersection.end()));
+
             AssertThrow (intersection.empty(),
                          ExcMessage ("Boundary indicator <"
                                      +
@@ -227,7 +285,7 @@ namespace aspect
                                      geometry_model->translate_id_to_symbol_name (*intersection.begin())
                                      +
                                      "> is listed as having more "
-                                     "than one type of velocity boundary condition in the input file."));
+                                     "than one type of velocity or traction boundary condition in the input file."));
           }
 
       const std::set<types::boundary_id> all_boundary_indicators
@@ -397,6 +455,21 @@ namespace aspect
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
+      }
+
+    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
+         p = parameters.prescribed_traction_boundary_indicators.begin();
+         p != parameters.prescribed_traction_boundary_indicators.end();
+         ++p)
+      {
+        TractionBoundaryConditions::Interface<dim> *bv
+          = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
+            (p->second.second);
+        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
+          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        bv->parse_parameters (prm);
+        bv->initialize ();
+        traction_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver
@@ -638,6 +711,15 @@ namespace aspect
     gravity_model->update();
     heating_model_manager.update();
     adiabatic_conditions->update();
+
+    // do the same for the traction boundary conditions and other things
+    // that end up in the bilinear form. we update those that end up in
+    // the constraints object when calling compute_current_constraints()
+    // above
+    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > >::iterator
+         p = traction_boundary_conditions.begin();
+         p != traction_boundary_conditions.end(); ++p)
+      p->second->update ();
   }
 
 
