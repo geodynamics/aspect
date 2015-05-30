@@ -62,20 +62,25 @@ namespace aspect
           const double r = position.norm();
           const double r0 = (r - x);
           const double h = thickness;
-          const double normalization = (dim == 3 
-                                        ? 
-                                        1./( 7./6.*h*h*h/r0/r0 + 3.*h)
-                                        :
-                                        1./( 3.*h) );
+          //const double normalization = (dim == 3 
+          //                              ? 
+          //                              1./( 7./6.*h*h*h/r0/r0 + 3.*h)
+          //                              :
+          //                              1./( 3.*h) );
+          const double normalization = ( dim == 3 
+                                         ?
+                                         std::sqrt(2. * M_PI) * (1. + h*h/r0/r0)
+                                         :
+                                         std::sqrt(2. * M_PI) * h );
                                          
-         // depth_perturbation = std::exp( -x*x/2./thickness/thickness)/normalization;
-         if( std::abs(r-r0) < h )
+          depth_perturbation = std::exp( -x*x/2./thickness/thickness)/normalization;
+     /*    if( std::abs(r-r0) < h )
            {
             if( r > r0)
               depth_perturbation = (1.-(r-r0)/h)*normalization;
             else
               depth_perturbation = (1.+(r-r0)/h)*normalization;
-           }
+           }*/
         }
       else
         {
