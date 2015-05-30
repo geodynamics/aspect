@@ -27,8 +27,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
-     Pressure min/avg/max:               0.001019 Pa, 0.5 Pa, 0.9644 Pa
-     Temperature min/avg/max:            0 K, 0.8967 K, 2 K
+     Pressure min/avg/max:               0.0007412 Pa, 0.5 Pa, 0.9647 Pa
+     Temperature min/avg/max:            0 K, 0.8961 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 2:  t=12.5 seconds
@@ -38,8 +38,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.004679 Pa, 0.5 Pa, 0.9323 Pa
-     Temperature min/avg/max:            0 K, 0.9283 K, 2 K
+     Pressure min/avg/max:               0.004131 Pa, 0.5 Pa, 0.9328 Pa
+     Temperature min/avg/max:            0 K, 0.9273 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 3:  t=18.75 seconds
@@ -49,8 +49,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
-     Pressure min/avg/max:               0.009149 Pa, 0.5 Pa, 0.9042 Pa
-     Temperature min/avg/max:            0 K, 0.9583 K, 2 K
+     Pressure min/avg/max:               0.008336 Pa, 0.5 Pa, 0.905 Pa
+     Temperature min/avg/max:            0 K, 0.9567 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 4:  t=25 seconds
@@ -60,8 +60,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
-     Pressure min/avg/max:               0.01422 Pa, 0.5 Pa, 0.8814 Pa
-     Temperature min/avg/max:            0 K, 0.9851 K, 2 K
+     Pressure min/avg/max:               0.01314 Pa, 0.5 Pa, 0.8825 Pa
+     Temperature min/avg/max:            0 K, 0.983 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 5:  t=31.25 seconds
@@ -71,8 +71,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.01984 Pa, 0.5 Pa, 0.8634 Pa
-     Temperature min/avg/max:            0 K, 1.009 K, 2 K
+     Pressure min/avg/max:               0.0185 Pa, 0.5 Pa, 0.8647 Pa
+     Temperature min/avg/max:            0 K, 1.006 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 6:  t=37.5 seconds
@@ -82,8 +82,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.02588 Pa, 0.5 Pa, 0.8486 Pa
-     Temperature min/avg/max:            0 K, 1.03 K, 2 K
+     Pressure min/avg/max:               0.02428 Pa, 0.5 Pa, 0.8501 Pa
+     Temperature min/avg/max:            0 K, 1.027 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 7:  t=43.75 seconds
@@ -93,8 +93,8 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.03215 Pa, 0.5 Pa, 0.8359 Pa
-     Temperature min/avg/max:            0 K, 1.049 K, 2 K
+     Pressure min/avg/max:               0.0303 Pa, 0.5 Pa, 0.8377 Pa
+     Temperature min/avg/max:            0 K, 1.046 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 *** Timestep 8:  t=50 seconds
@@ -104,26 +104,26 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
-     Pressure min/avg/max:               0.03853 Pa, 0.5 Pa, 0.8252 Pa
-     Temperature min/avg/max:            0 K, 1.066 K, 2 K
+     Pressure min/avg/max:               0.03642 Pa, 0.5 Pa, 0.8271 Pa
+     Temperature min/avg/max:            0 K, 1.062 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.09s |            |
+| Total wallclock time elapsed since start    |      1.35s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         9 |     0.393s |        36% |
-| Assemble temperature system     |         9 |     0.165s |        15% |
-| Build Stokes preconditioner     |         9 |     0.263s |        24% |
-| Build temperature preconditioner|         9 |   0.00343s |      0.32% |
-| Solve Stokes system             |         9 |    0.0214s |         2% |
-| Solve temperature system        |         9 |   0.00536s |      0.49% |
-| Initialization                  |         2 |    0.0437s |         4% |
-| Postprocessing                  |         9 |    0.0374s |       3.4% |
-| Setup dof systems               |         1 |      0.02s |       1.8% |
+| Assemble Stokes system          |         9 |     0.556s |        41% |
+| Assemble temperature system     |         9 |     0.138s |        10% |
+| Build Stokes preconditioner     |         9 |     0.349s |        26% |
+| Build temperature preconditioner|         9 |   0.00504s |      0.37% |
+| Solve Stokes system             |         9 |    0.0292s |       2.2% |
+| Solve temperature system        |         9 |   0.00671s |       0.5% |
+| Initialization                  |         2 |    0.0548s |       4.1% |
+| Postprocessing                  |         9 |    0.0279s |       2.1% |
+| Setup dof systems               |         1 |    0.0166s |       1.2% |
 +---------------------------------+-----------+------------+------------+
 

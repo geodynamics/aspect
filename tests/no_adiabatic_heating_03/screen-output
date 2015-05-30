@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
+--     . version 1.4.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -73,7 +73,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.003842 K, 0.004154 K
+     Temperature min/avg/max: 0 K, 0.003202 K, 0.003462 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568181 seconds
@@ -99,7 +99,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.007599 K, 0.008302 K
+     Temperature min/avg/max: 0 K, 0.006333 K, 0.006918 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds
@@ -125,7 +125,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.01125 K, 0.01244 K
+     Temperature min/avg/max: 0 K, 0.009376 K, 0.01037 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.1 seconds
@@ -151,7 +151,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     Temperature min/avg/max:  0 K, 0.01311 K, 0.01459 K
+     Temperature min/avg/max:  0 K, 0.01093 K, 0.01215 K
      RMS, max velocity:        1.05 m/s, 1.1 m/s
      Writing graphical output: output-no_adiabatic_heating_03/solution-00001
 
@@ -159,18 +159,18 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      27.8s |            |
+| Total wallclock time elapsed since start    |      7.91s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        25 |      15.4s |        55% |
-| Assemble temperature system     |         5 |      1.55s |       5.6% |
-| Build Stokes preconditioner     |        25 |      9.19s |        33% |
-| Build temperature preconditioner|         5 |    0.0223s |      0.08% |
-| Solve Stokes system             |        25 |     0.439s |       1.6% |
-| Solve temperature system        |         5 |    0.0368s |      0.13% |
-| Initialization                  |         2 |     0.135s |      0.49% |
-| Postprocessing                  |         5 |     0.245s |      0.88% |
-| Setup dof systems               |         1 |     0.172s |      0.62% |
+| Assemble Stokes system          |        25 |      4.53s |        57% |
+| Assemble temperature system     |         5 |     0.193s |       2.4% |
+| Build Stokes preconditioner     |        25 |      2.71s |        34% |
+| Build temperature preconditioner|         5 |   0.00672s |     0.085% |
+| Solve Stokes system             |        25 |     0.102s |       1.3% |
+| Solve temperature system        |         5 |   0.00835s |      0.11% |
+| Initialization                  |         2 |    0.0626s |      0.79% |
+| Postprocessing                  |         5 |    0.0657s |      0.83% |
+| Setup dof systems               |         1 |    0.0373s |      0.47% |
 +---------------------------------+-----------+------------+------------+
 

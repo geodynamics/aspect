@@ -19,47 +19,52 @@
 */
 
 
-#ifndef __aspect__heating_model_shear_heating_h
-#define __aspect__heating_model_shear_heating_h
+#ifndef __aspect__prescribed_stokes_solution_function_h
+#define __aspect__prescribed_stokes_solution_function_h
 
-#include <aspect/heating_model/interface.h>
+#include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
-  namespace HeatingModel
+  namespace PrescribedStokesSolution
   {
     using namespace dealii;
 
     /**
-     * A class that implements a standard shear heating rate.
+     * A class that implements velocity and pressure solutions based on a
+     * functional description provided in the input file.
      *
-     * Add the term
-     *    $  2 \eta \left( \varepsilon - \frac{1}{3} \text{tr}
-     *       \varepsilon \mathbf 1 \right) : \left( \varepsilon - \frac{1}{3}
-     *       \text{tr} \varepsilon \mathbf 1 \right) $
-     *
-     * Also see the Equations section in the manual.
-     *
-     * @ingroup HeatingModels
+     * @ingroup PrescribedStokesSolution
      */
     template <int dim>
-    class ShearHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * Compute the heating model outputs for this class.
+         * Constructor.
+         */
+        Function ();
+
+        /**
+         * Return the velocity and pressure as a function of position.
          */
         virtual
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+        stokes_solution (const Point<dim> &p, Vector<double> &value) const;
 
         /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the velocity and
+         * pressure values will next be evaluated. For the current class,
+         * the function passes to the parsed function what the current time is.
          */
+        virtual
+        void
+        update ();
+
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -73,9 +78,16 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+      private:
         /**
-         * @}
+         * A function object representing the components of the velocity.
          */
+        Functions::ParsedFunction<dim> prescribed_velocity_function;
+        /**
+         * A function object representing the pressure.
+         */
+        Functions::ParsedFunction<dim> prescribed_pressure_function;
     };
   }
 }
