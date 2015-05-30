@@ -19,24 +19,27 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+5 iterations.
       Nonlinear residuals: 1.37468e-11, 0, 0.0346137, 0, 22.3625
+      Total relative nonlinear residual: 1
 
-      residual: 1
+
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
    Solving Stokes system... 30+2 iterations.
-      Nonlinear residuals: 1.49513e-11, 0.0346137, 1.97955e-14, 0.0346137, 0.172797
+      Nonlinear residuals: 1.48472e-11, 0.0346137, 1.97946e-14, 0.0346137, 0.172797
+      Total relative nonlinear residual: 0.00772709
 
-      residual: 0.00772709
+
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Solving Stokes system... 0 iterations.
-      Nonlinear residuals: 1.56239e-11, 1.97942e-14, 1.97955e-14, 1.97942e-14, 2.0376e-06
+      Nonlinear residuals: 1.50862e-11, 1.97939e-14, 1.97946e-14, 1.97939e-14, 2.0376e-06
+      Total relative nonlinear residual: 9.11168e-08
 
-      residual: 9.11168e-08
+
 
    Postprocessing:
      Compositions min/max/mass: 1/1/2 // 1/1/2 // 1/1/2
@@ -50,24 +53,27 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13 iterations.
       Nonlinear residuals: 331.725, 0.0346137, 0.0346137, 0.0346137, 2.58291e-05
+      Total relative nonlinear residual: 0.5
 
-      residual: 0.5
+
    Solving temperature system... 5 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
    Solving Stokes system... 30+2 iterations.
-      Nonlinear residuals: 0.0161267, 0.0346137, 6.51931e-14, 0.0346137, 0.172797
+      Nonlinear residuals: 0.0161267, 0.0346137, 6.51932e-14, 0.0346137, 0.172797
+      Total relative nonlinear residual: 0.5
 
-      residual: 0.5
+
    Solving temperature system... 5 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Solving Stokes system... 0 iterations.
-      Nonlinear residuals: 0.0118361, 6.52004e-14, 6.5193e-14, 6.52004e-14, 2.06654e-06
+      Nonlinear residuals: 0.0118361, 6.52004e-14, 6.51931e-14, 6.52004e-14, 2.06654e-06
+      Total relative nonlinear residual: 1.4051e-07
 
-      residual: 1.4051e-07
+
 
    Postprocessing:
      Compositions min/max/mass: 3/3/6 // 2/2/4 // 3/3/6
