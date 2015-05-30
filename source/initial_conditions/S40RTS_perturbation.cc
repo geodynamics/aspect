@@ -266,11 +266,11 @@ namespace aspect
       int ind = 0;
 
       // option to not include degree zero in summation
-      unsigned int starting_degree = (zero_out_degree_0
-                                      ?
-                                      1.
-                                      :
-                                      0.);
+      const unsigned int starting_degree = (zero_out_degree_0
+                                            ?
+                                            1.
+                                            :
+                                            0.);
 
 
       for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
