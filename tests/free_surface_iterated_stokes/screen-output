@@ -15,9 +15,10 @@ Number of free surface degrees of freedom: 1394
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
+   Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 4.3798e-08
+   Residual after nonlinear iteration 2: 4.38453e-08
 
 Number of active cells: 220 (on 5 levels)
 Number of degrees of freedom: 3,320 (2,034+269+1,017)
@@ -28,9 +29,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+13 iterations.
+   Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 3.08626e-08
+   Residual after nonlinear iteration 2: 2.98302e-08
 
    Postprocessing:
 
@@ -54,9 +56,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
+   Residual after nonlinear iteration 1: 1.446
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 3.28305e-08
+   Residual after nonlinear iteration 2: 4.73899e-08
 
    Postprocessing:
      Topography min/max: -78.79 m, 178.3 m, 
@@ -67,9 +70,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
+   Residual after nonlinear iteration 1: 1.65226
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 6.01022e-08
+   Residual after nonlinear iteration 2: 9.92511e-08
 
    Postprocessing:
      Topography min/max: -106.9 m, 83.96 m, 
@@ -79,10 +83,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+14 iterations.
+   Residual after nonlinear iteration 1: 0.565363
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 1.42906e-07
+   Residual after nonlinear iteration 2: 4.03374e-08
 
    Postprocessing:
      Topography min/max: -12.75 m, 42.42 m, 
@@ -93,9 +98,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
+   Residual after nonlinear iteration 1: 0.452537
 
    Solving Stokes system... 0+1 iterations.
-   Residual after nonlinear iteration 2: 7.50545e-08
+   Residual after nonlinear iteration 2: 5.85636e-08
 
    Postprocessing:
      Topography min/max: -18.65 m, 59.93 m, 
@@ -106,9 +112,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+13 iterations.
+   Residual after nonlinear iteration 1: 0.220893
 
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 3.27522e-07
+   Solving Stokes system... 0+1 iterations.
+   Residual after nonlinear iteration 2: 8.85827e-08
 
    Postprocessing:
      Topography min/max: -14.47 m, 50.23 m, 
@@ -117,32 +124,18 @@ Number of free surface degrees of freedom: 538
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       2.7s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        14 |     0.843s |        31% |
-| Assemble temperature system     |         7 |     0.302s |        11% |
-| Build Stokes preconditioner     |         7 |     0.488s |        18% |
-| Build temperature preconditioner|         7 |    0.0163s |       0.6% |
-| Solve Stokes system             |        14 |     0.483s |        18% |
-| Solve temperature system        |         7 |   0.00995s |      0.37% |
-| FreeSurface                     |         7 |     0.147s |       5.4% |
-| Initialization                  |         3 |    0.0654s |       2.4% |
-| Postprocessing                  |         6 |   0.00924s |      0.34% |
-| Refine mesh structure, part 1   |         1 |    0.0607s |       2.2% |
-| Refine mesh structure, part 2   |         1 |   0.00221s |     0.082% |
-| Setup dof systems               |         2 |     0.163s |         6% |
 +---------------------------------+-----------+------------+------------+
 
 *** Timestep 6:  t=1.07312e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system... 0+13 iterations.
+   Residual after nonlinear iteration 1: 0.141654
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 5.79918e-07
+   Residual after nonlinear iteration 2: 4.2346e-08
 
    Postprocessing:
      Topography min/max: -16.58 m, 55 m, 
@@ -153,9 +146,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
+   Residual after nonlinear iteration 1: 0.065792
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 1.26213e-06
+   Residual after nonlinear iteration 2: 7.04216e-08
 
    Postprocessing:
      Topography min/max: -15.62 m, 52.96 m, 
@@ -166,9 +160,10 @@ Number of free surface degrees of freedom: 538
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
+   Residual after nonlinear iteration 1: 0.0356575
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 9.0161e-07
+   Residual after nonlinear iteration 2: 4.54794e-08
 
    Postprocessing:
      Topography min/max: -16.11 m, 54.21 m, 
@@ -178,10 +173,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+12 iterations.
+   Residual after nonlinear iteration 1: 0.0190831
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 4.34866e-06
+   Residual after nonlinear iteration 2: 2.04257e-08
 
    Postprocessing:
      Topography min/max: -15.89 m, 53.76 m, 
@@ -191,10 +187,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+12 iterations.
+   Residual after nonlinear iteration 1: 0.0106439
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 4.96021e-06
+   Residual after nonlinear iteration 2: 2.05497e-08
 
    Postprocessing:
      Topography min/max: -16.05 m, 54.2 m, 
@@ -203,43 +200,13 @@ Number of free surface degrees of freedom: 538
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.04s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        24 |      1.31s |        32% |
-| Assemble temperature system     |        12 |     0.527s |        13% |
-| Build Stokes preconditioner     |        12 |     0.775s |        19% |
-| Build temperature preconditioner|        12 |    0.0241s |       0.6% |
-| Solve Stokes system             |        24 |     0.695s |        17% |
-| Solve temperature system        |        12 |    0.0175s |      0.43% |
-| FreeSurface                     |        12 |     0.229s |       5.7% |
-| Initialization                  |         3 |    0.0654s |       1.6% |
-| Postprocessing                  |        11 |    0.0172s |      0.42% |
-| Refine mesh structure, part 1   |         1 |    0.0607s |       1.5% |
-| Refine mesh structure, part 2   |         1 |   0.00221s |     0.055% |
-| Setup dof systems               |         2 |     0.163s |         4% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.04s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        24 |      1.31s |        32% |
-| Assemble temperature system     |        12 |     0.527s |        13% |
-| Build Stokes preconditioner     |        12 |     0.775s |        19% |
-| Build temperature preconditioner|        12 |    0.0241s |       0.6% |
-| Solve Stokes system             |        24 |     0.695s |        17% |
-| Solve temperature system        |        12 |    0.0175s |      0.43% |
-| FreeSurface                     |        12 |     0.229s |       5.7% |
-| Initialization                  |         3 |    0.0654s |       1.6% |
-| Postprocessing                  |        11 |    0.0172s |      0.42% |
-| Refine mesh structure, part 1   |         1 |    0.0607s |       1.5% |
-| Refine mesh structure, part 2   |         1 |   0.00221s |     0.055% |
-| Setup dof systems               |         2 |     0.163s |         4% |
 +---------------------------------+-----------+------------+------------+
 
