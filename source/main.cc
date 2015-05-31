@@ -25,8 +25,10 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
+#ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
 #include <fenv.h>
+#endif
 #endif
 
 #if ASPECT_USE_SHARED_LIBS==1
