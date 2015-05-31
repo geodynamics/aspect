@@ -16,9 +16,8 @@ updated from previous document by Eric Heien published on October 9, 2014}
 Setting up ASPECT on TACC Stampede is much easier than on previous systems since
 most of the necessary libraries are already correctly installed and configured. Following all
 the instructions in this document should allow you to start running ASPECT within 30
-minutes.
-
-For further information on Stampede you can also refer to the user guide at \\\url{http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide}
+minutes. For further information on Stampede you can also refer to the user guide at \\ 
+\url{http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide} 
 
 Also, please note that most parts of this document have changed since the previous
 version. Even if you have set up ASPECT before, please follow all sections of this document
@@ -26,25 +25,27 @@ to make sure your current setup has all necessary updates.
 
 
 \section{Account}
-You first need to obtain an XSEDE account at \url{http://portal.xsede.org/}. If you need one send an email to cig-help@geodynamics.org.  
+You first need to obtain an XSEDE account at \url{http://portal.xsede.org/}. If you need one send an email to: \begin{alltt}\footnotesize cig-help@geodynamics.org\end{alltt}.  
 
 \section{Setup}
 \begin{enumerate}
 \item To start edit your $\sim$/.bashrc file to load the correct modules. Update the file with the following in the 
-section that says PLACE MODULE COMMANDS HERE and ONLY HERE: \\
+section that says PLACE MODULE COMMANDS HERE and ONLY HERE: 
 
 \begin{alltt}
 \footnotesize
-  module load git \\
-  module load gcc/4.7.1 \\
-  module load mkl/13.0.2.146 \\
-  module load cmake \\
+  module load git 
+  module load gcc/4.7.1 
+  module load mkl/13.0.2.146 
+  module load cmake 
 \end{alltt}
 
-To ensure the setup is correct log out, log in again, and run the following:
+To ensure the setup is correct, type source your $\sim$/.bashrc file and list the currently loaded modules \\
 
 \begin{alltt}
-\footnotesize	login1.stampede$ module list
+\footnotesize
+source ~/.bashrc 
+login1.stampede$ module list
 \end{alltt}
 The result should include all the modules above as well as some default modules:
 
@@ -58,10 +59,12 @@ Currently Loaded Modules:
 
 \item Get trilinos on Stampede for compiling locally. 
 
-mkdir \$HOME/Downloads/ \\
+\begin{alltt}
+\footnotesize  mkdir \$HOME/Downloads/ \end{alltt} 
 Download a copy of trilinos from trilinos.org. When creating this document we used 
  trilinos-11.12.1-Source.tar because it's a known working version for the dealii-8.2.1 
- version we install. \\
+ version we install. You can use other trilinos versions, but doing so requires updating 
+ the script aspect-setup.sh with the version you choose.\\
 
  \begin{alltt}\footnotesize
  scp trilinos-11.12.1-Source.tar  login@stampede.tacc.utexas.edu:/work/02668/login/Downloads/ 
@@ -70,7 +73,10 @@ Download a copy of trilinos from trilinos.org. When creating this document we us
  \item Obtain and run currently working script for installing trilinos, p4est, and deal.ii  aspect-setup\_stampede.sh 
  
  
-Script is located in doc/install/aspect-setup\_stampede.sh \\
+Obtain the script with: 
+ \begin{alltt}\scriptsize
+wget https://raw.githubusercontent.com/geodynamics/aspect/master/doc/install/aspect-setup_stampede.sh
+ \end{alltt}  
  
  \end{enumerate}
 
@@ -89,14 +95,21 @@ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
 You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
  
  \begin{alltt}\footnotesize
- aspect-setup.sh trilinos \\
- aspect-setup.sh p4est \\
- aspect-setup.sh deal.ii    \\
+ aspect-setup_stampede.sh trilinos 
+ aspect-setup_stampede.sh p4est 
+ aspect-setup_stampede.sh deal.ii    
  \end{alltt}
  
  You should now have the following directory structure in  \begin{alltt}\footnotesize \$HOME/packages:  \\
   
   build  deal.II  p4est  trilinos
+\end{alltt}
+
+At this point you have automatically linked to these directories in your .bashrc file. Source your .bashrc file again before configuring and building ASPECT to ensure you can access to the deal.ii directory.
+
+ \begin{alltt}\footnotesize
+source ~/.bashrc 
+echo $DEAL_II_DIR
 \end{alltt}
 
  \section{Configure and build ASPECT}
@@ -114,19 +127,19 @@ You will need to modify the script if you choose to install a different version 
 
 You will get a lot of warnings, but as long as you see the following you are ready to compile. \\
 -- Generating done \\
--- Build files have been written to: /home1/02668/login/packages/aspect/build \\
+-- Build files have been written to: \begin{alltt}\footnotesize /home1/02668/login/packages/aspect/build \end{alltt}
 
  \begin{alltt}\footnotesize
 make -j8 
  \end{alltt}
 
 \section{Running}
-When testing ASPECT, it can be useful to run in interactive mode on the cluster. This way you can use multiple processors for fast testing, but still make changes to files and test different options without needing to wait in the batch queue after each change. To start an interactive shell with multiple processors, use: \\
+When testing ASPECT, it can be useful to run in interactive mode on the cluster. This way you can use multiple processors for fast testing, but still make changes to files and test different options without needing to wait in the batch queue after each change. To start an interactive shell with multiple processors, use: 
 
  \begin{alltt}\footnotesize
-srun -p development -t <maximum time> -n <\#cores> --pty /bin/bash -l \\
+srun -p development -t <maximum time> -n <\#cores> --pty /bin/bash -l 
  \end{alltt}
- 
+
 For example: 
  \begin{alltt}\footnotesize
 srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l 
@@ -135,10 +148,10 @@ srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l
 Once logged in you can run ASPECT in parallel using the command:
  
   \begin{alltt}\footnotesize
- ibrun ./build/aspect <parameter file> 
+ibrun ./build/aspect <parameter file> 
   \end{alltt}
  
- The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
+The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below: \\
  
    \begin{alltt}\footnotesize
 \#!/bin/bash 
