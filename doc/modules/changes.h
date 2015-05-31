@@ -22,6 +22,8 @@
  * between [longitude, latitude and radius], [phi, theta and radius] and
  * Cartesian [x, y, z] are consistent with mathematical convention and 
  * other models in dealii/ASPECT.
+ * This model was based largely on work on deal.ii by D. Sarah Stamps, 
+ * Wolfgang Bangerth, and in ASPECT by Menno Fraters.
  * (Bob Myhill, 2015/05/29)
  *
  * <li> New: There are now postprocessors BoundaryDensities and
