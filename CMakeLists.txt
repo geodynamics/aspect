@@ -165,15 +165,28 @@ IF (_HAVE_LINK_H)
   ENDFOREACH()
 ENDIF()
 
+
+SET(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
+
+IF (ASPECT_USE_FP_EXCEPTIONS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  # deal.II is triggering floating point exception in Pattern::Double() so disable them
+  MESSAGE("Runtime floating point checks not supported on Intel compiler. Disabling...")
+  SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
 INCLUDE (CheckCXXSymbolExists)
-CHECK_CXX_SYMBOL_EXISTS("feenableexcept" "fenv.h" _HAVE_FPE_EXCEPTIONS)
-IF (_HAVE_FPE_EXCEPTIONS)
+CHECK_CXX_SYMBOL_EXISTS("feenableexcept" "fenv.h" _HAVE_FP_EXCEPTIONS)
+IF (_HAVE_FP_EXCEPTIONS AND ASPECT_USE_FP_EXCEPTIONS)
+  MESSAGE(STATUS "Runtime floating point checks enabled.")
   FOREACH(_source_file ${TARGET_SRC})
     SET_PROPERTY(SOURCE ${_source_file}
-      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_HAVE_FPE_EXCEPTIONS=1)
+      APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_FP_EXCEPTIONS=1)
   ENDFOREACH()
 ELSE()
-  MESSAGE(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks...")
+  IF (ASPECT_USE_FP_EXCEPTIONS)
+    SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+    MESSAGE(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
+  ENDIF()
 ENDIF()
 
 DEAL_II_INVOKE_AUTOPILOT()
