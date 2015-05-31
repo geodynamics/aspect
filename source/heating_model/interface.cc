@@ -51,6 +51,8 @@ namespace aspect
 
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     template <int dim>
     void
     Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -61,17 +63,15 @@ namespace aspect
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
           heating_model_outputs.heating_source_terms[q] = specific_heating_rate(material_model_inputs.temperature[q],
                                                                                 material_model_inputs.pressure[q],
                                                                                 material_model_inputs.composition[q],
                                                                                 material_model_inputs.position[q])
                                                           * material_model_outputs.densities[q];
-#pragma GCC diagnostic pop
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
+#pragma GCC diagnostic pop
 
 
     template <int dim>
