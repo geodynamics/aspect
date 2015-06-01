@@ -161,3 +161,12 @@
  *
  * @ingroup BoundaryConditions
  */
+
+/**
+ * @defgroup TractionBoundaryConditionsModels Describing traction boundary conditions for the velocity field
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing traction boundary values for the velocity field.
+ *
+ * @ingroup BoundaryConditions
+ */
