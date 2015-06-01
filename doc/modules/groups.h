@@ -26,13 +26,15 @@
  */
 
 /**
- * @defgroup MaterialModels Describing the properties of the fluid
+ * @defgroup MaterialModels Describing the material model
  *
  * This group contains all classes, namespaces and functions that have to do
- * with modeling the fluid under consideration. This includes handling all
- * input parameters related to the material, as well as describing how
- * density, viscosity, and many other parameters depend on pressure,
- * temperature, and/or position within the fluid.
+ * with modeling the material properties of the fluid under consideration, as
+ * well as all of the other variables in use such as compositional
+ * fields. This includes handling all input parameters related to the
+ * material, as well as describing how density, viscosity, and many other
+ * parameters depend on pressure, temperature, and/or position within the
+ * fluid.
  */
 
 /**
