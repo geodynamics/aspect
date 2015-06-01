@@ -90,6 +90,7 @@ namespace aspect
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
+            in.position = fe_values.get_quadrature_points();
 
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
