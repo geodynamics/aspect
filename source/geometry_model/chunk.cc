@@ -28,72 +28,65 @@
 #include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/manifold_lib.h>
 
-namespace
-{
-  using namespace dealii;
-
-  template <int dim>
-  Point<dim>
-  ChunkGeometry<dim>::
-  push_forward(const Point<dim> &input_vertex) const
-  {
-    Point<dim> output_vertex;
-    switch (dim)
-      {
-        case 2:
-        {
-          output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
-          output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
-          break;
-        }
-        case 3:
-        {
-          output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
-          output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
-          output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
-          break;
-        }
-        default:
-          Assert (false, ExcNotImplemented ());
-      }
-    return output_vertex;
-  }
-
-  template <int dim>
-  Point<dim>
-  ChunkGeometry<dim>::
-  pull_back(const Point<dim> &v) const
-  {
-    Point<dim> output_vertex;
-    switch (dim)
-      {
-        case 2:
-        {
-          output_vertex[1] = std::atan2(v[1], v[0]);
-          output_vertex[0] = v.norm();
-          break;
-        }
-        case 3:
-        {
-          const double radius=v.norm();
-          output_vertex[0] = radius;
-          output_vertex[1] = std::atan2(v[1], v[0]);
-          output_vertex[2] = std::asin(v[2]/radius);
-          break;
-        }
-        default:
-          Assert (false, ExcNotImplemented ());
-      }
-    return output_vertex;
-  }
-
-}
-
 
 namespace aspect
 {
   namespace GeometryModel
   {
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    push_forward(const Point<dim> &input_vertex) const
+    {
+      Point<dim> output_vertex;
+      switch (dim)
+        {
+          case 2:
+          {
+            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
+            output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
+            break;
+          }
+          case 3:
+          {
+            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
+            output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
+            output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented ());
+        }
+      return output_vertex;
+    }
+
+    template <int dim>
+    Point<dim>
+    Chunk<dim>::ChunkGeometry::
+    pull_back(const Point<dim> &v) const
+    {
+      Point<dim> output_vertex;
+      switch (dim)
+        {
+          case 2:
+          {
+            output_vertex[1] = std::atan2(v[1], v[0]);
+            output_vertex[0] = v.norm();
+            break;
+          }
+          case 3:
+          {
+            const double radius=v.norm();
+            output_vertex[0] = radius;
+            output_vertex[1] = std::atan2(v[1], v[0]);
+            output_vertex[2] = std::asin(v[2]/radius);
+            break;
+          }
+          default:
+            Assert (false, ExcNotImplemented ());
+        }
+      return output_vertex;
+    }
 
     template <int dim>
     void
@@ -109,7 +102,7 @@ namespace aspect
 
 
       // Transform box into spherical chunk
-      GridTools::transform (std_cxx11::bind(&ChunkGeometry<dim>::push_forward,
+      GridTools::transform (std_cxx11::bind(&ChunkGeometry::push_forward,
                                             std_cxx11::cref(manifold),
                                             std_cxx11::_1),
                             coarse_grid);
