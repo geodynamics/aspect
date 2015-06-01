@@ -27,48 +27,6 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/grid/grid_out.h>
 
-namespace
-{
-  using namespace dealii;
-
-  /**
-   * A geometry model class that describes a chunk of a spherical shell.
-   * In 2D, this class simulates a sector with inner and outer radius, and
-   * minimum and maximum longitude. Longitude increases anticlockwise
-   * from the positive x-axis, as per the mathematical convention of phi.
-   * In 3D, the class simulates a chunk of a sphere, bounded by arbitrary
-   * lines of longitude, latitude and radius. Boundary indicator names are
-   * west, east, south, north, inner and outer.
-   *
-   * The parameters that describe this geometry and that are read from the
-   * input file are the inner and outer radii of the shell, the minimum
-   * and maximum longitude, minimum and maximum longitude, and the
-   * number of cells initialised in each dimension.
-   */
-
-  /**
-   * ChunkGeometry is a class that implements the interface of
-   * ChartManifold. The function push_forward takes a point
-   * in the reference (lat,long,radius) domain and transforms
-   * it into real space (cartesian). The inverse function
-   * pull_back reverses this operation.
-   */
-
-  template <int dim>
-  class ChunkGeometry : public ChartManifold<dim,dim>
-  {
-    public:
-      virtual
-      Point<dim>
-      pull_back(const Point<dim> &space_point) const;
-
-      virtual
-      Point<dim>
-      push_forward(const Point<dim> &chart_point) const;
-  };
-
-}
-
 namespace aspect
 {
   namespace GeometryModel
@@ -76,9 +34,18 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that describes a piece of a circle/sphere delimited by
-     * minimum and maximum longitude and radius (2D), or
-     * minimum and maximum longitude, latitude and radius (3D)
+     * A geometry model class that describes a chunk of a spherical shell.
+     * In 2D, this class simulates a sector with inner and outer radius, and
+     * minimum and maximum longitude. Longitude increases anticlockwise
+     * from the positive x-axis, as per the mathematical convention of phi.
+     * In 3D, the class simulates a chunk of a sphere, bounded by arbitrary
+     * lines of longitude, latitude and radius. Boundary indicator names are
+     * west, east, south, north, inner and outer.
+     *
+     * The parameters that describe this geometry and that are read from the
+     * input file are the inner and outer radii of the shell, the minimum
+     * and maximum longitude, minimum and maximum longitude, and the
+     * number of cells initialised in each dimension.
      */
     template <int dim>
     class Chunk : public Interface<dim>
@@ -202,9 +169,29 @@ namespace aspect
         unsigned int repetitions[dim];
 
         /**
+         * ChunkGeometry is a class that implements the interface of
+         * ChartManifold. The function push_forward takes a point
+         * in the reference (lat,long,radius) domain and transforms
+         * it into real space (cartesian). The inverse function
+         * pull_back reverses this operation.
+         */
+
+        class ChunkGeometry : public ChartManifold<dim,dim>
+        {
+          public:
+            virtual
+            Point<dim>
+            pull_back(const Point<dim> &space_point) const;
+
+            virtual
+            Point<dim>
+            push_forward(const Point<dim> &chart_point) const;
+        };
+
+        /**
          * An object that describes the geometry.
          */
-        ChunkGeometry<dim> manifold;
+        ChunkGeometry manifold;
 
         static void set_manifold_ids (Triangulation<dim> &triangulation);
         static void clear_manifold_ids (Triangulation<dim> &triangulation);
