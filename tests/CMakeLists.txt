@@ -123,8 +123,11 @@ FOREACH(_test ${_tests})
 
   IF(_use_test)
 
-    # main target for this test:
-    ADD_CUSTOM_TARGET(tests.${_test})
+    # Create main target for this test. We let it depend on the screen output
+    # even if the folder with reference data for this test doesn't contain any
+    # files. This is useful when you are constructing a new test.
+    ADD_CUSTOM_TARGET(tests.${_test}
+	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output)
 
     MATH(EXPR _n_tests "${_n_tests} + 1")
 
