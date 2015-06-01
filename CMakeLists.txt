@@ -168,7 +168,10 @@ ENDIF()
 
 SET(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
 
-IF (ASPECT_USE_FP_EXCEPTIONS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+IF (ASPECT_USE_FP_EXCEPTIONS 
+    AND CMAKE_CXX_COMPILER_ID MATCHES "Intel"
+    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "15"
+    )
   # deal.II is triggering floating point exception in Pattern::Double() so disable them
   MESSAGE("Runtime floating point checks not supported on Intel compiler. Disabling...")
   SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
