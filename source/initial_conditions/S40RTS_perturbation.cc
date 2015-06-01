@@ -265,28 +265,29 @@ namespace aspect
       double prefact;
       int ind = 0;
 
+      // option to not include degree zero in summation
+      const unsigned int starting_degree = (zero_out_degree_0
+                                            ?
+                                            1.
+                                            :
+                                            0.);
+
+
       for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
         {
-          for (int degree_l = 0; degree_l < maxdegree+1; degree_l++)
+          for (int degree_l = starting_degree; degree_l < maxdegree+1; degree_l++)
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
                   const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
                   const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
+
+                  // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   if (order_m == 0)
-                    {
-                      // option to zero out degree 0, i.e. make sure that the average of the perturbation
-                      // is 0 and the average of the temperature is the background temperature
-                      prefact = (zero_out_degree_0
-                                 ?
-                                 0.
-                                 :
-                                 1.);
-                    }
+                    prefact = 1.;
                   else
-                    {
-                      prefact = sqrt(2.);
-                    }
+                    prefact = sqrt(2.);
+
                   spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
 
                   ind += 1;
