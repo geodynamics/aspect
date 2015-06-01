@@ -317,8 +317,8 @@ namespace aspect
           out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
           out.fluid_densities[i] = reference_rho_f;
           out.fluid_compressibilities[i] = 0.0;
-          porosity = std::max(std::min(porosity,0.995),5e-3);
-          out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
+          porosity = std::max(std::min(porosity,0.995),1e-5);
+          out.compaction_viscosities[i] = eta_0 * 50.0 * exp(- alpha_phi * porosity);
         }
     }
 
@@ -345,6 +345,11 @@ namespace aspect
           prm.declare_entry ("Reference shear viscosity", "5e20",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
+                             "This viscosity may be modified by both temperature and porosity "
+                             "dependencies. Units: $Pa s$.");
+          prm.declare_entry ("Reference bulk viscosity", "1e22",
+                             Patterns::Double (0),
+                             "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
                              "dependencies. Units: $Pa s$.");
           prm.declare_entry ("Reference melt viscosity", "10",
@@ -481,6 +486,7 @@ namespace aspect
           reference_rho_f            = prm.get_double ("Reference melt density");
           reference_T                = prm.get_double ("Reference temperature");
           eta_0                      = prm.get_double ("Reference shear viscosity");
+          xi_0                       = prm.get_double ("Reference bulk viscosity");
           eta_f                      = prm.get_double ("Reference melt viscosity");
           reference_permeability     = prm.get_double ("Reference permeability");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
