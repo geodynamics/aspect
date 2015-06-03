@@ -604,28 +604,8 @@ namespace aspect
     // other solution variables.
     remap.block (block_vel) = current_linearization_point.block (block_vel);
 
-    if (parameters.include_melt_transport)
-      {
-        //convert_pressure_blocks(current_linearization_point, true, distributed_stokes_solution);
-        remap.block (block_p) = distributed_stokes_solution.block (block_p);
-        // before solving we scale the initial solution to the right dimensions
-        // because have to go through the elements of the pressure block individually,
-        // we need the distributed_stokes_solution as input here, as its pressure
-        // blocks are converted to p_f, p_c
-        // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
-        // bigger vector here, oh well.
-        LinearAlgebra::BlockVector ghosted (introspection.index_sets.system_partitioning,
-                                            introspection.index_sets.system_relevant_partitioning,
-                                            mpi_communicator);
-        ghosted.block(block_p) = remap.block(block_p);
-        denormalize_pressure (remap, ghosted);
-      }
-    else
-      {
-        remap.block (block_p) = current_linearization_point.block (block_p);
-        // before solving we scale the initial solution to the right dimensions
-        denormalize_pressure (remap, current_linearization_point);
-      }
+    remap.block (block_p) = current_linearization_point.block (block_p);
+    denormalize_pressure (remap, current_linearization_point);
 
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
