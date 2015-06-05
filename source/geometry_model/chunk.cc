@@ -218,7 +218,7 @@ namespace aspect
 
     template <int dim>
     double
-    Chunk<dim>::start_longitude () const
+    Chunk<dim>::west_longitude () const
     {
       return point1[1];
     }
@@ -226,7 +226,7 @@ namespace aspect
 
     template <int dim>
     double
-    Chunk<dim>::end_longitude () const
+    Chunk<dim>::east_longitude () const
     {
       return point2[1];
     }
@@ -237,6 +237,39 @@ namespace aspect
     {
       return point2[1] - point1[1];
     }
+
+    template <int dim>
+    double
+    Chunk<dim>::south_latitude () const
+    {
+      if (dim == 3)
+        return point1[2];
+      else
+        return 0;
+    }
+
+
+    template <int dim>
+    double
+    Chunk<dim>::north_latitude () const
+    {
+      if (dim==3)
+        return point2[2];
+      else
+        return 0;
+    }
+
+
+    template <int dim>
+    double
+    Chunk<dim>::latitude_range () const
+    {
+      if (dim==3)
+        return point2[2] - point1[2];
+      else
+        return 0;
+    }
+
 
     template <int dim>
     double
