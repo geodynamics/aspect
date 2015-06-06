@@ -21,13 +21,12 @@
 #ifndef __aspect__particle_output_interface_h
 #define __aspect__particle_output_interface_h
 
-#include <aspect/particle/base_particle.h>
+#include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
 #include <aspect/plugins.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/mpi.h>
-
 
 namespace aspect
 {
@@ -62,9 +61,6 @@ namespace aspect
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The directory into which output files shall be placed.
-           * @param[in] The MPI communicator that describes this simulation.
            */
           Interface() {}
 
@@ -107,7 +103,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                const std::vector<std::string>  &data_names,
                                const std::vector<unsigned int> &data_components,
                                const double &current_time) = 0;

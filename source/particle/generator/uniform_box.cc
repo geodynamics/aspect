@@ -37,7 +37,7 @@ namespace aspect
       template <int dim>
       void
       UniformBox<dim>::generate_particles(const double total_num_particles,
-                                          Particle::World<dim> &world)
+                                          World<dim> &world)
       {
         unsigned int cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
@@ -80,7 +80,7 @@ namespace aspect
       void
       UniformBox<dim>::generate_particle(const Point<dim> &position,
                                          const unsigned int id,
-                                         Particle::World<dim> &world)
+                                         World<dim> &world)
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
@@ -88,7 +88,7 @@ namespace aspect
         if (it->is_locally_owned())
           {
             //Only try to add the point if the cell it is in, is on this processor
-            BaseParticle<dim> new_particle(position, id);
+            Particle<dim> new_particle(position, id);
             world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
           }
       }

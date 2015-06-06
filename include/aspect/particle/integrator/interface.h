@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,7 +21,7 @@
 #ifndef __aspect__particle_integrator_interface_h
 #define __aspect__particle_integrator_interface_h
 
-#include <aspect/particle/base_particle.h>
+#include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
@@ -73,7 +73,7 @@ namespace aspect
            * complete (false).
            */
           virtual bool integrate_step(typename std::multimap<LevelInd,
-                                      BaseParticle<dim> > &particles,
+                                      Particle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt) = 0;

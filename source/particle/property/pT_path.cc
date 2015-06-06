@@ -45,8 +45,8 @@ namespace aspect
                                    const Vector<double> &solution,
                                    const std::vector<Tensor<1,dim> > &)
       {
-        data[data_position++] = solution[this->introspection().component_indices.pressure];
-        data[data_position++] = solution[this->introspection().component_indices.temperature];
+        data[data_position] = solution[this->introspection().component_indices.pressure];
+        data[data_position+1] = solution[this->introspection().component_indices.temperature];
       }
 
       template <int dim>
@@ -64,11 +64,6 @@ namespace aspect
         length.push_back(1);
       }
 
-      /**
-       * Set up the MPI data type information for the PTPath type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       PTPath<dim>::data_names(std::vector<std::string> &names) const

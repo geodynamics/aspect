@@ -50,7 +50,7 @@ namespace aspect
           virtual
           void
           generate_particles(const double total_num_particles,
-                             Particle::World<dim> &world);
+                             World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -77,7 +77,7 @@ namespace aspect
           void
           generate_particle(const Point<dim> &position,
                             const unsigned int id,
-                            Particle::World<dim> &world);
+                            World<dim> &world);
       };
 
     }

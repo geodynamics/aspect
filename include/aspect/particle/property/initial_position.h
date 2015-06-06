@@ -50,9 +50,9 @@ namespace aspect
           void data_length(std::vector<unsigned int> &length) const;
 
           /**
-           * Set up the MPI data type information for the DataParticle type
+           * Set up the name information for the particle property
            *
-           * @param [in,out] data_info Vector to append MPIDataInfo objects to
+           * @param [in,out] names Vector that contains the property name
            */
           void data_names(std::vector<std::string> &names) const;
       };

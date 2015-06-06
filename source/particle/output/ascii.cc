@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -27,57 +27,36 @@ namespace aspect
   {
     namespace Output
     {
-      /**
-       * Constructor.
-       *
-       * @param[in] The directory into which output files shall be placed.
-       * @param[in] The MPI communicator that describes this simulation.
-       */
       template <int dim>
       ASCIIOutput<dim>::ASCIIOutput()
         :
         Interface<dim> ()
       {}
 
-      /**
-       * Write data about the particles specified in the first argument
-       * to a file. If possible, encode the current simulation time
-       * into this file using the data provided in the second argument.
-       *
-       * @param[in] particles The set of particles to generate a graphical
-       *   representation for
-       * @param[in] current_time Current time of the simulation, given as either
-       *   years or seconds, as selected in the input file. In other words,
-       *   output writers do not need to know the units in which time is
-       *   described.
-       * @return The name of the file that was written, or any other
-       *   information that describes what output was produced if for example
-       *   multiple files were created.
-       */
       template <int dim>
       std::string
-      ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                              const std::vector<std::string> &names,
                                              const std::vector<unsigned int> &lengths,
                                              const double &)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator  it;
-        unsigned int                            i;
-        std::string                             output_file_prefix, output_path_prefix, full_filename;
-
-        output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
-        output_path_prefix = this->output_dir + output_file_prefix;
-        full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) + ".txt";
+        const std::string output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
+        const std::string output_path_prefix = this->output_dir + output_file_prefix;
+        const std::string full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) + ".txt";
         std::ofstream output (full_filename.c_str());
         if (!output)
           std::cout << "ERROR: proc " << Utilities::MPI::this_mpi_process(this->communicator) << " could not create " << full_filename << std::endl;
 
         // Print the header line
         output << "# ";
-        std::vector<std::string>::const_iterator  name;
-        std::vector<unsigned int>::const_iterator length;
+        for (unsigned int i = 0; i < dim; ++i)
+          output << "position[" << i << "] ";
 
-        for (name=names.begin(); name!=names.end(),length!=lengths.end(); ++name,++length)
+        output << "id ";
+
+        std::vector<std::string>::const_iterator  name = names.begin();
+        std::vector<unsigned int>::const_iterator length = lengths.begin();
+        for (; name!=names.end(),length!=lengths.end(); ++name,++length)
           {
             // If it's a 1D element, print just the name, otherwise use []
             if (*length == 1)
@@ -86,23 +65,19 @@ namespace aspect
               }
             else
               {
-                for (i=0; i<*length; ++i) output << *name << "[" << i << "] ";
+                for (unsigned int i=0; i<*length; ++i) output << *name << "[" << i << "] ";
               }
           }
         output << "\n";
 
         // And print the data for each particle
-        for (it=particles.begin(); it!=particles.end(); ++it)
+        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
           {
             std::vector<double>  particle_data;
-            unsigned int p = 0;
             it->second.write_data(particle_data);
-            for (length=lengths.begin(); length!=lengths.end();++length)
+            for (unsigned int i = 0; i < particle_data.size(); ++i)
               {
-                for (i=0; i<*length; ++i)
-                  {
-                    output << particle_data[p++] << " ";
-                  }
+                output << particle_data[i] << " ";
               }
             output << "\n";
           }
@@ -127,7 +102,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_OUTPUT(ASCIIOutput,
                                       "ascii",
-                                      "")
+                                      "This particle output plugin writes particle "
+                                      "positions and properties into space separated "
+                                      "ascii files.")
     }
   }
 }

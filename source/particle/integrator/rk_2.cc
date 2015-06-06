@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -40,12 +40,12 @@ namespace aspect
 
       template <int dim>
       bool
-      RK2Integrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      RK2Integrator<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                          const std::vector<Tensor<1,dim> > &old_velocities,
                                          const std::vector<Tensor<1,dim> > &velocities,
                                          const double dt)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it = particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it = particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
@@ -56,15 +56,16 @@ namespace aspect
             if (step == 0)
               {
                 loc0[id_num] = loc;
-                it->second.set_location(loc + 0.5*dt*(*old_vel));
+                it->second.set_location(loc + 0.5 * dt * (*old_vel));
               }
             else if (step == 1)
               {
-                it->second.set_location(loc0[id_num] + dt*(*old_vel + *vel)/2.0);
+                it->second.set_location(loc0[id_num] + dt * (*old_vel + *vel)/2.0);
               }
             else
               {
-                // Error!
+                Assert(false,
+                       ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
           }
 

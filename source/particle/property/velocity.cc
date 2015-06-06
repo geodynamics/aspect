@@ -46,7 +46,7 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
-          data[data_position++] = solution[this->introspection().component_indices.velocities[i]];
+          data[data_position+i] = solution[this->introspection().component_indices.velocities[i]];
       }
 
       template <int dim>
@@ -63,11 +63,6 @@ namespace aspect
         length.push_back(dim);
       }
 
-      /**
-       * Set up the MPI data type information for the Velocity type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       Velocity<dim>::data_names(std::vector<std::string> &names) const

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -56,7 +56,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                const std::vector<std::string> &names,
                                const std::vector<unsigned int> &lengths,
                                const double &);

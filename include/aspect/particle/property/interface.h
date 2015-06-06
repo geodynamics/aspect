@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,13 +21,12 @@
 #ifndef __aspect__particle_property_interface_h
 #define __aspect__particle_property_interface_h
 
-#include <aspect/particle/base_particle.h>
+#include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
-
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
-#include <deal.II/base/std_cxx1x/shared_ptr.h>
 
+#include <deal.II/base/std_cxx1x/shared_ptr.h>
 
 namespace aspect
 {
@@ -37,7 +36,7 @@ namespace aspect
     {
 
       /**
-        * Interface provides an example of how to extend the BaseParticle
+        * Interface provides an example of how to extend the Particle
         * class to include related particle data. This allows users to attach
         * scalars/vectors/tensors/etc to particles and ensure they are
         * transmitted correctly over MPI and written to output files.
@@ -95,9 +94,9 @@ namespace aspect
           data_length(std::vector<unsigned int> &length) const = 0;
 
           /**
-           * Set up the MPI data type information for the Interface type
+           * Set up the name information for the particle property
            *
-           * @param [in,out] data_info Vector to append MPIDataInfo objects to
+           * @param [in,out] names Vector that contains the property name
            */
           virtual
           void
@@ -159,17 +158,26 @@ namespace aspect
           unsigned int data_len;
 
           /**
-           * List of the names of the properties that are selected in this
-           * model.
+           * Vector of the names of the properties that are selected in this
+           * model. This vector has as many components as individually named
+           * fields in the properties.
            */
           std::vector<std::string> names;
 
           /**
-           * List of the data length of the properties that are selected in
-           * this model.
+           * Vector of the data length of the properties that are selected in
+           * this model. This vector has as many components as individually named
+           * fields in the properties.
            */
           std::vector<unsigned int> length;
 
+          /**
+           * Vector of the data positions of individual property plugins.
+           * This vector has as many components as property plugins selected.
+           * It can be different from length of names or length, because
+           * single plugins can define multiple data fields.
+           */
+          std::vector<unsigned int> positions;
 
         public:
           /**
@@ -197,7 +205,7 @@ namespace aspect
            */
           virtual
           void
-          initialize_particle (BaseParticle<dim> &particle,
+          initialize_particle (Particle<dim> &particle,
                                const Vector<double> &solution,
                                const std::vector<Tensor<1,dim> > &gradients);
 
@@ -207,7 +215,7 @@ namespace aspect
            */
           virtual
           void
-          update_particle (BaseParticle<dim> &particle,
+          update_particle (Particle<dim> &particle,
                            const Vector<double> &solution,
                            const std::vector<Tensor<1,dim> > &gradients);
 

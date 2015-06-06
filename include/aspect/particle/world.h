@@ -21,7 +21,7 @@
 #ifndef __aspect__particle_world_h
 #define __aspect__particle_world_h
 
-#include <aspect/particle/base_particle.h>
+#include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
 
 #include <aspect/particle/integrator/interface.h>
@@ -60,7 +60,7 @@ namespace aspect
          * Set of particles currently in the local domain, organized by
          * the level/index of the cell they are in
          */
-        std::multimap<LevelInd, BaseParticle<dim> >      particles;
+        std::multimap<LevelInd, Particle<dim> >      particles;
 
         /**
          * Total number of particles in simulation
@@ -80,7 +80,7 @@ namespace aspect
          * @return The level and index of the cell the particle was determined
          * to be in.  If no cell was found this returns (-1, -1).
          */
-        LevelInd recursive_find_cell(BaseParticle<dim> &particle,
+        LevelInd recursive_find_cell(Particle<dim> &particle,
                                      const LevelInd cur_cell);
 
         /**
@@ -137,7 +137,7 @@ namespace aspect
          * Add a particle to this world. If the specified cell does not exist
          * in the local subdomain an exception will be thrown.
          */
-        void add_particle(const BaseParticle<dim> &particle, const LevelInd &cell);
+        void add_particle(const Particle<dim> &particle, const LevelInd &cell);
 
         /**
          * Initialize the particle properties.
@@ -152,12 +152,12 @@ namespace aspect
         /**
          * Access to particles in this world.
          */
-        std::multimap<LevelInd, BaseParticle<dim> > &get_particles();
+        std::multimap<LevelInd, Particle<dim> > &get_particles();
 
         /**
          * Const access to particles in this world.
          */
-        const std::multimap<LevelInd, BaseParticle<dim> > &get_particles() const;
+        const std::multimap<LevelInd, Particle<dim> > &get_particles() const;
 
         /**
          * Const access to particles in this world.
@@ -208,7 +208,7 @@ namespace aspect
          * If no cell was found to contain the particle, return the
          * level/index (-1, -1)
          */
-        LevelInd find_cell(BaseParticle<dim> &particle, const LevelInd &cur_cell);
+        LevelInd find_cell(Particle<dim> &particle, const LevelInd &cur_cell);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other

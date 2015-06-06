@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -38,8 +38,6 @@ namespace aspect
           /**
            * Constructor.
            *
-           * @param[in] The directory into which output files shall be placed.
-           * @param[in] The MPI communicator that describes this simulation.
            */
           HDF5Output();
 
@@ -60,7 +58,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                const std::vector<std::string>  &data_names,
                                const std::vector<unsigned int> &data_components,
                                const double &current_time);

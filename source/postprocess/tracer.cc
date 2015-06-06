@@ -84,6 +84,12 @@ namespace aspect
           initialized = true;
         }
 
+      // Advance the particles in the world by the old timestep
+      // This accounts for the fact that the tracers are actually still at
+      // their old positions and the current timestep is already updated for the
+      // next step
+      world.advance_timestep (this->get_old_timestep());
+
       const unsigned int num_particles = world.get_global_particle_count();
       statistics.add_value("Advected particles",num_particles);
       std::ostringstream result_string;
@@ -109,9 +115,6 @@ namespace aspect
 
           result_string << ". Writing particle graphical output " + data_file_name;
         }
-
-      // Advance the particles in the world by the current timestep
-      world.advance_timestep (this->get_timestep());
 
       return std::make_pair("Advected particles: ", result_string.str());
     }

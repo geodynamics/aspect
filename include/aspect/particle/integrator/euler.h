@@ -37,7 +37,7 @@ namespace aspect
       class EulerIntegrator : public Interface<dim>
       {
         public:
-          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &,
                                       const double dt);

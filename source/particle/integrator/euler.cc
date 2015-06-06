@@ -32,12 +32,12 @@ namespace aspect
        */
       template <int dim>
       bool
-      EulerIntegrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      EulerIntegrator<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                            const std::vector<Tensor<1,dim> > &old_velocities,
                                            const std::vector<Tensor<1,dim> > &,
                                            const double dt)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it = particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it = particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = old_velocities.begin();
 
         for (; it!=particles.end(), vel!=old_velocities.end(); ++it,++vel)

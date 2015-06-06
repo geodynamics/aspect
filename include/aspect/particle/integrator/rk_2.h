@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -23,6 +23,9 @@
 
 #include <aspect/particle/integrator/interface.h>
 
+#include <aspect/simulator_access.h>
+
+
 namespace aspect
 {
   namespace Particle
@@ -34,11 +37,11 @@ namespace aspect
        * This scheme requires storing the original location, and the read/write_data functions reflect this.
        */
       template <int dim>
-      class RK2Integrator : public Interface<dim>
+      class RK2Integrator : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           RK2Integrator();
-          virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt);

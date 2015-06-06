@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_output_ascii_h
-#define __aspect__particle_output_ascii_h
+#ifndef __aspect__particle_output_null_h
+#define __aspect__particle_output_null_h
 
 #include <aspect/particle/output/interface.h>
 
@@ -30,6 +30,10 @@ namespace aspect
   {
     namespace Output
     {
+      /**
+       * Blank class to avoid output of data, for example, if particles are used to represent
+       * other physical phenomenon that influences the simulation and we don't care about their positions
+       */
       template <int dim>
       class NullOutput : public Interface<dim>
       {
@@ -56,7 +60,7 @@ namespace aspect
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+          output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                const std::vector<std::string>  &data_names,
                                const std::vector<unsigned int> &data_components,
                                const double &current_time);

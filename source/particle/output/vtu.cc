@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,36 +28,15 @@ namespace aspect
   {
     namespace Output
     {
-      /**
-       * Constructor.
-       *
-       * @param[in] The directory into which output files shall be placed.
-       * @param[in] The MPI communicator that describes this simulation.
-       */
       template <int dim>
       VTUOutput<dim>::VTUOutput()
         :
         Interface<dim> ()
       {}
 
-      /**
-       * Write data about the particles specified in the first argument
-       * to a file. If possible, encode the current simulation time
-       * into this file using the data provided in the second argument.
-       *
-       * @param[in] particles The set of particles to generate a graphical
-       *   representation for
-       * @param[in] current_time Current time of the simulation, given as either
-       *   years or seconds, as selected in the input file. In other words,
-       *   output writers do not need to know the units in which time is
-       *   described.
-       * @return The name of the file that was written, or any other
-       *   information that describes what output was produced if for example
-       *   multiple files were created.
-       */
       template <int dim>
       std::string
-      VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                            const std::vector<std::string> &names,
                                            const std::vector<unsigned int> &lengths,
                                            const double &current_time)
@@ -85,7 +64,7 @@ namespace aspect
         // Go through the particles on this domain and print the position of each one
         output << "      <Points>\n";
         output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
              it=particles.begin(); it!=particles.end(); ++it)
           {
             output << "          " << it->second.get_location();
@@ -119,8 +98,8 @@ namespace aspect
         output << "      <PointData Scalars=\"scalars\">\n";
 
         output << "        <DataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
-            it=particles.begin(); it!=particles.end(); ++it)
+        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
+             it=particles.begin(); it!=particles.end(); ++it)
           output << "          " << it->second.get_id() << "\n" ;
 
         output << "        </DataArray>\n";
@@ -134,7 +113,7 @@ namespace aspect
           {
 
             output << "        <DataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" Format=\"ascii\">\n";
-            for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+            for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
                 std::vector<double> particle_data;
@@ -176,6 +155,7 @@ namespace aspect
             pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
             pvtu_output << "    </PPoints>\n";
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
+            pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
 
             for (name=names.begin(),length=lengths.begin(); name!=names.end(); ++name,++length)
               {
@@ -226,7 +206,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_OUTPUT(VTUOutput,
                                       "vtu",
-                                      "")
+                                      "This particle output plugin writes particle "
+                                      "positions and properties into vtu files.")
     }
   }
 }

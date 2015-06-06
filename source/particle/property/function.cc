@@ -49,11 +49,6 @@ namespace aspect
         length.push_back(1);
       }
 
-      /**
-       * Set up the MPI data type information for the Function type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       Function<dim>::data_names(std::vector<std::string> &names) const

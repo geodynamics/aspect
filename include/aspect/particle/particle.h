@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_base_particle_h
-#define __aspect__particle_base_particle_h
+#ifndef __aspect__particle_particle_h
+#define __aspect__particle_particle_h
 
 #include <aspect/global.h>
 #include <deal.II/base/point.h>
@@ -37,7 +37,7 @@ namespace aspect
      * manager
      */
     template <int dim>
-    class BaseParticle
+    class Particle
     {
       private:
         /**
@@ -66,13 +66,13 @@ namespace aspect
 
       public:
         /**
-         * Empty constructor for BaseParticle, creates a particle at the
+         * Empty constructor for Particle, creates a particle at the
          * origin with zero velocity.
          */
-        BaseParticle ();
+        Particle ();
 
         /**
-         * Constructor for BaseParticle, creates a particle with the specified
+         * Constructor for Particle, creates a particle with the specified
          * ID at the specified location with zero velocity. Note that Aspect
          * does not check for duplicate particle IDs so the user must be sure
          * the IDs are unique over all processes.
@@ -80,14 +80,14 @@ namespace aspect
          * @param[in] new_loc Initial location of particle.
          * @param[in] new_id Globally unique ID number of particle.
          */
-        BaseParticle (const Point<dim> &new_loc,
-                      const double &new_id);
+        Particle (const Point<dim> &new_loc,
+                  const double &new_id);
 
         /**
-         * Destructor for BaseParticle
+         * Destructor for Particle
          */
         virtual
-        ~BaseParticle ();
+        ~Particle ();
 
         /**
          * Get the number of doubles required to represent this particle for
@@ -145,22 +145,6 @@ namespace aspect
         get_location () const;
 
         /**
-         * Set the velocity of this particle.
-         *
-         * @param [in] new_vel The new velocity for this particle.
-         */
-        void
-        set_velocity (const Tensor<1,dim> &new_vel);
-
-        /**
-         * Get the velocity of this particle.
-         *
-         * @return The velocity of this particle.
-         */
-        Tensor<1,dim> &
-        get_velocity () const;
-
-        /**
          * Get the ID number of this particle.
          *
          * @return The id of this particle.
@@ -210,24 +194,6 @@ namespace aspect
          */
         void
         set_local (bool new_local);
-
-        /**
-         * Whether to check the particle velocity at its current location.
-         * This is used for integrators where the particle velocity may not
-         * need to be checked every step.
-         *
-         * @return Whether to check the particle velocity
-         */
-        bool
-        vel_check () const;
-
-        /**
-         * Mark whether to check the particle velocity.
-         *
-         * @param[in] new_vel_check Whether to check the particle velocity.
-         */
-        void
-        set_vel_check (bool new_vel_check);
     };
 
   }

@@ -45,16 +45,10 @@ namespace aspect
           length.push_back(1);
       }
 
-      /**
-       * Set up the MPI data type information for the InitialComposition type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       InitialComposition<dim>::data_names(std::vector<std::string> &names) const
       {
-        std::string data_info;
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
             std::ostringstream field_name;

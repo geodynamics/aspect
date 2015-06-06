@@ -44,12 +44,12 @@ namespace aspect
 
       template <int dim>
       bool
-      RK4Integrator<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      RK4Integrator<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                          const std::vector<Tensor<1,dim> > &old_velocities,
                                          const std::vector<Tensor<1,dim> > &velocities,
                                          const double dt)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it=particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it=particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 

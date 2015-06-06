@@ -41,7 +41,7 @@ namespace aspect
       template <int dim>
       void
       RandomFunction<dim>::generate_particles(const double total_num_particles,
-                                              Particle::World<dim> &world)
+                                              World<dim> &world)
       {
         const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
         const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
@@ -131,7 +131,7 @@ namespace aspect
                                                                   const double start_weight,
                                                                   const unsigned int num_particles,
                                                                   const unsigned int start_id,
-                                                                  Particle::World<dim> &world)
+                                                                  World<dim> &world)
       {
         // Pick cells and assign particles at random points inside them
         unsigned int cur_id = start_id;
@@ -191,7 +191,7 @@ namespace aspect
             AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
 
             // Add the generated particle to the set
-            BaseParticle<dim> new_particle(pt, cur_id);
+            Particle<dim> new_particle(pt, cur_id);
             world.add_particle(new_particle, select_cell);
 
             cur_id++;
@@ -275,11 +275,12 @@ namespace aspect
                                          "particles over entire simulation domain. "
                                          "The particle density is prescribed in the "
                                          "form of a user-prescribed function. The "
-                                         "format of these functions follows the syntax "
+                                         "format of this function follows the syntax "
                                          "understood by the muparser library, see "
                                          "Section~\\ref{sec:muparser-format}. The "
                                          "return value of the function is always "
-                                         "interpreted positively.")
+                                         "interpreted as a positive probability "
+                                         "density.")
     }
   }
 }

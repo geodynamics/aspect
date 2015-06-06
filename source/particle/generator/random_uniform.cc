@@ -35,7 +35,7 @@ namespace aspect
       template <int dim>
       void
       RandomUniform<dim>::generate_particles(const double total_num_particles,
-                                             Particle::World<dim> &world)
+                                             World<dim> &world)
       {
         double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
 
@@ -75,7 +75,7 @@ namespace aspect
       void
       RandomUniform<dim>::uniform_random_particles_in_subdomain (const unsigned int subdomain_particles,
                                                                  const unsigned int start_id,
-                                                                 Particle::World<dim> &world)
+                                                                 World<dim> &world)
       {
         unsigned int          i, d, v, num_tries, cur_id;
         double                total_volume, roulette_spin;
@@ -151,7 +151,7 @@ namespace aspect
             AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
 
             // Add the generated particle to the set
-            BaseParticle<dim> new_particle(pt, cur_id);
+            Particle<dim> new_particle(pt, cur_id);
             world.add_particle(new_particle, select_cell);
 
             cur_id++;

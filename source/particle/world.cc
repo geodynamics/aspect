@@ -27,7 +27,7 @@ namespace aspect
   {
     template <int dim>
     LevelInd
-    World<dim>::recursive_find_cell(BaseParticle<dim> &particle,
+    World<dim>::recursive_find_cell(Particle<dim> &particle,
                                     const LevelInd cur_cell)
     {
       // If the particle is in the specified cell
@@ -111,7 +111,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::add_particle(const BaseParticle<dim> &particle, const LevelInd &cell)
+    World<dim>::add_particle(const Particle<dim> &particle, const LevelInd &cell)
     {
       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it
       (&(this->get_triangulation()), cell.first, cell.second);
@@ -138,7 +138,7 @@ namespace aspect
       Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
 
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator  it, sit;
+      typename std::multimap<LevelInd, Particle<dim> >::iterator  it, sit;
       for (it=particles.begin(); it!=particles.end();)
         {
           // Save a pointer to the first particle in this cell
@@ -201,8 +201,8 @@ namespace aspect
       Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
 
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator  sit;
-      for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
+      typename std::multimap<LevelInd, Particle<dim> >::iterator  sit;
+      for (typename std::multimap<LevelInd, Particle<dim> >::iterator
            it=particles.begin(); it!=particles.end();)
         {
           // Save a pointer to the first particle in this cell
@@ -249,14 +249,14 @@ namespace aspect
     }
 
     template <int dim>
-    std::multimap<LevelInd, BaseParticle<dim> > &
+    std::multimap<LevelInd, Particle<dim> > &
     World<dim>::get_particles()
     {
       return particles;
     }
 
     template <int dim>
-    const std::multimap<LevelInd, BaseParticle<dim> > &
+    const std::multimap<LevelInd, Particle<dim> > &
     World<dim>::get_particles() const
     {
       return particles;
@@ -281,14 +281,14 @@ namespace aspect
     void
     World<dim>::find_all_cells()
     {
-      std::multimap<LevelInd, BaseParticle<dim> > tmp_map;
+      std::multimap<LevelInd, Particle<dim> > tmp_map;
 
       // Find the cells that the particles moved to.
       // Note that the iterator in the following loop is increased in a
       // very particular way, because it is changed, if elements
       // get erased. A change can result in invalid memory access.
       tmp_map.clear();
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator   it;
+      typename std::multimap<LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
           const LevelInd found_cell = find_cell(it->second, it->first);
@@ -361,7 +361,7 @@ namespace aspect
 
     template <int dim>
     LevelInd
-    World<dim>::find_cell(BaseParticle<dim> &particle, const LevelInd &cur_cell)
+    World<dim>::find_cell(Particle<dim> &particle, const LevelInd &cur_cell)
     {
       const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
 
@@ -411,10 +411,10 @@ namespace aspect
       const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
       const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-      std::list<BaseParticle<dim> > send_particles;
+      std::list<Particle<dim> > send_particles;
 
       // Go through the particles and take out those which need to be moved to another processor
-      for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it=particles.begin(); it!=particles.end();)
+      for (typename std::multimap<LevelInd, Particle<dim> >::iterator it=particles.begin(); it!=particles.end();)
         {
           if (!it->second.local())
             {
@@ -433,7 +433,7 @@ namespace aspect
       std::vector<double> send_data;
 
       // Copy the particle data into the send array
-      for (typename std::list<BaseParticle<dim> >::const_iterator particle = send_particles.begin(); particle!=send_particles.end(); ++particle)
+      for (typename std::list<Particle<dim> >::const_iterator particle = send_particles.begin(); particle!=send_particles.end(); ++particle)
         {
           particle->write_data(send_data);
           integrator->write_data(send_data, particle->get_id());
@@ -470,7 +470,7 @@ namespace aspect
       // Put the received particles into the domain if they are in the triangulation
       for (int i=0; i<total_recv_particles; ++i)
         {
-          BaseParticle<dim>       recv_particle;
+          Particle<dim>       recv_particle;
           recv_particle.set_data_len(property_manager->get_data_len());
 
           pos = recv_particle.read_data(recv_data, pos);
@@ -507,7 +507,7 @@ namespace aspect
 
       unsigned int particle_idx = 0;
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
+      for (typename std::multimap<LevelInd, Particle<dim> >::iterator
            it=particles.begin(); it!=particles.end();)
         {
           // Get the current cell
@@ -534,22 +534,22 @@ namespace aspect
 
           // Interpolate the velocity field for each of the particles
           old_fe_value.set_active_cell(found_cell);
-          old_fe_value.vector_value_list(particle_points, result);
+          old_fe_value.vector_value_list(particle_points, old_result);
 
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, old_result);
+          fe_value.vector_value_list(particle_points, result);
 
-          // Copy the resulting velocities to the appropriate vector
-          for (typename std::vector<Vector<double> >::iterator particle = result.begin(); particle != result.end(); ++particle)
+          // Copy the resulting velocities to the appropriate vector#
+          for (unsigned int id = 0; id < n_particles_in_cell; ++id)
             {
-              Tensor<1,dim> velocity;
-              for (int d=0; d<dim; ++d)
-                velocity[d] = (*particle)[d];
+              Tensor<1,dim> velocity, old_velocity;
+              for (unsigned int d=0; d<dim; ++d)
+                {
+                  velocity[d] = result[id][d];
+                  old_velocity[d] = old_result[id][d];
+                }
               velocities[particle_idx] = velocity;
-
-              for (int d=0; d<dim; ++d)
-                velocity[d] = (*particle)[d];
-              old_velocities[particle_idx] = velocity;
+              old_velocities[particle_idx] = old_velocity;
               particle_idx++;
             }
         }

@@ -45,11 +45,6 @@ namespace aspect
         length.push_back(dim);
       }
 
-      /**
-       * Set up the MPI data type information for the InitialPosition type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       InitialPosition<dim>::data_names(std::vector<std::string> &names) const

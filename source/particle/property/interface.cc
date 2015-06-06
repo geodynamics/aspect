@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -84,26 +84,35 @@ namespace aspect
       void
       Manager<dim>::initialize ()
       {
-        data_len = dim + 1;
+        unsigned int old_size = 0;
+        data_len = 0;
 
+        // Save the names, lengths and positions of the selected properties
         for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
+            positions.push_back(data_len);
+
             (*p)->initialize();
             (*p)->data_names(names);
             (*p)->data_length(length);
+
+            for (unsigned int i = old_size; i < length.size(); ++i)
+              {
+                property_component_map.insert(std::make_pair(names[i],data_len));
+                data_len += length[i];
+              }
+            old_size = length.size();
           }
 
-        for (unsigned int i = 0; i < length.size(); ++i)
-          {
-            property_component_map.insert(std::make_pair(names[i],data_len));
-            data_len += length[i];
-          }
+        // The total length is the selected properties plus the basic properties
+        // position and id.
+        data_len += dim + 1;
       }
 
       template <int dim>
       void
-      Manager<dim>::initialize_particle (BaseParticle<dim> &particle,
+      Manager<dim>::initialize_particle (Particle<dim> &particle,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &gradients)
       {
@@ -122,15 +131,15 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_particle (BaseParticle<dim> &particle,
+      Manager<dim>::update_particle (Particle<dim> &particle,
                                      const Vector<double> &solution,
                                      const std::vector<Tensor<1,dim> > &gradients)
       {
-        unsigned int data_position = 0;
+        unsigned int property = 0;
         for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p)
+             p = property_list.begin(); p!=property_list.end(); ++p,++property)
           {
-            (*p)->update_particle(data_position,
+            (*p)->update_particle(positions[property],
                                   particle.get_properties(),
                                   particle.get_location(),
                                   solution,
@@ -247,7 +256,7 @@ namespace aspect
                            "all") != prop_names.end())
               {
                 prop_names.clear();
-                for (typename std::list<typename aspect::internal::Plugins::PluginList<Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
+                for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
                      p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
                      p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
                   prop_names.push_back (std_cxx1x::get<0>(*p));
@@ -261,7 +270,7 @@ namespace aspect
         // their own parameters
         for (unsigned int name=0; name<prop_names.size(); ++name)
           {
-            Particle::Property::Interface<dim> *
+            aspect::Particle::Property::Interface<dim> *
             particle_property = std_cxx1x::get<dim>(registered_plugins)
                                 .create_plugin (prop_names[name],
                                                 "Particle property plugins");

@@ -21,8 +21,8 @@
 #ifndef __aspect__particle_generator_interface_h
 #define __aspect__particle_generator_interface_h
 
-#include <aspect/particle/base_particle.h>
 #include <aspect/particle/world.h>
+#include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -66,7 +66,7 @@ namespace aspect
           virtual
           void
           generate_particles(const double total_num_particles,
-                             Particle::World<dim> &world) = 0;
+                             World<dim> &world) = 0;
 
 
           /**
