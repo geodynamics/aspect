@@ -397,6 +397,14 @@ namespace aspect
         bool interpolate_output;
 
         /**
+         * For free surface computations Aspect uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, so the mesh
+         * has its own velocity field.  This may be written as an output field
+         * by setting output_mesh_velocity to true.
+         */
+        bool output_mesh_velocity;
+
+        /**
          * Set the time output was supposed to be written. In the simplest
          * case, this is the previous last output time plus the interval, but
          * in general we'd like to ensure that it is the largest supposed
