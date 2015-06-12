@@ -44,8 +44,8 @@ namespace aspect
           void
           initialize_particle (std::vector<double> &data,
                                const Point<dim> &position,
-                               const Vector<double> &,
-                               const std::vector<Tensor<1,dim> > &);
+                               const Vector<double> &solution,
+                               const std::vector<Tensor<1,dim> > &gradients);
 
           void data_length(std::vector<unsigned int> &length) const;
 

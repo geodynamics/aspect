@@ -37,7 +37,6 @@ namespace aspect
           // If the cell is active, we're at the finest level of refinement and can finish
           if (found_cell->active())
             {
-              particle.set_local(found_cell->is_locally_owned());
               return cur_cell;
             }
           else
@@ -279,41 +278,51 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::find_all_cells()
+    World<dim>::find_all_cells(std::vector<Particle<dim> > &lost_particles)
     {
-      std::multimap<LevelInd, Particle<dim> > tmp_map;
+      std::multimap<LevelInd, Particle<dim> > moved_particles;
 
       // Find the cells that the particles moved to.
       // Note that the iterator in the following loop is increased in a
       // very particular way, because it is changed, if elements
       // get erased. A change can result in invalid memory access.
-      tmp_map.clear();
+      moved_particles.clear();
       typename std::multimap<LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
           const LevelInd found_cell = find_cell(it->second, it->first);
           if (found_cell != it->first)
             {
-              tmp_map.insert(std::make_pair(found_cell, it->second));
+              // Reinsert the particle into our domain if we found its cell
+              // Mark it for MPI transfer otherwise
+              typename parallel::distributed::Triangulation<dim>::cell_iterator cell(&this->get_triangulation(), found_cell.first, found_cell.second);
+              if (cell->is_locally_owned())
+                moved_particles.insert(std::make_pair(found_cell, it->second));
+              else
+                lost_particles.push_back(it->second);
+
               particles.erase(it++);
             }
           else
             ++it;
         }
-      particles.insert(tmp_map.begin(),tmp_map.end());
+      particles.insert(moved_particles.begin(),moved_particles.end());
     }
 
     template <int dim>
     void
-    World<dim>::advance_timestep(const double timestep)
+    World<dim>::advance_timestep()
     {
       bool        continue_integrator = true;
 
-      // Find the cells that the particles moved to
-      find_all_cells();
-
       // If the triangulation changed, we may need to move particles between processors
-      if (triangulation_changed) send_recv_particles();
+      if (triangulation_changed)
+        {
+          // Find the cells that the particles moved to
+          std::vector<Particle<dim> > lost_particles;
+          find_all_cells(lost_particles);
+          send_recv_particles(lost_particles);
+        }
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
@@ -332,16 +341,17 @@ namespace aspect
           continue_integrator = integrator->integrate_step(particles,
                                                            old_velocities,
                                                            velocities,
-                                                           timestep);
+                                                           this->get_old_timestep());
 
+          std::vector<Particle<dim> > lost_particles;
           // Find the cells that the particles moved to
-          find_all_cells();
+          find_all_cells(lost_particles);
 
           // If particles fell out of the mesh, put them back in at the closest point in the mesh
           move_particles_back_in_mesh();
 
           // Swap particles between processors if needed
-          send_recv_particles();
+          send_recv_particles(lost_particles);
         }
 
       // Update particle properties
@@ -372,7 +382,6 @@ namespace aspect
           if (found_cell != triangulation->end() && found_cell->point_inside(particle.get_location()) && found_cell->active())
             {
               // If the cell is active, we're at the finest level of refinement and can finish
-              particle.set_local(found_cell->is_locally_owned());
               return cur_cell;
             }
         }
@@ -393,53 +402,42 @@ namespace aspect
         {
           if (ait->point_inside(particle.get_location()))
             {
-              particle.set_local(ait->is_locally_owned());
               return std::make_pair(ait->level(), ait->index());
             }
         }
 
       // If it failed all these tests, the particle is outside the mesh
-      particle.set_local(false);
       return std::make_pair(-1, -1);
     }
 
     template <int dim>
     void
-    World<dim>::send_recv_particles()
+    World<dim>::send_recv_particles(const std::vector<Particle <dim> > &send_particles)
     {
       // Determine the size of the MPI comm world
       const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
       const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-
-      std::list<Particle<dim> > send_particles;
-
-      // Go through the particles and take out those which need to be moved to another processor
-      for (typename std::multimap<LevelInd, Particle<dim> >::iterator it=particles.begin(); it!=particles.end();)
-        {
-          if (!it->second.local())
-            {
-              send_particles.push_back(it->second);
-              particles.erase(it++);
-            }
-          else
-            ++it;
-        }
 
       // Determine the total number of particles we will send to other processors
       int total_send_particles = send_particles.size();
       const int total_recv_particles = Utilities::MPI::sum (total_send_particles, this->get_mpi_communicator());
 
       // Allocate space for sending and receiving particle data
-      std::vector<double> send_data;
+      std::vector<double> send_data(total_send_particles * (property_manager->get_data_len() + integrator->data_length()));
+      std::vector<double>::iterator data = send_data.begin();
 
       // Copy the particle data into the send array
-      for (typename std::list<Particle<dim> >::const_iterator particle = send_particles.begin(); particle!=send_particles.end(); ++particle)
+      for (typename std::vector<Particle<dim> >::const_iterator particle = send_particles.begin(); particle!=send_particles.end(); ++particle)
         {
-          particle->write_data(send_data);
-          integrator->write_data(send_data, particle->get_id());
+          particle->write_data(data);
+          integrator->write_data(data, particle->get_id());
         }
 
       int num_send_data = send_data.size();
+
+      AssertThrow(data == send_data.end(),
+                  ExcMessage("The amount of data written into the array that is send to other processes "
+                             "is inconsistent with the number and size of particles."));
 
       // Notify other processors how many particles we will be sending
       std::vector<int> num_recv_data(world_size,0);
@@ -457,33 +455,29 @@ namespace aspect
       // Set up the space for the received particle data
       std::vector<double> recv_data(total_recv_data);
 
-      AssertThrow(send_data.size() == total_send_particles * (integrator->data_length()+property_manager->get_data_len()),
-                  ExcMessage("The amount of data written into the array that is send to other processes "
-                             "is inconsistent with the number and size of particles."));
-
       // Exchange the particle data between domains
       MPI_Allgatherv (&(send_data[0]), num_send_data, MPI_DOUBLE,
                       &(recv_data[0]), &(num_recv_data[0]), &(recv_offset[0]), MPI_DOUBLE,
                       this->get_mpi_communicator());
 
-      unsigned int pos = 0;
       // Put the received particles into the domain if they are in the triangulation
+      std::vector<double>::const_iterator recv_data_it = recv_data.begin();
+
       for (int i=0; i<total_recv_particles; ++i)
         {
-          Particle<dim>       recv_particle;
-          recv_particle.set_data_len(property_manager->get_data_len());
-
-          pos = recv_particle.read_data(recv_data, pos);
-          pos = integrator->read_data(recv_data, pos, recv_particle.get_id());
+          Particle<dim> recv_particle(recv_data_it,property_manager->get_data_len());
+          integrator->read_data(recv_data_it, recv_particle.get_id());
 
           const LevelInd found_cell = find_cell(recv_particle, std::make_pair(-1,-1));
-          if (recv_particle.local())
+          const typename parallel::distributed::Triangulation<dim>::cell_iterator cell(&this->get_triangulation(), found_cell.first, found_cell.second);
+
+          if (cell->is_locally_owned())
             {
               particles.insert(std::make_pair(found_cell, recv_particle));
             }
         }
 
-      AssertThrow(pos == recv_data.size(),
+      AssertThrow(recv_data_it == recv_data.end(),
                   ExcMessage("The amount of data that was read into new particles "
                              "does not match the amount of data sent around."));
     }

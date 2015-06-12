@@ -77,18 +77,15 @@ namespace aspect
           next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          generator->generate_particles(n_initial_tracers, world);
+          generator->generate_particles(world);
           world.finished_adding_particles();
           world.initialize_particles();
 
           initialized = true;
         }
 
-      // Advance the particles in the world by the old timestep
-      // This accounts for the fact that the tracers are actually still at
-      // their old positions and the current timestep is already updated for the
-      // next step
-      world.advance_timestep (this->get_old_timestep());
+      // Advance the particles in the world to the current time
+      world.advance_timestep();
 
       const unsigned int num_particles = world.get_global_particle_count();
       statistics.add_value("Advected particles",num_particles);
@@ -148,12 +145,6 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          prm.declare_entry ("Number of tracers", "1000",
-                             Patterns::Double (0),
-                             "Total number of tracers to create (not per processor or per element). "
-                             "The number is parsed as a floating point number (so that one can "
-                             "specify, for example, '1e4' particles) but it is interpreted as "
-                             "an integer, of course.");
           prm.declare_entry ("Time between data output", "1e8",
                              Patterns::Double (0),
                              "The time interval between each generation of "
@@ -182,9 +173,7 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          n_initial_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
           data_output_interval = prm.get_double ("Time between data output");
-
         }
         prm.leave_subsection ();
       }

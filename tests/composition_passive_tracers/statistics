@@ -13,20 +13,20 @@
 # 13: Time step size (seconds)
 # 14: Visualization file name
 # 15: Advected particles
- 0 0.0000e+00 64 659 289 578  0  0  0 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00000 1000  
- 1 6.2500e-02 64 659 289 578 10 10 11 12 13 13 6.2500e-02                                                "" 1000  
- 2 1.2500e-01 64 659 289 578 10 11 10 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00001 1000  
- 3 1.8750e-01 64 659 289 578 10 12 11 22 23 23 6.2500e-02                                                "" 1000  
- 4 2.5000e-01 64 659 289 578 10 11 11 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00002 1000  
- 5 3.1250e-01 64 659 289 578 10 11 11 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00003 1000  
- 6 3.7500e-01 64 659 289 578  9 11 10 22 23 23 6.2500e-02                                                "" 1000  
- 7 4.3750e-01 64 659 289 578 10 11 10 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00004 1000  
- 8 5.0000e-01 64 659 289 578 10 10 11 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00005 1000  
- 9 5.6250e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02                                                "" 1000  
-10 6.2500e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00006 1000  
-11 6.8750e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02                                                "" 1000  
-12 7.5000e-01 64 659 289 578 11 11 11 22 23 23 6.2500e-02 output-composition_passive_tracers/solution-00007 1000  
-13 8.1250e-01 64 659 289 578 10 10 10 10 11 11 6.2500e-02 output-composition_passive_tracers/solution-00008 1000  
-14 8.7500e-01 64 659 289 578 10 10 10  9 10 10 6.2500e-02                                                "" 1000  
-15 9.3750e-01 64 659 289 578 10 10  9  8  9  9 6.2500e-02 output-composition_passive_tracers/solution-00009 1000  
-16 1.0000e+00 64 659 289 578 10 10 10  9 10 10 6.2500e-02 output-composition_passive_tracers/solution-00010 1000  
+ 0 0.0000e+00 64 659 289 578  0  0  0 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00000 10 
+ 1 6.2500e-02 64 659 289 578 10 10 11 12 13 13 6.2500e-02                                                "" 10 
+ 2 1.2500e-01 64 659 289 578 10 11 10 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00001 10 
+ 3 1.8750e-01 64 659 289 578 10 12 11 22 23 23 6.2500e-02                                                "" 10 
+ 4 2.5000e-01 64 659 289 578 10 11 11 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00002 10 
+ 5 3.1250e-01 64 659 289 578 10 11 11 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00003 10 
+ 6 3.7500e-01 64 659 289 578  9 11 10 22 23 23 6.2500e-02                                                "" 10 
+ 7 4.3750e-01 64 659 289 578 10 11 10 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00004 10 
+ 8 5.0000e-01 64 659 289 578 10 10 11 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00005 10 
+ 9 5.6250e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02                                                "" 10 
+10 6.2500e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00006 10 
+11 6.8750e-01 64 659 289 578 10 10 10 22 23 23 6.2500e-02                                                "" 10 
+12 7.5000e-01 64 659 289 578 11 11 11 22 23 23 6.2500e-02 output-composition-passive-tracers/solution-00007 10 
+13 8.1250e-01 64 659 289 578 10 10 10 10 11 11 6.2500e-02 output-composition-passive-tracers/solution-00008 10 
+14 8.7500e-01 64 659 289 578 10 10 10  9 10 10 6.2500e-02                                                "" 10 
+15 9.3750e-01 64 659 289 578 10 10  9  8  9  9 6.2500e-02 output-composition-passive-tracers/solution-00009 10 
+16 1.0000e+00 64 659 289 578 10 10 10  9 10 10 6.2500e-02 output-composition-passive-tracers/solution-00010 10 

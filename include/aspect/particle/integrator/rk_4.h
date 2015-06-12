@@ -46,8 +46,12 @@ namespace aspect
                                       const double dt);
 
           virtual unsigned int data_length() const;
-          virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num);
-          virtual void write_data(std::vector<double> &data, const double &id_num) const;
+
+          virtual void read_data(std::vector<double>::const_iterator &data,
+                                 const double &id_num);
+
+          virtual void write_data(std::vector<double>::iterator &data,
+                                  const double &id_num) const;
 
         private:
           unsigned int                     step;

@@ -52,15 +52,26 @@
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="Float64" Name="id" NumberOfComponents="1" Format="ascii">
-          0 
-          3 
-          1 
-          4 
-          2 
-          5 
-          6 
-          7 
-          8 
+          0
+          3
+          1
+          4
+          2
+          5
+          6
+          7
+          8
+        </DataArray>
+        <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
+          -0.000348228 3.41373e-05 0 
+          -0.000380139 5.76975e-06 0 
+          -0.0002879 0.000102872 0 
+          -0.000309201 2.25291e-05 0 
+          -4.9609e-05 0.000124761 0 
+          -6.17923e-05 2.20891e-05 0 
+          -0.00036835 -1.81342e-05 0 
+          -0.000291888 -4.48888e-05 0 
+          -6.5404e-05 -6.55348e-05 0 
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
           1 

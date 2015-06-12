@@ -92,15 +92,11 @@ namespace aspect
            * from the data vector.
            *
            * @param [in] data The vector of double data to read from.
-           * @param [in] pos The position in the data vector to start reading
-           * from.
            * @param [in] id_num The id number of the particle to read the data
            * for.
-           * @return The position in the vector of the next unread double.
            */
-          virtual unsigned int read_data(const std::vector<double> &data,
-                                         const unsigned int &pos,
-                                         const double &id_num) = 0;
+          virtual void read_data(std::vector<double>::const_iterator &data,
+                                 const double &id_num) = 0;
 
           /**
            * Write integration related data to a vector for a particle
@@ -108,10 +104,11 @@ namespace aspect
            *
            * @param [in,out] data The vector of doubles to write integrator
            * data into.
-           * @param [in] id_num The id number of the particle to read the data
+           * @param [in] id_num The id number of the particle to write the data
            * for.
            */
-          virtual void write_data(std::vector<double> &data, const double &id_num) const = 0;
+          virtual void write_data(std::vector<double>::iterator &data,
+                                  const double &id_num) const = 0;
 
 
           /**

@@ -56,16 +56,14 @@ namespace aspect
         return 0;
       }
       template <int dim>
-      unsigned int
-      EulerIntegrator<dim>::read_data(const std::vector<double> &,
-                                      const unsigned int &pos,
+      void
+      EulerIntegrator<dim>::read_data(std::vector<double>::const_iterator &,
                                       const double &)
       {
-        return pos;
       }
       template <int dim>
       void
-      EulerIntegrator<dim>::write_data(std::vector<double> &,
+      EulerIntegrator<dim>::write_data(std::vector<double>::iterator &,
                                        const double &) const
       {
       }

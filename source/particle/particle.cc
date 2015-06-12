@@ -33,7 +33,6 @@ namespace aspect
       :
       location (new_loc),
       id (new_id),
-      is_local (true),
       val ()
     {
     }
@@ -44,9 +43,24 @@ namespace aspect
       :
       location (),
       id (0),
-      is_local (true),
       val()
     {
+    }
+
+    template <int dim>
+    inline
+    Particle<dim>::Particle (std::vector<double>::const_iterator &begin_data,
+                             const unsigned int data_len)
+      :
+      val(data_len-dim-1)
+    {
+      for (unsigned int i = 0; i < dim; ++i)
+        location(i) = *begin_data++;
+
+      id = *begin_data++;
+
+      for (unsigned int i = 0; i < val.size(); ++i)
+        val [i] = *begin_data++;
     }
 
 
@@ -73,6 +87,25 @@ namespace aspect
 
     template <int dim>
     void
+    Particle<dim>::write_data (std::vector<double>::iterator &data) const
+    {
+      // Write location data
+      for (unsigned int i = 0; i < dim; ++i,++data)
+        {
+          *data =location(i);
+        }
+
+      *data = id;
+      ++data;
+
+      for (unsigned int i = 0; i < val.size(); ++i,++data)
+        {
+          *data = val[i];
+        }
+    }
+
+    template <int dim>
+    void
     Particle<dim>::write_data (std::vector<double> &data) const
     {
       // Write location data
@@ -83,9 +116,9 @@ namespace aspect
 
       data.push_back(id);
 
-      for (unsigned int i = 0; i < val.size(); i++)
+      for (unsigned int i = 0; i < val.size(); ++i)
         {
-          data.push_back(val [i]);
+          data.push_back(val[i]);
         }
     }
 
@@ -151,20 +184,6 @@ namespace aspect
     Particle<dim>::get_properties ()
     {
       return val;
-    }
-
-    template <int dim>
-    bool
-    Particle<dim>::local () const
-    {
-      return is_local;
-    }
-
-    template <int dim>
-    void
-    Particle<dim>::set_local (bool new_local)
-    {
-      is_local = new_local;
     }
   }
 }

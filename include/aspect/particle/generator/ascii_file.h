@@ -49,8 +49,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world);
+          generate_particles(World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.

@@ -49,8 +49,22 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world);
+          generate_particles(World<dim> &world);
+
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
 
         private:
           /**
@@ -60,6 +74,11 @@ namespace aspect
            */
           boost::mt19937            random_number_generator;
           boost::uniform_01<double> uniform_distribution_01;
+
+          /**
+           * Number of initial particles to create
+           */
+          unsigned int n_tracers;
 
 
           /**

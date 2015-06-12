@@ -48,8 +48,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world);
+          generate_particles(World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -66,6 +65,11 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+          /**
+           * Number of initial particles to create
+           */
+          unsigned int n_tracers;
+
           /**
            * The minimum coordinates of the tracer region.
            */

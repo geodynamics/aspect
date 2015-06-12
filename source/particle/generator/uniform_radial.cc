@@ -23,9 +23,6 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_tools.h>
-#include <deal.II/base/mpi.h>
-
-#include <boost/random.hpp>
 
 
 namespace aspect
@@ -39,102 +36,99 @@ namespace aspect
 
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(const double total_num_particles,
-                                             World<dim> &world)
+      UniformRadial<dim>::generate_particles(World<dim> &world)
       {
         // Create the array of shell to deal with
-        std::vector<double> shell_radius(radial_layers);
-        const double shell_seperation = (P_max[0] - P_min[0]) / (radial_layers-1);
-        std::vector<unsigned int> particlesPerRadius(radial_layers);
-        double radiusTotal = 0;
+        const double radius_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);
 
-        for (unsigned int i = 0; i < radial_layers; ++i)
+        // Calculate amount of particles per shell.
+        // The number of particles depend on the fraction of the area
+        // (or length in 2D) that this shell occupies compared to the total domain
+        std::vector<unsigned int> particles_per_radius(radial_layers);
+        if (dim == 2)
           {
-            // Calculate radius of each shell
-            radiusTotal += shell_radius[i] = P_min[0] + (shell_seperation * i);
+            double total_radius = 0;
+            for (unsigned int i = 0; i < radial_layers; ++i)
+              total_radius += P_min[0] + (radius_spacing * i);
+            for (unsigned int i = 0; i < radial_layers; ++i)
+              {
+                const double radius = P_min[0] + (radius_spacing * i);
+                particles_per_radius[i] = round(n_tracers * radius / total_radius);
+              }
           }
-
-        for (unsigned int i = 0; i < radial_layers; ++i)
+        else if (dim == 3)
           {
-            // Calculate amount of particles per shell.
-            // Number of particles depend on the portion of the radius that this shell is in (i.e., more radius = more particles)
-            particlesPerRadius[i] = round(total_num_particles * shell_radius[i] / radiusTotal);
+            double total_area = 0;
+            for (unsigned int i = 0; i < radial_layers; ++i)
+              total_area += std::pow(P_min[0] + (radius_spacing * i),2);
+            for (unsigned int i = 0; i < radial_layers; ++i)
+              {
+                const double area = std::pow(P_min[0] + (radius_spacing * i),2);
+                particles_per_radius[i] = round(n_tracers * area / total_area);
+              }
           }
+        else
+          ExcNotImplemented();
 
-        unsigned int cur_id = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * total_num_particles;
+        unsigned int cur_id = 0;
         std_cxx11::array<double,dim> spherical_coordinates;
 
-        if (dim == 3)
+        for (unsigned int i = 0; i < radial_layers; ++i)
           {
-            for (unsigned int i = 0; i < radial_layers; i++)
+            spherical_coordinates[0] = P_min[0] + (radius_spacing * i);
+            if (dim == 2)
               {
-                spherical_coordinates[0] = shell_radius[i];
-                const int thetaParticles = floor(sqrt(particlesPerRadius[i]));
-                const int phiParticles = particlesPerRadius[i] / thetaParticles;
-                const double phiSeperation = (P_max[1] - P_min[1]) / phiParticles;
+                const double phi_spacing = (P_max[1] - P_min[1]) / fmax(particles_per_radius[i]-1,1);
 
-                std::vector<int> ppPh(phiParticles);
-                int j = 0;
-
-                for (double phi = P_min[1]; phi < P_max[1]; phi += phiSeperation, j++)
+                for (unsigned int j = 0; j < particles_per_radius[i]; ++j)
                   {
-                    //Average value of sin(n) from 0 to 180 degrees is (2/pi)
-                    ppPh[j] = (thetaParticles * sin(phi / 180 * M_PI) * (M_PI / 2)) + 1;
-                  }
-
-                j = 0;
-                for (double phi = P_min[1]; phi < P_max[1]; phi += phiSeperation, j++)
-                  {
-                    spherical_coordinates[1] = phi;
-                    const double thetaSeperation = (P_max[2] - P_max[1]) / ppPh[j];
-                    for (double theta = P_min[2]; theta < P_max[2]; theta += thetaSeperation)
-                      {
-                        spherical_coordinates[2] = theta;
-                        const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-
-                        typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), newPoint)).first;
-
-                        if (it->is_locally_owned())
-                          {
-                            //Only try to add the point if the cell it is in, is on this processor
-                            Particle<dim> new_particle(newPoint, cur_id);
-                            world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-                          }
-
-                        cur_id++;
-                      }
-                  }
-              }
-          }
-        else if (dim == 2)
-          {
-            for (unsigned int i = 0; i < radial_layers; i++)
-              {
-                spherical_coordinates[0] = shell_radius[i];
-                const double phiSeperation = (P_max[1] - P_min[1]) / particlesPerRadius[i];
-
-                for (double phi = P_min[1]; phi < P_max[1]; phi += phiSeperation)
-                  {
-                    spherical_coordinates[1] = phi;
+                    spherical_coordinates[1] = P_min[1] + j * phi_spacing;
                     const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-
-                    //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
-                    typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                      (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), newPoint)).first;
-
-                    if (it->is_locally_owned())
-                      {
-                        //Only try to add the point if the cell it is in, is on this processor
-                        Particle<dim> new_particle(newPoint, cur_id);
-                        world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-                      }
-
-                    cur_id++;
+                    generate_particle(newPoint,cur_id++,world);
                   }
               }
-          }
+            else if (dim == 3)
+              {
+                const unsigned int theta_particles = round(sqrt(particles_per_radius[i]));
+                const unsigned int phi_particles = round ((double) particles_per_radius[i] / (double) theta_particles);
+                const double theta_spacing = (P_max[2] - P_min[2]) / fmax(theta_particles-1,1);
 
+                for (unsigned int j = 0; j < theta_particles; ++j)
+                  {
+                    spherical_coordinates[2] = P_min[2] + j * theta_spacing;
+
+                    //Average value of sin(n) from 0 to 180 degrees is (2/pi)
+                    const int adjusted_phi_particles = std::max(static_cast<int> (phi_particles * std::sin(spherical_coordinates[2])),1);
+                    const double phi_spacing = (P_max[1] - P_min[1]) / fmax(adjusted_phi_particles-1,1);
+                    for (unsigned int k = 0; k < adjusted_phi_particles; ++k)
+                      {
+                        spherical_coordinates[1] = P_min[1] + k * phi_spacing;
+                        const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
+                        generate_particle(newPoint,cur_id++,world);
+                      }
+                  }
+              }
+            else
+              ExcNotImplemented();
+          }
+      }
+
+
+      template <int dim>
+      void
+      UniformRadial<dim>::generate_particle(const Point<dim> &position,
+                                            const unsigned int id,
+                                            World<dim> &world)
+      {
+        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
+
+        if (it->is_locally_owned())
+          {
+            //Only try to add the point if the cell it is in, is on this processor
+            Particle<dim> new_particle(position, id);
+            world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
+          }
       }
 
 
@@ -146,6 +140,13 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            prm.declare_entry ("Number of tracers", "1000",
+                               Patterns::Double (0),
+                               "Total number of tracers to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform radial");
@@ -199,6 +200,8 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform radial");

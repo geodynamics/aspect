@@ -40,8 +40,7 @@ namespace aspect
 
       template <int dim>
       void
-      RandomFunction<dim>::generate_particles(const double total_num_particles,
-                                              World<dim> &world)
+      RandomFunction<dim>::generate_particles(World<dim> &world)
       {
         const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
         const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
@@ -117,11 +116,11 @@ namespace aspect
         const double subdomain_fraction = local_function_integral / global_function_integral;
 
         // Calculate start and end IDs so there are no gaps
-        const unsigned int start_id = round(total_num_particles * start_weight / global_function_integral) + 1;
-        const unsigned int end_id   = round(total_num_particles * accumulated_cell_weights.back()  / global_function_integral);
+        const unsigned int start_id = round(n_tracers * start_weight / global_function_integral) + 1;
+        const unsigned int end_id   = round(n_tracers * accumulated_cell_weights.back()  / global_function_integral);
         const unsigned int subdomain_particles = end_id - start_id;
 
-        uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id,world);
+        uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,n_tracers, 1.1 * start_id,world);
       }
 
       template <int dim>
@@ -208,6 +207,13 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            prm.declare_entry ("Number of tracers", "1000",
+                               Patterns::Double (0),
+                               "Total number of tracers to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Random function");
@@ -232,6 +238,8 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Random function");

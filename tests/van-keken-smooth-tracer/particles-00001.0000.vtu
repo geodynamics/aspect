@@ -4,16 +4,16 @@
     <Piece NumberOfPoints="10" NumberOfCells="10">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.618697 0.0937634 0.0
-          0.561367 0.214799 0.0
-          0.345272 0.93649 0.0
-          0.626841 0.637802 0.0
-          0.700461 0.546535 0.0
-          0.86603 0.547865 0.0
-          0.532197 0.914262 0.0
-          0.865034 0.775853 0.0
-          0.91241 0.819193 0.0
-          0.854638 0.999779 0.0
+          0.612342 0.0926089 0.0
+          0.554985 0.211437 0.0
+          0.34703 0.936529 0.0
+          0.630066 0.635077 0.0
+          0.702389 0.542486 0.0
+          0.866454 0.543547 0.0
+          0.534249 0.914105 0.0
+          0.865589 0.774237 0.0
+          0.912428 0.818064 0.0
+          0.854639 0.999779 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -55,29 +55,17 @@
         </DataArray>
       </Cells>
       <PointData Scalars="scalars">
-        <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          -0.000293984 -4.16674e-05 0 
-          -0.000222591 -9.86036e-05 0 
-          5.8957e-05 2.43296e-06 0 
-          0.000139144 -8.23209e-05 0 
-          0.000101001 -0.000143953 0 
-          2.4451e-05 -0.000181282 0 
-          7.61523e-05 -3.71795e-06 0 
-          2.42077e-05 -6.40358e-05 0 
-          7.92946e-07 -4.51131e-05 0 
-          4.83744e-08 -1.20714e-09 0 
-        </DataArray>
         <DataArray type="Float64" Name="id" NumberOfComponents="1" Format="ascii">
-          4 
-          3 
-          7 
-          9 
-          0 
-          1 
-          2 
-          8 
-          6 
-          5 
+          4
+          3
+          7
+          9
+          0
+          1
+          2
+          8
+          6
+          5
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
           1 

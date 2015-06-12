@@ -55,8 +55,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world);
+          generate_particles(World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -80,6 +79,11 @@ namespace aspect
            */
           boost::mt19937            random_number_generator;
           boost::uniform_01<double> uniform_distribution_01;
+
+          /**
+           * Number of particles to create
+           */
+          unsigned int n_tracers;
 
           /**
            * A function object representing the temperature.

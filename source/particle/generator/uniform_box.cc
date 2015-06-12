@@ -36,41 +36,36 @@ namespace aspect
 
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(const double total_num_particles,
-                                          World<dim> &world)
+      UniformBox<dim>::generate_particles(World<dim> &world)
       {
         unsigned int cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
-        double totalDiff(0.0);
-        for (unsigned int i = 0; i < dim; ++i)
-          totalDiff += P_diff[i];
-        std_cxx11::array<unsigned int ,dim> nParticles;
-        std_cxx11::array<double,dim> Particle_separation;
 
-        if (dim == 2)
-          {
-            nParticles[1] = round(sqrt(total_num_particles*P_diff[1]/P_diff[0]));
-            nParticles[0] = round(total_num_particles / nParticles[1]);
-          }
-        else
-          {
-            ///Amount of particles is the total amount of particles, divided by length of each axis
-            for (unsigned int i = 0; i < dim; ++i)
-              nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
-          }
-        ///Amount of particles is the total amount of particles, divided by length of each axis
+        double volume(1.0);
         for (unsigned int i = 0; i < dim; ++i)
-          Particle_separation[i] = P_diff[i] / (nParticles[i]-1);
+          volume *= P_diff[i];
 
-        for (double x = P_min[0]; x <= P_max[0]; x+= Particle_separation[0])
+        std_cxx11::array<double,dim> nParticles;
+        std_cxx11::array<double,dim> spacing;
+
+        // Calculate separation of particles
+        for (unsigned int i = 0; i < dim; ++i)
           {
-            for (double y = P_min[1]; y <= P_max[1]; y += Particle_separation[1])
+            nParticles[i] = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
+            spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
+          }
+
+        for (unsigned int i = 0; i < nParticles[0]; ++i)
+          {
+            for (unsigned int j = 0; j < nParticles[1]; ++j)
               {
                 if (dim == 2)
-                  generate_particle(Point<dim> (x,y),cur_id++,world);
-                if (dim == 3)
-                  for (double z = P_min[2]; z <= P_max[2]; z += Particle_separation[2])
-                    generate_particle(Point<dim> (x,y,z),cur_id++,world);
+                  generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]),cur_id++,world);
+                else if (dim == 3)
+                  for (unsigned int k = 0; k < nParticles[2]; ++k)
+                    generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]),cur_id++,world);
+                else
+                  ExcNotImplemented();
               }
           }
       }
@@ -82,7 +77,7 @@ namespace aspect
                                          const unsigned int id,
                                          World<dim> &world)
       {
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
 
         if (it->is_locally_owned())
@@ -102,6 +97,13 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            prm.declare_entry ("Number of tracers", "1000",
+                               Patterns::Double (0),
+                               "Total number of tracers to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform box");
@@ -143,6 +145,8 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform box");
@@ -152,7 +156,7 @@ namespace aspect
                 P_min(1) = prm.get_double ("Minimal y");
                 P_max(1) = prm.get_double ("Maximal y");
 
-                if (dim ==3)
+                if (dim == 3)
                   {
                     P_min(2) = prm.get_double ("Minimal z");
                     P_max(2) = prm.get_double ("Maximal z");

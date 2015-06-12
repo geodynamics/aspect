@@ -39,12 +39,16 @@ namespace aspect
         public:
           virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
-                                      const std::vector<Tensor<1,dim> > &,
+                                      const std::vector<Tensor<1,dim> > &velocities,
                                       const double dt);
 
           virtual unsigned int data_length() const;
-          virtual unsigned int read_data(const std::vector<double> &, const unsigned int &pos, const double &);
-          virtual void write_data(std::vector<double> &, const double &) const;
+
+          virtual void read_data(std::vector<double>::const_iterator &data,
+                                 const double &id);
+
+          virtual void write_data(std::vector<double>::iterator &,
+                                  const double &id) const;
       };
 
     }

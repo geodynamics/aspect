@@ -101,29 +101,27 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      RK2IntegratorMultiStep<dim>::read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num)
+      void
+      RK2IntegratorMultiStep<dim>::read_data(std::vector<double>::const_iterator &data,
+                                             const double &id_num)
       {
-        unsigned int p = pos;
-
         // Read location data
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            loc0[id_num](i) = data[p++];
+            loc0[id_num](i) = *data;
           }
-
-        return p;
       }
 
       template <int dim>
       void
-      RK2IntegratorMultiStep<dim>::write_data(std::vector<double> &data, const double &id_num) const
+      RK2IntegratorMultiStep<dim>::write_data(std::vector<double>::iterator &data,
+                                              const double &id_num) const
       {
         // Write location data
         const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            data.push_back(it->second(i));
+            *data = it->second(i);
           }
       }
     }

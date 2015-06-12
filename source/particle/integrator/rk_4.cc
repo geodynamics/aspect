@@ -105,58 +105,56 @@ namespace aspect
       }
 
       template <int dim>
-      unsigned int
-      RK4Integrator<dim>::read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num)
+      void
+      RK4Integrator<dim>::read_data(std::vector<double>::const_iterator &data,
+                                    const double &id_num)
       {
-        unsigned int    i, p = pos;
-
         // Read location data
-        for (i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           {
-            loc0[id_num](i) = data[p++];
+            loc0[id_num](i) = *data++;
           }
         // Read k1, k2 and k3
-        for (i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           {
-            k1[id_num][i] = data[p++];
+            k1[id_num][i] = *data++;
           }
-        for (i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           {
-            k2[id_num][i] = data[p++];
+            k2[id_num][i] = *data++;
           }
-        for (i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           {
-            k3[id_num][i] = data[p++];
+            k3[id_num][i] = *data++;
           }
-
-        return p;
       }
 
       template <int dim>
       void
-      RK4Integrator<dim>::write_data(std::vector<double> &data, const double &id_num) const
+      RK4Integrator<dim>::write_data(std::vector<double>::iterator &data,
+                                     const double &id_num) const
       {
         // Write location data
         typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            data.push_back(it->second(i));
+            *data = it->second(i);
           }
         // Write k1, k2 and k3
         typename std::map<double, Tensor<1,dim> >::const_iterator it_k = k1.find(id_num);
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            data.push_back(it->second(i));
+            *data = it->second(i);
           }
         it_k = k2.find(id_num);
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            data.push_back(it->second(i));
+            *data = it->second(i);
           }
         it_k = k3.find(id_num);
-        for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i,++data)
           {
-            data.push_back(it->second(i));
+            *data = it->second(i);
           }
       }
     }

@@ -42,10 +42,10 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize_particle (std::vector<double> &,
-                               const Point<dim> &,
-                               const Vector<double> &,
-                               const std::vector<Tensor<1,dim> > &);
+          initialize_particle (std::vector<double> &data,
+                               const Point<dim> &position,
+                               const Vector<double> &solution,
+                               const std::vector<Tensor<1,dim> > &gradients);
 
           /**
            * Update function. This function is called once every timestep
@@ -55,8 +55,8 @@ namespace aspect
           update_particle (unsigned int &data_position,
                            std::vector<double> &data,
                            const Point<dim> &position,
-                           const Vector<double> &,
-                           const std::vector<Tensor<1,dim> > &);
+                           const Vector<double> &solution,
+                           const std::vector<Tensor<1,dim> > &gradients);
 
           /**
            * This implementation tells the particle manager that

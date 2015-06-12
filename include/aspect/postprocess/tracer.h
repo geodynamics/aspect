@@ -69,11 +69,6 @@ namespace aspect
         bool                            initialized;
 
         /**
-         * Number of initial particles to create
-         */
-        unsigned int                    n_initial_tracers;
-
-        /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)
          */

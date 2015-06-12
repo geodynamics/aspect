@@ -34,8 +34,7 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(const double total_num_particles,
-                                         World<dim> &world)
+      AsciiFile<dim>::generate_particles(World<dim> &world)
       {
         const std::string filename = data_directory+data_filename;
         std::ifstream in(filename.c_str(), std::ios::in);
@@ -55,7 +54,7 @@ namespace aspect
 
         char sep;
         // Read data lines
-        unsigned int id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * total_num_particles;
+        unsigned int id = 0;
         Point<dim> coordinates;
 
         if (dim == 2)

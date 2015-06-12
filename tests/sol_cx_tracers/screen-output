@@ -19,77 +19,77 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00000
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00000
 
 *** Timestep 1:  t=8.80814 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00001
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00001
 
 *** Timestep 2:  t=17.6163 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00002
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00002
 
 *** Timestep 3:  t=26.4244 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00003
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00003
 
 *** Timestep 4:  t=35.2326 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00004
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00004
 
 *** Timestep 5:  t=44.0407 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00005
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00005
 
 *** Timestep 6:  t=52.8489 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00006
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00006
 
 *** Timestep 7:  t=61.657 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00007
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00007
 
 *** Timestep 8:  t=70.4652 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00008
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00008
 
 *** Timestep 9:  t=79.2733 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00009
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00009
 
 *** Timestep 10:  t=88.0814 seconds
    Solving Stokes system... 0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00010
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00010
 
 Number of active cells: 238 (on 5 levels)
 Number of degrees of freedom: 3,379 (2,070+274+1,035)
@@ -102,7 +102,7 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
       Nonlinear Stokes residual: 1.93775e-09
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00011
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00011
 
 *** Timestep 12:  t=100 seconds
    Solving Stokes system... 27 iterations.
@@ -111,23 +111,26 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
       Nonlinear Stokes residual: 2.00346e-09
 
    Postprocessing:
-     Advected particles:  1000. Writing particle graphical output output-sol_cx_tracers/particles-00012
+     Advected particles:  10. Writing particle graphical output output-sol_cx_tracers/particles-00012
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      13.2s |            |
+| Total wallclock time elapsed since start    |     0.994s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        16 |      1.24s |       9.4% |
-| Build Stokes preconditioner     |         2 |     0.392s |         3% |
-| Solve Stokes system             |        16 |     0.202s |       1.5% |
-| Initialization                  |         2 |     0.132s |         1% |
-| Postprocessing                  |        13 |      9.35s |        71% |
-| Refine mesh structure, part 1   |         1 |     0.523s |         4% |
-| Refine mesh structure, part 2   |         1 |   0.00399s |      0.03% |
-| Setup dof systems               |         2 |     0.373s |       2.8% |
+| Assemble Stokes system          |        13 |     0.153s |        15% |
+| Assemble temperature system     |        13 |     0.256s |        26% |
+| Build Stokes preconditioner     |         2 |     0.116s |        12% |
+| Build temperature preconditioner|        13 |     0.023s |       2.3% |
+| Solve Stokes system             |        13 |     0.108s |        11% |
+| Solve temperature system        |        13 |   0.00629s |      0.63% |
+| Initialization                  |         2 |    0.0294s |         3% |
+| Postprocessing                  |        13 |    0.0948s |       9.5% |
+| Refine mesh structure, part 1   |         1 |    0.0701s |       7.1% |
+| Refine mesh structure, part 2   |         1 |   0.00116s |      0.12% |
+| Setup dof systems               |         2 |    0.0513s |       5.2% |
 +---------------------------------+-----------+------------+------------+
 

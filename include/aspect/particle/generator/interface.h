@@ -65,8 +65,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world) = 0;
+          generate_particles(World<dim> &world) = 0;
 
 
           /**
