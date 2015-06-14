@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
@@ -80,13 +81,13 @@ namespace aspect
           :
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
-          grads_phi_u (finite_element.dofs_per_cell),
-          phi_p (finite_element.dofs_per_cell),
-          temperature_values (quadrature.size()),
-          pressure_values (quadrature.size()),
-          strain_rates (quadrature.size()),
+          grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+          phi_p (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
+          temperature_values (quadrature.size(), Utilities::signaling_nan<double>()),
+          pressure_values (quadrature.size(), Utilities::signaling_nan<double>()),
+          strain_rates (quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           composition_values(n_compositional_fields,
-                             std::vector<double>(quadrature.size())),
+                             std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields)
         {}
@@ -167,10 +168,10 @@ namespace aspect
                                       face_quadrature,
                                       face_update_flags),
 
-          phi_u (finite_element.dofs_per_cell),
-          grads_phi_u (finite_element.dofs_per_cell),
-          div_phi_u (finite_element.dofs_per_cell),
-          velocity_values (quadrature.size())
+          phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
+          grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+          div_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
+          velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >())
         {}
 
 
@@ -279,34 +280,34 @@ namespace aspect
 
           local_dof_indices (finite_element.dofs_per_cell),
 
-          phi_field (advection_element.dofs_per_cell),
-          grad_phi_field (advection_element.dofs_per_cell),
-          old_velocity_values (quadrature.size()),
-          old_old_velocity_values (quadrature.size()),
-          old_pressure (quadrature.size()),
-          old_old_pressure (quadrature.size()),
-          old_pressure_gradients (quadrature.size()),
-          old_old_pressure_gradients (quadrature.size()),
-          old_strain_rates (quadrature.size()),
-          old_old_strain_rates (quadrature.size()),
-          old_temperature_values (quadrature.size()),
-          old_old_temperature_values(quadrature.size()),
-          old_field_grads(quadrature.size()),
-          old_old_field_grads(quadrature.size()),
-          old_field_laplacians(quadrature.size()),
-          old_old_field_laplacians(quadrature.size()),
+          phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<double>()),
+          grad_phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_old_velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_pressure (quadrature.size(), Utilities::signaling_nan<double>()),
+          old_old_pressure (quadrature.size(), Utilities::signaling_nan<double>()),
+          old_pressure_gradients (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_old_pressure_gradients (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_strain_rates (quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+          old_old_strain_rates (quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+          old_temperature_values (quadrature.size(), Utilities::signaling_nan<double>()),
+          old_old_temperature_values(quadrature.size(), Utilities::signaling_nan<double>()),
+          old_field_grads(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_old_field_grads(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          old_field_laplacians(quadrature.size(), Utilities::signaling_nan<double>()),
+          old_old_field_laplacians(quadrature.size(), Utilities::signaling_nan<double>()),
           old_composition_values(n_compositional_fields,
-                                 std::vector<double>(quadrature.size())),
+                                 std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
           old_old_composition_values(n_compositional_fields,
-                                     std::vector<double>(quadrature.size())),
-          current_temperature_values(quadrature.size()),
-          current_velocity_values(quadrature.size()),
-          mesh_velocity_values(quadrature.size()),
-          current_strain_rates(quadrature.size()),
-          current_pressure_values(quadrature.size()),
-          current_pressure_gradients(quadrature.size()),
+                                     std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
+          current_temperature_values(quadrature.size(), Utilities::signaling_nan<double>()),
+          current_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          mesh_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          current_strain_rates(quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+          current_pressure_values(quadrature.size(), Utilities::signaling_nan<double>()),
+          current_pressure_gradients(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           current_composition_values(n_compositional_fields,
-                                     std::vector<double>(quadrature.size())),
+                                     std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           explicit_material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -603,8 +604,8 @@ namespace aspect
                                     local_for_max[2] = { -min_entropy, max_entropy };
     double global_for_sum[2], global_for_max[2];
 
-    Utilities::MPI::sum (local_for_sum, mpi_communicator, global_for_sum);
-    Utilities::MPI::max (local_for_max, mpi_communicator, global_for_max);
+    dealii::Utilities::MPI::sum (local_for_sum, mpi_communicator, global_for_sum);
+    dealii::Utilities::MPI::max (local_for_max, mpi_communicator, global_for_max);
 
     const double average_entropy = global_for_sum[0] / global_for_sum[1];
 
