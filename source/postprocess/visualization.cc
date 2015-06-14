@@ -66,13 +66,46 @@ namespace aspect
                 computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
           }
 
+          virtual
+          bool
+          is_compositional_vector (const unsigned int c) const
+          {
+            if (c+dim <= this->n_compositional_fields())
+              {
+                bool ret = true;
+                const std::string cxname = this->introspection().name_for_compositional_index(c);
+                ret &= (0 == cxname.compare (cxname.length() - 2, 2, "_x"));
+                const std::string cyname = this->introspection().name_for_compositional_index(c+1);
+                ret &= (0 == cyname.compare (cyname.length() - 2, 2, "_y"));
+                ret &= (0 == cyname.compare (0, cyname.length() - 2, cxname.substr(0, cxname.length() - 2)));
+                if (dim == 3)
+                  {
+                    const std::string czname = this->introspection().name_for_compositional_index(c+2);
+                    ret &= (0 == czname.compare (czname.length() - 2, 2, "_z"));
+                    ret &= (0 == czname.compare (0, czname.length() - 2, cxname.substr(0, cxname.length() - 2)));
+                  }
+                return ret;
+              }
+            else
+              return false;
+          }
+
           virtual std::vector<std::string> get_names () const
           {
             std::vector<std::string> solution_names (dim, "velocity");
             solution_names.push_back ("p");
             solution_names.push_back ("T");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              solution_names.push_back (this->introspection().name_for_compositional_index(c));
+              if (this->is_compositional_vector(c))
+                {
+                  std::string cname = this->introspection().name_for_compositional_index(c);
+                  for (unsigned int i=0; i<dim; ++i)
+                    solution_names.push_back (cname.substr(0,cname.length()-2));
+
+                  c += dim-1;
+                }
+              else
+                solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
             return solution_names;
           }
@@ -87,7 +120,17 @@ namespace aspect
             interpretation.push_back (DataComponentInterpretation::component_is_scalar);
             interpretation.push_back (DataComponentInterpretation::component_is_scalar);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+              {
+                if (this->is_compositional_vector(c)) //HACK
+                  {
+                    for (unsigned int i=0; i<dim; ++i)
+                      interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+
+                    c += dim-1;
+                  }
+                else
+                  interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+              }
 
             return interpretation;
           }
