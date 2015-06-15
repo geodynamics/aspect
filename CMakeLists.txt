@@ -19,9 +19,9 @@
 #  $Id$
 
 
-MESSAGE("====================================================")
-MESSAGE("============ Configuring ASPECT ====================")
-MESSAGE("====================================================")
+MESSAGE(STATUS "====================================================")
+MESSAGE(STATUS "============ Configuring ASPECT ====================")
+MESSAGE(STATUS "====================================================")
 
 # Set the name of the project and target:
 SET(TARGET "aspect")
@@ -133,7 +133,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
 ENDIF()
 
 
-MESSAGE("====================================================")
+MESSAGE(STATUS "====================================================")
 
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this
