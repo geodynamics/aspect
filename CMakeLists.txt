@@ -133,8 +133,6 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
 ENDIF()
 
 
-MESSAGE(STATUS "====================================================")
-
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this
 # down during compilation so we can disable it in the code
