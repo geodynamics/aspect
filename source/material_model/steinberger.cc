@@ -769,80 +769,6 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
     is_compressible () const
     {
       return compressible;
@@ -1001,6 +927,28 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
+        //declare dependencies
+
+//viscosity dependence
+        this->model_dependence.viscosity = NonlinearDependence::temperature;
+
+//density dependence
+        this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+//compressibility dependence
+        this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+
+//specific_heat dependence
+        this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+
+//thermal conductivity dependence
+        this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+
+
+
+
+
+
       }
     }
   }

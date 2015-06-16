@@ -384,46 +384,7 @@ namespace aspect
       /* After parsing the parameters for averaging, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->viscosity_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->density_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->compressibility_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->specific_heat_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->thermal_conductivity_depends_on(dependence);
+      this->model_dependence = base_model-> get_model_dependence();
     }
 
     template <int dim>
