@@ -263,7 +263,13 @@ namespace aspect
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
       double prefact;
-      int ind = 0;
+      
+      // option to not include the sin and cos coefficients of degree zero
+      int ind = (zero_out_degree_0
+                  ?
+                  1
+                  :
+                  0);
 
       // option to not include degree zero in summation
       const unsigned int starting_degree = (zero_out_degree_0
