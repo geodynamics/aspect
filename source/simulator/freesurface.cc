@@ -65,6 +65,19 @@ namespace aspect
                         "the free surface is stabilized with this term, "
                         "where zero is no stabilization, and one is fully "
                         "implicit.");
+      prm.declare_entry("Surface velocity projection", "normal",
+                        Patterns::Selection("normal|vertical"),
+                        "After each time step the free surface must be "
+                        "advected in the direction of the velocity field. "
+                        "Mass conservation requires that the mesh velocity "
+                        "is in the normal direction of the surface. However, "
+                        "for steep topography or large curvature, advection "
+                        "in the normal direction can become ill-conditioned, "
+                        "and instabilities in the mesh can form. Projection "
+                        "of the mesh velocity onto the local vertical direction "
+                        "can preserve the mesh quality better, but at the "
+                        "cost of slightly poorer mass conservation of the "
+                        "domain.");
     }
     prm.leave_subsection ();
   }
@@ -75,6 +88,15 @@ namespace aspect
     prm.enter_subsection ("Free surface");
     {
       free_surface_theta = prm.get_double("Free surface stabilization theta");
+      std::string advection_dir = prm.get("Surface velocity projection");
+
+      if ( advection_dir == "normal")
+        advection_direction = SurfaceAdvection::normal;
+      else if ( advection_dir == "vertical")
+        advection_direction = SurfaceAdvection::vertical;
+      else
+        AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
+
     }
     prm.leave_subsection ();
   }
@@ -177,9 +199,9 @@ namespace aspect
                                                      mesh_displacement_constraints, sim.mapping);
 
     //For the free surface indicators we constrain the displacement to be v.n
-    LinearAlgebra::Vector boundary_normal_velocity;
-    boundary_normal_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-    project_normal_velocity_onto_boundary( boundary_normal_velocity );
+    LinearAlgebra::Vector boundary_velocity;
+    boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
+    project_velocity_onto_boundary( boundary_velocity );
 
     //now insert the relevant part of the solution into the mesh constraints
     IndexSet constrained_dofs;
@@ -192,7 +214,7 @@ namespace aspect
           if (mesh_displacement_constraints.is_constrained(index)==false)
             {
               mesh_displacement_constraints.add_line(index);
-              mesh_displacement_constraints.set_inhomogeneity(index, boundary_normal_velocity[index]);
+              mesh_displacement_constraints.set_inhomogeneity(index, boundary_velocity[index]);
             }
       }
 
@@ -201,13 +223,14 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output)
+  void Simulator<dim>::FreeSurfaceHandler::project_velocity_onto_boundary(LinearAlgebra::Vector &output)
   {
     // TODO: should we use the extrapolated solution?
 
     //stuff for iterating over the mesh
     QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
-    UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
+                                           | update_normal_vectors | update_JxW_values);
     FEFaceValues<dim> fs_fe_face_values (sim.mapping, free_surface_fe, face_quadrature, update_flags);
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, face_quadrature, update_flags);
     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
@@ -292,20 +315,30 @@ namespace aspect
               cell_vector = 0;
               cell_matrix = 0;
               for (unsigned int point=0; point<n_face_q_points; ++point)
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  {
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      {
-                        cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
-                                             fs_fe_face_values[extract_vel].value(i,point) ) *
-                                            fs_fe_face_values.JxW(point);
-                      }
+                {
+                  //Select the direction onto which to project the velocity solution
+                  Tensor<1,dim> direction;
+                  if ( advection_direction == SurfaceAdvection::normal ) //project onto normal vector
+                    direction = fs_fe_face_values.normal_vector(point);
+                  else if ( advection_direction == SurfaceAdvection::vertical ) //project onto local gravity
+                    direction = sim.gravity_model->gravity_vector( fs_fe_face_values.quadrature_point(point) );
+                  else AssertThrow(false, ExcInternalError());
+                  direction *= ( direction.norm() > 0.0 ? 1./direction.norm() : 0.0 );
 
-                    cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) *
-                                       fs_fe_face_values.normal_vector(point) ) *
-                                      (velocity_values[point]*fs_fe_face_values.normal_vector(point)) *
-                                      fs_fe_face_values.JxW(point);
-                  }
+                  for (unsigned int i=0; i<dofs_per_cell; ++i)
+                    {
+                      for (unsigned int j=0; j<dofs_per_cell; ++j)
+                        {
+                          cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
+                                               fs_fe_face_values[extract_vel].value(i,point) ) *
+                                              fs_fe_face_values.JxW(point);
+                        }
+
+                      cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) * direction)
+                                        * (velocity_values[point] * direction)
+                                        * fs_fe_face_values.JxW(point);
+                    }
+                }
 
               mass_matrix_constraints.distribute_local_to_global (cell_matrix, cell_vector,
                                                                   cell_dof_indices, mass_matrix, rhs, false);

@@ -1341,10 +1341,10 @@ namespace aspect
           void make_constraints ();
 
           /**
-           * Project the normal part of the Stokes velocity solution onto the
+           * Project the the Stokes velocity solution onto the
            * free surface. Called by make_constraints()
            */
-          void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
+          void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
 
           /**
            * Actually solve the elliptic problem for the mesh velocitiy.  Just
@@ -1433,6 +1433,20 @@ namespace aspect
            * well-behaved
            */
           ConstraintMatrix mesh_vertex_constraints;
+
+          /**
+           * A struct for holding information about how to advect the free surface.
+           */
+          struct SurfaceAdvection
+          {
+            enum Direction { normal, vertical };
+          };
+
+          /**
+           * Stores whether to advect the free surface in the normal direction
+           * or the direction of the local vertical.
+           */
+          typename SurfaceAdvection::Direction advection_direction;
 
 
           friend class Simulator<dim>;
