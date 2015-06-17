@@ -62,9 +62,16 @@ if [ $? -ne 0 ]; then
   echo "******* Error during diffing output results for ${PRETTY_TEST_AND_FILENAME}"
   echo "******* Results are stored in ${DIFF_OUTPUT}.failed"
   echo "******* Check ${ORIGINAL_GEN_FULL_PATH} ${ORIGINAL_REF_FULL_PATH}"
-  echo "******* 50 lines of diffs are:"
+  nlines="`cat ${DIFF_OUTPUT}.failed | wc -l`"
+  if test "$nlines" -ge 50 ; then
+    echo "******* First 50 of $nlines lines of diffs are:"
+  else
+    echo "******* All of $nlines lines of diffs are:"
+  fi
   head -n 50 ${DIFF_OUTPUT}.failed
+
   exit 1
+
 else
   mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}
 fi
