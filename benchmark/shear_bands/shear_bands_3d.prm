@@ -7,12 +7,11 @@ set Additional shared libraries            = ./libshear_bands.so
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated IMPES
-set Output directory                       = output
-set Max nonlinear iterations               = 10
+set Output directory                       = output_3d
+set Max nonlinear iterations               = 5
 set Nonlinear solver tolerance             = 1e-5
-set Linear solver tolerance                = 1e-12
 
-set Dimension                              = 2
+set Dimension                              = 3
 
 set End time                               = 3.125e-8
 
@@ -58,8 +57,8 @@ end
 # move with the same speed u0, but in opposite directions
 subsection Boundary velocity model
   subsection Function
-    set Function constants = u0=3.2e4,ymid=0.0005
-    set Function expression = u0*(y/ymid-1.0);0
+    set Function constants = u0=3.2e4,zmid=0.0005
+    set Function expression = u0*(z/zmid-1.0);0;0
   end
 end
 
@@ -69,6 +68,7 @@ subsection Geometry model
   subsection Box
     set X extent  = 0.004
     set Y extent  = 0.001
+    set Z extent  = 0.001
     set X periodic = true
     set X repetitions = 4
   end
@@ -93,7 +93,6 @@ subsection Initial conditions
   subsection Function
     set Function constants  = l=64000
     set Function expression = 0.0
-    set Variable names      = x,y
   end
 end
 
@@ -121,9 +120,9 @@ end
 
 
 subsection Model settings
-  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Prescribed velocity boundary indicators = 4:function, 5:function
 
-  set Tangential velocity boundary indicators = 
+  set Tangential velocity boundary indicators = 2,3
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = true
@@ -134,15 +133,15 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization,composition statistics,velocity statistics,shear bands statistics
+  set List of postprocessors = visualization,composition statistics,velocity statistics
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt pressure, melt velocity, melt density, permeability, melt viscosity, compaction viscosity, strain rate
+    set List of output variables      = density, viscosity, melt pressure, melt velocity, permeability, melt viscosity, compaction viscosity, strain rate
 
     set Number of grouped files       = 0
     set Output format                 = vtu
-    set Time between graphical output = 2e-9
+    set Time between graphical output = 3.125e-10
   end
 
 end

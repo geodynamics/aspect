@@ -366,7 +366,15 @@ namespace aspect
         for (unsigned int j=0; j<white_noise.size()[1]; ++j)
         {
           idx[1] = j;
-          white_noise(idx) = noise_amplitude * ((std::rand() % 10000) / 5000.0 - 1.0);
+
+          if(dim == 3)
+            for (unsigned int k=0; k<white_noise.size()[2]; ++k)
+            {
+              idx[2] = k;
+              white_noise(idx) = noise_amplitude * ((std::rand() % 10000) / 5000.0 - 1.0);
+            }
+          else
+            white_noise(idx) = noise_amplitude * ((std::rand() % 10000) / 5000.0 - 1.0);
         }
       }
 
@@ -409,6 +417,12 @@ namespace aspect
               "the initial background porosity that will then be interpolated "
               "to the model grid. "
               "Units: none.");
+          prm.declare_entry ("Grid intervals for noise Z", "25",
+              Patterns::Integer (0),
+              "Grid intervals in Z directions for the white noise added to "
+              "the initial background porosity that will then be interpolated "
+              "to the model grid. "
+              "Units: none.");
         }
         prm.leave_subsection();
       }
@@ -428,6 +442,9 @@ namespace aspect
           noise_amplitude      = prm.get_double ("Noise amplitude");
           grid_intervals[0]    = prm.get_integer ("Grid intervals for noise X");
           grid_intervals[1]    = prm.get_integer ("Grid intervals for noise Y");
+
+          if (dim == 3)
+            grid_intervals[2]    = prm.get_integer ("Grid intervals for noise Z");
         }
         prm.leave_subsection();
       }
