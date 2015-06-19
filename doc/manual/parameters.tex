@@ -2348,7 +2348,8 @@ The formula is interpreted as having units W/kg.
 {\it Default:} 0e0
 
 
-{\it Description:} The specific rate of heating due to radioactive decay (or other bulk sources you may want to describe). This parameter corresponds to the variable $H$ in the temperature equation stated in the manual, and the heating term is $ho H$. Units: W/kg.
+{\it Description:} The specific rate of heating due to radioactive decay (or other bulk sources you may want to describe). This parameter corresponds to the variable $H$ in the temperature equation stated in the manual, and the heating term is $
+ho H$. Units: W/kg.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -3548,7 +3549,7 @@ Otherwise, this material model has a temperature- and pressure-dependent density
 
 This model uses the following set of equations for the two coefficients that are non-constant: \begin{align}  \eta(p,T,\mathfrak c) &= \tau(T) \zeta(\mathfrak c) \eta_0, \\  \rho(p,T,\mathfrak c) &= \left(1-\alpha (T-T_0)\right)\rho_0 + \Delta\rho \; c_0,\end{align}where $c_0$ is the first component of the compositional vector $\mathfrak c$ if the model uses compositional fields, or zero otherwise. 
 
-The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \begin{cases}                            10^{-2} & \text{if}\; x<10^{-2}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            10^{2} & \text{if}\; x>10^{2}, \\                         \end{cases}\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$.
+The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{-\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \begin{cases}                            10^{-2} & \text{if}\; x<10^{-2}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            10^{2} & \text{if}\; x>10^{2}, \\                         \end{cases}\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$.
 
 The compositional pre-factor for the viscosity is defined as \begin{align}  \zeta(\mathfrak c) &= \xi^{c_0}\end{align} if the model has compositional fields and equals one otherwise. $\xi$ corresponds to the parameter ``Composition viscosity prefactor'' in the input file.
 
