@@ -310,7 +310,7 @@ namespace aspect
                                    "The temperature pre-factor for the viscosity formula above is "
                                    "defined as "
                                    "\\begin{align}"
-                                   "  \\tau(T) &= H\\left(e^{\\beta (T-T_0)/T_0}\\right),"
+                                   "  \\tau(T) &= H\\left(e^{-\\beta (T-T_0)/T_0}\\right),"
                                    "  \\qquad\\qquad H(x) = \\begin{cases}"
                                    "                            10^{-2} & \\text{if}\\; x<10^{-2}, \\\\"
                                    "                            x & \\text{if}\\; 10^{-2}\\le x \\le 10^2, \\\\"
