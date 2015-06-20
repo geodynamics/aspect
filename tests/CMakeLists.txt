@@ -170,6 +170,8 @@ FOREACH(_test ${_tests})
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
 		 ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+      COMMAND echo ''
+		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo 'set Output directory = output-${_test}'
 		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo '${_testlib}'
