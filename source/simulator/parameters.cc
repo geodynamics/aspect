@@ -489,6 +489,13 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
+      prm.declare_entry ("Maximum refinement level",
+                         Utilities::int_to_string(Patterns::Integer::max_int_value),
+                         Patterns::Integer (0),
+                         "The maximum refinement level each cell should have, "
+                         "and that can not be exceeded by refining. "
+                         "Should not be lower than the 'Initial global refinement' "
+                         "parameter.");
       prm.declare_entry ("Minimum refinement level", "0",
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
@@ -766,11 +773,15 @@ namespace aspect
       refinement_fraction         = prm.get_double ("Refinement fraction");
       coarsening_fraction         = prm.get_double ("Coarsening fraction");
       min_grid_level              = prm.get_integer ("Minimum refinement level");
+      max_grid_level              = prm.get_integer ("Maximum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
                   ExcMessage("Refinement/coarsening fractions must be positive."));
       AssertThrow(refinement_fraction+coarsening_fraction <= 1,
                   ExcMessage("Refinement and coarsening fractions must be <= 1."));
+      AssertThrow(max_grid_level >= initial_global_refinement,
+                  ExcMessage("Maximum refinement level must not be lower than "
+                             "Initial global refinement."));
       AssertThrow(min_grid_level <= initial_global_refinement,
                   ExcMessage("Minimum refinement level must not be larger than "
                              "Initial global refinement."));

@@ -1366,9 +1366,12 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
+  void Simulator<dim>::refine_mesh (const unsigned int max_refinement_level)
   {
     computing_timer.enter_section ("Refine mesh structure, part 1");
+
+    const unsigned int max_grid_level = std::min(parameters.max_grid_level,
+                                                 max_refinement_level);
 
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
     mesh_refinement_manager.execute (estimated_error_per_cell);
