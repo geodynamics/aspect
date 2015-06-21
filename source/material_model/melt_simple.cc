@@ -34,7 +34,7 @@ namespace aspect
     MeltSimple<dim>::
     reference_viscosity () const
     {
-      return eta_0;
+      return eta_0 / 100.0;
     }
 
     template <int dim>
@@ -225,6 +225,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       std::vector<double> maximum_melt_fractions(in.position.size());
+      std::vector<double> old_porosity(in.position.size());
 
       // we want to get the peridotite field from the old solution here,
       // because it tells us how much of the material was already molten
@@ -234,16 +235,24 @@ namespace aspect
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
             fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
 
-          // only get peridotite field from the old the solution
-          Assert(this->introspection().compositional_name_exists("peridotite"),
-                 ExcMessage("Material model Melt simple only works if there is a "
-                            "compositional field called peridotite."));
+          // get peridotite and porosity field from the old the solution
+          AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                      ExcMessage("Material model Melt simple only works if there is a "
+                                 "compositional field called peridotite."));
+          AssertThrow(this->introspection().compositional_name_exists("porosity"),
+                      ExcMessage("Material model Melt simple with melt transport only "
+                                 "works if there is a compositional field called porosity."));
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
           fe_value.set_active_cell(in.cell);
           fe_value.value_list(in.position,
                               maximum_melt_fractions,
                               this->introspection().component_indices.compositional_fields[peridotite_idx]);
+
+          fe_value.value_list(in.position,
+                              old_porosity,
+                              this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
 
       for (unsigned int i=0;i<in.position.size();++i)
@@ -258,23 +267,23 @@ namespace aspect
                                      "works if there is a compositional field called porosity."));
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
-              const double porosity = std::max(in.composition[i][porosity_idx],0.0);
-              out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
 
-              double melting_rate = 0.0;
-              if (this->get_timestep_number() > 0)
-                {
-                  const double F = melt_fraction(in.temperature[i], in.pressure[i]);
-                  melting_rate = (F > maximum_melt_fractions[i]
-                                  ?
-                                  F - maximum_melt_fractions[i]
-                                  :
-                                  0.0);
-                }
+              // calculate the melting rate as difference between the equilibrium melt fraction
+              // and the solution of the previous time step
+              double melting_rate = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - maximum_melt_fractions[i];
+
+              // remove melt that gets close to the surface
+              if(this->get_geometry_model().depth(in.position[i]) < 5000.0)
+                melting_rate = -old_porosity[i] * (in.position[i](1) - 65000.0)/5000.0;
+
+              // do not allow negative porosity
+              if(old_porosity[i] + melting_rate < 0)
+                melting_rate = -old_porosity[i];
+
 
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
-                  if (c == peridotite_idx)
+                  if (c == peridotite_idx && this->get_timestep_number() > 0)
                     out.reaction_terms[i][c] = melting_rate;
                   else if (c == porosity_idx && this->get_timestep_number() > 0)
                     out.reaction_terms[i][c] = melting_rate
@@ -282,6 +291,9 @@ namespace aspect
                   else
                     out.reaction_terms[i][c] = 0.0;
                 }
+
+              const double porosity = std::max(in.composition[i][porosity_idx],0.0);
+              out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
             }
           else
           {
@@ -293,11 +305,27 @@ namespace aspect
           out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::pressure);
           out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::temperature);
 
-          out.densities[i] = reference_rho_s * (1 - thermal_expansivity * (in.temperature[i] - reference_T));
+          // first, calculate temperature dependence of density
+          double temperature_dependence = 1.0;
+          if (this->include_adiabatic_heating ())
+            {
+              // temperature dependence is 1 - alpha * (T - T(adiabatic))
+              if (this->get_adiabatic_conditions().is_initialized())
+                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                          * thermal_expansivity;
+            }
+          else
+            temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
+
+          out.densities[i] = reference_rho_s * temperature_dependence;
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = thermal_conductivity;
           out.compressibilities[i] = 0.0;
+
+          const double delta_temp = in.temperature[i]-reference_T;
+          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          out.viscosities[i] *= visc_temperature_dependence;
         }
     }
 
@@ -317,8 +345,14 @@ namespace aspect
           out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
           out.fluid_densities[i] = reference_rho_f;
           out.fluid_compressibilities[i] = 0.0;
-          porosity = std::max(std::min(porosity,0.995),5e-3);
-          out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
+
+          const double phi_0 = 0.05;
+          porosity = std::max(std::min(porosity,0.995),1e-2);
+          out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+
+//          const double delta_temp = in.temperature[i]-reference_T;
+//          double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+//          out.compaction_viscosities[i] *= temperature_dependence;
         }
     }
 
@@ -345,6 +379,11 @@ namespace aspect
           prm.declare_entry ("Reference shear viscosity", "5e20",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
+                             "This viscosity may be modified by both temperature and porosity "
+                             "dependencies. Units: $Pa s$.");
+          prm.declare_entry ("Reference bulk viscosity", "1e22",
+                             Patterns::Double (0),
+                             "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
                              "dependencies. Units: $Pa s$.");
           prm.declare_entry ("Reference melt viscosity", "10",
@@ -481,6 +520,7 @@ namespace aspect
           reference_rho_f            = prm.get_double ("Reference melt density");
           reference_T                = prm.get_double ("Reference temperature");
           eta_0                      = prm.get_double ("Reference shear viscosity");
+          xi_0                       = prm.get_double ("Reference bulk viscosity");
           eta_f                      = prm.get_double ("Reference melt viscosity");
           reference_permeability     = prm.get_double ("Reference permeability");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");

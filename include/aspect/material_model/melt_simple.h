@@ -142,6 +142,7 @@ namespace aspect
         double reference_rho_f;
         double reference_T;
         double eta_0;
+        double xi_0;
         double eta_f;
         double thermal_viscosity_exponent;
         double thermal_expansivity;
