@@ -493,7 +493,8 @@ namespace aspect
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
                          "and that can not be exceeded by coarsening. "
-                         "Should be higher than the 'Initial global refinement' parameter.");
+                         "Should not be higher than the 'Initial global refinement' "
+                         "parameter.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
