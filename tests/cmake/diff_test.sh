@@ -21,6 +21,16 @@ CMAKE_CURRENT_SOURCE_DIR=$3
 CMAKE_CURRENT_BINARY_DIR=$4
 
 
+# Grab ASPECT_GENERATE_REFERENCE_OUTPUT from the environment. If set to "1",
+# do not run tests normally but generate reference output instead. Also see
+# the generate_reference_output make target and the file
+# ./cmake/generate_reference_output.sh
+GENERATE_REFERENCE_OUTPUT=0
+if [ "$ASPECT_GENERATE_REFERENCE_OUTPUT" -eq "1" ]; then
+  GENERATE_REFERENCE_OUTPUT=1
+  echo "generating reference output" 1>&2
+fi
+
 #
 # now generate filenames with full paths
 #
@@ -58,6 +68,13 @@ case ${DIFF_EXE} in
 esac
 
 if [ $? -ne 0 ]; then
+
+  if [ "$GENERATE_REFERENCE_OUTPUT" -eq 1 ]; then
+    echo "modifying $ORIGINAL_REF_FULL_PATH"
+    cp ${GEN_FILE} $ORIGINAL_REF_FULL_PATH
+    exit 0
+  fi
+
   mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}.failed
   echo "******* Error during diffing output results for ${PRETTY_TEST_AND_FILENAME}"
   echo "******* Results are stored in ${DIFF_OUTPUT}.failed"
