@@ -407,7 +407,7 @@ namespace aspect
      * option one for simple material models.
      *
      * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
-     * reference_density() need to be implemented.
+     * and reference_density() need to be implemented.
      *
      * @ingroup MaterialModels
      */
