@@ -229,6 +229,7 @@ namespace aspect
     double                         refinement_fraction;
     double                         coarsening_fraction;
     unsigned int                   min_grid_level;
+    unsigned int                   max_grid_level;
     std::vector<double>            additional_refinement_times;
     unsigned int                   adaptive_refinement_interval;
     bool                           run_postprocessors_on_initial_refinement;
