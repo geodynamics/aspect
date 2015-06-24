@@ -64,7 +64,12 @@ namespace aspect
             const unsigned int n_q_points = uh.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
-                computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
+                {
+                  if (this->include_melt_transport())
+                    computed_quantities[q][i]=uh[q][i] * ((i < dim || (i > dim+1 && i < dim+2+dim)) ? velocity_scaling_factor : 1.0);
+                  else
+                    computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
+                }
           }
 
           virtual std::vector<std::string> get_names () const
