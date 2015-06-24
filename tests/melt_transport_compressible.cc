@@ -161,7 +161,7 @@ namespace aspect
             values[4]=0.1 * std::exp(y);       //x melt vel
             values[5]=-0.075 * std::exp(y) + 0.135 * std::exp(y) * K_D / porosity;    //y melt vel
 
-            values[6]=0;  // p_s
+            values[6]=values[2] + values[3] / (1.0 - porosity);  // p_s
             values[7]=0; // T
             values[8]=porosity; // porosity
           }
