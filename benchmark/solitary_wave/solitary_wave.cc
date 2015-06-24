@@ -252,7 +252,7 @@ namespace aspect
         public:
           FunctionSolitaryWave (const double offset, const double delta, const std::vector<double> &initial_pressure, const double max_z)
             :
-            Function<dim>(dim+4),
+            Function<dim>(dim+2),
             offset_(offset),
             delta_(delta),
             initial_pressure_(initial_pressure),
@@ -282,7 +282,7 @@ namespace aspect
                                                  initial_pressure_[index] + (initial_pressure_[index+1] - initial_pressure_[index])
                                                  * (p[dim-1]-delta_ - z_coordinate1) / (z_coordinate2 - z_coordinate1);
 
-            values[dim+3] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
+            values[dim+2+dim+2] = AnalyticSolutions::interpolate(p[dim-1]-delta_,offset_); //porosity
             values[dim+1] = interpolated_pressure;                                   //compaction pressure
           }
 
@@ -771,9 +771,7 @@ namespace aspect
       // do the same stuff we do in depth average
       std::vector<double> volume(max_points,0.0);
       std::vector<double> pressure(max_points,0.0);
-      std::vector<double> p_s(n_q_points);
-      std::vector<double> p_f(n_q_points);
-      std::vector<double> phi(n_q_points);
+      std::vector<double> p_c(n_q_points);
       double local_max_pressure = 0.0;
 
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
@@ -782,22 +780,19 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                      p_s);
             fe_values[this->introspection().extractors.compaction_pressure].get_function_values (this->get_solution(),
-                p_f);
-            fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                phi);
+                p_c);
+
             for (unsigned int q=0; q<n_q_points; ++q)
               {
                 double z = fe_values.quadrature_point(q)[dim-1];
                 const unsigned int idx = static_cast<unsigned int>((z*(max_points-1))/max_depth);
                 AssertThrow(idx < max_points, ExcInternalError());
 
-                pressure[idx] += (1.0-phi[q]) * (p_s[q] - p_f[q]) * fe_values.JxW(q);
+                pressure[idx] += p_c[q] * fe_values.JxW(q);
                 volume[idx] += fe_values.JxW(q);
 
-                local_max_pressure = std::max (local_max_pressure, std::abs((1.0-phi[q]) * (p_s[q] - p_f[q])));
+                local_max_pressure = std::max (local_max_pressure, std::abs(p_c[q]));
               }
           }
 
@@ -806,6 +801,7 @@ namespace aspect
       Utilities::MPI::sum(pressure, this->get_mpi_communicator(), initial_pressure);
       maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
 
+      for (unsigned int i=0; i<initial_pressure.size(); ++i)
 	{
 	  initial_pressure[i] = initial_pressure[i] / (static_cast<double>(volume_all[i])+1e-20);
 	}
@@ -993,60 +989,6 @@ namespace aspect
                       ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
         }
 
-
-      // we need the compaction pressure, but we only have the solid and the fluid pressure stored in the solution vector.
-      // Hence, we create a new vector only with the compaction pressure
-      LinearAlgebra::BlockVector distributed_compaction_pressure (
-	this->introspection().index_sets.system_partitioning,
-	this->get_mpi_communicator());
-
-      const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.pressure).get_unit_support_points());
-      std::vector<double> porosity_values(quadrature.size());
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_values);
-
-      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit(cell);
-            cell->get_dof_indices (local_dof_indices);
-            fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
-              this->get_solution(), porosity_values);
-            for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
-              {
-                unsigned int pressure_idx
-                  = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
-                                                             /*dof index within component=*/ j);
-
-                // skip entries that are not locally owned:
-                if (!this->get_dof_handler().locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
-                  continue;
-
-                unsigned int p_f_idx
-                  = this->get_fe().component_to_system_index(this->introspection().component_indices.compaction_pressure,
-                                                             /*dof index within component=*/ j);
-
-                double p_s = this->get_solution()(local_dof_indices[pressure_idx]);
-                double p_f = this->get_solution()(local_dof_indices[p_f_idx]);
-                double phi = porosity_values[j];
-                double p_c;
-                p_c = (1.0-phi) * (p_s - p_f);
-
-                distributed_compaction_pressure(local_dof_indices[p_f_idx]) = p_c;
-              }
-          }
-
-      distributed_compaction_pressure.compress(VectorOperation::insert);
-      LinearAlgebra::BlockVector compaction_pressure(this->get_solution());
-      compaction_pressure = distributed_compaction_pressure;
-
       // what we want to compare:
       // (1) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
@@ -1061,8 +1003,9 @@ namespace aspect
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
 
       // get correct components for porosity and compaction pressure
-      ComponentSelectFunction<dim> comp_f(dim+3, dim+4);
-      ComponentSelectFunction<dim> comp_p(dim+1, dim+4);
+      const unsigned int n_total_comp = this->introspection().n_components;
+      ComponentSelectFunction<dim> comp_f(dim+2+dim+2, n_total_comp);
+      ComponentSelectFunction<dim> comp_p(dim+1, n_total_comp);
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.pressure).degree+1);
 
@@ -1074,7 +1017,7 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_f);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         compaction_pressure,
+                                         this->get_solution(),
                                          *ref_func,
                                          cellwise_errors_p,
                                          quadrature_formula,
