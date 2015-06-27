@@ -1816,9 +1816,8 @@ namespace aspect
     double melt_transport_RHS = melting_rate / density
     		                + divergence_u + compressibility * density * (current_u * gravity);
 
-    if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold
-    		                                             && (!material_model->is_compressible()))
-      melt_transport_RHS = melting_rate / density;
+    if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold)
+      melt_transport_RHS = melting_rate / density + compressibility * density * (current_u * gravity);
 
     return melt_transport_RHS;
   }
