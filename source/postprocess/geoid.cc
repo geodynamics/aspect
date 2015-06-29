@@ -63,7 +63,7 @@ namespace aspect
         const std_cxx11::array<double,dim> spherical_position =
           Utilities::spherical_coordinates(position);
 
-        for (unsigned int i = 0, k = 0; i < max_degree; ++i)
+        for (unsigned int i = 0, k = 0; i <= max_degree; ++i)
           for (unsigned int j = 0; j <= i; ++j, ++k)
             {
               coefficients.sine_coefficients[k] += value
@@ -120,7 +120,7 @@ namespace aspect
       bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
       //TODO: remove this when finished, it is only there for benchmark purposes
-      internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
+      //internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -206,14 +206,15 @@ namespace aspect
                 const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
 
                 const double density   = out.densities[q];
-                const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
+                const double buoyancy = (density - average_densities[layer_id]);
+                //const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
 
                 buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
 
                 //TODO: remove this when finished, it is only there for benchmark purposes
-                const std_cxx1x::array<double,dim> spherical_position =
-                  Utilities::spherical_coordinates(location);
-                example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
+                //const std_cxx1x::array<double,dim> spherical_position =
+                //  Utilities::spherical_coordinates(location);
+                //example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
 
                 // if this is a cell at the surface, add the topography to
                 // the topography expansion
@@ -270,11 +271,11 @@ namespace aspect
 
           const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
 
-          for (unsigned int i = 0, k = 0; i < max_degree; ++i)
+          for (unsigned int i = 0, k = 0; i <= max_degree; ++i)
             {
               const double con1 = scaling * layer_thickness / (2 * i + 1.0);
               const double cont = pow (layer_radius/outer_radius,i+2);
-              const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
+              //const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
 
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
@@ -302,7 +303,7 @@ namespace aspect
           // Use the average density at the surface to compute density jump across the surface
           const double density_contrast = average_densities.front() - density_above;
 
-          for (unsigned int i = 0, k = 0; i < max_degree; i++)
+          for (unsigned int i = 0, k = 0; i <= max_degree; i++)
             {
               const double con1 = scaling * density_contrast / (2.0 * i + 1.0);
 
@@ -325,7 +326,7 @@ namespace aspect
           // Use the average density at the bottom to compute density jump across the bottom surface
           const double density_contrast = density_below - average_densities.back();
 
-          for (unsigned int i = 0, k = 0; i < max_degree; i++)
+          for (unsigned int i = 0, k = 0; i <= max_degree; i++)
             {
               const double con1 = density_contrast * scaling / (2.0 * i + 1.0);
               const double con2 = con1 * pow(inner_radius/outer_radius, i+2);
@@ -355,7 +356,7 @@ namespace aspect
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
           file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
           // Write the solution to an output file
-          for (unsigned int i=0, k=0; i < max_degree; ++i)
+          for (unsigned int i=0, k=0; i <= max_degree; ++i)
             {
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
