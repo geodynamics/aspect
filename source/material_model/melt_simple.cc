@@ -273,8 +273,8 @@ namespace aspect
               double melting_rate = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - maximum_melt_fractions[i];
 
               // remove melt that gets close to the surface
-              if(this->get_geometry_model().depth(in.position[i]) < 5000.0)
-                melting_rate = -old_porosity[i] * (in.position[i](1) - 65000.0)/5000.0;
+              if(this->get_geometry_model().depth(in.position[i]) < extraction_depth)
+                melting_rate = -old_porosity[i] * (in.position[i](1) - (this->get_geometry_model().maximal_depth() - extraction_depth))/extraction_depth;
 
               // do not allow negative porosity
               if(old_porosity[i] + melting_rate < 0)
@@ -347,12 +347,12 @@ namespace aspect
           out.fluid_compressibilities[i] = 0.0;
 
           const double phi_0 = 0.05;
-          porosity = std::max(std::min(porosity,0.995),1e-2);
+          porosity = std::max(std::min(porosity,0.995),1e-4);
           out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
-//          const double delta_temp = in.temperature[i]-reference_T;
-//          double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
-//          out.compaction_viscosities[i] *= temperature_dependence;
+          const double delta_temp = in.temperature[i]-reference_T;
+          double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          out.compaction_viscosities[i] *= temperature_dependence;
         }
     }
 
@@ -414,6 +414,12 @@ namespace aspect
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
                              "Units: $m^2$.");
+          prm.declare_entry ("Melt extraction depth", "1000.0",
+                             Patterns::Double(0),
+                             "Depth above that melt will be extracted from the model, "
+                             "which is done by a negative reaction term proportional to the " 
+                             "porosity field."
+                             "Units: $m$.");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
@@ -528,6 +534,7 @@ namespace aspect
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
           alpha_phi                  = prm.get_double ("Exponential melt weakening factor");
+          extraction_depth           = prm.get_double ("Melt extraction depth");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));

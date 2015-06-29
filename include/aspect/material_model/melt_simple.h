@@ -150,6 +150,7 @@ namespace aspect
         double thermal_conductivity;
         double reference_permeability;
         double alpha_phi;
+        double extraction_depth;
 
         /**
          * Parameters for anhydrous melting of peridotite after Katz, 2003
