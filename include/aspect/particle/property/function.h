@@ -38,11 +38,6 @@ namespace aspect
       template <int dim>
       class Function : public Interface<dim>
       {
-        private:
-          /**
-           * A function object representing the tracer property.
-           */
-          Functions::ParsedFunction<dim> function;
         public:
           Function();
 
@@ -81,6 +76,12 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * A function object representing the tracer property.
+           */
+          Functions::ParsedFunction<dim> function;
       };
     }
   }

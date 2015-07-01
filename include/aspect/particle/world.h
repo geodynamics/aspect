@@ -37,58 +37,6 @@ namespace aspect
     template <int dim>
     class World : public SimulatorAccess<dim>
     {
-      private:
-        /**
-         * Integration scheme for moving particles in this world
-         */
-        Integrator::Interface<dim>     *integrator;
-
-        /**
-         * The property manager stores information about the additional
-         * particle properties and handles the initialization and update of
-         * these properties.
-         */
-        Property::Manager<dim>         *property_manager;
-
-        /**
-         * Whether the triangulation was changed (e.g. through refinement), in which
-         * case we must treat all recorded particle level/index values as invalid
-         */
-        bool                            triangulation_changed;
-
-        /**
-         * Set of particles currently in the local domain, organized by
-         * the level/index of the cell they are in
-         */
-        std::multimap<LevelInd, Particle<dim> >      particles;
-
-        /**
-         * Total number of particles in simulation
-         */
-        unsigned int                    global_num_particles;
-
-        /**
-         * Recursively determines which cell the given particle belongs to.
-         * Returns true if the particle is in the specified cell and sets the
-         * particle cell information appropriately, false otherwise.
-         *
-         * @param [in,out] particle The particle for which a cell is being
-         * searched for. The particle will be marked to indicate whether it is
-         * in the local subdomain or not.
-         * @param [in] cur_cell The current cell level and index being
-         * investigated as potentially containing the particle.
-         * @return The level and index of the cell the particle was determined
-         * to be in.  If no cell was found this returns (-1, -1).
-         */
-        LevelInd recursive_find_cell(Particle<dim> &particle,
-                                     const LevelInd cur_cell);
-
-        /**
-         * Called by listener functions to indicate that the mesh of this
-         * subdomain has changed.
-         */
-        void mesh_changed();
-
       public:
         /**
          * Default World constructor.
@@ -100,6 +48,12 @@ namespace aspect
          * structures.
          */
         ~World();
+
+        /**
+         * Initialize the particle world by connecting to be informed when
+         * the triangulation changes.
+         */
+        void init();
 
         /**
          * Set the particle Integrator scheme for this particle world.
@@ -125,13 +79,6 @@ namespace aspect
          */
         const Property::Manager<dim> &
         get_manager() const;
-
-        /**
-         * All processes must call this function when finished adding
-         * particles to the world. This function will determine the total
-         * number of particles.
-         */
-        void finished_adding_particles();
 
         /**
          * Add a particle to this world. If the specified cell does not exist
@@ -160,25 +107,24 @@ namespace aspect
         const std::multimap<LevelInd, Particle<dim> > &get_particles() const;
 
         /**
-         * Const access to particles in this world.
+         * Get the names and number of particle properties from the
+         * property_manager.
+         *
+         * @param [inout] names Vector of property names attached to particles
+         * @param [inout] length Number of doubles needed to represent properties
          */
         void
         get_data_info(std::vector<std::string> &names,
                       std::vector<unsigned int> &length) const;
 
         /**
-         * Initialize the particle world by connecting to be informed when
-         * the triangulation changes.
+         * Calculate the cells containing each particle for all particles. If
+         * particles moved out of the domain of this process they will be send
+         * to their new process and inserted there. After this function call
+         * every particle is either on its current process and in its current
+         * cell, or deleted (if it could not find its new process or cell).
          */
-        void init();
-
-        /**
-         * Calculate the cells containing each particle for all particles.
-         *
-         * @param [in,out] lost_particles All particles that have left the
-         * local domain are saved in this vector.
-         */
-        void find_all_cells(std::vector<Particle<dim> > &lost_particles);
+        void find_all_cells();
 
         /**
          * Advance particles by the old timestep using the current
@@ -194,21 +140,6 @@ namespace aspect
          * domain. In particular for periodic boundary conditions.
          */
         void move_particles_back_in_mesh();
-
-        /**
-         * Finds the cell the particle is contained in and returns the
-         * appropriate cell level/index.
-         *
-         * @param [in,out] particle The particle to find the cell for. This
-         * particle will be updated to indicate whether it is in the local
-         * subdomain or not.
-         * @param [in] cur_cell The current cell (level and index) being
-         * checked.
-         * @return The level and index of the active cell the particle is in.
-         * If no cell was found to contain the particle, return the
-         * level/index (-1, -1)
-         */
-        LevelInd find_cell(Particle<dim> &particle, const LevelInd &cur_cell);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
@@ -244,7 +175,7 @@ namespace aspect
 
         /**
          * Calculates the global sum of particles over all processes. This is
-         * done to ensure no particles have fallen out of the simulation
+         * done to monitor the number of particles that have fallen out of the
          * domain.
          *
          * @return Total number of particles in simulation.
@@ -252,17 +183,41 @@ namespace aspect
         unsigned int get_global_particle_count() const;
 
         /**
-         * Checks that the number of particles in the simulation has not
-         * unexpectedly changed. If the particle count changes then the
-         * simulation will be aborted.
-         */
-        void check_particle_count();
-
-        /**
          * Read or write the data of this object for serialization
          */
         template <class Archive>
         void serialize(Archive &ar, const unsigned int version);
+
+      private:
+        /**
+         * Integration scheme for moving particles in this world
+         */
+        Integrator::Interface<dim>     *integrator;
+
+        /**
+         * The property manager stores information about the additional
+         * particle properties and handles the initialization and update of
+         * these properties.
+         */
+        Property::Manager<dim>         *property_manager;
+
+        /**
+         * Whether the triangulation was changed (e.g. through refinement), in which
+         * case we must treat all recorded particle level/index values as invalid
+         */
+        bool                            triangulation_changed;
+
+        /**
+         * Set of particles currently in the local domain, organized by
+         * the level/index of the cell they are in
+         */
+        std::multimap<LevelInd, Particle<dim> >      particles;
+
+        /**
+         * Called by listener functions to indicate that the mesh of this
+         * subdomain has changed.
+         */
+        void mesh_changed();
     };
   }
 }

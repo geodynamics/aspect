@@ -140,45 +140,6 @@ namespace aspect
       template <int dim>
       class Manager : public SimulatorAccess<dim>
       {
-        private:
-          /**
-           * A list of property objects that have been requested in the
-           * parameter file.
-           */
-          std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
-
-          /**
-           * A map between names of properties and their data component.
-           */
-          std::map<std::string,unsigned int> property_component_map;
-
-          /**
-           * The number of doubles needed to represent a typical tracer
-           */
-          unsigned int data_len;
-
-          /**
-           * Vector of the names of the properties that are selected in this
-           * model. This vector has as many components as individually named
-           * fields in the properties.
-           */
-          std::vector<std::string> names;
-
-          /**
-           * Vector of the data length of the properties that are selected in
-           * this model. This vector has as many components as individually named
-           * fields in the properties.
-           */
-          std::vector<unsigned int> length;
-
-          /**
-           * Vector of the data positions of individual property plugins.
-           * This vector has as many components as property plugins selected.
-           * It can be different from length of names or length, because
-           * single plugins can define multiple data fields.
-           */
-          std::vector<unsigned int> positions;
-
         public:
           /**
            * Empty constructor for Manager
@@ -296,6 +257,44 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+        private:
+          /**
+           * A list of property objects that have been requested in the
+           * parameter file.
+           */
+          std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
+
+          /**
+           * A map between names of properties and their data component.
+           */
+          std::map<std::string,unsigned int> property_component_map;
+
+          /**
+           * The number of doubles needed to represent a typical tracer
+           */
+          unsigned int data_len;
+
+          /**
+           * Vector of the names of the properties that are selected in this
+           * model. This vector has as many components as individually named
+           * fields in the properties.
+           */
+          std::vector<std::string> names;
+
+          /**
+           * Vector of the data length of the properties that are selected in
+           * this model. This vector has as many components as individually named
+           * fields in the properties.
+           */
+          std::vector<unsigned int> length;
+
+          /**
+           * Vector of the data positions of individual property plugins.
+           * This vector has as many components as property plugins selected.
+           * It can be different from length of names or length, because
+           * single plugins can define multiple data fields.
+           */
+          std::vector<unsigned int> positions;
       };
 
 

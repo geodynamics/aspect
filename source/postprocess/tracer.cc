@@ -78,7 +78,6 @@ namespace aspect
 
           // Add the specified number of particles
           generator->generate_particles(world);
-          world.finished_adding_particles();
           world.initialize_particles();
 
           initialized = true;

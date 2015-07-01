@@ -20,53 +20,12 @@
 
 #include <aspect/particle/world.h>
 #include <deal.II/numerics/fe_field_function.h>
+#include <deal.II/grid/grid_tools.h>
 
 namespace aspect
 {
   namespace Particle
   {
-    template <int dim>
-    LevelInd
-    World<dim>::recursive_find_cell(Particle<dim> &particle,
-                                    const LevelInd cur_cell)
-    {
-      // If the particle is in the specified cell
-      typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell(&(this->get_triangulation()), cur_cell.first, cur_cell.second);
-      if (found_cell != this->get_triangulation().end() && found_cell->point_inside(particle.get_location()))
-        {
-          // If the cell is active, we're at the finest level of refinement and can finish
-          if (found_cell->active())
-            {
-              return cur_cell;
-            }
-          else
-            {
-              // Otherwise we need to search deeper
-              for (unsigned int child_num=0; child_num<found_cell->n_children(); ++child_num)
-                {
-                  const typename parallel::distributed::Triangulation<dim>::cell_iterator child_cell = found_cell->child(child_num);
-                  const LevelInd child_li(child_cell->level(), child_cell->index());
-                  const LevelInd res = recursive_find_cell(particle, child_li);
-                  if (res.first != -1 && res.second != -1) return res;
-                }
-            }
-        }
-
-      // If we still can't find it, return false
-      return LevelInd(-1, -1);
-    }
-
-    /**
-     * Called by listener functions to indicate that the mesh of this
-     * subdomain has changed.
-     */
-    template <int dim>
-    void
-    World<dim>::mesh_changed()
-    {
-      triangulation_changed = true;
-    }
-
     template <int dim>
     World<dim>::World()
     {
@@ -77,6 +36,20 @@ namespace aspect
     template <int dim>
     World<dim>::~World()
     {}
+
+    template <int dim>
+    void
+    World<dim>::init()
+    {
+      this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
+    }
+
+    template <int dim>
+    void
+    World<dim>::mesh_changed()
+    {
+      triangulation_changed = true;
+    }
 
     template <int dim>
     void
@@ -97,15 +70,6 @@ namespace aspect
     World<dim>::get_manager() const
     {
       return *property_manager;
-    }
-
-    template <int dim>
-    void
-    World<dim>::finished_adding_particles()
-    {
-      unsigned int local_num_particles = particles.size();
-
-      MPI_Allreduce(&local_num_particles, &global_num_particles, 1, MPI_UNSIGNED, MPI_SUM, this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -271,15 +235,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::init()
+    World<dim>::find_all_cells()
     {
-      this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
-    }
-
-    template <int dim>
-    void
-    World<dim>::find_all_cells(std::vector<Particle<dim> > &lost_particles)
-    {
+      std::vector<Particle<dim> > lost_particles;
       std::multimap<LevelInd, Particle<dim> > moved_particles;
 
       // Find the cells that the particles moved to.
@@ -290,23 +248,47 @@ namespace aspect
       typename std::multimap<LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
-          const LevelInd found_cell = find_cell(it->second, it->first);
-          if (found_cell != it->first)
+          if ((it->first != std::make_pair(-1,-1)) && !triangulation_changed)
             {
-              // Reinsert the particle into our domain if we found its cell
-              // Mark it for MPI transfer otherwise
-              typename parallel::distributed::Triangulation<dim>::cell_iterator cell(&this->get_triangulation(), found_cell.first, found_cell.second);
-              if (cell->is_locally_owned())
-                moved_particles.insert(std::make_pair(found_cell, it->second));
-              else
-                lost_particles.push_back(it->second);
+              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+              old_cell (&(this->get_triangulation()), it->first.first, it->first.second);
 
-              particles.erase(it++);
+              try
+                {
+                  const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(old_cell, it->second.get_location());
+                  if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+                    {
+                      ++it;
+                      continue;
+                    }
+                }
+              catch (...)
+                {}
             }
+
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
+            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+
+          const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
+
+          // Reinsert the particle into our domain if we found its cell
+          // Mark it for MPI transfer otherwise
+          if (cell->is_locally_owned())
+            moved_particles.insert(std::make_pair(found_cell, it->second));
           else
-            ++it;
+            lost_particles.push_back(it->second);
+
+          particles.erase(it++);
         }
       particles.insert(moved_particles.begin(),moved_particles.end());
+
+
+      // If particles fell out of the mesh, put them back in at the closest point in the mesh
+      move_particles_back_in_mesh();
+
+      // Swap particles between processors if needed
+      if (lost_particles.size() > 0)
+        send_recv_particles(lost_particles);
     }
 
     template <int dim>
@@ -320,8 +302,8 @@ namespace aspect
         {
           // Find the cells that the particles moved to
           std::vector<Particle<dim> > lost_particles;
-          find_all_cells(lost_particles);
-          send_recv_particles(lost_particles);
+          find_all_cells();
+          triangulation_changed = false;
         }
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
@@ -343,23 +325,13 @@ namespace aspect
                                                            velocities,
                                                            this->get_old_timestep());
 
-          std::vector<Particle<dim> > lost_particles;
           // Find the cells that the particles moved to
-          find_all_cells(lost_particles);
-
-          // If particles fell out of the mesh, put them back in at the closest point in the mesh
-          move_particles_back_in_mesh();
-
-          // Swap particles between processors if needed
-          send_recv_particles(lost_particles);
+          find_all_cells();
         }
 
       // Update particle properties
       if (property_manager->need_update())
         update_particles();
-
-      // Ensure we didn't lose any particles
-      check_particle_count();
     }
 
     template <int dim>
@@ -367,47 +339,6 @@ namespace aspect
     World<dim>::move_particles_back_in_mesh()
     {
       // TODO: fix this to work with arbitrary meshes
-    }
-
-    template <int dim>
-    LevelInd
-    World<dim>::find_cell(Particle<dim> &particle, const LevelInd &cur_cell)
-    {
-      const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
-
-      // First check the last recorded cell since particles will generally stay in the same area
-      if (!triangulation_changed)
-        {
-          typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell(triangulation, cur_cell.first, cur_cell.second);
-          if (found_cell != triangulation->end() && found_cell->point_inside(particle.get_location()) && found_cell->active())
-            {
-              // If the cell is active, we're at the finest level of refinement and can finish
-              return cur_cell;
-            }
-        }
-
-      // Check all the cells on level 0 and recurse down
-      for (typename parallel::distributed::Triangulation<dim>::cell_iterator
-           it=triangulation->begin(0); it!=triangulation->end(0); ++it)
-        {
-          const LevelInd res = recursive_find_cell(particle, std::make_pair(it->level(), it->index()));
-          if (res.first != -1 && res.second != -1) return res;
-        }
-
-      // If we couldn't find it there, we need to check the active cells
-      // since the particle could be on a curved boundary not included in the
-      // coarse grid
-      for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-           ait=triangulation->begin_active(); ait!=triangulation->end(); ++ait)
-        {
-          if (ait->point_inside(particle.get_location()))
-            {
-              return std::make_pair(ait->level(), ait->index());
-            }
-        }
-
-      // If it failed all these tests, the particle is outside the mesh
-      return std::make_pair(-1, -1);
     }
 
     template <int dim>
@@ -468,11 +399,12 @@ namespace aspect
           Particle<dim> recv_particle(recv_data_it,property_manager->get_data_len());
           integrator->read_data(recv_data_it, recv_particle.get_id());
 
-          const LevelInd found_cell = find_cell(recv_particle, std::make_pair(-1,-1));
-          const typename parallel::distributed::Triangulation<dim>::cell_iterator cell(&this->get_triangulation(), found_cell.first, found_cell.second);
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
+            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
 
           if (cell->is_locally_owned())
             {
+              const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
               particles.insert(std::make_pair(found_cell, recv_particle));
             }
         }
@@ -557,21 +489,11 @@ namespace aspect
     }
 
     template <int dim>
-    void
-    World<dim>::check_particle_count()
-    {
-      const unsigned int global_particles = get_global_particle_count();
-
-      global_num_particles = global_particles;
-    }
-
-    template <int dim>
     template <class Archive>
     void
     World<dim>::serialize(Archive &ar, const unsigned int version)
     {
       ar &particles
-      &global_num_particles
       ;
     }
   }

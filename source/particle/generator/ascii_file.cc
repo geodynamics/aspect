@@ -58,13 +58,13 @@ namespace aspect
         Point<dim> coordinates;
 
         if (dim == 2)
-          while (in >> coordinates[0] >> sep >> coordinates[1])
+          while (in >> coordinates[0] >> coordinates[1])
             {
               generate_particle(coordinates,id,world);
               id++;
             }
         else if (dim == 3)
-          while (in >> coordinates[0] >> sep >> coordinates[1] >> sep >> coordinates[2])
+          while (in >> coordinates[0] >> coordinates[1] >> coordinates[2])
             {
               generate_particle(coordinates,id,world);
               id++;

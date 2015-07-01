@@ -40,24 +40,6 @@ namespace aspect
       template <int dim>
       class Interface
       {
-        protected:
-          /**
-           * Path to directory in which to put particle output files
-           */
-          std::string     output_dir;
-
-          /**
-           * MPI communicator to be used for output synchronization
-           */
-          MPI_Comm        communicator;
-
-//TODO: This needs to be serialized
-          /**
-           * Internal index of file output number, must be incremented by
-           * derived classes when they create a new file.
-           */
-          unsigned int    file_index;
-
         public:
           /**
            * Constructor.
@@ -137,6 +119,24 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &);
+
+        protected:
+          /**
+           * Path to directory in which to put particle output files
+           */
+          std::string     output_dir;
+
+          /**
+           * MPI communicator to be used for output synchronization
+           */
+          MPI_Comm        communicator;
+
+//TODO: This needs to be serialized
+          /**
+           * Internal index of file output number, must be incremented by
+           * derived classes when they create a new file.
+           */
+          unsigned int    file_index;
       };
 
 

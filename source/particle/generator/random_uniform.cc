@@ -132,7 +132,8 @@ namespace aspect
                   }
                 try
                   {
-                    if (it->point_inside(pt)) break;
+                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, pt);
+                    if (GeometryInfo<dim>::is_inside_unit_cell(p_unit)) break;
                   }
                 catch (...)
                   {

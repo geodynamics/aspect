@@ -32,43 +32,25 @@ namespace aspect
 
     /**
      * Base class of particles - represents a particle with position,
-     * velocity, an ID number and an variable number of properties. This class
+     * an ID number and an variable number of properties. This class
      * can be extended to include data related to a particle by the property
-     * manager
+     * manager.
      */
     template <int dim>
     class Particle
     {
-      private:
-        /**
-         * Current particle location
-         */
-        Point<dim>      location;
-
-        /**
-         * Globally unique ID of particle
-         * TODO: Integer?
-         */
-        double          id;
-
-        /**
-         * The serialized vector of all tracer properties
-         */
-        std::vector<double>      val;
-
-
       public:
         /**
          * Empty constructor for Particle, creates a particle at the
-         * origin with zero velocity.
+         * origin.
          */
         Particle ();
 
         /**
          * Constructor for Particle, creates a particle with the specified
-         * ID at the specified location with zero velocity. Note that Aspect
-         * does not check for duplicate particle IDs so the user must be sure
-         * the IDs are unique over all processes.
+         * ID at the specified location. Note that Aspect
+         * does not check for duplicate particle IDs so the generator must
+         * make sure the IDs are unique over all processes.
          *
          * @param[in] new_loc Initial location of particle.
          * @param[in] new_id Globally unique ID number of particle.
@@ -106,7 +88,7 @@ namespace aspect
 
         /**
           * Set the number of doubles required to represent this particle for
-          * communication. This includes the base properties like position
+          * communication. This includes the base properties position
           * and id as well as the additional user requested properties.
           *
           * @param [in] data_len Number of doubles to represent this particle
@@ -194,6 +176,23 @@ namespace aspect
          */
         const std::vector<double> &
         get_properties () const;
+
+      private:
+        /**
+         * Current particle location
+         */
+        Point<dim>      location;
+
+        /**
+         * Globally unique ID of particle
+         * TODO: Integer?
+         */
+        double          id;
+
+        /**
+         * The serialized vector of all tracer properties
+         */
+        std::vector<double>      val;
     };
 
   }
