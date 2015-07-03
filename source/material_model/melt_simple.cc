@@ -64,6 +64,8 @@ namespace aspect
     {
       if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
         return true;
+      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
+        return ((compressibility != 0) || (melt_compressibility != 0));
       else
         return false;
     }
@@ -98,7 +100,7 @@ namespace aspect
     MeltSimple<dim>::
     is_compressible () const
     {
-      return false;
+      return model_is_compressible;
     }
 
     template <int dim>
@@ -317,11 +319,11 @@ namespace aspect
           else
             temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
 
-          out.densities[i] = reference_rho_s * temperature_dependence;
+          out.densities[i] = reference_rho_s * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = thermal_conductivity;
-          out.compressibilities[i] = 0.0;
+          out.compressibilities[i] = compressibility;
 
           const double delta_temp = in.temperature[i]-reference_T;
           double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
@@ -343,16 +345,32 @@ namespace aspect
 
           out.fluid_viscosities[i] = eta_f;
           out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
-          out.fluid_densities[i] = reference_rho_f;
-          out.fluid_compressibilities[i] = 0.0;
+
+          // first, calculate temperature dependence of density
+          double temperature_dependence = 1.0;
+          if (this->include_adiabatic_heating ())
+            {
+              // temperature dependence is 1 - alpha * (T - T(adiabatic))
+              if (this->get_adiabatic_conditions().is_initialized())
+                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                          * thermal_expansivity;
+            }
+          else
+            temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
+
+          // the fluid compressibility includes two parts, a constant compressibility, and a pressure-dependent one
+          // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
+          out.fluid_compressibilities[i] = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
+          out.fluid_densities[i] = reference_rho_f * std::exp(out.fluid_compressibilities[i] * (in.pressure[i] - this->get_surface_pressure()))
+                                   * temperature_dependence;
 
           const double phi_0 = 0.05;
           porosity = std::max(std::min(porosity,0.995),1e-4);
           out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
           const double delta_temp = in.temperature[i]-reference_T;
-          double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
-          out.compaction_viscosities[i] *= temperature_dependence;
+          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          out.compaction_viscosities[i] *= visc_temperature_dependence;
         }
     }
 
@@ -420,6 +438,25 @@ namespace aspect
                              "which is done by a negative reaction term proportional to the " 
                              "porosity field."
                              "Units: $m$.");
+          prm.declare_entry ("Solid compressibility", "0.0",
+                             Patterns::Double (0),
+                             "The value of the compressibility of the solid matrix. "
+                             "Units: $1/Pa$.");
+          prm.declare_entry ("Melt compressibility", "0.0",
+                             Patterns::Double (0),
+                             "The value of the compressibility of the melt. "
+                             "Units: $1/Pa$.");
+          prm.declare_entry ("Melt bulk modulus derivative", "0.0",
+                             Patterns::Double (0),
+                             "The value of the pressure derivative of the melt bulk"
+                             "modulus. "
+                             "Units: None.");
+          prm.declare_entry ("Use full compressibility", "false",
+                             Patterns::Bool (),
+                             "If the compressibility should be used everywhere in the code"
+                             "(if true), changing the volume of material when the density changes, "
+                             "or only in the momentum conservation and advection equations "
+                             "(if false).");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
@@ -535,6 +572,10 @@ namespace aspect
           thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
           alpha_phi                  = prm.get_double ("Exponential melt weakening factor");
           extraction_depth           = prm.get_double ("Melt extraction depth");
+          compressibility            = prm.get_double ("Solid compressibility");
+          melt_compressibility       = prm.get_double ("Melt compressibility");
+          model_is_compressible      = prm.get_bool ("Use full compressibility");
+          melt_bulk_modulus_derivative = prm.get_double ("Melt bulk modulus derivative");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));

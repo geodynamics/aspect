@@ -151,6 +151,10 @@ namespace aspect
         double reference_permeability;
         double alpha_phi;
         double extraction_depth;
+        double compressibility;
+        double melt_compressibility;
+        double melt_bulk_modulus_derivative;
+        bool model_is_compressible;
 
         /**
          * Parameters for anhydrous melting of peridotite after Katz, 2003
