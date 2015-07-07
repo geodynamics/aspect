@@ -36,12 +36,12 @@ namespace aspect
       HarmonicCoefficients::HarmonicCoefficients(const unsigned int max_degree)
       {
         unsigned int k=0;
-        for (unsigned int i=0;i<=max_degree;i++)
+        for (unsigned int i=0; i<=max_degree; i++)
           {
-          for (unsigned int j=0; j<=i; ++j)
-            {
-              ++k;
-            }
+            for (unsigned int j=0; j<=i; ++j)
+              {
+                ++k;
+              }
           }
 
         sine_coefficients.resize(k);
@@ -50,9 +50,9 @@ namespace aspect
 
       template <int dim>
       SphericalHarmonicsExpansion<dim>::SphericalHarmonicsExpansion(const unsigned int max_degree)
-      :
-      max_degree(max_degree),
-      coefficients(max_degree)
+        :
+        max_degree(max_degree),
+        coefficients(max_degree)
       {}
 
       template <int dim>
@@ -61,20 +61,20 @@ namespace aspect
                                                         const double value)
       {
         const std_cxx11::array<double,dim> spherical_position =
-            Utilities::spherical_coordinates(position);
+          Utilities::spherical_coordinates(position);
 
         for (unsigned int i = 0, k = 0; i < max_degree; ++i)
           for (unsigned int j = 0; j <= i; ++j, ++k)
-          {
+            {
               coefficients.sine_coefficients[k] += value
-                                                  * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1]);
-                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
-                                                  // * cos(j*spherical_position[1]);
+                                                   * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1]);
+              //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
+              // * cos(j*spherical_position[1]);
               coefficients.cosine_coefficients[k] += value
-                                                  * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
-                                                  //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
-                                                  // * sin(j*spherical_position[1]);
-          }
+                                                     * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
+              //* boost::math::legendre_p(i,j,cos(spherical_position[2]))
+              // * sin(j*spherical_position[1]);
+            }
       }
 
       template <int dim>
@@ -104,11 +104,11 @@ namespace aspect
       Assert(quadrature_formula.size()==1, ExcInternalError());
 
       const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                    (&this->get_geometry_model());
+                                                                 (&this->get_geometry_model());
 
       AssertThrow (geometry_model != 0,
                    ExcMessage("The geoid postprocessor is currently only implemented for "
-                       "the spherical shell geometry model."));
+                              "the spherical shell geometry model."));
 
       // TODO AssertThrow (no_free_surface);
 
@@ -151,38 +151,38 @@ namespace aspect
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
+          {
+            fe_values.reinit (cell);
 
-              // get the various components of the solution, then
-              // evaluate the material properties there
-              fe_values[this->introspection().extractors.temperature]
-              .get_function_values (this->get_solution(), in.temperature);
-              fe_values[this->introspection().extractors.pressure]
-              .get_function_values (this->get_solution(), in.pressure);
-              fe_values[this->introspection().extractors.velocities]
-              .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
+            // get the various components of the solution, then
+            // evaluate the material properties there
+            fe_values[this->introspection().extractors.temperature]
+            .get_function_values (this->get_solution(), in.temperature);
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_values (this->get_solution(), in.pressure);
+            fe_values[this->introspection().extractors.velocities]
+            .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
 
-              in.position = fe_values.get_quadrature_points();
+            in.position = fe_values.get_quadrature_points();
 
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                fe_values[this->introspection().extractors.compositional_fields[c]]
-                .get_function_values(this->get_solution(),
-                                     composition_values[c]);
-              for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-                {
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              fe_values[this->introspection().extractors.compositional_fields[c]]
+              .get_function_values(this->get_solution(),
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
 
-              this->get_material_model().evaluate(in, out);
+            this->get_material_model().evaluate(in, out);
 
-              // see if the cell is at the *top* or *bottom* boundary
-              bool surface_cell = false;
-              bool bottom_cell = false;
+            // see if the cell is at the *top* or *bottom* boundary
+            bool surface_cell = false;
+            bool bottom_cell = false;
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                {
+            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              {
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                   {
                     surface_cell = true;
@@ -193,65 +193,65 @@ namespace aspect
                     bottom_cell = true;
                     break;
                   }
-                }
-              // for each of the quadrature points, evaluate the
-              // density and add its contribution to the spherical harmonics
+              }
+            // for each of the quadrature points, evaluate the
+            // density and add its contribution to the spherical harmonics
 
-              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                {
-                  const Point<dim> location = fe_values.quadrature_point(q);
+            for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+              {
+                const Point<dim> location = fe_values.quadrature_point(q);
 
-                  const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
-                  const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-                  const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
+                const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
+                const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
+                const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
 
-                  const double density   = out.densities[q];
-                  const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
+                const double density   = out.densities[q];
+                const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
 
-                  buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
+                buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
 
-                  //TODO: remove this when finished, it is only there for benchmark purposes
-                  const std_cxx1x::array<double,dim> spherical_position =
-                      Utilities::spherical_coordinates(location);
-                  example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
+                //TODO: remove this when finished, it is only there for benchmark purposes
+                const std_cxx1x::array<double,dim> spherical_position =
+                  Utilities::spherical_coordinates(location);
+                example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
 
-                  // if this is a cell at the surface, add the topography to
-                  // the topography expansion
-                  if (surface_cell)
-                    {
-                      const double viscosity = out.viscosities[q];
+                // if this is a cell at the surface, add the topography to
+                // the topography expansion
+                if (surface_cell)
+                  {
+                    const double viscosity = out.viscosities[q];
 
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+                    const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
-                      // Subtract the adiabatic pressure
-                      const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
-                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
+                    // Subtract the adiabatic pressure
+                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                    const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
-                      // Add topography contribution
-                      surface_topography_expansion->add_data_point(location,dynamic_topography);
-                    }
+                    // Add topography contribution
+                    surface_topography_expansion->add_data_point(location,dynamic_topography);
+                  }
 
-                  // if this is a cell at the bottom, add the topography to
-                  // the bottom expansion
-                  if (bottom_cell)
-                    {
-                      const double viscosity = out.viscosities[q];
+                // if this is a cell at the bottom, add the topography to
+                // the bottom expansion
+                if (bottom_cell)
+                  {
+                    const double viscosity = out.viscosities[q];
 
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+                    const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
-                      // Subtract the adiabatic pressure
-                      const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
-                      const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                      const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+                    // Subtract the adiabatic pressure
+                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                    const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
 
-                      // Add topography contribution
-                      bottom_topography_expansion->add_data_point(location,dynamic_topography);
-                    }
-                }
-            }
+                    // Add topography contribution
+                    bottom_topography_expansion->add_data_point(location,dynamic_topography);
+                  }
+              }
+          }
 
       // From here on we consider the gravity constant at the value of the surface
       const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));

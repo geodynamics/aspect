@@ -39,10 +39,10 @@ namespace aspect
        */
       struct HarmonicCoefficients
       {
-          HarmonicCoefficients(const unsigned int max_degree);
+        HarmonicCoefficients(const unsigned int max_degree);
 
-          std::vector<double> sine_coefficients;
-          std::vector<double> cosine_coefficients;
+        std::vector<double> sine_coefficients;
+        std::vector<double> cosine_coefficients;
       };
 
       /**
@@ -56,7 +56,7 @@ namespace aspect
           SphericalHarmonicsExpansion(const unsigned int max_degree);
 
           void add_data_point (const Point<dim> &position,
-                         const double value);
+                               const double value);
 
           HarmonicCoefficients
           get_coefficients () const;
