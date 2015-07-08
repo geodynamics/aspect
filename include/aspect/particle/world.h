@@ -160,9 +160,11 @@ namespace aspect
         void send_recv_particles(const std::vector<Particle <dim> > &send_particles);
 
         /**
-         * Calculates the velocities for each particle at its location given
-         * the input solution velocity field. The calculated velocities are
-         * stored in the Particle objects for this world.
+         * Calculates the current and old velocities for each particle at its
+         * current location. The velocities are stored in the vectors given
+         * to the function, ordered in the same way an iterator iterates over
+         * the map of particles. This means the ordering is only correct as
+         * long as the map does not change.
          *
          * @param [inout] velocities The current solution vector for this
          * simulation.

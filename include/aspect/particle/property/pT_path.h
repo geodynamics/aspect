@@ -63,7 +63,7 @@ namespace aspect
            * This implementation tells the particle manager that
            * we need to update tracer properties over time.
            */
-          bool
+          UpdateTimeFlags
           need_update ();
 
           void

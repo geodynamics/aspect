@@ -35,6 +35,26 @@ namespace aspect
     namespace Property
     {
 
+      enum UpdateTimeFlags
+      {
+        /**
+         * Never update the initially set properties.
+         */
+        update_never,
+        /**
+         * Update the tracer properties before outputting them. This is
+         * sufficient for all tracer properties that depend on the current
+         * solution, like current velocity or pressure.
+         */
+        update_output_step,
+        /**
+         * Update the tracer properties every timestep. This is only necessary
+         * if the properties at the output time depend on some sort of time
+         * integration of solution properties.
+         */
+        update_time_step
+      };
+
       /**
         * Interface provides an example of how to extend the Particle
         * class to include related particle data. This allows users to attach
@@ -86,7 +106,7 @@ namespace aspect
            * to update tracer properties over time.
            */
           virtual
-          bool
+          UpdateTimeFlags
           need_update ();
 
           virtual
@@ -188,7 +208,7 @@ namespace aspect
            * evaluated at tracer positions in this case.
            */
           virtual
-          bool
+          UpdateTimeFlags
           need_update ();
 
           /**

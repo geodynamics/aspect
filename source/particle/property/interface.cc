@@ -50,10 +50,10 @@ namespace aspect
       {}
 
       template <int dim>
-      bool
+      UpdateTimeFlags
       Interface<dim>::need_update ()
       {
-        return false;
+        return update_never;
       }
 
       template <int dim>
@@ -148,14 +148,14 @@ namespace aspect
       }
 
       template <int dim>
-      bool
+      UpdateTimeFlags
       Manager<dim>::need_update ()
       {
-        bool update(false);
+        UpdateTimeFlags update = update_never;
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            update = update | (*p)->need_update();
+            update = std::max(update,(*p)->need_update());
           }
         return update;
       }

@@ -330,7 +330,7 @@ namespace aspect
         }
 
       // Update particle properties
-      if (property_manager->need_update())
+      if (property_manager->need_update() == Property::update_time_step)
         update_particles();
     }
 

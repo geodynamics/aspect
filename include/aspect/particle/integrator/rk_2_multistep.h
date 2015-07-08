@@ -32,8 +32,8 @@ namespace aspect
     {
       /**
       * Runge Kutta second order integrator, where y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n).
-      * This scheme requires storing the original location, and the read/write_data functions reflec
-      * This version is different in that particle movement "lags" behind by one timestep, and there
+      * This scheme is identical to the rk2 integrator, but instead of storing the old location
+      * in the integrator, it is stored as particle property."
       */
       template <int dim>
       class RK2IntegratorMultiStep : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
@@ -56,7 +56,6 @@ namespace aspect
 
         private:
           unsigned int                    step;
-          std::map<double, Point<dim> >   loc0;
       };
     }
   }

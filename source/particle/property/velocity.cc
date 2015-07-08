@@ -50,10 +50,10 @@ namespace aspect
       }
 
       template <int dim>
-      bool
+      UpdateTimeFlags
       Velocity<dim>::need_update()
       {
-        return true;
+        return update_output_step;
       }
 
       template <int dim>

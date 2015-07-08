@@ -94,6 +94,9 @@ namespace aspect
       // If it's time to generate an output file, call the appropriate functions and reset the timer
       if (this->get_time() >= next_data_output_time)
         {
+          if (property_manager.need_update() == Particle::Property::update_output_step)
+            world.update_particles();
+
           set_next_data_output_time (this->get_time());
 
           std::vector<std::string> names;

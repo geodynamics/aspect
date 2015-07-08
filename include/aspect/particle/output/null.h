@@ -50,6 +50,12 @@ namespace aspect
            *
            * @param[in] particles The set of particles to generate a graphical
            *   representation for
+           * @param [in] data_names The names of the particle properties that
+           *   will be written.
+           * @param [in] data_components The number of property components.
+           *   Equals one for scalar properties and dim for vector properties,
+           *   but any other number is valid as well (e.g. number of compositional
+           *   fields).
            * @param[in] current_time Current time of the simulation, given as either
            *   years or seconds, as selected in the input file. In other words,
            *   output writers do not need to know the units in which time is

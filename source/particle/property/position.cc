@@ -50,10 +50,10 @@ namespace aspect
       }
 
       template <int dim>
-      bool
+      UpdateTimeFlags
       Position<dim>::need_update()
       {
-        return true;
+        return update_output_step;
       }
 
       template <int dim>

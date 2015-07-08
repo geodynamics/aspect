@@ -39,11 +39,11 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::initialize (std::string output_directory,
-                                  MPI_Comm communicator_)
+      Interface<dim>::initialize (const std::string &output_directory,
+                                  const MPI_Comm &comm)
       {
         output_dir = output_directory;
-        communicator = communicator_;
+        communicator = comm;
         file_index = 0;
       }
 

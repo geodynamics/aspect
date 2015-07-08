@@ -32,7 +32,6 @@ namespace aspect
       RK2IntegratorMultiStep<dim>::RK2IntegratorMultiStep()
       {
         step = 0;
-        loc0.clear();
       }
 
       template <int dim>
@@ -71,22 +70,19 @@ namespace aspect
 
             if (step == 0)
               {
-                //vel = midNewVel; loc = lastLoc + dt * (midOldVel + midNewVel)/2
                 it->second.set_location(lastLoc + 0.5 * dt * lastVel);
               }
             else if (step == 1)
               {
-                //lastLoc = oldPos, loc = pos + 1/2 vel
                 it->second.set_location(lastLoc + dt*(*vel + *old_vel) / 2.0);
               }
             else
               {
-                // Error!
+                Assert(false,
+                       ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
           }
 
-        //if (step == 1) loc0.clear();
-        // step = (step+1)%3;
         step = (step+1)%2;
 
         // Continue until we're at the last step
@@ -97,7 +93,7 @@ namespace aspect
       unsigned int
       RK2IntegratorMultiStep<dim>::data_length() const
       {
-        return dim;
+        return 0;
       }
 
       template <int dim>
@@ -105,11 +101,6 @@ namespace aspect
       RK2IntegratorMultiStep<dim>::read_data(std::vector<double>::const_iterator &data,
                                              const double &id_num)
       {
-        // Read location data
-        for (unsigned int i=0; i<dim; ++i,++data)
-          {
-            loc0[id_num](i) = *data;
-          }
       }
 
       template <int dim>
@@ -117,12 +108,6 @@ namespace aspect
       RK2IntegratorMultiStep<dim>::write_data(std::vector<double>::iterator &data,
                                               const double &id_num) const
       {
-        // Write location data
-        const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
-        for (unsigned int i=0; i<dim; ++i,++data)
-          {
-            *data = it->second(i);
-          }
       }
     }
   }
@@ -140,8 +125,9 @@ namespace aspect
                                           "rk2 multistep",
                                           "Runge Kutta second order integrator, where "
                                           "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "
-                                          "This scheme requires storing the original location, "
-                                          "and the read/write_data functions reflect this.")
+                                          "This scheme is identical to the rk2 integrator, "
+                                          "but instead of storing the old location in the "
+                                          "integrator, it is stored as particle property.")
     }
   }
 }
