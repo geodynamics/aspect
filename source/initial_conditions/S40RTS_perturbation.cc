@@ -265,17 +265,9 @@ namespace aspect
       double prefact;
       int ind = 0;
 
-      // option to not include degree zero in summation
-      const unsigned int starting_degree = (zero_out_degree_0
-                                            ?
-                                            1.
-                                            :
-                                            0.);
-
-
       for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
         {
-          for (int degree_l = starting_degree; degree_l < maxdegree+1; degree_l++)
+          for (int degree_l = 0; degree_l < maxdegree+1; degree_l++)
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
@@ -283,7 +275,13 @@ namespace aspect
                   const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
 
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
-                  if (order_m == 0)
+                  if (degree_l == 0)
+                    prefact = (zero_out_degree_0
+                               ?
+                               0.
+                               :
+                               1.);
+                  else if (order_m == 0)
                     prefact = 1.;
                   else
                     prefact = sqrt(2.);

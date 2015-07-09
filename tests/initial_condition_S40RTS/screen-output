@@ -16,7 +16,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Writing graphical output: output-initial_condition_S40RTS/solution-00000
-     Temperature min/avg/max:  1458 K, 1599 K, 1744 K
+     Temperature min/avg/max:  1450 K, 1600 K, 1798 K
 
 Termination requested by criterion: end time
 

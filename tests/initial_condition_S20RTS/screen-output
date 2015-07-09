@@ -16,7 +16,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Writing graphical output: output-initial_condition_S20RTS/solution-00000
-     Temperature min/avg/max:  1488 K, 1598 K, 1708 K
+     Temperature min/avg/max:  1364 K, 1599 K, 1723 K
 
 Termination requested by criterion: end time
 
