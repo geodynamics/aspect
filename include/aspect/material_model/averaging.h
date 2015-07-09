@@ -56,11 +56,11 @@ namespace aspect
     * $x_q$ are the values at the $Q$ quadrature points.
     *
     * - NWD Arithmetic averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q}]
+    * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q} \f]
     * where $x_q$ are the values and $w$ the weights at the $Q$ quadrature points.
     *
     * - NWD Harmonic averaging: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q \frac{w_q}{x_q}}
+    * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q \frac{w_q}{x_q}} \f]
     *  where $x_q$ are the values and $w$ the weights
     * at the $Q$ quadrature points.
     *
