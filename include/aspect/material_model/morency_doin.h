@@ -174,9 +174,6 @@ namespace aspect
         double reference_T;
         double min_strain_rate;
 
-        double min_visc;
-        double max_visc;
-        double veff_coefficient;
         double ref_visc;
     };
 
