@@ -99,6 +99,8 @@ namespace aspect
     {
       // create a quadrature formula based on the temperature element alone.
       const QMidpoint<dim> quadrature_formula;
+      const QMidpoint<dim-1> quadrature_formula_face;
+
       const unsigned int n_q_points = quadrature_formula.size();
 
       Assert(quadrature_formula.size()==1, ExcInternalError());
@@ -112,22 +114,25 @@ namespace aspect
 
       // TODO AssertThrow (no_free_surface);
 
-      buoyancy_expansions.resize(number_of_layers);
+      density_expansions.resize(number_of_layers);
       for (unsigned int i = 0; i < number_of_layers; ++i)
-        buoyancy_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
+        density_expansions[i].reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
       surface_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
       bottom_topography_expansion.reset(new internal::SphericalHarmonicsExpansion<dim>(max_degree));
 
-      //TODO: remove this when finished, it is only there for benchmark purposes
-      //internal::SphericalHarmonicsExpansion<dim> example_expansion(max_degree);
-
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,
+                               update_JxW_values |
                                update_values |
                                update_gradients |
                                update_q_points);
+
+      FEFaceValues<dim> fe_face_values (this->get_mapping(),
+                                        this->get_fe(),
+                                        quadrature_formula_face,
+                                        update_JxW_values);
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
@@ -178,47 +183,43 @@ namespace aspect
             this->get_material_model().evaluate(in, out);
 
             // see if the cell is at the *top* or *bottom* boundary
-            bool surface_cell = false;
-            bool bottom_cell = false;
+            unsigned int top_face_idx = numbers::invalid_unsigned_int;
+            unsigned int bottom_face_idx = numbers::invalid_unsigned_int;
 
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
                 if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
                   {
-                    surface_cell = true;
+                    top_face_idx = f;
                     break;
                   }
-                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - cell->face(f)->minimum_vertex_distance()/3))
+                if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center()) > (outer_radius - inner_radius - cell->face(f)->minimum_vertex_distance()/3))
                   {
-                    bottom_cell = true;
+                    bottom_face_idx = f;
                     break;
                   }
               }
+
             // for each of the quadrature points, evaluate the
             // density and add its contribution to the spherical harmonics
-
             for (unsigned int q=0; q<quadrature_formula.size(); ++q)
               {
-                const Point<dim> location = fe_values.quadrature_point(q);
+                const Point<dim> position = fe_values.quadrature_point(q);
+                const double radius = position.norm();
 
-                const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(location);
+                const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(position);
                 const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-                const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(location) / geometry_model->maximal_depth() * (number_of_layers-1));
+                const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(position) / geometry_model->maximal_depth() * (number_of_layers-1));
 
-                const double density   = out.densities[q];
-                const double buoyancy = (density - average_densities[layer_id]);
-                //const double buoyancy = -1.0 * (density - average_densities[layer_id]) * gravity.norm();
+                const double layer_volume = 4.0 / 3.0 * numbers::PI * (pow(radius+layer_thickness/2.0,3) - pow(radius-layer_thickness/2.0,3));
 
-                buoyancy_expansions[layer_id]->add_data_point(location,buoyancy);
+                const double density  = out.densities[q];
 
-                //TODO: remove this when finished, it is only there for benchmark purposes
-                //const std_cxx1x::array<double,dim> spherical_position =
-                //  Utilities::spherical_coordinates(location);
-                //example_expansion.add_data_point(location,boost::math::spherical_harmonic_r(3,2,spherical_position[2],spherical_position[1]));
+                density_expansions[layer_id]->add_data_point(position,density * fe_values.JxW(q) / layer_volume);
 
                 // if this is a cell at the surface, add the topography to
                 // the topography expansion
-                if (surface_cell)
+                if (top_face_idx != numbers::invalid_unsigned_int)
                   {
                     const double viscosity = out.viscosities[q];
 
@@ -226,17 +227,21 @@ namespace aspect
                     const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
                     // Subtract the adiabatic pressure
-                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(position);
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
+                    fe_face_values.reinit(cell, top_face_idx);
+                    const double surface = fe_face_values.JxW(q);
+                    const double total_surface = 4 * numbers::PI * outer_radius * outer_radius;
+
                     // Add topography contribution
-                    surface_topography_expansion->add_data_point(location,dynamic_topography);
+                    surface_topography_expansion->add_data_point(position,dynamic_topography * surface / total_surface);
                   }
 
                 // if this is a cell at the bottom, add the topography to
                 // the bottom expansion
-                if (bottom_cell)
+                if (bottom_face_idx != numbers::invalid_unsigned_int)
                   {
                     const double viscosity = out.viscosities[q];
 
@@ -244,12 +249,16 @@ namespace aspect
                     const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
                     // Subtract the adiabatic pressure
-                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
+                    const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(position);
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density_below - density);
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_below);
+
+                    fe_face_values.reinit(cell, bottom_face_idx);
+                    const double surface = fe_face_values.JxW(q);
+                    const double total_surface = 4 * numbers::PI * inner_radius * inner_radius;
 
                     // Add topography contribution
-                    bottom_topography_expansion->add_data_point(location,dynamic_topography);
+                    bottom_topography_expansion->add_data_point(position,dynamic_topography * surface / total_surface);
                   }
               }
           }
@@ -266,8 +275,8 @@ namespace aspect
 
       for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
         {
-          buoyancy_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
-          const internal::HarmonicCoefficients layer_coefficients = buoyancy_expansions[layer_id]->get_coefficients();
+          density_expansions[layer_id]->mpi_sum_coefficients(this->get_mpi_communicator());
+          const internal::HarmonicCoefficients layer_coefficients = density_expansions[layer_id]->get_coefficients();
 
           const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
 
@@ -318,6 +327,8 @@ namespace aspect
             }
         }
 
+      internal::HarmonicCoefficients bottom_topography_contribution(max_degree);
+
       if (include_topography_contribution)
         {
           bottom_topography_expansion->mpi_sum_coefficients(this->get_mpi_communicator());
@@ -335,6 +346,9 @@ namespace aspect
                 {
                   surface_geoid_expansion.sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
                   surface_geoid_expansion.cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
+
+                  bottom_topography_contribution.sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
+                  bottom_topography_contribution.cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
                 }
             }
         }
@@ -354,7 +368,7 @@ namespace aspect
 
           file << "# Timestep Maximum_degree Time" << std::endl;
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
-          file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine" << std::endl;
+          file << "# degree order geoid_sine_coefficient geoid_cosine_coefficient buoyancy_sine buoyancy_cosine topography_sine topography_cosine bottom_topography_sine bottom_topography_cosine" << std::endl;
           // Write the solution to an output file
           for (unsigned int i=0, k=0; i <= max_degree; ++i)
             {
@@ -366,7 +380,9 @@ namespace aspect
                        << buoyancy_contribution.sine_coefficients[k] << " "
                        << buoyancy_contribution.cosine_coefficients[k] << " "
                        << topography_contribution.sine_coefficients[k] << " "
-                       << topography_contribution.cosine_coefficients[k] << std::endl;
+                       << topography_contribution.cosine_coefficients[k] << " "
+                       << bottom_topography_contribution.sine_coefficients[k] << " "
+                       << bottom_topography_contribution.cosine_coefficients[k] <<std::endl;
                 }
             }
         }
@@ -394,15 +410,21 @@ namespace aspect
                              "sets the number of layers. Similar to the depth-average "
                              "postprocessor, the number of layers should correspond roughly to "
                              "the available model resolution.");
-          prm.declare_entry ("Density below", "8000",
+          prm.declare_entry ("Density below", "9900",
                              Patterns::Double(0),
-                             "");
-          prm.declare_entry ("Density above", "0",
-                             Patterns::Double(),
-                             "");
+                             "This constant density is assumed for the material underlying the "
+                             "model to calculate its topography contribution. The default value "
+                             "is chosen to match the outer core density.");
+          prm.declare_entry ("Density above", "1000",
+                             Patterns::Double(0),
+                             "This constant density is assumed for the material overlying the "
+                             "model to calculate its topography contribution. The default value "
+                             "is chosen to match the density of water.");
           prm.declare_entry ("Maximum degree of expansion", "7",
                              Patterns::Integer (1),
-                             "");
+                             "The geoid will be expanded in spherical harmonics up to this degree. "
+                             "If this degree of expansion is set too high compared to the model "
+                             "resolution the output will be unreliable.");
         }
         prm.leave_subsection();
       }
