@@ -37,9 +37,9 @@ namespace aspect
      * This adds the term from adiabatic compression heating
      *    $ \alpha T (\mathbf u \cdot \nabla p) $
      * where we use the definition of
-     *    $ \alpha = - \frac{1}{\rho} \frac{\partial \rho}{\partial T}
+     *    $ \alpha = - \frac{1}{\rho} \frac{\partial \rho}{\partial T} $
      * Note: this term is often simplified using the relationship
-     *    $ \rho \mathbf g = - \nabla p
+     *    $ \rho \mathbf g = - \nabla p $
      * to yield
      *    $ - \alpha \rho T (\mathbf u \cdot \mathbf g) $
      *
