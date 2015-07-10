@@ -787,7 +787,7 @@ namespace aspect
 
     internal::Assembly::Scratch::
     AdvectionSystem<dim> scratch (finite_element,
-                                  finite_element.base_element(advection_field.block_index(introspection)),
+                                  finite_element.base_element(advection_field.base_element(introspection)),
                                   mapping,
                                   QGauss<dim>((advection_field.is_temperature()
                                                ?
