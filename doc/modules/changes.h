@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: There is now an option in the Visualization postprocessor for
+ * outputting the mesh velocity in free surface runs.
+ * <br>
+ * (Ian Rose, 2015/06/16)
+ *
  * <li> New: There are now parameter files and a section in the manual for 
  * reproducing the benchmarks for free surface computations from Crameri et 
  * al. (2012).

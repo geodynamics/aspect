@@ -1,4 +1,4 @@
-#Test for free surface topography due to a rising blob
+# Test for outputting ALE mesh velocity with a free surface
 
 set Dimension = 2
 set CFL number                             = 0.5
@@ -78,7 +78,7 @@ end
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 1                       # default: 2
-  set Initial global refinement          = 3                      # default: 2
+  set Initial global refinement          = 1                      # default: 2
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.00
   set Strategy                           = temperature
@@ -102,9 +102,14 @@ end
 
 subsection Termination criteria
   set Termination criteria = end step
-  set End step = 10
+  set End step = 2
 end
 
 subsection Postprocess
-  set List of postprocessors = topography,velocity statistics, basic statistics, 
+  set List of postprocessors = topography,velocity statistics, basic statistics, visualization 
+  subsection Visualization
+    set Output mesh velocity = true
+    set Output format = gnuplot
+    set Time between graphical output = 0.
+  end 
 end

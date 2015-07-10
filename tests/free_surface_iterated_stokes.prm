@@ -1,5 +1,4 @@
-# Test for relaxin topography of the free surface after an 
-# initial sinusoidal perturbation
+#Test for running a free surface with the iterated stokes solver
 
 set Dimension = 2
 set CFL number                             = 0.1

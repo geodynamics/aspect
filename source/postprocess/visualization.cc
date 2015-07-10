@@ -97,6 +97,39 @@ namespace aspect
             return update_values;
           }
       };
+
+      /**
+       * This Postprocessor will generate the output variables of mesh velocity
+       * for when a free surface is used.
+       */
+      template <int dim>
+      class FreeSurfacePostprocessor: public DataPostprocessorVector< dim >, public SimulatorAccess<dim>
+      {
+        public:
+          FreeSurfacePostprocessor ()
+            : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
+          {}
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &,
+                                             const std::vector<Point<dim> > &,
+                                             const std::vector<Point<dim> > &,
+                                             std::vector<Vector<double> >                    &computed_quantities) const
+          {
+            //check that the first quadruatre point has dim components
+            Assert( computed_quantities[0].size() == dim,
+                    ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
+            const double velocity_scaling_factor =
+              this->convert_output_to_years() ? year_in_seconds : 1.0;
+            const unsigned int n_q_points = uh.size();
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<dim; ++i)
+                computed_quantities[q][i]= uh[q][i] * velocity_scaling_factor;
+          }
+      };
     }
 
 
@@ -237,6 +270,8 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       dynamic_cast<SimulatorAccess<dim>*>(&base_variables)->initialize(this->get_simulator());
 
+      std_cxx1x::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
+
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
       // that will write data in the background. the other thread
@@ -249,6 +284,14 @@ namespace aspect
       data_out.add_data_vector (this->get_solution(),
                                 base_variables);
 
+      // If there is a free surface, also attach the mesh velocity object
+      if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
+        {
+          free_surface_variables.reset( new internal::FreeSurfacePostprocessor<dim>);
+          free_surface_variables->initialize(this->get_simulator());
+          data_out.add_data_vector (this->get_mesh_velocity(),
+                                    *free_surface_variables);
+        }
 
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
@@ -678,6 +721,13 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Output mesh velocity", "false",
+                             Patterns::Bool(),
+                             "For free surface computations Aspect uses an Arbitrary-Lagrangian-"
+                             "Eulerian formulation to handle deforming the domain, so the mesh "
+                             "has its own velocity field.  This may be written as an output field "
+                             "by setting this parameter to true.");
+
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
@@ -729,6 +779,7 @@ namespace aspect
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
           interpolate_output = prm.get_bool("Interpolate output");
+          output_mesh_velocity = prm.get_bool("Output mesh velocity");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));

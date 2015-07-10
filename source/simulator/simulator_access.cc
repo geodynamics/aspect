@@ -221,6 +221,14 @@ namespace aspect
     return simulator->solution;
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_mesh_velocity () const
+  {
+    Assert( simulator->parameters.free_surface_enabled,
+            ExcMessage("You cannot get the mesh velocity with no free surface."));
+    return simulator->free_surface->mesh_velocity;
+  }
 
 
   template <int dim>

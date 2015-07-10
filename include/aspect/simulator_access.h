@@ -295,6 +295,16 @@ namespace aspect
       get_old_solution () const;
 
       /**
+       * Return a reference to the vector that has the mesh velocity for
+       * simulations with a free surface.
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
+      const LinearAlgebra::BlockVector &
+      get_mesh_velocity () const;
+
+      /**
        * Return a reference to the DoFHandler that is used to discretize the
        * variables at the current time step.
        */
