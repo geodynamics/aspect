@@ -1,0 +1,56 @@
+set Dimension                              = 3
+set End time                               = 0
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+end
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = compositional vector
+    set Output format = gnuplot
+    subsection Compositional fields as vectors
+      set Names of vectors = vector_field
+      set Names of fields = vec_x, vec_y, vec_z
+    end
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = unrelated1, vec_x, vec_y, vec_z, unrelated2
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1;1;.5;1;0
+  end
+end
