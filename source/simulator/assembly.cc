@@ -506,23 +506,6 @@ namespace aspect
 
       }
     }
-
-
-
-    template <class T>
-    inline
-    T
-    bdf2_extrapolate (const bool use_bdf_scheme,
-                      const double old_time_step,
-                      const double time_step,
-                      const T &old_data,
-                      const T &new_data)
-    {
-      return (use_bdf_scheme) ?
-             (new_data * (1 + time_step/old_time_step)
-              - old_data * time_step/old_time_step)
-             : new_data;
-    }
   }
 
 
