@@ -7,6 +7,16 @@
  *
  * <ol>
  *
+ * <li> New: For free surface computations there is an option to advect the 
+ * mesh vertically (in the direction of gravity),  in addition to the old 
+ * formulation which advects it in the direction normal to the surface.  
+ * This can be enabled by setting "Surface velocity projection" to "vertical"
+ * in the "Free surface" section of a parameter file. 
+ * This scheme can maintain better mesh regularity properties for computations
+ * where there is a large deformation, or large curvature.
+ * <br>
+ * (Ian Rose, 2015/07/10)
+ *
  * <li> New: There is now an option in the Visualization postprocessor for
  * outputting the mesh velocity in free surface runs.
  * <br>
