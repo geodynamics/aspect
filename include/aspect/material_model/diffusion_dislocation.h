@@ -81,10 +81,8 @@ namespace aspect
     {
       public:
 
-        typedef typename aspect::MaterialModel::Interface<dim>::MaterialModelInputs MaterialModelInputs;
-        typedef typename aspect::MaterialModel::Interface<dim>::MaterialModelOutputs MaterialModelOutputs;
-
-        virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         /**
          * Return true if the viscosity() function returns something that may
@@ -157,8 +155,13 @@ namespace aspect
         double max_visc;
         double veff_coefficient;
         double ref_visc;
+
+        double strain_rate_residual_threshold;
+        unsigned int stress_max_iteration_number;
+
         double thermal_diffusivity;
         double heat_capacity;
+        double grain_size;
 
         /**
          * From multicomponent material model: From a list of compositional
@@ -196,20 +199,23 @@ namespace aspect
                               const std::vector<double> &parameter_values,
                               const enum averaging_scheme &average_type) const;
 
-        std::vector<double> calculate_viscosities ( const std::vector<double> &volume_fractions,
-                                                    const double &pressure,
-                                                    const double &temperature,
-                                                    const SymmetricTensor<2,dim> &strain_rate) const;
+        std::vector<double>
+        calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
+                                          const double &pressure,
+                                          const double &temperature,
+                                          const SymmetricTensor<2,dim> &strain_rate) const;
 
 
         std::vector<double> prefactors_diffusion;
+        std::vector<double> stress_exponents_diffusion;
+        std::vector<double> grain_size_exponents_diffusion;
         std::vector<double> activation_energies_diffusion;
         std::vector<double> activation_volumes_diffusion;
 
         std::vector<double> prefactors_dislocation;
+        std::vector<double> stress_exponents_dislocation;
         std::vector<double> activation_energies_dislocation;
         std::vector<double> activation_volumes_dislocation;
-        std::vector<double> stress_exponents_dislocation;
 
     };
 
