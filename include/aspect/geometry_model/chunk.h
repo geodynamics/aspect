@@ -92,11 +92,11 @@ namespace aspect
          * Return the typical length scale one would expect of features in
          * this geometry, assuming realistic parameters.
          *
-        * As described in the first ASPECT paper, a length scale of
-        * 10km = 1e4m works well for the pressure scaling for earth
-        * sized spherical shells. use a length scale that
-        * yields this value for the R0,R1 corresponding to earth
-        * but otherwise scales like (R1-R0)
+         * As described in the first ASPECT paper, a length scale of
+         * 10km = 1e4m works well for the pressure scaling for earth
+         * sized spherical shells. use a length scale that
+         * yields this value for the R0,R1 corresponding to earth
+         * but otherwise scales like (R1-R0)
          */
         virtual
         double length_scale () const;
@@ -108,21 +108,66 @@ namespace aspect
         virtual
         Point<dim> representative_point(const double depth) const;
 
+        /**
+         * Return the longitude at the western edge of the chunk
+         * Measured in radians
+         */
         virtual
-        double start_longitude() const;
+        double west_longitude() const;
 
+        /**
+         * Return the longitude at the eastern edge of the chunk
+         * Measured in radians
+         */
         virtual
-        double end_longitude() const;
+        double east_longitude() const;
 
+        /**
+         * Returns the longitude range of the chunk
+         * Measured in radians
+         */
         virtual
         double longitude_range() const;
 
+        /**
+         * Return the latitude at the southern edge of the chunk
+         * Measured in radians from the equator
+         */
+        virtual
+        double south_latitude() const;
+
+        /**
+         * Return the latitude at the northern edge of the chunk
+         * Measured in radians from the equator
+         */
+        virtual
+        double north_latitude() const;
+
+        /**
+         * Return the latitude range of the chunk
+         * Measured in radians
+         */
+        virtual
+        double latitude_range() const;
+
+        /**
+         * Return the maximum depth from the surface of the model
+         * Measured in meters
+         */
         virtual
         double maximal_depth() const;
 
+        /**
+         * Return the inner radius of the chunk
+         * Measured in meters
+         */
         virtual
         double inner_radius() const;
 
+        /**
+         * Return the outer radius of the chunk
+         * Measured in meters
+         */
         virtual
         double outer_radius() const;
 
@@ -153,14 +198,14 @@ namespace aspect
       private:
         /**
          * Minimum depth, longitude-depth or
-        * longitude-latitude-depth point
+         * longitude-latitude-depth point
          */
         Point<dim> point1;
 
         /**
-        * Maximum depth, longitude-depth or
+         * Maximum depth, longitude-depth or
          * longitude-latitude-depth point
-               */
+         */
         Point<dim> point2;
 
         /**
@@ -187,6 +232,9 @@ namespace aspect
             Point<dim>
             push_forward(const Point<dim> &chart_point) const;
         };
+
+        Point<dim> pull_back(const Point<dim>) const;
+        Point<dim> push_forward(const Point<dim>) const;
 
         /**
          * An object that describes the geometry.

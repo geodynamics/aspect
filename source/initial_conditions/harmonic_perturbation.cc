@@ -99,7 +99,7 @@ namespace aspect
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is alway 0 at the model boundaries.
           const double opening_angle = chunk_geometry_model->longitude_range(); // in radians
-          const double start_angle = chunk_geometry_model->start_longitude(); // in radians
+          const double start_angle = chunk_geometry_model->west_longitude(); // in radians
           lateral_perturbation = std::sin((lateral_wave_number_1*(scoord[1]-start_angle))*numbers::PI/opening_angle);
 
         }
