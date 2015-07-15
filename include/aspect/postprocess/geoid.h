@@ -102,6 +102,12 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Returns the last computed geoid coefficients.
+         */
+        const internal::HarmonicCoefficients &
+        get_geoid_coefficients () const;
+
       private:
         /**
          * A parameter that we read from the input file that denotes whether
@@ -127,6 +133,8 @@ namespace aspect
          * combined contribution at the surface.
          */
         std::vector <std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > > density_expansions;
+
+        std_cxx11::shared_ptr<internal::HarmonicCoefficients> surface_geoid_expansion;
 
         std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > surface_topography_expansion;
         std_cxx11::shared_ptr<internal::SphericalHarmonicsExpansion<dim> > bottom_topography_expansion;

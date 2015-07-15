@@ -209,7 +209,7 @@ namespace aspect
 
                 const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(position);
                 const Tensor<1,dim> gravity_direction = gravity/gravity.norm();
-                const unsigned int layer_id = static_cast<unsigned int> (geometry_model->depth(position) / geometry_model->maximal_depth() * (number_of_layers-1));
+                const unsigned int layer_id = rint (geometry_model->depth(position) / geometry_model->maximal_depth() * (number_of_layers-1));
 
                 const double layer_volume = 4.0 / 3.0 * numbers::PI * (pow(radius+layer_thickness/2.0,3) - pow(radius-layer_thickness/2.0,3));
 
@@ -269,9 +269,8 @@ namespace aspect
       const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
 
       internal::HarmonicCoefficients buoyancy_contribution(max_degree);
-
-      internal::HarmonicCoefficients surface_geoid_expansion(max_degree);
       internal::HarmonicCoefficients bottom_geoid_expansion(max_degree);
+      surface_geoid_expansion.reset(new internal::HarmonicCoefficients(max_degree));
 
       for (unsigned int layer_id = 0; layer_id < number_of_layers; ++layer_id)
         {
@@ -288,8 +287,8 @@ namespace aspect
 
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
-                  surface_geoid_expansion.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
-                  surface_geoid_expansion.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+                  surface_geoid_expansion->sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion->cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
 
                   buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
                   buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
@@ -318,8 +317,8 @@ namespace aspect
 
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
-                  surface_geoid_expansion.sine_coefficients[k] += con1 * topography_coefficients.sine_coefficients[k];
-                  surface_geoid_expansion.cosine_coefficients[k] += con1 * topography_coefficients.cosine_coefficients[k];
+                  surface_geoid_expansion->sine_coefficients[k] += con1 * topography_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion->cosine_coefficients[k] += con1 * topography_coefficients.cosine_coefficients[k];
 
                   topography_contribution.sine_coefficients[k] += con1 * topography_coefficients.sine_coefficients[k];
                   topography_contribution.cosine_coefficients[k] += con1 * topography_coefficients.cosine_coefficients[k];
@@ -344,11 +343,13 @@ namespace aspect
 
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
-                  surface_geoid_expansion.sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
-                  surface_geoid_expansion.cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
+                  surface_geoid_expansion->sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion->cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
 
                   bottom_topography_contribution.sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
                   bottom_topography_contribution.cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
+                  surface_geoid_expansion->sine_coefficients[k] += con2 * topography_coefficients.sine_coefficients[k];
+                  surface_geoid_expansion->cosine_coefficients[k] += con2 * topography_coefficients.cosine_coefficients[k];
                 }
             }
         }
@@ -375,8 +376,8 @@ namespace aspect
               for (unsigned int j = 0; j <= i; ++j, ++k)
                 {
                   file << i << " " << j << " "
-                       << surface_geoid_expansion.sine_coefficients[k] << " "
-                       << surface_geoid_expansion.cosine_coefficients[k] << " "
+                       << surface_geoid_expansion->sine_coefficients[k] << " "
+                       << surface_geoid_expansion->cosine_coefficients[k] << " "
                        << buoyancy_contribution.sine_coefficients[k] << " "
                        << buoyancy_contribution.cosine_coefficients[k] << " "
                        << topography_contribution.sine_coefficients[k] << " "
@@ -389,6 +390,13 @@ namespace aspect
 
       return std::pair<std::string,std::string>("Writing geoid:",
                                                 filename);
+    }
+
+    template <int dim>
+    const internal::HarmonicCoefficients &
+    Geoid<dim>::get_geoid_coefficients () const
+    {
+      return *surface_geoid_expansion;
     }
 
     template <int dim>
