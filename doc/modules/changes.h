@@ -7,6 +7,10 @@
  *
  * <ol>
  *
+ * <li> New: Plugin for visualizing groups of compositional fields as vectors.
+ * <br>
+ * (Jonathan Perry-Houts, 2015/07/12)
+ *
  * <li> New: For free surface computations there is an option to advect the 
  * mesh vertically (in the direction of gravity),  in addition to the old 
  * formulation which advects it in the direction normal to the surface.  
