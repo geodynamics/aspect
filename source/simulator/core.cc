@@ -989,6 +989,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_dofs ()
   {
+    signals.edit_parameters_pre_setup_dofs(*this, parameters);
+
     computing_timer.enter_section("Setup dof systems");
 
     dof_handler.distribute_dofs(finite_element);
