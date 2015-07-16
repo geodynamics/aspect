@@ -231,7 +231,8 @@ namespace aspect
 
       // we want to get the peridotite field from the old solution here,
       // because it tells us how much of the material was already molten
-      if(this->include_melt_transport() && in.cell != this->get_dof_handler().end())
+      if(this->include_melt_transport() && in.cell != this->get_dof_handler().end()
+                                        && this->get_timestep_number() > 0)
         {
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
@@ -281,7 +282,6 @@ namespace aspect
               // do not allow negative porosity
               if(old_porosity[i] + melting_rate < 0)
                 melting_rate = -old_porosity[i];
-
 
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
@@ -369,7 +369,7 @@ namespace aspect
           out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
           const double delta_temp = in.temperature[i]-reference_T;
-          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
           out.compaction_viscosities[i] *= visc_temperature_dependence;
         }
     }
@@ -412,7 +412,13 @@ namespace aspect
                              "The porosity dependence of the viscosity. Units: dimensionless.");
           prm.declare_entry ("Thermal viscosity exponent", "0.0",
                              Patterns::Double (0),
-                             "The temperature dependence of viscosity. Dimensionless exponent. "
+                             "The temperature dependence of the shear viscosity. Dimensionless exponent. "
+                             "See the general documentation "
+                             "of this model for a formula that states the dependence of the "
+                             "viscosity on this factor, which is called $\\beta$ there.");
+          prm.declare_entry ("Thermal bulk viscosity exponent", "0.0",
+                             Patterns::Double (0),
+                             "The temperature dependence of the bulk viscosity. Dimensionless exponent. "
                              "See the general documentation "
                              "of this model for a formula that states the dependence of the "
                              "viscosity on this factor, which is called $\\beta$ there.");
@@ -567,6 +573,7 @@ namespace aspect
           eta_f                      = prm.get_double ("Reference melt viscosity");
           reference_permeability     = prm.get_double ("Reference permeability");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
+          thermal_bulk_viscosity_exponent = prm.get_double ("Thermal bulk viscosity exponent");
           thermal_conductivity       = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_expansivity        = prm.get_double ("Thermal expansion coefficient");
