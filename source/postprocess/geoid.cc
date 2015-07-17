@@ -279,26 +279,27 @@ namespace aspect
 
           const double layer_radius = inner_radius + (layer_id + 0.5) * layer_thickness;
 
-          for (unsigned int i = 0, k = 0; i <= max_degree; ++i)
-            {
-              const double con1 = scaling * layer_thickness / (2 * i + 1.0);
-              const double cont = pow (layer_radius/outer_radius,i+2);
-              //const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
+          if (outer_radius - layer_radius > density_exclusion_depth)
+            for (unsigned int i = 0, k = 0; i <= max_degree; ++i)
+              {
+                const double con1 = scaling * layer_thickness / (2 * i + 1.0);
+                const double cont = pow (layer_radius/outer_radius,i+2);
+                //const double conb = layer_radius / outer_radius * pow(inner_radius / layer_radius, i);
 
-              for (unsigned int j = 0; j <= i; ++j, ++k)
-                {
-                  surface_geoid_expansion->sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
-                  surface_geoid_expansion->cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+                for (unsigned int j = 0; j <= i; ++j, ++k)
+                  {
+                    surface_geoid_expansion->sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
+                    surface_geoid_expansion->cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
 
-                  buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
-                  buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
+                    buoyancy_contribution.sine_coefficients[k] += con1 * cont * layer_coefficients.sine_coefficients[k];
+                    buoyancy_contribution.cosine_coefficients[k] += con1 * cont * layer_coefficients.cosine_coefficients[k];
 
-                  //TODO: bottom_geoid
-                  //bottom_geoid_expansion.sine_coefficients[index] += con1 * conb * layer_coefficients.sine_coefficients[index];
-                  //bottom_geoid_expansion.cosine_coefficients[index] += con1 * conb * layer_coefficients.cosine_coefficients[index];
+                    //TODO: bottom_geoid
+                    //bottom_geoid_expansion.sine_coefficients[index] += con1 * conb * layer_coefficients.sine_coefficients[index];
+                    //bottom_geoid_expansion.cosine_coefficients[index] += con1 * conb * layer_coefficients.cosine_coefficients[index];
 
-                }
-            }
+                  }
+              }
         }
 
 
@@ -432,6 +433,11 @@ namespace aspect
                              "The geoid will be expanded in spherical harmonics up to this degree. "
                              "If this degree of expansion is set too high compared to the model "
                              "resolution the output will be unreliable.");
+          prm.declare_entry ("Remove density heterogeneity down to specified depth", "0",
+                             Patterns::Double (0),
+                             "The density variation of the uppermost layer is included in the "
+                             "topography contribution. Therefore it can make sense to remove "
+                             "it from the buoyancy expansion up to a certain depth.");
         }
         prm.leave_subsection();
       }
@@ -451,6 +457,7 @@ namespace aspect
           density_below                     = prm.get_double("Density below");
           density_above                     = prm.get_double("Density above");
           max_degree                        = prm.get_integer("Maximum degree of expansion");
+          density_exclusion_depth           = prm.get_double("Remove density heterogeneity down to specified depth");
         }
         prm.leave_subsection();
       }

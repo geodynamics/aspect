@@ -126,6 +126,7 @@ namespace aspect
         double density_below;
         double density_above;
         unsigned int max_degree;
+        double density_exclusion_depth;
 
         /**
          * The geoid contribution is added on a per-layer basis. These are the
