@@ -325,8 +325,17 @@ namespace aspect
           out.thermal_conductivities[i] = thermal_conductivity;
           out.compressibilities[i] = compressibility;
 
-          const double delta_temp = in.temperature[i]-reference_T;
-          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          double visc_temperature_dependence = 1.0;
+          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+            {
+              const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
+              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+            }
+          else
+            {
+              const double delta_temp = in.temperature[i]-reference_T;
+              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+            }
           out.viscosities[i] *= visc_temperature_dependence;
         }
     }
