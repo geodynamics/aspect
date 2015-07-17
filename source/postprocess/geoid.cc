@@ -146,7 +146,6 @@ namespace aspect
       const double inner_radius = geometry_model->inner_radius();
       const double outer_radius = geometry_model->outer_radius();
       const double layer_thickness = geometry_model->maximal_depth() / number_of_layers;
-      const double gravitational_constant = 6.67384e-11;
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -214,8 +213,9 @@ namespace aspect
                 const double layer_volume = 4.0 / 3.0 * numbers::PI * (pow(radius+layer_thickness/2.0,3) - pow(radius-layer_thickness/2.0,3));
 
                 const double density  = out.densities[q];
+                const double buoyancy = (density - average_densities[layer_id]);
 
-                density_expansions[layer_id]->add_data_point(position,density * fe_values.JxW(q) / layer_volume);
+                density_expansions[layer_id]->add_data_point(position,buoyancy * fe_values.JxW(q) / layer_volume);
 
                 // if this is a cell at the surface, add the topography to
                 // the topography expansion
@@ -266,7 +266,7 @@ namespace aspect
       // From here on we consider the gravity constant at the value of the surface
       const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(geometry_model->representative_point(0.0));
 
-      const double scaling = 4.0 * numbers::PI * outer_radius * gravitational_constant / gravity.norm();
+      const double scaling = 4.0 * numbers::PI * outer_radius * constants::big_g / gravity.norm();
 
       internal::HarmonicCoefficients buoyancy_contribution(max_degree);
       internal::HarmonicCoefficients bottom_geoid_expansion(max_degree);
@@ -327,7 +327,6 @@ namespace aspect
         }
 
       internal::HarmonicCoefficients bottom_topography_contribution(max_degree);
-
       if (include_topography_contribution)
         {
           bottom_topography_expansion->mpi_sum_coefficients(this->get_mpi_communicator());
