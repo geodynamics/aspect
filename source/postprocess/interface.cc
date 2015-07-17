@@ -55,6 +55,15 @@ namespace aspect
 
 
     template <int dim>
+    std::list<std::string>
+    Interface<dim>::required_other_postprocessors() const
+    {
+      return std::list<std::string>();
+    }
+
+
+
+    template <int dim>
     void
     Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
@@ -78,7 +87,7 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string> > output_list;
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         {
@@ -230,7 +239,126 @@ namespace aspect
 
           postprocessors.back()->parse_parameters (prm);
           postprocessors.back()->initialize ();
+
+          // now see if the newly created postprocessor relies on others. if so,
+          // go through the list of the ones we already have and if the required
+          // ones are new, add them to the end of the list we work through
+          const std::list<std::string> additional_postprocessors
+            = postprocessors.back()->required_other_postprocessors ();
+
+          for (std::list<std::string>::const_iterator p = additional_postprocessors.begin();
+               p != additional_postprocessors.end(); ++p)
+            {
+              AssertThrow (Patterns::Selection(std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ())
+                           .match (*p) == true,
+                           ExcMessage ("Postprocessor <" + postprocessor_names[name] +
+                                       "> states that it depends on another postprocessor, <"
+                                       + *p +
+                                       ">, but the latter is not a valid name."));
+
+              bool already_present = false;
+              for (unsigned int n=0; n<postprocessor_names.size(); ++n)
+                if (postprocessor_names[n] == *p)
+                  {
+                    already_present = true;
+                    break;
+                  }
+
+              if (already_present == false)
+                postprocessor_names.push_back (*p);
+            }
         }
+      Assert (postprocessor_names.size() == postprocessors.size(),
+              ExcInternalError());
+
+      // we now have matching lists 'postprocessors' and 'postprocessor_names'
+      // that define which postprocessors we have. we just need to bring them
+      // into an order so that dependencies run first, and dependents after
+      // them. the algorithm for creating a sorted list for this works as follows:
+      //
+      // while there are postprocessors not yet added to the sorted list:
+      // - go through the list
+      // - if we encounter a postprocessor that has not yet been added yet:
+      //   . if all of its dependencies are in the list, add it to the end
+      //   . if at least one of its dependencies are not yet in the list,
+      //     skip it
+      //
+      // if we go through a loop where we do not add a postprocessor to the list
+      // but there are still ones that haven't been added to the list, then we
+      // have found a cycle in the dependencies and that is clearly a problem
+      std::vector<bool> already_assigned (postprocessors.size(), false);
+      std::vector<std::string> sorted_names;
+      std::vector<std_cxx11::shared_ptr<Interface<dim> > > sorted_postprocessors;
+      while (sorted_names.size() < postprocessors.size())
+        {
+          bool at_least_one_element_added = false;
+
+          {
+            typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+            pp = postprocessors.begin();
+            for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
+              if (already_assigned[i] == false)
+                {
+                  // for this postprocessor, check if all of its dependencies
+                  // are already in the list
+                  const std::list<std::string> deps = (*pp)->required_other_postprocessors();
+                  bool unmet_dependencies = false;
+                  for (std::list<std::string>::const_iterator p = deps.begin();
+                       p != deps.end(); ++p)
+                    if (std::find (sorted_names.begin(),
+                                   sorted_names.end(),
+                                   *p) == sorted_names.end())
+                      {
+                        unmet_dependencies = true;
+                        break;
+                      }
+
+                  // if we have unmet dependencies, there is nothing we can do
+                  // right now for this postprocessor (but we will come back for it)
+                  //
+                  // if there are none, add this postprocessor
+                  if (unmet_dependencies == false)
+                    {
+                      sorted_names.push_back (postprocessor_names[i]);
+                      sorted_postprocessors.push_back (postprocessors[i]);
+                      already_assigned[i] = true;
+                      at_least_one_element_added = true;
+                    }
+                }
+          }
+
+          // check that we have added at least one element; if not, there is a cycle
+          if (at_least_one_element_added == false)
+            {
+              std::ostringstream out;
+              out << "While sorting postprocessors by their dependencies, "
+                  "ASPECT encountered a cycle in dependencies. The following "
+                  "postprocessors are involved:\n";
+              typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+              pp = postprocessors.begin();
+              for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
+                if (already_assigned[i] == false)
+                  {
+                    out << "  " << postprocessor_names[i] << " -> ";
+                    const std::list<std::string> deps = (*pp)->required_other_postprocessors();
+                    for (std::list<std::string>::const_iterator p = deps.begin();
+                         p != deps.end(); ++p)
+                      out << "'" << *p << "' ";
+                    out << std::endl;
+                  }
+              AssertThrow (false, ExcMessage(out.str()));
+            }
+        }
+      Assert (postprocessor_names.size() == sorted_names.size(),
+              ExcInternalError());
+      Assert (sorted_postprocessors.size() == sorted_names.size(),
+              ExcInternalError());
+      Assert (std::find (already_assigned.begin(), already_assigned.end(), false) == already_assigned.end(),
+              ExcInternalError());
+
+      // finally swap the unsorted list with the sorted list and only
+      // keep the latter
+      postprocessors.swap (sorted_postprocessors);
     }
 
 

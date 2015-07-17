@@ -66,8 +66,8 @@ namespace aspect
 
           /**
            * Return the vector of strings describing the names of the computed
-           * quantities. Given the purpose of this class, this is a vector with
-           * entries all equal to the name of the plugin.
+           * quantities. Given the purpose of this class, this is a vector
+           * with entries all equal to the name of the plugin.
            */
           virtual std::vector<std::string> get_names () const;
 
@@ -85,9 +85,9 @@ namespace aspect
           get_data_component_interpretation () const;
 
           /**
-           * Return which data has to be provided to compute the derived quantities.
-           * The flags returned here are the ones passed to the constructor of this
-           * class.
+           * Return which data has to be provided to compute the derived
+           * quantities. The flags returned here are the ones passed to the
+           * constructor of this class.
            */
           virtual UpdateFlags get_needed_update_flags () const;
       };

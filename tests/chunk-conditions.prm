@@ -1,0 +1,80 @@
+# A simple test that checks the temperature initialization
+# in a 2D chunk geometry. Sets a harmonic perturbation to
+# the temperature field, and lower and upper temperature
+# boundary conditions.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1600.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = 60
+    set Chunk maximum longitude = 120
+    set Longitude repetitions = 1
+    set Chunk inner radius = 3000000
+    set Chunk outer radius = 6000000
+    set Radius repetitions = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1800
+    set Outer temperature = 273
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = inner, outer
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = outer
+  set Zero velocity boundary indicators       = inner
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+end

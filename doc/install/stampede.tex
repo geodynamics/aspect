@@ -1,0 +1,245 @@
+\documentclass{article}
+\usepackage[pdftex]{graphicx,color}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{subfigure}
+\usepackage{textpos}
+
+% use a larger page size; otherwise, it is difficult to have complete
+% code listings and output on a single page
+\usepackage{fullpage}
+
+% have an index. we use the imakeidx' replacement of the 'multind' package so
+% that we can have an index of all run-time parameters separate from other
+% items (if we ever wanted one)
+\usepackage{imakeidx}
+\makeindex[name=prmindex, title=Index of run-time parameter entries]
+\makeindex[name=prmindexfull, title=Index of run-time parameters with section names]
+
+% be able to use \note environments with a box around the text
+\usepackage{fancybox}
+\newcommand{\note}[1]{
+{\parindent0pt
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}[c]{0.9\linewidth}
+        \textbf{Note:} #1
+      \end{minipage}
+    }
+  \end{center}
+}}
+
+% use the listings package for code snippets. define keywords for prm files
+% and for gnuplot
+\usepackage{listings}
+\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single}
+%\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
+\lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
+                            morecomment=[l]{\#},escapeinside={\%\%}{\%},}
+\lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
+                            morecomment=[l]{\#},}
+
+
+% use the hyperref package; set the base for relative links to
+% the top-level aspect directory so that we can link to
+% files in the aspect tree without having to specify the
+% location relative to the directory where the pdf actually
+% resides
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
+
+\newcommand{\dealii}{{\textsc{deal.II}}}
+\newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
+\newcommand{\trilinos}{{\textsc{Trilinos}}}
+\newcommand{\aspect}{\textsc{ASPECT}}
+
+
+\begin{document}
+
+\title{Compiling and Running \aspect{} on TACC Stampede}
+\author{D. Sarah Stamps \textless\url{dstamps@ucla.edu}\textgreater \\
+and Jonathan Perry-Houts \textless\url{jperryh2@uoregon.edu}\textgreater\\
+updated from previous document by Eric Heien published on October 9, 2014}
+
+\maketitle
+
+
+
+Setting up \aspect{} on TACC Stampede is much easier than on previous systems since
+most of the necessary libraries are already correctly installed and configured. Following all
+the instructions in this document should allow you to start running \aspect{} within 30
+minutes. For further information on Stampede you can also refer to the user guide at
+\url{http://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide} 
+
+Also, please note that most parts of this document have changed since the previous
+version. Even if you have set up \aspect{} before, please follow all sections of this document
+to make sure your current setup has all necessary updates.
+
+
+\section{Account}
+You first need to obtain an XSEDE account at \url{http://portal.xsede.org/}. If you need one send an email to: \url{cig-help@geodynamics.org}.  
+
+\section{Setup}
+\begin{enumerate}
+\item To start edit your $\sim$/.bashrc file to load the correct modules. Update the file with the following in the 
+section that says PLACE MODULE COMMANDS HERE and ONLY HERE: 
+
+\begin{lstlisting}[frame=single,language=ksh]
+  module load git 
+  module load gcc/4.7.1 
+  module load mkl/13.0.2.146 
+  module load cmake 
+\end{lstlisting}
+
+To ensure the setup is correct, type source your $\sim$/.bashrc file and list the currently loaded modules:
+\begin{lstlisting}[frame=single,language=ksh]
+> source ~/.bashrc 
+> module list
+\end{lstlisting}
+The result should include all the modules above as well as some default modules:
+\begin{lstlisting}[frame=single,language=ksh]
+Currently Loaded Modules:
+  1) TACC-paths      4) xalt/0.4.6   7) git/1.8.5.1     10) mkl/13.0.2.146
+  2) Linux           5) cluster      8) gcc/4.7.1       11) cmake/3.1.0
+  3) cluster-paths   6) TACC         9) mvapich2/1.9a2
+\end{lstlisting}
+
+\item Get trilinos on Stampede for compiling locally. 
+
+\begin{lstlisting}[frame=single,language=ksh]
+mkdir $HOME/Downloads/ 
+\end{lstlisting} 
+Download a copy of trilinos from \url{http://www.trilinos.org}. When creating this document we used 
+ trilinos-11.12.1-Source.tar because it's a known working version for the dealii-8.2.1 
+ version we install. You can use other trilinos versions, but doing so requires updating 
+ the script aspect-setup.sh with the version you choose.
+\begin{lstlisting}[frame=single,language=ksh]
+ scp trilinos-11.12.1-Source.tar  login@stampede.tacc.utexas.edu:/work/02668/login/Downloads/ 
+\end{lstlisting} 
+ 
+ \item Obtain and run currently working script for installing trilinos, p4est, and \dealii{}  aspect-setup\_stampede.sh 
+ 
+ 
+Obtain the script with: 
+\begin{lstlisting}[frame=single,language=ksh]
+wget https://raw.githubusercontent.com/geodynamics/aspect/master/doc/install/aspect-setup_stampede.sh
+\end{lstlisting}  
+ 
+ \end{enumerate}
+
+ \section{Install trilinos, p4est, and \dealii{}}
+ 
+Since some of these libraries require a long time to compile, it may take a long time to
+finish if it is done on a login node (which is shared with dozens or hundreds of other users).
+It is recommended you log onto a compute node when compiling. To do so, use the following
+command: \\
+
+\begin{lstlisting}[frame=single,language=ksh]
+ srun -p development -t 1:00:00 -n 16 --pty /bin/bash -l
+\end{lstlisting}
+
+
+You will need to modify the script if you choose to install a different version of trilinos.  See comments within the script for additional information.\\
+ 
+\begin{lstlisting}[frame=single,language=ksh]
+ aspect-setup_stampede.sh trilinos 
+ aspect-setup_stampede.sh p4est 
+ aspect-setup_stampede.sh deal.ii
+\end{lstlisting}
+ 
+ You should now have the following directory structure in 
+\begin{lstlisting}[frame=single,language=ksh]
+$HOME/packages:
+   build  deal.ii  p4est  trilinos
+\end{lstlisting}
+
+At this point you have automatically linked to these directories in your .bashrc file. Source your .bashrc file again before configuring and building \aspect{} to ensure you can access to the \texttt{deal.ii} directory.
+
+\begin{lstlisting}[frame=single,language=ksh]
+source ~/.bashrc 
+echo $DEAL_II_DIR
+\end{lstlisting}
+
+ \section{Configure and build \aspect{}}
+ Here we assume you have a cloned version of \aspect{} on github.  
+\begin{lstlisting}[frame=single,language=ksh]
+ cd $HOME/packages 
+ git clone https://github.com/your_github_account_name/aspect.git 
+ cd aspect 
+ git remote add upstream https://github.com/geodynamics/aspect.git 
+ git pull upstream master  
+ mkdir build 
+ cd build 
+ cmake ..  
+\end{lstlisting}
+
+You will get a lot of warnings, but as long as you see the following you are ready to compile. \\
+-- Generating done \\
+-- Build files have been written to:
+\begin{lstlisting}[frame=single,language=ksh]
+/home1/02668/login/packages/aspect/build
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single,language=ksh]
+make -j8 
+\end{lstlisting}
+
+\section{Running}
+When testing \aspect{}, it can be useful to run in interactive mode on the cluster. This way you can use multiple processors for fast testing, but still make changes to files and test different options without needing to wait in the batch queue after each change. To start an interactive shell with multiple processors, use: 
+
+\begin{lstlisting}[frame=single,language=ksh]
+srun -p development -t <maximum time> -n <#cores> --pty /bin/bash -l 
+\end{lstlisting}
+
+For example: 
+\begin{lstlisting}[frame=single,language=ksh]
+srun -p development -t 0:30:00 -n 4 --pty /bin/bash -l 
+\end{lstlisting}
+ 
+Once logged in you can run \aspect{} in parallel using the command:
+ 
+\begin{lstlisting}[frame=single,language=ksh]
+ibrun ./build/aspect <parameter file> 
+\end{lstlisting}
+ 
+The development queue only allows small short runs ($<$2 hours, $<$256 cores). To perform larger runs, you submit a job to the SLURM scheduler. The format of the submission script is detailed in the Stampede user guide (http://www.tacc.utexas.edu/user-services/ user-guides/stampede-user-guide). An example is included below:
+\begin{lstlisting}[frame=single,language=ksh]
+#!/bin/bash 
+#SBATCH -J aspect_run   # job name 
+#SBATCH -o aspect_run.o\%j   # output and error file name (\% expands to jobID) 
+#SBATCH -n 32  # total number of mpi tasks requested 
+#SBATCH -p normal # queue (partition) -- normal, development, etc. 
+#SBATCH -t 12:00:00 # run time (hh:mm:ss) - 12 hours 
+ibrun $WORK/aspect/build/aspect $WORK/cookbooks/shell_simple_3d.prm 
+\end{lstlisting}
+
+The script is submitted to the run queue using: 
+\begin{lstlisting}[frame=single,language=ksh]
+sbatch <script file> 
+\end{lstlisting}
+
+\section{File Transfer}
+Once a simulation is finished, you may wish to transfer the resulting output files to a local machine for further analysis. There are two common methods of doing so, scp or Globus. scp (secure copy) works best for smaller transfers (1GB or less). The syntax is similar to normal copies: \\
+
+\begin{lstlisting}[frame=single,language=ksh]
+scp user1@host1:file1 user2@host2:file2 
+\end{lstlisting}
+
+To recursively copy the contents of a directory, use the -r option. For example, to copy the results of a computation from Stampede to the local directory: 
+
+\begin{lstlisting}[frame=single,language=ksh]
+scp -r login@stampede.tacc.utexas.edu:/work/01766/login/aspect/output . 
+\end{lstlisting}
+
+For larger transfers, Globus is recommended since it optimizes transfer rates and tolerates
+failures during the transfer. For details about using Globus with Stampede please refer to: 
+
+\begin{lstlisting}[frame=single,language=ksh]
+https://www.tacc.utexas.edu/user-services/user-guides/stampede-user-guide#transferring.
+\end{lstlisting}
+ 
+
+ 
+
+
+
+\end{document}

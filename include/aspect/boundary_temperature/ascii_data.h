@@ -34,8 +34,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements prescribed data boundary conditions
-     * determined from a AsciiData input file.
+     * A class that implements prescribed data boundary conditions determined
+     * from a AsciiData input file.
      *
      * @ingroup BoundaryTemperatures
      */
@@ -58,8 +58,8 @@ namespace aspect
         /**
          * A function that is called at the beginning of each time step. For
          * the current plugin, this function loads the next data files if
-         * necessary and outputs a warning if the end of the set of data
-         * files is reached.
+         * necessary and outputs a warning if the end of the set of data files
+         * is reached.
          */
         void
         update ();

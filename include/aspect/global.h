@@ -40,13 +40,147 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
+#include <aspect/compat.h>
 
 namespace aspect
 {
   /**
-   * A variable whose value denotes the number of seconds in one year.
+   * The following are a set of global constants which may be used by ASPECT:
+   * (for sources of data and values used by ASPECT, see source/global.cc)
    */
-  extern const double year_in_seconds;
+  namespace constants
+  {
+    /**
+     * Number of seconds in a year [s]
+     */
+    extern const double year_in_seconds;
+
+    /**
+     * Zero degrees Celsius to Kelvin [K]
+     */
+    extern const double celsius_to_kelvin;
+
+    /**
+     * Gas constant (also known as R) [J K^-1 mol^-1]
+     */
+    extern const double gas_constant;
+    /**
+     * Avogadro's constant [mol^-1]
+     */
+    extern const double avogadro;
+    /**
+     * Gravitational constant [m^3 kg^-1 s^-2]
+     */
+    extern const double big_g;
+
+    /**
+     * Constants for Earth:
+     */
+    namespace earth
+    {
+
+      /**
+       * Masses are taken from Yoder (1995)
+       */
+      namespace masses
+      {
+        /**
+         * Planet mass [kg]
+         */
+        extern const double planet;
+        /**
+         * Mass of the whole core [kg]
+         */
+        extern const double core;
+        /**
+         * Mass of the mantle [kg]
+         */
+        extern const double mantle;
+      }
+
+      /**
+       * Earth structure radii taken from the IASP91 model:
+       */
+      namespace iasp91_radii
+      {
+        /**
+        * Inner core radius [m], equivalent of 5150 km depth
+        */
+        extern const double inner_core;
+        /**
+        * Inner core radius [m], equivalent of 2889 km depth
+        */
+        extern const double core;
+        /**
+        * Lower mantle radius [m], equivalent of 660 km depth
+        */
+        extern const double lower_mantle;
+        /**
+        * Radius [m], equivalent of 5150 km depth
+        */
+        extern const double planet;
+      }
+
+      /**
+       *  Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
+       */
+      namespace prem_gravity
+      {
+        /**
+        * Inner core boundary gravity [ms^-2]
+        */
+        extern const double icb;
+        /**
+        * Core-mantle boundary gravity [ms^-2]
+        */
+        extern const double cmb;
+        /**
+        * Upper-lower mantle boundary gravity [ms^-2]
+        */
+        extern const double ulmb;
+        /**
+        * Surface gravity [ms^-2]
+        */
+        extern const double surface;
+      }
+
+      /**
+       * "Standard gravity" (average gravitational acceleration at surface [ms^-2]
+       */
+      extern const double surface_gravity;
+    }
+
+    /**
+     * Constants for Mars:
+     */
+    namespace mars
+    {
+
+      /**
+       * Mars structure radii
+       */
+      namespace radii
+      {
+        /**
+         * Planetary radius [m]
+         */
+        extern const double planet;
+        /**
+         * Core radius [m]
+         */
+        extern const double core;
+      }
+      /**
+       * Surface gravity [ms^-2]
+       */
+      extern const double surface_gravity;
+    }
+  }
+
+  /**
+   * Number of seconds in a year [s] (deprecated)
+   */
+  using constants::year_in_seconds;
 
   /**
    * A variable that denotes whether we should periodically output statistics
@@ -207,7 +341,7 @@ void print_aspect_header(Stream &stream)
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 1.3.pre\n" //VERSION-INFO. Do not edit by hand.
+         << "--     . version 1.4.pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
          << "--     . running in DEBUG mode\n"
 #else

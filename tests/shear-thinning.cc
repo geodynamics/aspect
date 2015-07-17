@@ -11,15 +11,9 @@ namespace aspect
     class ShearThinning : public MaterialModel::Simple<dim>
     {
       public:
-        /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
 
       /**
         * Return true if the viscosity() function returns something that
@@ -38,15 +32,15 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     ShearThinning<dim>::
-    viscosity (const double ,
-               const double,
-               const std::vector<double> &,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      return 1./(1+strain_rate.norm());
+      Simple<dim>::evaluate(in, out);
+      if (in.strain_rate.size())
+        for (unsigned int i=0; i < in.position.size(); ++i)
+          out.viscosities[i] = 1./(1+in.strain_rate[i].norm());
     }
 
     template <int dim>
@@ -87,7 +81,7 @@ namespace aspect
       public:
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &);
     };
   }
 }
@@ -96,14 +90,13 @@ namespace aspect
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-
 namespace aspect
 {
   namespace Postprocess
   {
     template <int dim>
     std::pair<std::string,std::string>
-    ShearThinning<dim>::execute (TableHandler &statistics)
+    ShearThinning<dim>::execute (TableHandler &)
     {
       // create a quadrature formula based on the temperature element alone.
       // be defensive about determining that what we think is the temperature
@@ -124,8 +117,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      typename MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      typename MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       // compute the integral of the viscosity. since we're on a unit box,
       // this also is the average value

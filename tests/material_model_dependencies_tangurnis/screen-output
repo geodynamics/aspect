@@ -1,0 +1,60 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmaterial_model_dependencies_tangurnis.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12 iterations.
+      Nonlinear Stokes residual: 0.0863665
+   Solving Stokes system... 10 iterations.
+      Nonlinear Stokes residual: 0.160777
+   Solving Stokes system... 7 iterations.
+      Nonlinear Stokes residual: 0.00387072
+   Solving Stokes system... 6 iterations.
+      Nonlinear Stokes residual: 0.000311007
+   Solving Stokes system... 4 iterations.
+      Nonlinear Stokes residual: 1.11422e-05
+   Solving Stokes system... 3 iterations.
+      Nonlinear Stokes residual: 8.65502e-07
+   Solving Stokes system... 2 iterations.
+      Nonlinear Stokes residual: 3.04244e-08
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+
+   Postprocessing:
+viscosity depends on 
+density depends on 
+compressibility depends on 
+specific_heat depends on 
+thermal_conductivity depends on 
+model is compressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |    0.0461s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        10 |   0.00806s |        17% |
+| Build Stokes preconditioner     |         1 |   0.00572s |        12% |
+| Solve Stokes system             |        10 |   0.00801s |        17% |
+| Initialization                  |         2 |    0.0192s |        42% |
+| Postprocessing                  |         1 |  0.000105s |      0.23% |
+| Setup dof systems               |         1 |   0.00302s |       6.5% |
++---------------------------------+-----------+------------+------------+
+

@@ -37,12 +37,12 @@ namespace aspect
       /**
        * A class derived from DataPostprocessor that takes an output vector
        * and computes a variable that represents the 3 or 6 independent
-       * components (in 2d and 3d, respectively) of the stress tensor at
-       * every point. The shear stress is defined as $2 \eta
-       * (\varepsilon(\mathbf u) - \tfrac 13 \textrm{trace}\
-       * \varepsilon(\mathbf u) \mathbf 1) +pI = 2\eta (\varepsilon(\mathbf u) -
-       * \frac 13 (\nabla \cdot \mathbf u) \mathbf I) + pI$.  The second term in the
-       * parentheses is zero if the model is incompressible.
+       * components (in 2d and 3d, respectively) of the stress tensor at every
+       * point. The shear stress is defined as $2 \eta (\varepsilon(\mathbf u)
+       * - \tfrac 13 \textrm{trace}\ \varepsilon(\mathbf u) \mathbf 1) +pI =
+       * 2\eta (\varepsilon(\mathbf u) - \frac 13 (\nabla \cdot \mathbf u)
+       * \mathbf I) + pI$.  The second term in the parentheses is zero if the
+       * model is incompressible.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
@@ -65,8 +65,8 @@ namespace aspect
 
           /**
            * Return the vector of strings describing the names of the computed
-           * quantities. Given the purpose of this class, this is a vector with
-           * entries all equal to the name of the plugin.
+           * quantities. Given the purpose of this class, this is a vector
+           * with entries all equal to the name of the plugin.
            */
           virtual std::vector<std::string> get_names () const;
 
@@ -84,9 +84,9 @@ namespace aspect
           get_data_component_interpretation () const;
 
           /**
-           * Return which data has to be provided to compute the derived quantities.
-           * The flags returned here are the ones passed to the constructor of this
-           * class.
+           * Return which data has to be provided to compute the derived
+           * quantities. The flags returned here are the ones passed to the
+           * constructor of this class.
            */
           virtual UpdateFlags get_needed_update_flags () const;
       };

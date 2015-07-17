@@ -72,6 +72,13 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
+
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
@@ -99,7 +106,9 @@ namespace aspect
                        "On the other hand, for non-dimensional computations, one wants "
                        "results in their natural unit system as used inside the code. "
                        "If this flag is set to 'true' conversion to years happens; if "
-                       "it is 'false', no such conversion happens.");
+                       "it is 'false', no such conversion happens. Note that when 'true', "
+                       "some input such as prescribed velocities should also use years "
+                       "instead of seconds.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0),
@@ -137,7 +146,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -148,7 +157,10 @@ namespace aspect
                        "and then iterates out the solution of the Stokes equation. The 'Stokes only' "
                        "scheme only solves the Stokes system and ignores compositions and the "
                        "temperature equation (careful, the material model must not depend on "
-                       "the temperature; mostly useful for Stokes benchmarks).");
+                       "the temperature; mostly useful for Stokes benchmarks). The 'Advection only'"
+                       "scheme only solves the temperature and other advection systems and instead "
+                       "of solving for the Stokes system, a prescribed velocity and pressure is "
+                       "used");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0,1),
@@ -279,25 +291,6 @@ namespace aspect
     // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
-      prm.declare_entry ("Include shear heating", "true",
-                         Patterns::Bool (),
-                         "Whether to include shear heating into the model or not. From a "
-                         "physical viewpoint, shear heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include adiabatic heating", "false",
-                         Patterns::Bool (),
-                         "Whether to include adiabatic heating into the model or not. From a "
-                         "physical viewpoint, adiabatic heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include latent heat", "false",
-                         Patterns::Bool (),
-                         "Whether to include the generation of latent heat at phase transitions "
-                         "into the model or not. From a physical viewpoint, latent heat should "
-                         "always be used but may be undesirable when comparing results with known "
-                         "benchmarks that do not include this term in the temperature equation "
-                         "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Include melt transport", "false",
                          Patterns::Bool (),
                          "Whether to include the transport of melt into the model or not. If this "
@@ -423,19 +416,60 @@ namespace aspect
                          "the boundary values. Alternatively, you can simply list the "
                          "part of the boundary on which the velocity is to be zero with "
                          "the parameter ``Zero velocity boundary indicator'' in the "
-                         "current parameter section.");
-
+                         "current parameter section."
+                         "\n\n"
+                         "Note that when ``Use years in output instead of seconds'' is set "
+                         "to true, velocity should be given in m/yr. ");
+      prm.declare_entry ("Prescribed traction boundary indicators", "",
+                         Patterns::Map (Patterns::Anything(),
+                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                         "A comma separated list denoting those boundaries "
+                         "on which a traction force is prescribed, i.e., where "
+                         "known external forces act, resulting in an unknown velocity. This is "
+                         "often used to model ``open'' boundaries where we only know the pressure. "
+                         "This pressure then produces a force that is normal to the boundary and "
+                         "proportional to the pressure."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is either an "
+                         "integer or the symbolic name the geometry model in use may have "
+                         "provided for this part of the boundary) "
+                         "and each value must be one of the currently implemented boundary "
+                         "traction models. ``selector'' is an optional string given as a subset "
+                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "only to the components listed. As an example, '1 y: function' applies "
+                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "it will affect all components of the traction.");
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
                                                      "net translation|linear momentum|"
                                                      "net x translation|net y translation|net z translation|"
                                                      "linear x momentum|linear y momentum|linear z momentum"),
-                         "A selection of operations to remove certain parts of the nullspace from "
+                         "Choose none, one or several from "
+                         "\n\n"
+                         "\\begin{itemize} \\item net rotation \\item angular momentum \\item net translation "
+                         "\\item linear momentum \\item net x translation \\item net y translation "
+                         "\\item net z translation \\item linear x momentum \\item linear y momentum "
+                         "\\item linear z momentum \\end{itemize}"
+                         "\n\n"
+                         "These are a selection of operations to remove certain parts of the nullspace from "
                          "the velocity after solving. For some geometries and certain boundary conditions "
                          "the velocity field is not uniquely determined but contains free translations "
-                         "and or rotations. Depending on what you specify here, these non-determined "
+                         "and/or rotations. Depending on what you specify here, these non-determined "
                          "modes will be removed from the velocity field at the end of the Stokes solve step.\n"
-                         "Note that while more than operation can be selected it only makes sense to "
+                         "\n\n"
+                         "The ``angular momentum'' option removes a rotation such that the net angular momentum "
+                         "is zero. The ``linear * momentum'' options remove translations such that the net "
+                         "momentum in the relevant direction is zero.  The ``net rotation'' option removes the "
+                         "net rotation of the domain, and the ``net * translation'' options remove the "
+                         "net translations in the relevant directions.  For most problems there should not be a "
+                         "significant difference between the momentum and rotation/translation versions of "
+                         "nullspace removal, although the momentum versions are more physically motivated. "
+                         "They are equivalent for constant density simulations, and approximately equivalent "
+                         "when the density variations are small."
+                         "\n\n"
+                         "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
     }
     prm.leave_subsection ();
@@ -469,7 +503,8 @@ namespace aspect
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
                          "and that can not be exceeded by coarsening. "
-                         "Should be higher than the 'Initial global refinement' parameter.");
+                         "Should not be higher than the 'Initial global refinement' "
+                         "parameter.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -630,12 +665,21 @@ namespace aspect
                          "\n\n"
                          "The process of averaging, and where it may be used, is "
                          "discussed in more detail in "
-                         "Section~\\ref{sec:sinker-with-averaging}.");
+                         "Section~\\ref{sec:sinker-with-averaging}."
+                         "\n\n"
+                         "More averaging schemes are available in the averaging material "
+                         "model. This material model is a ``compositing material model'' "
+                         "which can be used in combination with other material models.");
     }
     prm.leave_subsection ();
 
-    //Also declare the parameters that the FreeSurfaceHandler needs
-    Simulator<dim>::FreeSurfaceHandler::declare_parameters( prm );
+    // also declare the parameters that the FreeSurfaceHandler needs
+    Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::declare_additional_parameters (dim, prm);
   }
 
 
@@ -671,6 +715,8 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
       nonlinear_solver = NonlinearSolver::Stokes_only;
+    else if (prm.get ("Nonlinear solver scheme") == "Advection only")
+      nonlinear_solver = NonlinearSolver::Advection_only;
     else
       AssertThrow (false, ExcNotImplemented());
 
@@ -756,12 +802,8 @@ namespace aspect
 
     prm.enter_subsection ("Model settings");
     {
-      include_shear_heating = prm.get_bool ("Include shear heating");
-      include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
-      include_latent_heat = prm.get_bool ("Include latent heat");
       include_melt_transport = prm.get_bool ("Include melt transport");
       melt_transport_threshold  = prm.get_double ("Melt transport threshold");
-
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -813,6 +855,15 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+
+#ifndef DEAL_II_WITH_ZLIB
+      AssertThrow ((checkpoint_time_secs == 0)
+                   &&
+                   (checkpoint_steps == 0),
+                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                               "option if you want to generate checkpoints, but deal.II "
+                               "did not detect its presence when you called 'cmake'."));
+#endif
     }
     prm.leave_subsection ();
 
@@ -916,6 +967,12 @@ namespace aspect
           (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
+
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::parse_additional_parameters (*this, prm);
   }
 
 
@@ -1039,7 +1096,7 @@ namespace aspect
 
           // now for the rest. since we don't know whether there is a
           // component selector, start reading at the end and subtracting
-          // letters x, y and zs
+          // letters x, y and z
           std::string key_and_comp = split_parts[0];
           std::string comp;
           while ((key_and_comp.size()>0) &&
@@ -1079,7 +1136,7 @@ namespace aspect
             }
 
           // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't see it yet
+          // make sure we haven't seen it yet
           types::boundary_id boundary_id;
           try
             {
@@ -1103,6 +1160,96 @@ namespace aspect
           prescribed_velocity_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
+
+      const std::vector<std::string> x_prescribed_traction_boundary_indicators
+        = Utilities::split_string_list
+          (prm.get ("Prescribed traction boundary indicators"));
+      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
+           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+        {
+          // each entry has the format (white space is optional):
+          // <id> [x][y][z] : <value (might have spaces)>
+          //
+          // first tease apart the two halves
+          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          AssertThrow (split_parts.size() == 2,
+                       ExcMessage ("The format for prescribed traction boundary indicators "
+                                   "requires that each entry has the form `"
+                                   "<id> [x][y][z] : <value>', but there does not "
+                                   "appear to be a colon in the entry <"
+                                   + *p
+                                   + ">."));
+
+          // the easy part: get the value
+          const std::string value = split_parts[1];
+
+          // now for the rest. since we don't know whether there is a
+          // component selector, start reading at the end and subtracting
+          // letters x, y and z
+          std::string key_and_comp = split_parts[0];
+          std::string comp;
+          while ((key_and_comp.size()>0) &&
+                 ((key_and_comp[key_and_comp.size()-1] == 'x')
+                  ||
+                  (key_and_comp[key_and_comp.size()-1] == 'y')
+                  ||
+                  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+            {
+              comp += key_and_comp[key_and_comp.size()-1];
+              key_and_comp.erase (--key_and_comp.end());
+            }
+
+          // we've stopped reading component selectors now. there are three
+          // possibilities:
+          // - no characters are left. this means that key_and_comp only
+          //   consisted of a single word that only consisted of 'x', 'y'
+          //   and 'z's. then this would have been a mistake to classify
+          //   as a component selector, and we better undo it
+          // - the last character of key_and_comp is not a whitespace. this
+          //   means that the last word in key_and_comp ended in an 'x', 'y'
+          //   or 'z', but this was not meant to be a component selector.
+          //   in that case, put these characters back.
+          // - otherwise, we split successfully. eat spaces that may be at
+          //   the end of key_and_comp to get key
+          if (key_and_comp.size() == 0)
+            key_and_comp.swap (comp);
+          else if (key_and_comp[key_and_comp.size()-1] != ' ')
+            {
+              key_and_comp += comp;
+              comp = "";
+            }
+          else
+            {
+              while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+                key_and_comp.erase (--key_and_comp.end());
+            }
+
+          // finally, try to translate the key into a boundary_id. then
+          // make sure we haven't seen it yet
+          types::boundary_id boundary_id;
+          try
+            {
+              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
+            }
+          catch (const std::string &error)
+            {
+              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                              "traction indicators>, there was an error. Specifically, "
+                                              "the conversion function complained as follows: "
+                                              + error));
+            }
+
+          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
+                       == prescribed_traction_boundary_indicators.end(),
+                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                   "> appears more than once in the list of indicators "
+                                   "for nonzero traction boundaries."));
+
+          // finally, put it into the list
+          prescribed_traction_boundary_indicators[boundary_id] =
+            std::pair<std::string,std::string>(comp,value);
+        }
+
     }
     prm.leave_subsection ();
   }
@@ -1117,15 +1264,17 @@ namespace aspect
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
-    HeatingModel::declare_parameters<dim> (prm);
+    HeatingModel::Manager<dim>::declare_parameters (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
     CompositionalInitialConditions::declare_parameters<dim> (prm);
+    PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::declare_parameters<dim> (prm);
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
+    TractionBoundaryConditions::declare_parameters<dim> (prm);
     FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
   }
 }

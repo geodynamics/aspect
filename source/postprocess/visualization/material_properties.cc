@@ -102,17 +102,22 @@ namespace aspect
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                       this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                         this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
+                                                   this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
+                                                     this->n_compositional_fields());
 
         in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
+              {
+                grad_u[d] = duh[q][d];
+                in.velocity[q][d] = uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+              }
+
             in.strain_rate[q] = symmetrize (grad_u);
 
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
@@ -121,7 +126,7 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
-        in.cell = this->get_dof_handler().end(); // we do not know the cell index
+        in.cell = NULL; // we do not know the cell index
 
         this->get_material_model().evaluate(in, out);
 

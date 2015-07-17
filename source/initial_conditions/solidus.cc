@@ -130,7 +130,7 @@ namespace aspect
       AssertThrow(spherical_geometry_model!=0,
                   ExcMessage("This initial condition can only be used with spherical shell geometry model."));
 
-      AssertThrow(&this->get_boundary_temperature()!=0,
+      AssertThrow(this->has_boundary_temperature(),
                   ExcMessage("This initial condition can only be used with a prescribed boundary temperature."));
 
       T_min=(this->get_boundary_temperature()).minimal_temperature();

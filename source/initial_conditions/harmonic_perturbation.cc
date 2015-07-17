@@ -22,6 +22,7 @@
 #include <aspect/initial_conditions/harmonic_perturbation.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 #include <aspect/utilities.h>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
@@ -85,6 +86,22 @@ namespace aspect
               // use a spherical harmonic function as lateral perturbation
               lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
             }
+        }
+      else if (const GeometryModel::Chunk<dim> *
+               chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+        {
+          AssertThrow ( dim == 2,
+                        ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
+
+          // In case of chunk calculate spherical coordinates
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+
+          // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
+          // This way the perturbation is alway 0 at the model boundaries.
+          const double opening_angle = chunk_geometry_model->longitude_range(); // in radians
+          const double start_angle = chunk_geometry_model->west_longitude(); // in radians
+          lateral_perturbation = std::sin((lateral_wave_number_1*(scoord[1]-start_angle))*numbers::PI/opening_angle);
+
         }
       else if (const GeometryModel::Box<dim> *
                box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))

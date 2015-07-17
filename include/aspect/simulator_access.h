@@ -50,8 +50,11 @@ namespace aspect
   using namespace dealii;
 
   // forward declaration
-  template <int> class Simulator;
-
+  template <int dim> class Simulator;
+  namespace HeatingModel
+  {
+    template <int dim> class Manager;
+  }
 
   /**
    * SimulatorAccess is base class for different plugins like postprocessors.
@@ -79,6 +82,20 @@ namespace aspect
   {
     public:
       /**
+       * Default constructor. Initialize the SimulatorAccess object without
+       * a reference to a particular Simulator object. You will later have
+       * to call initialize() to provide this reference to the Simulator
+       * object.
+       */
+      SimulatorAccess ();
+
+      /**
+       * Create a SimulatorAccess object that is already initialized for
+       * a particular Simulator.
+       */
+      SimulatorAccess (const Simulator<dim> &simulator_object);
+
+      /**
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
@@ -92,11 +109,10 @@ namespace aspect
        * classes should call this function from the base class as well,
        * however.
        *
-       * @param simulator A reference to the main simulator object.
+       * @param simulator_object A reference to the main simulator object.
        */
-      virtual void initialize (const Simulator<dim> &simulator);
+      virtual void initialize (const Simulator<dim> &simulator_object);
 
-    protected:
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
 
@@ -253,7 +269,6 @@ namespace aspect
       void
       get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell,
                                            const unsigned int compositional_variable) const;
-
       /** @} */
 
 
@@ -283,6 +298,16 @@ namespace aspect
        */
       const LinearAlgebra::BlockVector &
       get_old_solution () const;
+
+      /**
+       * Return a reference to the vector that has the mesh velocity for
+       * simulations with a free surface.
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
+      const LinearAlgebra::BlockVector &
+      get_mesh_velocity () const;
 
       /**
        * Return a reference to the DoFHandler that is used to discretize the
@@ -413,6 +438,16 @@ namespace aspect
       get_adiabatic_conditions () const;
 
       /**
+       * Return whether the current model has a boundary temperature object
+       * set. This is useful because a simulation does not actually have to
+       * declare any boundary temperature model, for example if all
+       * boundaries are insulating. In such cases, there is no
+       * boundary temperature model that can provide, for example,
+       * a minimal and maximal temperature on the boundary.
+       */
+      bool has_boundary_temperature () const;
+
+      /**
        * Return a pointer to the object that describes the temperature
        * boundary values.
        */
@@ -449,16 +484,25 @@ namespace aspect
       get_fixed_composition_boundary_indicators () const;
 
       /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a free surface boundary condition
+       */
+      const std::set<types::boundary_id> &
+      get_free_surface_boundary_indicators () const;
+
+      /**
        * Return the map of prescribed_velocity_boundary_conditions
        */
       const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
       get_prescribed_velocity_boundary_conditions () const;
 
       /**
-       * Return a pointer to the heating model.
+       * Return a pointer to the manager of the heating model.
+       * This can then i.e. be used to get the names of the heating models
+       * used in a computation.
        */
-      const HeatingModel::Interface<dim> &
-      get_heating_model () const;
+      const HeatingModel::Manager<dim> &
+      get_heating_model_manager () const;
 
       /**
        * A convenience function that copies the values of the compositional
@@ -471,10 +515,29 @@ namespace aspect
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 
+      /**
+       * Return a writable reference to the statistics object into which
+       * you can store additional data that then shows up in the
+       * <code>output_dir/statistics</code> file.
+       *
+       * Postprocessor objects get a reference to this object automatically
+       * when called, but other plugins may not. They do not usually
+       * produce output anyway, but through this function they can still
+       * record information as necessary.
+       * @return
+       */
+      TableHandler &get_statistics_object() const;
+
 
       /**
-       * Find a pointer to a certain postprocessor, if not return a NULL
-       * pointer.
+       * This function can be used to find out whether the list of
+       * postprocessors that are run at the end of each time step
+       * contains an object of the given template type. If so, the function
+       * returns a pointer to the postprocessor object of this type. If
+       * no postprocessor of this type has been selected in the input
+       * file (or, has been required by another postprocessor using the
+       * Postprocess::Interface::required_other_postprocessors()
+       * mechanism), then the function returns a NULL pointer.
        */
       template <typename PostprocessorType>
       PostprocessorType *

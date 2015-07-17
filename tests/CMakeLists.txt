@@ -7,6 +7,11 @@ MACRO(SET_IF_EMPTY _variable _value)
   ENDIF()
 ENDMACRO()
 
+# suppress mac os warning
+IF(APPLE AND NOT DEFINED CMAKE_MACOSX_RPATH)
+  SET(CMAKE_MACOSX_RPATH 0) # see policy CMP0042
+ENDIF()
+
 # A function that extracts from a file (presumably a .prm file)
 # the number of MPI processes this test is to be invoked as.
 # This is encoded in .prm files through lines of the form
@@ -29,30 +34,37 @@ FUNCTION(get_mpi_count _filename)
   endif()
 ENDFUNCTION()
 
-# extract from the prm if the test should be run with trilinos or
-# petsc. This is encoded in the .prm in form of line
-# '# LINEAR ALGEBRA: PETSC'
-# '# LINEAR ALGEBRA: PETSC TRILINOS'
-# If no line is there, Trilinos is assumed. 
-FUNCTION(check_linear_algebra _filename)
+# Analyze the .prm to decide if this test should be run or not. We are
+# checking for the following strings in the .prm:
+# 1. "LINEAR ALGEBRA: PETSC" - only run with PETSc, "LINEAR ALGEBRA: PETSC
+# TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
+# using Trilinos.
+# 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
+FUNCTION(SHOULD_ENABLE_TEST _filename)
+  SET(_use_test OFF PARENT_SCOPE)
+
   FILE(STRINGS ${_filename} _input_lines
        REGEX "LINEAR ALGEBRA:")
   IF("${_input_lines}" STREQUAL "")
     IF(ASPECT_USE_PETSC)
-      SET(_use_test 0 PARENT_SCOPE)
     ELSE()
-      SET(_use_test 1 PARENT_SCOPE)
+      SET(_use_test ON PARENT_SCOPE)
     ENDIF()
   ELSE()
-    SET(_use_test 0 PARENT_SCOPE)
     FOREACH(_input_line ${_input_lines})
       IF (${_input_line} MATCHES "PETSC" AND ASPECT_USE_PETSC)
-        SET(_use_test 1 PARENT_SCOPE)
+        SET(_use_test ON PARENT_SCOPE)
       ENDIF()
       IF (${_input_line} MATCHES "TRILINOS" AND NOT ASPECT_USE_PETSC)
-        SET(_use_test 1 PARENT_SCOPE)
+        SET(_use_test ON PARENT_SCOPE)
       ENDIF()
     ENDFOREACH()
+  ENDIF()
+
+  FILE(STRINGS ${_filename} _input_lines
+       REGEX "QUICK_TEST")
+  IF(NOT ${ASPECT_RUN_ALL_TESTS} AND "${_input_lines}" STREQUAL "")
+    SET(_use_test OFF PARENT_SCOPE)
   ENDIF()
 ENDFUNCTION()
 
@@ -67,9 +79,9 @@ SET_IF_EMPTY(TEST_TIME_LIMIT 600)
 ADD_CUSTOM_TARGET(tests)
 
 #
-# We need a diff tool, preferably numdiff:
+# We need a diff tool, preferably numdiff otherwise diff. Let the user
+# override it by specifying TEST_DIFF.
 #
-
 FIND_PROGRAM(DIFF_EXECUTABLE
   NAMES diff
   HINTS ${DIFF_DIR}
@@ -86,14 +98,9 @@ MARK_AS_ADVANCED(DIFF_EXECUTABLE NUMDIFF_EXECUTABLE)
 
 IF("${TEST_DIFF}" STREQUAL "")
   #
-  # No TEST_DIFF is set, specify one:
-  #
 
   IF(NOT NUMDIFF_EXECUTABLE MATCHES "-NOTFOUND")
-    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE} -a 1e-6 -r 1e-8 -s ' \\t\\n:,')
-    IF(DIFF_EXECUTABLE MATCHES "-NOTFOUND")
-      SET(DIFF_EXECUTABLE ${NUMDIFF_EXECUTABLE})
-    ENDIF()
+    SET(TEST_DIFF ${NUMDIFF_EXECUTABLE})
   ELSEIF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
     SET(TEST_DIFF ${DIFF_EXECUTABLE})
   ELSE()
@@ -111,14 +118,29 @@ LIST(SORT _tests)
 FOREACH(_test ${_tests})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
 
-  CHECK_LINEAR_ALGEBRA(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
+  SET(_use_test ON)
+  SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 
-  IF("${_use_test}" STREQUAL "1")
+  IF(_use_test)
+
+    # Create main target for this test. We let it depend on the screen output
+    # even if the folder with reference data for this test doesn't contain any
+    # files. This is useful when you are constructing a new test.
+    ADD_CUSTOM_TARGET(tests.${_test}
+	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output)
 
     MATH(EXPR _n_tests "${_n_tests} + 1")
 
     IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.cc)
       ADD_LIBRARY(${_test} SHARED EXCLUDE_FROM_ALL ${_test}.cc)
+      IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        # avoid linker errors about missing functions inside ASPECT:
+        SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+
+        # make shared libraries end on .so not .dylib
+        SET_TARGET_PROPERTIES(${_test} PROPERTIES SUFFIX ".so")
+      ENDIF()
+
       SET_PROPERTY(SOURCE ${_test}.cc
                    APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
       IF (ASPECT_USE_PETSC)
@@ -148,6 +170,8 @@ FOREACH(_test ${_tests})
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
 		 ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+      COMMAND echo ''
+		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo 'set Output directory = output-${_test}'
 		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo '${_testlib}'
@@ -176,7 +200,7 @@ FOREACH(_test ${_tests})
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
         SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/default.sh")
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default.sh")
     ENDIF()
 
     IF("${_mpi_count}" STREQUAL "1")
@@ -214,13 +238,6 @@ FOREACH(_test ${_tests})
     ENDIF()
 
 
-    # The final target for this test
-    ADD_CUSTOM_TARGET(${_test}.run
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
-      )
-
-
-    ADD_CUSTOM_TARGET(tests.${_test})
 
 
     # for each of the output files saved in the source directory for
@@ -250,6 +267,10 @@ FOREACH(_test ${_tests})
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}
       )
 
+      # While it looks like a typo to depend on screen-output and not on
+      # ${_output}, there is no rule to generate ${_output}. But generating
+      # screen-output will of course generate all output files (including
+      # ${_output}), so this rule will work as expected.
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
 	COMMAND
 	  cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}
@@ -264,20 +285,11 @@ FOREACH(_test ${_tests})
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	COMMAND
-	  if (${TEST_DIFF} ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
-		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
-	      > ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff) \; then
-	    : \;
-	  else
-	    mv ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
-	       ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
-	    echo "******* Error during diffing output results for ${_test}/${_output}" \;
-	    echo "******* Results are stored in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed" \;
-	    echo "******* Check: ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/${_output}" \;
-	    echo "******* Diffs are:" \;
-	    cat ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff.failed \;
-	    false \;
-	  fi
+	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
+		${TEST_DIFF}
+		${_test}/${_output}
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}
 	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.cmp.notime
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       )
@@ -309,4 +321,10 @@ FOREACH(_test ${_tests})
   ENDIF()
 ENDFOREACH()
 
-MESSAGE(STATUS "Added ${_n_tests} tests")
+# display as important for 'make setup_tests' (stdout is hidden)
+IF(PRINT_TEST_SUMMARY_AS_IMPORTANT)
+  SET(PRINT_TEST_SUMMARY_AS_IMPORTANT OFF CACHE INTERNAL "" FORCE)
+  MESSAGE("Added ${_n_tests} tests.")
+ELSE()
+  MESSAGE(STATUS "Added ${_n_tests} tests.")
+ENDIF()

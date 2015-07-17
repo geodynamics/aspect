@@ -64,10 +64,10 @@ namespace aspect
       std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (quadrature.size()));
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-                                                                     this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size(),
-                                                                       this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
+                                                   this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -83,6 +83,10 @@ namespace aspect
                                                                                          in.temperature);
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                        in.velocity);
+            fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                         in.pressure_gradient);
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
@@ -94,7 +98,7 @@ namespace aspect
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
-            in.cell = cell;
+            in.cell = &cell;
 
             this->get_material_model().evaluate(in, out);
 

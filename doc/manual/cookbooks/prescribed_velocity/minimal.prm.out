@@ -1,0 +1,21 @@
+# Load the signal library.
+set %%\hyperref[parameters:Additional shared libraries]{Additional shared libraries}% = ./libprescribed_velocity.so%% \index[prmindex]{Additional shared libraries} \index[prmindexfull]{Additional shared libraries} %
+
+## Turn prescribed velocities on
+set %%\hyperref[parameters:Prescribe internal velocities]{Prescribe internal velocities}% = true%% \index[prmindex]{Prescribe internal velocities} \index[prmindexfull]{Prescribe internal velocities} %
+
+subsection %%\hyperref[parameters:Prescribed_20velocities]{Prescribed velocities}%
+  subsection %%\hyperref[parameters:Prescribed_20velocities/Indicator_20function]{Indicator function}%
+    set %%\hyperref[parameters:Prescribed velocities/Indicator function/Variable names]{Variable names}% = x,y,t%% \index[prmindex]{Variable names} \index[prmindexfull]{Prescribed velocities!Indicator function!Variable names} %
+    # Return where to prescribe u_x; u_y; u_z
+    # (last one only used if dimension = 3)
+    # 1 if velocity should be prescribed, 0 otherwise
+    set %%\hyperref[parameters:Prescribed velocities/Indicator function/Function expression]{Function expression}% = if((x-.5)^2+(y-.5)^2<.125,1,0); \%% \index[prmindex]{Function expression} \index[prmindexfull]{Prescribed velocities!Indicator function!Function expression} %
+                                if((x-.5)^2+(y-.5)^2<.125,1,0)
+  end
+  subsection %%\hyperref[parameters:Prescribed_20velocities/Velocity_20function]{Velocity function}%
+    set %%\hyperref[parameters:Prescribed velocities/Velocity function/Variable names]{Variable names}% = x,y,t%% \index[prmindex]{Variable names} \index[prmindexfull]{Prescribed velocities!Velocity function!Variable names} %
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set %%\hyperref[parameters:Prescribed velocities/Velocity function/Function expression]{Function expression}% = 1;-1%% \index[prmindex]{Function expression} \index[prmindexfull]{Prescribed velocities!Velocity function!Function expression} %
+  end
+end

@@ -22,6 +22,7 @@
 #include <aspect/initial_conditions/adiabatic.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 
 #include <cmath>
 
@@ -57,33 +58,34 @@ namespace aspect
       // This implementation assumes that the top and bottom boundaries have
       // prescribed temperatures and minimal_temperature() returns the value
       // at the surface and maximal_temperature() the value at the bottom.
-      const double T_surface = (&this->get_boundary_temperature() != 0)
+      const double T_surface = (this->has_boundary_temperature()
+                                ?
+                                this->get_boundary_temperature().minimal_temperature(
+                                  this->get_fixed_temperature_boundary_indicators())
+                                :
+                                adiabatic_surface_temperature);
+      const double T_bottom = (this->has_boundary_temperature()
                                ?
-                               this->get_boundary_temperature().minimal_temperature(
+                               this->get_boundary_temperature().maximal_temperature(
                                  this->get_fixed_temperature_boundary_indicators())
                                :
-                               adiabatic_surface_temperature;
-      const double T_bottom = (&this->get_boundary_temperature() != 0)
-                              ?
-                              this->get_boundary_temperature().maximal_temperature(
-                                this->get_fixed_temperature_boundary_indicators())
-                              :
-                              adiabatic_bottom_temperature;
+                               adiabatic_bottom_temperature);
 
       // get a representative profile of the compositional fields as an input
       // for the material model
       const double depth = this->get_geometry_model().depth(position);
 
       // look up material properties
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
+      in.velocity[0]= Tensor<1,dim> ();
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
       in.strain_rate.resize(0); // adiabat has strain=0.
-      in.cell = this->get_dof_handler().end(); // and do not know the cell index
+      in.cell = NULL; // and do not know the cell index
 
       this->get_material_model().evaluate(in, out);
 
@@ -140,6 +142,32 @@ namespace aspect
                     }
                 }
             }
+          else if (const GeometryModel::Chunk<dim> *
+                   chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+            {
+              const double inner_radius = chunk_geometry_model->inner_radius();
+
+              const double west_longitude = chunk_geometry_model->west_longitude(); // in radians
+              const double longitude_range = chunk_geometry_model->longitude_range(); // in radians
+              const double longitude_midpoint = west_longitude + 0.5 * longitude_range;
+
+              if (dim==2)
+                {
+                  // choose the center of the perturbation at half angle along the inner radius
+                  mid_point(0) = inner_radius * std::cos(longitude_midpoint),
+                  mid_point(1) = inner_radius * std::sin(longitude_midpoint);
+                }
+              else if (dim==3)
+                {
+
+                  const double south_latitude = chunk_geometry_model->south_latitude(); // in radians
+                  const double latitude_range = chunk_geometry_model->latitude_range(); // in radians
+                  const double latitude_midpoint = south_latitude + 0.5 * latitude_range;
+                  mid_point(0) = inner_radius * std::cos(latitude_midpoint) * std::cos(longitude_midpoint);
+                  mid_point(1) = inner_radius * std::cos(latitude_midpoint) * std::sin(longitude_midpoint);
+                  mid_point(2) = inner_radius * std::sin(latitude_midpoint);
+                }
+            }
           else if (const GeometryModel::Box<dim> *
                    box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
             {
@@ -162,11 +190,11 @@ namespace aspect
 
       // add the subadiabaticity
       const double zero_depth = 0.174;
-      const double nondimesional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
-                                         / (1.0 - zero_depth);
+      const double nondimensional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
+                                          / (1.0 - zero_depth);
       double subadiabatic_T = 0.0;
-      if (nondimesional_depth > 0)
-        subadiabatic_T = -subadiabaticity * nondimesional_depth * nondimesional_depth;
+      if (nondimensional_depth > 0)
+        subadiabatic_T = -subadiabaticity * nondimensional_depth * nondimensional_depth;
 
       // If adiabatic heating is disabled, apply all perturbations to
       // constant adiabatic surface temperature instead of adiabatic profile.

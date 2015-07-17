@@ -81,12 +81,6 @@ namespace aspect
        * @endcode
        * Here, <code>any_variable</code> is a value that has its bits set for
        * all possible dependencies.
-       *
-       * On the other hand, in functions such as
-       * MaterialModel::viscosity_derivative, only a single variable may be
-       * identified in a variable of this type since it only makes sense to,
-       * for example, query the derivative of the density with respect to
-       * temperature, not with respect to temperature or pressure.
        */
       enum Dependence
       {
@@ -114,30 +108,29 @@ namespace aspect
 
     /**
      * A data structure with all inputs for the
-     * MaterialModel::Interface::evaluate() method. The
-     * vectors all have the same length and refer to different evaluation
-     * points (given in #position).
+     * MaterialModel::Interface::evaluate() method. The vectors all have the
+     * same length and refer to different evaluation points (given in
+     * #position).
      */
     template <int dim>
     struct MaterialModelInputs
     {
       /**
-       * Constructor. Initialize the various arrays of this structure
-       * with the given number of quadrature points and (finite element)
-       * components.
+       * Constructor. Initialize the various arrays of this structure with the
+       * given number of quadrature points and (finite element) components.
        *
-       * @param n_points The number of quadrature points for which
-       *   input quantities will be provided.
-       * @param n_comp The number of vector quantities (in the order in
-       *   which the Introspection class reports them) for which input
-       *   will be provided.
+       * @param n_points The number of quadrature points for which input
+       * quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in which
+       * the Introspection class reports them) for which input will be
+       * provided.
        */
       MaterialModelInputs(const unsigned int n_points,
                           const unsigned int n_comp);
 
       /**
-       * Vector with global positions where the material has to be
-       * evaluated in evaluate().
+       * Vector with global positions where the material has to be evaluated
+       * in evaluate().
        */
       std::vector<Point<dim> > position;
 
@@ -152,36 +145,52 @@ namespace aspect
       std::vector<double> pressure;
 
       /**
+       * Pressure gradients at the points given in the #position vector.
+       * This is important for the heating models.
+       */
+      std::vector<Tensor<1,dim> > pressure_gradient;
+
+      /**
+       * Velocity values at the points given in the #position vector.
+       * This value is mostly important in the case of determining
+       * whether material crossed a certain region (e.g. a phase boundary).
+       * The timestep that is needed for this check can be requested from
+       * SimulatorAccess.
+       */
+      std::vector<Tensor<1,dim> > velocity;
+
+      /**
        * Values of the compositional fields at the points given in the
-       * #position vector: composition[i][c] is the compositional field c
-       * at point i.
+       * #position vector: composition[i][c] is the compositional field c at
+       * point i.
        */
       std::vector<std::vector<double> > composition;
 
       /**
        * Strain rate at the points given in the #position vector. Only the
-       * viscosity may depend on these values. This std::vector can be set
-       * to size 0 if the viscosity is not needed.
+       * viscosity may depend on these values. This std::vector can be set to
+       * size 0 if the viscosity is not needed.
        *
-       * @note The strain rate is computed as $\varepsilon(\mathbf
-       * u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless
-       * of whether the model is compressible or not. This is relevant
-       * since in some other contexts, the strain rate in the compressible
-       * case is computed as $\varepsilon(\mathbf u)=\frac 12 (\nabla
-       * \mathbf u + \nabla \mathbf u^T) - \frac 13 \nabla \cdot \mathbf u
-       * \mathbf 1$.
+       * @note The strain rate is computed as $\varepsilon(\mathbf u)=\frac 12
+       * (\nabla \mathbf u + \nabla \mathbf u^T)$, regardless of whether the
+       * model is compressible or not. This is relevant since in some other
+       * contexts, the strain rate in the compressible case is computed as
+       * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
+       * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
        */
       std::vector<SymmetricTensor<2,dim> > strain_rate;
 
       /**
        * Optional reference to the cell that contains these quadrature
        * points. This allows for evaluating properties at the cell vertices
-       * and interpolating to the quadrature points. Note that not all
-       * calling functions can set this reference, so make sure that
-       * your material model either fails with a proper error message in
-       * these cases or provide an alternative calculation for these cases.
+       * and interpolating to the quadrature points, or to query the cell for
+       * material ids, neighbors, or other information that is not available
+       * solely from the locations. Note that not all calling functions can set
+       * this reference. In these cases it will be a NULL pointer, so make sure
+       * that your material model either fails with a proper error message
+       * or provide an alternative calculation for these cases.
        */
-      typename DoFHandler<dim>::active_cell_iterator cell;
+      const typename DoFHandler<dim>::active_cell_iterator *cell;
     };
 
 
@@ -191,18 +200,18 @@ namespace aspect
      * values at the different positions given by
      * MaterialModelInputs::position.
      */
+    template <int dim>
     struct MaterialModelOutputs
     {
       /**
-       * Constructor. Initialize the various arrays of this structure
-       * with the given number of quadrature points and (finite element)
-       * components.
+       * Constructor. Initialize the various arrays of this structure with the
+       * given number of quadrature points and (finite element) components.
        *
-       * @param n_points The number of quadrature points for which
-       *   input quantities will be provided.
-       * @param n_comp The number of vector quantities (in the order in
-       *   which the Introspection class reports them) for which input
-       *   will be provided.
+       * @param n_points The number of quadrature points for which input
+       * quantities will be provided.
+       * @param n_comp The number of vector quantities (in the order in which
+       * the Introspection class reports them) for which input will be
+       * provided.
        */
       MaterialModelOutputs (const unsigned int n_points,
                             const unsigned int n_comp);
@@ -233,24 +242,23 @@ namespace aspect
       std::vector<double> thermal_conductivities;
 
       /**
-       * Compressibility at the given positions. The compressibility is
-       * given as $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+       * Compressibility at the given positions. The compressibility is given
+       * as $\frac 1\rho \frac{\partial\rho}{\partial p}$.
        */
       std::vector<double> compressibilities;
 
       /**
-       * The product of the change of entropy $\Delta S$ at a phase
-       * transition and the derivative of the phase function
-       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to pressure at the
-       * given positions.
+       * The product of the change of entropy $\Delta S$ at a phase transition
+       * and the derivative of the phase function $X=X(p,T,\mathfrak c,\mathbf
+       * x)$ with regard to pressure at the given positions.
        */
       std::vector<double> entropy_derivative_pressure;
 
       /**
-       * The product of (minus) the change of entropy $-\Delta S$ at a
-       * phase transition and the derivative of the phase function
-       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at
-       * the given positions.
+       * The product of (minus) the change of entropy $-\Delta S$ at a phase
+       * transition and the derivative of the phase function
+       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at the
+       * given positions.
        */
       std::vector<double> entropy_derivative_temperature;
 
@@ -260,84 +268,85 @@ namespace aspect
        * compositional field c at point i.
        *
        * The mental model behind prescribing actual changes in composition
-       * rather than reaction rates is that we assume that there is always
-       * an equilibrium between the compositional fields (because the time
-       * scale of reactions is normally much shorter than that of
-       * convection), so the quantity returned by this function is an
-       * actual change in the amount of material, which is added to or
-       * subtracted from the current value of the compositional field,
-       * and NOT a reaction rate. The idea is, that in dependence of
-       * temperature, pressure, position and the compositional fields
-       * themselves an equilibrium can be calculated, and the difference
-       * between the current value and the equilibrium can be added to the
-       * respective compositional field.
+       * rather than reaction rates is that we assume that there is always an
+       * equilibrium between the compositional fields (because the time scale
+       * of reactions is normally much shorter than that of convection), so
+       * the quantity returned by this function is an actual change in the
+       * amount of material, which is added to or subtracted from the current
+       * value of the compositional field, and NOT a reaction rate. The idea
+       * is, that in dependence of temperature, pressure, position and the
+       * compositional fields themselves an equilibrium can be calculated, and
+       * the difference between the current value and the equilibrium can be
+       * added to the respective compositional field.
        *
        * For mass conservation it should ALWAYS be checked that what is
-       * subtracted from one field is added to another field (and the
-       * other way round) and that one never subtracts more than the
-       * actual value of a field (so it does not get negative).
+       * subtracted from one field is added to another field (and the other
+       * way round) and that one never subtracts more than the actual value of
+       * a field (so it does not get negative).
        *
        * This function has a default implementation that sets the reaction
        * term to zero (assuming no reactions).
        *
-       * @note In cases where one has slow chemical reactions (or cases
-       * where compositional fields are used to track quantities different
-       * than actual compositions, for example accumulated strains in
-       * damage models), models are formulated as differential equations
-       * with right hand sides, not as instantaneous equations. In such
-       * cases, the reaction terms (i.e., the incremental additions to the
-       * previous state) are usually of the form reaction rate times time
-       * step size. To implement something like this, derive your material
-       * model from SimulatorAccess so you can query the time step used by
-       * the simulator in order to compute the reaction increment.
+       * @note In cases where one has slow chemical reactions (or cases where
+       * compositional fields are used to track quantities different than
+       * actual compositions, for example accumulated strains in damage
+       * models), models are formulated as differential equations with right
+       * hand sides, not as instantaneous equations. In such cases, the
+       * reaction terms (i.e., the incremental additions to the previous
+       * state) are usually of the form reaction rate times time step size. To
+       * implement something like this, derive your material model from
+       * SimulatorAccess so you can query the time step used by the simulator
+       * in order to compute the reaction increment.
        */
       std::vector<std::vector<double> > reaction_terms;
     };
 
 
     /**
-     * A namespace in which we define how material model outputs
-     * should be averaged on each cell.
+     * A namespace in which we define how material model outputs should be
+     * averaged on each cell.
      *
-     * Material models compute output quantities such as the
-     * viscosity, the density, etc, based on pressures, temperatures,
-     * composition, and location at every quadrature point. For some
-     * models, these values vary drastically from quadrature point to
-     * quadrature point, and this creates difficulties both for the
-     * stability of the discretization as well as for the linear
-     * solvers. Some of this can be ameliorated by averaging values on
-     * every cell, although this of course reduces the ideal
-     * convergence order. This namespace defines the means to achieve
-     * such averaging.
+     * Material models compute output quantities such as the viscosity, the
+     * density, etc, based on pressures, temperatures, composition, and
+     * location at every quadrature point. For some models, these values vary
+     * drastically from quadrature point to quadrature point, and this creates
+     * difficulties both for the stability of the discretization as well as
+     * for the linear solvers. Some of this can be ameliorated by averaging
+     * values on every cell, although this of course reduces the ideal
+     * convergence order. This namespace defines the means to achieve such
+     * averaging.
      */
     namespace MaterialAveraging
     {
       /**
-       * An enum to define what kind of averaging operations are
-       * implemented. These are:
-       * - No averaging, i.e., leave the values as they were provided
-       *   by the material model.
-       * - Arithmetic averaging: Set the values of each output quantity
-       *   at every quadrature point to
-       *   $$ \bar x = \frac 1Q \sum_{q=1}^Q x_q $$
-       *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Harmonic averaging: Set the values of each output quantity
-       *   at every quadrature point to
-       *   $$ \bar x = \left(\frac 1Q \sum_{q=1}^Q \frac{1}{x_q}\right)^{-1} $$
-       *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Geometric averaging: Set the values of each output quantity
-       *   at every quadrature point to
-       *   $$ \bar x = \left(\prod_{q=1}^Q x_q\right)^{1/Q} $$
-       *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Pick largest: Set the values of each output quantity
-       *   at every quadrature point to
-       *   $$ \bar x = \max_{1\le q\le Q} x_q $$
-       *   where $x_q$ are the values at the $Q$ quadrature points.
-       * - Project to $Q_1$: This operation takes the values at the
-       *   quadrature points and computes the best bi- or trilinear
-       *   approximation for them. In other words, it projects the
-       *   values into the $Q_1$ finite element space. It then
-       *   re-evaluate this projection at the quadrature points.
+       * An enum to define what kind of averaging operations are implemented.
+       * These are:
+       *
+       * - No averaging, i.e., leave the values as they were provided by the
+       * material model.
+       *
+       * - Arithmetic averaging: Set the values of each output quantity at
+       * every quadrature point to \f[ \bar x = \frac 1Q \sum_{q=1}^Q x_q \f]
+       * where $x_q$ are the values at the $Q$ quadrature points.
+       *
+       * - Harmonic averaging: Set the values of each output quantity at every
+       * quadrature point to \f[ \bar x = \left(\frac 1Q \sum_{q=1}^Q
+       * \frac{1}{x_q}\right)^{-1} \f] where $x_q$ are the values at the $Q$
+       * quadrature points.
+       *
+       * - Geometric averaging: Set the values of each output quantity at
+       * every quadrature point to \f[ \bar x = \left(\prod_{q=1}^Q
+       * x_q\right)^{1/Q} \f] where $x_q$ are the values at the $Q$ quadrature
+       * points.
+       *
+       * - Pick largest: Set the values of each output quantity at every
+       * quadrature point to \f[ \bar x = \max_{1\le q\le Q} x_q \f] where
+       * $x_q$ are the values at the $Q$ quadrature points.
+       *
+       * - Project to $Q_1$: This operation takes the values at the quadrature
+       * points and computes the best bi- or trilinear approximation for them.
+       * In other words, it projects the values into the $Q_1$ finite element
+       * space. It then re-evaluate this projection at the quadrature points.
        */
       enum AveragingOperation
       {
@@ -367,16 +376,15 @@ namespace aspect
 
       /**
        * Given the averaging @p operation, a description of where the
-       * quadrature points are located on the given cell, and a
-       * mapping, perform this operation on all elements of the @p
-       * values structure.
+       * quadrature points are located on the given cell, and a mapping,
+       * perform this operation on all elements of the @p values structure.
        */
       template <int dim>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>   &quadrature_formula,
-                    const Mapping<dim>      &mapping,
-                    MaterialModelOutputs    &values);
+                    const Quadrature<dim>         &quadrature_formula,
+                    const Mapping<dim>            &mapping,
+                    MaterialModelOutputs<dim>          &values_out);
     }
 
 
@@ -399,7 +407,7 @@ namespace aspect
      * option one for simple material models.
      *
      * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
-     * reference_density() need to be implemented.
+     * and reference_density() need to be implemented.
      *
      * @ingroup MaterialModels
      */
@@ -408,19 +416,19 @@ namespace aspect
     {
       public:
         /**
-         * A typedef to import the MatertialModelInputs name into the
-         * current class. This typedef primarily exists as a backward
-         * compatibility measure given that the referenced structure
-         * used to be a member of the current class.
+         * A typedef to import the MatertialModelInputs name into the current
+         * class. This typedef primarily exists as a backward compatibility
+         * measure given that the referenced structure used to be a member of
+         * the current class.
          */
         typedef MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
         /**
-         * A typedef to import the MatertialModelOutputs name into the
-         * current class. This typedef primarily exists as a backward
-         * compatibility measure given that the referenced structure
-         * used to be a member of the current class.
+         * A typedef to import the MatertialModelOutputs name into the current
+         * class. This typedef primarily exists as a backward compatibility
+         * measure given that the referenced structure used to be a member of
+         * the current class.
          */
-        typedef MaterialModel::MaterialModelOutputs MaterialModelOutputs;
+        typedef MaterialModel::MaterialModelOutputs<dim> MaterialModelOutputs;
 
         /**
          * Destructor. Made virtual to enforce that derived classes also have
@@ -565,116 +573,6 @@ namespace aspect
          * @}
          */
 
-
-        /**
-         * @name Partial derivatives of physical parameters
-         * @{
-         */
-
-        /**
-         * Return the partial derivative of the viscosity function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * viscosity_depends_on() returns false for the given dependence and
-         * throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        viscosity_derivative (const double              temperature,
-                              const double              pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim>         &position,
-                              const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the density function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * density_depends_on() returns false for the given dependence and
-         * throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        density_derivative (const double              temperature,
-                            const double              pressure,
-                            const std::vector<double> &compositional_fields,
-                            const Point<dim>         &position,
-                            const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the compressibility function on
-         * the variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * compressibility_depends_on() returns false for the given dependence
-         * and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        compressibility_derivative (const double              temperature,
-                                    const double              pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim>         &position,
-                                    const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the specific heat function on the
-         * variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * specific_heat_depends_on() returns false for the given dependence
-         * and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        specific_heat_derivative (const double              temperature,
-                                  const double              pressure,
-                                  const std::vector<double> &compositional_fields,
-                                  const Point<dim>         &position,
-                                  const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return the partial derivative of the thermal conductivity function
-         * on the variable indicates as last argument.
-         *
-         * The default implementation of this function returns zero provided
-         * thermal_conductivity_depends_on() returns false for the given
-         * dependence and throws an exception otherwise.
-         *
-         * @note The @p dependence argument may identify only a single
-         * variable, not a combination. In other words, <code>NonlinearDepende
-         * nce::identifies_single_variable(dependence)</code> must return
-         * true.
-         */
-        virtual double
-        thermal_conductivity_derivative (const double              temperature,
-                                         const double              pressure,
-                                         const std::vector<double> &compositional_fields,
-                                         const Point<dim>         &position,
-                                         const NonlinearDependence::Dependence dependence) const;
-        /**
-         * @}
-         */
-
-
         /**
          * @name Reference quantities
          * @{
@@ -771,8 +669,8 @@ namespace aspect
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
          */
-        virtual void evaluate(const MaterialModelInputs &in,
-                              MaterialModelOutputs &out) const = 0;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -877,10 +775,6 @@ namespace aspect
          * The thermal expansion coefficient can equivalently be computed as
          * $\frac 1V \frac{\partial V}{\partial T}$. Note the difference in
          * sign.
-         *
-         * This function has a default implementation that computes $\alpha$
-         * through its definition above, using the density() and
-         * density_derivative() functions.
          */
         virtual double thermal_expansion_coefficient (const double      temperature,
                                                       const double      pressure,
@@ -920,9 +814,9 @@ namespace aspect
          * compositional fields (because the time scale of reactions is
          * normally much shorter than that of convection), so the quantity
          * returned by this function is an actual change in the amount of
-         * material, which is added to or subtracted from the current value
-         * of the compositional field, and NOT a reaction rate. The idea is,
-         * that in dependence of temperature, pressure, position and the
+         * material, which is added to or subtracted from the current value of
+         * the compositional field, and NOT a reaction rate. The idea is, that
+         * in dependence of temperature, pressure, position and the
          * compositional fields themselves an equilibrium can be calculated,
          * and the difference between the current value and the equilibrium
          * can be added to the respective compositional field.
@@ -982,8 +876,8 @@ namespace aspect
          * @param in
          * @param out
          */
-        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                      typename Interface<dim>::MaterialModelOutputs &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
     };
 
 
@@ -1021,7 +915,34 @@ namespace aspect
      */
     template <int dim>
     Interface<dim> *
+    create_material_model (const std::string &model_name);
+
+
+    /**
+     * A function that reads the name of a model from the parameter object
+     * and then returns a pointer to an
+     * object that describes this model. Ownership of the pointer is transferred to
+     * the caller.
+     *
+     * The material model object returned is not yet initialized and has not
+     * read its runtime parameters yet.
+     *
+     * @ingroup MaterialModels
+     */
+    template <int dim>
+    Interface<dim> *
     create_material_model (ParameterHandler &prm);
+
+
+    /**
+     * Return a string that consists of the names of material models that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
+     */
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ();
 
 
     /**

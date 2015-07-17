@@ -125,7 +125,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 % e.g. 1.0
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.3.pre %VERSION-INFO%
+1.4.pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -139,7 +139,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 Wolfgang Bangerth\\Timo Heister\\
 \large
     with contributions by:\\
-    Jacky Austermann,
+    Jacqueline Austermann,
     Markus B{\"u}rg,
     Juliane Dannberg,
     William Durkin,
@@ -158,7 +158,7 @@ Wolfgang Bangerth\\Timo Heister\\
 
 }
 
-{\fontfamily{\sfdefault}\selectfont \href{http://geodynamics.org}{geodynamics.org}}
+{\fontfamily{\sfdefault}\selectfont \href{https://geodynamics.org}{geodynamics.org}}
 
 
 %LINE%
@@ -237,9 +237,9 @@ University based on the following principles:
   in the form of widely used, actively maintained, and well tested and
   documented libraries, and we leverage these to make \aspect{} a much smaller
   and easier to understand system. Specifically, \aspect{} builds immediately
-  on top of the \dealii{} library (see \url{http://www.dealii.org/}) for
+  on top of the \dealii{} library (see \url{https://www.dealii.org/}) for
   everything that has to do with finite elements, geometries, meshes, etc.;
-  and, through \dealii{} on Trilinos (see \url{http://trilinos.sandia.gov/})
+  and, through \dealii{} on Trilinos (see \url{http://trilinos.org/})
   for parallel linear algebra and on \pfrst{} (see
   \url{http://www.p4est.org/}) for parallel mesh handling.
 
@@ -292,8 +292,8 @@ You can refer to the website by citing the following:
         title = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
         year = {2014},
-        note = {\texttt{http://aspect.dealii.org/}},
-        url = {http://aspect.dealii.org/}
+        note = {\texttt{https://aspect.dealii.org/}},
+        url = {https://aspect.dealii.org/}
       }
 \end{lstlisting}
 The manual's proper reference is this:
@@ -320,6 +320,10 @@ via The California Institute of Technology). In addition, the libraries upon
 which \aspect{} builds heavily have been supported through many other grants
 that are equally gratefully acknowledged.
 
+Please acknowledge CIG as follows:
+\begin{lstlisting}[frame=single,language=tex]
+ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG) which is supported by the National Science Foundation award NSF-094946.
+\end{lstlisting}
 
 \section{Equations, models, coefficients}
 \label{sec:models}
@@ -503,7 +507,14 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
   \\
-  \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf u}$},
+  \mathbf u &= \mathbf u_\text{prescribed} & \qquad &\textrm{on
+  $\Gamma_{\text{prescribed},\mathbf u}$},
+  \\
+  \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf
+  u}$},
+  \\
+  (2\eta \varepsilon(\mathbf u) -p I)\mathbf n  &= \mathbf t & \qquad
+  &\textrm{on $\Gamma_{\text{traction},\mathbf u}$},
   \\
   T &= T_{\text{prescribed}}
    & \qquad &\textrm{on $\Gamma_{D,T}$},
@@ -515,22 +526,39 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
    & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
    u\cdot\mathbf n<0\}$}.
 \end{align}
-Here,
-$\Gamma_{0,\mathbf u}$ corresponds to parts of the boundary on which the
-velocity is fixed to be zero,
-$\Gamma_{\parallel,\mathbf u}$ to parts of the boundary on which the
-velocity may be nonzero but must be parallel to the boundary,
-$\Gamma_{D,T}$ to places where the temperature is prescribed (for example at
-the inner and outer boundaries of the earth mantle), and finally
-$\Gamma_{N,T}$ to places where the temperature is unknown but the heat flux
-across the boundary is zero (for example on symmetry surfaces if only a part
+Here, the boundary conditions for velocity and temperature are subdivided into
+disjoint parts:
+\begin{itemize}
+  \item $\Gamma_{0,\mathbf u}$ corresponds to parts of the boundary on
+which the velocity is fixed to be zero.
+  \item $\Gamma_{\text{prescribed},\mathbf u}$ corresponds to parts of the
+  boundary on which the velocity is prescribed to some value (which could also
+  be zero). It is possible to restrict prescribing the velocity to only certain
+  components of the velocity vector.
+  \item $\Gamma_{\parallel,\mathbf u}$ corresponds to parts of the boundary on
+  which the velocity may be nonzero but must be parallel to the boundary, with the
+tangential component undetermined.
+  \item $\Gamma_{\text{traction},\mathbf u}$ corresponds to parts of the
+  boundary on which the traction is prescribed to some surface force density (a
+  common application being $\mathbf t=-p\mathbf n$ if one
+  just wants to prescribe a pressure component). It is possible to restrict
+  prescribing the traction to only certain vector components.
+  \item $\Gamma_{D,T}$ corresponds to places where the temperature is prescribed
+  (for example at the inner and outer boundaries of the earth mantle).
+  \item $\Gamma_{N,T}$ corresponds to places where the temperature is unknown
+  but the heat flux across the boundary is zero (for example on symmetry surfaces if only a part
 of the shell that constitutes the domain the Earth mantle occupies is
-simulated). We require that one of these boundary conditions hold at each
+simulated).
+\end{itemize}
+ We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
-$\Gamma_{0,\mathbf u}\cup\Gamma_{\parallel,\mathbf u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
-for the compositional fields at those parts of the boundary where flow is either
+$\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
+  u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
+  u}=\Gamma$ and
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be
+posed for the compositional fields at those parts of the boundary where flow is either
 tangential to the boundary or points outward.
+
 
 \subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
@@ -1659,7 +1687,7 @@ the moment of inertia dotted into the sought-after vector, we can solve for ${\m
 \end{equation*}
 A rotation about the rotation vector $\omega$ is then subtracted from the velocity solution.
 
-Removing the net translations/rotations are idential to their momentum counterparts, but for those the 
+Removing the net translations/rotations are identical to their momentum counterparts, but for those the 
 density is dropped from the formulae. For most applications the density should not vary so wildly 
 that there will be an appreciable difference between the two varieties, 
 though removing linear/angular momentum is more physically motivated.
@@ -1734,13 +1762,13 @@ The following steps should guide you through the installation of these
 prerequisites:
 \begin{enumerate}
 \item \textit{Trilinos:} Trilinos can be downloaded from
-  \href{http://trilinos.sandia.gov/download/}{http://trilinos.sandia.gov/}. At
+  \href{http://trilinos.org/download/}{http://trilinos.org/download/}. At
   the current time we recommend Trilinos Version 11.4.x.%
   \footnote{Other versions of Trilinos like 10.6.x
   and 10.8.x have bugs that make these versions unusable for our purpose. The
   \dealii{} ReadMe file provides a list of versions that are known to work
   without bugs with \dealii{}.} For installation instructions see
-  \href{http://www.dealii.org/developer/external-libs/trilinos.html}{the deal.II README file on installing Trilinos}. Note that you have
+  \href{https://www.dealii.org/developer/external-libs/trilinos.html}{the deal.II README file on installing Trilinos}. Note that you have
   to configure with MPI by using
 \begin{verbatim}
  TPL_ENABLE_MPI:BOOL=ON
@@ -1748,7 +1776,7 @@ prerequisites:
   in the call to cmake. After that, run {\tt{make install}}.
 
 \item \textit{\pfrst{}:} Download and install \pfrst{} as described in the
-  \href{http://www.dealii.org/developer/external-libs/p4est.html}{deal.II
+  \href{https://www.dealii.org/developer/external-libs/p4est.html}{deal.II
     p4est installation instructions}. This is done using the
   {\tt{p4est-setup.sh}}; do not use the \pfrst{} stand-alone installation
   instructions.
@@ -1766,12 +1794,12 @@ prerequisites:
 \item \textit{\dealii{}:}
   The current version of \aspect{} requires \dealii{} version 8.2 or later.
   This version can be downloaded and installed from
-  \url{http://www.dealii.org/download.html}.
+  \url{https://www.dealii.org/download.html}.
 
 \item \textit{Configuring and compiling \dealii:} Now it is time to configure
   \dealii.
   To this end, follow the \dealii{}
-  \href{http://www.dealii.org/developer/readme.html}{installation
+  \href{https://www.dealii.org/developer/readme.html}{installation
     instructions}. Note that \dealii{} recently made the switch to cmake,
     so the configuration changed. Make sure you enable MPI.
     A typical command line would look like this:
@@ -1801,7 +1829,7 @@ cmake -DDEAL_II_WITH_MPI=ON \
 
 \item  You may now want to set the environment variable\footnote{For bash
     this would be adding the line {\tt{export DEAL\_II\_DIR=/path/to/deal-installed/}} to
-    the file {\tt{\~{}/.bashrc}}.}
+    the file {\tt{\~{}/.bashrc}}. Then close the terminal and open it again to activate the change.}
 {\tt{DEAL\_II\_DIR}} to the directory where you \textit{installed} \dealii.
 
 \end{enumerate}
@@ -1872,6 +1900,116 @@ point for exploring the documentation.
 \end{enumerate}
 
 The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
+
+\subsection{Installing and running \aspect{} on Mac OS X}
+OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9) and Yosemite (10.10) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
+
+\begin{enumerate}
+\item Install Cmake.
+
+CMake is a cross-platform, open-source build system that can be downloaded from \url{http://www.cmake.org}.  After installation of CMake.app, the terminal command for cmake will be
+\begin{verbatim}
+/Applications/CMake.app/Contents/bin/cmake
+\end{verbatim}
+
+\item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
+%Current latest deal.ii version is 8.2.1.
+{\footnotesize
+\begin{verbatim}
+open  https://github.com/dealii/dealii/releases/download/v8.2.1/dealii-8.2.1-parallel-bundle.dmg
+\end{verbatim}
+}
+Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
+ To start the \dealii{} app, double click the icon in the Applications folder or use the open command:
+{\footnotesize \begin{verbatim}
+open /Applications/deal.II.app
+\end{verbatim}}
+\dealii{} app opens a terminal window and displays a \dealii{} message.   \dealii{}.app will install all required libraries for \aspect{} (p4est, parMeTiS, and Trilinos) and will include the environment variables needed to use these libraries.
+
+\item Download  the  \aspect{} source from the git repository.
+
+{\footnotesize \begin{verbatim}
+cd $HOME/src
+git clone https://github.com/geodynamics/aspect.git
+\end{verbatim}}
+
+
+Note: you {\bf MUST} \underline{build} and \underline{run} \aspect{} in the terminal window started by \dealii{}.
+
+\item Build \aspect{}
+
+\begin{enumerate}
+\item Go to the  directory where you wish to install \aspect{}  and run the following commands:
+
+{\footnotesize
+\begin{verbatim}
+cmake .
+\end{verbatim}}
+
+This should display something like:
+
+{\footnotesize
+\begin{verbatim}
+Project  aspect  set up with  deal.II-8.2.1  found at /Applications/deal.II.app/Contents/Resources
+\end{verbatim}}
+
+\item Run make:
+
+{\footnotesize
+\begin{verbatim}
+bash-3.2$ make
+Scanning dependencies of target aspect
+[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/initial_profile.cc.o
+[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/interface.cc.o
+...
+Linking CXX executable aspect
+[100%] Built target aspect
+bash-3.2$ ls -l aspect
+-rwxr-xr-x  1 <name>  staff  19131292 May  7 15:02 aspect
+\end{verbatim}
+}
+There may be  warnings from the compiler, but if the \aspect{} target is created then it was successful.
+
+\item By default,  \aspect{}  compiles the debug version of the code.
+To compile the optimized version:
+{\footnotesize\begin{verbatim}
+make release 
+\end{verbatim}}
+
+\item Run make test
+
+{\footnotesize
+\begin{verbatim}
+make test
+\end{verbatim}}
+
+
+\end {enumerate}
+
+
+
+\item Run \aspect{}.
+
+A reminder: you {\bf must} run  \aspect{}  on the terminal window which is opened by \dealii{}.app.
+
+To start \aspect{} using MPI for parallelization, from the directory where you installed \aspect{}:
+{\footnotesize
+\begin{verbatim}
+mpirun -np <# of processes> ./aspect <parameter file>
+\end{verbatim}}
+
+To check quickly whether you are running  \aspect{} on the  \dealii{}.app terminal, check the location of the \verb|mpirun| command:
+{\footnotesize
+\begin{verbatim}
+bash-3.2$ which mpirun
+/Applications/deal.II.app/Contents/Resources/opt/openmpi-1.6.5/bin/mpirun
+\end{verbatim}}
+
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Running \aspect}
 \label{sec:running}
@@ -2057,8 +2195,8 @@ The purpose of these files is as follows:
 
   VTK files can be visualized by many of the large visualization packages. In
   particular, the
-  \href{http://www.llnl.gov/visit/}{Visit} and
-  \href{http://www.paraview.org/HTML/Index.html}{ParaView} programs, both
+  \href{https://visit.llnl.gov}{Visit} and
+  \href{http://www.paraview.org/}{ParaView} programs, both
   widely used, can read the files so created. However, while VTK has become a
   de-facto standard for data visualization in scientific computing, there
   doesn't appear to be an agreed upon way to describe which files jointly make
@@ -2181,7 +2319,7 @@ prohibitively expensive for finding bugs; it is also a useful feature when
 scoping out whether certain parameter settings will have the desired effect by
 testing them in 2d first, before running them in 3d. This feature is discussed
 in detail in the
-\href{http://www.dealii.org/developer/doxygen/deal.II/step_4.html}{\dealii{}
+\href{https://www.dealii.org/developer/doxygen/deal.II/step_4.html}{\dealii{}
   tutorial program step-4}.
 Like there, all the functions and classes in
 \aspect{} are compiled for both 2d and 3d. Which dimension is actually
@@ -2258,8 +2396,8 @@ XML-based, compressed format defined by the VTK library, see
 \url{http://public.kitware.com/VTK/}. This file format has become a broadly
 accepted pseudo-standard that many visualization program support, including
 two of the visualization programs used most widely in computational science:
-Visit (see \url{http://www.llnl.gov/visit/}) and ParaView (see
-\url{http://www.paraview.org/HTML/Index.html}). The VTU format has a number of
+Visit (see \url{https://visit.llnl.gov/}) and ParaView (see
+\url{http://www.paraview.org/}). The VTU format has a number of
 advantages beyond being widely distributed:
 \begin{itemize}
 \item It allows for compression, keeping files relatively small even for
@@ -2421,7 +2559,7 @@ In order to visualize one time step, follow these steps:%
 \end{itemize}
 
 More information on all of these topics can be found in the Visit
-documentation, see \url{http://www.llnl.gov/visit/}. We have also recorded
+documentation, see \url{https://visit.llnl.gov/}. We have also recorded
 video lectures demonstrating this process interactively at
 \url{http://www.youtube.com/watch?v=3ChnUxqtt08} for Visit, and at
 \url{http://www.youtube.com/watch?v=w-65jufR-bc} for Paraview.
@@ -4849,6 +4987,51 @@ that the true pressure is in fact discontinuous along the edge of the circle.
 \end{table}
 
 
+\subsubsection{Prescribed internal velocity constraints}
+\label{sec:prescribed-velocities}
+\textit{This section was contributed by Jonathan Perry-Houts}
+
+In cases where it is desirable to investigate the behavior of one part of the model
+domain but the controlling physics of another part is difficult to capture,
+such as corner flow in subduction zones, it may be useful to force the desired
+behavior in some parts of the model domain and solve for the resulting flow
+everywhere else. This is possible through the use of \aspect{}'s ``signal'' mechanism,
+as documented in Section~\ref{sec:extending-signals}.
+
+Internally, \aspect{} adds ``constraints'' to the finite element system for boundary
+conditions and hanging nodes. These are places in the finite element system where
+certain solution variables are required to match some prescribed value. Although it
+is somewhat mathematically inadmissible to prescribe constraints on nodes inside
+the model domain, $\Omega$, it is nevertheless possible so long as the prescribed
+velocity field fits in to the finite element's solution space, and satisfies the
+other constraints (i.e., is divergence free).
+
+Using \aspect{}'s signals mechanism, we write a shared library which provides a
+``slot'' that listens for the signal which is triggered after the regular model
+constraints are set, but before they are ``distributed.''
+
+As an example of this functionality, below is a plugin which allows the user to prescribe
+internal velocities with functions in a parameter file:
+\lstinputlisting[language=c++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
+
+The above plugin can be compiled with \texttt{cmake . \&\& make} in the
+\url{cookbooks/prescribed_velocity} directory. It can be loaded in a parameter file
+as an ``Additional shared library.'' By setting parameters like those shown below,
+it is possible to produce many interesting flow fields such as the ones visualized in
+(Figure \ref{fig:prescribed-velocity}).
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity/minimal.prm.out}
+
+\begin{figure}
+    \centering
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/corner_flow}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/circle}}
+    \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
+    \label{fig:prescribed-velocity}
+\end{figure}
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
@@ -5420,6 +5603,131 @@ with a more elaborate material model we should be able to get even closer to
 reality.
 
 
+\subsubsection{3D convection with an Earth-like initial condition}
+\label{sec:cookbooks-S20RTS}
+\textit{This section was contributed by Jacqueline Austermann}
+
+For any model run with \aspect{} we have to choose an initial condition for the 
+temperature field. If we want to model convection in the Earth's mantle we want 
+to choose an initial temperature distribution that captures the Earth's buoyancy 
+structure. In this cookbook we present how to use temperature perturbations 
+based on the shear wave velocity model S20RTS \cite{S20RTS} to 
+initialize a mantle convection calculation.
+
+\paragraph{The input shear wave model.}
+
+The current version of \aspect{} can read in the shear wave velocity models 
+S20RTS \cite{S20RTS} and S40RTS \cite{S40RTS}, which are located 
+in \texttt{data/initial-conditions/S40RTS/}. Those models provide 
+spherical harmonic coefficients up do degree 20 and 40, respectively, for 21 
+depth layers. The interpolation with depth is done through a cubic spline 
+interpolation. The input files \texttt{S20RTS.sph} and \texttt{S40RTS.sph} were
+downloaded from \url{http://www.earth.lsa.umich.edu/~jritsema/Research.html} 
+and have the following format (this example is S20RTS): 
+
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.input.sph}
+
+The first number in the first line denotes the maximum degree. This is followed in 
+the next line by the spherical harmonic coefficients from the surface down to the 
+CMB. The coefficients are arranged in the following way:\\
+
+\noindent $a_{00}$ \\
+$a_{10}$ $a_{11}$ $b_{11}$ \\
+$a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$ \\
+... \\
+
+$a_{yz}$ is the cosine coefficient of degree $y$ and order $z$ and $b_{yz}$ is 
+the sine coefficient of degree $y$ and order $z$. The depth layers are specified 
+in the file \texttt{Spline\_knots.txt} by a normalized depth value ranging from the CMB (3480km, 
+normalized to -1) to the moho (6346km, normalized to 1). This is the original
+format provided on the homepage. 
+
+Any other perturbation model in this same format can also be used, one only
+has to specify the different filename in the parameter file (see next section).
+For models with different depth layers one has to adjust the \texttt{Spline\_knots.txt} 
+file as well as the number of depth layers, which is hard coded in the current 
+code. A further note of caution when switching to a different input model 
+concerns the normalization of the spherical harmonics, which might differ.  
+After reading in the shear wave velocity perturbation one has several options
+to scale this into temperature differences, which are then used to initialize 
+the temperature field. 
+
+\paragraph{Setting up the ASPECT model.}
+
+For this cookbook we will use the parameter file provided in 
+\url{cookbooks/S20RTS.prm}, which uses a 3d spherical shell 
+geometry similar to section \ref{sec:shell-simple-3d}. This plugin is only sensible 
+for a 3D spherical shell with Earth-like dimensions. 
+
+The relevant section in the input file is as follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.part.prm.out}
+
+For this initial condition model we need to first specify the data directory in which 
+the input files are located as well as the initial condition file (S20RTS.sph or 
+S40RTS.sph) and the file that contains the normalized depth layers (Spline knots depth file name). 
+We next have the option to remove the degree 0 perturbation from the shear 
+wave model. This might be the case if we want to make sure that the depth 
+average temperature follows the background (adiabatic or constant) temperature.  
+
+The next input parameters describe the scaling from the shear wave velocity 
+perturbation to the final temperature field. The shear wave velocity perturbation 
+$\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
+constant that is specified in the initial condition section of the input parameter 
+file as `vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+perturbation is further translated into a temperature difference $\Delta T$ by 
+multiplying it by the negative inverse of thermal expansion, which is also 
+specified in this section of the parameter file as `Thermal expansion coefficient 
+in initial temperature scaling'. This temperature difference is then added to the 
+background temperature, which is the adiabatic temperature for a compressible 
+model or the reference temperature (as specified in this section of the parameter file) for an 
+incompressible model. Features in the upper mantle such as cratons might 
+be chemically buoyant and therefore isostatically compensated, in which case 
+their shear wave perturbation would not contribute buoyancy variations. We therefore included an 
+additional option to zero out temperature perturbations within a certain depth. 
+In this example we set this parameter `Remove temperature heterogeneity down to specified 
+depth' to 200km. The chemical variation within the mantle 
+might require a more sophisticated `vs to density' scaling that varies for 
+example with depth or as a function of the perturbation itself, which is not captured
+in this model. The described procedure 
+provides an absolute temperature for every point, which will only be adjusted 
+at the boundaries if indicated in the Boundary temperature model. 
+
+\paragraph{Visualizing 3D models.}
+
+In this cookbook we calculate the instantaneous solution to examine the flow 
+field. Figure \ref{fig:ic-1} shows the density field for a resolution of 2 global refinement 
+steps (bottom right) as used in the cookbook, as well as 4 global refinement 
+steps (other panels in this figure). The top panels show the density variation 
+that has been obtained from scaling S20RTS and removing perturbations in 
+the upper 200km. One can see the two large low shear wave velocity perturbations 
+underneath Africa and the Pacific that lead to upwelling if they are assumed to 
+be buoyant (as is done in this case). One can also see the subducting slabs 
+underneath South America and the Philippine region that lead to local downwelling. 
+This flow produces dynamic topography on the surface, which is shown 
+in the bottom row (4 refinement steps on the left, 2 refinement steps on the right). 
+One can see that subduction zones are visible as depressed topography 
+due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
+ridges are elevated due to (deep and) shallow upward flow. 
+This model uses a highly simplified material model that is incompressible and 
+isoviscous and does therefore not represent real mantle flow. More realistic 
+material properties, density scaling as well as boundary conditions will affect the magnitude 
+and pattern shown here. 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/full_mantle.png}
+  \hfill
+  \caption{\it The top panels show the density distribution as prescribed from the shear
+  wave velocity model S20RTS and the resulting flow for a global refinement of 4. This
+  model assumes a constant scaling between shear wave and density perturbations 
+  and zeros out perturbations in the upper 200km.
+  The bottom figures show the great circle (blue line) along which the top slices
+  are evaluated. They also show the resulting dynamic topography for a global refinement of 4 (left)
+  and 2 (right, cookbook). }
+  \label{fig:ic-1}
+\end{figure}
+
+
 \marginpar{Use cookbooks/periodic-box.prm}
 \marginpar{Finish the GPlates section}
 
@@ -5633,7 +5941,7 @@ a period of no-slip boundary conditions before starting the use of the GPlates p
 This is a comfort implementation, which could also be achieved by using the checkpointing
 possibility described in section~\ref{sec:checkpoint-restart}. 
 
-\subsubsection{Reproducing Rheology of Morency and Doin, 2004}
+\subsubsection{Reproducing rheology of Morency and Doin, 2004}
 \label{sec:cookbooks-morency-doin}
 \textit{This section was contributed by Jonathan Perry-Houts}
 
@@ -5641,29 +5949,40 @@ Modeling interactions between the upper mantle and the lithosphere can be diffic
 of the dynamic range of temperatures and pressures involved. Many simple material models
 will assign very high viscosities at low temperature thermal boundary layers. The
 pseudo-brittle rheology described in \cite{MD04} was developed to limit the strength of
-lithosphere at low temperature. The effective rheology can be described as the harmonic mean
+lithosphere at low temperature. The effective viscosity can be described as the harmonic mean
 of two non-Newtonian rheologies:
-\[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\]
+\[v_\text{eff} = \left(\frac{1}{v_\text{eff}^v}+\frac{1}{v_\text{eff}^p}\right)^{-1}\]
 where
-\[v_{eff}^v = B \left(\frac{\dot{\varepsilon}}{\dot{\varepsilon}_{ref}}\right)^{-1+1/n_v}
-    exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right)
-    \text{ and  }
-    v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\varepsilon}^{-1+1/n_p}}
-    {\dot{\varepsilon}_{ref}^{1/n_p}} \right), \]
-where $v_{eff}$ is the effective viscosity, $B$ is a scaling constant, $\dot{\varepsilon}$ is
-related to the second invariant of the strain rate tensor, $\dot{\varepsilon}_{ref}$ is a
-reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,
-$V_a$ is the activation volume, $\rho_m$ is the mantle density, $R$ is the gas constant, $T$
-is temperature, $\tau_0$ is the cohesive strength of rocks at the surface, $\gamma$ is a
-coefficient of yield stress increase with depth, and $z$ is depth.
+\begin{align*}
+  v_\text{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}}\right)^{-1+1/n_v}
+  \exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right),
+  \\
+  v_\text{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}}
+  {\dot{\epsilon}_{ref}^{1/n_p}} \right),
+\end{align*}
+where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the
+second invariant of the strain rate tensor and a minimum strain rate, $\dot{\epsilon}_0$;
+$\dot{\epsilon}_{ref}$ is a reference strain rate; $n_v$, and $n_p$ are stress exponents;
+$E_a$ is the activation energy; $V_a$ is the activation volume; $\rho_m$ is the mantle density;
+$R$ is the gas constant; $T$ is temperature; $\tau_0$ is the cohesive strength of rocks at
+the surface; $\gamma$ is a coefficient of yield stress increase with depth; and $z$ is depth.
 
 By limiting the strength of the lithosphere at low temperature, this rheology allows one to
 more realistically model processes like lithospheric delamination and foundering in the
 presence of weak crustal layers. A similar model setup to the one described in \cite{MD04}
-can be reproduced with the following parameters. (Note: the viscosity profile in Figure 1
-of \cite{MD04} appears to be wrong. The published parameters do not reproduce those
-viscosities; I don't know why. The values used here get close. See Fig.~\ref{fig:md-1} for
-the approximate reproduction of that figure).
+can be reproduced with the following parameters.
+
+\note{\cite{MD04} defines the second invariant of the strain rate in a nonstandard way.
+    The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2}
+    (\epsilon_{11}^2 + \epsilon_{12}^2)}$, where $\epsilon$ is the strain rate tensor.
+    For consistency, that is also the formulation implemented in Aspect. Because of this
+    irregularity it is inadvisable to use this material model for purposes beyond
+    reproducing published results.}
+
+\note{The viscosity profile in Figure 1 of \cite{MD04} appears to be wrong. The published
+    parameters do not reproduce those viscosities; it is unclear why. The values used here
+    get very close. See Figure \ref{fig:md-1} for an approximate reproduction of the
+    original figure.}
 
 \lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.prm.out}
 
@@ -5674,6 +5993,136 @@ the approximate reproduction of that figure).
   the low activation energy of the crustal component.}
   \label{fig:md-1}
 \end{figure}
+
+\subsubsection{Crustal deformation}
+
+\textit{This section was contributed by Cedric Thieulot, and makes use of the Drucker-Prager 
+material model written by Anne Glerum and the free surface plugin by Ian Rose.}
+
+This is a simple example of an upper-crust undergoing compression or extension.
+It is characterized by a single layer of visco-plastic material subjected to basal 
+kinematical boundary conditions. In compression, this setup is somewhat analogous 
+to \cite{will99}, and in extension to \cite{alht11}.
+
+Brittle failure is approximated by adapting the viscosity to limit the stress 
+that is generated during deformation. 
+This “cap” on the stress level is parameterized in this experiment by the pressure-dependent 
+Drucker Prager yield criterion  and we therefore make use of the Drucker-Prager 
+material model (see Section \ref{parameters:Material_20model}) in the 
+{\tt cookbooks/crustal\_model\_2D.prm}.
+
+The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
+The plasticity parameters are specified as follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm}
+
+The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of friction 
+(see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
+and the effective viscosity is then computed as follows:
+\[
+\mu_\text{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
+\mu_\text{min}} + \frac{1}{\mu_\text{max}}  \right)^{-1}
+\]
+where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
+The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
+
+During the first iteration of the first timestep, the strain rate is zero, so
+we avoid dividing by zero by setting the strain rate to {\tt Reference strain rate}.
+
+
+The top boundary is a free surface while the left, right and bottom boundaries are subjected 
+to the following boundary conditions:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part2.prm}
+
+Note that compressive boundary conditions are simply achieved by reversing  
+the sign of the imposed velocity.
+We also make use of the strain rate-based mesh refinement plugin:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm}
+
+Setting 
+{\tt   set Initial adaptive refinement        = 4}
+yields a series of meshes as shown in Fig. (\ref{fig:meshes}), all produced during the 
+first timestep. As expected, we see that the location of the highest mesh refinement
+corresponds to the location of a set of conjugated shear bands.
+
+If we now set this parameter to 1 and allow the simulation to evolve
+for 500kyr, a central graben or plateau (depending on the nature
+of the boundary conditions) develops and deepens/thickens over time, nicely showcasing 
+the unique capabilities of the code to handle free surface large deformation, localised
+strain rates through visco-plasticity and adaptive mesh refinement as
+shown in Fig. (\ref{fig:extcompr}).
+
+\begin{figure}
+   \centering
+   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/grids}
+   \caption{\it Mesh evolution during the first timestep (refinement is based on strain rate).}
+   \label{fig:meshes}
+\end{figure}
+
+ 
+
+Deformation localizes at the basal velocity discontinuity and plastic shear bands
+form at an angle of approximately $53^\circ$ to the bottom in extension and 
+$35^\circ$ in compression, both of which correspond to the reported Arthur angle \cite{kaus10,buit12}. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both}
+  \caption{\it Finite element mesh, velocity, viscosity and strain rate fields
+  in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.}
+  \label{fig:extcompr}
+\end{figure}
+
+
+
+\paragraph{Extension to 3D} We can easily modify the previous 
+input file to produce {\tt crustal\_model\_3D.prm}
+which implements a similar setup, with the additional constraint that the position 
+of the velocity discontinuity varies with the $y$-coordinate, 
+as shown in Fig. (\ref{fig:bottombc}). 
+The domain is now 
+$128\times96\times16$km and the boundary conditions are implemented as
+follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_3D_part1.prm}
+
+The presence of 
+an offset between the two velocity discontinuity zones leads to a transform 
+fault which connects them. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2}
+  \caption{\it Basal velocity boundary conditions and corresponding 
+  strain rate field for the 3D model.} 
+  \label{fig:bottombc}
+\end{figure}
+
+The Finite Element mesh, the velocity, viscosity and strain rate fields are shown 
+in Fig. (\ref{fig:ext3D}) at the end of the first time steps. The reader is encouraged
+to run this setup in time to look at how the two grabens interact as a function 
+of their initial offset \cite{alht11,alht12,alhf13}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{cookbooks/crustal_deformation/all3D.png}
+\caption{\it Finite element mesh, velocity, viscosity and strain rate fields at
+the end of the first time step after one level of strain rate-based adaptive mesh refinement.} 
+\label{fig:ext3D}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
@@ -6268,7 +6717,7 @@ error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in Table~\ref{tab:burstedde-table} and can be deduced from equations \eqref{eq:burstedde-velocity} and
 \eqref{eq:burstedde-pressure}.
-Figure \ref{figure} shows that the analytical solution is indeed retrieved by the model.
+Figure~\ref{fig:burstedde-benchmark} shows that the analytical solution is indeed retrieved by the model.
 
 \begin{table}[h!]
 \caption{Analytical solutions \label{tab:burstedde-table}}
@@ -6283,7 +6732,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
 
 \begin{figure}[t!]
   \centering
-  \subfigure[b]{
+  \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
   ~ 
   \subfigure[]{
@@ -6294,7 +6743,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
   ~
   \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
-  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{figure}
+  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{fig:burstedde-benchmark}
 \end{figure}
 
 The convergence of the numerical error of this benchmark has been analysed by
@@ -6892,15 +7341,155 @@ of results are listed in Table~\ref{tab:davies-et-al-results}.%
   \caption{\it Davies et al. benchmarks: Numerical results for some of the output quantities required by the benchmarks and the various cases considered.}
   \label{tab:davies-et-al-results}
 \end{table}
- 
 
+
+\subsubsection{The Crameri et al.~benchmarks}
+\label{sec:benchmark-crameri}
+
+\textit{This section was contributed by Ian Rose.}
+
+This section follows the two free surface benchmarks described by Crameri et al. \cite{CSG12}.  
+
+\paragraph{ Case 1: Relaxation of topography }
+\label{sec:benchmark-crameri-case-1}
+
+The first benchmark involves a high viscosity lid sitting on top of a lower viscosity 
+mantle. There is an initial sinusoidal topography which is then allowed to relax.
+This benchmark has a semi-analytical solution (which is exact for infinitesimally small
+topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benchmark-initial-topography}.
+
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/initial_topography}
+  \end{center}
+  \caption{\it Setup for the topography relaxation benchmark. The box is $2800$ km wide and $700$ km high, with 
+    a $100$ km lid on top. The lid has a viscosity of $10^{23} \, {Pa\,s}$, while the mantle has a viscosity of $10^{21} \, {Pa\,s}$.  The sides are 
+    free slip, the bottom is no slip, and the top is a free surface.  Both the lid and the mantle have 
+    a density of $3300 \,{kg/m^3}$, and gravity is $10 \, {m/s^2}$. There is a $7 \, {km}$ 
+    sinusoidal initial topography on the free surface.}
+  \label{fig:crameri-benchmark-initial-topography}
+\end{figure}
+
+The complete parameter file for this benchmark can be found in 
+\url{benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm}, 
+the  most relevant parts of which are excerpted here: 
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_1.prm}
+In particular, this benchmark uses a custom geometry model to set the initial geometry. 
+This geometry model, called ``\texttt{ReboundBox}'', is based on the \texttt{Box} geometry model. 
+It generates a domain in using the same parameters as \texttt{Box}, but then displaces all 
+the nodes vertically with a sinusoidal perturbation, where the magnitude and order of that 
+perturbation are specified in the \texttt{ReboundBox} subsection.
+
+
+The characteristic timescales of topography relaxation are significantly smaller than those of 
+mantle convection. Taking timesteps larger than this relaxation timescale tends to cause sloshing
+instabilities, which are described further in Section~\ref{sec:freesurface}. Some sort of stabilization 
+is required to take large timesteps. In this benchmark, however, we are interested in the relaxation 
+timescale, so we are free to take very small timesteps (in this case, 0.01 times the CFL 
+number).  As can be seen in Figure~\ref{fig:crameri-benchmark-relaxation-topography}, the results of all the 
+codes which are included in this comparison are basically indistinguishable.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_1_comparison}
+  \end{center}
+  \caption{\it Results for the topography relaxation benchmark, showing maximum topography 
+   versus time. Over about $100$ ka the topography completely disappears. The results of four 
+   free surface codes, as well as the semi-analytic solution, are nearly identical.}
+  \label{fig:crameri-benchmark-relaxation-topography}
+\end{figure}
+
+\paragraph{ Case 2: Dynamic topography }
+\label{sec:benchmark-crameri-case-2}
+
+Case two is more complicated. Unlike the case one, it occurs over mantle convection 
+timescales.  In this benchmark there is the same high viscosity lid over a lower 
+viscosity mantle. However, now there is a blob of buoyant material rising in the 
+center of the domain, causing dynamic topography at the surface. The details for the setup
+are in the caption of Figure~\ref{fig:crameri-benchmark-rising-blob}.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/rising_blob}
+  \end{center}
+  \caption{\it Setup for the dynamic topography benchmark. Again, the domain is $2800$ km 
+  wide and $700$ km high.  A $100$ km thick lid with viscosity $10^{23}$ overlies a mantle
+  with viscosity $10^{21}$.  Both the lid and the mantle have a density of $3300\,kg/m^3$.
+  A blob with diameter $100$ km lies $300$ km from the bottom of the domain.  The blob has 
+  a density of $3200 kg/m^3$ and a viscosity of $10^{20}$ Pa s.}
+  \label{fig:crameri-benchmark-rising-blob}
+\end{figure}
+
+Case two requires higher resolution and longer time integrations than case one. The benchmark
+is over 20 million years and builds dynamic topography of $\sim 800$ meters.  
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_2_comparison}
+  \end{center}
+  \caption{\it Evolution of topography for the dynamic topography benchmark. The maximum topography
+   is shown as a function of time, for \aspect{} as well as for several other codes participating in
+   the benchmark. This benchmark shows considerably more scatter between the codes.}
+  \label{fig:crameri-2-comparison}
+\end{figure}
+
+Again, we excerpt the most relevant parts of the parameter file for this benchmark, with the 
+full thing available in \url{benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm}.
+Here we use the ``Multicomponent'' material model, which allows us to easily set up a number 
+of compositional fields with different material properties. The first compositional field 
+corresponds to background mantle, the second corresponds to the rising blob, and the third 
+corresponds to the viscous lid.
+
+Furthermore, the results of this benchmark are sensitive to the mesh refenement and timestepping 
+parameters. Here we have nine refinement levels, and refine according to density and the 
+compositional fields.
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_2.prm}
+
+Unlike the first benchmark, for case two there is no (semi) analytical solution to compare against.
+Furthermore, the time integration for this benchmark is much longer, allowing for errors to 
+accumulate. As such, there is considerably more scatter between the participating codes.  \aspect{}
+does, however, fall within the range of the other results, and the curve is somewhat less wiggly.
+The results for maximum topography versus time are shown in~\ref{fig:crameri-2-comparison}
+
+The precise values for topography at a given time are quite dependent on the resolution and
+timestepping parameters. Following \cite{CSG12} we investigate the convergence of the maximum 
+topography at 3 Ma as a function of CFL number and mesh resolution.  The results are shown in 
+figure~\ref{fig:crameri-benchmark-convergence}. 
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/crameri_2_convergence}
+  \end{center}
+  \caption{\it Convergence for case two.  Left: Logarithm of the error with decreasing CFL number. 
+As the CFL number decreases, the error gets smaller. However, once it reaches a value of $\sim0.1$, there
+stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh 
+resolution. As the resolution increases, so does the accuracy.}
+  \label{fig:crameri-benchmark-convergence}
+\end{figure}
+
+We find that at 3 Ma \aspect{}  converges to a maximum topography of $\sim$396 meters. 
+This is slightly different from what MILAMIN\_VEP reported as its convergent value in \cite{CSG12},
+but still well within the range of variation of the codes. Additionally, we note that \aspect{}
+is able to achieve good results with relatively less mesh resolution due to the ability 
+to adaptively refine in the regions of interest (namely, the blob and the high viscosity lid).
+
+Accuracy improves roughly linearly with decreasing CFL number, though stops improving at CFL $\sim 0.1$.
+Accuracy also improves with increasing mesh resolution, though its convergence order does not seem 
+to be excellent.  It is possible that other mesh refinement parameters than we tried in this benchmark 
+could improve the convergence. The primary challenge in accuracy is limiting numerical diffusion 
+of the rising blob. If the blob becomes too diffuse, its ability to lift topography is diminished.
+It would be instructive to compare the results of this benchmark using tracer particles with the 
+results using compositional fields.
 
 \section{Extending \aspect}
 \label{sec:extending}
 
-\aspect{} is designed to be an extensible code. In particular, the program
-uses a plugin architecture in which it is trivial to replace
-or extend certain components of the program:
+\aspect{} is designed to be an extensible code. In particular, it
+uses both a plugin architecture and a set of signals through which it is
+trivial to replace or extend certain components of the program. Examples of
+things that are simple to extend are:
 \begin{itemize}
 \item the material description,
 \item the geometry,
@@ -6917,11 +7506,23 @@ or extend certain components of the program:
 \item the computation of refinement indicators,
 \item the determination of how long a computation should run.
 \end{itemize}
+This list may also have grown since this section was written.
 We will discuss the way this is achieved in Sections~\ref{sec:plugins} and
 \ref{sec:plugins-concrete}. Changing the core functionality, i.e., the basic equations
 \eqref{eq:stokes-1}--\eqref{eq:temperature}, and how they are solved is
 arguably more involved. We will discuss this in Section
 \ref{sec:extending-solver}.
+
+\note{The purpose of coming up with ways to make extensibility simple is that if
+you want to extend \aspect{} for your own purposes, you can do this in a
+separate set of files that describe your situation, rather than by modifying
+the \aspect{} source files themselves. This is important, because (i) it makes
+it possible for you to update \aspect{} itself to a newer version without
+losing the functionality you added (because you did not make any changes to
+the \aspect{} files themselves), (ii) because it makes it possible to keep
+unrelated changes separate in your own set of files, in a place where they are
+simple to find, and (iii) because it makes it much easier for you to share
+your modifications and additions with others.}
 
 Since \aspect{} is written in C++ using the \dealii{} library, you
 will have to be proficient in C++. You will also likely have
@@ -6929,39 +7530,39 @@ to familiarize yourself with this library for which there is an extensive
 amount of documentation:
 \begin{itemize}
 \item The manual at
-  \url{http://www.dealii.org/developer/doxygen/deal.II/index.html} that
+  \url{https://www.dealii.org/developer/doxygen/deal.II/index.html} that
   describes in detail what every class, function and variable in \dealii{}
   does.
 \item A collection of modules at
-  \url{http://www.dealii.org/developer/doxygen/deal.II/modules.html} that give
+  \url{https://www.dealii.org/developer/doxygen/deal.II/modules.html} that give
   an overview of whole groups of classes and functions and how they work
   together to achieve their goal.
 \item The \dealii{} tutorial at
-  \url{http://www.dealii.org/developer/doxygen/tutorial/index.html} that
+  \url{https://www.dealii.org/developer/doxygen/tutorial/index.html} that
   provides a step-by-step introduction to the library using a sequence of
   several dozen programs that introduce gradually more complex topics. In
   particular, you will learn \dealii's way of \textit{dimension independent
   programming} that allows you to write the program once, test it in 2d, and
   run the exact same code in 3d without having to debug it a second time.
 \item The step-31 and step-32 tutorial programs at
-  \url{http://www.dealii.org/developer/doxygen/deal.II/step_31.html} and
-  \url{http://www.dealii.org/developer/doxygen/deal.II/step_32.html} from
+  \url{https://www.dealii.org/developer/doxygen/deal.II/step_31.html} and
+  \url{https://www.dealii.org/developer/doxygen/deal.II/step_32.html} from
   which \aspect{} directly descends.
 \item An overview of many general approaches to numerical methods, but also
   a discussion of \dealii{} and tools we use in programming, debugging and
   visualizing data are given in Wolfgang Bangerth's video lectures. These
-  are linked from the \dealii{} website at \url{http://www.dealii.org/}
+  are linked from the \dealii{} website at \url{https://www.dealii.org/}
   and directly available at
   \url{http://www.math.tamu.edu/~bangerth/videos.html}.
 \item The \dealii{} Frequently Asked Questions at
-  \url{http://dealii.sourceforge.net/index.php/Deal.II_Questions_and_Answers}
+  \url{https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions}
   that also have extensive sections on developing code with \dealii{} as well
   as on debugging. It also answers a number of questions we frequently get
   about the use of C++ in \dealii{}.
 \item Several other parts of the \dealii{} website at
-  \url{http://www.dealii.org/} also have information that may be relevant if
+  \url{https://www.dealii.org/} also have information that may be relevant if
   you dive deeper into developing code. If you have questions, the mailing
-  lists at \url{http://www.dealii.org/mail.html} are also of general help.
+  lists at \url{https://www.dealii.org/mail.html} are also of general help.
 \item A general overview of \dealii{} is also provided in the paper
   \cite{BHK07}.
 \end{itemize}
@@ -6979,7 +7580,7 @@ this may be annoying at first, remember that these are actual bugs in your
 code that have to be fixed anyway and that are much easier to find if the
 program aborts than if you have to go by their more indirect results such as
 wrong answers. The Frequently Asked Questions at
-\url{http://dealii.sourceforge.net/index.php/Deal.II_Questions_and_Answers}
+\url{https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions}
 contain a section on how to debug \dealii{} programs.
 
 The downside of debug mode, as mentioned before, is that it makes the program
@@ -8521,6 +9122,193 @@ plugins above.
 
 
 
+\subsection{Extending \aspect{} through the signals mechanism}
+\label{sec:extending-signals}
+
+Not all things you may want to do fit neatly into the list of plugins of the
+previous sections. Rather, there are cases where you may want to change things
+that are more of the one-off kind and that require code that is at a lower level
+and requires more knowledge about \aspect{}'s internal workings. For such
+changes, we still want to stick with the general principle outlined at the
+beginning of Section~\ref{sec:extending}: You should be able to make all of your
+changes and extensions in your own files, without having to modify \aspect{}'s
+own sources.
+
+To support this, \aspect{} uses a ``signals'' mechanism. Signals are, in
+essence, objects that represent \textit{events}, for example the fact that the
+solver has finished a time step. The core of \aspect{} defines a number of such
+signals, and \textit{triggers} them at the appropriate points. The idea of
+signals is now that you can \textit{connect} to them: you can tell the signal
+that it should call a particular function every time the signal is triggered.
+The functions that are connected to a signal are called ``slots'' in common
+diction. One, several, or no slots may be connected to each signal.
+
+There are two kinds of signals that \aspect{} provides:
+\begin{itemize}
+  \item Signals that are triggered at startup of the program: These are, in
+  essence, signals that live in some kind of global scope. Examples are signals
+  that declare additional parameters for use in input files, or that read the
+  values of these parameters from a \texttt{ParameterHandler} object. These
+  signals are static member variables of the structure that contains them and
+  consequently exist only once for the entire program.
+  \item Signals that reference specific events that happen inside a simulator
+  object. These are regular member variables of the structure that contains
+  them, and because each simulator object has such a structure, the signals
+  exist once per simulator object. (Which in practice is only once per program,
+  of course.)
+\end{itemize}
+For both of these kinds, a user-written plugin file can (but does not need) to
+register functions that connect functions in this file (i.e., slots) to their
+respective signals.
+
+In the first case, code that registers slots with global signals would look like
+this:
+\begin{lstlisting}[frame=single,language=c++]
+// A function that will be called at the time when parameters are declared.
+// It receives the dimension in which ASPECT will be run as the first argument,
+// and the ParameterHandler object that holds the runtime parameter
+// declarations as second argument.
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
+{
+  prm.declare_entry("My parameter", ...);
+}
+
+
+// The same for parsing parameters. 'my_parameter' is a parameter
+// that stores something we want to read from the input file
+// and use in other functions in this file (which we don't show here).
+// For simplicity, we assume that it is an integer.
+//
+// The function also receives a first argument that contains all
+// of the other (already parsed) arguments of the simulation, in
+// case what you want to do here wants to refer to other parameters.
+int my_parameter;
+
+template <int dim>
+void parse_parameters(const Parameters<dim> &parameters,
+                      ParameterHandler &prm)
+{
+  my_parameter = prm.get_integer ("My parameter");
+}
+
+
+// Now have a function that connects slots (i.e., the two functions
+// above) to the static signals. Do this for both the 2d and 3d
+// case for generality.
+void parameter_connector ()
+{
+  SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
+  SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
+
+  SimulatorSignals<2>::parse_additional_parameters.connect (&parse_parameters<2>);
+  SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
+}
+
+
+// Finally register the connector function above to make sure it gets run
+// whenever we load a user plugin that is mentioned among the additional
+// shared libraries in the input file:
+ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(parameter_connector)
+ \end{lstlisting}
+
+The second kind of signal can be connected to once a simulator object has been
+created. As above, one needs to define the slots, define a connector function,
+and register the connector function. The following gives an example:
+\begin{lstlisting}[frame=single,language=c++]
+// A function that is called at the end of creating the current constraints
+// on degrees of freedom (i.e., the constraints that describe, for example,
+// hanging nodes, boundary conditions, etc).
+template <int dim>
+void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
+                                ConstraintMatrix &current_constraints)
+{
+  ...; // do whatever you want to do here
+}
+
+
+// A function that is called from the simulator object and that can connect
+// a slot (such as the function above) to any of the signals declared in the
+// structure passed as argument:
+template <int dim>
+void signal_connector (SimulatorSignals<dim> &signals)
+{
+  signals.post_constraints_creation.connect (&post_constraints_creation<dim>);
+}
+
+
+// Finally register the connector function so that it is called whenever
+// a simulator object has been set up. For technical reasons, we need to
+// register both 2d and 3d versions of this function:
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
+                                  signal_connector<3>)
+\end{lstlisting}
+
+As mentioned above, each signal may be connected to zero, one, or many slots.
+Consequently, you could have multiple plugins each of which connect to the same
+slot, or the connector function above may just connect multiple slots (i.e.,
+functions in your program) to the same signal.
+
+So what could one do in a place like this? One option would be to just monitor
+what is going on, e.g., in code like this that simply outputs into the
+statistics file (see Section~\ref{sec:viz-stat}):
+\begin{lstlisting}[frame=single,language=c++]
+template <int dim>
+void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
+                                ConstraintMatrix &current_constraints)
+{
+  simulator_access.get_statistics_object()
+    .add_value ("number of constraints",
+		        current_constraints.n_constraints());
+}
+\end{lstlisting}
+This will produce, for every time step (because this is how often the signal is
+called) an entry in a new column in the statistics file that records the number
+of constraints. On the other hand, it is equally possible to also modify the
+constraints object at this point. An application would be if you wanted to run a
+simulation where you prescribe the velocity in a part of the domain, e.g., for a
+subducting slab (see Section \ref{sec:prescribed-velocities}).
+
+Signals exist for various waypoints in a simulation and you can consequently
+monitor and change what is happening inside a simulation by connecting your own
+functions to these signals. It would be pointless to list here what signals
+actually exist -- simply refer to the documentation of the
+\href{doc/doxygen/structaspect_1_1SimulatorSignals.html}{SimulatorSignals
+class} for a complete list of signals you can connect to.
+
+As a final note, it is generally true that writing functions that can connect to
+signals require significantly more internal knowledge of the workings of
+\aspect{} than writing plugins through the mechanisms outlined above. It also
+allows to affect the course of a simulation by working on the internal data
+structures of \aspect{} in ways that are not available to the largely
+passive and reactive plugins discussed in previous sections. With this
+obviously also comes the potential for trouble. On the other hand, it also
+allows to do things with \aspect{} that were not initially intended by the
+authors, and that would be hard or impossible to implement through plugins. An
+example would be to couple different codes by exchanging details of the internal
+data structures, or even update the solution vectors using information received
+from another code.
+
+
+\note{Chances are that if you think about using the signal mechanism, there is
+not yet a signal that is triggered at exactly the point where you need it. Consequently,
+you will be tempted to just put your code into the place where it fits inside
+\aspect{} where it fits best. This is poor practice: it prevents you from
+upgrading to a newer version of \aspect{} at a later time because this would
+overwrite the code you inserted.
+
+Rather, a more productive approach would be to either define a new signal that
+is triggered where you need it, and connect a function (slot) in your own plugin
+file to this signal using the mechanisms outlined above. Then send the code that
+defines and triggers the signal to the developers of \aspect{} to make sure that
+it is also included in the next release. Alternatively, you can also simply ask
+on the mailing lists for someone to add such a signal in the place where you
+want it. Either way, adding signals is something that is easy to do, and we would 
+much rather add signals than have people who modify the \aspect{} source files
+for their own needs and are then stuck on a particular version.}
+
+
+
 \subsection{Extending the basic solver}
 \label{sec:extending-solver}
 
@@ -8563,12 +9351,12 @@ documentation is at a much higher level than the one typically found inside
 convection simulators as part of the \dealii{} tutorial:
 \begin{itemize}
 \item The step-31 program at
-  \url{http://www.dealii.org/developer/doxygen/deal.II/step_31.html}: This
+  \url{https://www.dealii.org/developer/doxygen/deal.II/step_31.html}: This
   program is the first version of a convection solver. It does not run in
   parallel, but it introduces many of the concepts relating to the time
   discretization, the linear solvers, etc.
 \item The step-32 program at
-  \url{http://www.dealii.org/developer/doxygen/deal.II/step_32.html}: This is
+  \url{https://www.dealii.org/developer/doxygen/deal.II/step_32.html}: This is
   a parallel version of the step-31 program that already solves on a spherical
   shell geometry. The focus of the documentation in this program is on the
   techniques necessary to make the program run in parallel, as well as some of
@@ -8680,7 +9468,7 @@ resources:
   on Trilinos and p4est is primarily through deal.II, and not directly
   visible in the \aspect{} source code). If you have particular questions
   about deal.II, contact
-  the mailing lists described at \url{http://www.dealii.org/mail.html}.
+  the mailing lists described at \url{https://www.dealii.org/mail.html}.
 
 \item In case of more general questions about mantle convection, you can
   contact the CIG mantle

@@ -51,7 +51,7 @@ end
 subsection Initial conditions
   set Model name = function
   subsection Function
-    set Function expression = 1473
+    set Function expression = 1.473e3
   end
 end
 

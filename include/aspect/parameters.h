@@ -27,6 +27,7 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 
+
 namespace aspect
 {
   using namespace dealii;
@@ -39,18 +40,18 @@ namespace aspect
   }
 
   /**
-       * A structure that holds run-time parameters. These parameters are all
-       * declared for the ParameterHandler class in the declare_parameters()
-       * member function, and read in the parse_parameters() function.
-       *
-       * Each of the member variables of this class corresponds to a parameter
-       * declared for the ParameterHandler class. Rather than duplicating the
-       * documentation of each of these parameters for the member variables
-       * here, please refer to the documentation of run-time parameters in the
-       * ASPECT manual for more information.
-       *
-       * @ingroup Simulator
-       */
+   * A structure that holds run-time parameters. These parameters are all
+   * declared for the ParameterHandler class in the declare_parameters()
+   * member function, and read in the parse_parameters() function.
+   *
+   * Each of the member variables of this class corresponds to a parameter
+   * declared for the ParameterHandler class. Rather than duplicating the
+   * documentation of each of these parameters for the member variables here,
+   * please refer to the documentation of run-time parameters in the ASPECT
+   * manual for more information.
+   *
+   * @ingroup Simulator
+   */
   template <int dim>
   struct Parameters
   {
@@ -66,7 +67,8 @@ namespace aspect
         IMPES,
         iterated_IMPES,
         iterated_Stokes,
-        Stokes_only
+        Stokes_only,
+        Advection_only
       };
     };
 
@@ -95,20 +97,20 @@ namespace aspect
      * Constructor. Fills the values of member functions from the given
      * parameter object.
      *
-     * @param prm The parameter object that has previously been filled
-     * with content by reading an input file.
+     * @param prm The parameter object that has previously been filled with
+     * content by reading an input file.
      *
      * @param mpi_communicator The MPI communicator we will use for this
-     * simulation. We need this when calling parse_parameters() so that we
-     * can verify some of the input arguments.
+     * simulation. We need this when calling parse_parameters() so that we can
+     * verify some of the input arguments.
      */
     Parameters (ParameterHandler &prm,
                 MPI_Comm mpi_communicator);
 
     /**
      * Declare the run-time parameters this class takes, and call the
-     * respective <code>declare_parameters</code> functions of the
-     * namespaces that describe geometries, material models, etc.
+     * respective <code>declare_parameters</code> functions of the namespaces
+     * that describe geometries, material models, etc.
      *
      * @param prm The object in which the run-time parameters are to be
      * declared.
@@ -117,20 +119,19 @@ namespace aspect
     void declare_parameters (ParameterHandler &prm);
 
     /**
-     * Read run-time parameters from an object that has previously parsed
-     * an input file. This reads all parameters that do not require
-     * knowledge of the geometry model we use. There is a separate
-     * function parse_geometry_dependent_parameters() that is called as
-     * soon as the geometry object has been created and that can translate
-     * between the symbolic names for boundary components that the
-     * geometry model publishes and the boundary indicators used
-     * internally.
+     * Read run-time parameters from an object that has previously parsed an
+     * input file. This reads all parameters that do not require knowledge of
+     * the geometry model we use. There is a separate function
+     * parse_geometry_dependent_parameters() that is called as soon as the
+     * geometry object has been created and that can translate between the
+     * symbolic names for boundary components that the geometry model
+     * publishes and the boundary indicators used internally.
      *
      * @param prm The object from which to obtain the run-time parameters.
      *
      * @param mpi_communicator The MPI communicator we will use for this
-     * simulation. We need this when calling parse_parameters() so that we
-     * can verify some of the input arguments.
+     * simulation. We need this when calling parse_parameters() so that we can
+     * verify some of the input arguments.
      */
     void parse_parameters (ParameterHandler &prm,
                            const MPI_Comm mpi_communicator);
@@ -139,17 +140,17 @@ namespace aspect
      * Read those run-time parameters from a ParameterHandler object that
      * depend on knowing which geometry object we use. This function
      * complements parse_parameters() but is only called once the geometry
-     * object has been created. This function is separate because we allow
-     * the use of symbolic names in defining which boundary components
-     * have which boundary conditions, and the names one can specify there
-     * are not available until after the geometry object has been created.
+     * object has been created. This function is separate because we allow the
+     * use of symbolic names in defining which boundary components have which
+     * boundary conditions, and the names one can specify there are not
+     * available until after the geometry object has been created.
      *
      * This function is called from the GeometryModel::create_geometry()
      * function.
      *
      * @param prm The object from which to obtain the run-time parameters.
-     * @param geometry_model The geometry model that provides boundary
-     * names etc.
+     * @param geometry_model The geometry model that provides boundary names
+     * etc.
      */
     void parse_geometry_dependent_parameters (ParameterHandler &prm,
                                               const GeometryModel::Interface<dim> &geometry_model);
@@ -186,9 +187,6 @@ namespace aspect
      * @name Parameters that have to do with terms in the model
      * @{
      */
-    bool                           include_shear_heating;
-    bool                           include_adiabatic_heating;
-    bool                           include_latent_heat;
     bool                           include_melt_transport;
     double                         melt_transport_threshold;
     double                         radiogenic_heating_rate;
@@ -196,16 +194,26 @@ namespace aspect
     std::set<types::boundary_id> fixed_composition_boundary_indicators;
     std::set<types::boundary_id> zero_velocity_boundary_indicators;
     std::set<types::boundary_id> tangential_velocity_boundary_indicators;
+
     /**
-     * map from boundary id to a pair "components", "velocity boundary
-     * type", where components is of the format "[x][y][z]" and the
-     * velocity type is mapped to one of the plugins of velocity boundary
-     * conditions (e.g. "function")
+     * Map from boundary id to a pair "components", "velocity boundary type",
+     * where components is of the format "[x][y][z]" and the velocity type is
+     * mapped to one of the plugins of velocity boundary conditions (e.g.
+     * "function")
      */
     std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
+
     /**
-     * Selection of operations to perform to remove nullspace from
-     * velocity field.
+     * Map from boundary id to a pair "components", "traction boundary type",
+     * where components is of the format "[x][y][z]" and the traction type is
+     * mapped to one of the plugins of traction boundary conditions (e.g.
+     * "function")
+     */
+    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
+
+    /**
+     * Selection of operations to perform to remove nullspace from velocity
+     * field.
      */
     typename NullspaceRemoval::Kind nullspace_removal;
     /**
@@ -229,8 +237,8 @@ namespace aspect
      */
 
     /**
-     * @name Parameters that have to do with the stabilization of
-     * transport equations
+     * @name Parameters that have to do with the stabilization of transport
+     * equations
      * @{
      */
     unsigned int                   stabilization_alpha;

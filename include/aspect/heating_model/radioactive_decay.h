@@ -23,8 +23,8 @@
 #ifndef __aspect__heating_model_radioactive_decay_h
 #define __aspect__heating_model_radioactive_decay_h
 
-#include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/parsed_function.h>
 

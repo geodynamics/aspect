@@ -67,12 +67,6 @@ namespace aspect
             const double temperature = uh[q][this->introspection().component_indices.temperature];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            const SymmetricTensor<2,dim> compressible_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
 
             std::vector<double> composition(this->n_compositional_fields());
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

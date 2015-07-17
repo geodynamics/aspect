@@ -28,7 +28,6 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <math.h>
 #include <stdio.h>
@@ -119,6 +118,39 @@ namespace aspect
             return update_values;
           }
       };
+
+      /**
+       * This Postprocessor will generate the output variables of mesh velocity
+       * for when a free surface is used.
+       */
+      template <int dim>
+      class FreeSurfacePostprocessor: public DataPostprocessorVector< dim >, public SimulatorAccess<dim>
+      {
+        public:
+          FreeSurfacePostprocessor ()
+            : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
+          {}
+
+          virtual
+          void
+          compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                             const std::vector<std::vector<Tensor<1,dim> > > &,
+                                             const std::vector<std::vector<Tensor<2,dim> > > &,
+                                             const std::vector<Point<dim> > &,
+                                             const std::vector<Point<dim> > &,
+                                             std::vector<Vector<double> >                    &computed_quantities) const
+          {
+            //check that the first quadruatre point has dim components
+            Assert( computed_quantities[0].size() == dim,
+                    ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
+            const double velocity_scaling_factor =
+              this->convert_output_to_years() ? year_in_seconds : 1.0;
+            const unsigned int n_q_points = uh.size();
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<dim; ++i)
+                computed_quantities[q][i]= uh[q][i] * velocity_scaling_factor;
+          }
+      };
     }
 
 
@@ -146,6 +178,15 @@ namespace aspect
 
 
       template <int dim>
+      std::list<std::string>
+      Interface<dim>::required_other_postprocessors () const
+      {
+        return std::list<std::string>();
+      }
+
+
+
+      template <int dim>
       void
       Interface<dim>::save (std::map<std::string,std::string> &) const
       {}
@@ -166,7 +207,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      output_file_number (0)
+      output_file_number (0),
+      mesh_changed (true)
     {}
 
 
@@ -249,6 +291,8 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       dynamic_cast<SimulatorAccess<dim>*>(&base_variables)->initialize(this->get_simulator());
 
+      std_cxx1x::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
+
       // create a DataOut object on the heap; ownership of this
       // object will later be transferred to a different thread
       // that will write data in the background. the other thread
@@ -258,6 +302,14 @@ namespace aspect
       data_out.add_data_vector (this->get_solution(),
                                 base_variables);
 
+      // If there is a free surface, also attach the mesh velocity object
+      if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
+        {
+          free_surface_variables.reset( new internal::FreeSurfacePostprocessor<dim>);
+          free_surface_variables->initialize(this->get_simulator());
+          data_out.add_data_vector (this->get_mesh_velocity(),
+                                    *free_surface_variables);
+        }
 
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
@@ -313,9 +365,9 @@ namespace aspect
               std::cerr << std::endl << std::endl
                         << "----------------------------------------------------"
                         << std::endl;
-              std::cerr << "Exception on MPI process <"
+              std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running visualization postprocessor <"
+                        << "> while running the visualization postprocessor <"
                         << typeid(**p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
@@ -331,9 +383,9 @@ namespace aspect
               std::cerr << std::endl << std::endl
                         << "----------------------------------------------------"
                         << std::endl;
-              std::cerr << "Exception on MPI process <"
+              std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running visualization postprocessor <"
+                        << "> while running the visualization postprocessor <"
                         << typeid(**p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
@@ -373,12 +425,12 @@ namespace aspect
           data_out.write_filtered_data(data_filter);
           data_out.write_hdf5_parallel(data_filter,
                                        mesh_changed,
-                                       (this->get_output_directory()+last_mesh_file_name).c_str(),
-                                       (this->get_output_directory()+h5_solution_file_name).c_str(),
+                                       this->get_output_directory()+last_mesh_file_name,
+                                       this->get_output_directory()+h5_solution_file_name,
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      last_mesh_file_name.c_str(),
-                                                      h5_solution_file_name.c_str(),
+                                                      last_mesh_file_name,
+                                                      h5_solution_file_name,
                                                       time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
           xdmf_entries.push_back(new_xdmf_entry);
@@ -548,7 +600,7 @@ namespace aspect
           if (tmp_filename == *filename)
             AssertThrow (false, ExcMessage(std::string("Trying to write to file <") +
                                            *filename +
-                                           " but the file can't be opened!"))
+                                           ">, but the file can't be opened!"))
             else
               {
                 tmp_filename = *filename;
@@ -687,6 +739,13 @@ namespace aspect
                              "and a factor of 8 in 3d, when using quadratic elements for the velocity, "
                              "and correspondingly more for even higher order elements.");
 
+          prm.declare_entry ("Output mesh velocity", "false",
+                             Patterns::Bool(),
+                             "For free surface computations Aspect uses an Arbitrary-Lagrangian-"
+                             "Eulerian formulation to handle deforming the domain, so the mesh "
+                             "has its own velocity field.  This may be written as an output field "
+                             "by setting this parameter to true.");
+
           // finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
@@ -738,6 +797,7 @@ namespace aspect
           output_format   = prm.get ("Output format");
           group_files     = prm.get_integer("Number of grouped files");
           interpolate_output = prm.get_bool("Interpolate output");
+          output_mesh_velocity = prm.get_bool("Output mesh velocity");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));
@@ -805,10 +865,15 @@ namespace aspect
       & output_file_number
       & times_and_pvtu_names
       & output_file_names_by_timestep
-      & mesh_changed
       & last_mesh_file_name
       & xdmf_entries
       ;
+
+      // We do not serialize mesh_changed but use the default (true) from our
+      // constructor. This will result in a new mesh file the first time we
+      // create visualization output after resuming from a snapshot. Otherwise
+      // we might get corrupted graphical output, because the ordering of
+      // vertices can be different after resuming.
     }
 
 
@@ -876,6 +941,30 @@ namespace aspect
                                                                declare_parameters_function,
                                                                factory_function);
     }
+
+
+
+    template <int dim>
+    std::list<std::string>
+    Visualization<dim>::required_other_postprocessors () const
+    {
+      std::list<std::string> requirements;
+
+      // loop over all of the viz postprocessors and collect what
+      // they want. don't worry about duplicates, the postprocessor
+      // manager will filter them out
+      for (typename std::list<std_cxx11::shared_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
+           p = postprocessors.begin();
+           p != postprocessors.end(); ++p)
+        {
+          const std::list<std::string> this_requirements = (*p)->required_other_postprocessors();
+          requirements.insert (requirements.end(),
+                               this_requirements.begin(), this_requirements.end());
+        }
+
+      return requirements;
+    }
+
 
   }
 }

@@ -25,7 +25,9 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/distributed/solution_transfer.h>
 
-#include <zlib.h>
+#ifdef DEAL_II_WITH_ZLIB
+#  include <zlib.h>
+#endif
 
 namespace aspect
 {
@@ -100,6 +102,7 @@ namespace aspect
       oa << (*this);
 
       // compress with zlib and write to file on the root processor
+#ifdef DEAL_II_WITH_ZLIB
       if (my_id == 0)
         {
           uLongf compressed_data_length = compressBound (oss.str().length());
@@ -124,6 +127,12 @@ namespace aspect
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
+#else
+      AssertThrow (false,
+                   ExcMessage ("You need to have deal.II configured with the 'libz' "
+                               "option to support checkpoint/restart, but deal.II "
+                               "did not detect its presence when you called 'cmake'."));
+#endif
 
     }
     pcout << "*** Snapshot created!" << std::endl << std::endl;
@@ -199,6 +208,7 @@ namespace aspect
     // read zlib compressed resume.z
     try
       {
+#ifdef DEAL_II_WITH_ZLIB
         std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
         AssertThrow(ifs.is_open(),
                     ExcMessage("Cannot open snapshot resume file."));
@@ -225,6 +235,12 @@ namespace aspect
           aspect::iarchive ia (ss);
           ia >> (*this);
         }
+#else
+        AssertThrow (false,
+                     ExcMessage ("You need to have deal.II configured with the 'libz' "
+                                 "option to support checkpoint/restart, but deal.II "
+                                 "did not detect its presence when you called 'cmake'."));
+#endif
       }
     catch (std::exception &e)
       {

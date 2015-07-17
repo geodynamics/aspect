@@ -1,0 +1,44 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmaterial_model_dependencies_simple_compressible.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14 iterations.
+      Nonlinear Stokes residual: 0.00903878
+   Solving Stokes system... 4 iterations.
+      Nonlinear Stokes residual: 5.20073e-10
+
+   Postprocessing:
+viscosity depends on 
+density depends on pressure temperature 
+compressibility depends on 
+specific_heat depends on 
+thermal_conductivity depends on 
+model is compressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |    0.0526s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |   0.00395s |       7.5% |
+| Build Stokes preconditioner     |         1 |   0.00578s |        11% |
+| Solve Stokes system             |         2 |   0.00294s |       5.6% |
+| Initialization                  |         2 |    0.0321s |        61% |
+| Postprocessing                  |         1 |   8.3e-05s |      0.16% |
+| Setup dof systems               |         1 |   0.00519s |       9.9% |
++---------------------------------+-----------+------------+------------+
+

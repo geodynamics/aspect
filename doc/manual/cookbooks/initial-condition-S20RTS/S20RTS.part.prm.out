@@ -1,0 +1,14 @@
+subsection %%\hyperref[parameters:Initial_20conditions]{Initial conditions}%
+  set %%\hyperref[parameters:Initial conditions/Model name]{Model name}% = S40RTS perturbation%% \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+  subsection %%\hyperref[parameters:Initial_20conditions/S40RTS_20perturbation]{S40RTS perturbation}%
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Data directory]{Data directory}%                    = $ASPECT_SOURCE_DIR/data/initial-conditions/S40RTS/%% \index[prmindex]{Data directory} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Data directory} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Initial condition file name]{Initial condition file name}%       = S20RTS.sph%% \index[prmindex]{Initial condition file name} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Initial condition file name} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Spline knots depth file name]{Spline knots depth file name}%      = Spline_knots.txt%% \index[prmindex]{Spline knots depth file name} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Spline knots depth file name} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Remove degree 0 from perturbation]{Remove degree 0 from perturbation}% = false%% \index[prmindex]{Remove degree 0 from perturbation} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Remove degree 0 from perturbation} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/vs to density scaling]{vs to density scaling}%             = 0.2 %% \index[prmindex]{vs to density scaling} \index[prmindexfull]{Initial conditions!S40RTS perturbation!vs to density scaling} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Thermal expansion coefficient in initial temperature scaling]{Thermal expansion coefficient in initial temperature scaling}% = 3e-5%% \index[prmindex]{Thermal expansion coefficient in initial temperature scaling} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Thermal expansion coefficient in initial temperature scaling} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Reference temperature]{Reference temperature}%             = 1600%% \index[prmindex]{Reference temperature} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Reference temperature} %
+    set %%\hyperref[parameters:Initial conditions/S40RTS perturbation/Remove temperature heterogeneity down to specified depth]{Remove temperature heterogeneity down to specified depth}% = 200000%% \index[prmindex]{Remove temperature heterogeneity down to specified depth} \index[prmindexfull]{Initial conditions!S40RTS perturbation!Remove temperature heterogeneity down to specified depth} %
+  end
+end
+

@@ -105,28 +105,15 @@ namespace aspect
 
         }
 
-      // now do the reductions over all processors. we can use Utilities::MPI::max
-      // for the maximal values. unfortunately, there is currently no matching
-      // Utilities::MPI::min function, so negate the argument, take the maximum
-      // as well, then negate it all again
+      // now do the reductions over all processors
       std::vector<double> global_min_compositions (this->n_compositional_fields(),
                                                    std::numeric_limits<double>::max());
       std::vector<double> global_max_compositions (this->n_compositional_fields(),
                                                    -std::numeric_limits<double>::max());
-
       {
-        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          local_min_compositions[c] = -local_min_compositions[c];
-        Utilities::MPI::max (local_min_compositions,
+        Utilities::MPI::min (local_min_compositions,
                              this->get_mpi_communicator(),
                              global_min_compositions);
-        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          {
-            local_min_compositions[c] = -local_min_compositions[c];
-            global_min_compositions[c] = -global_min_compositions[c];
-          }
-
-        // it's simpler for the maximal values
         Utilities::MPI::max (local_max_compositions,
                              this->get_mpi_communicator(),
                              global_max_compositions);

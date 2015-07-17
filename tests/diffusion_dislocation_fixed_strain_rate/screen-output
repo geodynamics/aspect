@@ -1,0 +1,40 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 4 MPI processes
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.577 m/year, 0.993 m/year
+     Temperature min/avg/max: 1600 K, 1600 K, 1600 K
+     Writing depth average    output-diffusion_dislocation_fixed_strain_rate/depth_average.gnuplot
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.953s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0976s |        10% |
+| Assemble temperature system     |         1 |    0.0492s |       5.2% |
+| Build Stokes preconditioner     |         1 |     0.147s |        15% |
+| Build temperature preconditioner|         1 |   0.00445s |      0.47% |
+| Solve Stokes system             |         1 |     0.158s |        17% |
+| Solve temperature system        |         1 |   0.00253s |      0.27% |
+| Initialization                  |         2 |    0.0729s |       7.6% |
+| Postprocessing                  |         1 |     0.275s |        29% |
+| Setup dof systems               |         1 |    0.0772s |       8.1% |
++---------------------------------+-----------+------------+------------+
+

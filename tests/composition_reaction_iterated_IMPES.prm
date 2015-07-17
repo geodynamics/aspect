@@ -45,6 +45,10 @@ subsection Model settings
   set Prescribed velocity boundary indicators = 3: function
 end
 
+subsection Heating model
+  set List of model names = shear heating
+end
+
 
 subsection Compositional fields
   set Number of fields = 3

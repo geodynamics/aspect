@@ -100,6 +100,10 @@ subsection Model settings
   set Zero velocity boundary indicators       = 1
 end
 
+subsection Heating model
+  set List of model names = shear heating
+end
+
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, depth average, spherical velocity statistics
 

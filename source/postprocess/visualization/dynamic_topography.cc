@@ -58,8 +58,8 @@ namespace aspect
                                           quadrature_formula_face,
                                           update_JxW_values);
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -101,8 +101,11 @@ namespace aspect
                 fe_values[this->introspection().extractors.pressure]
                 .get_function_values (this->get_solution(), in.pressure);
                 fe_values[this->introspection().extractors.velocities]
+                .get_function_values (this->get_solution(), in.velocity);
+                fe_values[this->introspection().extractors.velocities]
                 .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
-
+                fe_values[this->introspection().extractors.pressure]
+                .get_function_gradients (this->get_solution(), in.pressure_gradient);
 
                 in.position = fe_values.get_quadrature_points();
 
@@ -115,7 +118,7 @@ namespace aspect
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                       in.composition[i][c] = composition_values[c][i];
                   }
-                in.cell = this->get_dof_handler().end(); // we do not know the cell index
+                in.cell = NULL; // we do not know the cell index
 
                 this->get_material_model().evaluate(in, out);
 

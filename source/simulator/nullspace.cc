@@ -165,6 +165,99 @@ namespace aspect
 
   }
 
+
+
+  template <int dim>
+  void Simulator<dim>::setup_nullspace_constraints(ConstraintMatrix &constraints)
+  {
+    if (!(parameters.nullspace_removal & (NullspaceRemoval::linear_momentum
+                                          | NullspaceRemoval::net_translation)))
+      return;
+
+    // Note: We want to add a single Dirichlet zero constraint for each
+    // translation direction. This is complicated by the fact that we need to
+    // find a DoF that is not already constrained. In parallel the constraint
+    // needs to be added on all processors where it is locally_relevant and
+    // all processors need to agree on the index.
+
+    // First find candidates for DoF indices to constrain for each velocity component.
+    types::global_dof_index vel_idx[dim];
+    {
+      for (unsigned int d=0; d<dim; ++d)
+        vel_idx[d] = numbers::invalid_dof_index;
+
+      unsigned int n_left_to_find = dim;
+
+      std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+      typename DoFHandler<dim>::active_cell_iterator cell;
+      for (cell = dof_handler.begin_active(); n_left_to_find>0 && cell != dof_handler.end(); ++cell)
+        if (cell->is_locally_owned())
+          {
+            cell->get_dof_indices (local_dof_indices);
+
+            for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
+              {
+                const unsigned int component = finite_element.system_to_component_index(i).first;
+
+                if (component < introspection.component_indices.velocities[0]
+                    || component > introspection.component_indices.velocities[dim-1])
+                  continue; // only look at velocity
+
+                const unsigned int velocity_component = component - introspection.component_indices.velocities[0];
+
+                if (vel_idx[velocity_component] != numbers::invalid_dof_index)
+                  continue; // already found one
+
+                const types::global_dof_index idx = local_dof_indices[i];
+
+                if (constraints.can_store_line(idx) && !constraints.is_constrained(idx))
+                  {
+                    vel_idx[velocity_component] = idx;
+                    --n_left_to_find;
+                  }
+
+                // are we done searching?
+                if (n_left_to_find == 0)
+                  break; // exit inner loop, outer loop will terminate automatically
+              }
+
+          }
+
+#ifdef DEBUG
+      Assert(n_left_to_find == 0, ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+
+      for (unsigned int d=0; d<dim; ++d)
+        Assert(vel_idx[d] != numbers::invalid_dof_index,
+               ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+#endif
+    }
+
+
+    const unsigned int flags[] = {(NullspaceRemoval::linear_momentum_x
+                                   |NullspaceRemoval::net_translation_x),
+                                  (NullspaceRemoval::linear_momentum_y
+                                   |NullspaceRemoval::net_translation_y),
+                                  (NullspaceRemoval::linear_momentum_z
+                                   |NullspaceRemoval::net_translation_z)
+                                 };
+
+    for (unsigned int d=0; d<dim; ++d)
+      if (parameters.nullspace_removal & flags[d])
+        {
+          // Make a reduction to find the smallest index (processors with a larger candidate
+          // just happened to not be able to store that index)
+          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(vel_idx[d], mpi_communicator);
+
+          // Finally set this DoF to zero (if we care about it):
+          if (constraints.can_store_line(global_idx))
+            {
+              Assert(!constraints.is_constrained((global_idx)), ExcInternalError());
+              constraints.add_line(global_idx);
+            }
+        }
+  }
+
+
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
@@ -205,7 +298,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     Tensor<1,dim> local_momentum;
     double local_mass = 0.0;
@@ -227,14 +320,16 @@ namespace aspect
           fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
 
           // get the density at each quadrature point if necessary
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                         parameters.n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                           parameters.n_compositional_fields);
+          MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                     parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                       parameters.n_compositional_fields);
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              in.velocity = velocities;
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -316,7 +411,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     typename DoFHandler<dim>::active_cell_iterator cell;
 
@@ -331,8 +426,6 @@ namespace aspect
     //Vectors for evaluating the finite element solution
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
                                                           std::vector<double> (n_q_points));
-    std::vector< Tensor<1,dim> > velocities( n_q_points );
-
 
     //loop over all local cells
     for (cell = dof_handler.begin_active(); cell != dof_handler.end(); ++cell)
@@ -341,18 +434,20 @@ namespace aspect
           fe.reinit (cell);
           const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
-          //Get the velocity at each quadrature point
-          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
-
           // get the density at each quadrature point if necessary
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                         parameters.n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                           parameters.n_compositional_fields);
+          MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                                     parameters.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                       parameters.n_compositional_fields);
+
+          //Get the velocity at each quadrature point
+          fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
+
           if ( ! use_constant_density)
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -363,7 +458,7 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
-          in.cell = cell;
+              in.cell = &cell;
 
               material_model->evaluate(in, out);
             }
@@ -382,7 +477,7 @@ namespace aspect
                   cross_product(r_perp, r_vec);
 
                   // calculate a signed scalar angular momentum
-                  local_scalar_angular_momentum += velocities[k] * r_perp * rho * fe.JxW(k);
+                  local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * fe.JxW(k);
                   // calculate a scalar moment of inertia
                   local_scalar_moment += r_vec.norm_square() * rho * fe.JxW(k);
                 }
@@ -390,7 +485,7 @@ namespace aspect
                 {
                   //calculate angular momentum vector
                   Tensor<1,dim> r_cross_v;
-                  cross_product( r_cross_v, r_vec, velocities[k]);
+                  cross_product( r_cross_v, r_vec, in.velocity[k]);
                   for (unsigned int i=0; i<dim; ++i)
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 
@@ -461,7 +556,8 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector);
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::setup_nullspace_constraints (ConstraintMatrix &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

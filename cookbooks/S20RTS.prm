@@ -1,0 +1,139 @@
+# A description of convection in a 3d spherical shell with 
+# a prescribed initial condition based on the shear wave
+# velocity model S20RTS.
+
+# Define the number of space dimensions we would like to 
+# work in:
+set Dimension                              = 3 
+
+# Specify the time you want to let the model run for in 
+# years and the output directory. Here we only calculate
+# the instantaneous solution.
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory                       = output
+
+# The following variables describe the tolerance of
+# the linear solver as well as how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain 
+set Linear solver tolerance                = 1e-4
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Here we specify the geometry of the domain, which is 
+# a spherical shell with inner radius of 3481km and 
+# outer radius of 6371km
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+end
+
+# This section specifies the temperature at the boundary of 
+# the domain. Here we set the temperature to be constant.
+# Alternatively it could be set to the initial condition.
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 1600
+    set Outer temperature = 1600
+  end
+end
+
+# This section describes the gravity field, which is pointing
+# towards the Earth's center with the same magnitude of 10 m/s^2
+# everywhere
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# This section prescribes the initial condition in the temperature
+# field, which is chosen as a scaled version of the S20RTS shear
+# wave velocity model (Ritsema et al., 2000). S20RTS is defined
+# by spherical harmonics up to degree 20 that are radially interpolated
+# with a cubic spline. 
+subsection Initial conditions
+  set Model name = S40RTS perturbation
+    subsection S40RTS perturbation
+
+# The two input options here are S20RTS or the higher resolution
+# S40RTS (Ritsema et al., 2011). One can choose to remove the 
+# degree 0 from these files so that the depth average value
+# is zero. 
+    set Initial condition file name       = S20RTS.sph
+    set Remove degree 0 from perturbation = false
+
+# The following parameters determine the scaling from shear wave 
+# velocity perturbation to temperature differences. We chose the
+# scaling to density perturbation as 0.2 and zero out
+# heterogeneities in the upper 200km.
+    set vs to density scaling             = 0.2 
+    set Remove temperature heterogeneity down to specified depth = 200000
+    set Thermal expansion coefficient in initial temperature scaling = 3e-5
+
+# This specifies the background temperature to which we add the 
+# temperature difference.
+    set Reference temperature             = 1600
+  end
+end
+
+# The material model is based on the simple material model, which assumes
+# a constant density, and other parameters as stated below.
+subsection Material model
+  set Model name = simple
+    subsection Simple model
+    set Reference density                 = 3300
+    set Viscosity                         = 1e21
+    set Thermal expansion coefficient     = 3e-5
+    set Reference temperature             = 1600
+    set Thermal conductivity              = 4.125 
+    set Reference specific heat           = 1250
+  end
+end
+
+# For this calculation we only do 2 global refinement steps. This resolution
+# is too low to fully resolve the mantle flow, however it does capture
+# the main features.
+subsection Mesh refinement
+  set Initial global refinement          = 2
+  set Initial adaptive refinement        = 0
+end
+
+# We assume fixed temperatures and free slip at the inner and outer boundary
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0,1
+
+  set Include adiabatic heating               = false 
+  set Include shear heating                   = false
+
+  set Tangential velocity boundary indicators = 0,1
+end
+
+
+# We output the density, velocity and dynamic topography for plotting. For the
+# dynamic topography we subtract the mean so that the mean is zero and hence
+# mass is conserved. 
+subsection Postprocess
+  set List of postprocessors = dynamic topography, visualization, basic statistics
+
+  subsection Dynamic Topography
+    set Subtract mean of dynamic topography = true
+  end
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = dynamic topography, density,viscosity, gravity
+    set Time between graphical output = 0
+    set Number of grouped files       = 1 
+   
+    subsection Dynamic Topography
+      set Subtract mean of dynamic topography = true
+    end
+  end
+end

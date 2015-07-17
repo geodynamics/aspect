@@ -50,8 +50,8 @@ namespace aspect
                                         quadrature_formula_face,
                                         update_JxW_values);
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -96,8 +96,11 @@ namespace aspect
               fe_values[this->introspection().extractors.pressure]
               .get_function_values (this->get_solution(), in.pressure);
               fe_values[this->introspection().extractors.velocities]
+              .get_function_values (this->get_solution(), in.velocity);
+              fe_values[this->introspection().extractors.velocities]
               .get_function_symmetric_gradients (this->get_solution(), in.strain_rate);
-
+              fe_values[this->introspection().extractors.pressure]
+              .get_function_gradients (this->get_solution(), in.pressure_gradient);
 
               in.position = fe_values.get_quadrature_points();
 
@@ -110,7 +113,7 @@ namespace aspect
                   for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
-              in.cell = cell;
+              in.cell = &cell;
 
               this->get_material_model().evaluate(in, out);
 
@@ -195,6 +198,10 @@ namespace aspect
         {
           std::ofstream file (filename.c_str());
 
+          file << "# "
+               << ((dim==2)? "x y" : "x y z")
+               << " topography" << std::endl;
+
           // first write out the data we have created locally
           file << output.str();
 
@@ -263,7 +270,7 @@ namespace aspect
       {
         prm.enter_subsection("Dynamic Topography");
         {
-          subtract_mean_dyn_topography              = prm.get_bool("Subtract mean of dynamic topography");
+          subtract_mean_dyn_topography = prm.get_bool("Subtract mean of dynamic topography");
         }
         prm.leave_subsection();
       }
@@ -282,8 +289,8 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DynamicTopography,
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
-                                  "based on the stress at the surface. The data is written into a "
-                                  "file named 'dynamic\\_topography.NNNNN' in the output directory, "
+                                  "based on the stress at the surface. The data is written into text "
+                                  "files named 'dynamic\\_topography.NNNNN' in the output directory, "
                                   "where NNNNN is the number of the time step."
                                   "\n\n"
                                   "The exact approach works as follows: At the centers of all cells "
@@ -299,6 +306,9 @@ namespace aspect
                                   "topography is computed using the formula "
                                   "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
                                   "is the density at the cell center."
+                                  "\n"
+                                  "The file format then consists of lines with Euclidiean coordinates "
+                                  "followed by the corresponding topography value."
                                   "\n\n"
                                   "(As a side note, the postprocessor chooses the cell center "
                                   "instead of the center of the cell face at the surface, where we "

@@ -106,7 +106,7 @@ namespace aspect
               }
 
       double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
-      double min_topography = -Utilities::MPI::max(-local_min_height, this->get_mpi_communicator());
+      double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
 
       statistics.add_value ("Minimum topography (m)",
                             min_topography);
