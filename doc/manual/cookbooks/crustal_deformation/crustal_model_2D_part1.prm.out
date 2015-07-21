@@ -1,0 +1,13 @@
+subsection %%\hyperref[parameters:Material_20model]{Material model}%
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = drucker prager%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+  subsection %%\hyperref[parameters:Material_20model/Drucker_20Prager]{Drucker Prager}%
+    set %%\hyperref[parameters:Material model/Drucker Prager/Reference density]{Reference density}% = 2800%% \index[prmindex]{Reference density} \index[prmindexfull]{Material model!Drucker Prager!Reference density} %
+    subsection %%\hyperref[parameters:Material_20model/Drucker_20Prager/Viscosity]{Viscosity}%
+       set %%\hyperref[parameters:Material model/Drucker Prager/Viscosity/Minimum viscosity]{Minimum viscosity}% = 1e19%% \index[prmindex]{Minimum viscosity} \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Minimum viscosity} %
+       set %%\hyperref[parameters:Material model/Drucker Prager/Viscosity/Maximum viscosity]{Maximum viscosity}% = 1e25 %% \index[prmindex]{Maximum viscosity} \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Maximum viscosity} %
+       set %%\hyperref[parameters:Material model/Drucker Prager/Viscosity/Reference strain rate]{Reference strain rate}% = 1e-20%% \index[prmindex]{Reference strain rate} \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Reference strain rate} %
+       set %%\hyperref[parameters:Material model/Drucker Prager/Viscosity/Angle internal friction]{Angle internal friction}% = 30%% \index[prmindex]{Angle internal friction} \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Angle internal friction} %
+       set %%\hyperref[parameters:Material model/Drucker Prager/Viscosity/Cohesion]{Cohesion}% = 20e6 %% \index[prmindex]{Cohesion} \index[prmindexfull]{Material model!Drucker Prager!Viscosity/Cohesion} %
+    end
+  end
+end

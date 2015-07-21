@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,6 +41,7 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/heating_model/interface.h>
@@ -50,8 +51,10 @@
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/fluid_pressure_boundary_conditions/interface.h>
+#include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
 #include <aspect/postprocess/interface.h>
@@ -151,8 +154,8 @@ namespace aspect
       typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
 
       /**
-      * Import nullspace removal type.
-      */
+       * Import nullspace removal type.
+       */
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
@@ -608,20 +611,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-      /**
-       * Compute the heating term for the advection system index. Currently
-       * the heating term is 0 for compositional fields, but this can be
-       * changed in the future to allow for interactions between compositional
-       * fields.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      double compute_heating_term(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                  typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                  const AdvectionField &advection_field,
-                                  const unsigned int q_point) const;
 
 
       /**
@@ -652,7 +641,6 @@ namespace aspect
                                         typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
                                         typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
                                         const unsigned int q_point) const;
-
 
       /**
        * Copy the contribution to the advection system from a single cell into
@@ -691,11 +679,11 @@ namespace aspect
       void make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Fills a vector with the artificial viscosity for the temperature
-       * or composition on each local cell.
+       * Fills a vector with the artificial viscosity for the temperature or
+       * composition on each local cell.
        * @param viscosity_per_cell Output vector
        * @param advection_field Determines whether this variable should select
-       *   the temperature field or a compositional field.
+       * the temperature field or a compositional field.
        */
       void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
                                      const AdvectionField &advection_field) const;
@@ -719,8 +707,8 @@ namespace aspect
        *     void setup(const unsigned int q_points);
        *
        *     // fill @p output for each quadrature point
-       *     void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-       *        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+       *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+       *        const MaterialModel::MaterialModelOutputs<dim> &out,
        *        FEValues<dim> &fe_values,
        *        const LinearAlgebra::BlockVector &solution,
        *        std::vector<double> &output);
@@ -886,6 +874,24 @@ namespace aspect
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                             LinearAlgebra::Vector &vec);
 
+
+      /**
+       * Add constraints to the given @p constraints object that are required
+       * for unique solvability of the velocity block based on the nullspace
+       * removal settings.
+       *
+       * This method will add a zero Dirichlet constraint for the first
+       * velocity unknown in the domain for each velocity component, which is
+       * later being processed for translational or linear momentum removal.
+       * This avoids breakdowns of the linear solvers that otherwise occured
+       * in some instances.
+       *
+       * @note: Rotational modes are currently not handled and don't appear to
+       * require constraints so far.
+       */
+      void setup_nullspace_constraints(ConstraintMatrix &constraints);
+
+
       /**
        * Eliminate the nullspace of the velocity in the given vector. Both
        * vectors are expected to contain the up to date data.
@@ -903,9 +909,9 @@ namespace aspect
       /**
        * Remove the angular momentum of the given vector
        *
-       * @param use_constant_density determines whether to use a constant density
-       * (which corresponds to removing a net rotation instead of net angular
-       * momentum).
+       * @param use_constant_density determines whether to use a constant
+       * density (which corresponds to removing a net rotation instead of net
+       * angular momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -920,9 +926,9 @@ namespace aspect
       /**
        * Remove the linear momentum of the given vector
        *
-       * @param use_constant_density determines whether to use a constant density
-       * (which corresponds to removing a net translation instead of net linear
-       * momentum).
+       * @param use_constant_density determines whether to use a constant
+       * density (which corresponds to removing a net translation instead of
+       * net linear momentum).
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
@@ -1009,11 +1015,12 @@ namespace aspect
       void
       compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                         const double                        average_field,
-                                        const AdvectionField     &advection_field,
+                                        const AdvectionField               &advection_field,
                                         double                             &max_residual,
                                         double                             &max_velocity,
                                         double                             &max_density,
-                                        double                             &max_specific_heat) const;
+                                        double                             &max_specific_heat,
+                                        double                             &conductivity) const;
 
       /**
        * Extract the values of temperature, pressure, composition and optional
@@ -1032,6 +1039,8 @@ namespace aspect
        * describes the finite element space in use and that is used to
        * evaluate the solution values at the quadrature points of the current
        * cell.
+       * @param[in] cell The cell on which we are currently evaluating
+       * the material model.
        * @param[in] compute_strainrate A flag determining whether the strain
        * rate should be computed or not in the output structure.
        * @param[out] material_model_inputs The output structure that contains
@@ -1044,8 +1053,9 @@ namespace aspect
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
                                            const fevalues                                      &input_finite_element_values,
+                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
-                                           typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs) const;
+                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
 
       /**
@@ -1123,13 +1133,12 @@ namespace aspect
       void compute_melt_variables(LinearAlgebra::BlockVector &solution);
 
       /**
-       * This routine computes the initial Stokes residual that is
-       * needed as a convergence criterion in models with the iterated
-       * IMPES solver. We calculate it in the same way as the
-       * tolerance for the linear solver, using the norm of the pressure
-       * RHS for the pressure part and a residual with zero velocity
-       * for the velocity part to get the part of the RHS not balanced
-       * by the static pressure.
+       * This routine computes the initial Stokes residual that is needed as a
+       * convergence criterion in models with the iterated IMPES solver. We
+       * calculate it in the same way as the tolerance for the linear solver,
+       * using the norm of the pressure RHS for the pressure part and a
+       * residual with zero velocity for the velocity part to get the part of
+       * the RHS not balanced by the static pressure.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -1147,6 +1156,7 @@ namespace aspect
        */
       Parameters<dim>                     parameters;
       Introspection<dim>                  introspection;
+      SimulatorSignals<dim>               signals;
 
       MPI_Comm                            mpi_communicator;
 
@@ -1201,15 +1211,17 @@ namespace aspect
       const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
       const IntermediaryConstructorAction                            post_geometry_model_creation_action;
       const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
-      const std::auto_ptr<HeatingModel::Interface<dim> >             heating_model;
       const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
       const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
       const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
       const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
+      const std::auto_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
       const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
       const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
+      std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > traction_boundary_conditions;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
+
       /**
        * @}
        */
@@ -1243,6 +1255,7 @@ namespace aspect
       double                                                    global_volume;
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
+      HeatingModel::Manager<dim>                                heating_model_manager;
 
       const MappingQ<dim>                                       mapping;
 
@@ -1373,6 +1386,19 @@ namespace aspect
                                     FullMatrix<double> &local_matrix);
 
           /**
+           * If a geometry model uses manifolds for the refinement behavior
+           * it can produce nonsensical meshes on refinement when using a
+           * free surface, since the free surface may deform the mesh to the
+           * point where the manifold is no longer a good description of the
+           * domain.  However, it can still be useful to have the manifold
+           * description for producing a nice starting mesh with the initial
+           * refinements (that is to say, before timestepping).  This detaches
+           * manifolds from cells, and is called after the initial refinements
+           * of the domain.
+           */
+          void detach_manifolds();
+
+          /**
            * Declare parameters for the free surface handling.
            */
           static
@@ -1397,10 +1423,10 @@ namespace aspect
           void make_constraints ();
 
           /**
-           * Project the normal part of the Stokes velocity solution onto the
+           * Project the the Stokes velocity solution onto the
            * free surface. Called by make_constraints()
            */
-          void project_normal_velocity_onto_boundary (LinearAlgebra::Vector &output);
+          void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
 
           /**
            * Actually solve the elliptic problem for the mesh velocitiy.  Just
@@ -1490,8 +1516,23 @@ namespace aspect
            */
           ConstraintMatrix mesh_vertex_constraints;
 
+          /**
+           * A struct for holding information about how to advect the free surface.
+           */
+          struct SurfaceAdvection
+          {
+            enum Direction { normal, vertical };
+          };
+
+          /**
+           * Stores whether to advect the free surface in the normal direction
+           * or the direction of the local vertical.
+           */
+          typename SurfaceAdvection::Direction advection_direction;
+
 
           friend class Simulator<dim>;
+          friend class SimulatorAccess<dim>;
       };
 
       /**

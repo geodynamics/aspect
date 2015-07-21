@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (years)
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Visualization file name
+0 0.0000e+00 40 433 189  0 12 13 12 1.8039e+07  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                         "" 
+0 0.0000e+00 40 467 205  0 11 12 47 2.8491e+06  0.00000000e+00 0.00000000e+00 6.47565100e-04 2.17377824e-03 output-mesh_velocity_output/solution-00000 
+1 2.8491e+06 40 467 205 11 11 12 54 4.0084e+06 -1.60565669e+03 3.58117550e+03 7.82070836e-04 2.34371259e-03 output-mesh_velocity_output/solution-00001 
+2 6.8575e+06 40 467 205 11 11 12 54 2.7283e+06 -6.03769750e+03 2.79442639e+03 9.53252256e-04 3.62275996e-03 output-mesh_velocity_output/solution-00002 

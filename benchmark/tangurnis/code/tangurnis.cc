@@ -355,7 +355,8 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      return Di/gamma / density(temperature, pressure, compositional_fields, pos);
+      double d = density(temperature, pressure, compositional_fields, pos);
+      return (d==0) ? 1.0 : (Di/gamma / d);
     }
 
 
@@ -562,7 +563,7 @@ namespace aspect
        */
       virtual
       double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const unsigned int                   boundary_indicator,
+                          const types::boundary_id                   boundary_indicator,
                           const Point<dim>                    &location) const;
 
       /**
@@ -590,7 +591,7 @@ namespace aspect
   double
   TanGurnisBoundary<dim>::
   temperature (const GeometryModel::Interface<dim> &geometry_model,
-               const unsigned int                   boundary_indicator,
+               const types::boundary_id                   boundary_indicator,
                const Point<dim>                    &location) const
   {
     // verify that the geometry is in fact a box since only

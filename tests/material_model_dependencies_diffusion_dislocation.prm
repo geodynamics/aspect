@@ -1,0 +1,99 @@
+# Evaluate the nonlinear dependencies of the material model used here
+# This parameter file implements an initial temperature of 293 K + x,
+# where x is the fraction of the box width, in a 2D box of size 1x1.
+
+subsection Material model
+  set Model name = diffusion dislocation
+end
+subsection Postprocess
+  set List of postprocessors = material model dependencies
+end
+
+
+#############################
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 293
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = Stokes only
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+
+    set Y extent = 1
+
+    set Z extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 293 + x 
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 2                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false # default: true
+
+
+  set Fixed temperature boundary indicators   = 0, 1
+
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+end
+
+
+

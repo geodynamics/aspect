@@ -35,8 +35,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements the prescribed compositional fields
-     * determined from a AsciiData input file.
+     * A class that implements the prescribed compositional fields determined
+     * from a AsciiData input file.
      *
      * @ingroup CompositionalInitialConditionsModels
      */

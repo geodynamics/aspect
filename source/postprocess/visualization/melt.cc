@@ -75,7 +75,7 @@ namespace aspect
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
 
-        in.cell = this->get_dof_handler().end(); // we do not know the cell index
+        in.cell = NULL; // we do not know the cell index
         const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(in, out);
@@ -130,7 +130,7 @@ namespace aspect
                in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
            }
 
-         in.cell = this->get_dof_handler().end(); // we do not know the cell index
+         in.cell = NULL; // we do not know the cell index
          const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
          AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
          melt_mat->evaluate_with_melt(in, out);
@@ -180,7 +180,7 @@ namespace aspect
                in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
            }
 
-         in.cell = this->get_dof_handler().end(); // we do not know the cell index
+         in.cell = NULL; // we do not know the cell index
          const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
          AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
          melt_mat->evaluate_with_melt(in, out);
@@ -235,7 +235,7 @@ namespace aspect
                 in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
             }
 
-          in.cell = this->get_dof_handler().end(); // we do not know the cell index
+          in.cell = NULL; // we do not know the cell index
           const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
           AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
           melt_mat->evaluate_with_melt(in, out);

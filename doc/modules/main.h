@@ -6,7 +6,8 @@
  * This is the documentation of ASPECT, an Advanced Solver for Problems in
  * Earth's ConvecTion. The primary entry point to the documentation are
  *
- * - the <a href="../manual.pdf">manual</a> for a broad overview;
+ * - the <a href="http://www.math.clemson.edu/~heister/manual.pdf">manual</a>
+ * for a broad overview;
  *
  * - the <a href="modules.html">modules page</a> of this documentation for an
  * overview of which classes belong together in functionality;

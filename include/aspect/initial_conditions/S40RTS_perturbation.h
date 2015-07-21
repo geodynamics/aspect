@@ -104,9 +104,12 @@ namespace aspect
          * constraints on three- dimensional structure, vertical flow, and
          * heat transfer in the mantle, J. Geophys. Res. 102 (B8),
          * 17,981-17,994.
+         * The last parameter is a depth down to which heterogeneities are
+         * zeroed out.
          */
         double vs_to_density;
         double thermal_alpha;
+        double no_perturbation_depth;
 
         /**
          * This parameter allows to set the degree 0 component of the shear

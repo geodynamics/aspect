@@ -1,3 +1,19 @@
+@string{jcp = {J.~Comp.~Phys.}}
+@string{jgr = {J.~Geophys.~Res.}}
+@string{epsl = {Earth~Planet.~Sci.~Lett.}}
+@string{grl = {Geophys.~Res.~Lett.}}
+@string{pepi = {Phys.~Earth.~Planet.~Inter.}}
+@string{g3 = {Geochem.~Geophys.~Geosyst.}}
+@string{gji = {Geophy.~J.~Int.}}
+@string{ijnmf = {Int.~J.~Num.~Meth.~Fluids}}
+@string{ijnme = {Int.~J.~Num.~Meth.~Eng.}}
+@string{se = {Solid Earth}}
+@string{ajs = {American Journal of Science}}
+@string{cmame = {Computer Methods in Applied Mechanics and Engineering}}
+@string{pnas = {Proceedings of the National Academy of Sciences}}
+
+
+
 @Article{BRVMFG04,
   author = 	 {J. Badro and J.-P. Rueff and G. Vank{\'o} and G. Monaco
                   and G. Fiquet and F. Guyot},
@@ -611,6 +627,16 @@ YEAR = "2003"
   pages =	 {15--30}
 }
 
+@Article{CSG12,
+  title={A comparison of numerical surface topography calculations in geodynamic modelling: An evaluation of the `sticky air' method},
+  author={Crameri, F. and Schmeling, H. and Golabek, G. J. and Duretz, T. and Orendt, R. and Buiter, S. J. H. and May, D. A. and Kaus, B. J. P. and Gerya, T. V. and Tackley, P. J.},
+  journal={Geophysical Journal International},
+  volume={189},
+  number={1},
+  pages={38--54},
+  year={2012},
+  publisher={Oxford University Press}
+}
 
 @Article{HSK96,
   author = 	 {Hodgkinson, K. M. and Stein, R. S. and King, G. C. P.},
@@ -3207,7 +3233,6 @@ source terms},
   howpublished = {http://www-unix.mcs.anl.gov/petsc/petsc-2}
 }
 
-String{VERSION = {$Id: own.bib 5238 2009-04-24 14:32:38Z bangerth $}}
 @String{IWR = {IWR, Universit{\"a}t Heidelberg}}
 @String{SFB = {SFB~359, Universit{\"a}t Heidelberg}}
 @String{IAM = {Institut f{\"u}r Angewandte Mathematik, Universit{\"a}t Heidelberg}}
@@ -5141,7 +5166,6 @@ Linear and Nonlinear Solid and Structural Mechanics'' Udine, Oct. 4-8, 1999},
   OPTannote = 	 {}
 }
 
-# $Id: parameter-estimation.bib 5470 2009-09-12 22:41:13Z bangerth $
 
 
 
@@ -8131,6 +8155,21 @@ Transfer},
   pages =	 {5469--5474}
 }
 
+@Article{S20RTS,
+  author = 	 {J. Ritsema and H. J. van Heijst},
+  title = 	 {Seismic imaging of structural heterogeneity in Earth's mantle: Evidence for large-scale mantle flow},
+  journal = 	 {Sci. Progr.},
+  year = 	 2000,
+  volume = 	 83,
+  pages = 	 {243--259}}
+  
+@Article{S40RTS,
+  author = 	 {J. Ritsema and A. Deuss and H. J. van Heijst and J. H. Woodhouse},
+  title = 	 {S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements},
+  journal = 	 {Geophysical Journal International},
+  year = 	 2011,
+  volume = 	 184,
+  pages = 	 {1223--1236}}
 
 
 @Article{ROO05,
@@ -9565,7 +9604,6 @@ Approximations},
   institution =  {IBM},
   year = 	 2009}
 
-# $Id: waves.bib 5172 2009-03-25 22:29:43Z bangerth $
 
 @Article{ABEI99,
   author = 	 {M. Aza\"\i{}ez and F. {Ben Belgacem} and H. {El Fekih}
@@ -10811,7 +10849,7 @@ author = "H. L. Stone and A. O. Garder"
 
 @Article{KMM2010,
   title={A stabilization algorithm for geodynamic numerical simulations with a free surface},
-  author={Kaus, Boris JP and M{\"u}hlhaus, Hans and May, Dave A},
+  author={Kaus, B. J. P. and M{\"u}hlhaus, H. and May, D. A.},
   journal={Physics of the Earth and Planetary Interiors},
   volume={181},
   number={1},
@@ -10822,7 +10860,7 @@ author = "H. L. Stone and A. O. Garder"
 
 @InBook {DHPR2004,
 title = {Arbitrary Lagrangian-Eulerian Methods},
-author = {Donea, Jean and Huerta, Antonio and Ponthot, J.-Ph. and Rodríguez-Ferran, A.},
+author = {Donea, J. and Huerta, A. and Ponthot, J.-Ph. and Rodr{\'i}guez-Ferran, A.},
 publisher = {John Wiley \& Sons, Ltd},
 isbn = {9780470091357},
 url = {http://dx.doi.org/10.1002/0470091355.ecm009},
@@ -10878,7 +10916,7 @@ a free surface},
   pages = 	 {198--223}}
 
 @Article{Deu08,
-  author = 	 {Y. Deubelbeiss and B. J. P. Kauss},
+  author = 	 {Y. Deubelbeiss and B. J. P. Kaus},
   title = 	 {Comparison of Eulerian and Lagrangian numerical techniques for the Stokes equations in the presence of strongly varying viscosity},
   journal = 	 {Physics of the Earth and Planetary Interiors},
   year = 	 2008,
@@ -10886,10 +10924,80 @@ a free surface},
   pages = 	 {92--111}}
 
 @Article{TMK14,
-  author = 	 {M. Thielmann and D. A. May and B. J. P. Kauss},
+  author = 	 {M. Thielmann and D. A. May and B. J. P. Kaus},
   title = 	 {Discretization Errors in the Hybrid Finite Element Particle-in-cell Method},
   journal = 	 {Pure and Applied Geophysics},
   year = 	 2014,
   volume = 	 171,
   pages = 	 {2165--2184}}
+
+
+@article{will99,
+Author = {S. D. Willett},
+Journal = {Tectonophysics},
+Pages = {419-435},
+Title = {Rheological dependence of extension in wedge models of convergent orogens},
+Volume = {305},
+Year = {1999}}
+
+@article{alht12,
+Author = {V. Allken and R. Huismans and C. Thieulot},
+Journal = g3,
+Title = {Factors controlling the mode of rift interaction in brittle-ductile coupled systems: a 3D numerical study},
+Volume = {13},
+Number = {5},
+Pages = {Q05010},
+Year = {2012}}
+
+@article{alht11,
+Author = {V. Allken and R. Huismans and C. Thieulot},
+Journal = jgr,
+Title = {Three dimensional numerical modelling of upper crustal extensional systems},
+Pages = {B10409},
+Volume = {116},
+Year = {2011}}
+
+@article{thie11,
+title={{FANTOM: two- and three-dimensional numerical modelling of creeping flows for the solution of geological problems}},
+author={C. Thieulot},
+journal=pepi,
+volume={188},
+pages={47-68},
+year={2011}
+}
+
+@article{full95,
+Author = {P. Fullsack},
+Journal = gji,
+Pages = {1-23},
+Title = {An arbitrary {L}agrangian-{E}ulerian formulation for creeping flows and its application in tectonic models},
+Volume = {120},
+Year = {1995}}
+
+@article{kaus10,
+Author = {B.J.P. Kaus},
+Journal = {Tectonophysics},
+Title = {Factors that control the angle of shear bands in geodynamic numerical models of brittle deformation},
+Volume = {484},
+Pages = {36--47},
+Year = {2010}}
+
+@article{alhf13,
+title={{3D numerical modelling of graben interaction and linkage: a case study of the Canyonlands grabens, Utah}},
+author={V. Allken and R.S. Huismans and H. Fossen and C. Thieulot},
+journal={Basin Research},
+volume={25},
+pages={1--14},
+year={2013}
+}
+
+@article{buit12,
+title={{A review of brittle compressional wedge models}},
+author={S. J. H. Buiter},
+journal={Tectonophysics},
+volume={530},
+pages={1-17},
+year={2012}
+}
+
 

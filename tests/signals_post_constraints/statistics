@@ -1,0 +1,27 @@
+# 1: number of constraints
+# 2: Time step number
+# 3: Time (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Time step size (seconds)
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
+390 0 0.0000e+00 1024 9539 4225  0  0  0  0 0.0000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 
+390 1 6.1685e-04 1024 9539 4225  0 32 20  3 6.1685e-04 1.79112171e+01 2.53271834e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 -5.91160354e-06 5.91160354e-06 -4.88438657e+00 4.88438657e+00 
+390 2 1.2298e-03 1024 9539 4225 29 29 30 30 6.1300e-04 1.79206256e+01 2.54863248e+01 0.00000000e+00 5.00000205e-01 1.00000000e+00 5.00000205e-01 -2.65071185e-06 2.67371774e-06 -4.83412127e+00 4.83417665e+00 
+390 3 1.8378e-03 1024 9539 4225 21 25 26 26 6.0798e-04 1.79633151e+01 2.56969062e+01 0.00000000e+00 5.00000636e-01 1.00000000e+00 5.00000636e-01 -6.05122683e-06 6.04881120e-06 -4.72744261e+00 4.72759595e+00 
+390 4 2.0000e-03 1024 9539 4225 21 25 26 26 1.6217e-04 1.80455161e+01 2.59672456e+01 0.00000000e+00 5.00001125e-01 1.00000000e+00 5.00001125e-01 -6.34580370e-06 6.34076600e-06 -4.55340270e+00 4.55368096e+00 
+390 0 0.0000e+00    0    0    0 10 22 23 23 5.9976e-04 1.80744508e+01 2.60500583e+01 0.00000000e+00 5.00001257e-01 1.00000000e+00 5.00001257e-01 -6.55199727e-06 6.54769574e-06 -4.49593324e+00 4.49624548e+00 

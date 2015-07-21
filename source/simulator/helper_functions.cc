@@ -294,16 +294,14 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
-                             update_values | (parameters.use_conduction_timestep || parameters.include_melt_transport
+                             update_values | update_gradients |
+                             ((parameters.use_conduction_timestep || parameters.include_melt_transport)
                                               ?
-                                              (parameters.include_melt_transport
-                                               ?
-                                               update_gradients | update_quadrature_points
-                                               :
-                                               update_quadrature_points)
+                                              update_quadrature_points
                                               :
                                               update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_pressure_gradients(n_q_points);
+    std::vector<Tensor<1,dim> > pressure_gradients(n_q_points);
     std::vector<double> pressure_values(n_q_points), fluid_pressure_values(n_q_points), temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
@@ -338,12 +336,14 @@ namespace aspect
                                                                                 pressure_values);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
                                                                                    temperature_values);
+              fe_values[introspection.extractors.pressure].get_function_gradients (solution,
+                                                                                   pressure_gradients);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
-              typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
-              typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
 
               in.strain_rate.resize(0);// we are not reading the viscosity
 
@@ -355,10 +355,12 @@ namespace aspect
                   in.position[q] = fe_values.quadrature_point(q);
                   in.temperature[q] = temperature_values[q];
                   in.pressure[q] = pressure_values[q];
+                  in.velocity[q] = velocity_values[q];
+                  in.pressure_gradient[q] = pressure_gradients[q];
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
-              in.cell = cell;
+              in.cell = &cell;
 
               material_model->evaluate(in, out);
 
@@ -409,7 +411,7 @@ namespace aspect
                     in.composition[q][c] = composition_values_at_q_point[c];
                 }
 
-              in.cell = cell;
+              in.cell = &cell;
               const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&*material_model);
               AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
               melt_mat->evaluate_with_melt(in, out);
@@ -472,18 +474,6 @@ namespace aspect
     return std::make_pair(new_time_step, convection_dominant);
   }
 
-
-  namespace
-  {
-    void
-    extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
-                                           const unsigned int                      q,
-                                           std::vector<double>                    &composition_values_at_q_point)
-    {
-      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-        composition_values_at_q_point[k] = composition_values[k][q];
-    }
-  }
 
 
   template <int dim>
@@ -571,8 +561,8 @@ namespace aspect
             }
       }
 
-    return std::make_pair(-Utilities::MPI::max (-min_local_field,
-                                                mpi_communicator),
+    return std::make_pair(Utilities::MPI::min (min_local_field,
+                                               mpi_communicator),
                           Utilities::MPI::max (max_local_field,
                                                mpi_communicator));
   }
@@ -914,11 +904,13 @@ namespace aspect
 
     const double global_normal_velocity_integral = 0.0;
 
+    // In the following we integrate the right hand side. This integral is the
+    // correction term that needs to be added to the pressure right hand side.
+    // (so that the integral of right hand side is set to zero).
     if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
       {
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
         const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
-
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
     else
@@ -928,7 +920,6 @@ namespace aspect
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
                                  :
                                  introspection.index_sets.locally_owned_pressure_dofs;
-
         double pressure_sum = 0.0;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
@@ -980,7 +971,6 @@ namespace aspect
                                finite_element,
                                quadrature,
                                update_quadrature_points | update_values | update_gradients);
-
       std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
       typename DoFHandler<dim>::active_cell_iterator
       cell = dof_handler.begin_active(),
@@ -996,12 +986,12 @@ namespace aspect
               solution, u_s_values);
             fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
               solution, grad_p_f_values);
-
             compute_material_model_input_values (solution,
                                                  fe_values,
+                                                 cell,
                                                  true, // TODO: use rebuild_stokes_matrix here?
                                                  in);
-            in.cell = cell;
+
             typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
             melt_mat->evaluate_with_melt(in, out);
 
@@ -1011,10 +1001,8 @@ namespace aspect
                   = finite_element.system_to_base_index(j).first;
                 if (base_index.first != introspection.base_elements.fluid_velocities)
                   continue;
-
                 const unsigned int q = finite_element.system_to_base_index(j).second;
                 const unsigned int d = base_index.second;
-
                 Assert(q < quadrature.size(), ExcInternalError());
 
                 // skip entries that are not locally owned:
@@ -1029,7 +1017,6 @@ namespace aspect
                   {
                     const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
                     const double gravity_d = this->gravity_model->gravity_vector(in.position[q])[d];
-
                     // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
                     value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - out.fluid_densities[q] * gravity_d) / phi;
                   }
@@ -1044,10 +1031,10 @@ namespace aspect
     //compute solid pressure
     {
       const unsigned int block_p = introspection.block_indices.pressure;
+    // current_constraints.distribute.
 
       // Think what we need to do if the pressure is not an FE_Q...
       Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
-
       const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.pressure).get_unit_support_points());
       std::vector<double> porosity_values(quadrature.size());
       std::vector<double> p_c_values(quadrature.size());
@@ -1276,10 +1263,10 @@ namespace aspect
     cell = dof_handler.begin_active(),
     endc = dof_handler.end();
 
-    typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                   parameters.n_compositional_fields);
-    typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                     parameters.n_compositional_fields);
+    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                               parameters.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                 parameters.n_compositional_fields);
 
     fctr.setup(quadrature_formula.size());
 
@@ -1293,8 +1280,12 @@ namespace aspect
                                                                                 in.pressure);
               fe_values[introspection.extractors.temperature].get_function_values (this->solution,
                                                                                    in.temperature);
+              fe_values[introspection.extractors.velocities].get_function_values (this->solution,
+                                                                                  in.velocity);
               fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
                   in.strain_rate);
+              fe_values[introspection.extractors.pressure].get_function_gradients (this->solution,
+                                                                                   in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
                                                                                                 composition_values[c]);
@@ -1305,7 +1296,7 @@ namespace aspect
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
-              in.cell = cell;
+              in.cell = &cell;
 
               material_model->evaluate(in, out);
             }
@@ -1350,8 +1341,8 @@ namespace aspect
         {
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1393,8 +1384,8 @@ namespace aspect
         void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &out,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)
@@ -1431,8 +1422,8 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1467,7 +1458,8 @@ namespace aspect
 
         bool need_material_properties() const
         {
-          return false;
+          // this is needed because we want to access in.position in operator()
+          return true;
         }
 
         void setup(const unsigned int q_points)
@@ -1475,8 +1467,8 @@ namespace aspect
           velocity_values.resize(q_points);
         }
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &fe_values,
                         const LinearAlgebra::BlockVector &solution,
                         std::vector<double> &output)
@@ -1484,8 +1476,10 @@ namespace aspect
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
             {
-              Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
-              output[q] = std::fabs(std::min(-1e-16,g*velocity_values[q]/g.norm()))*year_in_seconds;
+              const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertical = (g.norm() > 0 ? g/g.norm() : Tensor<1,dim>());
+
+              output[q] = std::fabs(std::min(0.0, velocity_values[q] * vertical))*year_in_seconds;
             }
         }
 
@@ -1523,8 +1517,8 @@ namespace aspect
         void setup(const unsigned int)
         {}
 
-        void operator()(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &,
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
                         FEValues<dim> &,
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output)

@@ -10,7 +10,7 @@
 # 10: Velocity iterations in Stokes preconditioner
 # 11: Schur complement iterations in Stokes preconditioner
 # 12: Time step size (years)
-# 13: Average internal heating rate (W/kg) 
-# 14: Total internal heating rate (W) 
+# 13: Average radioactive decay rate (W/kg) 
+# 14: Total radioactive decay rate (W) 
 0 0.0000e+00 768 7392 3264 3264  0  0 38 94 27 1.0000e+06 1.86469455e-12 4.94791849e+05 
 1 1.0000e+06 768 7392 3264 3264 11 12 39 95 30 7.7829e+05 1.42816185e-12 3.78971807e+05 

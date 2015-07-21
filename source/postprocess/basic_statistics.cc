@@ -44,20 +44,31 @@ namespace aspect
               const MaterialModel::Simple<dim> &material_model
                 = dynamic_cast<const MaterialModel::Simple<dim> &>(this->get_material_model());
 
+              MaterialModel::MaterialModelInputs<dim> in (1, this->n_compositional_fields());
+              MaterialModel::MaterialModelOutputs<dim> out (1, this->n_compositional_fields());
+
               const double h = this->get_geometry_model().maximal_depth();
 
               // dT is only meaningful if boundary temperatures are prescribed, otherwise it is 0
-              const double dT = (&this->get_boundary_temperature())
-                                ?
-                                this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
-                                :
-                                0;
+              const double dT = (this->has_boundary_temperature()
+                                 ?
+                                 this->get_boundary_temperature().maximal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                 - this->get_boundary_temperature().minimal_temperature(this->get_fixed_temperature_boundary_indicators())
+                                 :
+                                 0);
 
               // we do not compute the compositions but give the functions below the value 0.0 instead
               std::vector<double> composition_values(this->n_compositional_fields(),0.0);
 
               Point<dim> representative_point = this->get_geometry_model().representative_point(0);
+
+              in.position[0] = representative_point;
+              in.temperature[0] = dT;
+              in.pressure[0] = dT; //TODO: dT for the pressure is wrong
+              for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
+                in.composition[0][c] = 0.0;
+              material_model.evaluate(in, out);
+
               const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
               const double Ra = material_model.reference_density()*
                                 gravity*
@@ -92,13 +103,13 @@ namespace aspect
                                << Ra
                                << std::endl;
               this->get_pcout()<< "     k_value:                                       "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point) //TODO: dT for the pressure is wrong
+                               << out.thermal_conductivities[0]
                                << std::endl;
               this->get_pcout()<< "     reference_cp:                                  "
                                << material_model.reference_cp()
                                << std::endl;
               this->get_pcout()<< "     reference_thermal_diffusivity:                 "
-                               << material_model.thermal_conductivity(dT, dT, composition_values, representative_point)/(material_model.reference_density()*material_model.reference_cp()) //TODO: dT for the pressure is wrong
+                               << out.thermal_conductivities[0]/(material_model.reference_density()*material_model.reference_cp())
                                << std::endl;
               this->get_pcout()<<  std::endl;
             }

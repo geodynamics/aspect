@@ -19,9 +19,9 @@
 #  $Id$
 
 
-MESSAGE("====================================================")
-MESSAGE("============ Configuring ASPECT ====================")
-MESSAGE("====================================================")
+MESSAGE(STATUS "====================================================")
+MESSAGE(STATUS "============ Configuring ASPECT ====================")
+MESSAGE(STATUS "====================================================")
 
 # Set the name of the project and target:
 SET(TARGET "aspect")
@@ -101,20 +101,41 @@ ENDFOREACH()
 # set up compiler flags, include paths, etc to compile an
 # Aspect plugin
 CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/AspectConfig.cmake.in
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
   ${CMAKE_BINARY_DIR}/AspectConfig.cmake
   @ONLY
 )
 
 
 # Next, set up the testsuite
+
+SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
+  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
+  @ONLY
+)
+CONFIGURE_FILE(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
+  ${CMAKE_BINARY_DIR}/print_test_info.sh
+  @ONLY
+)
+
+ADD_CUSTOM_TARGET(setup_tests
+  COMMAND echo "Enabling all tests ..."
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D PRINT_TEST_SUMMARY_AS_IMPORTANT=ON . >/dev/null
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   ENABLE_TESTING()
   ADD_SUBDIRECTORY(tests)
 ENDIF()
 
 
-MESSAGE("====================================================")
+ADD_CUSTOM_TARGET(generate_reference_output
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh 
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this
@@ -146,13 +167,38 @@ IF (_HAVE_LINK_H)
   ENDFOREACH()
 ENDIF()
 
-
 DEAL_II_INVOKE_AUTOPILOT()
+
+
+# Check if we can raise floating point exceptions.
+#
+# Note that some library we link with in ASPECT on some platforms will trigger
+# floating point exceptions when converting -numeric_limits<double>::max to a
+# string. The only thing we can do is a configure check and disable the
+# exceptions. This is done here:
+SET(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
+
+IF (ASPECT_USE_FP_EXCEPTIONS)
+  INCLUDE(${CMAKE_SOURCE_DIR}/cmake/fpe_check.cmake)
+
+  IF (HAVE_FP_EXCEPTIONS)
+    MESSAGE(STATUS "Runtime floating point checks enabled.")
+    FOREACH(_source_file ${TARGET_SRC})
+      SET_PROPERTY(SOURCE ${_source_file}
+        APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_FP_EXCEPTIONS=1)
+    ENDFOREACH()
+  ELSE()
+    SET(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+    MESSAGE(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
+  ENDIF()
+ENDIF()
+
+
 
 MESSAGE(STATUS "Writing config into detailed.log...")
 LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
   )
 
-INCLUDE(write_config)
+INCLUDE(cmake/write_config)
 

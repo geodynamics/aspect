@@ -97,7 +97,8 @@ namespace aspect
     template <int dim>
     void
     Simpler<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       for (unsigned int i=0; i<in.position.size(); ++i)
         {

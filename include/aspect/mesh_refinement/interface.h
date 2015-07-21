@@ -203,7 +203,7 @@ namespace aspect
          * A function that is used to register mesh refinement objects in such
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
-         * plugins are implement to register these plugins, rather than also
+         * plugins are implemented to register these plugins, rather than also
          * having to modify the Manager class by adding the new mesh
          * refinement class.
          *

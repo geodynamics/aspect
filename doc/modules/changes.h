@@ -1,149 +1,182 @@
 /**
- * @page changes_current Changes after the latest release (v1.2)
+ * @page changes_current Changes after the latest release (v1.3)
  *
  * <p> This is the list of changes made after the release of Aspect version
- * 1.2. All entries are signed with the names of the author. </p>
+ * 1.3. All entries are signed with the names of the author. </p>
  *
  *
  * <ol>
  *
- * <li> New: There are now visualization postprocessors that can output
- * the shear stress and full stress tensors.
+ * <li> New: Plugin for visualizing groups of compositional fields as vectors.
  * <br>
- * (Wolfgang Bangerth, 2015/05/02)
+ * (Jonathan Perry-Houts, 2015/07/12)
  *
- * <li> Changed: ASPECT accidentally used the type <code>unsigned int</code>
- * in denoting boundary indicators in BoundaryComposition::Interface::composition()
- * and BoundaryTemperature::Interface::temperature(), as well as derived
- * classes' corresponding functions. It should have been the deal.II type
- * types::boundary_id. This is now fixed. It may require fixing user plugins that
- * overload these functions.
+ * <li> New: For free surface computations there is an option to advect the 
+ * mesh vertically (in the direction of gravity),  in addition to the old 
+ * formulation which advects it in the direction normal to the surface.  
+ * This can be enabled by setting "Surface velocity projection" to "vertical"
+ * in the "Free surface" section of a parameter file. 
+ * This scheme can maintain better mesh regularity properties for computations
+ * where there is a large deformation, or large curvature.
  * <br>
- * (Wolfgang Bangerth, 2015/04/30)
+ * (Ian Rose, 2015/07/10)
  *
- * <li> New: ASPECT can now average material properties between the
- * quadrature points of a cell. This greatly increases the stability
- * of solutions in simulations with spatially varying coefficients,
- * and also greatly accelerates the solution, at times up to a factor
- * of ten.
+ * <li> New: There is now an option in the Visualization postprocessor for
+ * outputting the mesh velocity in free surface runs.
  * <br>
- * (Wolfgang Bangerth, 2015/04/25)
+ * (Ian Rose, 2015/06/16)
  *
- * <li> Fixed: Removal rigid body translations and rotations when the
- * simulation has a nullspace was bugged. This feature has been fixed
- * and extended, and a new section has been added to the manual describing
- * its use.
+ * <li> New: There are now parameter files and a section in the manual for 
+ * reproducing the benchmarks for free surface computations from Crameri et 
+ * al. (2012).
  * <br>
- * (Ian Rose, 2015/04/23)
+ * (Ian Rose, 2015/06/14)
  *
- * <li> New: vtu visualization output can now be grouped into an arbitrary
- * number of files per time step by setting "Number of grouped files" to
- * a number larger than 1.
+ * <li> New: One can now prescribe the traction on a boundary instead of 
+ * supplying velocity boundary conditions.
+ * This is done in a similar way as for the prescribed velocity boundary conditions:
+ * For a given boundary indicator, one can prescribe all or a selection of the
+ * traction components.
  * <br>
- * (Timo Heister, 2015/04/15)
+ * (Wolfgang Bangerth, Anne Glerum, 2015/05/29)
  *
- * <li> Fixed: To make the right-hand side of the Stokes equation compatible
- * to the matrix we need to apply a correction for inbalanced in-/outflow
- * across the model boundaries. This correction was accidentally applied 
- * twice in the first iteration of the iterated IMPES solver. This does not
- * change the results, because subsequent iterations will do it correctly,
- * but it might prevent the model to converge or slow down convergence. 
- * This is fixed now by applying the correction directly after assembling
- * the matrix and right-hand side.
+ * <li> Changed: We now use the exact formulation with the 
+ * compressible strain rate instead of an approximation 
+ * using the right hand side of the mass conservation equation
+ * to calculate the shear heating. This is more accurate in
+ * compressible models.
  * <br>
- * (Rene Gassmoeller, Timo Heister, Juliane Dannberg, 2015/04/14)
- *
- * <ol>
- * <li> New: ASPECT can now read the list of input arguments from the
- * default input stdin, instead of a file, by specifying "--" for
- * the name of the input file.
+ * (Juliane Dannberg, 2015/05/29)
+ * 
+ * <li> New: There is now a new geometry model called chunk, which
+ * takes radius, longitude (and latitude) pairs and creates a regional
+ * chunk of a spherical shell. Spherical boundary and initial conditions 
+ * have been updated to accept this new model. The conversion conventions
+ * between [longitude, latitude and radius], [phi, theta and radius] and
+ * Cartesian [x, y, z] are consistent with mathematical convention and 
+ * other models in dealii/ASPECT.
+ * This model was based largely on work on deal.ii by D. Sarah Stamps, 
+ * Wolfgang Bangerth, and in ASPECT by Menno Fraters.
  * <br>
- * (Wolfgang Bangerth, 2015/03/20)
+ * (Bob Myhill, 2015/05/29)
  *
- * <li> Changed: We use the current linearization point instead of the old 
- * solution in the assembly of the composition advection system now, and 
- * update the current linearization point with the solution after we have 
- * solved all of the fields. This allows for model parameters used in the 
- * composition advection (like the reaction term) to depend on solution 
- * variables and to be updated during nonlinear iterations.   
+ * <li> New: Added the ability to prescribe internal velocities with an ascii
+ * file. 
  * <br>
- * (Juliane Dannberg, 2015/02/20)
+ * (Scott Tarlow, 2015/05/29)
  *
- * <li> Changed: The default values for the latent heat release of melting in
- * the 'latent heat melt' material model had the wrong sign. This likely
- * resulted from a change in the latent heat terms in the assembly long ago.
- * All tests were correctly set up, but the default values were forgotten.
- * This is fixed now.
+ * <li> New: Three new material averaging schemes are added. These are combined
+ * with the existing averaging schemes, except for the Q1 averaging schemes into
+ * a compositing material model. The new averaging schemes are normalised weighted
+ * distance versions of the arithmetic, harmonic and geometric averages.
  * <br>
- * (Rene Gassmoeller, 2015/02/18)
+ * (Menno Fraters, 2015/05/28)
  *
- *
- * <li> Changed: The unused parameter 'Activation enthalpies' was removed from
- * the 'latent heat' material model. The active parameter for the same purpose
- * is 'Thermal viscosity exponent'. If there are parameter files specifying
- * the removed parameter it is safe to just remove the line.
+ * <li> New: There are now postprocessors BoundaryDensities and
+ * BoundaryPressures which calculate laterally averaged densities 
+ * and pressures at the top and bottom of the domain.
  * <br>
- * (Rene Gassmoeller, 2015/02/16)
+ * (Ian Rose, 2015/05/28)
  *
- * <li> Fixed: The compressibility in the 'latent heat' and 'latent heat melt'
- * material models was used incorrectly to calculate the density. This did only
- * affect compressible models with these material models and is fixed now.
+ * <li> New: Postprocessor and visualization postprocessor plugins can
+ * now state that they require other postprocessors to run as well,
+ * for example because they want to query information computed
+ * by these other postprocessors in computing their own information.
+ * This is done using the
+ * aspect::Postprocess::Interface::requires_other_postprocessors()
+ * function.
  * <br>
- * (Rene Gassmoeller, 2015/02/12)
+ * (Wolfgang Bangerth, 2015/05/28)
  *
- * <li> Changed: We use a new method to calculate the initial residuals 
- * used for the iterated IMPES solver. Instead of using the first solution,
- * we use the norm of the right-hand side, so that the residual is small
- * for cases where the initial guess of a time step is already very good, 
- * and the number of iterations is decreased for these cases (e.g. when
- * using a smaller time step size).
- * Moreover, the screen output of the residuals is now in the same order as 
- * the output before (about which system is solved and how many iterations were 
- * needed).  
+ * <li> New: Added cookbook to prescribe initial condition from shear
+ * wave velocity model.
  * <br>
- * (Juliane Dannberg, 2015/02/09)
+ * (Jacqueline Austermann, 2015/05/28)
  *
- * <li> New: A new plugin called 'ascii data' is available for boundary and
- * initial conditions that reads in text data from files provided by the user.
- * The plugin works for box and shell geometries and allows for time-dependent
- * or constant boundary conditions. The data files must provide data for the
- * whole model domain and the plugin interpolates the data from a structured
- * grid to Aspect's mesh linearly.
+ * <li> Changed: The heating models have a new straucture now:
+ * Instead of the implementation in the assembly, there is a heating
+ * plugin for each model now that can be used both in the assembly 
+ * and the postprocessors, and a new heating model manager that
+ * combines the plugins by adding the individual heating terms.
  * <br>
- * (Eva Bredow, Rene Gassmoeller, 2015/02/03)
+ * (Juliane Dannberg, 2015/05/27)
  *
- *
- * <li> New: There is now a mass flux statistics postprocessor that
- * calculates the mass flux through every boundary interface. This 
- * is helpful for regional models with prescribed boundary velocities. 
- * In general one would want to set up models with as much in- as out-
- * flux, but in some cases it is hard to know, if the boundary
- * plugins actually ensure this. With this plugins the net flux can
- * be monitored.
+ * <li> Fixed: There was a bug in the make pressure rhs compatibility
+ * function that caused the linear solver to fail in models with a
+ * significant in- or outflux of material. This is fixed now.
  * <br>
- * (Rene Gassmoeller, 2015/02/02)
+ * (Juliane Dannberg, 2015/05/27)
  *
- * <li> Fixed: There was a small bug in ASPECT 1.2 that only occured in
- * the adiabatic initial temperature plugin, when no temperature
- * was prescribed at any boundary, the model was compressible and a
- * bottom thermal boundary layer was included. This is fixed now.
+ * <li> New: Added cookbook for prescribed internal velocity values.
  * <br>
- * (Rene Gassmoeller, 2015/02/02)
+ * (Jonathan Perry-Houts, 2015/05/26)
  *
- * <li> Fixed: The residual of the iterated IMPES solver used to be 
- * nan when the initial residual of one of the solution variable was
- * zero. This is fixed now, so that this variable is not considered
- * for the overall residual anymore.
+ * <li> New: There is now a Material model called diffusion dislocation that 
+ * implements diffusion and dislocation creep viscosity.
  * <br>
- * (Juliane Dannberg, 2015/01/30)
+ * (Bob Myhill, 2015/05/26)
  *
- * <li> Fixed: The Steinberger material model had a bug in case a
- * material table was used that had not the same number of points in
- * temperature and pressure direction. The table was truncated in pressure
- * dimension to the number of lines of the temperature dimension. This is
- * fixed now.
+ * <li> Changed: Modified S40RTS initial condition file to incorporate 
+ * the option to zero out heterogeneities within a given depth.
  * <br>
- * (Rene Gassmoeller, 2015/01/29)
+ * (Jacqueline Austermann, 2015/05/26)
+ *
+ * <li> New: There is now a refinement plugin based on strain rate which
+ * will come handy to capture shear bands when combined with plasticity.
+ * <br>
+ * (Cedric Thieulot, 2015/05/26)
+ * 
+ * <li> New: There is now a Material model called Depth dependent that implements
+ * depth-dependent viscosity through the modification of any other Material model.
+ * <br>
+ * (Jacqueline Austermann and Max Rudolph, 2015/05/24)
+ *
+ * <li> The manual.pdf is no longer part of the git repository but you can
+ * find it online at http://aspect.dealii.org or you can build it yourself.
+ * <br>
+ * (Timo Heister, 2015/05/23)
+ *
+ * <li> New: There are now a set of global constants defined for physical
+ * properties and for radius and gravity parameters relevant to 
+ * Earth and Mars.
+ * <br>
+ * (Bob Myhill, 2015/05/22)
+ *
+ * <li> New: There is now a SimulatorAccess::get_statistics_object() function
+ * that allows all users of this class to record information in the statistics
+ * file, whether they are postprocessors or not.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/22)
+ *
+ * <li> New: ASPECT now also provides a signals mechanism to attach user-defined
+ * functions to certain events over the course of a simulation. This allows more
+ * fine-grained observation and intervention to user additions. A new section
+ * in the manual explains how to extend ASPECT this way.
+ * <br>
+ * (Wolfgang Bangerth, 2015/05/21)
+ *
+ * <li> Changed: The free surface handler now detaches internal manifolds
+ * for cases when the domain has them, since they are not necessarily a 
+ * good description of the geometry when there has been large mesh deformation.
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
+ * <li> Changed: The documentation for nullspace removal is now more 
+ * descriptive of what Aspect is actually doing. 
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
+ * <li> New: There is now a mesh refinement criterion called Slope, intended
+ * for use with a free surface, which refines where the topography has a 
+ * large slope.
+ * <br>
+ * (Ian Rose, 2015/05/21)
+ *
+ * <li> Changed: The specific heating plugin has a new interface now; it gets
+ * the material model inputs and outputs and fills a vector with heating
+ * model outputs for the whole cell.
+ * <br>
+ * (Juliane Dannberg, 2015/05/20)
  *
  * </ol>
  */

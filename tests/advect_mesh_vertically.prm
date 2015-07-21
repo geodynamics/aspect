@@ -1,0 +1,118 @@
+# Test projecting onto gravity direction for free surface computations
+# with a sinking blob.
+
+set Dimension = 2
+
+set CFL number                             = 0.1
+
+set End time                               = 1e8
+set Output directory                       = output
+
+set Pressure normalization                 = no
+set Use years in output instead of seconds = true
+
+
+subsection Boundary temperature model
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
+  end
+end
+
+
+subsection Discretization
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5  
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 500.e3 
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression = 0.0 
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent
+  subsection Multicomponent
+    set Densities             = 2970., 3800.
+    set Viscosities                     = 1.e20, 1.e24
+  end
+end
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 2              
+  set Initial global refinement          = 2
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = composition, boundary
+  set Time steps between mesh refinement = 5 
+  set Refinement criteria merge operation         = plus
+  set Refinement criteria scaling factors         = 2, 1
+  subsection Boundary
+    set Boundary refinement indicators = top
+  end
+end
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = left, right, bottom, top
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Zero velocity boundary indicators       = 
+  set Free surface boundary indicators = top
+end
+
+subsection Free surface
+  set Free surface stabilization theta = 0.5
+  set Surface velocity projection = vertical
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 20
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if( sqrt( (x-250.e3)^2 + (y-160.e3)^2 ) < 25.e3, 1.0, 0.0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,topography,velocity statistics,
+  subsection Visualization
+    set Output format = gnuplot
+    set Time between graphical output = 1.e4
+  end
+end

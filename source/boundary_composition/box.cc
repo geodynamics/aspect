@@ -50,7 +50,7 @@ namespace aspect
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a box."));
 
-      Assert (boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
+      Assert (boundary_indicator<2*dim, ExcMessage ("The given boundary indicator needs to be less than 2*dimension.."));
       return composition_values[boundary_indicator][compositional_field];
     }
 

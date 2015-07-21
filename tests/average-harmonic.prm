@@ -30,7 +30,7 @@ subsection Material model
   subsection Simple model
     set Reference density             = 1
     set Viscosity                     = 1
-    set Thermal expansion coefficient = 0
+    set Thermal expansion coefficient = 0.0
     set Composition viscosity prefactor = 1e6
     set Density differential for compositional field 1 = 10
   end

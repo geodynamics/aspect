@@ -1,0 +1,61 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 4 MPI processes
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving depleted_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+      Nonlinear residuals: 231496, 5.96195e-06, 1.61827e+14
+      Total relative nonlinear residual: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving depleted_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8 iterations.
+      Nonlinear residuals: 231496, 5.96195e-06, 1.18673e+11
+      Total relative nonlinear residual: 0.0007332
+
+
+   Solving temperature system... 0 iterations.
+   Solving depleted_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+      Nonlinear residuals: 231496, 5.96195e-06, 1.95168e+07
+      Total relative nonlinear residual: 1.20406e-07
+
+
+
+   Postprocessing:
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.351s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         3 |    0.0427s |        12% |
+| Assemble composition system     |         3 |    0.0241s |       6.9% |
+| Assemble temperature system     |         3 |    0.0243s |       6.9% |
+| Build Stokes preconditioner     |         3 |    0.0625s |        18% |
+| Build composition preconditioner|         3 |   0.00142s |      0.41% |
+| Build temperature preconditioner|         3 |   0.00172s |      0.49% |
+| Solve Stokes system             |         3 |    0.0968s |        28% |
+| Solve composition system        |         3 |   0.00443s |       1.3% |
+| Solve temperature system        |         3 |   0.00824s |       2.3% |
+| Initialization                  |         2 |    0.0502s |        14% |
+| Postprocessing                  |         1 |  0.000154s |     0.044% |
+| Setup dof systems               |         1 |    0.0223s |       6.4% |
++---------------------------------+-----------+------------+------------+
+

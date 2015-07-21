@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/utilities.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 #include <deal.II/fe/fe_values.h>
@@ -74,106 +75,6 @@ namespace aspect
       return 1.0;
     }
 
-
-    template <int dim>
-    double
-    Interface<dim>::viscosity_derivative (const double,
-                                          const double,
-                                          const std::vector<double> &, /*composition*/
-                                          const Point<dim> &,
-                                          const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (viscosity_depends_on(dependence) == false,
-              ExcMessage ("For a model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-    template <int dim>
-    double
-    Interface<dim>::density_derivative (const double,
-                                        const double,
-                                        const std::vector<double> &, /*composition*/
-                                        const Point<dim> &,
-                                        const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (density_depends_on(dependence) == false,
-              ExcMessage ("For a model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::compressibility_derivative (const double,
-                                                const double,
-                                                const std::vector<double> &, /*composition*/
-                                                const Point<dim> &,
-                                                const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (compressibility_depends_on(dependence) == false,
-              ExcMessage ("For a model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::specific_heat_derivative (const double,
-                                              const double,
-                                              const std::vector<double> &, /*composition*/
-                                              const Point<dim> &,
-                                              const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (specific_heat_depends_on(dependence) == false,
-              ExcMessage ("For a model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
-    template <int dim>
-    double
-    Interface<dim>::thermal_conductivity_derivative (const double,
-                                                     const double,
-                                                     const std::vector<double> &, /*composition*/
-                                                     const Point<dim> &,
-                                                     const NonlinearDependence::Dependence dependence) const
-    {
-      (void)dependence;
-
-      Assert (thermal_conductivity_depends_on(dependence) == false,
-              ExcMessage ("For a model declaring a certain dependence, "
-                          "the partial derivatives have to be implemented."));
-      Assert (NonlinearDependence::identifies_single_variable(dependence) == true,
-              ExcMessage ("The given dependence must identify a single variable!"));
-      return 0;
-    }
-
-
-
     template <int dim>
     void
     Interface<dim>::
@@ -217,6 +118,16 @@ namespace aspect
 
     template <int dim>
     Interface<dim> *
+    create_material_model (const std::string &model_name)
+    {
+      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
+                                                                                      "Material model::Model name");
+      return plugin;
+    }
+
+
+    template <int dim>
+    Interface<dim> *
     create_material_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -226,9 +137,17 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                      "Material model::Model name");
-      return plugin;
+      // If one sets the model name to an empty string in the input file,
+      // ParameterHandler produces an error while reading the file. However,
+      // if one omits specifying any model name at all (not even setting it to
+      // the empty string) then the value we get here is the empty string. If
+      // we don't catch this case here, we end up with awkward downstream
+      // errors because the value obviously does not conform to the Pattern.
+      AssertThrow(model_name != "",
+                  ExcMessage("You need to select a material model "
+                             "('set Model name' in 'subsection Material model')."));
+
+      return create_material_model<dim> (model_name);
     }
 
 
@@ -281,19 +200,38 @@ namespace aspect
 
 
     template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+    }
+
+
+    template <int dim>
     void
     declare_parameters (ParameterHandler &prm)
     {
       // declare the actual entry in the parameter file
       prm.enter_subsection ("Material model");
       {
-        const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = get_valid_model_names_pattern<dim>();
         try
           {
             prm.declare_entry ("Model name", "",
                                Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
+                               "The name of the material model to be used in "
+                               "this simulation. There are many material models "
+                               "you can choose from, as listed below. They generally "
+                               "fall into two category: (i) models that implement "
+                               "a particular case of material behavior, (ii) models "
+                               "that modify other models in some way. We sometimes "
+                               "call the latter ``compositing models''. An example "
+                               "of a compositing model is the ``depth dependent'' model "
+                               "below in that it takes another, freely choosable "
+                               "model as its base and then modifies that model's "
+                               "output in some way."
+                               "\n\n"
+                               "You can select one of the following models:\n\n"
                                +
                                std_cxx11::get<dim>(registered_plugins).get_description_string());
           }
@@ -314,46 +252,36 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
     {
-      position.resize(n_points);
-      temperature.resize(n_points);
-      pressure.resize(n_points);
+      position.resize(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >()));
+      temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      velocity.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
+      pressure_gradient.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
       composition.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
-        composition[q].resize(n_comp);
-      strain_rate.resize(n_points);
-    }
+        composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
 
-
-
-    MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
-                                               const unsigned int n_comp)
-    {
-      viscosities.resize(n_points);
-      densities.resize(n_points);
-      thermal_expansion_coefficients.resize(n_points);
-      specific_heat.resize(n_points);
-      thermal_conductivities.resize(n_points);
-      compressibilities.resize(n_points);
-      entropy_derivative_pressure.resize(n_points);
-      entropy_derivative_temperature.resize(n_points);
-      reaction_terms.resize(n_points);
-      for (unsigned int q=0; q<n_points; ++q)
-        reaction_terms[q].resize(n_comp);
+      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >());
+      cell = 0;
     }
 
 
 
     template <int dim>
-    double
-    InterfaceCompatibility<dim>::
-    thermal_expansion_coefficient (const double temperature,
-                                   const double pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const
+    MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
+                                                    const unsigned int n_comp)
     {
-      return (-1./density(temperature, pressure, compositional_fields, position)
-              *
-              this->density_derivative(temperature, pressure, compositional_fields, position, NonlinearDependence::temperature));
+      viscosities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      densities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_expansion_coefficients.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      specific_heat.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      thermal_conductivities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      compressibilities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      entropy_derivative_temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      reaction_terms.resize(n_points);
+      for (unsigned int q=0; q<n_points; ++q)
+        reaction_terms[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
     }
 
 
@@ -385,8 +313,8 @@ namespace aspect
 
     template <int dim>
     void
-    InterfaceCompatibility<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                          typename Interface<dim>::MaterialModelOutputs &out) const
+    InterfaceCompatibility<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                          MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
@@ -439,23 +367,22 @@ namespace aspect
         return none;
       }
 
-
       namespace
       {
         // Do the requested averaging operation for one array. The
         // projection matrix argument is only used if the operation
         // chosen is project_to_Q1
         void average (const AveragingOperation  operation,
-                      const FullMatrix<double> &projection_matrix,
-                      const FullMatrix<double> &expansion_matrix,
-                      std::vector<double>      &values)
+                      const FullMatrix<double>      &projection_matrix,
+                      const FullMatrix<double>      &expansion_matrix,
+                      std::vector<double>           &values_out)
         {
           // if an output field has not been filled (because it was
           // not requested), then simply do nothing -- no harm no foul
-          if (values.size() == 0)
+          if (values_out.size() == 0)
             return;
 
-          const unsigned int N = values.size();
+          const unsigned int N = values_out.size();
           const unsigned int P = expansion_matrix.n();
           Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
                   ExcInternalError());
@@ -481,23 +408,32 @@ namespace aspect
               {
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
-                  sum += values[i];
+                  sum += values_out[i];
 
                 const double average = sum/N;
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
               case harmonic_average:
               {
+                // if one of the values is zero, the average is 0.0
+                for (unsigned int i=0; i<N; ++i)
+                  if (values_out[i] == 0.0)
+                    {
+                      for (unsigned int j=0; j<N; ++j)
+                        values_out[j] = 0.0;
+                      return;
+                    }
+
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
-                  sum += 1./values[i];
+                  sum += 1./values_out[i];
 
                 const double average = 1./(sum/N);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
@@ -506,16 +442,16 @@ namespace aspect
                 double prod = 1;
                 for (unsigned int i=0; i<N; ++i)
                   {
-                    Assert (values[i] >= 0,
+                    Assert (values_out[i] >= 0,
                             ExcMessage ("Computing the geometric average "
                                         "only makes sense for non-negative "
                                         "quantities."));
-                    prod *= values[i];
+                    prod *= values_out[i];
                   }
 
                 const double average = std::pow (prod, 1./N);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = average;
+                  values_out[i] = average;
                 break;
               }
 
@@ -523,10 +459,10 @@ namespace aspect
               {
                 double max = -std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values[i]);
+                  max = std::max(max, values_out[i]);
 
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = max;
+                  values_out[i] = max;
                 break;
               }
 
@@ -536,11 +472,11 @@ namespace aspect
                 // after the projection operation
                 double min = std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  min = std::min(min, values[i]);
+                  min = std::min(min, values_out[i]);
 
                 double max = -std::numeric_limits<double>::max();
                 for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values[i]);
+                  max = std::max(max, values_out[i]);
 
                 // take the projection matrix and apply it to the
                 // values. as explained in the documentation of the
@@ -548,7 +484,7 @@ namespace aspect
                 // we want in the current context
                 Vector<double> x (N), z(P), y(N);
                 for (unsigned int i=0; i<N; ++i)
-                  y(i) = values[i];
+                  y(i) = values_out[i];
                 projection_matrix.vmult (z, y);
 
                 // now that we have the Q1 values, restrict them to
@@ -561,7 +497,7 @@ namespace aspect
                 // then expand back to the quadrature points
                 expansion_matrix.vmult (x, z);
                 for (unsigned int i=0; i<N; ++i)
-                  values[i] = x(i);
+                  values_out[i] = x(i);
 
                 break;
               }
@@ -658,13 +594,12 @@ namespace aspect
       }
 
 
-
       template <int dim>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>   &quadrature_formula,
-                    const Mapping<dim>      &mapping,
-                    MaterialModelOutputs    &values)
+                    const Quadrature<dim>         &quadrature_formula,
+                    const Mapping<dim>            &mapping,
+                    MaterialModelOutputs<dim>          &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
@@ -680,20 +615,19 @@ namespace aspect
                                        expansion_matrix);
           }
 
+        average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.viscosities);
+                 values_out.densities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.densities);
+                 values_out.thermal_expansion_coefficients);
         average (operation, projection_matrix, expansion_matrix,
-                 values.thermal_expansion_coefficients);
+                 values_out.specific_heat);
         average (operation, projection_matrix, expansion_matrix,
-                 values.specific_heat);
+                 values_out.compressibilities);
         average (operation, projection_matrix, expansion_matrix,
-                 values.compressibilities);
+                 values_out.entropy_derivative_pressure);
         average (operation, projection_matrix, expansion_matrix,
-                 values.entropy_derivative_pressure);
-        average (operation, projection_matrix, expansion_matrix,
-                 values.entropy_derivative_temperature);
+                 values_out.entropy_derivative_temperature);
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should
@@ -735,9 +669,17 @@ namespace aspect
                                 void ( *) (ParameterHandler &), \
                                 Interface<dim> *( *) ()); \
   \
+  template \
+  std::string \
+  get_valid_model_names_pattern<dim> (); \
+  \
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
+  \
+  template \
+  Interface<dim> * \
+  create_material_model<dim> (const std::string &model_name); \
   \
   template \
   Interface<dim> * \
@@ -745,14 +687,16 @@ namespace aspect
   \
   template struct MaterialModelInputs<dim>; \
   \
+  template struct MaterialModelOutputs<dim>; \
+  \
   namespace MaterialAveraging \
   { \
     template                \
     void average (const AveragingOperation operation, \
                   const DoFHandler<dim>::active_cell_iterator &cell, \
-                  const Quadrature<dim>   &quadrature_formula, \
-                  const Mapping<dim>      &mapping, \
-                  MaterialModelOutputs    &values); \
+                  const Quadrature<dim>     &quadrature_formula, \
+                  const Mapping<dim>        &mapping, \
+                  MaterialModelOutputs<dim>      &values_out); \
   }
 
 

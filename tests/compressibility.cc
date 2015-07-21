@@ -11,19 +11,9 @@ namespace aspect
     class Compressibility : public MaterialModel::Simple<dim>
     {
       public:
-        /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double density (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const Point<dim>             &position) const;
 
-        virtual double compressibility (const double                  temperature,
-                                        const double                  pressure,
-                                        const std::vector<double>    &compositional_fields,
-                                        const Point<dim>             &position) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
 
       /**
         * Return true if the compressibility() function returns something that
@@ -42,26 +32,18 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     Compressibility<dim>::
-    density (const double temperature,
-             const double pressure,
-             const std::vector<double> &composition,
-             const Point<dim> &position) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      return 1.0 + pressure;
-    }
-
-    template <int dim>
-    double
-    Compressibility<dim>::
-    compressibility (const double ,
-                     const double pressure,
-                     const std::vector<double> &,
-                     const Point<dim> &) const
-    {
-      // compressibility = 1/rho drho/dp
-      return 1.0 / (1. + pressure);
+      Simple<dim>::evaluate(in, out);
+      for (unsigned int i=0; i < in.position.size(); ++i)
+        {
+          const double pressure = in.pressure[i];
+          out.densities[i] = 1.0 + pressure;
+          out.compressibilities[i] = 1.0 / (1. + pressure);
+        }
     }
 
     template <int dim>
@@ -140,8 +122,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
       // compute the integral of the viscosity. since we're on a unit box,
       // this also is the average value

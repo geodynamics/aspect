@@ -34,8 +34,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a prescribed temperature field
-     * determined from a AsciiData input file.
+     * A class that implements a prescribed temperature field determined from
+     * a AsciiData input file.
      *
      * @ingroup InitialConditionsModels
      */

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,6 +31,7 @@
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 
 #include <fstream>
 
@@ -251,9 +252,9 @@ namespace aspect
                            default_filename,
                            Patterns::Anything (),
                            "The file name of the material data. Provide file in format: "
-                           "(Velocity file name).\\%s%d where \\\\%s is a string specifying "
+                           "(Velocity file name).\\%s\\%d where \\%s is a string specifying "
                            "the boundary of the model according to the names of the boundary "
-                           "indicators (of a box or a spherical shell).%d is any sprintf integer "
+                           "indicators (of a box or a spherical shell).\\%d is any sprintf integer "
                            "qualifier, specifying the format of the current file number. ");
         prm.declare_entry ("Scale factor", "1",
                            Patterns::Double (0),
@@ -315,9 +316,10 @@ namespace aspect
                                        const unsigned int components)
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell or box geometry."));
+                               "a spherical shell, chunk or box geometry."));
 
 
       for (typename std::set<types::boundary_id>::const_iterator
@@ -682,9 +684,10 @@ namespace aspect
     AsciiDataInitial<dim>::initialize (const unsigned int components)
     {
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+                   || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0
                    || (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model())) != 0,
                    ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell or box geometry."));
+                               "a spherical shell, chunk or box geometry."));
 
       lookup.reset(new Utilities::AsciiDataLookup<dim> (components,
                                                         Utilities::AsciiDataBase<dim>::scale_factor));
@@ -714,7 +717,8 @@ namespace aspect
     {
       Point<dim> internal_position = position;
 
-      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+      if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
+          || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
             ::aspect::Utilities::spherical_coordinates(position);

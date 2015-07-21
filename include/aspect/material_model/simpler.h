@@ -23,7 +23,6 @@
 #define __aspect__model_simpler_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -67,8 +66,8 @@ namespace aspect
 
         virtual double reference_density () const;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
 
         /**

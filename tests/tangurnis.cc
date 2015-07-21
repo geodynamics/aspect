@@ -355,7 +355,8 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      return Di/gamma / density(temperature, pressure, compositional_fields, pos);
+      double d = density(temperature, pressure, compositional_fields, pos);
+      return (d==0) ? 1.0 : (Di/gamma / d);
     }
 
 

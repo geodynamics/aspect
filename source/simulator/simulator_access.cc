@@ -23,6 +23,16 @@
 
 namespace aspect
 {
+  template <int dim>
+  SimulatorAccess<dim>::SimulatorAccess ()
+  {}
+
+
+  template <int dim>
+  SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
+    :
+    simulator (&simulator_object)
+  {}
 
 
   template <int dim>
@@ -147,14 +157,16 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
-    return simulator->parameters.include_adiabatic_heating;
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    return (std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end());
   }
 
   template <int dim>
   bool
   SimulatorAccess<dim>::include_latent_heat () const
   {
-    return simulator->parameters.include_latent_heat;
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
   }
 
   template <int dim>
@@ -216,6 +228,14 @@ namespace aspect
     return simulator->solution;
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_mesh_velocity () const
+  {
+    Assert( simulator->parameters.free_surface_enabled,
+            ExcMessage("You cannot get the mesh velocity with no free surface."));
+    return simulator->free_surface->mesh_velocity;
+  }
 
 
   template <int dim>
@@ -304,15 +324,27 @@ namespace aspect
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
   {
+    Assert (simulator->material_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
   }
 
 
 
   template <int dim>
+  bool
+  SimulatorAccess<dim>::has_boundary_temperature () const
+  {
+    return (simulator->boundary_temperature.get() != 0);
+  }
+
+
+  template <int dim>
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
+    Assert (simulator->boundary_temperature.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_temperature.get();
   }
 
@@ -334,6 +366,14 @@ namespace aspect
 
 
   template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_free_surface_boundary_indicators () const
+  {
+    return simulator->parameters.free_surface_boundary_indicators;
+  }
+
+
+  template <int dim>
   const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
   SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
   {
@@ -345,6 +385,8 @@ namespace aspect
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
+    Assert (simulator->geometry_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->geometry_model.get();
   }
 
@@ -352,6 +394,8 @@ namespace aspect
   const GravityModel::Interface<dim> &
   SimulatorAccess<dim>::get_gravity_model () const
   {
+    Assert (simulator->gravity_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->gravity_model.get();
   }
 
@@ -360,6 +404,8 @@ namespace aspect
   const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
+    Assert (simulator->adiabatic_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->adiabatic_conditions.get();
   }
 
@@ -368,6 +414,8 @@ namespace aspect
   const InitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_initial_conditions () const
   {
+    Assert (simulator->initial_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_conditions.get();
   }
 
@@ -376,14 +424,16 @@ namespace aspect
   const CompositionalInitialConditions::Interface<dim> &
   SimulatorAccess<dim>::get_compositional_initial_conditions () const
   {
+    Assert (simulator->compositional_initial_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->compositional_initial_conditions.get();
   }
 
   template <int dim>
-  const HeatingModel::Interface<dim> &
-  SimulatorAccess<dim>::get_heating_model () const
+  const HeatingModel::Manager<dim> &
+  SimulatorAccess<dim>::get_heating_model_manager () const
   {
-    return *simulator->heating_model.get();
+    return simulator->heating_model_manager;
   }
 
   template <int dim>
@@ -394,6 +444,14 @@ namespace aspect
   {
     for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
       composition_values_at_q_point[k] = composition_values[k][q];
+  }
+
+
+  template <int dim>
+  TableHandler &
+  SimulatorAccess<dim>::get_statistics_object () const
+  {
+    return const_cast<TableHandler &>(simulator->statistics);
   }
 
 }

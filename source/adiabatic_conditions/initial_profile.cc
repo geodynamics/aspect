@@ -66,18 +66,29 @@ namespace aspect
           z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
 
           const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
+          const double delta_z = 1.0/double(n_points-1)*this->get_geometry_model().maximal_depth();
+          Tensor <1,dim> g = this->get_gravity_model().gravity_vector(representative_point);
 
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
+          MaterialModel::MaterialModelInputs<dim> in(1, n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(1, n_compositional_fields);
           in.position[0] = representative_point;
           in.temperature[0] = temperatures[i-1];
           in.pressure[0] = pressures[i-1];
+          in.velocity[0] = Tensor <1,dim> ();
+
+          // we approximate the pressure gradient by extrapolating the values
+          // from the two points above
+          if (i>1)
+            in.pressure_gradient[0] = g/(g.norm() != 0.0 ? g.norm() : 1.0)
+                                      * (pressures[i-1] - pressures[i-2]) / delta_z;
+          else
+            in.pressure_gradient[0] = Tensor <1,dim> ();
 
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
 
           in.strain_rate.resize(0); // we do not need the viscosity
-          in.cell = this->get_dof_handler().end(); // and do not know the cell index
+          in.cell = NULL; // and do not know the cell index
 
           this->get_material_model().evaluate(in, out);
 
@@ -87,13 +98,15 @@ namespace aspect
           // approximation here.
           const double density = out.densities[0];
           const double alpha = out.thermal_expansion_coefficients[0];
-          const double cp = out.specific_heat[0];
+          // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
+          // 1/cp = 0.0 we will have a constant temperature profile with depth.
+          const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
 
           pressures[i] = pressures[i-1]
                          + density * gravity * delta_z;
           temperatures[i] = temperatures[i-1] * (1 +
-                                                 alpha * gravity * delta_z / cp);
+                                                 alpha * gravity * delta_z * one_over_cp);
         }
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=

@@ -121,7 +121,6 @@ namespace aspect
                                                           std_cxx11::ref(prm),
                                                           std_cxx11::cref(*geometry_model))),
     material_model (MaterialModel::create_material_model<dim>(prm)),
-    heating_model (HeatingModel::create_heating_model<dim>(prm)),
     gravity_model (GravityModel::create_gravity_model<dim>(prm)),
     // create a boundary temperature model, but only if we actually need
     // it. otherwise, allow the user to simply specify nothing at all
@@ -138,6 +137,7 @@ namespace aspect
                           :
                           BoundaryComposition::create_boundary_composition<dim>(prm)),
     initial_conditions (InitialConditions::create_initial_conditions<dim>(prm)),
+    prescribed_stokes_solution (PrescribedStokesSolution::create_prescribed_stokes_solution<dim>(prm)),
     compositional_initial_conditions (CompositionalInitialConditions::create_initial_conditions<dim>(prm)),
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 
@@ -193,18 +193,75 @@ namespace aspect
     // first do some error checking for the parameters we got
     {
       // make sure velocity boundary indicators don't appear in multiple lists
-      std::set<types::boundary_id> boundary_indicator_lists[4]
+      std::set<types::boundary_id> boundary_indicator_lists[6]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
             parameters.free_surface_boundary_indicators,
-            std::set<types::boundary_id>()
+            std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
           };
 
+      std::set<types::boundary_id> velocity_bi;
+      std::set<types::boundary_id> traction_bi;
+
+      // copy the used boundary indicators of prescribed velocity and prescribed traction
+      // into a set while checking whether selectors of the same boundary indicator
+      // are duplicate
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
-        boundary_indicator_lists[3].insert (p->first);
+        {
+          for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
+               r = parameters.prescribed_traction_boundary_indicators.begin();
+               r != parameters.prescribed_traction_boundary_indicators.end();
+               ++r)
+            {
+              if (p->first != r->first)
+                {
+                  velocity_bi.insert(p->first);
+                  traction_bi.insert(r->first);
+                }
+              else
+                {
+                  std::set<char> velocity_selector;
+                  std::set<char> traction_selector;
+
+                  for (std::string::const_iterator it=p->second.first.begin(); it!=p->second.first.end(); ++it)
+                    {
+                      velocity_selector.insert(*it);
+                    }
+
+                  for (std::string::const_iterator it=r->second.first.begin(); it!=r->second.first.end(); ++it)
+                    {
+                      traction_selector.insert(*it);
+                    }
+
+                  std::set<char> intersection;
+                  std::set_intersection (velocity_selector.begin(),
+                                         velocity_selector.end(),
+                                         traction_selector.begin(),
+                                         traction_selector.end(),
+                                         std::inserter(intersection, intersection.end()));
+
+                  AssertThrow(intersection.empty(), ExcMessage ("Prescribed velocity/traction boundary indicator and selector occur more than once."));
+
+                  velocity_bi.insert(p->first);
+                  traction_bi.insert(r->first);
+                }
+            }
+        }
+
+      // remove boundary indicators that have different selectors
+      // but occur in both the velocity and the traction set
+      std::set<types::boundary_id> union_set;
+      std::set_union (velocity_bi.begin(),
+                      velocity_bi.end(),
+                      traction_bi.begin(),
+                      traction_bi.end(),
+                      std::inserter(union_set, union_set.end()));
+      // Assign the prescribed boundary indicator list to the boundary_indicator_lists
+      boundary_indicator_lists[3] = union_set;
+
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
@@ -217,6 +274,7 @@ namespace aspect
                                    boundary_indicator_lists[j].begin(),
                                    boundary_indicator_lists[j].end(),
                                    std::inserter(intersection, intersection.end()));
+
             AssertThrow (intersection.empty(),
                          ExcMessage ("Boundary indicator <"
                                      +
@@ -227,21 +285,32 @@ namespace aspect
                                      geometry_model->translate_id_to_symbol_name (*intersection.begin())
                                      +
                                      "> is listed as having more "
-                                     "than one type of velocity boundary condition in the input file."));
+                                     "than one type of velocity or traction boundary condition in the input file."));
           }
 
-      // next make sure that all listed indicators are actually used by
-      // this geometry
       const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
-      for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-        for (typename std::set<types::boundary_id>::const_iterator
-             p = boundary_indicator_lists[i].begin();
-             p != boundary_indicator_lists[i].end(); ++p)
-          AssertThrow (all_boundary_indicators.find (*p)
-                       != all_boundary_indicators.end(),
-                       ExcMessage ("One of the boundary indicators listed in the input file "
-                                   "is not used by the geometry model."));
+      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
+        {
+          // next make sure that all listed indicators are actually used by
+          // this geometry
+          for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
+            for (typename std::set<types::boundary_id>::const_iterator
+                 p = boundary_indicator_lists[i].begin();
+                 p != boundary_indicator_lists[i].end(); ++p)
+              AssertThrow (all_boundary_indicators.find (*p)
+                           != all_boundary_indicators.end(),
+                           ExcMessage ("One of the boundary indicators listed in the input file "
+                                       "is not used by the geometry model."));
+        }
+      else
+        {
+          // next make sure that there are no listed indicators
+          for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
+            AssertThrow (boundary_indicator_lists[i].empty(),
+                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
+        }
+
 
       // now do the same for the fixed temperature indicators and the
       // compositional indicators
@@ -278,10 +347,8 @@ namespace aspect
     material_model->parse_parameters (prm);
     material_model->initialize ();
 
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(heating_model.get()))
-      sim->initialize (*this);
-    heating_model->parse_parameters (prm);
-    heating_model->initialize ();
+    heating_model_manager.initialize (*this);
+    heating_model_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
       sim->initialize (*this);
@@ -317,6 +384,32 @@ namespace aspect
         compositional_initial_conditions->initialize ();
       }
 
+    // Make sure we only have a prescribed Stokes plugin if needed
+    if (parameters.nonlinear_solver==NonlinearSolver::Advection_only)
+      {
+        AssertThrow(prescribed_stokes_solution.get()!=NULL,
+                    ExcMessage("For 'Advection only' solver you need to provide a Stokes plugin")
+                   );
+      }
+    else
+      {
+        AssertThrow(prescribed_stokes_solution.get()==NULL,
+                    ExcMessage("The prescribed stokes plugin you selected only works with solver type 'Advection only' ")
+                   );
+      }
+
+
+
+
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
+      sim->initialize (*this);
+    if (prescribed_stokes_solution.get())
+      {
+        prescribed_stokes_solution->parse_parameters (prm);
+        prescribed_stokes_solution->initialize ();
+      }
+
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
       sim->initialize (*this);
     adiabatic_conditions->parse_parameters (prm);
@@ -339,8 +432,9 @@ namespace aspect
       {
         //It should be possible to make the free surface work with any of a number of nonlinear
         //schemes, but I do not see a way to do it in generality --IR
-        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES,
-                     ExcMessage("The free surface scheme is only implemented for the IMPES solver") );
+        AssertThrow( parameters.nonlinear_solver == NonlinearSolver::IMPES ||
+                     parameters.nonlinear_solver == NonlinearSolver::iterated_Stokes,
+                     ExcMessage("The free surface scheme is only implemented for the IMPES or Iterated Stokes solver") );
         //Pressure normalization doesn't really make sense with a free surface, and if we do
         //use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no",
@@ -373,6 +467,21 @@ namespace aspect
           dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
+      }
+
+    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
+         p = parameters.prescribed_traction_boundary_indicators.begin();
+         p != parameters.prescribed_traction_boundary_indicators.end();
+         ++p)
+      {
+        TractionBoundaryConditions::Interface<dim> *bv
+          = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
+            (p->second.second);
+        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
+          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        bv->parse_parameters (prm);
+        bv->initialize ();
+        traction_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver
@@ -431,6 +540,11 @@ namespace aspect
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
+
+    // the very last action is to let user-provided plugins let their slots
+    // connect to the signals we provide
+    internals::SimulatorSignals::call_connector_functions (signals);
+
     computing_timer.exit_section();
   }
 
@@ -466,7 +580,7 @@ namespace aspect
          * interface.
          *
          * @param n_components total number of components of the finite element system.
-         * @param function_object The scalar function that will form one component
+         * @param function_object The function that will form one component
          *     of the resulting Function object.
          */
         VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
@@ -610,8 +724,17 @@ namespace aspect
     // Temperature BC are currently updated in compute_current_constraints
     material_model->update();
     gravity_model->update();
-    heating_model->update();
+    heating_model_manager.update();
     adiabatic_conditions->update();
+
+    // do the same for the traction boundary conditions and other things
+    // that end up in the bilinear form. we update those that end up in
+    // the constraints object when calling compute_current_constraints()
+    // above
+    for (typename std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > >::iterator
+         p = traction_boundary_conditions.begin();
+         p != traction_boundary_conditions.end(); ++p)
+      p->second->update ();
   }
 
 
@@ -740,6 +863,12 @@ namespace aspect
                                                       introspection.component_masks.compositional_fields[c]);
           }
     }
+
+
+    // let plugins add more constraints if they so choose, then close the
+    // constraints object
+    signals.post_constraints_creation(*this, current_constraints);
+
     current_constraints.close();
   }
 
@@ -952,6 +1081,7 @@ namespace aspect
     //reinit the constraints matrix and make hanging node constraints
     constraints.clear();
     constraints.reinit(introspection.index_sets.system_relevant_set);
+
     DoFTools::make_hanging_node_constraints (dof_handler,
                                              constraints);
 
@@ -974,7 +1104,7 @@ namespace aspect
                   == parameters.prescribed_velocity_boundary_indicators.end() &&
                   parameters.prescribed_velocity_boundary_indicators.find( (*p).first.second)
                   == parameters.prescribed_velocity_boundary_indicators.end(),
-                  ExcInternalError());
+                  ExcMessage("Periodic boundaries must not have boundary conditions set."));
 
           DoFTools::make_periodicity_constraints(dof_handler,
                                                  (*p).first.first,  //first boundary id
@@ -985,6 +1115,10 @@ namespace aspect
 
 
     }
+
+    // This needs to happen after the periodic constraints are added:
+    setup_nullspace_constraints(constraints);
+
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
@@ -1330,13 +1464,11 @@ namespace aspect
       freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
-    global_volume = GridTools::volume (triangulation, mapping);
     computing_timer.exit_section();
 
     setup_dofs ();
 
     computing_timer.enter_section ("Refine mesh structure, part 2");
-
     {
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
@@ -1381,28 +1513,122 @@ namespace aspect
           constraints.distribute (distributed_mesh_velocity);
           free_surface->mesh_velocity = distributed_mesh_velocity;
         }
+
+      // do the same as above also for the free surface solution
+      if (parameters.free_surface_enabled)
+        {
+          LinearAlgebra::Vector distributed_mesh_vertices;
+          distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
+                                           mpi_communicator);
+
+          std::vector<LinearAlgebra::Vector *> system_tmp (1);
+          system_tmp[0] = &distributed_mesh_vertices;
+
+          freesurface_trans->interpolate (system_tmp);
+          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
+          free_surface->mesh_vertices = distributed_mesh_vertices;
+
+          //make sure the mesh is consistent with mesh_vertices
+          free_surface->displace_mesh ();
+        }
     }
+    computing_timer.exit_section();
 
-    // do the same as above also for the free surface solution
-    if (parameters.free_surface_enabled)
+    //calculate global volume after displacing mesh (if we have, in fact, displaced it)
+    global_volume = GridTools::volume (triangulation, mapping);
+  }
+
+  /**
+   * Converts a function with a certain number of components into a Function@dim@
+   * with optionally having additional zero components.
+   **/
+  template <int dim>
+  class VectorFunctionFromVectorFunctionObject : public Function<dim>
+  {
+    public:
+      /**
+       * Converts a function with @p n_object_components components into a Function@dim@
+       * while optionally providing additional components that are set to zero.
+       *
+       * @param function_object The function that will form the components
+       *     of the resulting Function object.
+       * @param first_component The first component that should be
+       *     filled.
+       * @param n_object_components The number of components that should be
+       *     filled from the first.
+       * @param n_total_components The total number of vector components of the
+       *     resulting Function object.
+       **/
+
+      VectorFunctionFromVectorFunctionObject (const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> &function_object,
+                                              const unsigned int first_component,
+                                              const unsigned int n_object_components,
+                                              const unsigned int n_total_components)
+        :
+        Function<dim>(n_total_components),
+        function_object (function_object),
+        first_component (first_component),
+        n_object_components (n_object_components)
       {
-        LinearAlgebra::Vector distributed_mesh_vertices;
-        distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
-                                         mpi_communicator);
-
-        std::vector<LinearAlgebra::Vector *> system_tmp (1);
-        system_tmp[0] = &distributed_mesh_vertices;
-
-        freesurface_trans->interpolate (system_tmp);
-        free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
-        free_surface->mesh_vertices = distributed_mesh_vertices;
+        Assert ((n_object_components > 0
+                 &&
+                 first_component+n_object_components <= n_total_components),
+                ExcMessage ("Number of objects components needs to be less than number of total components"));
       }
 
-    if (parameters.free_surface_enabled)
-      free_surface->displace_mesh ();
+      double
+      value (const Point<dim> &p,
+             const unsigned int component) const
+      {
+        Assert (component < this->n_components,
+                ExcIndexRange (component, 0, this->n_components));
 
-    computing_timer.exit_section();
-  }
+        if (component < first_component)
+          return 0;
+        else if (component >= first_component + n_object_components)
+          return 0;
+        else
+          {
+            Vector<double> temp(n_object_components);
+            function_object (p, temp);
+            return temp(component - first_component);
+          }
+      }
+
+      void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>     &values) const
+      {
+        AssertDimension(values.size(), this->n_components);
+
+        // set everything to zero, and then the right components to their correct values
+        values = 0;
+        Vector<double> temp(n_object_components);
+        function_object (p, temp);
+        for (unsigned int i = 0; i < n_object_components; i++)
+          {
+            values(first_component + i) = temp(i);
+          }
+      }
+
+    private:
+      /**
+       * The function object which we call when this class's solution() function is called.
+       **/
+      const std_cxx1x::function<void (const Point<dim> &,Vector<double> &)> function_object;
+
+      /**
+       * The first vector component whose value is to be filled by the given
+       * function.
+       */
+      const unsigned int first_component;
+      /**
+       * The number of vector components whose values are to be filled by the given
+       * function.
+       */
+      const unsigned int n_object_components;
+
+  };
 
 
   template <int dim>
@@ -1526,13 +1752,11 @@ namespace aspect
           do
             {
               assemble_advection_system(AdvectionField::temperature());
+              build_advection_preconditioner(AdvectionField::temperature(),
+                                             T_preconditioner);
 
               if (iteration == 0)
-                {
-                  build_advection_preconditioner(AdvectionField::temperature(),
-                                                 T_preconditioner);
-                  initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
-                }
+                initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
 
@@ -1547,6 +1771,7 @@ namespace aspect
                   assemble_advection_system (AdvectionField::composition(c));
                   build_advection_preconditioner(AdvectionField::composition(c),
                                                  C_preconditioner);
+
                   if (iteration == 0)
                     initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
@@ -1569,11 +1794,10 @@ namespace aspect
                 rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
               assemble_stokes_system();
+              build_stokes_preconditioner();
+
               if (iteration == 0)
-                {
-                  build_stokes_preconditioner();
-                  initial_stokes_residual = compute_initial_stokes_residual();
-                }
+                initial_stokes_residual = compute_initial_stokes_residual();
 
               const double stokes_residual = solve_stokes();
 
@@ -1588,8 +1812,8 @@ namespace aspect
 
               pcout << ", " << stokes_residual;
 
-              pcout << std::endl
-                    << std::endl;
+              pcout << std::endl;
+
 
               double max = 0.0;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -1599,7 +1823,9 @@ namespace aspect
                 max = std::max(stokes_residual/initial_stokes_residual, max);
               if (initial_temperature_residual>0)
                 max = std::max(temperature_residual/initial_temperature_residual, max);
-              pcout << "      residual: " << max << std::endl;
+              pcout << "      Total relative nonlinear residual: " << max << std::endl;
+              pcout << std::endl
+                    << std::endl;
               if (max < parameters.nonlinear_tolerance)
                 break;
 
@@ -1613,6 +1839,9 @@ namespace aspect
 
         case NonlinearSolver::iterated_Stokes:
         {
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
           // solve the temperature system once...
           assemble_advection_system (AdvectionField::temperature());
           build_advection_preconditioner (AdvectionField::temperature (),
@@ -1650,17 +1879,16 @@ namespace aspect
 
               assemble_stokes_system();
               build_stokes_preconditioner();
-              const double stokes_residual = solve_stokes();
 
               if (i==0)
-                initial_stokes_residual = stokes_residual;
-              else
+                initial_stokes_residual = compute_initial_stokes_residual();
+
+              const double stokes_residual = solve_stokes();
+
+              pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
+              if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
                 {
-                  pcout << "   Residual after nonlinear iteration " << i+1 << ": " << stokes_residual/initial_stokes_residual << std::endl;
-                  if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
-                    {
-                      break; // convergence reached, exist nonlinear iteration.
-                    }
+                  break; // convergence reached, exit nonlinear iterations.
                 }
 
               current_linearization_point.block(introspection.block_indices.velocities)
@@ -1670,6 +1898,55 @@ namespace aspect
                   = solution.block(introspection.block_indices.pressure);
 
               pcout << std::endl;
+            }
+
+          break;
+        }
+
+        case NonlinearSolver::Advection_only:
+        {
+          // Identical to IMPES except does not solve Stokes equation
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+
+          LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+
+          VectorFunctionFromVectorFunctionObject<dim> func(std_cxx1x::bind (&PrescribedStokesSolution::Interface<dim>::stokes_solution,
+                                                                            std_cxx1x::cref(*prescribed_stokes_solution),
+                                                                            std_cxx1x::_1,
+                                                                            std_cxx1x::_2),
+                                                           0,
+                                                           dim+1, //velocity and pressure
+                                                           introspection.n_components);
+
+          VectorTools::interpolate (mapping, dof_handler, func, distributed_stokes_solution);
+
+          const unsigned int block_vel = introspection.block_indices.velocities;
+          const unsigned int block_p = introspection.block_indices.pressure;
+
+          // distribute hanging node and
+          // other constraints
+          current_constraints.distribute (distributed_stokes_solution);
+
+          solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
+          solution.block(block_p) = distributed_stokes_solution.block(block_p);
+
+          assemble_advection_system (AdvectionField::temperature());
+          build_advection_preconditioner(AdvectionField::temperature(),
+                                         T_preconditioner);
+          solve_advection(AdvectionField::temperature());
+
+          current_linearization_point.block(introspection.block_indices.temperature)
+            = solution.block(introspection.block_indices.temperature);
+
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            {
+              assemble_advection_system (AdvectionField::composition(c));
+              build_advection_preconditioner(AdvectionField::composition(c),
+                                             C_preconditioner);
+              solve_advection(AdvectionField::composition(c));
+              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
 
           break;
@@ -1798,6 +2075,12 @@ namespace aspect
             ++pre_refinement_step;
             goto start_time_iteration;
           }
+
+        // as soon as the mesh starts deforming with a free surface, a manifold
+        // description and boundary shape are no longer guaranteed to be any good.
+        // Here we detach those manifolds and boundaries.
+        if ( timestep_number == 0 && parameters.free_surface_enabled == true )
+          free_surface->detach_manifolds();
 
         postprocess ();
 

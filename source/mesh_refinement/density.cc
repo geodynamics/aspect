@@ -57,17 +57,17 @@ namespace aspect
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
-                               update_quadrature_points | update_values);
+                               update_quadrature_points | update_values | update_gradients);
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (quadrature.size()));
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(quadrature.size(),
-                                                                     this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(quadrature.size(),
-                                                                       this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
+                                                   this->n_compositional_fields());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
@@ -81,6 +81,11 @@ namespace aspect
                                                                                       in.pressure);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          in.temperature);
+            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                        in.velocity);
+            fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                         in.pressure_gradient);
+
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);
@@ -92,7 +97,7 @@ namespace aspect
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   in.composition[i][c] = prelim_composition_values[c][i];
               }
-            in.cell = cell;
+            in.cell = &cell;
 
             this->get_material_model().evaluate(in, out);
 

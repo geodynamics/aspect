@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -92,9 +92,9 @@ namespace aspect
                                                      "contain the number of grid points in each dimension as"
                                                      "for example '# POINTS: 3 3'."
                                                      "The order of the data columns "
-                                                     "has to be 'x', 'y', 'composition_1', 'composition_2', "
-                                                     "etc. in a 2d model and 'x', 'y', 'z', 'composition_1', "
-                                                     "'composition_2', etc. in a 3d model, according "
+                                                     "has to be 'x', 'y', 'composition1', 'composition2', "
+                                                     "etc. in a 2d model and 'x', 'y', 'z', 'composition1', "
+                                                     "'composition2', etc. in a 3d model, according "
                                                      "to the number of compositional fields, which means that "
                                                      "there has to be a single column "
                                                      "for every composition in the model."

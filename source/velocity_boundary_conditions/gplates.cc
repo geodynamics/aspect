@@ -31,7 +31,6 @@
 #include <cmath>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/lexical_cast.hpp>
 
 
 namespace aspect

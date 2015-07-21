@@ -67,7 +67,7 @@ end
 subsection Initial conditions
   set Model name = function
   subsection Function
-    set Function expression = 1000.0
+    set Function expression = 1.0e3
     set Variable names      = x,y
   end
 end
