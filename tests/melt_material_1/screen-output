@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.3.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libmelt_material_1.so>
 
@@ -34,171 +27,157 @@ Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
 *** Timestep 2:  t=2.02246e-09 years
    Solving temperature system... 15 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 17 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00002
-     Compositions min/max/mass: -0.01758/0.3181/3.749e+10 // -0.01143/0.3146/3.008e+10
+     Compositions min/max/mass: -0.01758/0.3181/3.749e+10 // -0.01237/0.3146/3.008e+10
 
-*** Timestep 3:  t=3.00962e-09 years
+*** Timestep 3:  t=3.00961e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
-   Solving porosity system ... 12 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00003
-     Compositions min/max/mass: -0.009621/0.3166/3.749e+10 // -0.003751/0.313/3.008e+10
+     Compositions min/max/mass: -0.009621/0.3166/3.749e+10 // -0.004678/0.3141/3.008e+10
 
-*** Timestep 4:  t=3.9829e-09 years
+*** Timestep 4:  t=3.98283e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00004
-     Compositions min/max/mass: -0.007625/0.312/3.749e+10 // -0.005434/0.3109/3.008e+10
+     Compositions min/max/mass: -0.007625/0.312/3.749e+10 // -0.004558/0.3119/3.008e+10
 
-*** Timestep 5:  t=4.94461e-09 years
+*** Timestep 5:  t=4.94435e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00005
-     Compositions min/max/mass: -0.009113/0.3076/3.749e+10 // -0.005127/0.3104/3.008e+10
+     Compositions min/max/mass: -0.009113/0.3076/3.749e+10 // -0.008416/0.31/3.008e+10
 
-*** Timestep 6:  t=5.89604e-09 years
+*** Timestep 6:  t=5.8954e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 16 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00006
-     Compositions min/max/mass: -0.009551/0.3053/3.749e+10 // -0.007259/0.3093/3.008e+10
+     Compositions min/max/mass: -0.009553/0.3053/3.749e+10 // -0.01118/0.3168/3.008e+10
 
-*** Timestep 7:  t=6.83929e-09 years
+*** Timestep 7:  t=6.83799e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00007
-     Compositions min/max/mass: -0.008678/0.3034/3.749e+10 // -0.004788/0.3101/3.008e+10
+     Compositions min/max/mass: -0.008664/0.3034/3.749e+10 // -0.008327/0.3146/3.008e+10
 
-*** Timestep 8:  t=7.77531e-09 years
+*** Timestep 8:  t=7.77318e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00008
-     Compositions min/max/mass: -0.01076/0.3054/3.749e+10 // -0.006814/0.31/3.008e+10
+     Compositions min/max/mass: -0.01076/0.3054/3.749e+10 // -0.008526/0.3121/3.008e+10
 
-*** Timestep 9:  t=8.70632e-09 years
+*** Timestep 9:  t=8.70321e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00009
-     Compositions min/max/mass: -0.008363/0.3067/3.749e+10 // -0.006808/0.3094/3.008e+10
+     Compositions min/max/mass: -0.008348/0.3067/3.749e+10 // -0.0112/0.3164/3.008e+10
 
-*** Timestep 10:  t=9.63278e-09 years
+*** Timestep 10:  t=9.62851e-09 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00010
-     Compositions min/max/mass: -0.0109/0.307/3.749e+10 // -0.005834/0.3091/3.008e+10
+     Compositions min/max/mass: -0.01088/0.307/3.749e+10 // -0.008798/0.313/3.008e+10
 
-*** Timestep 11:  t=1.05564e-08 years
+*** Timestep 11:  t=1.0551e-08 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00011
-     Compositions min/max/mass: -0.01099/0.3047/3.749e+10 // -0.006462/0.3096/3.008e+10
+     Compositions min/max/mass: -0.01099/0.3047/3.749e+10 // -0.009583/0.3176/3.008e+10
 
-*** Timestep 12:  t=1.14785e-08 years
+*** Timestep 12:  t=1.14717e-08 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00012
-     Compositions min/max/mass: -0.008134/0.3057/3.749e+10 // -0.005665/0.3094/3.008e+10
+     Compositions min/max/mass: -0.008115/0.3057/3.749e+10 // -0.01102/0.3158/3.008e+10
 
-*** Timestep 13:  t=1.23996e-08 years
+*** Timestep 13:  t=1.23917e-08 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00013
-     Compositions min/max/mass: -0.01081/0.3072/3.749e+10 // -0.005807/0.3087/3.008e+10
+     Compositions min/max/mass: -0.01078/0.3072/3.749e+10 // -0.008768/0.3181/3.008e+10
 
-*** Timestep 14:  t=1.33212e-08 years
+*** Timestep 14:  t=1.33122e-08 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00014
-     Compositions min/max/mass: -0.01022/0.3059/3.749e+10 // -0.00556/0.3086/3.008e+10
+     Compositions min/max/mass: -0.01022/0.3059/3.749e+10 // -0.01019/0.3183/3.008e+10
 
-*** Timestep 15:  t=1.42443e-08 years
+*** Timestep 15:  t=1.42342e-08 years
    Solving temperature system... 14 iterations.
    Solving peridotite system ... 17 iterations.
-   Solving porosity system ... 11 iterations.
+   Solving porosity system ... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00015
-     Compositions min/max/mass: -0.007342/0.3036/3.749e+10 // -0.005275/0.3086/3.008e+10
+     Compositions min/max/mass: -0.007322/0.3036/3.749e+10 // -0.0109/0.318/3.008e+10
 
 *** Timestep 16:  t=1.45e-08 years
    Solving temperature system... 9 iterations.
    Solving peridotite system ... 11 iterations.
-   Solving porosity system ... 8 iterations.
+   Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:  output-melt_material_1/solution-00016
-     Compositions min/max/mass: -0.00783/0.3039/3.749e+10 // -0.00481/0.308/3.008e+10
+     Compositions min/max/mass: -0.007826/0.3039/3.749e+10 // -0.01013/0.3191/3.008e+10
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      33.4s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        17 |      18.7s |        56% |
-| Assemble composition system     |        34 |      3.54s |        11% |
-| Assemble temperature system     |        17 |      2.21s |       6.6% |
-| Build composition preconditioner|        34 |     0.196s |      0.59% |
-| Build temperature preconditioner|        17 |    0.0996s |       0.3% |
-| Solve Stokes system             |        17 |      3.69s |        11% |
-| Solve composition system        |        34 |      0.26s |      0.78% |
-| Solve temperature system        |        17 |     0.125s |      0.38% |
-| Initialization                  |         2 |     0.234s |       0.7% |
-| Postprocessing                  |        17 |      2.45s |       7.3% |
-| Setup dof systems               |         1 |     0.221s |      0.66% |
 +---------------------------------+-----------+------------+------------+
 

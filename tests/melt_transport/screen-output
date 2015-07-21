@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.3.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
@@ -20,7 +13,7 @@ Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
      Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0/0
 
 *** Timestep 1:  t=1.29422e+09 years
-   Solving temperature system... 375 iterations.
+   Solving temperature system... 374 iterations.
    Solving peridotite system ... 15 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
@@ -29,7 +22,7 @@ Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
      Writing graphical output:  output-melt_transport/solution-00001
      Compositions min/max/mass: -0.02531/0.3252/3.749e+10 // 0/0/0
 
-*** Timestep 2:  t=3.46679e+09 years
+*** Timestep 2:  t=3.4666e+09 years
    Solving temperature system... 330 iterations.
    Solving peridotite system ... 12 iterations.
    Solving porosity system ... 0 iterations.
@@ -39,7 +32,7 @@ Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
      Writing graphical output:  output-melt_transport/solution-00002
      Compositions min/max/mass: -0.02071/0.3189/3.749e+10 // 0/0/0
 
-*** Timestep 3:  t=6.38269e+09 years
+*** Timestep 3:  t=6.38209e+09 years
    Solving temperature system... 268 iterations.
    Solving peridotite system ... 11 iterations.
    Solving porosity system ... 0 iterations.
@@ -49,7 +42,7 @@ Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
      Writing graphical output:  output-melt_transport/solution-00003
      Compositions min/max/mass: -0.01785/0.3151/3.749e+10 // 0/0/0
 
-*** Timestep 4:  t=9.4113e+09 years
+*** Timestep 4:  t=9.41048e+09 years
    Solving temperature system... 357 iterations.
    Solving peridotite system ... 15 iterations.
    Solving porosity system ... 0 iterations.
@@ -73,20 +66,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      22.4s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      12.5s |        56% |
-| Assemble composition system     |        12 |      2.03s |       9.1% |
-| Assemble temperature system     |         6 |       1.3s |       5.8% |
-| Build composition preconditioner|        12 |     0.122s |      0.54% |
-| Build temperature preconditioner|         6 |    0.0616s |      0.28% |
-| Solve Stokes system             |         6 |      2.42s |        11% |
-| Solve composition system        |        12 |    0.0799s |      0.36% |
-| Solve temperature system        |         6 |      1.28s |       5.7% |
-| Initialization                  |         2 |     0.374s |       1.7% |
-| Postprocessing                  |         6 |      0.93s |       4.2% |
-| Setup dof systems               |         1 |     0.396s |       1.8% |
 +---------------------------------+-----------+------------+------------+
 

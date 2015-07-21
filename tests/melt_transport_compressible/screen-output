@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.3.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libmelt_transport_compressible.so>
 
@@ -16,92 +9,107 @@ Number of degrees of freedom: 7,401 (2,756+2,178+289+1,089+1,089)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 18.0037
+      Total relative nonlinear residual: 1
 
-      residual: 1
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 4.51931
+      Total relative nonlinear residual: 0.251021
 
-      residual: 0.251021
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00762846
+      Total relative nonlinear residual: 0.000423716
 
-      residual: 0.000423716
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00850332
+      Total relative nonlinear residual: 0.000472309
 
-      residual: 0.000472309
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00854903
+      Total relative nonlinear residual: 0.000474848
 
-      residual: 0.000474848
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00850805
+      Total relative nonlinear residual: 0.000472572
 
-      residual: 0.000472572
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00856177
+      Total relative nonlinear residual: 0.000475556
 
-      residual: 0.000475556
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00847943
+      Total relative nonlinear residual: 0.000470982
 
-      residual: 0.000470982
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00840839
+      Total relative nonlinear residual: 0.000467036
 
-      residual: 0.000467036
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00856963
+      Total relative nonlinear residual: 0.000475992
 
-      residual: 0.000475992
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00841795
+      Total relative nonlinear residual: 0.000467567
 
-      residual: 0.000467567
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00827423
+      Total relative nonlinear residual: 0.000459584
 
-      residual: 0.000459584
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00838136
+      Total relative nonlinear residual: 0.000465535
 
-      residual: 0.000465535
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00857645
+      Total relative nonlinear residual: 0.000476371
 
-      residual: 0.000476371
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 3.58597e-18, 0.00858387
+      Total relative nonlinear residual: 0.000476783
 
-      residual: 0.000476783
+
 
    Postprocessing:
      Writing graphical output:                               output-melt_transport_compressible/solution-00000
@@ -114,20 +122,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.18s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        15 |      3.36s |        65% |
-| Assemble composition system     |        15 |     0.408s |       7.9% |
-| Assemble temperature system     |        15 |     0.431s |       8.3% |
-| Build composition preconditioner|        15 |    0.0225s |      0.43% |
-| Build temperature preconditioner|         1 |   0.00165s |     0.032% |
-| Solve Stokes system             |        15 |     0.526s |        10% |
-| Solve composition system        |        15 |   0.00688s |      0.13% |
-| Solve temperature system        |        15 |   0.00726s |      0.14% |
-| Initialization                  |         2 |     0.164s |       3.2% |
-| Postprocessing                  |         1 |     0.121s |       2.3% |
-| Setup dof systems               |         1 |    0.0465s |       0.9% |
 +---------------------------------+-----------+------------+------------+
 

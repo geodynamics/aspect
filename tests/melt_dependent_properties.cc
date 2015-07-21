@@ -81,6 +81,8 @@ namespace aspect
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
             out.compressibilities[i] = 0.0;
+            for (unsigned int c=0;c<in.composition[i].size();++c)
+              out.reaction_terms[i][c] = 0.0;	    
           }
       }
 

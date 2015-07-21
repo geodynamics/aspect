@@ -11,7 +11,7 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 100
+set End time                               = 9
 set Use years in output instead of seconds = true
 set Use direct solver for Stokes system    = true
 set Adiabatic surface temperature          = 1600 

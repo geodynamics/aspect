@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.3.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libmelt_transport_adaptive.so>
 
@@ -16,14 +9,16 @@ Number of degrees of freedom: 7,401 (2,756+2,178+289+1,089+1,089)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 7.08627e-17, 524.003
+      Total relative nonlinear residual: 1
 
-      residual: 1
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 7.08627e-17, 1.76373e-12
+      Total relative nonlinear residual: 3.36589e-15
 
-      residual: 3.36589e-15
+
 
 Number of active cells: 400 (on 6 levels)
 Number of degrees of freedom: 11,955 (4,444+3,526+459+1,763+1,763)
@@ -33,14 +28,16 @@ Number of degrees of freedom: 11,955 (4,444+3,526+459+1,763+1,763)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 4.84734e-17, 514.652
+      Total relative nonlinear residual: 1
 
-      residual: 1
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 4.84734e-17, 1.42671e-12
+      Total relative nonlinear residual: 2.77219e-15
 
-      residual: 2.77219e-15
+
 
 Number of active cells: 844 (on 7 levels)
 Number of degrees of freedom: 25,317 (9,396+7,482+957+3,741+3,741)
@@ -50,14 +47,16 @@ Number of degrees of freedom: 25,317 (9,396+7,482+957+3,741+3,741)
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 4.5537e-17, 516.374
+      Total relative nonlinear residual: 1
 
-      residual: 1
+
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
       Nonlinear residuals: 0, 4.5537e-17, 4.68431e-11
+      Total relative nonlinear residual: 9.07154e-14
 
-      residual: 9.07154e-14
+
 
    Postprocessing:
      Writing graphical output:                               output-melt_transport_adaptive/solution-00000
@@ -70,22 +69,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      12.1s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         6 |      4.55s |        37% |
-| Assemble composition system     |         6 |     0.948s |       7.8% |
-| Assemble temperature system     |         6 |      1.44s |        12% |
-| Build composition preconditioner|         6 |    0.0234s |      0.19% |
-| Build temperature preconditioner|         3 |    0.0118s |     0.097% |
-| Solve Stokes system             |         6 |      1.36s |        11% |
-| Solve composition system        |         6 |   0.00772s |     0.064% |
-| Solve temperature system        |         6 |   0.00772s |     0.064% |
-| Initialization                  |         4 |     0.881s |       7.3% |
-| Postprocessing                  |         1 |      1.72s |        14% |
-| Refine mesh structure, part 1   |         2 |     0.124s |         1% |
-| Refine mesh structure, part 2   |         2 |    0.0272s |      0.22% |
-| Setup dof systems               |         3 |     0.317s |       2.6% |
 +---------------------------------+-----------+------------+------------+
 
