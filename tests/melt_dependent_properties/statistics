@@ -12,12 +12,21 @@
 # 12: Minimal pressure (Pa)
 # 13: Average pressure (Pa)
 # 14: Maximal pressure (Pa)
-# 15: Maximum velocity magnitude on boundary with indicator 0 (m/s)
-# 16: Minimum velocity magnitude on boundary with indicator 0 (m/s)
-# 17: Maximum velocity magnitude on boundary with indicator 1 (m/s)
-# 18: Minimum velocity magnitude on boundary with indicator 1 (m/s)
-# 19: Maximum velocity magnitude on boundary with indicator 2 (m/s)
-# 20: Minimum velocity magnitude on boundary with indicator 2 (m/s)
-# 21: Maximum velocity magnitude on boundary with indicator 3 (m/s)
-# 22: Minimum velocity magnitude on boundary with indicator 3 (m/s)
-0 0.0000e+00 1024 10628 4225 4225 0 0 1.0417e-02 2.23606798e-01 4.96484275e-01 -2.00000000e+00 -5.00000000e-01 1.00000000e+00 4.96484275e-01 6.20198505e-06 4.96484275e-01 6.20198505e-06 0.00000000e+00 0.00000000e+00 5.00000000e-01 5.00000000e-01 
+# 15: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 16: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 17: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 19: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 23: Visualization file name
+0 0.0000e+00 144 1869 657 657 0 0 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                              "" 
+1 1.0092e-05 144 1869 657 657 0 0 1.0092e-05 1.83638911e+01 1.99966907e+01 -1.05125539e+01 -2.62348794e+00 -1.17159931e+00 1.99966907e+01 1.02999736e+01 1.99966907e+01 1.02999736e+01 1.00000000e+01 1.00000000e+01 2.00000000e+01 2.00000000e+01 output-melt_dependent_properties/solution-00000 
+0 0.0000e+00   0    0   0   0 7 8 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                              "" 
+2 1.9877e-05 144 1869 657 657 5 4 9.7852e-06 1.83653748e+01 1.99966978e+01 -1.05032486e+01 -2.61888428e+00 -1.16920868e+00 1.99966931e+01 1.03001386e+01 1.99966931e+01 1.03001386e+01 1.00000000e+01 1.00000000e+01 2.00000014e+01 1.99999969e+01 output-melt_dependent_properties/solution-00001 
+0 0.0000e+00   0    0   0   0 6 6 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                              "" 
+3 2.9377e-05 144 1869 657 657 3 2 9.5003e-06 1.83668075e+01 1.99967046e+01 -1.04943400e+01 -2.61444339e+00 -1.16689837e+00 1.99966954e+01 1.03002969e+01 1.99966954e+01 1.03002969e+01 1.00000000e+01 1.00000000e+01 2.00000027e+01 1.99999939e+01 output-melt_dependent_properties/solution-00002 
+0 0.0000e+00   0    0   0   0 6 6 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                              "" 
+4 3.0000e-05 144 1869 657 657 3 2 6.2267e-07 1.83681934e+01 1.99967113e+01 -1.04857579e+01 -2.61015645e+00 -1.16466166e+00 1.99966975e+01 1.03004466e+01 1.99966975e+01 1.03004466e+01 1.00000000e+01 1.00000000e+01 2.00000040e+01 1.99999909e+01 output-melt_dependent_properties/solution-00003 
+0 0.0000e+00   0    0   0   0 5 4 9.2179e-06 1.83682841e+01 1.99967117e+01 -1.04851977e+01 -2.60987633e+00 -1.16451528e+00 1.99966976e+01 1.03004563e+01 1.99966976e+01 1.03004563e+01 1.00000000e+01 1.00000000e+01 2.00000041e+01 1.99999907e+01 output-melt_dependent_properties/solution-00004 

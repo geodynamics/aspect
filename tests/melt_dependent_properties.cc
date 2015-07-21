@@ -1,6 +1,3 @@
-// hack:
-#define ASPECT_USE_PETSC
-
 #include <aspect/global.h>
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
@@ -113,7 +110,7 @@ namespace aspect
     class RefFunction : public Function<dim>
     {
       public:
-        RefFunction () : Function<dim>(dim+2) {}
+        RefFunction () : Function<dim>(2*dim+5) {}
         virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
         {
@@ -122,10 +119,13 @@ namespace aspect
 	    
 	  values[0]=0;  //x vel
 	  values[1]=1.0 / (y+0.1);  //y vel
-	  values[2]=0;  // p_s
-	  values[3]=1.0 - (y+0.1);  // p_f
-	  values[4]=0; // T
-	  values[5]=1.0 - (y+0.1); // porosity
+	  values[2]=1.0 - (y+0.1);  // p_f
+	  values[3]=0;  // p_c  =?
+	  values[4]=0;  // u_f x  =?
+	  values[5]=0;  // u_f y  =?
+	  values[6]=0;  // p_s
+	  values[7]=0; // T
+	  values[8]=1.0 - (y+0.1); // porosity
         }
     };
 
@@ -149,15 +149,21 @@ namespace aspect
     {
       RefFunction<dim> ref_func;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
-      
-      Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
 
+      const unsigned int n_total_comp = this->introspection().n_components;
+
+      Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
+      
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          dim+4);
-      ComponentSelectFunction<dim> comp_pf(dim+1, dim+4);
-      ComponentSelectFunction<dim> comp_porosity(dim+3, dim+4);
+                                          n_total_comp);
+      ComponentSelectFunction<dim> comp_p_f(dim, n_total_comp);
+      ComponentSelectFunction<dim> comp_p_c(dim+1, n_total_comp);
+      ComponentSelectFunction<dim> comp_u_f(std::pair<unsigned int, unsigned int>(dim+2,dim+2+dim),
+                                          n_total_comp);
+      ComponentSelectFunction<dim> comp_p(dim+2+dim, n_total_comp);
+      ComponentSelectFunction<dim> comp_porosity(dim+2+dim+2, n_total_comp);
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
@@ -172,7 +178,7 @@ namespace aspect
                                          cellwise_errors_p,
                                          quadrature_formula,
                                          VectorTools::L2_norm,
-                                         &comp_pf);
+                                         &comp_p_f);
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
                                          ref_func,
@@ -186,7 +192,7 @@ namespace aspect
       
       std::ostringstream os;
       os << std::scientific << err_u << ", " << err_p << ", " << err_por;
-      return std::make_pair("Errors u_L2, p_fL2, porosity_L2:", os.str());
+      return std::make_pair("Errors u_L2, p_f_L2, porosity_L2:", os.str());
     }
 
 }  

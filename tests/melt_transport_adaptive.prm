@@ -121,7 +121,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.95
 
   set Initial adaptive refinement              = 2                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial global refinement                = 4                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

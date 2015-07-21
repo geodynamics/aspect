@@ -31,7 +31,7 @@ set Dimension                              = 2
 
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 1e4
+set End time                               = 3e-5
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0

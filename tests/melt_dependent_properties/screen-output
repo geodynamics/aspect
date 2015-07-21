@@ -1,44 +1,133 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
+--     . version 1.3.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
 -----------------------------------------------------------------------------
 
-Loading shared library <./libmelt_material_3.so>
+Loading shared library <./libmelt_dependent_properties.so>
 
-Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 19,078 (10,628+4,225+4,225)
+Number of active cells: 144 (on 3 levels)
+Number of degrees of freedom: 4,497 (1,684+1,314+185+657+657)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
+      Nonlinear residuals: 1.63042e-18, 3.90749e-19, 733.215
+
+      residual: 1
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 1.63042e-18, 3.90749e-19, 1.30267e-09
+
+      residual: 1.77665e-12
 
    Postprocessing:
-     RMS, max velocity:                         0.224 m/s, 0.496 m/s
-     Pressure min/avg/max:                      -2 Pa, -0.5 Pa, 1 Pa
-     Max and min velocity along boundary parts: 0.4965 m/s, 6.202e-06 m/s, 0.4965 m/s, 6.202e-06 m/s, 0 m/s, 0 m/s, 0.5 m/s, 0.5 m/s
+     RMS, max velocity:                         18.4 m/s, 20 m/s
+     Pressure min/avg/max:                      -10.51 Pa, -2.623 Pa, -1.172 Pa
+     Max and min velocity along boundary parts: 20 m/s, 10.3 m/s, 20 m/s, 10.3 m/s, 10 m/s, 10 m/s, 20 m/s, 20 m/s
+     Writing graphical output:                  output-melt_dependent_properties/solution-00000
+     Errors u_L2, p_f_L2, porosity_L2:          4.851674e+00, 6.895268e-02, 2.487236e-17
+
+*** Timestep 1:  t=1.00918e-05 seconds
+   Solving temperature system... 7 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 5.65616e-06, 8.62586e-07, 3.48502
+
+      residual: 0.00555695
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 1.75565e-08, 1.27484e-10, 0.00194445
+
+      residual: 3.10048e-06
+
+   Postprocessing:
+     RMS, max velocity:                         18.4 m/s, 20 m/s
+     Pressure min/avg/max:                      -10.5 Pa, -2.619 Pa, -1.169 Pa
+     Max and min velocity along boundary parts: 20 m/s, 10.3 m/s, 20 m/s, 10.3 m/s, 10 m/s, 10 m/s, 20 m/s, 20 m/s
+     Writing graphical output:                  output-melt_dependent_properties/solution-00001
+     Errors u_L2, p_f_L2, porosity_L2:          4.852077e+00, 6.895706e-02, 6.171306e-05
+
+*** Timestep 2:  t=1.9877e-05 seconds
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 1.32365e-07, 4.69157e-09, 0.0406749
+
+      residual: 6.49965e-05
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 9.64669e-11, 6.37565e-13, 1.14124e-05
+
+      residual: 1.82365e-08
+
+   Postprocessing:
+     RMS, max velocity:                         18.4 m/s, 20 m/s
+     Pressure min/avg/max:                      -10.49 Pa, -2.614 Pa, -1.167 Pa
+     Max and min velocity along boundary parts: 20 m/s, 10.3 m/s, 20 m/s, 10.3 m/s, 10 m/s, 10 m/s, 20 m/s, 20 m/s
+     Writing graphical output:                  output-melt_dependent_properties/solution-00002
+     Errors u_L2, p_f_L2, porosity_L2:          4.852467e+00, 6.896126e-02, 1.214258e-04
+
+*** Timestep 3:  t=2.93773e-05 seconds
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 6 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 1.44347e-07, 4.24708e-09, 0.0369842
+
+      residual: 5.90943e-05
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 9.20948e-11, 7.12136e-13, 1.36175e-05
+
+      residual: 2.17584e-08
+
+   Postprocessing:
+     RMS, max velocity:                         18.4 m/s, 20 m/s
+     Pressure min/avg/max:                      -10.49 Pa, -2.61 Pa, -1.165 Pa
+     Max and min velocity along boundary parts: 20 m/s, 10.3 m/s, 20 m/s, 10.3 m/s, 10 m/s, 10 m/s, 20 m/s, 20 m/s
+     Writing graphical output:                  output-melt_dependent_properties/solution-00003
+     Errors u_L2, p_f_L2, porosity_L2:          4.852843e+00, 6.896528e-02, 1.792962e-04
+
+*** Timestep 4:  t=3e-05 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving Stokes system... done.
+      Nonlinear residuals: 3.38751e-09, 1.02588e-10, 0.00127854
+
+      residual: 2.04292e-06
+
+   Postprocessing:
+     RMS, max velocity:                         18.4 m/s, 20 m/s
+     Pressure min/avg/max:                      -10.49 Pa, -2.61 Pa, -1.165 Pa
+     Max and min velocity along boundary parts: 20 m/s, 10.3 m/s, 20 m/s, 10.3 m/s, 10 m/s, 10 m/s, 20 m/s, 20 m/s
+     Writing graphical output:                  output-melt_dependent_properties/solution-00004
+     Errors u_L2, p_f_L2, porosity_L2:          4.852868e+00, 6.896553e-02, 1.830856e-04
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      23.1s |            |
+| Total wallclock time elapsed since start    |      2.05s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |      7.47s |        32% |
-| Assemble composition system     |         1 |      1.31s |       5.7% |
-| Assemble temperature system     |         1 |      1.49s |       6.4% |
-| Build composition preconditioner|         1 |    0.0233s |       0.1% |
-| Build temperature preconditioner|         1 |    0.0245s |      0.11% |
-| Solve Stokes system             |         1 |     0.975s |       4.2% |
-| Solve composition system        |         1 |   0.00643s |     0.028% |
-| Solve temperature system        |         1 |   0.00622s |     0.027% |
-| Initialization                  |         2 |      6.24s |        27% |
-| Postprocessing                  |         1 |     0.173s |      0.75% |
-| Setup dof systems               |         1 |      1.76s |       7.6% |
+| Assemble Stokes system          |         9 |      1.12s |        55% |
+| Assemble composition system     |         9 |     0.155s |       7.6% |
+| Assemble temperature system     |         9 |     0.177s |       8.7% |
+| Build composition preconditioner|         9 |   0.00805s |      0.39% |
+| Build temperature preconditioner|         5 |   0.00479s |      0.23% |
+| Solve Stokes system             |         9 |     0.106s |       5.2% |
+| Solve composition system        |         9 |   0.00549s |      0.27% |
+| Solve temperature system        |         9 |   0.00608s |       0.3% |
+| Initialization                  |         2 |    0.0804s |       3.9% |
+| Postprocessing                  |         5 |     0.175s |       8.6% |
+| Setup dof systems               |         1 |    0.0316s |       1.5% |
 +---------------------------------+-----------+------------+------------+
 

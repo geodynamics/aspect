@@ -107,19 +107,23 @@ namespace aspect
       class RefFunction : public Function<dim>
       {
         public:
-          RefFunction () : Function<dim>(dim+2) {}
+          RefFunction () : Function<dim>(2*dim+5) {}
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
             double x = p(0);
             double y = p(1);
+            double porosity = -0.1 * std::exp(-(y+0.1))/(y+0.1) + 1.0;
 
-            values[0]=0.0; //x vel
-            values[1]=0.0; //y vel
-            values[2]=0.0; // p_s
-            values[3]=0.0; // p_f
-            values[4]=0.0; // T
-            values[5]=-0.1 * std::exp(-(y+0.1))/(y+0.1) + 1.0; // porosity
+            values[0]=0;       //x vel
+            values[1]=0;    //y vel
+            values[2]=0;  // p_f
+            values[3]=0;  // p_c
+            values[4]=0;       //x melt vel
+            values[5]=0;    //y melt vel
+            values[6]=0;  // p_s
+            values[7]=0; // T
+            values[8]=porosity; // porosity
           }
       };
 
@@ -150,8 +154,9 @@ namespace aspect
       RefFunction<dim> ref_func;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
+      const unsigned int n_total_comp = this->introspection().n_components;
       Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
-      ComponentSelectFunction<dim> comp_porosity(dim+3, dim+4);
+      ComponentSelectFunction<dim> comp_porosity(dim+2+dim+2, n_total_comp);
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
