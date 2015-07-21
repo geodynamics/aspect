@@ -70,6 +70,20 @@ namespace aspect
                                   ConstraintMatrix &)>  post_constraints_creation;
 
     /**
+    * A signal that is called at the start of setup_dofs().
+    * This allows for editing of the parameters struct on the fly
+    * (such as changing boundary conditions) to give Aspect different behavior
+    * in mid-run than it otherwise would have.
+
+    * The functions that connect to this signal must take two arguments,
+    * a SimulatorAccess object that describes the simulator, and an object
+    * of type aspect::Parameters<dim>, which is the current parameters
+    * object that the simulator is working with.
+    */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  Parameters<dim> &parameters)>  edit_parameters_pre_setup_dofs;
+
+    /**
      * A signal that is called at the beginning of the program. It
      * gives user extensions the ability to declare additional
      * parameters via the provided argument. User extensions connected to
