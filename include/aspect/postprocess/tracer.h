@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,7 +28,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
-#include "../particle/particle.h"
+#include <aspect/particle/particle.h>
 
 namespace aspect
 {
@@ -37,6 +37,83 @@ namespace aspect
     template <int dim>
     class PassiveTracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
+      public:
+        /**
+         * Constructor.
+         */
+        PassiveTracers();
+
+        /**
+         * Destructor.
+         */
+        ~PassiveTracers();
+
+        /**
+         *
+         */
+        void
+        initialize();
+
+        /**
+         * Returns a reference to the particle world, in case anyone wants to
+         * query something about tracers.
+         */
+        const Particle::World<dim> &
+        get_particle_world() const;
+
+        /**
+         * Execute this postprocessor. Derived classes will implement this
+         * function to do whatever they want to do to evaluate the solution at
+         * the current time step.
+         *
+         * @param[in,out] statistics An object that contains statistics that
+         * are collected throughout the simulation and that will be written to
+         * an output file at the end of each time step. Postprocessors may
+         * deposit data in these tables for later visualization or further
+         * processing.
+         *
+         * @return A pair of strings that will be printed to the screen after
+         * running the postprocessor in two columns; typically the first
+         * column contains a description of what the data is and the second
+         * contains a numerical value of this data. If there is nothing to
+         * print, simply return two empty strings.
+         */
+        virtual
+        std::pair<std::string,std::string> execute (TableHandler &statistics);
+
+        /**
+         * Save the state of this object.
+         */
+        virtual
+        void save (std::map<std::string, std::string> &status_strings) const;
+
+        /**
+         * Restore the state of the object.
+         */
+        virtual
+        void load (const std::map<std::string, std::string> &status_strings);
+
+        /**
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
       private:
         /**
          * The world holding the particles
@@ -95,64 +172,6 @@ namespace aspect
          * next_data_output_time variable.
          */
         void set_next_data_output_time (const double current_time);
-
-
-      public:
-        /**
-         * Constructor.
-         */
-        PassiveTracers();
-
-        /**
-         * Destructor.
-         */
-        ~PassiveTracers();
-
-        /**
-         *
-         */
-        void
-        initialize();
-
-        /**
-         * Returns a reference to the particle world, in case anyone wants to
-         * query something about tracers.
-         */
-        const Particle::World<dim> &
-        get_particle_world() const;
-
-        /**
-         * Execute this postprocessor. Derived classes will implement this
-         * function to do whatever they want to do to evaluate the solution at
-         * the current time step.
-         *
-         * @param[in,out] statistics An object that contains statistics that
-         * are collected throughout the simulation and that will be written to
-         * an output file at the end of each time step. Postprocessors may
-         * deposit data in these tables for later visualization or further
-         * processing.
-         *
-         * @return A pair of strings that will be printed to the screen after
-         * running the postprocessor in two columns; typically the first
-         * column contains a description of what the data is and the second
-         * contains a numerical value of this data. If there is nothing to
-         * print, simply return two empty strings.
-         */
-        virtual std::pair<std::string,std::string> execute (TableHandler &statistics);
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
   }
 }

@@ -22,7 +22,10 @@
 #define __aspect__particle_particle_h
 
 #include <aspect/global.h>
+
 #include <deal.II/base/point.h>
+
+#include <boost/serialization/vector.hpp>
 
 namespace aspect
 {
@@ -177,6 +180,12 @@ namespace aspect
         const std::vector<double> &
         get_properties () const;
 
+        /**
+         * Serialize the contents of this class.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
+
       private:
         /**
          * Current particle location
@@ -195,6 +204,17 @@ namespace aspect
         std::vector<double>      val;
     };
 
+    /* -------------------------- inline and template functions ---------------------- */
+
+    template <int dim>
+    template <class Archive>
+    void Particle<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &location
+      & id
+      & val
+      ;
+    }
   }
 }
 

@@ -22,7 +22,7 @@
 #define __aspect__particle_output_ascii_h
 
 #include <aspect/particle/output/interface.h>
-
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -31,7 +31,8 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      class ASCIIOutput : public Interface<dim>
+      class ASCIIOutput : public Interface<dim>,
+        public SimulatorAccess<dim>
       {
         public:
           /**
@@ -66,6 +67,12 @@ namespace aspect
                                const std::vector<std::string> &names,
                                const std::vector<unsigned int> &lengths,
                                const double &current_time);
+
+        private:
+          /**
+           * Internal index of file output number.
+           */
+          unsigned int    file_index;
       };
     }
   }

@@ -20,8 +20,6 @@
 
 #include <aspect/particle/particle.h>
 
-#include <list>
-
 namespace aspect
 {
   namespace Particle

@@ -22,7 +22,7 @@
 #define __aspect__particle_output_vtu_h
 
 #include <aspect/particle/output/interface.h>
-
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -31,7 +31,8 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      class VTUOutput : public Interface<dim>
+      class VTUOutput : public Interface<dim>,
+        public aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -67,7 +68,31 @@ namespace aspect
                                const std::vector<unsigned int> &lengths,
                                const double &current_time);
 
+          /**
+           * Read or write the data of this object for serialization
+           */
+          template <class Archive>
+          void serialize(Archive &ar, const unsigned int version);
+
+          /**
+           * Save the state of the object.
+           */
+          virtual
+          void
+          save (std::ostringstream &os) const;
+
+          /**
+           * Restore the state of the object.
+           */
+          virtual
+          void
+          load (std::istringstream &is);
+
         private:
+          /**
+           * Internal index of file output number.
+           */
+          unsigned int    file_index;
 
           /**
            * A list of pairs (time, pvtu_filename) that have so far been written
@@ -77,7 +102,6 @@ namespace aspect
            * is done because there is no way to store the simulation
            * time inside the .pvtu or .vtu files).
            */
-//TODO: This needs to be serialized
           std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
 
           /**

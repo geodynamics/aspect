@@ -31,7 +31,7 @@ namespace aspect
       template <int dim>
       VTUOutput<dim>::VTUOutput()
         :
-        Interface<dim> ()
+        file_index(0)
       {}
 
       template <int dim>
@@ -41,14 +41,14 @@ namespace aspect
                                            const std::vector<unsigned int> &lengths,
                                            const double &current_time)
       {
-        const std::string output_file_prefix = "particles-" + Utilities::int_to_string (this->file_index, 5);
-        const std::string output_path_prefix = this->output_dir + output_file_prefix;
+        const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
+        const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
 
         const std::string filename = (output_file_prefix +
                                       "." +
-                                      Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) +
+                                      Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) +
                                       ".vtu");
-        const std::string full_filename = (this->output_dir + filename);
+        const std::string full_filename = (this->get_output_directory() + filename);
 
         std::ofstream output (full_filename.c_str());
         AssertThrow (output, ExcIO());
@@ -140,10 +140,10 @@ namespace aspect
 
 
         // Write the parallel pvtu and pvd files on the root process
-        if (Utilities::MPI::this_mpi_process(this->communicator) == 0)
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
             const std::string pvtu_filename = (output_file_prefix + ".pvtu");
-            const std::string full_pvtu_filename = (this->output_dir + pvtu_filename);
+            const std::string full_pvtu_filename = (this->get_output_directory() + pvtu_filename);
 
             std::ofstream pvtu_output (full_pvtu_filename.c_str());
             AssertThrow (pvtu_output, ExcIO());
@@ -162,7 +162,7 @@ namespace aspect
                 pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
-            for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->communicator); ++i)
+            for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
               {
                 pvtu_output << "    <Piece Source=\"" << output_file_prefix << "." << Utilities::int_to_string(i, 4) << ".vtu\"/>\n";
               }
@@ -175,21 +175,48 @@ namespace aspect
             vtu_file_names.push_back (full_filename);
 
             // write .pvd and .visit records
-            const std::string pvd_master_filename = (this->output_dir + "particles.pvd");
+            const std::string pvd_master_filename = (this->get_output_directory() + "particles.pvd");
             std::ofstream pvd_master (pvd_master_filename.c_str());
             DataOut<dim>().write_pvd_record (pvd_master, times_and_pvtu_file_names);
 
 //TODO: write a global .visit record. this needs a variant of the write_visit_record
 // function
             /*
-                          const std::string visit_master_filename = (this->output_dir + "particles.visit");
+                          const std::string visit_master_filename = (this->get_output_directory() + "particles.visit");
                           std::ofstream visit_master (visit_master_filename.c_str());
                           DataOut<dim>().write_visit_record (visit_master, vtu_file_names);
             */
           }
-        this->file_index++;
+        file_index++;
 
         return output_path_prefix;
+      }
+
+      template <int dim>
+      template <class Archive>
+      void VTUOutput<dim>::serialize (Archive &ar, const unsigned int)
+      {
+        // invoke serialization of the base class
+        ar &file_index
+        & times_and_pvtu_file_names
+        & vtu_file_names
+        ;
+      }
+
+      template <int dim>
+      void
+      VTUOutput<dim>::save (std::ostringstream &os) const
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      template <int dim>
+      void
+      VTUOutput<dim>::load (std::istringstream &is)
+      {
+        aspect::iarchive ia (is);
+        ia >> (*this);
       }
     }
   }

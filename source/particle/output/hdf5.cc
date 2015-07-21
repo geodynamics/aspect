@@ -35,7 +35,7 @@ namespace aspect
       template <int dim>
       HDF5Output<dim>::HDF5Output()
         :
-        Interface<dim> ()
+        file_index(0)
       {}
 
       template <int dim>
@@ -50,8 +50,8 @@ namespace aspect
 
         std::string             output_file_prefix, output_path_prefix, full_filename;
 
-        output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
-        output_path_prefix = this->output_dir + output_file_prefix;
+        output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
+        output_path_prefix = this->get_output_directory() + output_file_prefix;
 #ifdef DEAL_II_HAVE_HDF5
         // TODO: error checking for H5 calls
         hid_t   h5_file_id;
@@ -70,7 +70,7 @@ namespace aspect
         // Create parallel file access
         plist_id = H5Pcreate(H5P_FILE_ACCESS);
 #ifdef H5_HAVE_PARALLEL
-        H5Pset_fapl_mpio(plist_id, this->communicator, MPI_INFO_NULL);
+        H5Pset_fapl_mpio(plist_id, this->get_mpi_communicator(), MPI_INFO_NULL);
 #endif
 
         // Create the file
@@ -79,7 +79,7 @@ namespace aspect
         // Create the file dataspace descriptions
         local_particle_count = particles.size();
         // TODO: error checking on MPI call
-        MPI_Comm com = this->communicator;
+        MPI_Comm com = this->get_mpi_communicator();
         MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, com);
         dims[0] = global_particle_count;
         dims[1] = 3;
@@ -114,7 +114,7 @@ namespace aspect
 
         // Count the number of particles on this process and get the offset among all processes
         mpi_count = particles.size();
-        MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, this->communicator);
+        MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, this->get_mpi_communicator());
         count[0] = mpi_count;
         count[1] = 3;
         offset[0] = mpi_offset-mpi_count;
@@ -182,18 +182,18 @@ namespace aspect
         H5Fclose(h5_file_id);
 
         // Record and output XDMF info on root process
-        if (Utilities::MPI::this_mpi_process(this->communicator) == 0)
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
             std::string local_h5_filename = output_file_prefix+".h5";
             XDMFEntry   entry(local_h5_filename, current_time, global_particle_count, 0, 3);
             DataOut<dim> data_out;
-            const std::string xdmf_filename = (this->output_dir + "particle.xdmf");
+            const std::string xdmf_filename = (this->get_output_directory() + "particle.xdmf");
 
             entry.add_attribute("velocity", 3);
             entry.add_attribute("id", 1);
             xdmf_entries.push_back(entry);
 
-            data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->communicator);
+            data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->get_mpi_communicator());
           }
 
 #else
@@ -202,7 +202,7 @@ namespace aspect
         (void)current_time;
 #endif
 
-        this->file_index++;
+        file_index++;
 
         return output_path_prefix;
       }

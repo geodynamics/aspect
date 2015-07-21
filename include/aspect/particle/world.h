@@ -21,6 +21,7 @@
 #ifndef __aspect__particle_world_h
 #define __aspect__particle_world_h
 
+#include <aspect/global.h>
 #include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
 
@@ -185,10 +186,10 @@ namespace aspect
         unsigned int get_global_particle_count() const;
 
         /**
-         * Read or write the data of this object for serialization
+         * Serialize the contents of this class.
          */
         template <class Archive>
-        void serialize(Archive &ar, const unsigned int version);
+        void serialize (Archive &ar, const unsigned int version);
 
       private:
         /**
@@ -221,6 +222,16 @@ namespace aspect
          */
         void mesh_changed();
     };
+
+    /* -------------------------- inline and template functions ---------------------- */
+
+    template <int dim>
+    template <class Archive>
+    void World<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &particles
+      ;
+    }
   }
 }
 

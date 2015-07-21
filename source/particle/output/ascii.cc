@@ -30,7 +30,7 @@ namespace aspect
       template <int dim>
       ASCIIOutput<dim>::ASCIIOutput()
         :
-        Interface<dim> ()
+        file_index(0)
       {}
 
       template <int dim>
@@ -40,12 +40,12 @@ namespace aspect
                                              const std::vector<unsigned int> &lengths,
                                              const double &)
       {
-        const std::string output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
-        const std::string output_path_prefix = this->output_dir + output_file_prefix;
-        const std::string full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->communicator), 4) + ".txt";
+        const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
+        const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
+        const std::string full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) + ".txt";
         std::ofstream output (full_filename.c_str());
         if (!output)
-          std::cout << "ERROR: proc " << Utilities::MPI::this_mpi_process(this->communicator) << " could not create " << full_filename << std::endl;
+          std::cout << "ERROR: proc " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) << " could not create " << full_filename << std::endl;
 
         // Print the header line
         output << "# ";
@@ -84,7 +84,7 @@ namespace aspect
 
         output.close();
 
-        this->file_index++;
+        file_index++;
 
         return output_path_prefix;
       }

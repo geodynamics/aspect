@@ -28,6 +28,10 @@ namespace aspect
     namespace Output
     {
       template <int dim>
+      Interface<dim>::Interface ()
+      {}
+
+      template <int dim>
       void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
@@ -39,13 +43,23 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::initialize (const std::string &output_directory,
-                                  const MPI_Comm &comm)
-      {
-        output_dir = output_directory;
-        communicator = comm;
-        file_index = 0;
-      }
+      Interface<dim>::initialize ()
+      {}
+
+      template <int dim>
+      template <class Archive>
+      void Interface<dim>::serialize (Archive &ar, const unsigned int)
+      {}
+
+      template <int dim>
+      void
+      Interface<dim>::save (std::ostringstream &os) const
+      {}
+
+      template <int dim>
+      void
+      Interface<dim>::load (std::istringstream &is)
+      {}
 
 
       // -------------------------------- Deal with registering models and automating

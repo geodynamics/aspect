@@ -44,7 +44,7 @@ namespace aspect
           /**
            * Constructor.
            */
-          Interface() {}
+          Interface();
 
           /**
            * Destructor. Made virtual so that derived classes can be created
@@ -57,16 +57,10 @@ namespace aspect
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run and after the
            * SimulatorAccess (if applicable) is initialized.
-           *
-           * @param[in] output_directory The directory into which output files
-           * shall be placed.
-           * @param[in] communicator The MPI communicator that describes this
-           * simulation.
            */
           virtual
           void
-          initialize (const std::string &output_directory,
-                      const MPI_Comm &comm);
+          initialize ();
 
           /**
            * Write data about the particles specified in the first argument to
@@ -100,11 +94,21 @@ namespace aspect
            * Read or write the data of this object for serialization
            */
           template <class Archive>
-          void serialize(Archive &ar, const unsigned int version)
-          {
-            ar &file_index
-            ;
-          }
+          void serialize(Archive &ar, const unsigned int version);
+
+          /**
+           * Save the state of the object.
+           */
+          virtual
+          void
+          save (std::ostringstream &os) const;
+
+          /**
+           * Restore the state of the object.
+           */
+          virtual
+          void
+          load (std::istringstream &is);
 
           /**
            * Declare the parameters this class takes through input files. The
@@ -125,23 +129,6 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &);
-
-        protected:
-          /**
-           * Path to directory in which to put particle output files
-           */
-          std::string     output_dir;
-
-          /**
-           * MPI communicator to be used for output synchronization
-           */
-          MPI_Comm        communicator;
-
-          /**
-           * Internal index of file output number, must be incremented by
-           * derived classes when they create a new file.
-           */
-          unsigned int    file_index;
       };
 
 

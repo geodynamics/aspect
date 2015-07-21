@@ -20,6 +20,13 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/tracer.h>
+#include <aspect/simulator_access.h>
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
+#include <stdio.h>
+#include <unistd.h>
 
 namespace aspect
 {
@@ -65,8 +72,6 @@ namespace aspect
     {
       if (!initialized)
         {
-          next_data_output_time = this->get_time();
-
           // Set up the particle world with the appropriate simulation objects
           world.set_integrator(integrator);
           world.set_manager(&property_manager);
@@ -74,13 +79,16 @@ namespace aspect
           // And initialize the world
           world.init();
 
-          next_data_output_time = this->get_time();
-
-          // Add the specified number of particles
-          generator->generate_particles(world);
-          world.initialize_particles();
+          // Let the generator add the specified number of particles if we are
+          // not resuming from a snapshot (in that case we have stored particles)
+          if (world.get_global_particle_count() == 0)
+            {
+              generator->generate_particles(world);
+              world.initialize_particles();
+            }
 
           initialized = true;
+          next_data_output_time = this->get_time();
         }
 
       // Advance the particles in the world to the current time
@@ -139,6 +147,113 @@ namespace aspect
         }
     }
 
+
+    template <int dim>
+    template <class Archive>
+    void PassiveTracers<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &next_data_output_time
+      ;
+
+      // We do not serialize mesh_changed but use the default (true) from our
+      // constructor. This will result in a new mesh file the first time we
+      // create visualization output after resuming from a snapshot. Otherwise
+      // we might get corrupted graphical output, because the ordering of
+      // vertices can be different after resuming.
+    }
+
+
+    template <int dim>
+    void
+    PassiveTracers<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      aspect::oarchive oa (os);
+
+      oa << world;
+
+      const unsigned int mpi_tag = 124;
+
+      // on processor 0, collect all of the data the individual processors send
+       // and concatenate them as serialized strings into the archive
+       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+         {
+           // loop through all of the other processors and collect
+           // data, then write it in the archive
+           // TODO: this assumes that the number of processes does not change
+           for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+             {
+               // get the data length and data
+               MPI_Status status;
+               MPI_Probe(p, mpi_tag, this->get_mpi_communicator(), &status);
+
+               int data_length;
+               MPI_Get_count(&status, MPI_CHAR, &data_length);
+
+               std::string tmp(data_length,'\0');
+               MPI_Recv (&tmp[0], data_length, MPI_CHAR, p, mpi_tag,
+                         this->get_mpi_communicator(), &status);
+
+               oa << tmp;
+             }
+
+           oa << (*this);
+           output->save(os);
+         }
+       else
+         // on other processors, send the serialized data to processor zero.
+         {
+           MPI_Send (&os.str()[0], os.str().size(), MPI_CHAR, 0, mpi_tag,
+                     this->get_mpi_communicator());
+         }
+
+      status_strings["Tracers"] = os.str();
+
+    }
+
+
+    template <int dim>
+    void
+    PassiveTracers<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // see if something was saved
+      if (status_strings.find("Tracers") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("Tracers")->second);
+          aspect::iarchive ia (is);
+
+          // Load the particle world of the first process. This will be
+          // overwritten on all processes but the first one later on, but every
+          // process needs to load the whole archive to correctly deserialize
+          // the data
+          ia >> world;
+
+          // Then loop through all of the other processors, but save only
+          // the data corresponding to this process. The tracers might not
+          // be in the domain of this process anymore due to a freshly build
+          // mesh, but this does not matter, because they will simply be send
+          // around until every tracer has found its process in the usual way
+          // after a mesh change.
+          // TODO: this assumes that the number of processes does not change
+          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+            {
+              std::string tmp;
+              ia >> tmp;
+
+              if (p == Utilities::MPI::this_mpi_process(this->get_mpi_communicator()))
+                {
+                  std::istringstream ws (tmp);
+                  aspect::iarchive wa (ws);
+                  wa >> world;
+                }
+            }
+
+          ia >> (*this);
+          output->load(is);
+        }
+    }
+
+
     template <int dim>
     void
     PassiveTracers<dim>::declare_parameters (ParameterHandler &prm)
@@ -195,8 +310,7 @@ namespace aspect
                (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output))
         sim->initialize (this->get_simulator());
-      output->initialize(this->get_output_directory(),
-                         this->get_mpi_communicator());
+      output->initialize();
 
       // Create an integrator object depending on the specified parameter
       integrator = Particle::Integrator::create_particle_integrator<dim>

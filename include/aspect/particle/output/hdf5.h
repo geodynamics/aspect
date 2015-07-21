@@ -22,8 +22,9 @@
 #define __aspect__particle_output_hdf5_h
 
 #include <aspect/particle/output/interface.h>
-#include <deal.II/base/data_out_base.h>
+#include <aspect/simulator_access.h>
 
+#include <deal.II/base/data_out_base.h>
 
 namespace aspect
 {
@@ -32,7 +33,8 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      class HDF5Output : public Interface<dim>
+      class HDF5Output : public Interface<dim>,
+        public SimulatorAccess<dim>
       {
         public:
           /**
@@ -70,7 +72,14 @@ namespace aspect
                                const double &current_time);
 
         private:
-          // A set of XDMF data objects to create the XDMF file for particles
+          /**
+           * Internal index of file output number.
+           */
+          unsigned int    file_index;
+
+          /**
+           *  A set of XDMF data objects to create the XDMF file for particles
+           */
           std::vector<XDMFEntry>          xdmf_entries;
       };
     }
