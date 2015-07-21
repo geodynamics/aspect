@@ -71,7 +71,7 @@ namespace aspect
             out.densities[i] = 3000;
             for (unsigned int c=0;c<in.composition[i].size();++c)
               {
-                if(this->get_timestep_number() > 0)
+                if(in.strain_rate.size())
                   out.reaction_terms[i][c] = trace(in.strain_rate[i]) * this->get_timestep();
                 else
                   out.reaction_terms[i][c] = 0.0;
