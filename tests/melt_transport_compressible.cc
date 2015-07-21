@@ -200,9 +200,6 @@ namespace aspect
     std::pair<std::string,std::string>
     CompressibleMeltPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       RefFunction<dim> ref_func;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
@@ -268,12 +265,12 @@ namespace aspect
                                          &comp_u_f);
 
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_u.l2_norm()
-         << ", " << cellwise_errors_p.l2_norm()
-         << ", " << cellwise_errors_p_f.l2_norm()
-         << ", " << cellwise_errors_p_c.l2_norm()
-         << ", " << cellwise_errors_porosity.l2_norm()
-         << ", " << cellwise_errors_u_f.l2_norm();
+      os << std::scientific << std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),MPI_COMM_WORLD))
+         << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD))
+         << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),MPI_COMM_WORLD))
+         << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),MPI_COMM_WORLD))
+         << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),MPI_COMM_WORLD))
+         << ", " << std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),MPI_COMM_WORLD));
 
       return std::make_pair("Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2:", os.str());
     }
