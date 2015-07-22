@@ -154,12 +154,6 @@ namespace aspect
     {
       ar &next_data_output_time
       ;
-
-      // We do not serialize mesh_changed but use the default (true) from our
-      // constructor. This will result in a new mesh file the first time we
-      // create visualization output after resuming from a snapshot. Otherwise
-      // we might get corrupted graphical output, because the ordering of
-      // vertices can be different after resuming.
     }
 
 
@@ -175,37 +169,37 @@ namespace aspect
       const unsigned int mpi_tag = 124;
 
       // on processor 0, collect all of the data the individual processors send
-       // and concatenate them as serialized strings into the archive
-       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-         {
-           // loop through all of the other processors and collect
-           // data, then write it in the archive
-           // TODO: this assumes that the number of processes does not change
-           for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-             {
-               // get the data length and data
-               MPI_Status status;
-               MPI_Probe(p, mpi_tag, this->get_mpi_communicator(), &status);
+      // and concatenate them as serialized strings into the archive
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          // loop through all of the other processors and collect
+          // data, then write it in the archive
+          // TODO: this assumes that the number of processes does not change
+          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+            {
+              // get the data length and data
+              MPI_Status status;
+              MPI_Probe(p, mpi_tag, this->get_mpi_communicator(), &status);
 
-               int data_length;
-               MPI_Get_count(&status, MPI_CHAR, &data_length);
+              int data_length;
+              MPI_Get_count(&status, MPI_CHAR, &data_length);
 
-               std::string tmp(data_length,'\0');
-               MPI_Recv (&tmp[0], data_length, MPI_CHAR, p, mpi_tag,
-                         this->get_mpi_communicator(), &status);
+              std::string tmp(data_length,'\0');
+              MPI_Recv (&tmp[0], data_length, MPI_CHAR, p, mpi_tag,
+                        this->get_mpi_communicator(), &status);
 
-               oa << tmp;
-             }
+              oa << tmp;
+            }
 
-           oa << (*this);
-           output->save(os);
-         }
-       else
-         // on other processors, send the serialized data to processor zero.
-         {
-           MPI_Send (&os.str()[0], os.str().size(), MPI_CHAR, 0, mpi_tag,
-                     this->get_mpi_communicator());
-         }
+          oa << (*this);
+          output->save(os);
+        }
+      else
+        // on other processors, send the serialized data to processor zero.
+        {
+          MPI_Send (&os.str()[0], os.str().size(), MPI_CHAR, 0, mpi_tag,
+                    this->get_mpi_communicator());
+        }
 
       status_strings["Tracers"] = os.str();
 

@@ -135,6 +135,15 @@
  * <br>
  * (Ian Rose, 2015/07/22)
  *
+ * <li> New: The tracer architecture has been completely overhauled. It is now
+ * more flexible and allows for easier modification. Additionally tracers
+ * now carry properties with them, which allows for a variety of new use cases.
+ * A number of bugs related to curved cells in spherical models with tracers 
+ * have been resolved. The new architecture is still work in progress in the
+ * sense that it is neither particularly optimized for speed nor very scalable.
+ * <br>
+ * (Rene Gassmöller, 2015/07/22)
+ *
  * <li> New: Plugin for visualizing groups of compositional fields as vectors.
  * <br>
  * (Jonathan Perry-Houts, 2015/07/12)
