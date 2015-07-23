@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 160 (on 3 levels)
 Number of degrees of freedom: 2,977 (1,394+189+697+697)
@@ -55,7 +48,7 @@ Number of free surface degrees of freedom: 326
      Topography min/max: -298.7 m, 140.6 m, 
      RMS, max velocity:  0.374 m/year, 0.911 m/year
 
-*** Timestep 2:  t=658.842 years
+*** Timestep 2:  t=658.949 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -66,7 +59,7 @@ Number of free surface degrees of freedom: 326
      Topography min/max: -592 m, 266.7 m, 
      RMS, max velocity:  0.349 m/year, 0.878 m/year
 
-*** Timestep 3:  t=1012.45 years
+*** Timestep 3:  t=1012.67 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -74,10 +67,10 @@ Number of free surface degrees of freedom: 326
    Solving Stokes system... 15 iterations.
 
    Postprocessing:
-     Topography min/max: -880.8 m, 381.2 m, 
+     Topography min/max: -880.8 m, 381.1 m, 
      RMS, max velocity:  0.324 m/year, 0.836 m/year
 
-*** Timestep 4:  t=1382.55 years
+*** Timestep 4:  t=1382.88 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -85,10 +78,10 @@ Number of free surface degrees of freedom: 326
    Solving Stokes system... 13 iterations.
 
    Postprocessing:
-     Topography min/max: -1165 m, 485.4 m, 
+     Topography min/max: -1165 m, 485.3 m, 
      RMS, max velocity:  0.301 m/year, 0.792 m/year
 
-*** Timestep 5:  t=1771.58 years
+*** Timestep 5:  t=1772.03 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -96,14 +89,14 @@ Number of free surface degrees of freedom: 326
    Solving Stokes system... 15 iterations.
 
    Postprocessing:
-     Topography min/max: -1445 m, 579.7 m, 
+     Topography min/max: -1445 m, 579.5 m, 
      RMS, max velocity:  0.28 m/year, 0.755 m/year
 
 Number of active cells: 172 (on 5 levels)
 Number of degrees of freedom: 3,587 (1,682+223+841+841)
 
 Number of free surface degrees of freedom: 446
-*** Timestep 6:  t=2177.9 years
+*** Timestep 6:  t=2178.46 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -111,10 +104,10 @@ Number of free surface degrees of freedom: 446
    Solving Stokes system... 17 iterations.
 
    Postprocessing:
-     Topography min/max: -1720 m, 663.6 m, 
+     Topography min/max: -1720 m, 663.4 m, 
      RMS, max velocity:  0.261 m/year, 0.731 m/year
 
-*** Timestep 7:  t=2595.25 years
+*** Timestep 7:  t=2595.91 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -122,10 +115,10 @@ Number of free surface degrees of freedom: 446
    Solving Stokes system... 16 iterations.
 
    Postprocessing:
-     Topography min/max: -1992 m, 737 m, 
+     Topography min/max: -1992 m, 736.8 m, 
      RMS, max velocity:  0.243 m/year, 0.69 m/year
 
-*** Timestep 8:  t=3035.76 years
+*** Timestep 8:  t=3036.53 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -133,10 +126,10 @@ Number of free surface degrees of freedom: 446
    Solving Stokes system... 12 iterations.
 
    Postprocessing:
-     Topography min/max: -2260 m, 801.6 m, 
+     Topography min/max: -2260 m, 801.4 m, 
      RMS, max velocity:  0.226 m/year, 0.651 m/year
 
-*** Timestep 9:  t=3500.77 years
+*** Timestep 9:  t=3501.64 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -144,10 +137,10 @@ Number of free surface degrees of freedom: 446
    Solving Stokes system... 14 iterations.
 
    Postprocessing:
-     Topography min/max: -2522 m, 857.5 m, 
+     Topography min/max: -2522 m, 857.3 m, 
      RMS, max velocity:  0.211 m/year, 0.614 m/year
 
-*** Timestep 10:  t=3991.49 years
+*** Timestep 10:  t=3992.46 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -155,14 +148,14 @@ Number of free surface degrees of freedom: 446
    Solving Stokes system... 16 iterations.
 
    Postprocessing:
-     Topography min/max: -2779 m, 905 m, 
+     Topography min/max: -2779 m, 904.7 m, 
      RMS, max velocity:  0.199 m/year, 0.587 m/year
 
 Number of active cells: 220 (on 5 levels)
 Number of degrees of freedom: 4,420 (2,074+272+1,037+1,037)
 
 Number of free surface degrees of freedom: 544
-*** Timestep 11:  t=4503.29 years
+*** Timestep 11:  t=4504.34 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
@@ -170,10 +163,10 @@ Number of free surface degrees of freedom: 544
    Solving Stokes system... 30+16 iterations.
 
    Postprocessing:
-     Topography min/max: -3029 m, 943.5 m, 
+     Topography min/max: -3029 m, 943.3 m, 
      RMS, max velocity:  0.188 m/year, 0.558 m/year
 
-*** Timestep 12:  t=5039.52 years
+*** Timestep 12:  t=5040.64 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -181,10 +174,10 @@ Number of free surface degrees of freedom: 544
    Solving Stokes system... 30+20 iterations.
 
    Postprocessing:
-     Topography min/max: -3271 m, 974.7 m, 
+     Topography min/max: -3271 m, 974.5 m, 
      RMS, max velocity:  0.178 m/year, 0.531 m/year
 
-*** Timestep 13:  t=5601.23 years
+*** Timestep 13:  t=5602.42 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -192,10 +185,10 @@ Number of free surface degrees of freedom: 544
    Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
-     Topography min/max: -3507 m, 999.2 m, 
+     Topography min/max: -3507 m, 998.9 m, 
      RMS, max velocity:  0.169 m/year, 0.506 m/year
 
-*** Timestep 14:  t=6188.34 years
+*** Timestep 14:  t=6189.59 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -203,10 +196,10 @@ Number of free surface degrees of freedom: 544
    Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
-     Topography min/max: -3737 m, 1018 m, 
+     Topography min/max: -3737 m, 1017 m, 
      RMS, max velocity:  0.162 m/year, 0.483 m/year
 
-*** Timestep 15:  t=6800.69 years
+*** Timestep 15:  t=6801.98 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -214,25 +207,25 @@ Number of free surface degrees of freedom: 544
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Topography min/max: -3960 m, 1031 m, 
+     Topography min/max: -3959 m, 1031 m, 
      RMS, max velocity:  0.156 m/year, 0.463 m/year
 
 Number of active cells: 232 (on 5 levels)
 Number of degrees of freedom: 4,556 (2,138+280+1,069+1,069)
 
 Number of free surface degrees of freedom: 560
-*** Timestep 16:  t=7437.72 years
+*** Timestep 16:  t=7439.04 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+43 iterations.
+   Solving Stokes system... 30+27 iterations.
 
    Postprocessing:
-     Topography min/max: -4176 m, 1039 m, 
+     Topography min/max: -4175 m, 1039 m, 
      RMS, max velocity:  0.15 m/year, 0.445 m/year
 
-*** Timestep 17:  t=8098.55 years
+*** Timestep 17:  t=8099.89 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -243,7 +236,7 @@ Number of free surface degrees of freedom: 560
      Topography min/max: -4384 m, 1044 m, 
      RMS, max velocity:  0.146 m/year, 0.429 m/year
 
-*** Timestep 18:  t=8781.61 years
+*** Timestep 18:  t=8782.96 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -254,7 +247,7 @@ Number of free surface degrees of freedom: 560
      Topography min/max: -4586 m, 1046 m, 
      RMS, max velocity:  0.142 m/year, 0.414 m/year
 
-*** Timestep 19:  t=9486.01 years
+*** Timestep 19:  t=9487.36 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -265,7 +258,7 @@ Number of free surface degrees of freedom: 560
      Topography min/max: -4780 m, 1047 m, 
      RMS, max velocity:  0.138 m/year, 0.402 m/year
 
-*** Timestep 20:  t=10210.7 years
+*** Timestep 20:  t=10212.1 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
@@ -285,24 +278,6 @@ Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      7.83s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        23 |       1.7s |        22% |
-| Assemble composition system     |        23 |     0.928s |        12% |
-| Assemble temperature system     |        23 |     0.906s |        12% |
-| Build Stokes preconditioner     |        23 |      1.42s |        18% |
-| Build composition preconditioner|        23 |    0.0254s |      0.32% |
-| Build temperature preconditioner|        23 |    0.0259s |      0.33% |
-| Solve Stokes system             |        23 |      1.74s |        22% |
-| Solve composition system        |        23 |    0.0261s |      0.33% |
-| Solve temperature system        |        23 |   0.00974s |      0.12% |
-| FreeSurface                     |        23 |     0.316s |         4% |
-| Initialization                  |         4 |    0.0642s |      0.82% |
-| Postprocessing                  |        21 |    0.0403s |      0.51% |
-| Refine mesh structure, part 1   |         6 |     0.121s |       1.6% |
-| Refine mesh structure, part 2   |         6 |    0.0129s |      0.17% |
-| Setup dof systems               |         7 |     0.208s |       2.7% |
 +---------------------------------+-----------+------------+------------+
 
