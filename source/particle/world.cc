@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 
 #include <deal.II/numerics/fe_field_function.h>
+#include <deal.II/base/quadrature_lib.h>
+#include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -271,8 +273,19 @@ namespace aspect
                 {}
             }
 
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
+          try
+            {
+              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+            }
+          catch (GridTools::ExcPointNotFound<dim> &)
+            {
+              // If we can find no cell for this particle it has left the domain due
+              // to an integration error or an open boundary. Simply remove the
+              // tracer in this case.
+              particles.erase(it++);
+              continue;
+            }
 
           const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 
@@ -405,8 +418,19 @@ namespace aspect
           Particle<dim> recv_particle(recv_data_it,property_manager->get_data_len());
           integrator->read_data(recv_data_it, recv_particle.get_id());
 
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
+          try
+            {
+              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+            }
+          catch (GridTools::ExcPointNotFound<dim> &)
+            {
+              // If we can find no cell for this particle it has left the domain due
+              // to an integration error or open boundary. Simply ignore the
+              // tracer in this case.
+              continue;
+            }
+
 
           if (cell->is_locally_owned())
             {
@@ -422,20 +446,15 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &velocities,
-                                        std::vector<Tensor<1,dim> > &old_velocities)
+    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &old_velocities,
+                                        std::vector<Tensor<1,dim> > &velocities)
     {
-      Vector<double>                single_res(dim);
-      std::vector<Vector<double> >  result(50,single_res);
-      std::vector<Vector<double> >  old_result(50,single_res);
-      std::vector<Point<dim> >      particle_points(50);
+      std::vector<Tensor<1,dim> >  result;
+      std::vector<Tensor<1,dim> >  old_result;
+      std::vector<Point<dim> >     particle_points;
 
       const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
       const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
-
-      // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> old_fe_value(*dof_handler, this->get_old_solution(), this->get_mapping());
 
       unsigned int particle_idx = 0;
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
@@ -445,43 +464,42 @@ namespace aspect
           // Get the current cell
           const LevelInd cur_cell = it->first;
 
+          // Get the cell the particle is in
+          const typename DoFHandler<dim>::active_cell_iterator cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
+
           // Resize the vectors to the number of particles in this cell
           const unsigned int num_cell_particles = particles.count(cur_cell);
           particle_points.resize(num_cell_particles);
+          result.resize(num_cell_particles);
+          old_result.resize(num_cell_particles);
 
           // Get a vector of the particle locations in this cell
           unsigned int n_particles_in_cell = 0;
           while (it != particles.end() && it->first == cur_cell)
             {
-              particle_points[n_particles_in_cell++] = it->second.get_location();
+              const Point<dim> position = it->second.get_location();
+              particle_points[n_particles_in_cell++] = this->get_mapping().transform_real_to_unit_cell(cell, position);
               it++;
             }
 
-          result.resize(n_particles_in_cell, single_res);
-          old_result.resize(n_particles_in_cell, single_res);
-          particle_points.resize(n_particles_in_cell);
+          const std::vector< double > ww(num_cell_particles, 1./((double) num_cell_particles));
+          const Quadrature<dim> quadrature_formula(particle_points, ww);
+          FEValues<dim> fe_value (this->get_mapping(),
+                                  this->get_fe(),
+                                  quadrature_formula,
+                                  update_values);
 
-          // Get the cell the particle is in
-          const typename DoFHandler<dim>::active_cell_iterator found_cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
-
-          // Interpolate the velocity field for each of the particles
-          old_fe_value.set_active_cell(found_cell);
-          old_fe_value.vector_value_list(particle_points, old_result);
-
-          fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, result);
+          fe_value.reinit (cell);
+          fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                    result);
+          fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
+                                                                                    old_result);
 
           // Copy the resulting velocities to the appropriate vector#
-          for (unsigned int id = 0; id < n_particles_in_cell; ++id)
+          for (unsigned int id = 0; id < num_cell_particles; ++id)
             {
-              Tensor<1,dim> velocity, old_velocity;
-              for (unsigned int d=0; d<dim; ++d)
-                {
-                  velocity[d] = result[id][d];
-                  old_velocity[d] = old_result[id][d];
-                }
-              velocities[particle_idx] = velocity;
-              old_velocities[particle_idx] = old_velocity;
+              velocities[particle_idx] = result[id];
+              old_velocities[particle_idx] = old_result[id];
               particle_idx++;
             }
         }

@@ -1,0 +1,41 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:   0.1 m/s, 0.1 m/s
+     Advected particles:  1. Writing particle graphical output output-tracer_linear_accelerated_flow_rk2/particle-00000
+
+*** Timestep 1:  t=1 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:   1.1 m/s, 1.1 m/s
+     Advected particles:  1. Writing particle graphical output output-tracer_linear_accelerated_flow_rk2/particle-00001
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.056s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble temperature system     |         2 |   0.00526s |       9.4% |
+| Build temperature preconditioner|         2 |  0.000446s |       0.8% |
+| Solve temperature system        |         2 |   0.00061s |       1.1% |
+| Initialization                  |         2 |    0.0401s |        72% |
+| Postprocessing                  |         2 |    0.0039s |         7% |
+| Setup dof systems               |         1 |   0.00302s |       5.4% |
++---------------------------------+-----------+------------+------------+
+
