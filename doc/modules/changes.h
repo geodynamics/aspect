@@ -7,6 +7,14 @@
  *
  * <ol>
  *
+ * <li> Fixed: Quasi-implicit stabilization of a free surface had used the 
+ * reference density instead of the density as evaluated by the material 
+ * model.  Now it uses the actual density of at the surface.  This should 
+ * not change much unless the density at the surface is significantly 
+ * different from the reference density.
+ * <br>
+ * (Ian Rose, 2015/07/22)
+ *
  * <li> New: Plugin for visualizing groups of compositional fields as vectors.
  * <br>
  * (Jonathan Perry-Houts, 2015/07/12)

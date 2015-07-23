@@ -650,7 +650,11 @@ namespace aspect
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, quadrature, update_flags);
     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points;
 
-    const FEValuesExtractors::Vector velocities (0);
+    MaterialModel::MaterialModelInputs<dim> in(n_face_q_points,
+                                               sim.parameters.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_face_q_points,
+                                                 sim.parameters.n_compositional_fields);
+    std::vector<std::vector<double> > composition_values (sim.parameters.n_compositional_fields,std::vector<double> (n_face_q_points));
 
     //only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
@@ -668,9 +672,28 @@ namespace aspect
               continue;
 
             fe_face_values.reinit(cell, face_no);
-
-            //come up with the density contrast across the free surface
             std::vector<Point<dim> > quad_points = fe_face_values.get_quadrature_points();
+
+            //Evaluate the density at the surface quadrature points
+            fe_face_values[sim.introspection.extractors.temperature]
+            .get_function_values (sim.solution, in.temperature);
+            fe_face_values[sim.introspection.extractors.pressure]
+            .get_function_values (sim.solution, in.pressure);
+
+            in.position = quad_points;
+            in.strain_rate.resize(0);  //no need for viscosity
+
+            for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
+              fe_face_values[sim.introspection.extractors.compositional_fields[c]]
+              .get_function_values(sim.solution,
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
+
+            sim.material_model->evaluate(in, out);
 
             for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
               for (unsigned int i=0; i< fe_face_values.dofs_per_cell; ++i)
@@ -682,13 +705,12 @@ namespace aspect
                     double g_norm = gravity.norm();
 
                     //construct the relevant vectors
-                    const Tensor<1,dim> v =     fe_face_values[velocities].value(j, q_point);
+                    const Tensor<1,dim> v =     fe_face_values[sim.introspection.extractors.velocities].value(j, q_point);
                     const Tensor<1,dim> n_hat = fe_face_values.normal_vector(q_point);
-                    const Tensor<1,dim> w =     fe_face_values[velocities].value(i, q_point);
+                    const Tensor<1,dim> w =     fe_face_values[sim.introspection.extractors.velocities].value(i, q_point);
                     const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
-                    //TODO we should use the actual density, not the reference density here.
-                    double pressure_perturbation = std::abs(sim.material_model->reference_density())*
+                    double pressure_perturbation = out.densities[q_point]*
                                                    sim.time_step*free_surface_theta*g_norm;
 
                     //The fictive stabilization stress is (w.g)*(v.n)
