@@ -86,7 +86,7 @@ namespace aspect
               peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
 
             // melt fraction after melting of all clinopyroxene
-            const double R_cpx = r1 + r2 * pressure;
+            const double R_cpx = r1 + r2 * std::max(0.0, pressure);
             const double F_max = M_cpx / R_cpx;
 
             if (peridotite_melt_fraction > F_max && temperature < T_liquidus)

@@ -130,7 +130,7 @@ namespace aspect
         peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
 
       // melt fraction after melting of all clinopyroxene
-      const double R_cpx = r1 + r2 * pressure;
+      const double R_cpx = r1 + r2 * std::max(0.0, pressure);
       const double F_max = M_cpx / R_cpx;
 
       if(peridotite_melt_fraction > F_max && temperature < T_liquidus)
@@ -184,7 +184,7 @@ namespace aspect
               / pow(T_lherz_liquidus - T_solidus,2);
 
           // melt fraction after melting of all clinopyroxene
-          const double R_cpx = r1 + r2 * pressure;
+	  const double R_cpx = r1 + r2 * std::max(0.0, pressure);
           const double F_max = M_cpx / R_cpx;
 
           if (melt_fraction(temperature, pressure) > F_max)
@@ -294,7 +294,7 @@ namespace aspect
                     out.reaction_terms[i][c] = 0.0;
                 }
 
-              const double porosity = std::max(in.composition[i][porosity_idx],0.0);
+              const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
               out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
             }
           else

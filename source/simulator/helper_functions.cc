@@ -426,7 +426,7 @@ namespace aspect
                   double p_s = in.pressure[q];
                   double p_f = fluid_pressure_values[q];
 
-                  if (porosity < parameters.melt_transport_threshold)
+                  if (porosity <= parameters.melt_transport_threshold)
                     melt_velocity = velocity_values[q];
                   else
                     {
