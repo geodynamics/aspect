@@ -72,13 +72,6 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
-#ifndef DEAL_II_WITH_ZLIB
-    AssertThrow (resume_computation == false,
-                 ExcMessage ("You need to have deal.II configured with the 'libz' "
-                             "option if you want to resume a computation from a checkpoint, but deal.II "
-                             "did not detect its presence when you called 'cmake'."));
-#endif
-
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
@@ -687,6 +680,13 @@ namespace aspect
                  ExcInternalError());
 
     resume_computation      = prm.get_bool ("Resume computation");
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
+
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
