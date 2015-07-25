@@ -377,8 +377,17 @@ namespace aspect
           porosity = std::max(std::min(porosity,0.995),1e-4);
           out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
-          const double delta_temp = in.temperature[i]-reference_T;
-          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+          double visc_temperature_dependence = 1.0;
+          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+            {
+              const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
+              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+            }
+          else
+            {
+              const double delta_temp = in.temperature[i]-reference_T;
+              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+            }
           out.compaction_viscosities[i] *= visc_temperature_dependence;
         }
     }
