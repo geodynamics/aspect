@@ -134,19 +134,25 @@ namespace aspect
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = std::max(in.composition[i][porosity_idx],1e-4);
-            const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i]
-                                                           - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
-            const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
-
             out.viscosities[i] = eta_0 * std::exp(alpha*(porosity - background_porosity));
-            if(std::abs(second_strain_rate_invariant) > 1e-30)
-              out.viscosities[i] *= std::pow(second_strain_rate_invariant,strain_rate_dependence);
+	    if (in.strain_rate.size())
+	      {
+		const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i]
+								 - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+		const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+		
+		if(std::abs(second_strain_rate_invariant) > 1e-30)
+		  out.viscosities[i] *= std::pow(second_strain_rate_invariant,strain_rate_dependence);
+	      }
+	    
 
             out.densities[i] = reference_rho_s;
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 0.0;
             out.compressibilities[i] = 0.0;
+            for (unsigned int c=0;c<in.composition[i].size();++c)
+              out.reaction_terms[i][c] = 0.0;
           }
       }
 
