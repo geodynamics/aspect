@@ -399,6 +399,7 @@ namespace aspect
 
               const unsigned int porosity_idx = introspection.compositional_index_for_name("porosity");
 
+              in.strain_rate.resize(0);// we are not reading the viscosity
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
                   for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
