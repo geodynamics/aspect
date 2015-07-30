@@ -52,7 +52,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      next_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::quiet_NaN()),
       n_depth_zones (100)
     {}
 
@@ -65,11 +65,11 @@ namespace aspect
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during
       // the first time step
-      if (std::isnan(next_output_time))
-        next_output_time = this->get_time();
+      if (std::isnan(last_output_time))
+        last_output_time = this->get_time() - output_interval;
 
       // see if output is requested at this time
-      if (this->get_time() < next_output_time)
+      if (this->get_time() < last_output_time + output_interval)
         return std::pair<std::string,std::string>();
 
       const unsigned int n_statistics = 8+this->n_compositional_fields();
@@ -173,7 +173,7 @@ namespace aspect
         }
 
 
-      set_next_output_time (this->get_time());
+      set_last_output_time (this->get_time());
 
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
@@ -232,6 +232,8 @@ namespace aspect
         prm.enter_subsection("Depth average");
         {
           output_interval = prm.get_double ("Time between graphical output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
           n_depth_zones = prm.get_integer ("Number of zones");
           output_format = DataOutBase::parse_output_format(prm.get("Output format"));
         }
@@ -245,7 +247,7 @@ namespace aspect
     template <class Archive>
     void DepthAverage<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &next_output_time
+      ar &last_output_time
       & entries;
     }
 
@@ -273,28 +275,25 @@ namespace aspect
           aspect::iarchive ia (is);
           ia >> (*this);
         }
-
-      // set next output time to something useful
-      set_next_output_time (this->get_time());
     }
 
 
     template <int dim>
     void
-    DepthAverage<dim>::set_next_output_time (const double current_time)
+    DepthAverage<dim>::set_last_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
       // a positive multiple.
       if (output_interval > 0)
         {
-          // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          const double output_interval_in_s = (this->convert_output_to_years() ?
-                                               (output_interval*year_in_seconds) :
-                                               output_interval);
-
-          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
-          // even if it is a whole number already (otherwise we output twice in a row)
-          next_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
   }
