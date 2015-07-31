@@ -654,23 +654,12 @@ namespace aspect
       }
       prm.leave_subsection();
 
-//dependences
-//viscosity
+      // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
-
-      //density dependence
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
-
-      //other dependences
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-
-
-
-
-
-
     }
   }
 }

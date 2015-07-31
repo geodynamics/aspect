@@ -165,37 +165,21 @@ namespace aspect
       }
       prm.leave_subsection();
 
-//declare dependencies
+      // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-
-//density dependence
-// if density depends on temperature
       this->model_dependence.density = NonlinearDependence::none;
-      if ( (thermal_alpha != 0))
-        {
-          //if it also depends on pressure
-          if ( (reference_compressibility != 0))
-            this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure;
-          //if it only depends on temperature
-          else
-            this->model_dependence.density = NonlinearDependence::temperature;
-        }
-//if it only depends on pressure
-      else if ((reference_compressibility != 0))
-        this->model_dependence.density = NonlinearDependence::pressure;
-//no dependencies
-      else
-        this->model_dependence.density = NonlinearDependence::none;
 
-
-
-
+      if (thermal_alpha != 0)
+        this->model_dependence.density |= NonlinearDependence::temperature;
+      if (reference_compressibility != 0)
+        this->model_dependence.density |= NonlinearDependence::pressure;
     }
   }
 }
+
 // explicit instantiations
 namespace aspect
 {
