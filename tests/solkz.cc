@@ -873,26 +873,17 @@ namespace aspect
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
-template <int dim>
+
+    template <int dim>
     void
-   SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
-      SolKzMaterial<dim>::parse_parameters(prm);
       this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
       this->model_dependence.density = MaterialModel::NonlinearDependence::none;
       this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
       this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;   
-
-
-
-}
-
-
-
-
-
-
+    }
   }
 }
 
