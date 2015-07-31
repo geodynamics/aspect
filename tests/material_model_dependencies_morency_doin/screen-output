@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libmaterial_model_dependencies_morency_doin.so>
 
@@ -20,26 +13,17 @@ Number of degrees of freedom: 268 (162+25+81)
       Nonlinear Stokes residual: 1.28113e-09
 
    Postprocessing:
-viscosity depends on pressure temperature strainrate composition 
-density depends on pressure temperature composition 
-compressibility depends on 
-specific_heat depends on 
-thermal_conductivity depends on composition 
+viscosity depends on temperature strainrate composition
+density depends on temperature composition
+compressibility depends on
+specific_heat depends on
+thermal_conductivity depends on temperature composition
 model is incompressible
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0617s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |   0.00545s |       8.8% |
-| Build Stokes preconditioner     |         2 |     0.012s |        19% |
-| Solve Stokes system             |         2 |   0.00552s |         9% |
-| Initialization                  |         2 |    0.0328s |        53% |
-| Postprocessing                  |         1 |  0.000125s |       0.2% |
-| Setup dof systems               |         1 |   0.00345s |       5.6% |
 +---------------------------------+-----------+------------+------------+
 

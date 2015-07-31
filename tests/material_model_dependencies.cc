@@ -21,75 +21,75 @@ namespace aspect
 
 	 const aspect::MaterialModel::Interface<dim> &model
 	   = this->get_material_model();
-	 std::cout << "viscosity depends on "
+	 std::cout << "viscosity depends on"
 		   << ((model.get_model_dependence().viscosity & MaterialModel::NonlinearDependence::pressure)
 		       ?
-		       "pressure " : "")
+		       " pressure" : "")
 		   << ((model.get_model_dependence().viscosity & MaterialModel::NonlinearDependence::temperature)
 		       ?
-		       "temperature " : "")
+		       " temperature" : "")
 		   << ((model.get_model_dependence().viscosity & MaterialModel::NonlinearDependence::strain_rate)
 		       ?
-		       "strainrate " : "")
+		       " strainrate" : "")
 		   << ((model.get_model_dependence().viscosity & MaterialModel::NonlinearDependence::compositional_fields)
 		       ?
-		       "composition " : "")
+		       " composition" : "")
 		   << std::endl;
-	 std::cout << "density depends on "
+	 std::cout << "density depends on"
 		   << ((model.get_model_dependence().density & MaterialModel::NonlinearDependence::pressure)
 		       ?
-		       "pressure " : "")
+		       " pressure" : "")
 		   << ((model.get_model_dependence().density & MaterialModel::NonlinearDependence::temperature)
 		       ?
-		       "temperature " : "")
+		       " temperature" : "")
 		   << ((model.get_model_dependence().density & MaterialModel::NonlinearDependence::strain_rate)
 		       ?
-		       "strainrate " : "")
+		       " strainrate" : "")
 		   << ((model.get_model_dependence().density & MaterialModel::NonlinearDependence::compositional_fields)
 		       ?
-		       "composition " : "")
+		       " composition" : "")
 		   << std::endl;
-	 std::cout << "compressibility depends on "
+	 std::cout << "compressibility depends on"
 		   << ((model.get_model_dependence().compressibility & MaterialModel::NonlinearDependence::pressure)
 		       ?
-		       "pressure " : "")
+		       " pressure" : "")
 		   << ((model.get_model_dependence().compressibility & MaterialModel::NonlinearDependence::temperature)
 		       ?
-		       "temperature " : "")
+		       " temperature" : "")
 		   << ((model.get_model_dependence().compressibility & MaterialModel::NonlinearDependence::strain_rate)
 		       ?
-		       "strainrate " : "")
+		       " strainrate" : "")
 		   << ((model.get_model_dependence().compressibility & MaterialModel::NonlinearDependence::compositional_fields)
 		       ?
-		       "composition " : "")
+		       " composition" : "")
 		   << std::endl;
-	 std::cout << "specific_heat depends on "
+	 std::cout << "specific_heat depends on"
 		   << ((model.get_model_dependence().specific_heat & MaterialModel::NonlinearDependence::pressure)
 		       ?
-		       "pressure " : "")
+		       " pressure" : "")
 		   << ((model.get_model_dependence().specific_heat & MaterialModel::NonlinearDependence::temperature)
 		       ?
-		       "temperature " : "")
+		       " temperature" : "")
 		   << ((model.get_model_dependence().specific_heat & MaterialModel::NonlinearDependence::strain_rate)
 		       ?
-		       "strainrate " : "")
+		       " strainrate" : "")
 		   << ((model.get_model_dependence().specific_heat & MaterialModel::NonlinearDependence::compositional_fields)
 		       ?
-		       "composition " : "")
+		       " composition" : "")
 		   << std::endl;
-	 std::cout << "thermal_conductivity depends on "
+	 std::cout << "thermal_conductivity depends on"
 		   << ((model.get_model_dependence().thermal_conductivity & MaterialModel::NonlinearDependence::pressure)
 		       ?
-		       "pressure " : "")
+		       " pressure" : "")
 		   << ((model.get_model_dependence().thermal_conductivity & MaterialModel::NonlinearDependence::temperature)
 		       ?
-		       "temperature " : "")
+		       " temperature" : "")
 		   << ((model.get_model_dependence().thermal_conductivity & MaterialModel::NonlinearDependence::strain_rate)
 		       ?
-		       "strainrate " : "")
+		       " strainrate" : "")
 		   << ((model.get_model_dependence().thermal_conductivity & MaterialModel::NonlinearDependence::compositional_fields)
 		       ?
-		       "composition " : "")
+		       " composition" : "")
 		   << std::endl;
 	 std::cout << "model is "
 		   << (model.is_compressible() ? "compressible" : "incompressible")
