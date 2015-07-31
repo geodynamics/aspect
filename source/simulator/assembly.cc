@@ -1500,9 +1500,15 @@ namespace aspect
                                              0))
                                         * scratch.finite_element_values.JxW(q);
 
+        Tensor<1,dim> force_u;
+        for (unsigned int d=0;d<dim;++d)
+          force_u[d] = outputs->force_vector[q][d];
+        const double force_p = outputs->force_vector[q][dim];
+
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
-                                 (bulk_density * gravity * scratch.phi_u[i])
+                                 ((bulk_density * gravity + force_u) * scratch.phi_u[i])
+                                 + (pressure_scaling * force_p * scratch.phi_p[i])
                                  + (is_compressible
                                     ?
                                     (pressure_scaling *

@@ -282,6 +282,7 @@ namespace aspect
       reaction_terms.resize(n_points);
       for (unsigned int q=0; q<n_points; ++q)
         reaction_terms[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
+      force_vector.resize(n_points, Vector<double>(dim+1));
     }
 
 
