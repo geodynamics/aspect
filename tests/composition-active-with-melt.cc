@@ -71,7 +71,7 @@ namespace aspect
             out.specific_heat[i] = 1250.0;
             out.thermal_conductivities[i] = 1e-6;
             out.compressibilities[i] = 0.0;
-            out.densities[i] = 1.0 * (1 - out.thermal_expansion_coefficients[i] * in.temperature[i]) + 100*in.composition[i][0];
+            out.densities[i] = 1.0 * (1 - out.thermal_expansion_coefficients[i] * in.temperature[i]) + 100.0*std::max(in.composition[i][0],0.0);
 
             // Pressure derivative of entropy at the given positions.
             out.entropy_derivative_pressure[i] = 0.0;
