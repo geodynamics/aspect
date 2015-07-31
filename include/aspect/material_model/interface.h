@@ -51,31 +51,25 @@ namespace aspect
     namespace NonlinearDependence
     {
       /**
-      *
-      *   NOTE/UPDATE: functionality of x_depends_on functions have been replaced by get_model_dependence();
-      *
-      *
+       *
        * An enum whose members are used in querying the nonlinear dependence
        * of physical parameters on other solution variables.
        *
        * The values of this enum are used in the
-       * MaterialModel::NonlinearDependence::model_dependence, queried by get_model_dependence()
+       * NonlinearDependence::model_dependence, queried by get_model_dependence()
        * to see if a coefficient like the viscosity, depends on the
        * temperature, pressure, strain rate, or compositional field value.
-       * Because the values of
-       * the enum are chosen so that they represent single bits in an integer,
-       * the result here is a number that can be represented in base-2 as 101
-       * (the number 100=4 for the strain rate and 001=1 for the temperature).
-       * The functions taking such arguments are required to return
-       * <code>true</code> whenever the coefficient represented by this
-       * function depends on <i>any</i> of the variables identified in the
-       * argument.
+       * Because the values of the enum are chosen so that they represent
+       * single bits in an integer, the result here is a number that can be
+       * represented in base-2 as 101 (the number 100=4 for the strain rate and
+       * 001=1 for the temperature).
        *
        * To query nonlinear dependence of a coefficient on any other variable,
        * you can use
        * @code
        *   material_model.get_model_dependence();
        * @endcode
+       * and compare the result to NonlinearDependence::Dependence::Variable.
        */
       enum Dependence
       {
