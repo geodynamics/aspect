@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/multicomponent.h>
 #include <aspect/simulator.h>
-#include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
 

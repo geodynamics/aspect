@@ -20,7 +20,6 @@
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <aspect/material_model/depth_dependent.h>
-#include <deal.II/base/parameter_handler.h>
 #include <utility>
 #include <limits>
 

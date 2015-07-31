@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/simpler.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 

@@ -469,13 +469,8 @@ namespace aspect
      * The second option is more efficient in general, but it is okay to use
      * option one for simple material models.
      *
-<<<<<<< HEAD
-     * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
-     * and reference_density() need to be implemented.
-=======
      * In all cases, model_dependence values, is_compressible(), reference_viscosity(),
      * reference_density() need to be implemented.
->>>>>>> work in progress
      *
      * @ingroup MaterialModels
      */

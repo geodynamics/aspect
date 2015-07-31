@@ -23,7 +23,6 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {

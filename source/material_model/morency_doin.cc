@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+
 #include <aspect/material_model/morency_doin.h>
 
 using namespace dealii;

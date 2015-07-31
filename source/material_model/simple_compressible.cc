@@ -19,7 +19,6 @@
 */
 
 #include <aspect/material_model/simple_compressible.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
