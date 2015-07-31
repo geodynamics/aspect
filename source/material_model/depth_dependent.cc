@@ -284,6 +284,7 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);

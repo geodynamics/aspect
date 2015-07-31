@@ -52,10 +52,6 @@ namespace aspect
                               MaterialModelOutputs<dim> &out) const;
 
         /**
-         * @}
-         */
-
-        /**
          * @name Qualitative properties one can ask a material model
          * @{
          */
