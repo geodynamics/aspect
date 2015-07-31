@@ -22,8 +22,6 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/parameter_handler.h>
-
 #include <iostream>
 #include <cmath>
 
@@ -201,12 +199,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.density = NonlinearDependence::none;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-
     }
   }
 }

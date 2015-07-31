@@ -648,12 +648,9 @@ namespace aspect
       /**
        * @}
        */
-    void
-    parse_parameters (ParameterHandler &prm);
 
-
-
-
+      void
+      parse_parameters (ParameterHandler &prm);
   };
 
 
@@ -780,6 +777,18 @@ namespace aspect
     return false;
   }
 
+  template <int dim>
+  void
+  SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
+  {
+    // Declare dependencies on solution variables
+    this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+    this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+    this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+    this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+    this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
+  }
+
 
 
 
@@ -872,17 +881,6 @@ namespace aspect
          << ", " << cellwise_errors_pl2.l2_norm();
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
-    }
-
-    template <int dim>
-    void
-    SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;   
     }
   }
 }

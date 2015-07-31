@@ -2699,6 +2699,7 @@ namespace aspect
        }
        prm.leave_subsection();
      
+       // Declare dependencies on solution variables
        this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
        this->model_dependence.density = MaterialModel::NonlinearDependence::none;
        this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
