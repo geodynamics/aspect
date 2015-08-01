@@ -646,6 +646,10 @@ namespace aspect
                          "for velocity/pressure, temperature, and compositions in each "
                          "time step, as well as their corresponding preconditioners."
                          "\n\n"
+                         "Possible choices: " + MaterialModel::MaterialAveraging::
+                         get_averaging_operation_names()
+                         +
+                         "\n\n"
                          "The process of averaging, and where it may be used, is "
                          "discussed in more detail in "
                          "Section~\\ref{sec:sinker-with-averaging}."
