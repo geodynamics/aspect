@@ -1066,7 +1066,11 @@ namespace aspect
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
-        // TODO: averaging
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   melt_outputs);
         outputs = &melt_outputs;
       }
 
@@ -1392,7 +1396,11 @@ namespace aspect
         typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
-        // TODO: averaging
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   melt_outputs);
         outputs = &melt_outputs;
       }
 

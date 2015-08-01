@@ -311,6 +311,19 @@ namespace aspect
     };
 
 
+    template <int dim>
+    struct MeltMaterialModelOutputs: public MaterialModelOutputs<dim>
+     {
+        MeltMaterialModelOutputs (const unsigned int n_points,
+                              const unsigned int n_comp);
+
+        std::vector<double> compaction_viscosities;
+        std::vector<double> fluid_viscosities;
+        std::vector<double> permeabilities;
+        std::vector<double> fluid_densities;
+        std::vector<double> fluid_compressibilities;
+     };
+
     /**
      * A namespace in which we define how material model outputs should be
      * averaged on each cell.
@@ -394,6 +407,12 @@ namespace aspect
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
                     MaterialModelOutputs<dim>          &values_out);
+      template <int dim>
+      void average (const AveragingOperation operation,
+                    const typename DoFHandler<dim>::active_cell_iterator &cell,
+                    const Quadrature<dim>         &quadrature_formula,
+                    const Mapping<dim>            &mapping,
+                    MeltMaterialModelOutputs<dim>          &values_out);
     }
 
 

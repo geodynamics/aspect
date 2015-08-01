@@ -37,17 +37,12 @@ namespace aspect
     MeltInterface<dim>::~MeltInterface ()
     {}
 
-    template <int dim>
-    MeltInterface<dim>::MaterialModelInputs::MaterialModelInputs(const unsigned int n_points,
-                                                               const unsigned int n_comp)
-    : Interface<dim>::MaterialModelInputs(n_points, n_comp)
-    {
-    }
+
 
     template <int dim>
-    MeltInterface<dim>::MaterialModelOutputs::MaterialModelOutputs(const unsigned int n_points,
+    MeltMaterialModelOutputs<dim>::MeltMaterialModelOutputs(const unsigned int n_points,
                                                                const unsigned int n_comp)
-    : Interface<dim>::MaterialModelOutputs(n_points, n_comp)
+    : MaterialModelOutputs<dim>(n_points, n_comp)
     {
       compaction_viscosities.resize(n_points);
       fluid_viscosities.resize(n_points);
@@ -66,7 +61,8 @@ namespace aspect
   namespace MaterialModel
   {
 #define INSTANTIATE(dim) \
-  template class MeltInterface<dim>;
+  template class MeltInterface<dim>;\
+  template class MeltMaterialModelOutputs<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
