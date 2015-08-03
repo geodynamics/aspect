@@ -1120,6 +1120,20 @@ namespace aspect
     // This needs to happen after the periodic constraints are added:
     setup_nullspace_constraints(constraints);
 
+    // TODO: make this optional
+    if (parameters.include_melt_transport)
+    { // add a single pressure DoF
+      const types::global_dof_index global_idx = introspection.system_dofs_per_block[0];
+
+      // Finally set this DoF to zero (if we care about it):
+      if (constraints.can_store_line(global_idx))
+        {
+          Assert(!constraints.is_constrained((global_idx)), ExcInternalError());
+          constraints.add_line(global_idx);
+        }
+
+    }
+
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
     // addition, we may be computing constraints from boundary values for the
