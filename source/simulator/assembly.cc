@@ -692,12 +692,15 @@ namespace aspect
           (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
            / old_time_step);
 
+        const Tensor<1,dim> gravity = gravity_model->gravity_vector (scratch.explicit_material_model_inputs.position[q]);
+
         // TODO: we use the current velocity divergences here instead of the old ones
         const double melt_transport_RHS = compute_melting_RHS (scratch,
                                                                scratch.explicit_material_model_inputs,
                                                                scratch.explicit_material_model_outputs,
                                                                advection_field,
-                                                               q);
+                                                               q,
+                                                               gravity);
 
         const double melt_transport_LHS =
           ((parameters.include_melt_transport && advection_field.is_porosity(introspection))
@@ -1019,6 +1022,36 @@ namespace aspect
     material_model_inputs.cell = &cell;
   }
 
+  template <int dim>
+  void
+  Simulator<dim>::
+  average_gravity_vector(const Quadrature<dim> &quadrature,
+                         const Mapping<dim> &mapping,
+                         const typename DoFHandler<dim>::active_cell_iterator &cell,
+                         const std::vector<Point<dim> > &quadrature_points,
+                         std::vector<std::vector<double> > &gravity_values) const
+  {
+    //TODO: check that vector has correct size
+
+    for (unsigned int q_point=0; q_point<quadrature_points.size(); ++q_point)
+      {
+        const Tensor<1,dim> gravity_vector = gravity_model->gravity_vector (quadrature_points[q_point]);
+        for (unsigned int d=0; d<dim; ++d)
+          {
+            gravity_values[d][q_point] = gravity_vector[d];
+          }
+      }
+
+    for (unsigned int d=0; d<dim; ++d)
+      {
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   quadrature,
+                                                   mapping,
+                                                   gravity_values[d]);
+      }
+  }
+
 
   template <int dim>
   void
@@ -1294,7 +1327,8 @@ namespace aspect
   compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                              typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
                              typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-                             const unsigned int q_point) const
+                             const unsigned int q_point,
+                             const Tensor<1,dim> &gravity) const
   {
     if (!parameters.include_melt_transport)
       return 0.0;
@@ -1314,9 +1348,6 @@ namespace aspect
     		            material_model_outputs.permeabilities[q_point] / material_model_outputs.fluid_viscosities[q_point]
     		            :
     		            0.0);
-
-    const Tensor<1,dim>
-    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
 
     double fluid_pressure_RHS = 0.0;
 
@@ -1404,6 +1435,13 @@ namespace aspect
         outputs = &melt_outputs;
       }
 
+    std::vector<std::vector<double> > gravity_values (dim, std::vector<double>(scratch.finite_element_values.n_quadrature_points));
+    average_gravity_vector(scratch.finite_element_values.get_quadrature(),
+                           scratch.finite_element_values.get_mapping(),
+                           cell,
+                           scratch.finite_element_values.get_quadrature_points(),
+                           gravity_values);
+
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
@@ -1436,8 +1474,9 @@ namespace aspect
                             :
                             std::numeric_limits<double>::quiet_NaN());
 
-        const Tensor<1,dim>
-        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
+        Tensor<1,dim> gravity;
+        for (unsigned int d=0; d<dim; ++d)
+          gravity[d] = gravity_values[d][q];
 
         const double compressibility
           = (is_compressible
@@ -1473,7 +1512,8 @@ namespace aspect
             p_f_RHS = compute_fluid_pressure_RHS(scratch,
                 melt_inputs,
                 melt_outputs,
-                q);
+                q,
+                gravity);
           }
 
         if (rebuild_stokes_matrix)
@@ -1562,6 +1602,13 @@ namespace aspect
             AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
             melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
 
+            std::vector<std::vector<double> > gravity_values (dim, std::vector<double>(scratch.finite_element_values.n_quadrature_points));
+            average_gravity_vector(QGauss<dim>(2),
+                                   scratch.finite_element_face_values.get_mapping(),
+                                   cell,
+                                   scratch.finite_element_face_values.get_quadrature_points(),
+                                   gravity_values);
+
             std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
             fluid_pressure_boundary_conditions->fluid_pressure_gradient(melt_inputs,
                 melt_outputs,
@@ -1569,8 +1616,9 @@ namespace aspect
 
             for (unsigned int q=0; q<n_face_q_points; ++q)
               {
-                const Tensor<1,dim>
-                gravity = gravity_model->gravity_vector (scratch.finite_element_face_values.quadrature_point(q));
+                Tensor<1,dim> gravity;
+                for (unsigned int d=0; d<dim; ++d)
+                  gravity[d] = gravity_values[d][q];
                 const double density_f = melt_outputs.fluid_densities[q];
                 const double density_s = melt_outputs.densities[q];
 
@@ -1777,7 +1825,8 @@ namespace aspect
                                       typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                       typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                       const AdvectionField     &advection_field,
-                                      const unsigned int q_point) const
+                                      const unsigned int q_point,
+                                      const Tensor<1,dim> &gravity) const
   {
     if ((!advection_field.is_porosity(introspection)) || (!parameters.include_melt_transport))
       return 0.0;
@@ -1795,15 +1844,11 @@ namespace aspect
                                          material_model_outputs.compressibilities[q_point]
                                          :
                                          0.0);
+
     const Tensor<1,dim> current_u     = scratch.current_velocity_values[q_point];
-    const Tensor<1,dim>
-    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
 
     double melt_transport_RHS = melting_rate / density
-    		                + divergence_u + compressibility * density * (current_u * gravity);
-
-    if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold)
-      melt_transport_RHS = melting_rate / density + compressibility * density * (current_u * gravity);
+    		                + scratch.current_velocity_divergences[q_point] + compressibility * density * (current_u * gravity);
 
     return melt_transport_RHS;
   }
@@ -1927,6 +1972,19 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                               cell,
+                                               scratch.finite_element_values.get_quadrature(),
+                                               scratch.finite_element_values.get_mapping(),
+                                               scratch.current_velocity_divergences);
+
+    std::vector<std::vector<double> > gravity_values (dim, std::vector<double>(scratch.finite_element_values.n_quadrature_points));
+    average_gravity_vector(scratch.finite_element_values.get_quadrature(),
+                           scratch.finite_element_values.get_mapping(),
+                           cell,
+                           scratch.finite_element_values.get_quadrature_points(),
+                           gravity_values);
+
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
     heating_model_manager.evaluate(scratch.material_model_inputs,
                                    scratch.material_model_outputs,
@@ -2025,11 +2083,16 @@ namespace aspect
            :
            scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
 
+        Tensor<1,dim> gravity;
+        for (unsigned int d=0; d<dim; ++d)
+          gravity[d] = gravity_values[d][q];
+
         const double melt_transport_RHS = compute_melting_RHS (scratch,
                                                                scratch.material_model_inputs,
                                                                scratch.material_model_outputs,
                                                                advection_field,
-                                                               q);
+                                                               q,
+                                                               gravity);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -2058,7 +2121,7 @@ namespace aspect
               scratch.material_model_outputs.compressibilities[q]
               * scratch.material_model_outputs.densities[q]
               * current_u
-              * gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q))
+              * gravity
               :
               0.0)
            :
