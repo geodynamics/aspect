@@ -340,7 +340,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|nwd arithmetic average|nwd harmonic average|nwd geometric average";
       }
 
 
@@ -358,6 +358,12 @@ namespace aspect
           return pick_largest;
         else if (s == "project to Q1")
           return project_to_Q1;
+        else if (s == "nwd arithmetic average")
+          return nwd_arithmetic_average;
+        else if (s == "nwd harmonic average")
+          return nwd_harmonic_average;
+        else if (s == "nwd geometric average")
+          return nwd_geometric_average;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
