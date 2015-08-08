@@ -399,6 +399,18 @@ namespace aspect
        */
       void
       get_depth_average_Vp(std::vector<double> &values) const;
+
+      /**
+       * Compute a depth average of the heat flux, with the sign
+       * convention of positive heat flux when it flows upwards.
+       *
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_depth_average_heat_flux(std::vector<double> &values) const;
+      /** @} */
       /** @} */
 
 

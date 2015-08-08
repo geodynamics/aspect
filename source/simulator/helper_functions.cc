@@ -1207,6 +1207,76 @@ namespace aspect
     compute_depth_average(values, f);
   }
 
+  namespace
+  {
+    template <int dim>
+    class FunctorDepthAverageHeatFlux
+    {
+      public:
+        FunctorDepthAverageHeatFlux(const FEValuesExtractors::Vector &velocity_field,
+                                    const FEValuesExtractors::Scalar &temperature_field,
+                                    const GravityModel::Interface<dim> *gm)
+          : velocity_field_(velocity_field),
+            temperature_field_(temperature_field),
+            gravity_model(gm)
+        {}
+
+        bool need_material_properties() const
+        {
+          return true;
+        }
+
+        void setup(const unsigned int q_points)
+        {
+          velocity_values.resize(q_points);
+          temperature_values.resize(q_points);
+          temperature_gradients.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output)
+        {
+          fe_values[velocity_field_].get_function_values (solution, velocity_values);
+          fe_values[temperature_field_].get_function_values (solution, temperature_values);
+          fe_values[temperature_field_].get_function_gradients (solution, temperature_gradients);
+
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertical = -gravity/( gravity.norm() != 0.0 ?
+                                                        gravity.norm() : 1.0 );
+              const double advective_flux = (velocity_values[q] * vertical) * in.temperature[q] *
+                                            out.densities[q]*out.specific_heat[q];
+              const double conductive_flux = -(temperature_gradients[q]*vertical) *
+                                             out.thermal_conductivities[q];
+              output[q] = advective_flux + conductive_flux;
+            }
+        }
+
+        const FEValuesExtractors::Vector velocity_field_;
+        const FEValuesExtractors::Scalar temperature_field_;
+        const GravityModel::Interface<dim> *gravity_model;
+        std::vector<Tensor<1,dim> > velocity_values;
+        std::vector<Tensor<1,dim> > temperature_gradients;
+        std::vector<double> temperature_values;
+    };
+
+  }
+
+  template <int dim>
+  void Simulator<dim>::compute_depth_average_heat_flux(std::vector<double> &values) const
+  {
+    FunctorDepthAverageHeatFlux<dim> f(introspection.extractors.velocities,
+                                       introspection.extractors.temperature,
+                                       this->gravity_model.get());
+
+    compute_depth_average(values, f);
+  }
+
+
 
 
   template <int dim>
@@ -1239,6 +1309,7 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_heat_flux(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
