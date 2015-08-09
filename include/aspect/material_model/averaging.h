@@ -55,6 +55,10 @@ namespace aspect
     * quadrature point to \f[ \bar x = \max_{1\le q\le Q} x_q \f] where
     * $x_q$ are the values at the $Q$ quadrature points.
     *
+    * - Log average: Set the values of each output quantity at every
+    * quadrature point to \f[ \bar x = 10^{\frac 1Q \sum_{q=1}^Q log10_{x_q}} \f]
+    * where $x_q$ are the values at the $Q$ quadrature points.
+    *
     * - NWD Arithmetic averaging: Set the values of each output quantity at
     * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q} \f]
     * where $x_q$ are the values and $w$ the weights at the $Q$ quadrature points.
@@ -76,6 +80,7 @@ namespace aspect
       harmonic_average,
       geometric_average,
       pick_largest,
+      log_average,
       nwd_arithmetic_average,
       nwd_harmonic_average,
       nwd_geometric_average

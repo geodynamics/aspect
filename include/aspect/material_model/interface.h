@@ -347,6 +347,10 @@ namespace aspect
        * points and computes the best bi- or trilinear approximation for them.
        * In other words, it projects the values into the $Q_1$ finite element
        * space. It then re-evaluate this projection at the quadrature points.
+       *
+       * - Log average: Set the values of each output quantity at every
+       * quadrature point to \f[ \bar x = 10^{\frac 1Q \sum_{q=1}^Q log10_{x_q}} \f]
+       * where $x_q$ are the values at the $Q$ quadrature points.
        */
       enum AveragingOperation
       {
@@ -355,7 +359,8 @@ namespace aspect
         harmonic_average,
         geometric_average,
         pick_largest,
-        project_to_Q1
+        project_to_Q1,
+        log_average
       };
 
 
