@@ -56,7 +56,7 @@ namespace aspect
     * $x_q$ are the values at the $Q$ quadrature points.
     *
     * - Log average: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = 10^{\frac 1Q \sum_{q=1}^Q log10_{x_q}} \f]
+    * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10} x_q} \f]
     * where $x_q$ are the values at the $Q$ quadrature points.
     *
     * - NWD Arithmetic averaging: Set the values of each output quantity at
