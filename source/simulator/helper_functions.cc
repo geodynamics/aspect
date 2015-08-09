@@ -1210,12 +1210,12 @@ namespace aspect
   namespace
   {
     template <int dim>
-    class FunctorDepthAverageHeatFlux
+    class FunctorDepthAverageVerticalHeatFlux
     {
       public:
-        FunctorDepthAverageHeatFlux(const FEValuesExtractors::Vector &velocity_field,
-                                    const FEValuesExtractors::Scalar &temperature_field,
-                                    const GravityModel::Interface<dim> *gm)
+        FunctorDepthAverageVerticalHeatFlux(const FEValuesExtractors::Vector &velocity_field,
+                                            const FEValuesExtractors::Scalar &temperature_field,
+                                            const GravityModel::Interface<dim> *gm)
           : velocity_field_(velocity_field),
             temperature_field_(temperature_field),
             gravity_model(gm)
@@ -1267,11 +1267,11 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::compute_depth_average_heat_flux(std::vector<double> &values) const
+  void Simulator<dim>::compute_depth_average_vertical_heat_flux(std::vector<double> &values) const
   {
-    FunctorDepthAverageHeatFlux<dim> f(introspection.extractors.velocities,
-                                       introspection.extractors.temperature,
-                                       this->gravity_model.get());
+    FunctorDepthAverageVerticalHeatFlux<dim> f(introspection.extractors.velocities,
+                                               introspection.extractors.temperature,
+                                               this->gravity_model.get());
 
     compute_depth_average(values, f);
   }
@@ -1309,7 +1309,7 @@ namespace aspect
   template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const; \
   template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_heat_flux(std::vector<double> &values) const; \
+  template void Simulator<dim>::compute_depth_average_vertical_heat_flux(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \

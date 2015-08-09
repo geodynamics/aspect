@@ -90,7 +90,7 @@ namespace aspect
         this->get_depth_average_Vs(data_point.values[4+this->n_compositional_fields()]);
         this->get_depth_average_Vp(data_point.values[5+this->n_compositional_fields()]);
         this->get_depth_average_viscosity(data_point.values[6+this->n_compositional_fields()]);
-        this->get_depth_average_heat_flux(data_point.values[7+this->n_compositional_fields()]);
+        this->get_depth_average_vertical_heat_flux(data_point.values[7+this->n_compositional_fields()]);
       }
       entries.push_back (data_point);
 
@@ -120,7 +120,7 @@ namespace aspect
           variables.push_back ("Vs");
           variables.push_back ("Vp");
           variables.push_back ("viscosity");
-          variables.push_back ("heat flux");
+          variables.push_back ("vertical_heat_flux");
           Assert (variables.size() == n_statistics, ExcInternalError());
 
           for (unsigned int j=0; j<n_statistics; ++j)

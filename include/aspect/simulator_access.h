@@ -409,8 +409,7 @@ namespace aspect
        * depth slices.
        */
       void
-      get_depth_average_heat_flux(std::vector<double> &values) const;
-      /** @} */
+      get_depth_average_vertical_heat_flux(std::vector<double> &values) const;
       /** @} */
 
 

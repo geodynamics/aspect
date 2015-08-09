@@ -777,7 +777,7 @@ namespace aspect
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
-      void compute_depth_average_heat_flux(std::vector<double> &values) const;
+      void compute_depth_average_vertical_heat_flux(std::vector<double> &values) const;
 
       /**
        * Compute the seismic shear wave speed, Vs anomaly per element. we

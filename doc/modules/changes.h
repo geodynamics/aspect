@@ -7,7 +7,7 @@
  *
  * <ol>
  *
- * <li> New: The DepthAverage postprocessor now calculates the laterally
+ * <li> New: The DepthAverage postprocessor now can calculate the laterally
  * averaged heat flux in the interior of the simulation.
  * <br>
  * (Ian Rose, 2015/08/24)

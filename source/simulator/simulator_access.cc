@@ -315,9 +315,9 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_depth_average_heat_flux(std::vector<double> &values) const
+  SimulatorAccess<dim>::get_depth_average_vertical_heat_flux(std::vector<double> &values) const
   {
-    simulator->compute_depth_average_heat_flux(values);
+    simulator->compute_depth_average_vertical_heat_flux(values);
   }
 
   template <int dim>
