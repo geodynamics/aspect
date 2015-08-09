@@ -510,9 +510,9 @@ namespace aspect
                 for (unsigned int i=0; i<N; ++i)
                   {
                     Assert (values_out[i] >= 0,
-                    ExcMessage ("Computing the geometric average "
-                                    "only makes sense for non-negative "
-                                    "quantities."));
+                    ExcMessage ("Computing the log average "
+                                "only makes sense for non-negative "
+                                "quantities."));
                     sum += std::log10(values_out[i]);
                   }
                 const double log_value_average = std::pow (10.,sum/N);
