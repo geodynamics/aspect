@@ -186,5 +186,11 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
+ * <li> New: A new material averaging option using logarithms based on 10 is added.
+ * This is combined with the existing averaging schemes. Taking the viscosity for example,
+ * the log averaging will average 10^23 and 10^21 to 10^22.
+ * <br>
+ * (Shangxin Liu, 2015/08/09)
+ *   
  * </ol>
  */
