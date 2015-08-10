@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> New: There is a new visualization postprocessor which displays 
+ * the heat flux in the vertical direction, where upwards heat flux 
+ * is positive.
+ * <br>
+ * (Ian Rose, 2015/08/12)
+ *
  * <li> New: A material model plugin for Drucker-Prager plasticity.
  * <br>
  * (Anne Glerum, 2015/08/03)
