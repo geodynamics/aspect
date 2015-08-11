@@ -75,7 +75,13 @@ namespace aspect
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
-
+    
+    prm.declare_entry ("Max nonlinear iterations in pre-refinment", "-1",
+                       Patterns::Integer (-1),
+                       "The maximal number of nonlinear iterations to be performed in the pre-refinment "
+                       "steps. This does not include the last refinment step before moving to timestep 1. "
+                       "The value -1 means that the value of the max nonlinear iteraions should be used.");
+    
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
@@ -717,6 +723,10 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
+    max_nonlinear_iterations_in_prerefinment = prm.get_integer ("Max nonlinear iterations in pre-refinment");
+    if(max_nonlinear_iterations_in_prerefinment == -1)
+      max_nonlinear_iterations_in_prerefinment = max_nonlinear_iterations;
+    
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
       start_time *= year_in_seconds;
