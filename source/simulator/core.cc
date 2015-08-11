@@ -1698,10 +1698,10 @@ namespace aspect
               ++iteration;
             }
           while (iteration < parameters.max_nonlinear_iterations
-              && 
-              (iteration < parameters.max_nonlinear_iterations_in_prerefinment 
-              || 
-              parameters.initial_adaptive_refinement <= pre_refinement_step));
+                 &&
+                 (iteration < parameters.max_nonlinear_iterations_in_prerefinment
+                  ||
+                  parameters.initial_adaptive_refinement <= pre_refinement_step));
           break;
         }
 
@@ -1797,10 +1797,10 @@ namespace aspect
 //TODO: terminate here if the number of iterations is too large and we see no convergence
             }
           while (iteration < parameters.max_nonlinear_iterations
-              && 
-              (iteration < parameters.max_nonlinear_iterations_in_prerefinment 
-              || 
-              parameters.initial_adaptive_refinement <= pre_refinement_step));
+                 &&
+                 (iteration < parameters.max_nonlinear_iterations_in_prerefinment
+                  ||
+                  parameters.initial_adaptive_refinement <= pre_refinement_step));
 
           break;
         }
@@ -1837,10 +1837,10 @@ namespace aspect
           // ...and then iterate the solution of the Stokes system
           double initial_stokes_residual = 0;
           for (unsigned int i=0; i< parameters.max_nonlinear_iterations
-               && 
-               (i < parameters.max_nonlinear_iterations_in_prerefinment 
-               || 
-               parameters.initial_adaptive_refinement <= pre_refinement_step); ++i)
+               &&
+               (i < parameters.max_nonlinear_iterations_in_prerefinment
+                ||
+                parameters.initial_adaptive_refinement <= pre_refinement_step); ++i)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
