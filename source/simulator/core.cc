@@ -1697,11 +1697,11 @@ namespace aspect
 
               ++iteration;
             }
-          while (iteration < parameters.max_nonlinear_iterations
-                 &&
-                 (iteration < parameters.max_nonlinear_iterations_in_prerefinment
-                  ||
-                  parameters.initial_adaptive_refinement <= pre_refinement_step));
+          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+                    ||
+                    ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                     &&
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
           break;
         }
 
@@ -1796,11 +1796,11 @@ namespace aspect
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
             }
-          while (iteration < parameters.max_nonlinear_iterations
-                 &&
-                 (iteration < parameters.max_nonlinear_iterations_in_prerefinment
-                  ||
-                  parameters.initial_adaptive_refinement <= pre_refinement_step));
+          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+                    ||
+                    ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                     &&
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
 
           break;
         }
@@ -1836,11 +1836,11 @@ namespace aspect
 
           // ...and then iterate the solution of the Stokes system
           double initial_stokes_residual = 0;
-          for (unsigned int i=0; i< parameters.max_nonlinear_iterations
-               &&
-               (i < parameters.max_nonlinear_iterations_in_prerefinment
-                ||
-                parameters.initial_adaptive_refinement <= pre_refinement_step); ++i)
+          for (unsigned int i=0; (! ((i >= parameters.max_nonlinear_iterations) // regular timestep
+                                     ||
+                                     ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                                      &&
+                                      (i >= parameters.max_nonlinear_iterations_in_prerefinment)))); ++i)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
