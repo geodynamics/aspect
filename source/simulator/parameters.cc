@@ -76,11 +76,11 @@ namespace aspect
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
 
-    prm.declare_entry ("Max nonlinear iterations in pre-refinment", "-1",
+    prm.declare_entry ("Max nonlinear iterations in pre-refinement", "-1",
                        Patterns::Integer (-1),
-                       "The maximal number of nonlinear iterations to be performed in the pre-refinment "
-                       "steps. This does not include the last refinment step before moving to timestep 1. "
-                       "The value -1 means that the value of the max nonlinear iteraions should be used.");
+                       "The maximal number of nonlinear iterations to be performed in the pre-refinement "
+                       "steps. This does not include the last refinement step before moving to timestep 1. "
+                       "The value -1 means that the value of the max nonlinear iterations should be used.");
 
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
