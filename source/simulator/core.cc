@@ -1697,7 +1697,11 @@ namespace aspect
 
               ++iteration;
             }
-          while (iteration < parameters.max_nonlinear_iterations);
+          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+                    ||
+                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
+                     &&
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
           break;
         }
 
@@ -1792,7 +1796,11 @@ namespace aspect
               ++iteration;
 //TODO: terminate here if the number of iterations is too large and we see no convergence
             }
-          while (iteration < parameters.max_nonlinear_iterations);
+          while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
+                    ||
+                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
+                     &&
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
 
           break;
         }
@@ -1828,7 +1836,11 @@ namespace aspect
 
           // ...and then iterate the solution of the Stokes system
           double initial_stokes_residual = 0;
-          for (unsigned int i=0; i< parameters.max_nonlinear_iterations; ++i)
+          for (unsigned int i=0; (! ((i >= parameters.max_nonlinear_iterations) // regular timestep
+                                     ||
+                                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
+                                      &&
+                                      (i >= parameters.max_nonlinear_iterations_in_prerefinment)))); ++i)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
@@ -1927,7 +1939,7 @@ namespace aspect
   {
     unsigned int max_refinement_level = parameters.initial_global_refinement +
                                         parameters.initial_adaptive_refinement;
-    unsigned int pre_refinement_step = 0;
+    pre_refinement_step = 0;
 
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
@@ -2035,6 +2047,10 @@ namespace aspect
             ++pre_refinement_step;
             goto start_time_iteration;
           }
+
+        // invalidate the value of pre_refinement_step since it will no longer be used from here on
+        if ( timestep_number == 0 )
+          pre_refinement_step = std::numeric_limits<unsigned int>::max();
 
         // as soon as the mesh starts deforming with a free surface, a manifold
         // description and boundary shape are no longer guaranteed to be any good.

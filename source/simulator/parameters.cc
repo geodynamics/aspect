@@ -26,6 +26,7 @@
 
 #include <dirent.h>
 #include <stdlib.h>
+#include <boost/lexical_cast.hpp>
 
 
 namespace aspect
@@ -75,6 +76,12 @@ namespace aspect
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
+
+    prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                       Patterns::Integer (0),
+                       "The maximal number of nonlinear iterations to be performed in the pre-refinement "
+                       "steps. This does not include the last refinement step before moving to timestep 1. "
+                       "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
@@ -717,6 +724,8 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
+    max_nonlinear_iterations_in_prerefinment = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
       start_time *= year_in_seconds;
