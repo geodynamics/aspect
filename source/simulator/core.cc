@@ -1699,7 +1699,7 @@ namespace aspect
             }
           while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
                     ||
-                    ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
                      (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
           break;
@@ -1798,7 +1798,7 @@ namespace aspect
             }
           while (! ((iteration >= parameters.max_nonlinear_iterations) // regular timestep
                     ||
-                    ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                    ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
                      (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
 
@@ -1838,7 +1838,7 @@ namespace aspect
           double initial_stokes_residual = 0;
           for (unsigned int i=0; (! ((i >= parameters.max_nonlinear_iterations) // regular timestep
                                      ||
-                                     ((pre_refinement_step <= parameters.initial_adaptive_refinement) // pre-refinement
+                                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                                       &&
                                       (i >= parameters.max_nonlinear_iterations_in_prerefinment)))); ++i)
             {
