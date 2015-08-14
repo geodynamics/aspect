@@ -2048,6 +2048,10 @@ namespace aspect
             goto start_time_iteration;
           }
 
+        // invalidate the value of pre_refinement_step since it will no longer be used from here on
+        if ( timestep_number == 0 )
+        pre_refinement_step = std::numeric_limits<unsigned int>::max();
+        
         // as soon as the mesh starts deforming with a free surface, a manifold
         // description and boundary shape are no longer guaranteed to be any good.
         // Here we detach those manifolds and boundaries.
