@@ -77,7 +77,7 @@ namespace aspect
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
 
-    prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<unsigned int>::max()),
+    prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed in the pre-refinement "
                        "steps. This does not include the last refinement step before moving to timestep 1. "
