@@ -38,8 +38,7 @@ namespace aspect
       for (unsigned int i=0; i < in.position.size(); ++i)
         {
           const double temperature = in.temperature[i];
-          const std::vector<double> composition = in.composition[i];
-          const Point<dim> position = in.position[i];
+          const std::vector<double> &composition = in.composition[i];
           const double delta_temp = temperature-reference_T;
           double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
 
@@ -76,7 +75,7 @@ namespace aspect
                              + compositional_delta_rho_1 * c1 + compositional_delta_rho_2 * c2;
 
 
-          const double depth = this->get_geometry_model().depth(position);
+          const double depth = this->get_geometry_model().depth(in.position[i]);
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             {
               double delta_C = 0.0;
