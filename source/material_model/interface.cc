@@ -509,13 +509,18 @@ namespace aspect
                 double sum = 0;
                 for (unsigned int i=0; i<N; ++i)
                   {
-                    Assert (values_out[i] >= 0,
+                    if (values_out[i] == 0.0)
+                      {
+                        sum = -std::numeric_limits<double>::infinity();
+                        break;
+                      }
+                    Assert (values_out[i] > 0.0,
                             ExcMessage ("Computing the log average "
-                                        "only makes sense for non-negative "
+                                        "only makes sense for positive "
                                         "quantities."));
                     sum += std::log10(values_out[i]);
                   }
-                const double log_value_average = std::pow (10.,sum/N);
+                const double log_value_average = std::pow (10., sum/N);
                 for (unsigned int i=0; i<N; ++i)
                   values_out[i] = log_value_average;
                 break;
