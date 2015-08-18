@@ -32,11 +32,11 @@ namespace aspect
     template <int dim>
     double
     DruckerPrager<dim>::
-    viscosity (const double temperature,
+    viscosity (const double /*temperature*/,
                const double pressure,
-               const std::vector<double> &composition,
+               const std::vector<double> &/*composition*/,
                const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
+               const Point<dim> &/*position*/) const
     {
       // For the very first time this function is called,
       // we prescribe a representative reference strain rate,
