@@ -44,11 +44,10 @@ namespace aspect
           if (std::isnan(temperature_dependence))
             temperature_dependence = 1.0;
 
-          double composition_dependence = 1.0;
           switch (composition.size())
             {
               case 0:
-                out.viscosities[i] = composition_dependence * temperature_dependence * eta;
+                out.viscosities[i] = temperature_dependence * eta;
                 break;
               case 1:
                 //geometric interpolation
