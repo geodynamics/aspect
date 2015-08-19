@@ -143,25 +143,6 @@ namespace aspect
     template <int dim>
     bool
     CompositionReaction<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_viscosity_exponent != 0))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-               &&
-               (composition_viscosity_prefactor_1 != 1.0 || composition_viscosity_prefactor_2 != 1.0))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    CompositionReaction<dim>::
     is_compressible () const
     {
       return false;
