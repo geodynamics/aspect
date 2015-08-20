@@ -110,6 +110,16 @@ namespace aspect
      */
     static boost::signals2::signal<void (const Parameters<dim> &,
                                          ParameterHandler &)>  parse_additional_parameters;
+
+    /**
+      * A signal that is fired when the iterative Stokes solver is
+      * done. Parameters are a reference to the SimulatorAccess, a bool
+      * indicating success or failure, and a vector with linear residuals in
+      * each solver step.
+      */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  const bool,
+                                  const std::vector<double> &)> post_stokes_solver;
   };
 
 
