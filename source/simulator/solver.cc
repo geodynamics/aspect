@@ -268,7 +268,7 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
+        SolverControl solver_control(1000, 1e-8 * src.block(1).l2_norm());
 
 #ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
@@ -322,7 +322,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm()*1e-6);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -661,9 +661,10 @@ namespace aspect
     // succeeds in 30 steps or less (or whatever the chosen value for the
     // corresponding parameter is).
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
-                                        solver_tolerance);
-    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
-                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
+                                        solver_tolerance, true);
+    const unsigned int max_its = system_matrix.block(block_vel,block_p).m() +
+        system_matrix.block(block_p,block_vel).m();
+    SolverControl solver_control_expensive (100*max_its, solver_tolerance, true);
 
     unsigned int its_A = 0, its_S = 0;
     try
@@ -684,7 +685,8 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(30, true));
+               AdditionalData(200, true));
+//               AdditionalData(30, true));
 
         solver.connect(
                     std_cxx11::bind (&Simulator<dim>::solver_callback,
@@ -717,7 +719,11 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(50, true));
+               AdditionalData(100, true));
+        /*
+        SolverBicgstab<LinearAlgebra::BlockVector>
+        solver(solver_control_expensive, mem);
+*/
 
         solver.connect(
                     std_cxx11::bind (&Simulator<dim>::solver_callback,
