@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__initial_conditions_S40RTS_perturbation_h
-#define __aspect__initial_conditions_S40RTS_perturbation_h
+#ifndef __aspect__initial_conditions_SAVANI_perturbation_h
+#define __aspect__initial_conditions_SAVANI_perturbation_h
 
 #include <aspect/simulator_access.h>
 #include <deal.II/base/std_cxx11/array.h>
@@ -33,7 +33,7 @@ namespace aspect
 
     namespace internal
     {
-      namespace S40RTS
+      namespace SAVANI
       {
         class SphericalHarmonicsLookup;
         class SplineDepthsLookup;
@@ -42,15 +42,15 @@ namespace aspect
 
     /**
      * A class that describes a perturbed initial temperature field for a
-     * spherical shell geometry model. The perturbation is based on the S20RTS
-     * / S40RTS global shear wave velocity model by Ritsema et al.
-     * http://www.earth.lsa.umich.edu/~jritsema/research.html
+     * spherical shell geometry model. The perturbation is based on the SAVANI
+     * global shear wave velocity model by Auer et al.
+     * http://n.ethz.ch/~auerl/research.html
      *
      * @ingroup InitialConditionsModels
      */
 
     template <int dim>
-    class S40RTSPerturbation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class SAVANIPerturbation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -90,11 +90,8 @@ namespace aspect
         std::string spline_depth_file_name;
 
         /**
-         * This parameter allows setting the input file for the shear-wave
-         * perturbation. Options so far are S20RTS.sph and S40RTS.sph. For
-         * S40RTS there are different versions available that differ by the
-         * degree of damping in the seismic inversion. These models could be
-         * downloaded and used as well.
+         * This parameter allows setting the input file for the SAVANI global
+         * shear-wave perturbation.
          */
         std::string harmonics_coeffs_file_name;
 
@@ -131,13 +128,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std_cxx11::shared_ptr<internal::S40RTS::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std_cxx11::shared_ptr<internal::SAVANI::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std_cxx11::shared_ptr<internal::S40RTS::SplineDepthsLookup> spline_depths_lookup;
+        std_cxx11::shared_ptr<internal::SAVANI::SplineDepthsLookup> spline_depths_lookup;
 
     };
 
