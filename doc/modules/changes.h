@@ -7,11 +7,23 @@
  *
  * <ol>
  *
+ * <li> New: There is now a new initial condition in which the temperature field is perturbed 
+ * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were 
+ * downloaded from http://n.ethz.ch/~auerl/research.html .
+ * <br>
+ * (Shangxin Liu, 2015/08/20)
+ *   
  * <li> New: There is a new visualization postprocessor which displays 
  * the heat flux in the vertical direction, where upwards heat flux 
  * is positive.
  * <br>
  * (Ian Rose, 2015/08/12)
+ *
+ * <li> New: A new material averaging option using logarithms is added.
+ * This is combined with the existing averaging schemes. Taking the viscosity for example,
+ * the log averaging will average 10^23 and 10^21 to 10^22.
+ * <br>
+ * (Shangxin Liu, 2015/08/09)
  *
  * <li> New: A material model plugin for Drucker-Prager plasticity.
  * <br>
@@ -196,17 +208,5 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
- * <li> New: A new material averaging option using logarithms is added.
- * This is combined with the existing averaging schemes. Taking the viscosity for example,
- * the log averaging will average 10^23 and 10^21 to 10^22.
- * <br>
- * (Shangxin Liu, 2015/08/09)
- *
- * <li> New: There is now a new initial condition in which the temperature field is perturbed 
- * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were 
- * downloaded from http://n.ethz.ch/~auerl/research.html .
- * <br>
- * (Shangxin Liu, 2015/08/20)
- *   
  * </ol>
  */
