@@ -268,7 +268,7 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
+        SolverControl solver_control(1000, 1e-8 * src.block(1).l2_norm());
 
 #ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
@@ -322,7 +322,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm()*1e-6);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -460,12 +460,22 @@ namespace aspect
 
 
 
+  template <int dim>
+  dealii::SolverControl::State
+  Simulator<dim>::solver_callback (const unsigned int iteration,
+                                   const double        check_value,
+                                   const LinearAlgebra::BlockVector       &current_iterate)
+  {
+    solver_history.push_back(check_value);
+    return dealii::SolverControl::success;
+  }
 
   template <int dim>
   double Simulator<dim>::solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
+    solver_history.clear();
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -651,9 +661,10 @@ namespace aspect
     // succeeds in 30 steps or less (or whatever the chosen value for the
     // corresponding parameter is).
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
-                                        solver_tolerance);
-    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
-                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
+                                        solver_tolerance, true);
+    const unsigned int max_its = system_matrix.block(block_vel,block_p).m() +
+        system_matrix.block(block_p,block_vel).m();
+    SolverControl solver_control_expensive (100*max_its, solver_tolerance, true);
 
     unsigned int its_A = 0, its_S = 0;
     try
@@ -674,7 +685,16 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(30, true));
+               AdditionalData(200, true));
+//               AdditionalData(30, true));
+
+        solver.connect(
+                    std_cxx11::bind (&Simulator<dim>::solver_callback,
+                                     this,
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3));
+
         solver.solve (stokes_block,
                       distributed_stokes_solution,
                       distributed_stokes_rhs,
@@ -688,6 +708,8 @@ namespace aspect
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
+        solver_history.push_back(-1);
+
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
@@ -697,8 +719,18 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(50, true));
+               AdditionalData(100, true));
+        /*
+        SolverBicgstab<LinearAlgebra::BlockVector>
+        solver(solver_control_expensive, mem);
+*/
 
+        solver.connect(
+                    std_cxx11::bind (&Simulator<dim>::solver_callback,
+                                     this,
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3));
         try
           {
             solver.solve(stokes_block,
@@ -711,12 +743,29 @@ namespace aspect
         // processors
         catch (const std::exception &exc)
           {
+
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-              AssertThrow (false,
-                           ExcMessage (std::string("The iterative Stokes solver "
-                                                   "did not converge. It reported the following error:\n\n")
-                                       +
-                                       exc.what()))
+            {
+                // output solver history
+                std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
+                for (unsigned int i=0;i<solver_history.size();++i)
+                {
+                    if (solver_history[i]<0)
+                        f << "\n";
+                    else
+                        f << i << " " << solver_history[i] << "\n";
+                }
+                f.close();
+
+                std::cout << "See " << parameters.output_directory+"solver_history.txt"
+                          << " for convergence history." << std::endl;
+
+                AssertThrow (false,
+                             ExcMessage (std::string("The iterative Stokes solver "
+                                                     "did not converge. It reported the following error:\n\n")
+                                         +
+                                         exc.what()))
+            }
               else
                 throw QuietException();
           }

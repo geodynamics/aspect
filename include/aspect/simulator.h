@@ -418,6 +418,11 @@ namespace aspect
        */
       double solve_advection (const AdvectionField &advection_field);
 
+      dealii::SolverControl::State
+      solver_callback (const unsigned int iteration,
+                       const double        check_value,
+                       const LinearAlgebra::BlockVector       &current_iterate);
+
       /**
        * Solve the Stokes linear system. Return the initial nonlinear
        * residual, i.e., if the linear system to be solved is $Ax=b$, then
@@ -1178,6 +1183,8 @@ namespace aspect
       SimulatorSignals<dim>               signals;
 
       MPI_Comm                            mpi_communicator;
+
+      std::vector<double> solver_history;
 
       /**
        * This stream will log into the file output/log.txt (used automatically
