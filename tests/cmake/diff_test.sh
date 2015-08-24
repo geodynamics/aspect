@@ -21,12 +21,12 @@ CMAKE_CURRENT_SOURCE_DIR=$3
 CMAKE_CURRENT_BINARY_DIR=$4
 
 
-# Grab ASPECT_GENERATE_REFERENCE_OUTPUT from the environment. If set to "1",
-# do not run tests normally but generate reference output instead. Also see
-# the generate_reference_output make target and the file
+# Grab ASPECT_GENERATE_REFERENCE_OUTPUT from the environment. If set to
+# something (not ""), do not run tests normally but generate reference output
+# instead. Also see the generate_reference_output make target and the file
 # ./cmake/generate_reference_output.sh
 GENERATE_REFERENCE_OUTPUT=0
-if [ "$ASPECT_GENERATE_REFERENCE_OUTPUT" -eq "1" ]; then
+if [ -n "$ASPECT_GENERATE_REFERENCE_OUTPUT" ]; then
   GENERATE_REFERENCE_OUTPUT=1
   echo "generating reference output" 1>&2
 fi

@@ -116,8 +116,12 @@ FILE(GLOB _tests *.prm)
 SET(_n_tests "0")
 LIST(SORT _tests)
 FOREACH(_test ${_tests})
+  SET(_test_full ${_test})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
-
+  IF ("${_test}" STREQUAL "")
+    MESSAGE("Ignoring invalid .prm '${_test_full}'...")
+    CONTINUE()
+  ENDIF()
   SET(_use_test ON)
   SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 

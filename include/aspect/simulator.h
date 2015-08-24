@@ -1259,6 +1259,7 @@ namespace aspect
       double                                                    time_step;
       double                                                    old_time_step;
       unsigned int                                              timestep_number;
+      unsigned int                                              pre_refinement_step;
       /**
        * @}
        */

@@ -45,6 +45,8 @@ namespace aspect
         return geometric_average;
       else if (s == "pick largest")
         return pick_largest;
+      else if (s == "log average")
+        return log_average;
       else if (s == "nwd arithmetic average")
         return nwd_arithmetic_average;
       else if (s == "nwd harmonic average")
@@ -139,6 +141,22 @@ namespace aspect
 
             for (unsigned int i=0; i<N; ++i)
               values_out[i] = max;
+            break;
+          }
+          case log_average:
+          {
+            double sum = 0;
+            for (unsigned int i=0; i<N; ++i)
+              {
+                Assert (values_out[i] >= 0,
+                        ExcMessage ("Computing the log average "
+                                    "only makes sense for non-negative "
+                                    "quantities."));
+                sum += std::log10(values_out[i]);
+              }
+            const double log_value_average = std::pow (10.,sum/N);
+            for (unsigned int i=0; i<N; ++i)
+              values_out[i] = log_value_average;
             break;
           }
           case nwd_arithmetic_average:
@@ -316,22 +334,21 @@ namespace aspect
       base_model -> evaluate(in,out);
 
       /**
-       * Check if the size of the viscosities (and thereby all the other vectors) has been filled.
-       * If it hasn't been filled yet, it will have size 1.
+       * Check if the size of the viscosities (and thereby all the other vectors) is larger
+       * than one. Averaging over one or zero points does not make a difference anyway,
+       * and the normalized weighted distance averaging schemes need the distance between
+       * the points and can not handle a distance of zero.
        */
       if (out.viscosities.size() > 1)
         {
-          /* Average the base model values value based on the chosen average */
-          for (unsigned int i=0; i < out.viscosities.size(); ++i)
-            {
-              average (averaging_operation,in.position,out.viscosities);
-              average (averaging_operation,in.position,out.densities);
-              average (averaging_operation,in.position,out.thermal_expansion_coefficients);
-              average (averaging_operation, in.position,out.specific_heat);
-              average (averaging_operation, in.position,out.compressibilities);
-              average (averaging_operation,in.position,out.entropy_derivative_pressure);
-              average (averaging_operation,in.position,out.entropy_derivative_temperature);
-            }
+          /* Average the base model values based on the chosen average */
+          average (averaging_operation,in.position,out.viscosities);
+          average (averaging_operation,in.position,out.densities);
+          average (averaging_operation,in.position,out.thermal_expansion_coefficients);
+          average (averaging_operation,in.position,out.specific_heat);
+          average (averaging_operation,in.position,out.compressibilities);
+          average (averaging_operation,in.position,out.entropy_derivative_pressure);
+          average (averaging_operation,in.position,out.entropy_derivative_temperature);
         }
     }
 
@@ -351,7 +368,7 @@ namespace aspect
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
           prm.declare_entry ("Averaging operation", "none",
-                             Patterns::Selection ("none|arithmetic average|harmonic average|geometric average|pick largest|nwd arithmetic average|nwd harmonic average|nwd geometric average"),
+                             Patterns::Selection ("none|arithmetic average|harmonic average|geometric average|pick largest|log average|nwd arithmetic average|nwd harmonic average|nwd geometric average"),
                              "Chose the averaging operation to use.");
           prm.declare_entry ("Bell shape limit", "1",
                              Patterns::Double(0),
@@ -468,7 +485,7 @@ namespace aspect
                                    "The user must specify a ``Base model'' from which material properties are "
                                    "derived. Furthermore an averaging operation must be selected, where the "
                                    "Choice should be from the list none|arithmetic average|harmonic average|"
-                                   "geometric average|pick largest|NWD arithmetic average|NWD harmonic average"
+                                   "geometric average|pick largest|log average|NWD arithmetic average|NWD harmonic average"
                                    "|NWD geometric average. "
                                    "\n\n"
                                    "NWD stands for Normalized Weighed Distance. The models with this in front "

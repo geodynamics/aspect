@@ -1,0 +1,134 @@
+############### Global parameters
+# This model is based on the paper 
+# Kaus, B. (2010), Tectonophysics 484, 36-47.
+# We iterate out the Stokes equation.
+# We use only the expensive Stokes solver.
+# 1 Timestep experiment.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Linear solver tolerance                = 1e-7 
+set Nonlinear solver tolerance             = 1e-5
+set Nonlinear solver scheme                = iterated Stokes
+set Number of cheap Stokes solver steps    = 0
+set Max nonlinear iterations               = 10 # to localize deformation, more iterations are needed
+
+############### Parameters describing the model
+# We consider a 2D box of 40x10 km of which the elements are of unit aspect ratio.
+# Temperature plays no role in this model.
+# We prescribe a horizontal velocity (compression) on the vertical
+# boundaries, but leave the vertical component free.
+# To the bottom boundary we prescribe the same horizontal velocity,
+# the vertical velocity component is set to zero. The top boundary is open.
+# We use a Drucker Prager failure criterion.
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 40000
+    set Y extent  = 10000
+    set X repetitions = 4
+  end
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 0 x:function,1 x:function, 2: function
+  set Include adiabatic heating = false
+  set Include shear heating     = false 
+end
+
+
+subsection Material model
+  set Model name = drucker prager
+  subsection Drucker Prager 
+    set Thermal conductivity          = 0.0
+    set Reference density             = 2700.0
+    set Reference viscosity           = 1.0e24
+    set Reference temperature         = 0.0
+    set Thermal expansion coefficient = 0.0
+    set Reference specific heat       = 1
+    subsection Viscosity
+      set Minimum viscosity           = 1e19
+      set Maximum viscosity           = 1e26
+      set Cohesion                    = 4e7
+      set Angle of internal friction  = 15
+      set Reference strain rate       = 1e-15
+    end
+  end
+end
+
+
+############## rho * g = 27000
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10 
+  end
+end
+
+
+############### We prescribe a velocity of W/2 * background strain rate invariant
+# where W is the width of the domain and the background strain rate 1e-15 1/s.
+subsection Boundary velocity model
+  subsection Function
+    set Function expression     =  if(x>=2e4,-2.e-11,2.e-11);0 
+  end
+end
+
+
+############### Parameters describing the temperature field
+# We set the temperature to zero, as it is not important.
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Left temperature = 0
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively. 
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+subsection Discretization
+  set Temperature polynomial degree = 1
+end
+
+############### Parameters describing the what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. 
+# We select to compute some statistics about the
+# velocity field and the mass flux through the boundaries.
+# We prescribe an inflow of 2e-11 m/s on both vertical boundaries
+# which should be the value of the maximum velocity. The VRMS will 
+# be a little lower, because the inflow will be balanced by an outflow 
+# through the top boundary over a greater boundary length.
+# For the given density and inflow velocity, a boundary
+# mass flux of v * L * rho = 2e-11 * 10000 * 2700 = 5.4e-4 kg/s 
+# is expected for each vertical boundary, 
+# compensated by a influx of 1.08e-3 kg/s through the top.
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics
+end

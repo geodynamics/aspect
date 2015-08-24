@@ -364,19 +364,22 @@ namespace aspect
 
               material_model->evaluate(in, out);
 
-              // In the future we may want to evaluate thermal diffusivity at
-              // each point in the mesh, but for now we just use the reference value
+              // Evaluate thermal diffusivity at each quadrature point and
+              // calculate the corresponding conduction timestep, if applicable
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  double k = out.thermal_conductivities[q];
-                  double rho = out.densities[q];
-                  double c_p = out.specific_heat[q];
+                  const double k = out.thermal_conductivities[q];
+                  const double rho = out.densities[q];
+                  const double c_p = out.specific_heat[q];
 
-                  double thermal_diffusivity = k/(rho*c_p);
+                  const double thermal_diffusivity = k/(rho*c_p);
 
-                  min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                           parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
-                                                           / thermal_diffusivity);
+                  if (thermal_diffusivity > 0)
+                    {
+                      min_local_conduction_timestep = std::min(min_local_conduction_timestep,
+                                                               parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
+                                                               / thermal_diffusivity);
+                    }
                 }
             }
 
@@ -457,20 +460,24 @@ namespace aspect
     else
       min_conduction_timestep = std::numeric_limits<double>::max();
 
-    // if the velocity is zero, then it is somewhat arbitrary what time step
-    // we should choose. in that case, do as if the velocity was one
-    if (max_global_speed_over_meshsize == 0 && !parameters.use_conduction_timestep)
-      {
-        new_time_step = (parameters.CFL_number /
-                         (parameters.temperature_degree * 1));
-        convection_dominant = false;
-      }
-    else
+    if ((max_global_speed_over_meshsize != 0.0) ||
+        (min_conduction_timestep < std::numeric_limits<double>::max()))
       {
         new_time_step = std::min(min_conduction_timestep,
                                  (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
         convection_dominant = (new_time_step < min_conduction_timestep);
       }
+    else
+      {
+        // If the velocity is zero and we either do not compute the conduction
+        // timestep or do not have any conduction, then it is somewhat
+        // arbitrary what time step we should choose. In that case, do as if
+        // the velocity was one
+        new_time_step = (parameters.CFL_number /
+                         (parameters.temperature_degree * 1));
+        convection_dominant = false;
+      }
+
 
     return std::make_pair(new_time_step, convection_dominant);
   }

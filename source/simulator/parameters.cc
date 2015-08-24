@@ -26,6 +26,7 @@
 
 #include <dirent.h>
 #include <stdlib.h>
+#include <boost/lexical_cast.hpp>
 
 
 namespace aspect
@@ -72,16 +73,15 @@ namespace aspect
                        "A flag indicating whether the computation should be resumed from "
                        "a previously saved state (if true) or start from scratch (if false).");
 
-#ifndef DEAL_II_WITH_ZLIB
-    AssertThrow (resume_computation == false,
-                 ExcMessage ("You need to have deal.II configured with the 'libz' "
-                             "option if you want to resume a computation from a checkpoint, but deal.II "
-                             "did not detect its presence when you called 'cmake'."));
-#endif
-
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
+
+    prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                       Patterns::Integer (0),
+                       "The maximal number of nonlinear iterations to be performed in the pre-refinement "
+                       "steps. This does not include the last refinement step before moving to timestep 1. "
+                       "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
@@ -663,6 +663,10 @@ namespace aspect
                          "for velocity/pressure, temperature, and compositions in each "
                          "time step, as well as their corresponding preconditioners."
                          "\n\n"
+                         "Possible choices: " + MaterialModel::MaterialAveraging::
+                         get_averaging_operation_names()
+                         +
+                         "\n\n"
                          "The process of averaging, and where it may be used, is "
                          "discussed in more detail in "
                          "Section~\\ref{sec:sinker-with-averaging}."
@@ -697,6 +701,13 @@ namespace aspect
                  ExcInternalError());
 
     resume_computation      = prm.get_bool ("Resume computation");
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
+
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
@@ -723,6 +734,8 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
+    max_nonlinear_iterations_in_prerefinment = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
       start_time *= year_in_seconds;

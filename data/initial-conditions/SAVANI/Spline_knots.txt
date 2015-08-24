@@ -1,0 +1,30 @@
+These spline interpolation knots correspond to the radial locations of different spherical layers in the SAVANI tomography model.
+The first number corresponds to the 3480km radius, i.e., CMB, the last to the 6346km radius, i.e., Moho depth.
+-1.000000
+-0.845778
+-0.741103
+-0.636427
+-0.531752
+-0.427076
+-0.322401
+-0.217725
+-0.113050
+-0.008374
+0.096301
+0.200977
+0.305652
+0.410328
+0.508025
+0.591766
+0.665038
+0.729588
+0.783671
+0.827285
+0.860433
+0.884857
+0.904047
+0.921493
+0.938939
+0.956385
+0.973831
+1.000000

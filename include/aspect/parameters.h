@@ -175,6 +175,7 @@ namespace aspect
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
     unsigned int                   max_nonlinear_iterations;
+    unsigned int                   max_nonlinear_iterations_in_prerefinment;
     unsigned int                   n_cheap_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;

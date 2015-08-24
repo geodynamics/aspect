@@ -341,7 +341,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average";
       }
 
 
@@ -359,6 +359,8 @@ namespace aspect
           return pick_largest;
         else if (s == "project to Q1")
           return project_to_Q1;
+        else if (s == "log average")
+          return log_average;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -500,6 +502,28 @@ namespace aspect
                 for (unsigned int i=0; i<N; ++i)
                   values_out[i] = x(i);
 
+                break;
+              }
+
+              case log_average:
+              {
+                double sum = 0;
+                for (unsigned int i=0; i<N; ++i)
+                  {
+                    if (values_out[i] == 0.0)
+                      {
+                        sum = -std::numeric_limits<double>::infinity();
+                        break;
+                      }
+                    Assert (values_out[i] > 0.0,
+                            ExcMessage ("Computing the log average "
+                                        "only makes sense for positive "
+                                        "quantities."));
+                    sum += std::log10(values_out[i]);
+                  }
+                const double log_value_average = std::pow (10., sum/N);
+                for (unsigned int i=0; i<N; ++i)
+                  values_out[i] = log_value_average;
                 break;
               }
 

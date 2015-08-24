@@ -71,6 +71,20 @@ namespace aspect
         initialize ();
 
         /**
+         * A function that is called at the beginning of each time step. The
+         * default implementation of the function does nothing, but derived
+         * classes that need more elaborate setups for a given time step may
+         * overload the function.
+         *
+         * The point of this function is to allow complex prescribed Stokes
+         * solutions to do an initialization step once at the beginning of each
+         * time step. An example would be a time-dependent prescribed velocity.
+         */
+        virtual
+        void
+        update ();
+
+        /**
          * Given a position @p p, fill in desired velocity and pressure at
          * that point into @p value, which will have dim+1 components. In @p
          * value, the velocity components come first, followed by the pressure
