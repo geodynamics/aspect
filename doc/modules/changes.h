@@ -13,6 +13,18 @@
  * <br>
  * (Shangxin Liu, 2015/08/20)
  *   
+ * <li> New: A box Geometry Model plugin with additional boundary indicators
+ * for the upper part of the box and corresponding Boundary Temperature and 
+ * Composition Model plugins. With this plugin, different boundary conditions 
+ * can be prescribed on the upper and lower part of the vertical domain boundaries.
+ * <br>
+ * (Anne Glerum, 2015/08/14)
+ *
+ * <li> New: Plugin for visualizing the boundary indicators used by the 
+ * Geometry Model.
+ * <br>
+ * (Anne Glerum, 2015/08/14)
+ *
  * <li> New: There is a new visualization postprocessor which displays 
  * the heat flux in the vertical direction, where upwards heat flux 
  * is positive.

@@ -1,0 +1,140 @@
+# With this geometry model we add 4 additional boundary
+# indicators to the lithospheric part of the left, right,
+# front and back boundaries (i.e. all vertical boundaries).
+
+set Dimension                              = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = surface
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+
+
+# We use a boundary temperature model
+# with additional boundary indicators 
+# as prescribed by the geometry model
+subsection Boundary temperature model
+  set Model name = box with lithosphere boundary indicators
+  subsection Box with lithosphere boundary indicators
+    set Left temperature = 0
+  end
+end
+
+
+# We use the initial composition
+subsection Boundary composition model
+  set Model name = initial composition 
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box with lithosphere boundary indicators
+
+  subsection Box with lithosphere boundary indicators
+    set X extent = 1000000
+    set Y extent = 600000
+    set Z extent = 600000
+    set Lithospheric thickness = 80000
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+   set Function expression = 0
+  end 
+end
+
+
+# We prescribe one compositional field
+# to represent the lithosphere
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities                  = 3300,3250
+    set Reference temperature      = 293
+    set Specific heats             = 1250
+    set Thermal conductivities     = 0.
+    set Thermal expansivities      = 0.
+    set Viscosities                = 1e20,1e21
+    set Viscosity averaging scheme = harmonic
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+
+# In 3D the additional boundary indicators have value 6 (left lithosphere), 
+# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere). 
+# Because we want flow through these boundaries
+# we set fixed temperature and composition boundary conditions.
+# For now we set the lower part of the vertical boundaries to
+# zero velocity, while prescribing a velocity function on boundary
+# 6, 7, 8 and 9. Note that this particular example can be accomplished
+# without additional boundary indicators and just prescribing a
+# velocity function on the whole vertical boundaries.
+# Along the top boundary and the lithospheric part of the vertical 
+# boundaries, we prescribe a plate velocity of 1 cm/year.
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1, 6, 7, 8, 9
+  set Fixed composition boundary indicators   = 0, 1, 6, 7, 8, 9
+  set Zero velocity boundary indicators       = 0, 1, 4
+  set Tangential velocity boundary indicators = 2, 3
+  set Prescribed velocity boundary indicators = 5: function, 6: function, 7: function, 8:function, 9:function
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y,z
+    set Function constants = lith_depth=8e4, model_height=6e5
+    set Function expression = if(z>(model_height-lith_depth),0.01,0);0;0
+  end
+end
+
+
+# The lithosphere is represented by a lower density,
+# higher viscosity compositional field.
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+   set Variable names = x,y,z
+   set Function constants = lith_depth=8e4, model_height=6e5
+   set Function expression = if((model_height-z)<lith_depth,1,0)
+  end
+end
+
+
+# We look at the velocity and pressure statistics. Max velocity will be
+# the prescribed velocity of 1 cm/year. The boundary indicator
+# visualization shows us the indicators we set at the boundaries.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, visualization
+  subsection Visualization
+    set Output format            = gnuplot
+    set List of output variables = boundary indicators
+  end
+end
