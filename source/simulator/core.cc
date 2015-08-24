@@ -713,7 +713,7 @@ namespace aspect
     heating_model_manager.update();
     adiabatic_conditions->update();
 
-    if(prescribed_stokes_solution.get())
+    if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
 
     // do the same for the traction boundary conditions and other things
