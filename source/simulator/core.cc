@@ -440,6 +440,8 @@ namespace aspect
     termination_manager.initialize (*this);
     termination_manager.parse_parameters (prm);
 
+    lateral_averaging.initialize (*this);
+
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 

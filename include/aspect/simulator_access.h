@@ -44,13 +44,13 @@
 #include <aspect/adiabatic_conditions/interface.h>
 
 
-
 namespace aspect
 {
   using namespace dealii;
 
   // forward declaration
   template <int dim> class Simulator;
+  template <int dim> class LateralAveraging;
   namespace HeatingModel
   {
     template <int dim> class Manager;
@@ -322,94 +322,6 @@ namespace aspect
       const FiniteElement<dim> &
       get_fe () const;
 
-      /**
-       * Fill the argument with a set of depth averages of the current
-       * temperature field. The function fills a vector that contains average
-       * field values over slices of the domain of same depth.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_temperature(std::vector<double> &values) const;
-
-      /**
-       * Fill the argument with a set of depth averages of the current
-       * compositional fields. See get_depth_average_temperature.
-       *
-       * @param composition_index The index of the compositional field whose
-       * matrix we want to assemble (0 <= composition_index < number of
-       * compositional fields in this problem).
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_composition(const unsigned int composition_index,
-                                    std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current viscosity
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_viscosity(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current velocity magnitude
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_velocity_magnitude(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current sinking velocity
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_sinking_velocity(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the seismic shear wave speed: Vs
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_Vs(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the seismic pressure wave speed: Vp
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_Vp(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the heat flux, with the sign
-       * convention of positive heat flux when it flows upwards.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void
-      get_depth_average_vertical_heat_flux(std::vector<double> &values) const;
       /** @} */
 
 
@@ -509,6 +421,14 @@ namespace aspect
        */
       const HeatingModel::Manager<dim> &
       get_heating_model_manager () const;
+
+      /**
+       * Return a reference to the lateral averaging object owned
+       * by the simulator, which can be used to query lateral averages
+       * of various quantities at depth slices.
+       */
+      const LateralAveraging<dim> &
+      get_lateral_averaging () const;
 
       /**
        * A convenience function that copies the values of the compositional

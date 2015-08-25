@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/depth_average.h>
 #include <aspect/simulator_access.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
 
 #include <deal.II/grid/grid_generator.h>
@@ -81,16 +82,16 @@ namespace aspect
       // add temperature and the compositional fields that follow
       // it immediately
       {
-        this->get_depth_average_temperature(data_point.values[0]);
+        this->get_lateral_averaging().get_temperature(data_point.values[0]);
         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          this->get_depth_average_composition(c, data_point.values[1+c]);
+          this->get_lateral_averaging().get_composition(c, data_point.values[1+c]);
         this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[1+this->n_compositional_fields()]);
-        this->get_depth_average_velocity_magnitude(data_point.values[2+this->n_compositional_fields()]);
-        this->get_depth_average_sinking_velocity(data_point.values[3+this->n_compositional_fields()]);
-        this->get_depth_average_Vs(data_point.values[4+this->n_compositional_fields()]);
-        this->get_depth_average_Vp(data_point.values[5+this->n_compositional_fields()]);
-        this->get_depth_average_viscosity(data_point.values[6+this->n_compositional_fields()]);
-        this->get_depth_average_vertical_heat_flux(data_point.values[7+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_velocity_magnitude(data_point.values[2+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_sinking_velocity(data_point.values[3+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_Vs(data_point.values[4+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_Vp(data_point.values[5+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_viscosity(data_point.values[6+this->n_compositional_fields()]);
+        this->get_lateral_averaging().get_vertical_heat_flux(data_point.values[7+this->n_compositional_fields()]);
       }
       entries.push_back (data_point);
 

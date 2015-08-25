@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/steinberger.h>
 #include <aspect/simulator_access.h>
+#include <aspect/lateral_averaging.h>
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
@@ -433,7 +434,7 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_depth_average_temperature(avg_temp);
+        this->get_lateral_averaging().get_temperature(avg_temp);
     }
 
 
