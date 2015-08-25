@@ -426,15 +426,15 @@ namespace aspect
                                    "chunk",
                                    "A geometry which can be described as a chunk of a spherical shell, "
                                    "bounded by lines of longitude, latitude and radius. "
-                                   "The minimum and maximum longitude, (latitude) and depth of the box "
-                                   "is set in the parameter file. The box geometry labels its "
-                                   "2*dim sides as follows: ``left'' and ``right'': minimum and maximum "
-                                   "longitude, ``back'' and ``front'': minimum and maximum latitude, "
-                                   "``bottom'' and ``top'': minimum and maximum radii. "
+                                   "The minimum and maximum longitude, (latitude) and depth of the chunk "
+                                   "is set in the parameter file. The chunk geometry labels its "
+                                   "2*dim sides as follows: ``west'' and ``east'': minimum and maximum "
+                                   "longitude, ``south'' and ``north'': minimum and maximum latitude, "
+                                   "``inner'' and ``outer'': minimum and maximum radii. "
                                    "Names in the parameter files are as follows: "
                                    "Chunk (minimum || maximum) (longitude || latitude): "
                                    "edges of geographical quadrangle (in degrees)"
-                                   "Chunk (inner || outer) radius: Radii at bottom and top of box"
+                                   "Chunk (inner || outer) radius: Radii at bottom and top of chunk"
                                    "(Longitude || Latitude || Radius) repetitions: "
                                    "number of cells in each coordinate direction.")
   }

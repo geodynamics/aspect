@@ -63,9 +63,10 @@ namespace aspect
          * This information is used to determine what boundary indicators can
          * be used in the input file.
          *
-         * The box model uses boundary indicators zero through 2*dim-1, with
-         * the first two being the faces perpendicular to the x-axis, the next
-         * two perpendicular to the y-axis, etc.
+         * The chunk model uses boundary indicators zero through 2*dim-1, with
+         * the first two being the faces perpendicular to the radius of the shell,
+         * the next two along lines of longitude and, in 3d, the next two
+         * along lines of latitude.
          */
         virtual
         std::set<types::boundary_id>
@@ -78,10 +79,10 @@ namespace aspect
          * describing which parts of the boundary have to satisfy which
          * boundary conditions.
          *
-         * This geometry returns the map <code>{{"left"->0}, {"right"->1},
-         * {"bottom"->2}, {"top"->3}}</code> in 2d, and <code>{{"left"->0},
-         * {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4},
-         * {"top"->5}}</code> in 3d.
+         * This geometry returns the map <code>{{"inner"->0}, {"outer"->1},
+         * {"west"->2}, {"east"->3}}</code> in 2d, and <code>{{"inner"->0},
+         * {"outer"->1}, {"west"->2}, {"east"->3}, {"south"->4},
+         * {"north"->5}}</code> in 3d.
          */
         virtual
         std::map<std::string,types::boundary_id>
@@ -175,7 +176,7 @@ namespace aspect
         /**
          * @copydoc Interface::has_curved_elements()
          *
-         * A box has only straight boundaries and cells, so return false.
+         * A chunk has curved boundaries and cells, so return true.
          */
         virtual
         bool
