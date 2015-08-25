@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: The DepthAverage postprocessor now can calculate the laterally
+ * averaged heat flux in the interior of the simulation.
+ * <br>
+ * (Ian Rose, 2015/08/24)
+ *
  * <li> New: There is now a new initial condition in which the temperature field is perturbed 
  * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were 
  * downloaded from http://n.ethz.ch/~auerl/research.html .

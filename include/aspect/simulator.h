@@ -767,6 +767,19 @@ namespace aspect
       void compute_depth_average_Vp(std::vector<double> &values) const;
 
       /**
+       * Compute a depth average of the heat flux, with the sign
+       * convention of positive heat flux when it flows upwards.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       *
+       * @param values The output vector of depth averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void compute_depth_average_vertical_heat_flux(std::vector<double> &values) const;
+
+      /**
        * Compute the seismic shear wave speed, Vs anomaly per element. we
        * compute the anomaly by computing a smoothed (over 200 km or so)
        * laterally averaged temperature profile and associated seismic
