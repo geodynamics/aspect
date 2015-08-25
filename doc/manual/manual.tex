@@ -5920,9 +5920,19 @@ to the following boundary conditions:
 
 Note that compressive boundary conditions are simply achieved by reversing  
 the sign of the imposed velocity.
-We also make use of the strain rate-based mesh refinement plugin:
+
+The free surface will be advected up and down according to the solution of the Stokes solve.
+We have a choice whether to advect the free surface in the direction of the surface normal
+or in the direction of the local vertical (i.e., in the direction of gravity).
+For small deformations, these directions are almost the same, but in this example the deformations 
+are quite large. We have found that when the deformation is large, advecting the surface vertically 
+results in a better behaved mesh, so we set the following in the free surface subsection:
 
 \lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm}
+
+We also make use of the strain rate-based mesh refinement plugin:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm}
 
 Setting 
 {\tt   set Initial adaptive refinement        = 4}
