@@ -37,6 +37,14 @@ subsection Model settings
 end
 
 
+# Advecting the free surface vertically rather than
+# in the surface normal direction can result in a
+# more stable mesh when the deformation is large
+subsection Free surface
+  set Surface velocity projection = vertical
+end
+
+
 subsection Material model
   set Model name = drucker prager
   subsection Drucker Prager
