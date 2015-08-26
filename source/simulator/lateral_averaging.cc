@@ -152,22 +152,22 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_temperature(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
     FEValuesExtractors::Scalar field = this->introspection().extractors.temperature;
-    get_field( field, values );
+    get_field_averages( field, values );
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_composition( const unsigned int c, std::vector<double> &values) const
+  void LateralAveraging<dim>::get_composition_averages( const unsigned int c, std::vector<double> &values) const
   {
     FEValuesExtractors::Scalar field = this->introspection().extractors.compositional_fields[c];
-    get_field( field, values );
+    get_field_averages( field, values );
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_field(const FEValuesExtractors::Scalar &field,
-                                        std::vector<double> &values) const
+  void LateralAveraging<dim>::get_field_averages(const FEValuesExtractors::Scalar &field,
+                                                 std::vector<double> &values) const
   {
     FunctorDepthAverageField<dim> f(field);
     compute_lateral_average(values, f);
@@ -199,7 +199,7 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_viscosity(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageViscosity<dim> f;
     compute_lateral_average(values, f);
@@ -243,7 +243,7 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_velocity_magnitude(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageVelocityMagnitude<dim> f(this->introspection().extractors.velocities);
 
@@ -295,7 +295,7 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_sinking_velocity(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageSinkingVelocity<dim> f(this->introspection().extractors.velocities,
                                               &this->get_gravity_model() );
@@ -346,7 +346,7 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_Vs(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageVsVp<dim> f(&this->get_material_model(), true /* Vs */);
 
@@ -354,7 +354,7 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_Vp(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageVsVp<dim> f(&this->get_material_model(), false /* Vp */);
 
@@ -421,7 +421,7 @@ namespace aspect
   }
 
   template <int dim>
-  void LateralAveraging<dim>::get_vertical_heat_flux(std::vector<double> &values) const
+  void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageVerticalHeatFlux<dim> f(this->introspection().extractors.velocities,
                                                this->introspection().extractors.temperature,

@@ -434,7 +434,7 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_lateral_averaging().get_temperature(avg_temp);
+        this->get_lateral_averaging().get_temperature_averages(avg_temp);
     }
 
 

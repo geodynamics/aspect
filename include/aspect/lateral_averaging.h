@@ -32,8 +32,9 @@ namespace aspect
    * LateralAveraging is a class that performs various averaging operations
    * on the solution.  The functions of this class take a vector as an argument.
    * The model is divided into depth slices where the number of slices is the
-   * length of the input vector, and then the relevant quantity is averaged
-   * laterally for each depth slice.
+   * length of the output vector. Each function averages a specific quantity
+   * (as specified by their name), and that quantity is averaged laterally
+   * for each depth slice.
 
    * Plugins may access the LateralAveraging plugin through the SimulatorAccess
    * function get_lateral_averaging(), and then query that for the desired
@@ -56,11 +57,11 @@ namespace aspect
        * depth slices.
        */
       void
-      get_temperature(std::vector<double> &values) const;
+      get_temperature_averages(std::vector<double> &values) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
-       * compositional fields. See get_lateral_average_temperature.
+       * compositional fields.
        *
        * @param composition_index The index of the compositional field whose
        * matrix we want to assemble (0 <= composition_index < number of
@@ -71,58 +72,61 @@ namespace aspect
        * depth slices.
        */
       void
-      get_composition(const unsigned int composition_index,
-                      std::vector<double> &values) const;
+      get_composition_averages(const unsigned int composition_index,
+                               std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the current viscosity
+       * Compute a lateral average of the current viscosity.
+       *
+       * @param composition_index The index of the compositional field
+       * to laterally average.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
       void
-      get_viscosity(std::vector<double> &values) const;
+      get_viscosity_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the current velocity magnitude
+       * Compute a lateral average of the current velocity magnitude.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
       void
-      get_velocity_magnitude(std::vector<double> &values) const;
+      get_velocity_magnitude_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the current sinking velocity
+       * Compute a lateral average of the current sinking velocity.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
       void
-      get_sinking_velocity(std::vector<double> &values) const;
+      get_sinking_velocity_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the seismic shear wave speed: Vs
+       * Compute a lateral average of the seismic shear wave speed: Vs.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
       void
-      get_Vs(std::vector<double> &values) const;
+      get_Vs_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the seismic pressure wave speed: Vp
+       * Compute a lateral average of the seismic pressure wave speed: Vp.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
       void
-      get_Vp(std::vector<double> &values) const;
+      get_Vp_averages(std::vector<double> &values) const;
 
       /**
        * Compute a lateral average of the heat flux, with the sign
@@ -133,7 +137,7 @@ namespace aspect
        * depth slices.
        */
       void
-      get_vertical_heat_flux(std::vector<double> &values) const;
+      get_vertical_heat_flux_averages(std::vector<double> &values) const;
 
     private:
 
@@ -155,12 +159,17 @@ namespace aspect
        *     // called once at the beginning with the number of quadrature points
        *     void setup(const unsigned int q_points);
        *
-       *     // fill @p output for each quadrature point
+       *     // Fill @p output for each quadrature point.
+       *     // This takes material model inputs and outputs (which are filled
+       *     // if need_material_properties() == true), an initialized FEValues
+       *     // object for a cell, and the current solution vector as inputs.
+       *     // It then evaluates the desired quantity and puts the results in
+       *     // the output vector, which is q_points long.
        *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-       *        const MaterialModel::MaterialModelOutputs<dim> &out,
-       *        FEValues<dim> &fe_values,
-       *        const LinearAlgebra::BlockVector &solution,
-       *        std::vector<double> &output);
+       *                     const MaterialModel::MaterialModelOutputs<dim> &out,
+       *                     FEValues<dim> &fe_values,
+       *                     const LinearAlgebra::BlockVector &solution,
+       *                     std::vector<double> &output);
        * };
        * @endcode
        *
@@ -177,16 +186,14 @@ namespace aspect
        * Compute a depth average of the current temperature/composition. The
        * function fills a vector that contains average
        * temperatures/compositions over slices of the domain of same depth.
-       * The function resizes the output vector to match the number of depth
-       * slices.
        *
-       * @param advection_field Temperature or compositional field to average.
+       * @param field  Extractor for temperature or compositional field to average.
        * @param values The output vector of depth averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.
        */
-      void get_field(const FEValuesExtractors::Scalar &field,
-                     std::vector<double> &values) const;
+      void get_field_averages(const FEValuesExtractors::Scalar &field,
+                              std::vector<double> &values) const;
 
   };
 }
