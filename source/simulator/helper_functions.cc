@@ -1287,8 +1287,8 @@ namespace aspect
     // left hand side of the Stokes equation is the viscosity. note
     // that our implementation of compressible materials makes sure
     // that the density does not appear on the lhs.
-    return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
-            == true);
+
+    return (material_model->get_model_dependence().viscosity != MaterialModel::NonlinearDependence::none);
   }
 }
 

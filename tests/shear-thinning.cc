@@ -13,14 +13,10 @@ namespace aspect
       public:
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-      /**
-        * Return true if the viscosity() function returns something that
-        * may depend on the variable identifies by the argument.
-        */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+        void
+        parse_parameters (ParameterHandler &prm);
     };
 
   }
@@ -44,11 +40,13 @@ namespace aspect
     }
 
     template <int dim>
-    bool
-    ShearThinning<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
+    void
+    ShearThinning<dim>::parse_parameters (ParameterHandler &prm)
     {
-      return ((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none);
+      Simple<dim>::parse_parameters(prm);
+
+      // Declare dependencies on solution variables that are different from simple
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::strain_rate;
     }
   }
 }

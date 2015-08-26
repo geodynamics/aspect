@@ -20,7 +20,6 @@
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <aspect/material_model/depth_dependent.h>
-#include <deal.II/base/parameter_handler.h>
 #include <utility>
 #include <limits>
 
@@ -285,49 +284,11 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->viscosity_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->density_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->compressibility_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->specific_heat_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->thermal_conductivity_depends_on(dependence);
+      this-> model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>

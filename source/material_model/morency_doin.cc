@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+
 #include <aspect/material_model/morency_doin.h>
 
 using namespace dealii;
@@ -174,69 +175,6 @@ namespace aspect
     template <int dim>
     bool
     MorencyDoin<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
     is_compressible () const
     {
       return false;
@@ -365,8 +303,22 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-    }
 
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+    }
+  }
+}
+
+// explicit instantiations
+namespace aspect
+{
+  namespace MaterialModel
+  {
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
                                    "Morency and Doin",
                                    "An implementation of the visco-plastic rheology described by (Morency"

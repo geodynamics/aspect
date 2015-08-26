@@ -122,70 +122,6 @@ namespace aspect
     template <int dim>
     bool
     Simple<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_viscosity_exponent != 0))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-               &&
-               (composition_viscosity_prefactor != 1.0))
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
-    bool
-    Simple<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_alpha != 0))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-               &&
-               (compositional_delta_rho != 0))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Simple<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simple<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simple<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    Simple<dim>::
     is_compressible () const
     {
       return false;
@@ -280,6 +216,23 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
+
+      if (thermal_viscosity_exponent != 0)
+        this->model_dependence.viscosity |= NonlinearDependence::temperature;
+      if (composition_viscosity_prefactor != 1.0)
+        this->model_dependence.viscosity |= NonlinearDependence::compositional_fields;
+
+      if (thermal_alpha != 0)
+        this->model_dependence.density |=NonlinearDependence::temperature;
+      if (compositional_delta_rho != 0)
+        this->model_dependence.density |=NonlinearDependence::compositional_fields;
     }
   }
 }
