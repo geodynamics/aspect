@@ -57,13 +57,7 @@ int f()
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
-  std::cout << "  diff solution-00009.0000.gnuplot[12]" << std::endl;
-  ret = system ("cd output-checkpoint_01 ; "
-	  "diff solution-00009.0000.gnuplot[12];");  
-  if (ret!=0)
-    std::cout << "system() returned error " << ret << std::endl;
-  
-  
+  // abort current process:
   exit (0);
   return 42;
 }

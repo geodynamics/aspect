@@ -7,12 +7,11 @@
 -----------------------------------------------------------------------------
 
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+8 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -22,7 +21,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 1:  t=1.02774e+06 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 30+5 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -32,7 +31,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 2:  t=2.10119e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -42,7 +41,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 3:  t=3.2227e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -54,8 +53,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 4:  t=4.39466e+06 seconds
    Solving temperature system... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -65,7 +63,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 5:  t=5.61937e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -75,7 +73,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 6:  t=6.90034e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -83,9 +81,9 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
      RMS, max velocity:        4.84e-09 m/s, 1.16e-08 m/s
 
-*** Timestep 7:  t=8.24179e+06 seconds
+*** Timestep 7:  t=8.2418e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -97,8 +95,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 8:  t=9.64864e+06 seconds
    Solving temperature system... 20 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+2 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -108,7 +105,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 9:  t=1e+07 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 28 iterations.
+   Solving Stokes system... done.
 
    Postprocessing:
      Writing depth average     output1.tmp/depth_average.gnuplot
@@ -120,19 +117,18 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       6.5s |            |
+| Total wallclock time elapsed since start    |      17.3s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        10 |     0.699s |        11% |
-| Assemble temperature system     |        10 |     0.833s |        13% |
-| Build Stokes preconditioner     |         3 |     0.576s |       8.9% |
-| Build temperature preconditioner|        10 |    0.0577s |      0.89% |
-| Solve Stokes system             |        10 |      1.08s |        17% |
-| Solve temperature system        |        10 |    0.0873s |       1.3% |
-| Create snapshot                 |         2 |    0.0202s |      0.31% |
-| Initialization                  |         2 |    0.0331s |      0.51% |
-| Postprocessing                  |        10 |      2.91s |        45% |
-| Setup dof systems               |         1 |     0.106s |       1.6% |
+| Assemble Stokes system          |        10 |      2.33s |        13% |
+| Assemble temperature system     |        10 |      2.23s |        13% |
+| Build temperature preconditioner|        10 |    0.0462s |      0.27% |
+| Solve Stokes system             |        10 |      1.98s |        11% |
+| Solve temperature system        |        10 |    0.0754s |      0.44% |
+| Create snapshot                 |         2 |    0.0434s |      0.25% |
+| Initialization                  |         2 |    0.0612s |      0.35% |
+| Postprocessing                  |        10 |      9.91s |        57% |
+| Setup dof systems               |         1 |     0.413s |       2.4% |
 +---------------------------------+-----------+------------+------------+
 
