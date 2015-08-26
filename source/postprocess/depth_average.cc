@@ -54,7 +54,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      n_depth_zones (100)
+      n_depth_zones (100),
+      ascii_output(false)
     {}
 
 
@@ -170,55 +171,85 @@ namespace aspect
 
           DataOutStack<1> data_out_stack;
 
-          for (unsigned int j=0; j<variables.size(); ++j)
-            data_out_stack.declare_data_vector (variables[j],
-                                                DataOutStack<1>::cell_vector);
-
-          for (unsigned int i=0; i<entries.size(); ++i)
+          if (!ascii_output)
             {
-              data_out_stack.new_parameter_value ((this->convert_output_to_years()
-                                                   ?
-                                                   entries[i].time / year_in_seconds
-                                                   :
-                                                   entries[i].time),
-                                                  // declare the time step, which here is the difference
-                                                  // between successive output times. we don't have anything
-                                                  // for the first time step, however. we could do a zero
-                                                  // delta, but that leads to invisible output. rather, we
-                                                  // use an artificial value of one tenth of the first interval,
-                                                  // if available
-                                                  (i == 0 ?
-                                                   (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
-                                                   entries[i].time - entries[i-1].time) /
-                                                  (this->convert_output_to_years()
-                                                   ?
-                                                   year_in_seconds
-                                                   :
-                                                   1));
-
-              data_out_stack.attach_dof_handler (dof_handler);
-
-              Vector<double> tmp(n_depth_zones);
               for (unsigned int j=0; j<variables.size(); ++j)
+                data_out_stack.declare_data_vector (variables[j],
+                                                    DataOutStack<1>::cell_vector);
+
+              for (unsigned int i=0; i<entries.size(); ++i)
                 {
-                  std::copy (entries[i].values[j].begin(),
-                             entries[i].values[j].end(),
-                             tmp.begin());
-                  data_out_stack.add_data_vector (tmp,
-                                                  variables[j]);
+                  data_out_stack.new_parameter_value ((this->convert_output_to_years()
+                                                       ?
+                                                       entries[i].time / year_in_seconds
+                                                       :
+                                                       entries[i].time),
+                                                      // declare the time step, which here is the difference
+                                                      // between successive output times. we don't have anything
+                                                      // for the first time step, however. we could do a zero
+                                                      // delta, but that leads to invisible output. rather, we
+                                                      // use an artificial value of one tenth of the first interval,
+                                                      // if available
+                                                      (i == 0 ?
+                                                       (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
+                                                       entries[i].time - entries[i-1].time) /
+                                                      (this->convert_output_to_years()
+                                                       ?
+                                                       year_in_seconds
+                                                       :
+                                                       1));
+
+                  data_out_stack.attach_dof_handler (dof_handler);
+
+                  Vector<double> tmp(n_depth_zones);
+                  for (unsigned int j=0; j<variables.size(); ++j)
+                    {
+                      std::copy (entries[i].values[j].begin(),
+                                 entries[i].values[j].end(),
+                                 tmp.begin());
+                      data_out_stack.add_data_vector (tmp,
+                                                      variables[j]);
+                    }
+                  data_out_stack.build_patches ();
+                  data_out_stack.finish_parameter_value ();
                 }
-              data_out_stack.build_patches ();
-              data_out_stack.finish_parameter_value ();
+
+
+              const std::string filename = (this->get_output_directory() +
+                                            "depth_average" +
+                                            DataOutBase::default_suffix(output_format));
+              std::ofstream f (filename.c_str());
+              data_out_stack.write (f, output_format);
             }
+          else
+            {
+              const std::string filename = (this->get_output_directory() + "depth_average.txt");
+              std::ofstream f;
+              if (this->get_timestep_number() == 0 )  //Write the header if this is the first step
+                {
+                  f.open(filename.c_str(), std::ofstream::out);
+                  f << "depth       " << "time        ";
+                  for ( unsigned int i = 0; i < variables.size(); ++i)
+                    {
+                      f << variables[i] << " ";
+                    }
+                  f << std::endl;
+                }
+              else f.open(filename.c_str(), std::ofstream::app);
 
-
-          const std::string filename = (this->get_output_directory() +
-                                        "depth_average" +
-                                        DataOutBase::default_suffix(output_format));
-          std::ofstream f (filename.c_str());
-          data_out_stack.write (f, output_format);
+              double depth = max_depth/double(data_point.values[0].size())/2.0;
+              for (unsigned int d = 0; d < data_point.values[0].size(); ++d)
+                {
+                  f << std::setw(12) << depth << " " << std::setw(12) <<
+                    (this->convert_output_to_years() ? data_point.time/year_in_seconds : data_point.time) << " ";
+                  for ( unsigned int i = 0; i < variables.size(); ++i )
+                    f << std::setw(12) << data_point.values[i][d] << " ";
+                  f << std::endl;
+                  depth+= max_depth/double(data_point.values[0].size() );
+                }
+              f.close();
+            }
         }
-
 
       set_last_output_time (this->get_time());
 
@@ -227,7 +258,7 @@ namespace aspect
       return std::make_pair (std::string ("Writing depth average"),
                              this->get_output_directory() +
                              "depth_average" +
-                             DataOutBase::default_suffix(output_format));
+                             (ascii_output ? ".txt" : DataOutBase::default_suffix(output_format)));
     }
 
 
@@ -259,7 +290,7 @@ namespace aspect
                              "faster. On the other hand, if you have an extremely highly "
                              "resolved mesh, choosing more zones might also make sense.");
           prm.declare_entry ("Output format", "gnuplot",
-                             Patterns::Selection(DataOutBase::get_output_format_names()),
+                             Patterns::Selection(DataOutBase::get_output_format_names().append("|txt")),
                              "The format in which the output shall be produced. The "
                              "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
@@ -290,13 +321,18 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
           n_depth_zones = prm.get_integer ("Number of zones");
-          output_format = DataOutBase::parse_output_format(prm.get("Output format"));
 
           output_variables = Utilities::split_string_list(prm.get("List of output variables"));
           if ( std::find( output_variables.begin(), output_variables.end(), "all") != output_variables.end())
             output_all_variables = true;
           else
             output_all_variables = false;
+
+          std::string x_output_format = prm.get("Output format");
+          if (x_output_format == "txt")
+            ascii_output = true;
+          else
+            output_format = DataOutBase::parse_output_format(prm.get("Output format"));
         }
         prm.leave_subsection();
       }
