@@ -11,11 +11,9 @@
  * property_depends_on() functions. The dependencies of parameters
  * on solution variables are instead handled by a structure in the
  * base class. All included material models have been updated. User
- * written material models will continue to work, unless they have
- * a variable viscosity, in which case they need to set the
- * model_dependence->viscosity. Since there is no solver yet that
- * utilizes the other dependencies, the impact of this change
- * is limited.
+ * written material models will continue to work as before. Since
+ * there is no solver yet that utilizes the other dependencies,
+ * the impact of this change is limited.
  * <br>
  * (Kimberly Moore, Rene Gassmoeller, Wolfgang Bangerth, 2015/08/26)
  *
