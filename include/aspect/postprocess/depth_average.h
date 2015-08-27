@@ -131,11 +131,12 @@ namespace aspect
         std::vector<DataPoint> entries;
 
         /**
-         * Compute the next output time from the current one. In the simplest
-         * case, this is simply the previous next output time plus the
-         * interval, but in general we'd like to ensure that it is larger than
-         * the current time to avoid falling behind with next_output_time and
-         * having to catch up once the time step becomes larger.
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
          */
         void set_last_output_time (const double current_time);
     };
