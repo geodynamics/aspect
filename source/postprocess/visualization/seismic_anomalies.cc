@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/seismic_anomalies.h>
 #include <aspect/simulator_access.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -72,7 +73,7 @@ namespace aspect
         const unsigned int npoints = 2; // window in running average half-width of window
         std::vector<double> Vs_depth_average(50);
 
-        this->get_depth_average_Vs(Vs_depth_average);
+        this->get_lateral_averaging().get_Vs_averages(Vs_depth_average);
         compute_running_average(Vs_depth_average, npoints);
 
         const unsigned int num_slices = Vs_depth_average.size();
@@ -144,7 +145,7 @@ namespace aspect
         const unsigned int npoints = 2; // window in running average half-width of window
         std::vector<double> Vp_depth_average(50);
 
-        this->get_depth_average_Vp(Vp_depth_average);
+        this->get_lateral_averaging().get_Vp_averages(Vp_depth_average);
         compute_running_average(Vp_depth_average, npoints);
 
         const unsigned int num_slices = Vp_depth_average.size();
