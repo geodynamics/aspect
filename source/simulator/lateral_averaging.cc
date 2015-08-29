@@ -212,8 +212,9 @@ namespace aspect
     class FunctorDepthAverageVelocityMagnitude
     {
       public:
-        FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field)
-          : field_(field) {}
+        FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field,
+                                             bool convert_to_years)
+          : field_(field), convert_to_years_(convert_to_years) {}
 
         bool need_material_properties() const
         {
@@ -233,11 +234,13 @@ namespace aspect
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
-            output[q] = velocity_values[q] * velocity_values[q];
+            output[q] = std::sqrt( velocity_values[q] * velocity_values[q] ) *
+                        (convert_to_years_ ? year_in_seconds : 1.0);
         }
 
         std::vector<Tensor<1,dim> > velocity_values;
         const FEValuesExtractors::Vector field_;
+        const bool convert_to_years_;
     };
   }
 
@@ -245,7 +248,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
-    FunctorDepthAverageVelocityMagnitude<dim> f(this->introspection().extractors.velocities);
+    FunctorDepthAverageVelocityMagnitude<dim> f(this->introspection().extractors.velocities,
+                                                this->convert_output_to_years());
 
     compute_lateral_average(values, f);
   }
@@ -257,8 +261,11 @@ namespace aspect
     {
       public:
         FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field,
-                                           const GravityModel::Interface<dim> *gravity)
-          : field_(field), gravity_(gravity) {}
+                                           const GravityModel::Interface<dim> *gravity,
+                                           bool convert_to_years)
+          : field_(field),
+            gravity_(gravity),
+            convert_to_years_(convert_to_years) {}
 
         bool need_material_properties() const
         {
@@ -283,13 +290,15 @@ namespace aspect
               const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
               const Tensor<1,dim> vertical = (g.norm() > 0 ? g/g.norm() : Tensor<1,dim>());
 
-              output[q] = std::fabs(std::min(0.0, velocity_values[q] * vertical))*year_in_seconds;
+              output[q] = std::fabs(std::min(0.0, velocity_values[q] * vertical))
+                          * (convert_to_years_ ? year_in_seconds : 1.0);
             }
         }
 
         std::vector<Tensor<1,dim> > velocity_values;
         const FEValuesExtractors::Vector field_;
         const GravityModel::Interface<dim> *gravity_;
+        const bool convert_to_years_;
     };
   }
 
@@ -298,7 +307,8 @@ namespace aspect
   void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
     FunctorDepthAverageSinkingVelocity<dim> f(this->introspection().extractors.velocities,
-                                              &this->get_gravity_model() );
+                                              &this->get_gravity_model(),
+                                              this->convert_output_to_years());
 
     compute_lateral_average(values, f);
   }

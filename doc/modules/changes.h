@@ -7,6 +7,18 @@
  *
  * <ol>
  *
+ * <li> Fixed: The laterally averaged sinking velocity and velocity
+ * magnitude calculations did not check whether the user selected m/s
+ * or m/yr for output values.  Now they do.
+ * <br>
+ * (Ian Rose, 2015/08/28)
+ *
+ * <li> Fixed: The lateral averaging of the velocity magnitude was
+ * mistakenly calculating the square of the velocity. Now it calculates
+ * the magnitude.
+ * <br>
+ * (Ian Rose, 2015/08/28)
+ *
  * <li> Changed: The interface of material models no longer declares
  * property_depends_on() functions. The dependencies of parameters
  * on solution variables are instead handled by a structure in the
