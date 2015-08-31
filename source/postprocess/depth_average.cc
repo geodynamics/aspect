@@ -90,22 +90,61 @@ namespace aspect
           variables.push_back ("vertical_heat_flux");
           n_statistics = variables.size();
         }
-      else
+      else  //we have to parse the list in this order to match the output below
         {
-          for ( std::vector<std::string>::const_iterator it = output_variables.begin();
-                it != output_variables.end(); ++it)
+          if ( std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
             {
-              if ( *it == "composition")
-                {
-                  n_statistics += this->n_compositional_fields();
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                    variables.push_back(std::string("C_") + Utilities::int_to_string(c));
-                }
-              else
-                {
-                  n_statistics++;
-                  variables.push_back(*it);
-                }
+              n_statistics++;
+              variables.push_back("temperature");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
+            {
+              n_statistics += this->n_compositional_fields();
+              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                variables.push_back(std::string("C_") + Utilities::int_to_string(c));
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("adiabatic_temperature");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("velocity_magnitude");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("sinking_velocity");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("Vs");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("Vp");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("viscosity");
+            }
+
+          if ( std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
+            {
+              n_statistics++;
+              variables.push_back("vertical_heat_flux");
             }
         }
       Assert (variables.size() == n_statistics, ExcInternalError());

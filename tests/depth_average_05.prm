@@ -1,7 +1,5 @@
-# Test the 'depth average' postprocessor on a coarse mesh version of
-# convection_box.prm. This test makes no sense since we average over
-# 100 depth intervals but we only compute on a 4x4 mesh -- several of
-# the depth intervals will receive no quadrature points
+# Test outputting a subset of the available laterally-averaged
+# quantities in the DepthAverage postprocessor.
 
 set Dimension                              = 2
 
@@ -98,7 +96,7 @@ subsection Postprocess
     set Time between graphical output = 0.1
     set Number of zones = 10
      # Test outputting a subset of the depth-averaged quantities
-    set List of output variables = temperature, velocity_magnitude
+    set List of output variables = velocity_magnitude, temperature
   end
 end
 
