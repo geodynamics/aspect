@@ -247,5 +247,12 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
+ * <li> New: There is now an (3D) ellipsoidal chunk geometry model where two 
+ * of the axis have the same length. The ellipsoidal chunk can be non-coordinate 
+ * parallel part of the ellipsoid. 
+ * This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang 
+ * Bangerth
+ * <br>
+ * (Menno Fraters, 2015/08/28)
  * </ol>
  */
