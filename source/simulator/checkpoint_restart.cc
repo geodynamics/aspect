@@ -273,6 +273,7 @@ namespace aspect
     ar &old_time_step;
     ar &timestep_number;
     ar &pre_refinement_step;
+    ar &pressure_adjustment;
 
     ar &postprocess_manager &statistics;
 
