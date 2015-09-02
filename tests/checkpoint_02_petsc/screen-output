@@ -1,0 +1,8 @@
+
+Loading shared library <./libcheckpoint_02.so>
+* starting from beginning:
+* now resuming:
+* now comparing:
+Binary files output1.tmp/restart.resume.z and output2.tmp/restart.resume.z differ
+Binary files output1.tmp/restart.mesh and output2.tmp/restart.mesh differ
+system() returned error 512
