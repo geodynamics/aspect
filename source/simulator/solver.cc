@@ -458,14 +458,20 @@ namespace aspect
   }
 
 
-  dealii::SolverControl::State
-  solver_callback (const unsigned int iteration,
-                   const double        check_value,
-                   const LinearAlgebra::BlockVector       &current_iterate,
-                   std::vector<double> &solver_history)
+  namespace
   {
-    solver_history.push_back(check_value);
-    return dealii::SolverControl::success;
+    /**
+     * Helper function used in solve_stokes().
+     */
+    dealii::SolverControl::State
+    solver_callback (const unsigned int /*iteration*/,
+                     const double check_value,
+                     const LinearAlgebra::BlockVector &/*current_iterate*/,
+                     std::vector<double> &solver_history)
+    {
+      solver_history.push_back(check_value);
+      return dealii::SolverControl::success;
+    }
   }
 
   template <int dim>
@@ -682,7 +688,8 @@ namespace aspect
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
-        solver_history.push_back(-1);
+        // this additional entry serves as a marker between cheap and expensive Stokes solver
+        solver_history.push_back(-1.0);
 
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
@@ -728,14 +735,13 @@ namespace aspect
                   }
                 f.close();
 
-                std::cout << "See " << parameters.output_directory+"solver_history.txt"
-                          << " for convergence history." << std::endl;
-
                 AssertThrow (false,
                              ExcMessage (std::string("The iterative Stokes solver "
                                                      "did not converge. It reported the following error:\n\n")
                                          +
-                                         exc.what()))
+                                         exc.what()
+                                         + "\n See " + parameters.output_directory+"solver_history.txt"
+                                         + " for convergence history."));
               }
             else
               throw QuietException();

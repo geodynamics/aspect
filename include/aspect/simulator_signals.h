@@ -115,7 +115,8 @@ namespace aspect
       * A signal that is fired when the iterative Stokes solver is
       * done. Parameters are a reference to the SimulatorAccess, a bool
       * indicating success or failure, and a vector with linear residuals in
-      * each solver step.
+      * each solver step. If the solver switches from the cheap to the expensive
+      * solver, a -1.0 is inserted.
       */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   const bool,
