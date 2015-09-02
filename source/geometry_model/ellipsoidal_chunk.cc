@@ -48,6 +48,19 @@ namespace aspect
 
     // constructor
     template <int dim>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::EllipsoidalChunkGeometry()
+      :
+      semi_major_axis_a (-1),
+      eccentricity (-1),
+      semi_minor_axis_b (-1),
+      rot_para_to_para_angle (0),
+      para_to_rect_angle (0),
+      rotation_longitude (-1),
+      rotation_latitude (-1),
+      bottom_depth (-1)
+    {}
+
+    template <int dim>
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::set_initial_values(double para_semi_major_axis_a,
                                                                         double para_eccentricity,
