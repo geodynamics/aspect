@@ -7,6 +7,12 @@
  *
  * <ol>
  *
+ * <li> New: The history of the Stokes solver residuals is saved and can
+ * be accessed using the post_stokes_solver signal and will be written to
+ * a file automatically in case the solver doesn't converge.
+ * <br>
+ * (Timo Heister, 2015/09/02)
+ *
  * <li> Fixed: The laterally averaged sinking velocity and velocity
  * magnitude calculations did not check whether the user selected m/s
  * or m/yr for output values.  Now they do.
