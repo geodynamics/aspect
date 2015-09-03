@@ -50,6 +50,7 @@ namespace aspect
         class EllipsoidalChunkGeometry : public ChartManifold<dim,3,3>
         {
           public:
+            EllipsoidalChunkGeometry();
 
             void
             set_initial_values(double para_semi_major_axis_a,
@@ -82,14 +83,14 @@ namespace aspect
 
 
           private:
-            double semi_major_axis_a = -1;
-            double eccentricity = -1;
-            double semi_minor_axis_b = -1;
-            double rot_para_to_para_angle = 0;
-            double para_to_rect_angle = 0;
-            double rotation_longitude = -1;
-            double rotation_latitude = -1;
-            double bottom_depth = -1;
+            double semi_major_axis_a;
+            double eccentricity;
+            double semi_minor_axis_b;
+            double rot_para_to_para_angle;
+            double para_to_rect_angle;
+            double rotation_longitude;
+            double rotation_latitude;
+            double bottom_depth;
 
             Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
             Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
