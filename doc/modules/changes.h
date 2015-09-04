@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Changed: the user can now select a subset of the laterally-
+ * averaged quantities to be computed in the DepthAverage postprocessor.
+ * <br>
+ * (Ian Rose, 2015/09/04)
+ *
  * <li> New: The history of the Stokes solver residuals is saved and can
  * be accessed using the post_stokes_solver signal and will be written to
  * a file automatically in case the solver doesn't converge.

@@ -114,6 +114,16 @@ namespace aspect
         unsigned int n_depth_zones;
 
         /**
+         * List of the quantities to calculate for each depth zone.
+         */
+        std::vector<std::string> output_variables;
+
+        /**
+         * Whether to calculate all available quantites when averaging.
+         */
+        bool output_all_variables;
+
+        /**
          * A structure for a single time step record.
          */
         struct DataPoint
