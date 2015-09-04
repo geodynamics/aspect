@@ -74,124 +74,81 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       //Set up the header for the requested output variables
-      unsigned int n_statistics = 0;
       std::vector<std::string> variables;
-      if ( output_all_variables )
-        {
-          variables.push_back ("temperature");
+      //we have to parse the list in this order to match the output below
+      {
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
+          variables.push_back("temperature");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             variables.push_back(std::string("C_") + Utilities::int_to_string(c));
-          variables.push_back ("adiabatic_temperature");
-          variables.push_back ("velocity_magnitude");
-          variables.push_back ("sinking_velocity");
-          variables.push_back ("Vs");
-          variables.push_back ("Vp");
-          variables.push_back ("viscosity");
-          variables.push_back ("vertical_heat_flux");
-          n_statistics = variables.size();
-        }
-      else  //we have to parse the list in this order to match the output below
-        {
-          if ( std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("temperature");
-            }
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
-            {
-              n_statistics += this->n_compositional_fields();
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                variables.push_back(std::string("C_") + Utilities::int_to_string(c));
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
+          variables.push_back("adiabatic_temperature");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("adiabatic_temperature");
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
+          variables.push_back("velocity_magnitude");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("velocity_magnitude");
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
+          variables.push_back("sinking_velocity");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("sinking_velocity");
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
+          variables.push_back("Vs");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("Vs");
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
+          variables.push_back("Vp");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("Vp");
-            }
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
+          variables.push_back("viscosity");
 
-          if ( std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("viscosity");
-            }
-
-          if ( std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
-            {
-              n_statistics++;
-              variables.push_back("vertical_heat_flux");
-            }
-        }
-      Assert (variables.size() == n_statistics, ExcInternalError());
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
+          variables.push_back("vertical_heat_flux");
+      }
 
       DataPoint data_point;
       data_point.time       = this->get_time();
-      data_point.values.resize(n_statistics, std::vector<double> (n_depth_zones));
+      data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
 
       //Add all the requested fields
       {
         unsigned int index = 0;
 
         //temperature
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "temperature") != variables.end() )
           this->get_lateral_averaging().get_temperature_averages(data_point.values[index++]);
 
-        //composition
+        //composition (search output_variables for this, since it has a different name in varibles)
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             this->get_lateral_averaging().get_composition_averages(c, data_point.values[index++]);
 
         //adiabatic temperature
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_temperature") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[index++]);
 
         //velocity magnitude
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "velocity_magnitude") != variables.end() )
           this->get_lateral_averaging().get_velocity_magnitude_averages(data_point.values[index++]);
 
         //sinking velocity
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "sinking_velocity") != variables.end() )
           this->get_lateral_averaging().get_sinking_velocity_averages(data_point.values[index++]);
 
         //Vs
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "Vs") != variables.end() )
           this->get_lateral_averaging().get_Vs_averages(data_point.values[index++]);
 
         //Vp
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "Vp") != variables.end() )
           this->get_lateral_averaging().get_Vp_averages(data_point.values[index++]);
 
         //viscosity
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "viscosity") != variables.end() )
           this->get_lateral_averaging().get_viscosity_averages(data_point.values[index++]);
 
         //vertical heat flux
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
+        if ( std::find( variables.begin(), variables.end(), "vertical_heat_flux") != variables.end() )
           this->get_lateral_averaging().get_vertical_heat_flux_averages(data_point.values[index++]);
       }
       entries.push_back (data_point);
@@ -213,7 +170,7 @@ namespace aspect
 
           DataOutStack<1> data_out_stack;
 
-          for (unsigned int j=0; j<n_statistics; ++j)
+          for (unsigned int j=0; j<variables.size(); ++j)
             data_out_stack.declare_data_vector (variables[j],
                                                 DataOutStack<1>::cell_vector);
 
@@ -242,7 +199,7 @@ namespace aspect
               data_out_stack.attach_dof_handler (dof_handler);
 
               Vector<double> tmp(n_depth_zones);
-              for (unsigned int j=0; j<n_statistics; ++j)
+              for (unsigned int j=0; j<variables.size(); ++j)
                 {
                   std::copy (entries[i].values[j].begin(),
                              entries[i].values[j].end(),
