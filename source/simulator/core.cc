@@ -440,6 +440,8 @@ namespace aspect
     termination_manager.initialize (*this);
     termination_manager.parse_parameters (prm);
 
+    lateral_averaging.initialize (*this);
+
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
@@ -712,6 +714,9 @@ namespace aspect
     gravity_model->update();
     heating_model_manager.update();
     adiabatic_conditions->update();
+
+    if (prescribed_stokes_solution.get())
+      prescribed_stokes_solution->update();
 
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in

@@ -68,12 +68,11 @@ namespace aspect
                        parameters.output_directory + "restart.mesh.info.old");
             move_file (parameters.output_directory + "restart.resume.z",
                        parameters.output_directory + "restart.resume.z.old");
-
-            // from now on, we know that if we get into this
-            // function again that a snapshot has previously
-            // been written
-            previous_snapshot_exists = true;
           }
+        // from now on, we know that if we get into this
+        // function again that a snapshot has previously
+        // been written
+        previous_snapshot_exists = true;
       }
 
     // save Triangulation and Solution vectors:
@@ -274,6 +273,7 @@ namespace aspect
     ar &old_time_step;
     ar &timestep_number;
     ar &pre_refinement_step;
+    ar &pressure_adjustment;
 
     ar &postprocess_manager &statistics;
 

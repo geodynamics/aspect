@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/drucker_prager.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -32,11 +31,11 @@ namespace aspect
     template <int dim>
     double
     DruckerPrager<dim>::
-    viscosity (const double temperature,
+    viscosity (const double /*temperature*/,
                const double pressure,
-               const std::vector<double> &composition,
+               const std::vector<double> &/*composition*/,
                const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
+               const Point<dim> &/*position*/) const
     {
       // For the very first time this function is called,
       // we prescribe a representative reference strain rate,
@@ -174,63 +173,6 @@ namespace aspect
       return 0.0;
     }
 
-    template <int dim>
-    bool
-    DruckerPrager<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // viscosity depends on strain rate and possibly on pressure
-      if (phi==0.0)
-        {
-          return ((dependence & NonlinearDependence::strain_rate));
-        }
-      else
-        {
-          return ((dependence & NonlinearDependence::pressure)
-                  ||
-                  (dependence & NonlinearDependence::strain_rate));
-        }
-    }
-
-
-    template <int dim>
-    bool
-    DruckerPrager<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-          &&
-          (thermal_alpha != 0))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    DruckerPrager<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    DruckerPrager<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    DruckerPrager<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
 
 
     template <int dim>
@@ -332,6 +274,19 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.viscosity = NonlinearDependence::strain_rate;
+      this->model_dependence.density = NonlinearDependence::none;
+
+      if (phi==0.0)
+        this->model_dependence.viscosity |= NonlinearDependence::pressure;
+
+      if (thermal_alpha != 0)
+        this->model_dependence.density = NonlinearDependence::temperature;
     }
   }
 }

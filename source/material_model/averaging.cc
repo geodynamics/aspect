@@ -20,7 +20,6 @@
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <aspect/material_model/averaging.h>
-#include <deal.II/base/parameter_handler.h>
 #include <utility>
 #include <limits>
 
@@ -334,22 +333,21 @@ namespace aspect
       base_model -> evaluate(in,out);
 
       /**
-       * Check if the size of the viscosities (and thereby all the other vectors) has been filled.
-       * If it hasn't been filled yet, it will have size 1.
+       * Check if the size of the viscosities (and thereby all the other vectors) is larger
+       * than one. Averaging over one or zero points does not make a difference anyway,
+       * and the normalized weighted distance averaging schemes need the distance between
+       * the points and can not handle a distance of zero.
        */
       if (out.viscosities.size() > 1)
         {
-          /* Average the base model values value based on the chosen average */
-          for (unsigned int i=0; i < out.viscosities.size(); ++i)
-            {
-              average (averaging_operation,in.position,out.viscosities);
-              average (averaging_operation,in.position,out.densities);
-              average (averaging_operation,in.position,out.thermal_expansion_coefficients);
-              average (averaging_operation,in.position,out.specific_heat);
-              average (averaging_operation,in.position,out.compressibilities);
-              average (averaging_operation,in.position,out.entropy_derivative_pressure);
-              average (averaging_operation,in.position,out.entropy_derivative_temperature);
-            }
+          /* Average the base model values based on the chosen average */
+          average (averaging_operation,in.position,out.viscosities);
+          average (averaging_operation,in.position,out.densities);
+          average (averaging_operation,in.position,out.thermal_expansion_coefficients);
+          average (averaging_operation,in.position,out.specific_heat);
+          average (averaging_operation,in.position,out.compressibilities);
+          average (averaging_operation,in.position,out.entropy_derivative_pressure);
+          average (averaging_operation,in.position,out.entropy_derivative_temperature);
         }
     }
 
@@ -399,49 +397,11 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
       /* After parsing the parameters for averaging, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->viscosity_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->density_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->compressibility_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->specific_heat_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    Averaging<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->thermal_conductivity_depends_on(dependence);
+      this->model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>

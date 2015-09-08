@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/depth_average.h>
 #include <aspect/simulator_access.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
 
 #include <deal.II/grid/grid_generator.h>
@@ -52,7 +53,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      next_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::quiet_NaN()),
       n_depth_zones (100)
     {}
 
@@ -65,31 +66,90 @@ namespace aspect
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during
       // the first time step
-      if (std::isnan(next_output_time))
-        next_output_time = this->get_time();
+      if (std::isnan(last_output_time))
+        last_output_time = this->get_time() - output_interval;
 
       // see if output is requested at this time
-      if (this->get_time() < next_output_time)
+      if (this->get_time() < last_output_time + output_interval)
         return std::pair<std::string,std::string>();
 
-      const unsigned int n_statistics = 7+this->n_compositional_fields();
+      //Set up the header for the requested output variables
+      std::vector<std::string> variables;
+      //we have to parse the list in this order to match the output below
+      {
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
+          variables.push_back("temperature");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            variables.push_back(std::string("C_") + Utilities::int_to_string(c));
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
+          variables.push_back("adiabatic_temperature");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
+          variables.push_back("velocity_magnitude");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
+          variables.push_back("sinking_velocity");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
+          variables.push_back("Vs");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end() )
+          variables.push_back("Vp");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
+          variables.push_back("viscosity");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
+          variables.push_back("vertical_heat_flux");
+      }
 
       DataPoint data_point;
       data_point.time       = this->get_time();
-      data_point.values.resize(n_statistics, std::vector<double> (n_depth_zones));
+      data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
 
-      // add temperature and the compositional fields that follow
-      // it immediately
+      //Add all the requested fields
       {
-        this->get_depth_average_temperature(data_point.values[0]);
-        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-          this->get_depth_average_composition(c, data_point.values[1+c]);
-        this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[1+this->n_compositional_fields()]);
-        this->get_depth_average_velocity_magnitude(data_point.values[2+this->n_compositional_fields()]);
-        this->get_depth_average_sinking_velocity(data_point.values[3+this->n_compositional_fields()]);
-        this->get_depth_average_Vs(data_point.values[4+this->n_compositional_fields()]);
-        this->get_depth_average_Vp(data_point.values[5+this->n_compositional_fields()]);
-        this->get_depth_average_viscosity(data_point.values[6+this->n_compositional_fields()]);
+        unsigned int index = 0;
+
+        //temperature
+        if ( std::find( variables.begin(), variables.end(), "temperature") != variables.end() )
+          this->get_lateral_averaging().get_temperature_averages(data_point.values[index++]);
+
+        //composition (search output_variables for this, since it has a different name in varibles)
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            this->get_lateral_averaging().get_composition_averages(c, data_point.values[index++]);
+
+        //adiabatic temperature
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_temperature") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[index++]);
+
+        //velocity magnitude
+        if ( std::find( variables.begin(), variables.end(), "velocity_magnitude") != variables.end() )
+          this->get_lateral_averaging().get_velocity_magnitude_averages(data_point.values[index++]);
+
+        //sinking velocity
+        if ( std::find( variables.begin(), variables.end(), "sinking_velocity") != variables.end() )
+          this->get_lateral_averaging().get_sinking_velocity_averages(data_point.values[index++]);
+
+        //Vs
+        if ( std::find( variables.begin(), variables.end(), "Vs") != variables.end() )
+          this->get_lateral_averaging().get_Vs_averages(data_point.values[index++]);
+
+        //Vp
+        if ( std::find( variables.begin(), variables.end(), "Vp") != variables.end() )
+          this->get_lateral_averaging().get_Vp_averages(data_point.values[index++]);
+
+        //viscosity
+        if ( std::find( variables.begin(), variables.end(), "viscosity") != variables.end() )
+          this->get_lateral_averaging().get_viscosity_averages(data_point.values[index++]);
+
+        //vertical heat flux
+        if ( std::find( variables.begin(), variables.end(), "vertical_heat_flux") != variables.end() )
+          this->get_lateral_averaging().get_vertical_heat_flux_averages(data_point.values[index++]);
       }
       entries.push_back (data_point);
 
@@ -109,19 +169,8 @@ namespace aspect
           Assert (dof_handler.n_dofs() == n_depth_zones, ExcInternalError());
 
           DataOutStack<1> data_out_stack;
-          std::vector<std::string> variables;
-          variables.push_back ("temperature");
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            variables.push_back(std::string("C_") + Utilities::int_to_string(c));
-          variables.push_back ("adiabatic_temperature");
-          variables.push_back ("velocity_magnitude");
-          variables.push_back ("sinking_velocity");
-          variables.push_back ("Vs");
-          variables.push_back ("Vp");
-          variables.push_back ("viscosity");
-          Assert (variables.size() == n_statistics, ExcInternalError());
 
-          for (unsigned int j=0; j<n_statistics; ++j)
+          for (unsigned int j=0; j<variables.size(); ++j)
             data_out_stack.declare_data_vector (variables[j],
                                                 DataOutStack<1>::cell_vector);
 
@@ -150,7 +199,7 @@ namespace aspect
               data_out_stack.attach_dof_handler (dof_handler);
 
               Vector<double> tmp(n_depth_zones);
-              for (unsigned int j=0; j<n_statistics; ++j)
+              for (unsigned int j=0; j<variables.size(); ++j)
                 {
                   std::copy (entries[i].values[j].begin(),
                              entries[i].values[j].end(),
@@ -171,7 +220,7 @@ namespace aspect
         }
 
 
-      set_next_output_time (this->get_time());
+      set_last_output_time (this->get_time());
 
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
@@ -214,6 +263,14 @@ namespace aspect
                              "The format in which the output shall be produced. The "
                              "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
+          prm.declare_entry("List of output variables", "all",
+                            Patterns::MultipleSelection("all|temperature|composition|adiabatic_temperature|"
+                                                        "velocity_magnitude|sinking_velocity|Vs|Vp|"
+                                                        "viscosity|vertical_heat_flux"),
+                            "A comma separated list which specifies which quantites to "
+                            "average in each depth slice. It defaults to averaging all "
+                            "availabe quantities, but this can be an expensive operation, "
+                            "so you may want to select only a few.");
         }
         prm.leave_subsection();
       }
@@ -230,8 +287,16 @@ namespace aspect
         prm.enter_subsection("Depth average");
         {
           output_interval = prm.get_double ("Time between graphical output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
           n_depth_zones = prm.get_integer ("Number of zones");
           output_format = DataOutBase::parse_output_format(prm.get("Output format"));
+
+          output_variables = Utilities::split_string_list(prm.get("List of output variables"));
+          if ( std::find( output_variables.begin(), output_variables.end(), "all") != output_variables.end())
+            output_all_variables = true;
+          else
+            output_all_variables = false;
         }
         prm.leave_subsection();
       }
@@ -243,7 +308,7 @@ namespace aspect
     template <class Archive>
     void DepthAverage<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &next_output_time
+      ar &last_output_time
       & entries;
     }
 
@@ -271,28 +336,25 @@ namespace aspect
           aspect::iarchive ia (is);
           ia >> (*this);
         }
-
-      // set next output time to something useful
-      set_next_output_time (this->get_time());
     }
 
 
     template <int dim>
     void
-    DepthAverage<dim>::set_next_output_time (const double current_time)
+    DepthAverage<dim>::set_last_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
       // a positive multiple.
       if (output_interval > 0)
         {
-          // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          const double output_interval_in_s = (this->convert_output_to_years() ?
-                                               (output_interval*year_in_seconds) :
-                                               output_interval);
-
-          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
-          // even if it is a whole number already (otherwise we output twice in a row)
-          next_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
   }

@@ -7,11 +7,73 @@
  *
  * <ol>
  *
+ * <li> Changed: the user can now select a subset of the laterally-
+ * averaged quantities to be computed in the DepthAverage postprocessor.
+ * <br>
+ * (Ian Rose, 2015/09/04)
+ *
+ * <li> New: The history of the Stokes solver residuals is saved and can
+ * be accessed using the post_stokes_solver signal and will be written to
+ * a file automatically in case the solver doesn't converge.
+ * <br>
+ * (Timo Heister, 2015/09/02)
+ *
+ * <li> Fixed: The laterally averaged sinking velocity and velocity
+ * magnitude calculations did not check whether the user selected m/s
+ * or m/yr for output values.  Now they do.
+ * <br>
+ * (Ian Rose, 2015/08/28)
+ *
+ * <li> Fixed: The lateral averaging of the velocity magnitude was
+ * mistakenly calculating the square of the velocity. Now it calculates
+ * the magnitude.
+ * <br>
+ * (Ian Rose, 2015/08/28)
+ *
+ * <li> Changed: The interface of material models no longer declares
+ * property_depends_on() functions. The dependencies of parameters
+ * on solution variables are instead handled by a structure in the
+ * base class. All included material models have been updated. User
+ * written material models will continue to work as before. Since
+ * there is no solver yet that utilizes the other dependencies,
+ * the impact of this change is limited.
+ * <br>
+ * (Kimberly Moore, Rene Gassmoeller, Wolfgang Bangerth, 2015/08/26)
+ *
+ * <li> New: The DepthAverage postprocessor now can calculate the laterally
+ * averaged heat flux in the interior of the simulation.
+ * <br>
+ * (Ian Rose, 2015/08/24)
+ *
+ * <li> New: There is now a new initial condition in which the temperature field is perturbed 
+ * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were 
+ * downloaded from http://n.ethz.ch/~auerl/research.html .
+ * <br>
+ * (Shangxin Liu, 2015/08/20)
+ *   
+ * <li> New: A box Geometry Model plugin with additional boundary indicators
+ * for the upper part of the box and corresponding Boundary Temperature and 
+ * Composition Model plugins. With this plugin, different boundary conditions 
+ * can be prescribed on the upper and lower part of the vertical domain boundaries.
+ * <br>
+ * (Anne Glerum, 2015/08/14)
+ *
+ * <li> New: Plugin for visualizing the boundary indicators used by the 
+ * Geometry Model.
+ * <br>
+ * (Anne Glerum, 2015/08/14)
+ *
  * <li> New: There is a new visualization postprocessor which displays 
  * the heat flux in the vertical direction, where upwards heat flux 
  * is positive.
  * <br>
  * (Ian Rose, 2015/08/12)
+ *
+ * <li> New: A new material averaging option using logarithms is added.
+ * This is combined with the existing averaging schemes. Taking the viscosity for example,
+ * the log averaging will average 10^23 and 10^21 to 10^22.
+ * <br>
+ * (Shangxin Liu, 2015/08/09)
  *
  * <li> New: A material model plugin for Drucker-Prager plasticity.
  * <br>
@@ -196,11 +258,12 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
- * <li> New: A new material averaging option using logarithms is added.
- * This is combined with the existing averaging schemes. Taking the viscosity for example,
- * the log averaging will average 10^23 and 10^21 to 10^22.
+ * <li> New: There is now an (3D) ellipsoidal chunk geometry model where two 
+ * of the axis have the same length. The ellipsoidal chunk can be non-coordinate 
+ * parallel part of the ellipsoid. 
+ * This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang 
+ * Bangerth
  * <br>
- * (Shangxin Liu, 2015/08/09)
- *   
+ * (Menno Fraters, 2015/08/28)
  * </ol>
  */

@@ -188,44 +188,6 @@ namespace aspect
          * @{
          */
 
-        /**
-         * Return true if the viscosity() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identifies by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         */
-        virtual bool
-        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the specific_heat() function returns something
-         * that may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identifies by the
-         * argument.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
         /**
          * Return whether the model is compressible or not.
@@ -397,48 +359,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    bool
-    InclusionMaterial<dim>::
-    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    InclusionMaterial<dim>::
-    density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    InclusionMaterial<dim>::
-    compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    InclusionMaterial<dim>::
-    specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    InclusionMaterial<dim>::
-    thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
     template <int dim>
     bool
     InclusionMaterial<dim>::
@@ -479,6 +399,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
     template <int dim>

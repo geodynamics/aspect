@@ -17,57 +17,43 @@ namespace aspect
     class IteratedReaction : public MaterialModel::CompositionReaction<dim>
     {
       public:
-        /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double reaction_term (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position,
-                                      const unsigned int compositional_variable) const;
+	virtual void evaluate(const MaterialModelInputs<dim> &in,
+                              MaterialModelOutputs<dim> &out) const
+	  {
+	    this->CompositionReaction<dim>::evaluate(in, out);
+	    for (unsigned int i=0; i < in.position.size(); ++i)
+	      {
+		const double depth = this->get_geometry_model().depth(in.position[i]);
+		for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+		  {
+		    Assert(in.composition[i].size() > 1, 
+			   ExcMessage ("Material model iterated reaction can only be used with "
+				       "at least two compositial fields."));
+ 
+		    double delta_C = 0.0;
+		    switch (c)
+		      {
+			case 0:
+			      delta_C = in.composition[i][1];
+			      break;
+			case 1:
+			      delta_C = 1.0;
+			      break;
+			case 2:
+			      delta_C = in.composition[i][1];
+			      break;			      
+		      }
+		    out.reaction_terms[i][c] = delta_C;
+		  }
+	      }
+	    
+	  }
+	
     };
 
   }
 }
 
-namespace aspect
-{
-  namespace MaterialModel
-  {
-
-    template <int dim>
-    double
-    IteratedReaction<dim>::
-    reaction_term (const double temperature,
-                   const double pressure,
-                   const std::vector<double> &compositional_fields,
-                   const Point<dim> &position,
-                   const unsigned int compositional_variable) const
-    {
-      Assert(compositional_fields.size() > 1, 
-            ExcMessage ("Material model iterated reaction can only be used with "
-                        "at least two compositial fields."));
-      double delta_C = 0.0;
-      switch (compositional_variable)
-        {
-          case 0:
-            delta_C = compositional_fields[1];
-            break;
-          case 1:
-            delta_C = 1;
-            break;
-          case 2:
-            delta_C = compositional_fields[1];
-            break;
-          default:
-            delta_C = 0.0;
-            break;
-        }
-      return delta_C;
-    }
-  }
-}
 
 // explicit instantiations
 namespace aspect

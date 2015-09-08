@@ -257,62 +257,6 @@ namespace aspect
   }
 
 
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_temperature(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::temperature(),
-                                           values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_composition(const unsigned int composition_index,
-                                                      std::vector<double> &values) const
-  {
-    // make sure that what we get here is really an index of one of the compositional fields
-    AssertIndexRange(composition_index,this->n_compositional_fields());
-
-    simulator->compute_depth_average_field(Simulator<dim>::AdvectionField::composition(composition_index),
-                                           values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_viscosity(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_viscosity(values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_velocity_magnitude(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_velocity_magnitude(values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_sinking_velocity(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_sinking_velocity(values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_Vs(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_Vs(values);
-  }
-
-  template <int dim>
-  void
-  SimulatorAccess<dim>::get_depth_average_Vp(std::vector<double> &values) const
-  {
-    simulator->compute_depth_average_Vp(values);
-  }
-
   template <int dim>
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
@@ -445,6 +389,13 @@ namespace aspect
   SimulatorAccess<dim>::get_statistics_object () const
   {
     return const_cast<TableHandler &>(simulator->statistics);
+  }
+
+  template <int dim>
+  const LateralAveraging<dim> &
+  SimulatorAccess<dim>::get_lateral_averaging() const
+  {
+    return simulator->lateral_averaging;
   }
 
 }
