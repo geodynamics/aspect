@@ -61,6 +61,25 @@ namespace aspect
         val [i] = *begin_data++;
     }
 
+    template <int dim>
+    inline
+    Particle<dim>::Particle (void *&begin_data,
+                             const unsigned int data_len)
+      :
+      val(data_len-dim-1)
+    {
+      double *data = static_cast<double *> (begin_data);
+      for (unsigned int i = 0; i < dim; ++i)
+        location(i) = *data++;
+
+      id = *data++;
+
+      for (unsigned int i = 0; i < val.size(); ++i)
+        val [i] = *data++;
+
+      begin_data = static_cast<void *> (data);
+    }
+
 
     template <int dim>
     inline
@@ -100,6 +119,28 @@ namespace aspect
         {
           *data = val[i];
         }
+    }
+
+    template <int dim>
+    void
+    Particle<dim>::write_data (void *&data) const
+    {
+      double *pdata = static_cast<double *> (data);
+      // Write location data
+      for (unsigned int i = 0; i < dim; ++i,++pdata)
+        {
+          *pdata =location(i);
+        }
+
+      *pdata = id;
+      ++pdata;
+
+      for (unsigned int i = 0; i < val.size(); ++i,++pdata)
+        {
+          *pdata = val[i];
+        }
+
+      data = static_cast<void *> (pdata);
     }
 
     template <int dim>

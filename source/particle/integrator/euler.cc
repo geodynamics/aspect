@@ -55,15 +55,17 @@ namespace aspect
       {
         return 0;
       }
+
       template <int dim>
       void
-      EulerIntegrator<dim>::read_data(std::vector<double>::const_iterator &,
+      EulerIntegrator<dim>::read_data(void *&,
                                       const double &)
       {
       }
+
       template <int dim>
       void
-      EulerIntegrator<dim>::write_data(std::vector<double>::iterator &,
+      EulerIntegrator<dim>::write_data(void *&,
                                        const double &) const
       {
       }

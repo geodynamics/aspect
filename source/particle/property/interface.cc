@@ -168,6 +168,14 @@ namespace aspect
       }
 
       template <int dim>
+      std::size_t
+      Manager<dim>::get_particle_size () const
+      {
+        // TODO: change ID to unsigned int
+        return data_len * sizeof(double);
+      }
+
+      template <int dim>
       void
       Manager<dim>::get_data_info (std::vector<std::string>  &data_names,
                                    std::vector<unsigned int> &data_length) const

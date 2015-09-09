@@ -74,6 +74,18 @@ namespace aspect
                   const unsigned int data_len);
 
         /**
+         * Constructor for Particle, creates a particle from a data vector.
+         * This constructor is usually called after sending a particle to a
+         * different process.
+         *
+         * @param[in,out] begin_data First data component.
+         * @param[in] data_len Number of components of the begin_data vector
+         * that will be read in by this particle.
+         */
+        Particle (void *&begin_data,
+                  const unsigned int data_len);
+
+        /**
          * Destructor for Particle
          */
         virtual
@@ -129,6 +141,18 @@ namespace aspect
          * should be written.
          */
         virtual void write_data(std::vector<double>::iterator &data) const;
+
+        /**
+         * Write particle data to a vector of doubles. The vector is expected
+         * to be large enough to take the data, and the input iterator should
+         * point to the first element in which the data should be written. This
+         * function avoids the resizing of the previous write_data function.
+         *
+         * @param [in,out] data The vector of doubles to write integrator data
+         * into. This iterator points to the first element, in which the data
+         * should be written.
+         */
+        virtual void write_data(void *&data) const;
 
 
         /**

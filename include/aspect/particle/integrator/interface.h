@@ -95,7 +95,7 @@ namespace aspect
            * @param [in] id_num The id number of the particle to read the data
            * for.
            */
-          virtual void read_data(std::vector<double>::const_iterator &data,
+          virtual void read_data(void *&data,
                                  const double &id_num) = 0;
 
           /**
@@ -107,7 +107,7 @@ namespace aspect
            * @param [in] id_num The id number of the particle to write the data
            * for.
            */
-          virtual void write_data(std::vector<double>::iterator &data,
+          virtual void write_data(void *&data,
                                   const double &id_num) const = 0;
 
 

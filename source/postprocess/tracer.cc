@@ -67,6 +67,13 @@ namespace aspect
     }
 
     template <int dim>
+    Particle::World<dim> &
+    PassiveTracers<dim>::get_particle_world()
+    {
+      return world;
+    }
+
+    template <int dim>
     std::pair<std::string,std::string>
     PassiveTracers<dim>::execute (TableHandler &statistics)
     {

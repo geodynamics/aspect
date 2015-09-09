@@ -221,6 +221,15 @@ namespace aspect
           get_data_len () const;
 
           /**
+           * Get the size in number of bytes required to represent this
+           * particle's properties for communication.
+           *
+           * @return Number of bytes required to represent this particle
+           */
+          std::size_t
+          get_particle_size () const;
+
+          /**
            * Add the MPI data description for this particle type to the vector.
            *
            * @param return This function returns a vector of names of the

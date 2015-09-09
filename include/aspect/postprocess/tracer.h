@@ -62,6 +62,13 @@ namespace aspect
         get_particle_world() const;
 
         /**
+         * Returns a reference to the particle world, in case anyone wants to
+         * query something about tracers.
+         */
+        Particle::World<dim> &
+        get_particle_world();
+
+        /**
          * Execute this postprocessor. Derived classes will implement this
          * function to do whatever they want to do to evaluate the solution at
          * the current time step.

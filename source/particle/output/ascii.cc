@@ -73,12 +73,18 @@ namespace aspect
         // And print the data for each particle
         for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
           {
-            std::vector<double>  particle_data;
-            it->second.write_data(particle_data);
-            for (unsigned int i = 0; i < particle_data.size(); ++i)
-              {
-                output << particle_data[i] << " ";
-              }
+            const Point<dim> position = it->second.get_location();
+
+            for (unsigned int i = 0; i < dim; ++i)
+              output << position[i] << " ";
+
+            output << it->second.get_id() << " ";
+
+            const std::vector<double>  properties = it->second.get_properties();
+
+            for (unsigned int i = 0; i < properties.size(); ++i)
+              output << properties[0] << " ";
+
             output << "\n";
           }
 

@@ -22,6 +22,8 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 
+#include <aspect/postprocess/tracer.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -1456,6 +1458,26 @@ namespace aspect
                                  (free_surface->free_surface_dof_handler));
       }
 
+    unsigned int tracer_data_offset;
+    unsigned int max_tracers_per_cell = 0;
+    Postprocess::PassiveTracers<dim> *tracer_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::PassiveTracers<dim> >();
+    if (tracer_postprocessor != NULL)
+      {
+        max_tracers_per_cell = tracer_postprocessor->get_particle_world().get_max_tracer_per_cell();
+        const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                       const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+                                           = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+                                                             std_cxx11::ref(tracer_postprocessor->get_particle_world()),
+                                                             std_cxx11::_1,
+                                                             std_cxx11::_2,
+                                                             std_cxx11::_3);
+        if (max_tracers_per_cell > 0)
+          {
+            const std::size_t particle_size = tracer_postprocessor->get_particle_world().get_manager().get_particle_size();
+            tracer_data_offset = triangulation.register_data_attach(max_tracers_per_cell * particle_size,callback_function);
+          }
+      }
+
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
@@ -1529,6 +1551,20 @@ namespace aspect
 
           //make sure the mesh is consistent with mesh_vertices
           free_surface->displace_mesh ();
+        }
+
+      if (tracer_postprocessor != NULL)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                         const void *) > callback_function
+                                             = std_cxx11::bind(&aspect::Particle::World<dim>::load_tracers,
+                                                               std_cxx11::ref(tracer_postprocessor->get_particle_world()),
+                                                               std_cxx11::_1,
+                                                               std_cxx11::_2,
+                                                               std_cxx11::_3);
+          if (max_tracers_per_cell > 0)
+            triangulation.notify_ready_to_unpack(tracer_data_offset,callback_function);
         }
     }
     computing_timer.exit_section();

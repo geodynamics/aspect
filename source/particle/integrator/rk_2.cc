@@ -85,26 +85,31 @@ namespace aspect
 
       template <int dim>
       void
-      RK2Integrator<dim>::read_data(std::vector<double>::const_iterator &data,
+      RK2Integrator<dim>::read_data(void *&data,
                                     const double &id_num)
       {
+        double* integrator_data = static_cast<double *> (data);
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
           {
-            loc0[id_num](i) = *data++;
+            loc0[id_num](i) = *integrator_data++;
           }
+        data = static_cast<void*> (integrator_data);
       }
 
       template <int dim>
       void
-      RK2Integrator<dim>::write_data(std::vector<double>::iterator &data, const double &id_num) const
+      RK2Integrator<dim>::write_data(void *&data,
+                                     const double &id_num) const
       {
+        double* integrator_data = static_cast<double *> (data);
         // Write location data
         const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
-        for (unsigned int i=0; i<dim; ++i,++data)
+        for (unsigned int i=0; i<dim; ++i,++integrator_data)
           {
-            *data = it->second(i);
+            *integrator_data = it->second(i);
           }
+        data = static_cast<void*> (integrator_data);
       }
     }
   }

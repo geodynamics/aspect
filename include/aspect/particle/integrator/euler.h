@@ -44,10 +44,10 @@ namespace aspect
 
           virtual unsigned int data_length() const;
 
-          virtual void read_data(std::vector<double>::const_iterator &data,
+          virtual void read_data(void *&data,
                                  const double &id);
 
-          virtual void write_data(std::vector<double>::iterator &,
+          virtual void write_data(void *&data,
                                   const double &id) const;
       };
 
