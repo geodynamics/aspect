@@ -34,7 +34,7 @@ namespace aspect
     MeltSimple<dim>::
     reference_viscosity () const
     {
-      return eta_0 / 100.0;
+      return eta_0;
     }
 
     template <int dim>
@@ -319,7 +319,14 @@ namespace aspect
           else
             temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
 
-          out.densities[i] = reference_rho_s * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
+          // calculate composition dependence of density
+          const double delta_rho = this->introspection().compositional_name_exists("peridotite")
+                                   ?
+                                   depletion_density_change * in.composition[i][this->introspection().compositional_index_for_name("peridotite")]
+                                   :
+                                   0.0;
+          out.densities[i] = (reference_rho_s + delta_rho)
+                             * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = thermal_conductivity;
@@ -481,6 +488,14 @@ namespace aspect
                              "(if true), changing the volume of material when the density changes, "
                              "or only in the momentum conservation and advection equations "
                              "(if false).");
+          prm.declare_entry ("Depletion density change", "0.0",
+                             Patterns::Double (0),
+                             "The density contrast between material with a depletion of 1 and a "
+                             "depletion of zero. Negative values indicate lower densities of"
+                             "depleted material. Depletion is indicated by the compositional"
+                             "field with the name peridotite. Not used if this field does not "
+                             "exist in the model."
+                             "Units: $kg/m^3$.");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
@@ -601,6 +616,7 @@ namespace aspect
           melt_compressibility       = prm.get_double ("Melt compressibility");
           model_is_compressible      = prm.get_bool ("Use full compressibility");
           melt_bulk_modulus_derivative = prm.get_double ("Melt bulk modulus derivative");
+          depletion_density_change   = prm.get_double ("Depletion density change");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
