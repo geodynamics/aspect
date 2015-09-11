@@ -673,7 +673,7 @@ namespace aspect
                            std_cxx11::_1,
                            std_cxx11::_2,
                            std_cxx11::_3,
-                           std::ref(solver_history)));
+                           std_cxx11::ref(solver_history)));
 
         solver.solve (stokes_block,
                       distributed_stokes_solution,
@@ -707,7 +707,7 @@ namespace aspect
                            std_cxx11::_1,
                            std_cxx11::_2,
                            std_cxx11::_3,
-                           std::ref(solver_history)));
+                           std_cxx11::ref(solver_history)));
         try
           {
             solver.solve(stokes_block,
