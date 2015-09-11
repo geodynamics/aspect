@@ -192,7 +192,7 @@ namespace aspect
 
     // first do some error checking for the parameters we got
     {
-      // make sure velocity boundary indicators don't appear in multiple lists
+      // make sure velocity and traction boundary indicators don't appear in multiple lists
       std::set<types::boundary_id> boundary_indicator_lists[6]
         = { parameters.zero_velocity_boundary_indicators,
             parameters.tangential_velocity_boundary_indicators,
@@ -200,68 +200,100 @@ namespace aspect
             std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
           };
 
+      // sets of the boundary indicators only (no selectors and values)
       std::set<types::boundary_id> velocity_bi;
       std::set<types::boundary_id> traction_bi;
 
-      // copy the used boundary indicators of prescribed velocity and prescribed traction
-      // into a set while checking whether selectors of the same boundary indicator
-      // are duplicate
       for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
            p = parameters.prescribed_velocity_boundary_indicators.begin();
            p != parameters.prescribed_velocity_boundary_indicators.end();
            ++p)
+        velocity_bi.insert(p->first);
+
+      for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
+           r = parameters.prescribed_traction_boundary_indicators.begin();
+           r != parameters.prescribed_traction_boundary_indicators.end();
+           ++r)
+        traction_bi.insert(r->first);
+
+      // are there any indicators that occur in both the prescribed velocity and traction list?
+      std::set<types::boundary_id> intersection;
+      std::set_intersection (velocity_bi.begin(),
+                             velocity_bi.end(),
+                             traction_bi.begin(),
+                             traction_bi.end(),
+                             std::inserter(intersection, intersection.end()));
+
+      // if so, do they have different selectors?
+      if (!intersection.empty())
         {
-          for (std::map<types::boundary_id,std::pair<std::string, std::string> >::const_iterator
-               r = parameters.prescribed_traction_boundary_indicators.begin();
-               r != parameters.prescribed_traction_boundary_indicators.end();
-               ++r)
+          for (std::set<types::boundary_id>::const_iterator
+               it = intersection.begin();
+               it != intersection.end();
+               ++it)
             {
-              if (p->first != r->first)
-                {
-                  velocity_bi.insert(p->first);
-                  traction_bi.insert(r->first);
-                }
-              else
-                {
-                  std::set<char> velocity_selector;
-                  std::set<char> traction_selector;
+              std::set<char> velocity_selector;
+              std::set<char> traction_selector;
 
-                  for (std::string::const_iterator it=p->second.first.begin(); it!=p->second.first.end(); ++it)
-                    {
-                      velocity_selector.insert(*it);
-                    }
+              for (std::string::const_iterator
+                   it_selector  = parameters.prescribed_velocity_boundary_indicators[*it].first.begin();
+                   it_selector != parameters.prescribed_velocity_boundary_indicators[*it].first.end();
+                   ++it_selector)
+                velocity_selector.insert(*it_selector);
 
-                  for (std::string::const_iterator it=r->second.first.begin(); it!=r->second.first.end(); ++it)
-                    {
-                      traction_selector.insert(*it);
-                    }
+              for (std::string::const_iterator
+                   it_selector  = parameters.prescribed_traction_boundary_indicators[*it].first.begin();
+                   it_selector != parameters.prescribed_traction_boundary_indicators[*it].first.end();
+                   ++it_selector)
+                traction_selector.insert(*it_selector);
 
-                  std::set<char> intersection;
-                  std::set_intersection (velocity_selector.begin(),
-                                         velocity_selector.end(),
-                                         traction_selector.begin(),
-                                         traction_selector.end(),
-                                         std::inserter(intersection, intersection.end()));
+              // if there are no selectors specified, throw exception
+              AssertThrow(!velocity_selector.empty() || !traction_selector.empty(),
+                          ExcMessage ("Boundary indicator <"
+                                      +
+                                      Utilities::int_to_string(*it)
+                                      +
+                                      "> with symbolic name <"
+                                      +
+                                      geometry_model->translate_id_to_symbol_name (*it)
+                                      +
+                                      "> is listed as having both "
+                                      "velocity and traction boundary conditions in the input file."));
 
-                  AssertThrow(intersection.empty(), ExcMessage ("Prescribed velocity/traction boundary indicator and selector occur more than once."));
+              std::set<char> intersection_selector;
+              std::set_intersection (velocity_selector.begin(),
+                                     velocity_selector.end(),
+                                     traction_selector.begin(),
+                                     traction_selector.end(),
+                                     std::inserter(intersection_selector, intersection_selector.end()));
 
-                  velocity_bi.insert(p->first);
-                  traction_bi.insert(r->first);
-                }
+              // if the same selectors are specified, throw exception
+              AssertThrow(intersection_selector.empty(),
+                          ExcMessage ("Selectors of boundary indicator <"
+                                      +
+                                      Utilities::int_to_string(*it)
+                                      +
+                                      "> with symbolic name <"
+                                      +
+                                      geometry_model->translate_id_to_symbol_name (*it)
+                                      +
+                                      "> are listed as having both "
+                                      "velocity and traction boundary conditions in the input file."));
             }
         }
 
-      // remove boundary indicators that have different selectors
-      // but occur in both the velocity and the traction set
+
+      // remove correct boundary indicators that occur in both the velocity and the traction set
+      // but have different selectors
       std::set<types::boundary_id> union_set;
       std::set_union (velocity_bi.begin(),
                       velocity_bi.end(),
                       traction_bi.begin(),
                       traction_bi.end(),
                       std::inserter(union_set, union_set.end()));
-      // Assign the prescribed boundary indicator list to the boundary_indicator_lists
-      boundary_indicator_lists[3] = union_set;
 
+      // assign the prescribed boundary indicator list to the boundary_indicator_lists
+      boundary_indicator_lists[3] = union_set;
 
       // for each combination of boundary indicator lists, make sure that the
       // intersection is empty
@@ -275,6 +307,7 @@ namespace aspect
                                    boundary_indicator_lists[j].end(),
                                    std::inserter(intersection, intersection.end()));
 
+            // if the same indicators are specified for different boundary conditions, throw exception
             AssertThrow (intersection.empty(),
                          ExcMessage ("Boundary indicator <"
                                      +
