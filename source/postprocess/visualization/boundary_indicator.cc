@@ -53,25 +53,32 @@ namespace aspect
         unsigned int cell_index = 0;
         for (; cell!=endc; ++cell,++cell_index)
           if (cell->is_locally_owned())
-            if (cell->at_boundary())
-              {
-                types::boundary_id boundary_id = largest_boundary_id_plus_one;
-                for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-                  {
-                    if (cell->face(f)->at_boundary())
-                      {
-                        boundary_id = cell->face(f)->boundary_indicator();
-                        break;
-                      }
-                  }
-                (*return_value.second)(cell_index) = static_cast<float> (boundary_id);
-              }
-        // internal cells are all set to the same boundary indicator value
-        // of the largest boundary indicator used for the current geometry plus one.
-            else
-              {
-                (*return_value.second)(cell_index) = largest_boundary_id_plus_one;
-              }
+            {
+              if (cell->at_boundary())
+                {
+                  types::boundary_id boundary_id = largest_boundary_id_plus_one;
+                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    {
+                      if (cell->face(f)->at_boundary())
+                        {
+                          boundary_id
+#if DEAL_II_VERSION_GTE(8,3,0)
+                            = cell->face(f)->boundary_id();
+#else
+                            = cell->face(f)->boundary_indicator();
+#endif
+                          break;
+                        }
+                    }
+                  (*return_value.second)(cell_index) = static_cast<float> (boundary_id);
+                }
+              // internal cells are all set to the same boundary indicator value
+              // of the largest boundary indicator used for the current geometry plus one.
+              else
+                {
+                  (*return_value.second)(cell_index) = largest_boundary_id_plus_one;
+                }
+            }
 
         return return_value;
       }
