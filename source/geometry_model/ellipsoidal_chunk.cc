@@ -242,7 +242,11 @@ namespace aspect
              coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
         for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
+#if DEAL_II_VERSION_GTE(8,3,0)
+            cell->face(f)->set_all_boundary_ids(f);
+#else
             cell->face(f)->set_all_boundary_indicators(f);
+#endif
 
       // also attach the real manifold to slot 15. we won't use it
       // during regular operation, but we set manifold_ids for all
