@@ -49,7 +49,7 @@ namespace aspect
 
       const SymmetricTensor<2,dim> strain_rate_dev = deviator(strain_rate);
 
-      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() == 0.0)
+      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 || strain_rate.norm() == 0.0)
                                             ?
                                             reference_strain_rate * reference_strain_rate
                                             :
