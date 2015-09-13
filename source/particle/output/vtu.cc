@@ -97,7 +97,7 @@ namespace aspect
         // Write data for each particle (id, velocity, etc)
         output << "      <PointData Scalars=\"scalars\">\n";
 
-        output << "        <DataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
+        output << "        <DataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
         for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
              it=particles.begin(); it!=particles.end(); ++it)
           output << "          " << it->second.get_id() << "\n" ;
@@ -155,7 +155,7 @@ namespace aspect
             pvtu_output << "      <PDataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\"/>\n";
             pvtu_output << "    </PPoints>\n";
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
-            pvtu_output << "      <PDataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
+            pvtu_output << "      <PDataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
 
             for (name=names.begin(),length=lengths.begin(); name!=names.end(); ++name,++length)
               {

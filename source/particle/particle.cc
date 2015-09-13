@@ -72,7 +72,9 @@ namespace aspect
       for (unsigned int i = 0; i < dim; ++i)
         location(i) = *data++;
 
-      id = *data++;
+      unsigned int *id_data = (unsigned int *) data;
+      id = *id_data++;
+      data = (double *) id_data;
 
       for (unsigned int i = 0; i < val.size(); ++i)
         val [i] = *data++;
@@ -112,7 +114,7 @@ namespace aspect
           *data =location(i);
         }
 
-      *data = id;
+      *data = (double) id;
       ++data;
 
       for (unsigned int i = 0; i < val.size(); ++i,++data)
@@ -132,8 +134,10 @@ namespace aspect
           *pdata =location(i);
         }
 
-      *pdata = id;
-      ++pdata;
+      unsigned int *id_data  = (unsigned int *) pdata;
+      *id_data = id;
+      ++id_data;
+      pdata = (double *) id_data;
 
       for (unsigned int i = 0; i < val.size(); ++i,++pdata)
         {
@@ -153,7 +157,7 @@ namespace aspect
           data.push_back(location(i));
         }
 
-      data.push_back(id);
+      data.push_back((double) id);
 
       for (unsigned int i = 0; i < val.size(); ++i)
         {
@@ -172,7 +176,7 @@ namespace aspect
           location (i) = data[p++];
         }
 
-      id = data[p++];
+      id = (unsigned int) data[p++];
 
       for (unsigned int i = 0; i < val.size(); ++i)
         {
@@ -198,7 +202,7 @@ namespace aspect
     }
 
     template <int dim>
-    double
+    unsigned int
     Particle<dim>::get_id () const
     {
       return id;

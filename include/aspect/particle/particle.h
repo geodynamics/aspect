@@ -177,7 +177,7 @@ namespace aspect
          *
          * @return The id of this particle.
          */
-        double
+        unsigned int
         get_id () const;
 
         /**
@@ -218,9 +218,8 @@ namespace aspect
 
         /**
          * Globally unique ID of particle
-         * TODO: Integer?
          */
-        double          id;
+        unsigned int          id;
 
         /**
          * The serialized vector of all tracer properties

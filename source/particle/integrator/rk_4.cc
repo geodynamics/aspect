@@ -109,7 +109,7 @@ namespace aspect
       RK4Integrator<dim>::read_data(void *&data,
                                     const double &id_num)
       {
-        double* integrator_data = static_cast<double *> (data);
+        double *integrator_data = static_cast<double *> (data);
 
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
@@ -130,7 +130,7 @@ namespace aspect
             k3[id_num][i] = *integrator_data++;
           }
 
-        data = static_cast<void*> (integrator_data);
+        data = static_cast<void *> (integrator_data);
       }
 
       template <int dim>
@@ -138,7 +138,7 @@ namespace aspect
       RK4Integrator<dim>::write_data(void *&data,
                                      const double &id_num) const
       {
-        double* integrator_data = static_cast<double *> (data);
+        double *integrator_data = static_cast<double *> (data);
 
         // Write location data
         typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
@@ -163,7 +163,7 @@ namespace aspect
             *integrator_data = it->second(i);
           }
 
-        data = static_cast<void*> (integrator_data);
+        data = static_cast<void *> (integrator_data);
       }
     }
   }

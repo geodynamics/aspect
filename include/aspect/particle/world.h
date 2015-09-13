@@ -151,9 +151,7 @@ namespace aspect
          * and let them determine which one owns it. This assumes there is no
          * overlap between subdomains. - Each process determines which of the
          * received particles is in its subdomain, keeps these and deletes the
-         * others - TODO: handle particles outside any domain - TODO: if we
-         * know the domain of a particle (e.g. bordering domains), send it
-         * only to that domain
+         * others
          *
          * @param [in,out] send_particles All particles that should be send
          * are in this vector.
@@ -204,7 +202,7 @@ namespace aspect
         void
         store_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                       const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                      void * data);
+                      void *data);
 
         /**
          * Called by listener functions after a refinement step. The local map
@@ -213,7 +211,7 @@ namespace aspect
         void
         load_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                      const typename parallel::distributed::Triangulation<dim>::CellStatus status,
-                     const void * data);
+                     const void *data);
 
       private:
         /**
