@@ -724,7 +724,7 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
-    max_nonlinear_iterations_in_prerefinment = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+    max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
 
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
