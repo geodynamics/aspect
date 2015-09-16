@@ -83,20 +83,20 @@ namespace aspect
            * communication in terms of number of doubles.
            *
            * @return The number of doubles required to store the relevant
-           * integrator data.
+           * integrator data for one particle.
            */
           virtual unsigned int data_length() const = 0;
 
           /**
            * Read integration related data for a particle specified by id_num
-           * from the data vector.
+           * from the data array.
            *
-           * @param [in] data The vector of double data to read from.
+           * @param [in] data The array of double data to read from.
            * @param [in] id_num The id number of the particle to read the data
            * for.
            */
-          virtual void read_data(void *&data,
-                                 const double &id_num) = 0;
+          virtual void read_data(const void *&data,
+                                 const unsigned int &id_num) = 0;
 
           /**
            * Write integration related data to a vector for a particle
@@ -108,7 +108,7 @@ namespace aspect
            * for.
            */
           virtual void write_data(void *&data,
-                                  const double &id_num) const = 0;
+                                  const unsigned int &id_num) const = 0;
 
 
           /**

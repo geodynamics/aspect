@@ -26,17 +26,12 @@ namespace aspect
   {
     namespace Integrator
     {
-      /**
-       * Runge Kutta second order integrator, where y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n).
-       * This scheme requires storing the original location, and the read/write_data functions reflect this.
-       */
       template <int dim>
       RK2Integrator<dim>::RK2Integrator(void)
       {
         step = 0;
         loc0.clear();
       }
-
 
       template <int dim>
       bool
@@ -51,7 +46,7 @@ namespace aspect
 
         for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const double id_num = it->second.get_id();
+            const unsigned int id_num = it->second.get_id();
             const Point<dim> loc = it->second.get_location();
             if (step == 0)
               {
@@ -85,30 +80,30 @@ namespace aspect
 
       template <int dim>
       void
-      RK2Integrator<dim>::read_data(void *&data,
-                                    const double &id_num)
+      RK2Integrator<dim>::read_data(const void *&data,
+                                    const unsigned int &id_num)
       {
-        double *integrator_data = static_cast<double *> (data);
+        const double *integrator_data = static_cast<const double *> (data);
+
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
-          {
-            loc0[id_num](i) = *integrator_data++;
-          }
-        data = static_cast<void *> (integrator_data);
+          loc0[id_num](i) = *integrator_data++;
+
+        data = static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
       void
       RK2Integrator<dim>::write_data(void *&data,
-                                     const double &id_num) const
+                                     const unsigned int &id_num) const
       {
         double *integrator_data = static_cast<double *> (data);
+
         // Write location data
-        const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
+        const typename std::map<unsigned int, Point<dim> >::const_iterator it = loc0.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          {
-            *integrator_data = it->second(i);
-          }
+          *integrator_data = it->second(i);
+
         data = static_cast<void *> (integrator_data);
       }
     }

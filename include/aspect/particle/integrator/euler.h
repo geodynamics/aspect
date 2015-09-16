@@ -44,11 +44,11 @@ namespace aspect
 
           virtual unsigned int data_length() const;
 
-          virtual void read_data(void *&data,
-                                 const double &id);
+          virtual void read_data(const void *&data,
+                                 const unsigned int &id);
 
           virtual void write_data(void *&data,
-                                  const double &id) const;
+                                  const unsigned int &id) const;
       };
 
     }

@@ -70,19 +70,7 @@ namespace aspect
          * @param[in] data_len Number of components of the begin_data vector
          * that will be read in by this particle.
          */
-        Particle (std::vector<double>::const_iterator &begin_data,
-                  const unsigned int data_len);
-
-        /**
-         * Constructor for Particle, creates a particle from a data vector.
-         * This constructor is usually called after sending a particle to a
-         * different process.
-         *
-         * @param[in,out] begin_data First data component.
-         * @param[in] data_len Number of components of the begin_data vector
-         * that will be read in by this particle.
-         */
-        Particle (void *&begin_data,
+        Particle (const void *&begin_data,
                   const unsigned int data_len);
 
         /**
@@ -112,48 +100,19 @@ namespace aspect
         set_data_len (const unsigned int data_len);
 
         /**
-         * Read the particle data from the specified vector of doubles.
-         *
-         * @param [in] data The vector of double data to read from.
-         * @param [in] pos The position in the data vector to start reading
-         * from.
-         * @return The position in the vector of the next unread double.
-         */
-        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int pos);
-
-        /**
-         * Write particle data to a vector of doubles. The vector is extended
-         * by the data written by this particle via push_back().
-         *
-         * @param [in,out] data The vector of doubles to write integrator data
-         * into.
-         */
-        virtual void write_data(std::vector<double> &data) const;
-
-        /**
-         * Write particle data to a vector of doubles. The vector is expected
-         * to be large enough to take the data, and the input iterator should
+         * Write particle data into a data array. The array is expected
+         * to be large enough to take the data, and the void pointer should
          * point to the first element in which the data should be written. This
-         * function avoids the resizing of the previous write_data function.
+         * function is meant for serializing all particle properties and
+         * afterwards de-serializing the properties by calling the appropriate
+         * constructor Particle(void *&data, const unsigned int data_len);
          *
-         * @param [in,out] data The vector of doubles to write integrator data
-         * into. This iterator points to the first element, in which the data
-         * should be written.
+         * @param [in,out] data The memory location to write particle data
+         * into. This pointer points to the begin of the memory, in which the
+         * data will be written.
          */
-        virtual void write_data(std::vector<double>::iterator &data) const;
-
-        /**
-         * Write particle data to a vector of doubles. The vector is expected
-         * to be large enough to take the data, and the input iterator should
-         * point to the first element in which the data should be written. This
-         * function avoids the resizing of the previous write_data function.
-         *
-         * @param [in,out] data The vector of doubles to write integrator data
-         * into. This iterator points to the first element, in which the data
-         * should be written.
-         */
-        virtual void write_data(void *&data) const;
-
+        void
+        write_data(void *&data) const;
 
         /**
          * Set the location of this particle. Note that this does not check

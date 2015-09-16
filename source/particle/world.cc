@@ -57,9 +57,7 @@ namespace aspect
     template <int dim>
     void
     World<dim>::init()
-    {
-      this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World<dim>::mesh_changed, std_cxx1x::ref(*this)));
-    }
+    {}
 
     template <int dim>
     void
@@ -96,8 +94,8 @@ namespace aspect
     template <int dim>
     void
     World<dim>::register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-        const typename parallel::distributed::Triangulation<dim>::CellStatus,
-        void *) > > > &callback_functions)
+                                                 const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                                 void *) > > > &callback_functions)
     {
       // Only save and load tracers if there are any, we might get here for
       // example before the tracer generation in timestep 0, or if somebody
@@ -107,19 +105,19 @@ namespace aspect
       if (max_tracers_per_cell > 0)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-              const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
-                  = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
-                                    std_cxx11::ref(*this),
-                                    std_cxx11::_1,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3);
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+            = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+                              std_cxx11::ref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
 
           // We need to transfer the number of tracers for this cell and
           // the tracer data itself and we need to provide 2^dim times the
           // space for the data in case a cell is coarsened
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-              (property_manager->get_particle_size() * max_tracers_per_cell)
-                  *  std::pow(2,dim);
+                                                     (property_manager->get_particle_size() * max_tracers_per_cell)
+                                                     *  std::pow(2,dim);
 
           callback_functions.push_back(std::make_pair(transfer_size_per_cell,callback_function));
         }
@@ -128,25 +126,25 @@ namespace aspect
     template <int dim>
     void
     World<dim>::register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-        const typename parallel::distributed::Triangulation<dim>::CellStatus,
-        const void *) > > &callback_functions)
+                                                                                   const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                                                                   const void *) > > &callback_functions)
     {
       Assert(particles.size() == 0,
-          ExcMessage("We are in the process of mesh refinement. All tracers "
-              "should have been serialized and stored, but there are still some "
-              "around. Is there a bug in the storage function?"));
+             ExcMessage("We are in the process of mesh refinement. All tracers "
+                        "should have been serialized and stored, but there are still some "
+                        "around. Is there a bug in the storage function?"));
 
       // Check if something was stored
       if (max_tracers_per_cell > 0)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-              const typename parallel::distributed::Triangulation<dim>::CellStatus,
-              const void *) > callback_function
-                  = std_cxx11::bind(&aspect::Particle::World<dim>::load_tracers,
-                                    std_cxx11::ref(*this),
-                                    std_cxx11::_1,
-                                    std_cxx11::_2,
-                                    std_cxx11::_3);
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                         const void *) > callback_function
+            = std_cxx11::bind(&aspect::Particle::World<dim>::load_tracers,
+                              std_cxx11::ref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
           callback_functions.push_back(callback_function);
         }
     }
@@ -219,7 +217,7 @@ namespace aspect
     {
       const unsigned int *n_particles_in_cell = static_cast<const unsigned int *> (data);
       const unsigned int particles_in_cell = *n_particles_in_cell++;
-      void *pdata = (void *) n_particles_in_cell;
+      const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell);
 
       for (unsigned int i = 0; i < particles_in_cell; ++i)
         {
@@ -246,13 +244,6 @@ namespace aspect
                 }
             }
         }
-    }
-
-    template <int dim>
-    void
-    World<dim>::mesh_changed()
-    {
-      triangulation_changed = true;
     }
 
     template <int dim>
@@ -441,7 +432,7 @@ namespace aspect
     void
     World<dim>::find_all_cells()
     {
-      std::multimap<types::subdomain_id,Particle<dim> > lost_particles;
+      std::multimap<types::subdomain_id, Particle<dim> > lost_particles;
       std::multimap<LevelInd, Particle<dim> > moved_particles;
 
       // Find the cells that the particles moved to.
@@ -452,7 +443,7 @@ namespace aspect
       typename std::multimap<LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
-          if ((it->first != std::make_pair(-1,-1)) && !triangulation_changed)
+          if (it->first != std::make_pair(-1,-1))
             {
               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
               old_cell (&(this->get_triangulation()), it->first.first, it->first.second);
@@ -499,30 +490,18 @@ namespace aspect
         }
       particles.insert(moved_particles.begin(),moved_particles.end());
 
-
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
 
-      // Swap lost particles between processors if any process lost some
-      const unsigned int global_lost_particles = Utilities::MPI::sum(lost_particles.size(),
-                                                                     this->get_mpi_communicator());
-      if (global_lost_particles > 0)
-        send_recv_particles(lost_particles);
+      // Swap lost particles between processors
+      send_recv_particles(lost_particles);
     }
 
     template <int dim>
     void
     World<dim>::advance_timestep()
     {
-      bool        continue_integrator = true;
-
-      // If the triangulation changed, we may need to move particles between processors
-      if (triangulation_changed)
-        {
-          // Find the cells that the particles moved to
-          //find_all_cells();
-          triangulation_changed = false;
-        }
+      bool continue_integrator = true;
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
@@ -560,74 +539,124 @@ namespace aspect
     }
 
     template <int dim>
+    std::vector<types::subdomain_id>
+    World<dim>::find_neighbors() const
+    {
+      std::vector<types::subdomain_id> neighbors;
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = this->get_triangulation().begin_active();
+           cell != this->get_triangulation().end(); ++cell)
+        {
+          if (cell->is_ghost())
+            {
+              bool neighbor_already_marked = false;
+
+              for (unsigned int i = 0; i < neighbors.size(); ++i)
+                if (neighbors[i] == cell->subdomain_id())
+                  {
+                    neighbor_already_marked = true;
+                    break;
+                  }
+
+              if (!neighbor_already_marked)
+                neighbors.push_back(cell->subdomain_id());
+            }
+        }
+      return neighbors;
+    }
+
+    template <int dim>
     void
     World<dim>::send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles)
     {
-      // Determine the size of the MPI comm world
-      const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+      // Determine the communication pattern
+      const std::vector<types::subdomain_id> neighbors = find_neighbors();
+      const unsigned int num_neighbors = neighbors.size();
       const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->data_length() * sizeof(double);
 
-      // Determine the total number of particles we will send to other processors
-      std::vector<int> num_send_particles(world_size);
+      // Determine the amount of data we will send to other processors
+      std::vector<int> num_send_data(num_neighbors);
+      std::vector<int> num_recv_data(num_neighbors);
 
-      std::vector<int> num_send_data(world_size);
-      std::vector<int> num_recv_data(world_size);
-
-      std::vector<int> send_offsets(world_size,0);
-      std::vector<int> recv_offsets(world_size,0);
-
-      int total_send_data = 0;
-      for (types::subdomain_id rank = 0; rank < world_size; ++rank)
-        {
-          send_offsets[rank] = total_send_data;
-          std::pair< const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator,
-              const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator>
-              send_particle_range = send_particles.equal_range(rank);
-          num_send_particles[rank] = std::distance(send_particle_range.first,send_particle_range.second);
-          num_send_data[rank] = num_send_particles[rank] * particle_size;
-          total_send_data += num_send_particles[rank] * particle_size;
-        }
+      std::vector<int> send_offsets(num_neighbors);
+      std::vector<int> recv_offsets(num_neighbors);
 
       // Allocate space for sending and receiving particle data
       std::vector<char> send_data(send_particles.size() * particle_size);
       void *data = static_cast<void *> (&send_data.front());
 
-      // Copy the particle data into the send array
-      for (typename std::multimap<types::subdomain_id,Particle<dim> >::const_iterator particle = send_particles.begin(); particle!=send_particles.end(); ++particle)
+      int total_send_data = 0;
+      for (types::subdomain_id neighbor_id = 0; neighbor_id < num_neighbors; ++neighbor_id)
         {
-          particle->second.write_data(data);
-          integrator->write_data(data, particle->second.get_id());
+          send_offsets[neighbor_id] = total_send_data;
+
+          std::pair< const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator,
+              const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator>
+              send_particle_range = send_particles.equal_range(neighbors[neighbor_id]);
+
+          int num_send_particles = std::distance(send_particle_range.first,send_particle_range.second);
+          num_send_data[neighbor_id] = num_send_particles * particle_size;
+          total_send_data += num_send_particles * particle_size;
+
+          // Copy the particle data into the send array
+          typename std::multimap<types::subdomain_id,Particle<dim> >::const_iterator particle = send_particle_range.first;
+          for (; particle != send_particle_range.second; ++particle)
+            {
+              particle->second.write_data(data);
+              integrator->write_data(data, particle->second.get_id());
+            }
         }
 
       AssertThrow(data == &(send_data.back())+1,
                   ExcMessage("The amount of data written into the array that is send to other processes "
                              "is inconsistent with the number and size of particles."));
 
-      // Notify other processors how many particles we will be sending
-      std::vector<int> recv_offset(world_size,0);
+      // Notify other processors how many particles we will send
+      MPI_Request *num_requests = new MPI_Request[2*num_neighbors];
+      for (unsigned int i=0; i<num_neighbors; ++i)
+        MPI_Irecv(&(num_recv_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(num_requests[2*i]));
+      for (unsigned int i=0; i<num_neighbors; ++i)
+        MPI_Isend(&(num_send_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(num_requests[2*i+1]));
+      MPI_Waitall(2*num_neighbors,num_requests,MPI_STATUSES_IGNORE);
+      delete num_requests;
 
-      MPI_Alltoall(&(num_send_data[0]), 1, MPI_INT, &(num_recv_data[0]), 1, MPI_INT, this->get_mpi_communicator());
-
+      // Determine how many particles and data we will receive
       int total_recv_data = 0;
-      for (unsigned int rank=0; rank<world_size; ++rank)
+      for (unsigned int neighbor_id=0; neighbor_id<num_neighbors; ++neighbor_id)
         {
-          recv_offset[rank] = total_recv_data;
-          total_recv_data += num_recv_data[rank];
+          recv_offsets[neighbor_id] = total_recv_data;
+          total_recv_data += num_recv_data[neighbor_id];
         }
-
       const int num_recv_particles = total_recv_data / particle_size;
 
       // Set up the space for the received particle data
       std::vector<char> recv_data(total_recv_data);
 
       // Exchange the particle data between domains
-      MPI_Alltoallv (&(send_data[0]), &(num_send_data[0]), &(send_offsets[0]), MPI_CHAR,
-                     &(recv_data[0]), &(num_recv_data[0]), &(recv_offset[0]), MPI_CHAR,
-                     this->get_mpi_communicator());
+      MPI_Request *requests = new MPI_Request[2*num_neighbors];
+      unsigned int send_ops = 0;
+      unsigned int recv_ops = 0;
+
+      for (unsigned int i=0; i<num_neighbors; ++i)
+        if (num_recv_data[i] > 0)
+          {
+            MPI_Irecv(&(recv_data[recv_offsets[i]]), num_recv_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops]));
+            send_ops++;
+          }
+
+      for (unsigned int i=0; i<num_neighbors; ++i)
+        if (num_send_data[i] > 0)
+          {
+            MPI_Isend(&(send_data[send_offsets[i]]), num_send_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops+recv_ops]));
+            recv_ops++;
+          }
+      MPI_Waitall(send_ops+recv_ops,requests,MPI_STATUSES_IGNORE);
+      delete requests;
 
       // Put the received particles into the domain if they are in the triangulation
-      void *recv_data_it = static_cast<void *> (&recv_data.front());
+      const void *recv_data_it = static_cast<const void *> (&recv_data.front());
 
       for (int i=0; i<num_recv_particles; ++i)
         {

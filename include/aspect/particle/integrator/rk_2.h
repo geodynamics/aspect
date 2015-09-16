@@ -41,6 +41,7 @@ namespace aspect
       {
         public:
           RK2Integrator();
+
           virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &velocities,
@@ -48,15 +49,15 @@ namespace aspect
 
           virtual unsigned int data_length() const;
 
-          virtual void read_data(void *&data,
-                                 const double &id_num);
+          virtual void read_data(const void *&data,
+                                 const unsigned int &id_num);
 
           virtual void write_data(void *&data,
-                                  const double &id_num) const;
+                                  const unsigned int &id_num) const;
 
         private:
-          unsigned int                    step;
-          std::map<double, Point<dim> >   loc0;
+          unsigned int                          step;
+          std::map<unsigned int, Point<dim> >   loc0;
 
       };
 

@@ -45,41 +45,25 @@ namespace aspect
     {
     }
 
+
     template <int dim>
     inline
-    Particle<dim>::Particle (std::vector<double>::const_iterator &begin_data,
+    Particle<dim>::Particle (const void *&data,
                              const unsigned int data_len)
       :
       val(data_len-dim-1)
     {
-      for (unsigned int i = 0; i < dim; ++i)
-        location(i) = *begin_data++;
-
-      id = *begin_data++;
-
-      for (unsigned int i = 0; i < val.size(); ++i)
-        val [i] = *begin_data++;
-    }
-
-    template <int dim>
-    inline
-    Particle<dim>::Particle (void *&begin_data,
-                             const unsigned int data_len)
-      :
-      val(data_len-dim-1)
-    {
-      double *data = static_cast<double *> (begin_data);
-      for (unsigned int i = 0; i < dim; ++i)
-        location(i) = *data++;
-
-      unsigned int *id_data = (unsigned int *) data;
+      const unsigned int *id_data = static_cast<const unsigned int *> (data);
       id = *id_data++;
-      data = (double *) id_data;
+      const double *pdata = reinterpret_cast<const double *> (id_data);
+
+      for (unsigned int i = 0; i < dim; ++i)
+        location(i) = *pdata++;
 
       for (unsigned int i = 0; i < val.size(); ++i)
-        val [i] = *data++;
+        val [i] = *pdata++;
 
-      begin_data = static_cast<void *> (data);
+      data = static_cast<const void *> (pdata);
     }
 
 
@@ -106,84 +90,22 @@ namespace aspect
 
     template <int dim>
     void
-    Particle<dim>::write_data (std::vector<double>::iterator &data) const
-    {
-      // Write location data
-      for (unsigned int i = 0; i < dim; ++i,++data)
-        {
-          *data =location(i);
-        }
-
-      *data = (double) id;
-      ++data;
-
-      for (unsigned int i = 0; i < val.size(); ++i,++data)
-        {
-          *data = val[i];
-        }
-    }
-
-    template <int dim>
-    void
     Particle<dim>::write_data (void *&data) const
     {
-      double *pdata = static_cast<double *> (data);
-      // Write location data
-      for (unsigned int i = 0; i < dim; ++i,++pdata)
-        {
-          *pdata =location(i);
-        }
-
-      unsigned int *id_data  = (unsigned int *) pdata;
+      unsigned int *id_data  = static_cast<unsigned int *> (data);
       *id_data = id;
       ++id_data;
-      pdata = (double *) id_data;
+      double *pdata = reinterpret_cast<double *> (id_data);
 
+      // Write location data
+      for (unsigned int i = 0; i < dim; ++i,++pdata)
+        *pdata =location(i);
+
+      // Write property data
       for (unsigned int i = 0; i < val.size(); ++i,++pdata)
-        {
-          *pdata = val[i];
-        }
+        *pdata = val[i];
 
       data = static_cast<void *> (pdata);
-    }
-
-    template <int dim>
-    void
-    Particle<dim>::write_data (std::vector<double> &data) const
-    {
-      // Write location data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          data.push_back(location(i));
-        }
-
-      data.push_back((double) id);
-
-      for (unsigned int i = 0; i < val.size(); ++i)
-        {
-          data.push_back(val[i]);
-        }
-    }
-
-    template <int dim>
-    unsigned int
-    Particle<dim>::read_data(const std::vector<double> &data, const unsigned int pos)
-    {
-      unsigned int p = pos;
-      // Read location data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          location (i) = data[p++];
-        }
-
-      id = (unsigned int) data[p++];
-
-      for (unsigned int i = 0; i < val.size(); ++i)
-        {
-          val [i] = data[p++];
-        }
-
-      return p;
     }
 
     template <int dim>

@@ -58,15 +58,15 @@ namespace aspect
 
       template <int dim>
       void
-      EulerIntegrator<dim>::read_data(void *&,
-                                      const double &)
+      EulerIntegrator<dim>::read_data(const void *&,
+                                      const unsigned int &)
       {
       }
 
       template <int dim>
       void
       EulerIntegrator<dim>::write_data(void *&,
-                                       const double &) const
+                                       const unsigned int &) const
       {
       }
     }

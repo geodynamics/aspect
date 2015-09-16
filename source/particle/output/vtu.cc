@@ -107,7 +107,7 @@ namespace aspect
         // Print the data associated with the particles, skipping the first entry (position)
         std::vector<std::string>::const_iterator name = names.begin();
         std::vector<unsigned int>::const_iterator length = lengths.begin();
-        unsigned int data_offset = dim + 1;
+        unsigned int data_offset = 0;
 
         for (; name!=names.end(); ++name,++length)
           {
@@ -116,9 +116,10 @@ namespace aspect
             for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
-                std::vector<double> particle_data;
-                it->second.write_data(particle_data);
+                const std::vector<double> particle_data = it->second.get_properties();
+
                 output << "          ";
+
                 for (unsigned int d=0; d<*length; ++d)
                   {
                     output << particle_data[data_offset+d] << " ";

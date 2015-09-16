@@ -26,12 +26,6 @@ namespace aspect
   {
     namespace Integrator
     {
-      /**
-      * Runge Kutta fourth order integrator, where y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4
-      * and k1, k2, k3, k4 are defined as usual.
-      * This scheme requires storing the original location and intermediate k1, k2, k3 values,
-      * so the read/write_data functions reflect this.
-      */
       template <int dim>
       RK4Integrator<dim>::RK4Integrator(void)
       {
@@ -55,13 +49,12 @@ namespace aspect
 
         for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const double id_num = it->second.get_id();
-            const Point<dim> loc = it->second.get_location();
+            const unsigned int id_num = it->second.get_id();
             if (step == 0)
               {
-                loc0[id_num] = loc;
+                loc0[id_num] = it->second.get_location();
                 k1[id_num] = dt*(*vel);
-                it->second.set_location(loc + 0.5*k1[id_num]);
+                it->second.set_location(it->second.get_location() + 0.5*k1[id_num]);
               }
             else if (step == 1)
               {
@@ -80,7 +73,8 @@ namespace aspect
               }
             else
               {
-                // Error!
+                Assert(false,
+                       ExcMessage("The RK4 integrator should never continue after four integration steps."));
               }
           }
 
@@ -106,62 +100,52 @@ namespace aspect
 
       template <int dim>
       void
-      RK4Integrator<dim>::read_data(void *&data,
-                                    const double &id_num)
+      RK4Integrator<dim>::read_data(const void *&data,
+                                    const unsigned int &id_num)
       {
-        double *integrator_data = static_cast<double *> (data);
+        const double *integrator_data = static_cast<const double *> (data);
 
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
-          {
-            loc0[id_num](i) = *integrator_data++;
-          }
+          loc0[id_num](i) = *integrator_data++;
+
         // Read k1, k2 and k3
         for (unsigned int i=0; i<dim; ++i)
-          {
-            k1[id_num][i] = *integrator_data++;
-          }
-        for (unsigned int i=0; i<dim; ++i)
-          {
-            k2[id_num][i] = *integrator_data++;
-          }
-        for (unsigned int i=0; i<dim; ++i)
-          {
-            k3[id_num][i] = *integrator_data++;
-          }
+          k1[id_num][i] = *integrator_data++;
 
-        data = static_cast<void *> (integrator_data);
+        for (unsigned int i=0; i<dim; ++i)
+          k2[id_num][i] = *integrator_data++;
+
+        for (unsigned int i=0; i<dim; ++i)
+          k3[id_num][i] = *integrator_data++;
+
+        data = static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
       void
       RK4Integrator<dim>::write_data(void *&data,
-                                     const double &id_num) const
+                                     const unsigned int &id_num) const
       {
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
+        typename std::map<unsigned int, Point<dim> >::const_iterator it = loc0.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          {
-            *integrator_data = it->second(i);
-          }
+          *integrator_data = it->second(i);
+
         // Write k1, k2 and k3
-        typename std::map<double, Tensor<1,dim> >::const_iterator it_k = k1.find(id_num);
+        typename std::map<unsigned int, Tensor<1,dim> >::const_iterator it_k = k1.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          {
-            *integrator_data = it->second(i);
-          }
+          *integrator_data = it_k->second[i];
+
         it_k = k2.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          {
-            *integrator_data = it->second(i);
-          }
+          *integrator_data = it_k->second[i];
+
         it_k = k3.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          {
-            *integrator_data = it->second(i);
-          }
+          *integrator_data = it_k->second[i];
 
         data = static_cast<void *> (integrator_data);
       }

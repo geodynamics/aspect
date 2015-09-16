@@ -52,8 +52,7 @@ namespace aspect
         ~World();
 
         /**
-         * Initialize the particle world by connecting to be informed when
-         * the triangulation changes.
+         * Initialize the particle world.
          */
         void init();
 
@@ -196,13 +195,13 @@ namespace aspect
 
         void
         register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-            const typename parallel::distributed::Triangulation<dim>::CellStatus,
-            void *) > > > &callback_functions);
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                         void *) > > > &callback_functions);
 
         void
         register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-            const typename parallel::distributed::Triangulation<dim>::CellStatus,
-            const void *) > > &callback_functions);
+                                                                           const typename parallel::distributed::Triangulation<dim>::CellStatus,
+                                                                           const void *) > > &callback_functions);
 
         /**
          * Called by listener functions before a refinement step. All tracers
@@ -252,10 +251,10 @@ namespace aspect
         std::multimap<LevelInd, Particle<dim> >      particles;
 
         /**
-         * Called by listener functions to indicate that the mesh of this
-         * subdomain has changed.
+         * Find the neighbor processes.
          */
-        void mesh_changed();
+        std::vector<types::subdomain_id>
+        find_neighbors() const;
 
         /**
          * This variable is used during mesh refinement to indicate how many

@@ -47,16 +47,16 @@ namespace aspect
 
           virtual unsigned int data_length() const;
 
-          virtual void read_data(void *&data,
-                                 const double &id_num);
+          virtual void read_data(const void *&data,
+                                 const unsigned int &id_num);
 
           virtual void write_data(void *&data,
-                                  const double &id_num) const;
+                                  const unsigned int &id_num) const;
 
         private:
           unsigned int                     step;
-          std::map<double, Point<dim> >    loc0;
-          std::map<double, Tensor<1,dim> > k1, k2, k3;
+          std::map<unsigned int, Point<dim> >    loc0;
+          std::map<unsigned int, Tensor<1,dim> > k1, k2, k3;
 
       };
     }
