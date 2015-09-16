@@ -1739,7 +1739,7 @@ namespace aspect
                     ||
                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
-                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
           break;
         }
 
@@ -1838,7 +1838,7 @@ namespace aspect
                     ||
                     ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                      &&
-                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinment))));
+                     (iteration >= parameters.max_nonlinear_iterations_in_prerefinement))));
 
           break;
         }
@@ -1878,7 +1878,7 @@ namespace aspect
                                      ||
                                      ((pre_refinement_step < parameters.initial_adaptive_refinement) // pre-refinement
                                       &&
-                                      (i >= parameters.max_nonlinear_iterations_in_prerefinment)))); ++i)
+                                      (i >= parameters.max_nonlinear_iterations_in_prerefinement)))); ++i)
             {
               // rebuild the matrix if it actually depends on the solution
               // of the previous iteration.
