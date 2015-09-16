@@ -33,11 +33,21 @@ namespace aspect
 {
   namespace Particle
   {
-    template <int dim>
-    World<dim>::World()
+
+    template <>
+    World<2>::World()
     {
       triangulation_changed = true;
       integrator = NULL;
+      aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
+    }
+
+    template <>
+    World<3>::World()
+    {
+      triangulation_changed = true;
+      integrator = NULL;
+      aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
     }
 
     template <int dim>
@@ -52,8 +62,20 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    World<dim>::connector_function(aspect::SimulatorSignals<dim> &signals)
+    {
+      signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     std_cxx11::_1));
+      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     std_cxx11::_1));
+    }
+
+    template <int dim>
     unsigned int
-    World<dim>::get_max_tracer_per_cell() const
+    World<dim>::get_global_max_tracer_per_cell() const
     {
       unsigned int local_max_tracer_per_cell(0);
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active();
@@ -68,9 +90,65 @@ namespace aspect
                                                  tracers_in_cell);
           }
 
-      const unsigned int global_max_tracer_per_cell = Utilities::MPI::max(local_max_tracer_per_cell,this->get_mpi_communicator());
-      // We need to provide 2^dim times the space in case a cell is coarsened
-      return std::pow(2,dim) * global_max_tracer_per_cell;
+      return Utilities::MPI::max(local_max_tracer_per_cell,this->get_mpi_communicator());
+    }
+
+    template <int dim>
+    void
+    World<dim>::register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+        const typename parallel::distributed::Triangulation<dim>::CellStatus,
+        void *) > > > &callback_functions)
+    {
+      // Only save and load tracers if there are any, we might get here for
+      // example before the tracer generation in timestep 0, or if somebody
+      // selected the tracer postprocessor but generated 0 tracers
+      max_tracers_per_cell = get_global_max_tracer_per_cell();
+
+      if (max_tracers_per_cell > 0)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+              const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+                  = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+                                    std_cxx11::ref(*this),
+                                    std_cxx11::_1,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3);
+
+          // We need to transfer the number of tracers for this cell and
+          // the tracer data itself and we need to provide 2^dim times the
+          // space for the data in case a cell is coarsened
+          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
+              (property_manager->get_particle_size() * max_tracers_per_cell)
+                  *  std::pow(2,dim);
+
+          callback_functions.push_back(std::make_pair(transfer_size_per_cell,callback_function));
+        }
+    }
+
+    template <int dim>
+    void
+    World<dim>::register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+        const typename parallel::distributed::Triangulation<dim>::CellStatus,
+        const void *) > > &callback_functions)
+    {
+      Assert(particles.size() == 0,
+          ExcMessage("We are in the process of mesh refinement. All tracers "
+              "should have been serialized and stored, but there are still some "
+              "around. Is there a bug in the storage function?"));
+
+      // Check if something was stored
+      if (max_tracers_per_cell > 0)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+              const typename parallel::distributed::Triangulation<dim>::CellStatus,
+              const void *) > callback_function
+                  = std_cxx11::bind(&aspect::Particle::World<dim>::load_tracers,
+                                    std_cxx11::ref(*this),
+                                    std_cxx11::_1,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3);
+          callback_functions.push_back(callback_function);
+        }
     }
 
     template <int dim>
@@ -492,7 +570,6 @@ namespace aspect
 
       // Determine the total number of particles we will send to other processors
       std::vector<int> num_send_particles(world_size);
-      std::vector<int> num_recv_particles(world_size);
 
       std::vector<int> num_send_data(world_size);
       std::vector<int> num_recv_data(world_size);
@@ -511,8 +588,6 @@ namespace aspect
           num_send_data[rank] = num_send_particles[rank] * particle_size;
           total_send_data += num_send_particles[rank] * particle_size;
         }
-
-      Utilities::MPI::sum (num_send_particles, this->get_mpi_communicator(), num_recv_particles);
 
       // Allocate space for sending and receiving particle data
       std::vector<char> send_data(send_particles.size() * particle_size);
@@ -541,6 +616,8 @@ namespace aspect
           total_recv_data += num_recv_data[rank];
         }
 
+      const int num_recv_particles = total_recv_data / particle_size;
+
       // Set up the space for the received particle data
       std::vector<char> recv_data(total_recv_data);
 
@@ -552,7 +629,7 @@ namespace aspect
       // Put the received particles into the domain if they are in the triangulation
       void *recv_data_it = static_cast<void *> (&recv_data.front());
 
-      for (int i=0; i<num_recv_particles[self_rank]; ++i)
+      for (int i=0; i<num_recv_particles; ++i)
         {
           Particle<dim> recv_particle(recv_data_it,property_manager->get_data_len());
           integrator->read_data(recv_data_it, recv_particle.get_id());
@@ -569,7 +646,6 @@ namespace aspect
               // tracer in this case.
               continue;
             }
-
 
           if (cell->is_locally_owned())
             {
@@ -652,7 +728,6 @@ namespace aspect
     }
   }
 }
-
 
 
 // explicit instantiation of the functions we implement in this file

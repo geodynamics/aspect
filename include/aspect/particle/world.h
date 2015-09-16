@@ -28,6 +28,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {
@@ -191,8 +192,17 @@ namespace aspect
 
 
         unsigned int
-        get_max_tracer_per_cell() const;
+        get_global_max_tracer_per_cell() const;
 
+        void
+        register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+            const typename parallel::distributed::Triangulation<dim>::CellStatus,
+            void *) > > > &callback_functions);
+
+        void
+        register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+            const typename parallel::distributed::Triangulation<dim>::CellStatus,
+            const void *) > > &callback_functions);
 
         /**
          * Called by listener functions before a refinement step. All tracers
@@ -212,6 +222,9 @@ namespace aspect
         load_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                      const typename parallel::distributed::Triangulation<dim>::CellStatus status,
                      const void *data);
+
+        void
+        connector_function(aspect::SimulatorSignals<dim> &signals);
 
       private:
         /**
@@ -243,6 +256,15 @@ namespace aspect
          * subdomain has changed.
          */
         void mesh_changed();
+
+        /**
+         * This variable is used during mesh refinement to indicate how many
+         * particles populate the cell with the largest number of particles.
+         * It is set by the register_store_callback_function() function and
+         * used by the register_load_callback_function() function to check if
+         * any data was saved.
+         */
+        unsigned int max_tracers_per_cell;
     };
 
     /* -------------------------- inline and template functions ---------------------- */

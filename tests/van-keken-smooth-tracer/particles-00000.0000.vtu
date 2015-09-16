@@ -55,17 +55,17 @@
         </DataArray>
       </Cells>
       <PointData Scalars="scalars">
-        <DataArray type="Float64" Name="id" NumberOfComponents="1" Format="ascii">
-          4 
-          3 
-          7 
-          9 
-          0 
-          1 
-          2 
-          8 
-          6 
-          5 
+        <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
+          4
+          3
+          7
+          9
+          0
+          1
+          2
+          8
+          6
+          5
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
           1 

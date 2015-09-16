@@ -83,7 +83,7 @@ namespace aspect
             const std::vector<double>  properties = it->second.get_properties();
 
             for (unsigned int i = 0; i < properties.size(); ++i)
-              output << properties[0] << " ";
+              output << properties[i] << " ";
 
             output << "\n";
           }
