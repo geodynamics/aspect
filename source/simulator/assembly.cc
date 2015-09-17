@@ -1848,7 +1848,7 @@ namespace aspect
     const Tensor<1,dim> current_u     = scratch.current_velocity_values[q_point];
 
     double melt_transport_RHS = melting_rate / density
-    		                + scratch.current_velocity_divergences[q_point] + compressibility * density * (current_u * gravity);
+                                + divergence_u + compressibility * density * (current_u * gravity);
 
     return melt_transport_RHS;
   }
