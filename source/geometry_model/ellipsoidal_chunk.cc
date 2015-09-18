@@ -262,7 +262,7 @@ namespace aspect
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const
+    EllipsoidalChunk<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &/*coarse_grid*/) const
     {
       Assert(false, ExcNotImplemented());
     }
@@ -687,7 +687,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    EllipsoidalChunk<dim>::representative_point(const double depth) const
+    EllipsoidalChunk<dim>::representative_point(const double /*depth*/) const
     {
       return Point<dim>();
     }
