@@ -300,9 +300,9 @@ namespace aspect
                                               update_quadrature_points
                                               :
                                               update_default));
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_pressure_gradients(n_q_points);
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_velocity_values(n_q_points);
     std::vector<Tensor<1,dim> > pressure_gradients(n_q_points);
-    std::vector<double> pressure_values(n_q_points), fluid_pressure_values(n_q_points), temperature_values(n_q_points);
+    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
@@ -326,10 +326,22 @@ namespace aspect
           for (unsigned int q=0; q<n_q_points; ++q)
             max_local_velocity = std::max (max_local_velocity,
                                            velocity_values[q].norm());
+
+          if (parameters.include_melt_transport)
+            {
+              fe_values[introspection.extractors.fluid_velocities].get_function_values (solution,
+                                                                                        fluid_velocity_values);
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                max_local_velocity = std::max (max_local_velocity,
+                                               fluid_velocity_values[q].norm());
+            }
+
           max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
                                                    max_local_velocity
                                                    /
                                                    cell->minimum_vertex_distance());
+
           if (parameters.use_conduction_timestep)
             {
               fe_values[introspection.extractors.pressure].get_function_values (solution,
@@ -381,74 +393,6 @@ namespace aspect
                                                                / thermal_diffusivity);
                     }
                 }
-            }
-
-          if (parameters.include_melt_transport)
-            {
-              fe_values[introspection.extractors.pressure].get_function_values (solution,
-                                                                                pressure_values);
-              fe_values[introspection.extractors.compaction_pressure].get_function_values (solution,
-                                                                                           fluid_pressure_values);
-              fe_values[introspection.extractors.compaction_pressure].get_function_gradients (solution,
-                                                                                              fluid_pressure_gradients);
-              fe_values[introspection.extractors.temperature].get_function_values (solution,
-                                                                                   temperature_values);
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
-                    composition_values[c]);
-
-              typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_q_points, parameters.n_compositional_fields);
-              typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_q_points, parameters.n_compositional_fields);
-
-              const unsigned int porosity_idx = introspection.compositional_index_for_name("porosity");
-
-              in.strain_rate.resize(0);// we are not reading the viscosity
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-                    composition_values_at_q_point[k] = composition_values[k][q];
-
-                  in.position[q] = fe_values.quadrature_point(q);
-                  in.temperature[q] = temperature_values[q];
-                  in.pressure[q] = pressure_values[q];
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    in.composition[q][c] = composition_values_at_q_point[c];
-                }
-
-              in.cell = &cell;
-              const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&*material_model);
-              AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-              melt_mat->evaluate_with_melt(in, out);
-
-              // melt velocity = v_f =  v_s - K_D (nabla p_f - rho_f g) / porosity  or = v_s, if porosity = 0
-              double max_local_melt_velocity = 0;
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  Tensor<1,dim> melt_velocity;
-                  double porosity = in.composition[q][porosity_idx];
-
-                  double p_s = in.pressure[q];
-                  double p_f = fluid_pressure_values[q];
-
-                  if (porosity <= parameters.melt_transport_threshold)
-                    melt_velocity = velocity_values[q];
-                  else
-                    {
-                      double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
-                      Tensor<1,dim> grad_p_f = fluid_pressure_gradients[q];
-                      const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
-
-                      // v_f =  v_s - K_D (nabla p_f - rho_f g) / porosity
-                      melt_velocity = velocity_values[q]  - K_D * (grad_p_f - out.fluid_densities[q] * gravity) / porosity;
-                    }
-                  max_local_melt_velocity = std::max (max_local_melt_velocity,
-                                                      melt_velocity.norm());
-
-                }
-              max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
-                                                       max_local_melt_velocity
-                                                       /
-                                                       cell->minimum_vertex_distance());
             }
 
         }

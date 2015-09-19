@@ -155,6 +155,7 @@ namespace aspect
         double compressibility;
         double melt_compressibility;
         double melt_bulk_modulus_derivative;
+        double depletion_density_change;
         bool model_is_compressible;
 
         /**
