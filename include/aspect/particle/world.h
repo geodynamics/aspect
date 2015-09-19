@@ -225,6 +225,9 @@ namespace aspect
         void
         connector_function(aspect::SimulatorSignals<dim> &signals);
 
+        void
+        set_max_particles_per_cell(const unsigned int max_particles_per_cell);
+
       private:
         /**
          * Integration scheme for moving particles in this world
@@ -257,13 +260,19 @@ namespace aspect
         find_neighbors() const;
 
         /**
-         * This variable is used during mesh refinement to indicate how many
-         * particles populate the cell with the largest number of particles.
-         * It is set by the register_store_callback_function() function and
-         * used by the register_load_callback_function() function to check if
-         * any data was saved.
+         * This variable is set by the register_store_callback_function()
+         * function and used by the register_load_callback_function() function
+         * to check if any data was saved.
          */
-        unsigned int max_tracers_per_cell;
+        bool stored_tracers;
+
+        /**
+         * Limit for how many particles are allowed per cell. This limit is
+         * useful for adaptive meshes to prevent coarse cells from slowing down
+         * the whole model. It will only be checked and enforced during mesh
+         * refinement and MPI transfer of particles.
+         */
+        unsigned int max_particles_per_cell;
     };
 
     /* -------------------------- inline and template functions ---------------------- */

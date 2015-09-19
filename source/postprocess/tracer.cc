@@ -271,6 +271,13 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
+
+          prm.declare_entry ("Maximum tracers per cell", "100",
+                             Patterns::Integer (0),
+                             "Limit for how many particles are allowed per cell. This limit is "
+                             "useful to prevent coarse cells in adaptive meshes from slowing down "
+                             "the whole model. It will only be checked and enforced during "
+                             "mesh refinement and MPI transfer of tracers.");
         }
         prm.leave_subsection ();
       }
@@ -292,6 +299,8 @@ namespace aspect
         prm.enter_subsection("Tracers");
         {
           data_output_interval = prm.get_double ("Time between data output");
+          unsigned int max_particles_per_cell = prm.get_integer("Maximum tracers per cell");
+          world.set_max_particles_per_cell(max_particles_per_cell);
         }
         prm.leave_subsection ();
       }

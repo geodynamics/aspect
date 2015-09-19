@@ -33,7 +33,6 @@ namespace aspect
 {
   namespace Particle
   {
-
     template <>
     World<2>::World()
     {
@@ -100,7 +99,7 @@ namespace aspect
       // Only save and load tracers if there are any, we might get here for
       // example before the tracer generation in timestep 0, or if somebody
       // selected the tracer postprocessor but generated 0 tracers
-      max_tracers_per_cell = get_global_max_tracer_per_cell();
+      const unsigned int max_tracers_per_cell = get_global_max_tracer_per_cell();
 
       if (max_tracers_per_cell > 0)
         {
@@ -120,6 +119,8 @@ namespace aspect
                                                      *  std::pow(2,dim);
 
           callback_functions.push_back(std::make_pair(transfer_size_per_cell,callback_function));
+
+          stored_tracers = true;
         }
     }
 
@@ -135,7 +136,7 @@ namespace aspect
                         "around. Is there a bug in the storage function?"));
 
       // Check if something was stored
-      if (max_tracers_per_cell > 0)
+      if (stored_tracers)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus,
@@ -178,6 +179,8 @@ namespace aspect
         }
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
+          const unsigned int coarsen_factor = (dim == 3) ? 8 : 4;
+
           for (unsigned int child_index = 0; child_index < cell->number_of_children(); ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
@@ -187,10 +190,19 @@ namespace aspect
               n_particles_in_cell += std::distance(particles_in_cell.first,particles_in_cell.second);
             }
 
+          bool reduce_tracers = false;
+          if ((max_particles_per_cell > 0) && (n_particles_in_cell > max_particles_per_cell))
+            {
+              n_particles_in_cell /= coarsen_factor;
+              reduce_tracers = true;
+            }
+
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata++ = n_particles_in_cell;
 
           data = static_cast<void *> (ndata);
+
+          unsigned int particle_index = 0;
 
           for (unsigned int child_index = 0; child_index < cell->number_of_children(); ++child_index)
             {
@@ -200,10 +212,12 @@ namespace aspect
               particles_in_cell = particles.equal_range(found_cell);
 
               for (typename std::multimap<LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
-                   particle != particles_in_cell.second; ++particle)
+                   particle != particles_in_cell.second; ++particle, ++particle_index)
                 {
-                  particle->second.write_data(data);
+                  if (!reduce_tracers || (particle_index % coarsen_factor == 0))
+                    particle->second.write_data(data);
                 }
+
               particles.erase(particles_in_cell.first,particles_in_cell.second);
             }
         }
@@ -679,7 +693,16 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
-              particles.insert(std::make_pair(found_cell, recv_particle));
+              // Detect if we need to reduce the number of tracers in this cell,
+              // we first reduce the incoming tracers, because they likely came from
+              // a region, where the particle density is higher than in this cell
+              // (otherwise this would not have been triggered).
+              const unsigned int coarsen_factor = (dim == 3) ? 8 : 4;
+              const bool reduce_tracers = (max_particles_per_cell > 0) && (particles.count(found_cell) == max_particles_per_cell);
+              if ( !reduce_tracers || (i % coarsen_factor == 0))
+                {
+                  particles.insert(std::make_pair(found_cell, recv_particle));
+                }
             }
         }
 
@@ -754,6 +777,13 @@ namespace aspect
     World<dim>::get_global_particle_count() const
     {
       return Utilities::MPI::sum (particles.size(), this->get_mpi_communicator());
+    }
+
+    template <int dim>
+    void
+    World<dim>::set_max_particles_per_cell(const unsigned int max_part_per_cell)
+    {
+      max_particles_per_cell = max_part_per_cell;
     }
   }
 }
