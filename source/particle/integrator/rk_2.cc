@@ -27,24 +27,25 @@ namespace aspect
     namespace Integrator
     {
       template <int dim>
-      RK2Integrator<dim>::RK2Integrator(void)
+      RK2Integrator<dim>::RK2Integrator()
       {
         step = 0;
         loc0.clear();
       }
 
       template <int dim>
-      bool
-      RK2Integrator<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
-                                         const std::vector<Tensor<1,dim> > &old_velocities,
-                                         const std::vector<Tensor<1,dim> > &velocities,
-                                         const double dt)
+      void
+      RK2Integrator<dim>::local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+                                               const std::vector<Tensor<1,dim> > &old_velocities,
+                                               const std::vector<Tensor<1,dim> > &velocities,
+                                               const double dt)
       {
-        typename std::multimap<LevelInd, Particle<dim> >::iterator it = particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
-        for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
+        for (; it!=end_particle, vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
             const unsigned int id_num = it->second.get_id();
             const Point<dim> loc = it->second.get_location();
@@ -63,10 +64,20 @@ namespace aspect
                        ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
           }
+      }
 
+      template <int dim>
+      void
+      RK2Integrator<dim>::advance_step()
+      {
         if (step == 1) loc0.clear();
         step = (step+1)%2;
+      }
 
+      template <int dim>
+      bool
+      RK2Integrator<dim>::continue_integration() const
+      {
         // Continue until we're at the last step
         return (step != 0);
       }
@@ -81,7 +92,7 @@ namespace aspect
       template <int dim>
       void
       RK2Integrator<dim>::read_data(const void *&data,
-                                    const unsigned int &id_num)
+                                    const unsigned int id_num)
       {
         const double *integrator_data = static_cast<const double *> (data);
 
@@ -95,7 +106,7 @@ namespace aspect
       template <int dim>
       void
       RK2Integrator<dim>::write_data(void *&data,
-                                     const unsigned int &id_num) const
+                                     const unsigned int id_num) const
       {
         double *integrator_data = static_cast<double *> (data);
 

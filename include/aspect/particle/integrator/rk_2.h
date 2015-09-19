@@ -42,21 +42,85 @@ namespace aspect
         public:
           RK2Integrator();
 
-          virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
-                                      const std::vector<Tensor<1,dim> > &old_velocities,
-                                      const std::vector<Tensor<1,dim> > &velocities,
-                                      const double dt);
+          /**
+           * Perform an integration step of moving the particles of one cell
+           * by the specified timestep dt. Implementations of this function
+           * must update the particle location. Between calls to this function
+           * the velocity at the updated particle positions is evaluated and
+           * passed to integrate_step during the next call.
+           *
+           * @param [in] begin_particle An iterator to the first particle to be moved.
+           * @param [in] end_particle An iterator to the last particle to be moved.
+           * @param [in] old_velocities The velocities at t_n, i.e. before the
+           * particle movement.
+           * @param [in] velocities The velocities at t_{n+1}, i.e. after the
+           * particle movement.
+           * @param [in] dt The length of the integration timestep.
+           */
+          virtual
+          void
+          local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+                               const std::vector<Tensor<1,dim> > &old_velocities,
+                               const std::vector<Tensor<1,dim> > &velocities,
+                               const double dt);
 
+          /**
+           * This function is called at the end of every integration step.
+           * In case of multi-step integrators is signals the beginning of a
+           * new integration step.
+           */
+          virtual void advance_step();
+
+          /**
+           * @return This function returns true if another integration step is required
+           * by the integrator. Its default implementation returns false.
+           */
+          virtual bool continue_integration() const;
+
+          /**
+           * Return data length of the integration related data required for
+           * communication in terms of number of doubles.
+           *
+           * @return The number of doubles required to store the relevant
+           * integrator data for one particle.
+           */
           virtual unsigned int data_length() const;
 
+          /**
+           * Read integration related data for a particle specified by id_num
+           * from the data array.
+           *
+           * @param [in] data The array of double data to read from.
+           * @param [in] id_num The id number of the particle to read the data
+           * for.
+           */
           virtual void read_data(const void *&data,
-                                 const unsigned int &id_num);
+                                 const unsigned int id_num);
 
+          /**
+           * Write integration related data to a vector for a particle
+           * specified by id_num.
+           *
+           * @param [in,out] data The vector of doubles to write integrator
+           * data into.
+           * @param [in] id_num The id number of the particle to write the data
+           * for.
+           */
           virtual void write_data(void *&data,
-                                  const unsigned int &id_num) const;
+                                  const unsigned int id_num) const;
 
         private:
+          /**
+           * The current integration step.
+           */
           unsigned int                          step;
+
+          /**
+           * The particle location before the first integration step. This is
+           * used in the second step and transferred to another process if
+           * the tracer leaves the domain during the first step.
+           */
           std::map<unsigned int, Point<dim> >   loc0;
 
       };

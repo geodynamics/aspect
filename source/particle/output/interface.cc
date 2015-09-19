@@ -53,12 +53,12 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::save (std::ostringstream &os) const
+      Interface<dim>::save (std::ostringstream &) const
       {}
 
       template <int dim>
       void
-      Interface<dim>::load (std::istringstream &is)
+      Interface<dim>::load (std::istringstream &)
       {}
 
 

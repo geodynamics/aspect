@@ -1457,22 +1457,7 @@ namespace aspect
       }
 
     // Possibly store data of plugins associated with cells
-    std::vector<unsigned int> data_offsets;
-    std::list<std::pair<std::size_t, std_cxx11::function<
-    void(const typename Triangulation<dim>::cell_iterator &, const typename parallel::distributed::Triangulation<dim>::CellStatus, void *)> > > callback_functions;
-    signals.pre_refinement_store_user_data(callback_functions);
-
-    if (callback_functions.size() > 0)
-      {
-        data_offsets.resize(callback_functions.size());
-
-        typename std::list<std::pair<std::size_t,std_cxx11::function<
-        void(const typename Triangulation<dim>::cell_iterator &, const typename parallel::distributed::Triangulation<dim>::CellStatus, void *)> > >::iterator
-        callback_function = callback_functions.begin();
-
-        for (unsigned int index = 0; callback_function != callback_functions.end(); ++callback_function, ++index)
-          data_offsets[index] = triangulation.register_data_attach(callback_function->first,callback_function->second);
-      }
+    signals.pre_refinement_store_user_data(triangulation);
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
@@ -1550,18 +1535,7 @@ namespace aspect
         }
 
       // Possibly load data of plugins associated with cells
-      std::list<std_cxx11::function<
-      void(const typename Triangulation<dim>::cell_iterator &, const typename parallel::distributed::Triangulation<dim>::CellStatus, const void *)> > callback_functions;
-      signals.post_refinement_load_user_data(callback_functions);
-      if (callback_functions.size() > 0)
-        {
-          typename std::list<std_cxx11::function<
-          void(const typename Triangulation<dim>::cell_iterator &, const typename parallel::distributed::Triangulation<dim>::CellStatus, const void *)> >::iterator
-          callback_function = callback_functions.begin();
-          for (unsigned int index = 0; callback_function != callback_functions.end(); ++callback_function, ++index)
-            triangulation.notify_ready_to_unpack(data_offsets[index],*callback_function);
-        }
-
+      signals.post_refinement_load_user_data(triangulation);
     }
     computing_timer.exit_section();
 

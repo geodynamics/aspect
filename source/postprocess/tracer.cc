@@ -84,7 +84,7 @@ namespace aspect
           world.set_manager(&property_manager);
 
           // And initialize the world
-          world.init();
+          world.initialize();
 
           // Let the generator add the specified number of particles if we are
           // not resuming from a snapshot (in that case we have stored particles)
@@ -306,7 +306,8 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      world.initialize(this->get_simulator());
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
+        sim->initialize (this->get_simulator());
 
       // Create a generator object using a random uniform distribution
       generator = Particle::Generator::create_particle_generator<dim>

@@ -113,13 +113,8 @@ namespace aspect
         for (unsigned int i = 0; i < accumulated_cell_weights.size(); ++i)
           accumulated_cell_weights[i] += start_weight;
 
-        // Assign this subdomain the appropriate fraction
-        const double subdomain_fraction = local_function_integral / global_function_integral;
-
         // Calculate start and end IDs so there are no gaps
         const unsigned int start_id = round(n_tracers * start_weight / global_function_integral) + 1;
-        const unsigned int end_id   = round(n_tracers * accumulated_cell_weights.back()  / global_function_integral);
-        const unsigned int subdomain_particles = end_id - start_id;
 
         uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,n_tracers, 1.1 * start_id,world);
       }

@@ -20,8 +20,8 @@
 
 #include <aspect/particle/world.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
-#include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
@@ -36,7 +36,7 @@ namespace aspect
     template <>
     World<2>::World()
     {
-      triangulation_changed = true;
+      data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
       aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
     }
@@ -44,7 +44,7 @@ namespace aspect
     template <>
     World<3>::World()
     {
-      triangulation_changed = true;
+      data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
       aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
     }
@@ -55,19 +55,67 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::init()
+    World<dim>::initialize()
     {}
 
     template <int dim>
     void
-    World<dim>::connector_function(aspect::SimulatorSignals<dim> &signals)
+    World<dim>::set_integrator(Integrator::Interface<dim> *new_integrator)
     {
-      signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
-                                                                     std_cxx11::ref(*this),
-                                                                     std_cxx11::_1));
-      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
-                                                                     std_cxx11::ref(*this),
-                                                                     std_cxx11::_1));
+      integrator = new_integrator;
+    }
+
+    template <int dim>
+    void
+    World<dim>::set_manager(Property::Manager<dim> *new_manager)
+    {
+      property_manager = new_manager;
+    }
+
+    template <int dim>
+    const Property::Manager<dim> &
+    World<dim>::get_manager() const
+    {
+      return *property_manager;
+    }
+
+    template <int dim>
+    void
+    World<dim>::set_max_particles_per_cell(const unsigned int max_part_per_cell)
+    {
+      max_particles_per_cell = max_part_per_cell;
+    }
+
+    template <int dim>
+    void
+    World<dim>::add_particle(const Particle<dim> &particle, const LevelInd &cell)
+    {
+      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it
+      (&(this->get_triangulation()), cell.first, cell.second);
+      AssertThrow(it != this->get_triangulation().end(),
+                  ExcMessage("Particles may only be added to cells in local subdomain."));
+      particles.insert(std::make_pair(cell, particle));
+    }
+
+    template <int dim>
+    std::multimap<LevelInd, Particle<dim> > &
+    World<dim>::get_particles()
+    {
+      return particles;
+    }
+
+    template <int dim>
+    const std::multimap<LevelInd, Particle<dim> > &
+    World<dim>::get_particles() const
+    {
+      return particles;
+    }
+
+    template <int dim>
+    unsigned int
+    World<dim>::get_global_particle_count() const
+    {
+      return dealii::Utilities::MPI::sum (particles.size(), this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -87,14 +135,24 @@ namespace aspect
                                                  tracers_in_cell);
           }
 
-      return Utilities::MPI::max(local_max_tracer_per_cell,this->get_mpi_communicator());
+      return dealii::Utilities::MPI::max(local_max_tracer_per_cell,this->get_mpi_communicator());
     }
 
     template <int dim>
     void
-    World<dim>::register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                                 const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                                 void *) > > > &callback_functions)
+    World<dim>::connector_function(aspect::SimulatorSignals<dim> &signals)
+    {
+      signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     std_cxx11::_1));
+      signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     std_cxx11::_1));
+    }
+
+    template <int dim>
+    void
+    World<dim>::register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
     {
       // Only save and load tracers if there are any, we might get here for
       // example before the tracer generation in timestep 0, or if somebody
@@ -117,18 +175,13 @@ namespace aspect
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
                                                      (property_manager->get_particle_size() * max_tracers_per_cell)
                                                      *  std::pow(2,dim);
-
-          callback_functions.push_back(std::make_pair(transfer_size_per_cell,callback_function));
-
-          stored_tracers = true;
+          data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
         }
     }
 
     template <int dim>
     void
-    World<dim>::register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                                                                   const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                                                                   const void *) > > &callback_functions)
+    World<dim>::register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
     {
       Assert(particles.size() == 0,
              ExcMessage("We are in the process of mesh refinement. All tracers "
@@ -136,7 +189,7 @@ namespace aspect
                         "around. Is there a bug in the storage function?"));
 
       // Check if something was stored
-      if (stored_tracers)
+      if (data_offset != aspect::Utilities::signaling_nan<unsigned int>())
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus,
@@ -146,7 +199,9 @@ namespace aspect
                               std_cxx11::_1,
                               std_cxx11::_2,
                               std_cxx11::_3);
-          callback_functions.push_back(callback_function);
+
+          triangulation.notify_ready_to_unpack(data_offset,callback_function);
+          data_offset = aspect::Utilities::signaling_nan<unsigned int>();
         }
     }
 
@@ -261,185 +316,31 @@ namespace aspect
     }
 
     template <int dim>
-    void
-    World<dim>::set_integrator(Integrator::Interface<dim> *new_integrator)
+    std::vector<types::subdomain_id>
+    World<dim>::find_neighbors() const
     {
-      integrator = new_integrator;
-    }
+      std::vector<types::subdomain_id> neighbors;
 
-    template <int dim>
-    void
-    World<dim>::set_manager(Property::Manager<dim> *new_manager)
-    {
-      property_manager = new_manager;
-    }
-
-    template <int dim>
-    const Property::Manager<dim> &
-    World<dim>::get_manager() const
-    {
-      return *property_manager;
-    }
-
-    template <int dim>
-    void
-    World<dim>::add_particle(const Particle<dim> &particle, const LevelInd &cell)
-    {
-      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it
-      (&(this->get_triangulation()), cell.first, cell.second);
-      AssertThrow(it != this->get_triangulation().end(),
-                  ExcMessage("Particles may only be added to cells in local subdomain."));
-      particles.insert(std::make_pair(cell, particle));
-    }
-
-    template <int dim>
-    void
-    World<dim>::initialize_particles()
-    {
-      const unsigned int solution_components = this->introspection().n_components;
-      Vector<double> value(solution_components);
-      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
-      std::vector<Vector<double> >  values(50,value);
-      std::vector<std::vector<Tensor<1,dim> > > gradients(50,gradient);
-      std::vector<Point<dim> >      particle_points(50);
-
-      const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
-      const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
-
-      // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
-
-      // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      typename std::multimap<LevelInd, Particle<dim> >::iterator  it, sit;
-      for (it=particles.begin(); it!=particles.end();)
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = this->get_triangulation().begin_active();
+           cell != this->get_triangulation().end(); ++cell)
         {
-          // Save a pointer to the first particle in this cell
-          sit = it;
-
-          // Get the current cell
-          const LevelInd cur_cell = it->first;
-
-          // Resize the vectors to the number of particles in this cell
-          particle_points.resize(particles.count(cur_cell));
-
-          // Get a vector of the particle locations in this cell
-          unsigned int i=0;
-          while (it != particles.end() && it->first == cur_cell)
+          if (cell->is_ghost())
             {
-              particle_points[i++] = it->second.get_location();
-              it++;
-            }
-          values.resize(i, value);
-          gradients.resize(i,gradient);
-          particle_points.resize(i);
+              bool neighbor_already_marked = false;
 
-          // Get the cell the particle is in
-          const typename DoFHandler<dim>::active_cell_iterator found_cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
+              for (unsigned int i = 0; i < neighbors.size(); ++i)
+                if (neighbors[i] == cell->subdomain_id())
+                  {
+                    neighbor_already_marked = true;
+                    break;
+                  }
 
-          // Interpolate the velocity field for each of the particles
-          fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, values);
-          fe_value.vector_gradient_list(particle_points, gradients);
-
-          // Copy the resulting velocities to the appropriate vector
-          it = sit;
-          i = 0;
-          while (it != particles.end() && it->first == cur_cell)
-            {
-              property_manager->initialize_particle(it->second,
-                                                    values[i],
-                                                    gradients[i]);
-              i++;
-              it++;
+              if (!neighbor_already_marked)
+                neighbors.push_back(cell->subdomain_id());
             }
         }
-    }
-
-    template <int dim>
-    void
-    World<dim>::update_particles()
-    {
-      const unsigned int solution_components = this->introspection().n_components;
-      Vector<double> value(solution_components);
-      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
-      std::vector<Vector<double> >  values(50,value);
-      std::vector<std::vector<Tensor<1,dim> > > gradients(50,gradient);
-      std::vector<Point<dim> >      particle_points(50);
-
-      const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
-      const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
-
-      // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, this->get_solution(), this->get_mapping());
-
-      // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      typename std::multimap<LevelInd, Particle<dim> >::iterator  sit;
-      for (typename std::multimap<LevelInd, Particle<dim> >::iterator
-           it=particles.begin(); it!=particles.end();)
-        {
-          // Save a pointer to the first particle in this cell
-          sit = it;
-
-          // Get the current cell
-          const LevelInd cur_cell = it->first;
-
-          // Resize the vectors to the number of particles in this cell
-          particle_points.resize(particles.count(cur_cell));
-
-          // Get a vector of the particle locations in this cell
-          unsigned int i=0;
-          while (it != particles.end() && it->first == cur_cell)
-            {
-              particle_points[i++] = it->second.get_location();
-              it++;
-            }
-          values.resize(i, value);
-          gradients.resize(i,gradient);
-          particle_points.resize(i);
-
-          // Get the cell the particle is in
-          const typename DoFHandler<dim>::active_cell_iterator found_cell =
-            typename DoFHandler<dim>::active_cell_iterator(triangulation, cur_cell.first, cur_cell.second, dof_handler);
-
-          // Interpolate the velocity field for each of the particles
-          fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, values);
-          fe_value.vector_gradient_list(particle_points, gradients);
-
-          // Copy the resulting velocities to the appropriate vector
-          it = sit;
-          i = 0;
-          while (it != particles.end() && it->first == cur_cell)
-            {
-              property_manager->update_particle(it->second,
-                                                values[i],
-                                                gradients[i]);
-              i++;
-              it++;
-            }
-        }
-    }
-
-    template <int dim>
-    std::multimap<LevelInd, Particle<dim> > &
-    World<dim>::get_particles()
-    {
-      return particles;
-    }
-
-    template <int dim>
-    const std::multimap<LevelInd, Particle<dim> > &
-    World<dim>::get_particles() const
-    {
-      return particles;
-    }
-
-    template <int dim>
-    void
-    World<dim>::get_data_info(std::vector<std::string> &names,
-                              std::vector<unsigned int> &length) const
-    {
-      property_manager->get_data_info(names,length);
+      return neighbors;
     }
 
     template <int dim>
@@ -453,7 +354,6 @@ namespace aspect
       // Note that the iterator in the following loop is increased in a
       // very particular way, because it is changed, if elements
       // get erased. A change can result in invalid memory access.
-      moved_particles.clear();
       typename std::multimap<LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
@@ -507,42 +407,9 @@ namespace aspect
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
 
-      // Swap lost particles between processors
-      send_recv_particles(lost_particles);
-    }
-
-    template <int dim>
-    void
-    World<dim>::advance_timestep()
-    {
-      bool continue_integrator = true;
-
-      // If particles fell out of the mesh, put them back in at the closest point in the mesh
-      move_particles_back_in_mesh();
-
-      // Keep calling the integrator until it indicates it is finished
-      while (continue_integrator)
-        {
-          // Starting out, particles must know which cells they belong to
-          // Using this we can quickly interpolate the velocities
-          std::vector<Tensor<1,dim> > old_velocities(particles.size());
-          std::vector<Tensor<1,dim> > velocities(particles.size());
-
-          get_particle_velocities(old_velocities,velocities);
-
-          // Call the integrator
-          continue_integrator = integrator->integrate_step(particles,
-                                                           old_velocities,
-                                                           velocities,
-                                                           this->get_old_timestep());
-
-          // Find the cells that the particles moved to
-          find_all_cells();
-        }
-
-      // Update particle properties
-      if (property_manager->need_update() == Property::update_time_step)
-        update_particles();
+      // Swap lost particles between processors if we have more than one process
+      if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+        send_recv_particles(lost_particles);
     }
 
     template <int dim>
@@ -553,41 +420,13 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<types::subdomain_id>
-    World<dim>::find_neighbors() const
-    {
-      std::vector<types::subdomain_id> neighbors;
-
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = this->get_triangulation().begin_active();
-           cell != this->get_triangulation().end(); ++cell)
-        {
-          if (cell->is_ghost())
-            {
-              bool neighbor_already_marked = false;
-
-              for (unsigned int i = 0; i < neighbors.size(); ++i)
-                if (neighbors[i] == cell->subdomain_id())
-                  {
-                    neighbor_already_marked = true;
-                    break;
-                  }
-
-              if (!neighbor_already_marked)
-                neighbors.push_back(cell->subdomain_id());
-            }
-        }
-      return neighbors;
-    }
-
-    template <int dim>
     void
     World<dim>::send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles)
     {
       // Determine the communication pattern
       const std::vector<types::subdomain_id> neighbors = find_neighbors();
       const unsigned int num_neighbors = neighbors.size();
-      const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      const unsigned int self_rank  = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->data_length() * sizeof(double);
 
       // Determine the amount of data we will send to other processors
@@ -713,77 +552,229 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &old_velocities,
-                                        std::vector<Tensor<1,dim> > &velocities)
+    World<dim>::local_initialize_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                           const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                           const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle)
     {
-      std::vector<Tensor<1,dim> >  result;
-      std::vector<Tensor<1,dim> >  old_result;
-      std::vector<Point<dim> >     particle_points;
+      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
+      const unsigned int solution_components = this->introspection().n_components;
 
-      const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
-      const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
+      Vector<double> value(solution_components);
+      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
 
-      unsigned int particle_idx = 0;
-      // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      for (typename std::multimap<LevelInd, Particle<dim> >::iterator
-           it=particles.begin(); it!=particles.end();)
+      std::vector<Vector<double> >  values(particles_in_cell,value);
+      std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
+
+      std::vector<Point<dim> >     particle_points(particles_in_cell);
+
+      typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
+      for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
-          // Get the current cell
-          const LevelInd cur_cell = it->first;
+          const Point<dim> position = it->second.get_location();
+          particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
+        }
 
-          // Get the cell the particle is in
-          const typename DoFHandler<dim>::active_cell_iterator cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
+      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
+      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      FEValues<dim> fe_value (this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values |
+                              update_gradients);
 
-          // Resize the vectors to the number of particles in this cell
-          const unsigned int num_cell_particles = particles.count(cur_cell);
-          particle_points.resize(num_cell_particles);
-          result.resize(num_cell_particles);
-          old_result.resize(num_cell_particles);
+      fe_value.reinit (cell);
+      fe_value.get_function_values (this->get_solution(),
+                                    values);
+      fe_value.get_function_gradients (this->get_solution(),
+                                       gradients);
 
-          // Get a vector of the particle locations in this cell
-          unsigned int n_particles_in_cell = 0;
-          while (it != particles.end() && it->first == cur_cell)
-            {
-              const Point<dim> position = it->second.get_location();
-              particle_points[n_particles_in_cell++] = this->get_mapping().transform_real_to_unit_cell(cell, position);
-              it++;
-            }
-
-          const std::vector< double > ww(num_cell_particles, 1./((double) num_cell_particles));
-          const Quadrature<dim> quadrature_formula(particle_points, ww);
-          FEValues<dim> fe_value (this->get_mapping(),
-                                  this->get_fe(),
-                                  quadrature_formula,
-                                  update_values);
-
-          fe_value.reinit (cell);
-          fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                     result);
-          fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
-                                                                                     old_result);
-
-          // Copy the resulting velocities to the appropriate vector#
-          for (unsigned int id = 0; id < num_cell_particles; ++id)
-            {
-              velocities[particle_idx] = result[id];
-              old_velocities[particle_idx] = old_result[id];
-              particle_idx++;
-            }
+      it = begin_particle;
+      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+        {
+          property_manager->initialize_particle(it->second,
+                                                values[i],
+                                                gradients[i]);
         }
     }
 
     template <int dim>
-    unsigned int
-    World<dim>::get_global_particle_count() const
+    void
+    World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                       const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle)
     {
-      return Utilities::MPI::sum (particles.size(), this->get_mpi_communicator());
+      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
+      const unsigned int solution_components = this->introspection().n_components;
+
+      Vector<double> value(solution_components);
+      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
+
+      std::vector<Vector<double> >  values(particles_in_cell,value);
+      std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
+
+      std::vector<Point<dim> >     particle_points(particles_in_cell);
+
+      typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
+      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+        {
+          const Point<dim> position = it->second.get_location();
+          particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
+        }
+
+      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
+      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      FEValues<dim> fe_value (this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values |
+                              update_gradients);
+
+      fe_value.reinit (cell);
+      fe_value.get_function_values (this->get_solution(),
+                                    values);
+      fe_value.get_function_gradients (this->get_solution(),
+                                       gradients);
+
+      it = begin_particle;
+      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+        {
+          property_manager->update_particle(it->second,
+                                            values[i],
+                                            gradients[i]);
+        }
     }
 
     template <int dim>
     void
-    World<dim>::set_max_particles_per_cell(const unsigned int max_part_per_cell)
+    World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                       const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle)
     {
-      max_particles_per_cell = max_part_per_cell;
+      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
+
+      std::vector<Tensor<1,dim> >  result(particles_in_cell);
+      std::vector<Tensor<1,dim> >  old_result(particles_in_cell);
+      std::vector<Point<dim> >     particle_points(particles_in_cell);
+
+      typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
+      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+        {
+          const Point<dim> position = it->second.get_location();
+          particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
+        }
+
+      const std::vector< double > weights(particles_in_cell, 1./((double) particles_in_cell));
+      const Quadrature<dim> quadrature_formula(particle_points, weights);
+      FEValues<dim> fe_value (this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values);
+
+      fe_value.reinit (cell);
+      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                 result);
+      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
+                                                                                 old_result);
+
+      integrator->local_integrate_step(begin_particle,
+                                       end_particle,
+                                       old_result,
+                                       result,
+                                       this->get_old_timestep());
+    }
+
+
+    template <int dim>
+    void
+    World<dim>::initialize_particles()
+    {
+      // Loop over all cells and initialize the particles cell-wise
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            std::pair< const typename std::multimap<LevelInd,Particle <dim> >::iterator,
+                const typename std::multimap<LevelInd,Particle <dim> >::iterator>
+                particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+
+            // Only initialize particles, if there are any in this cell
+            if (particle_range_in_cell.first != particle_range_in_cell.second)
+              local_initialize_particles(cell,
+                                         particle_range_in_cell.first,
+                                         particle_range_in_cell.second);
+          }
+    }
+
+    template <int dim>
+    void
+    World<dim>::update_particles()
+    {
+      // Loop over all cells and update the particles cell-wise
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            std::pair< const typename std::multimap<LevelInd,Particle <dim> >::iterator,
+                const typename std::multimap<LevelInd,Particle <dim> >::iterator>
+                particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+
+            // Only update particles, if there are any in this cell
+            if (particle_range_in_cell.first != particle_range_in_cell.second)
+              local_update_particles(cell,
+                                     particle_range_in_cell.first,
+                                     particle_range_in_cell.second);
+          }
+    }
+
+    template <int dim>
+    void
+    World<dim>::advect_particles()
+    {
+      // Loop over all cells and advect the particles cell-wise
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            std::pair< const typename std::multimap<LevelInd,Particle <dim> >::iterator,
+                const typename std::multimap<LevelInd,Particle <dim> >::iterator>
+                particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+
+            // Only advect particles, if there are any in this cell
+            if (particle_range_in_cell.first != particle_range_in_cell.second)
+              local_advect_particles(cell,
+                                     particle_range_in_cell.first,
+                                     particle_range_in_cell.second);
+          }
+    }
+
+    template <int dim>
+    void
+    World<dim>::advance_timestep()
+    {
+      // Keep calling the integrator until it indicates it is finished
+      do
+        {
+          advect_particles();
+
+          // Find the cells that the particles moved to
+          find_all_cells();
+
+          integrator->advance_step();
+        }
+      while (integrator->continue_integration());
+
+      // Update particle properties
+      if (property_manager->need_update() == Property::update_time_step)
+        update_particles();
     }
   }
 }

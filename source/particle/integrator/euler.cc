@@ -31,43 +31,21 @@ namespace aspect
        * This requires only one step per integration, and doesn't involve any extra data.
        */
       template <int dim>
-      bool
-      EulerIntegrator<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
-                                           const std::vector<Tensor<1,dim> > &old_velocities,
-                                           const std::vector<Tensor<1,dim> > &,
-                                           const double dt)
+      void
+      EulerIntegrator<dim>::local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                                 const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+                                                 const std::vector<Tensor<1,dim> > &old_velocities,
+                                                 const std::vector<Tensor<1,dim> > &,
+                                                 const double dt)
       {
-        typename std::multimap<LevelInd, Particle<dim> >::iterator it = particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
         typename std::vector<Tensor<1,dim> >::const_iterator vel = old_velocities.begin();
 
-        for (; it!=particles.end(), vel!=old_velocities.end(); ++it,++vel)
+        for (; it!=end_particle, vel!=old_velocities.end(); ++it,++vel)
           {
             const Point<dim> loc = it->second.get_location();
             it->second.set_location(loc + dt*(*vel));
           }
-
-        return false;
-      }
-
-      template <int dim>
-      unsigned int
-      EulerIntegrator<dim>::data_length() const
-      {
-        return 0;
-      }
-
-      template <int dim>
-      void
-      EulerIntegrator<dim>::read_data(const void *&,
-                                      const unsigned int &)
-      {
-      }
-
-      template <int dim>
-      void
-      EulerIntegrator<dim>::write_data(void *&,
-                                       const unsigned int &) const
-      {
       }
     }
   }

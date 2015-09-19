@@ -56,27 +56,40 @@ namespace aspect
           virtual ~Interface () {}
 
           /**
-           * Perform an integration step of moving the particles by the
-           * specified timestep dt. Implementations of this function must
-           * update the particle location. If the integrator requires multiple
-           * internal steps, this function must return true until all internal
-           * steps are finished. Between calls to this function the velocity
-           * at the updated particle positions is evaluated and passed to
-           * integrate_step during the next call.
+           * Perform an integration step of moving the particles of one cell
+           * by the specified timestep dt. Implementations of this function
+           * must update the particle location. Between calls to this function
+           * the velocity at the updated particle positions is evaluated and
+           * passed to integrate_step during the next call.
            *
-           * @param [in,out] particles The map of particles to move. The
-           * particle positions will be changed in this function based on the
-           * integration scheme.
-           * @param [in] dt The timestep length to perform the integration.
-           * @return Whether this function needs to be called again (true) for
-           * additional integration steps or if all internal steps are
-           * complete (false).
+           * @param [in] begin_particle An iterator to the first particle to be moved.
+           * @param [in] end_particle An iterator to the last particle to be moved.
+           * @param [in] old_velocities The velocities at t_n, i.e. before the
+           * particle movement.
+           * @param [in] velocities The velocities at t_{n+1}, i.e. after the
+           * particle movement.
+           * @param [in] dt The length of the integration timestep.
            */
-          virtual bool integrate_step(typename std::multimap<LevelInd,
-                                      Particle<dim> > &particles,
-                                      const std::vector<Tensor<1,dim> > &old_velocities,
-                                      const std::vector<Tensor<1,dim> > &velocities,
-                                      const double dt) = 0;
+          virtual
+          void
+          local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+                               const std::vector<Tensor<1,dim> > &old_velocities,
+                               const std::vector<Tensor<1,dim> > &velocities,
+                               const double dt) = 0;
+
+          /**
+           * This function is called at the end of every integration step.
+           * In case of multi-step integrators is signals the beginning of a
+           * new integration step.
+           */
+          virtual void advance_step();
+
+          /**
+           * @return This function returns true if another integration step is required
+           * by the integrator. Its default implementation returns false.
+           */
+          virtual bool continue_integration() const;
 
           /**
            * Return data length of the integration related data required for
@@ -85,7 +98,7 @@ namespace aspect
            * @return The number of doubles required to store the relevant
            * integrator data for one particle.
            */
-          virtual unsigned int data_length() const = 0;
+          virtual unsigned int data_length() const;
 
           /**
            * Read integration related data for a particle specified by id_num
@@ -96,7 +109,7 @@ namespace aspect
            * for.
            */
           virtual void read_data(const void *&data,
-                                 const unsigned int &id_num) = 0;
+                                 const unsigned int id_num);
 
           /**
            * Write integration related data to a vector for a particle
@@ -108,7 +121,7 @@ namespace aspect
            * for.
            */
           virtual void write_data(void *&data,
-                                  const unsigned int &id_num) const = 0;
+                                  const unsigned int id_num) const;
 
 
           /**

@@ -52,7 +52,6 @@ namespace aspect
             getline(in,temp);
           }
 
-        char sep;
         // Read data lines
         unsigned int id = 0;
         Point<dim> coordinates;

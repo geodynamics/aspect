@@ -46,15 +46,14 @@ namespace aspect
         World();
 
         /**
-         * Default World destructor, deallocates all relevant arrays and
-         * structures.
+         * Default World destructor.
          */
         ~World();
 
         /**
          * Initialize the particle world.
          */
-        void init();
+        void initialize();
 
         /**
          * Set the particle Integrator scheme for this particle world.
@@ -75,17 +74,26 @@ namespace aspect
         /**
          * Get the particle property manager for this particle world.
          *
-         * @param return manager The new property manager for this
+         * @param return manager The property manager for this
          * world.
          */
         const Property::Manager<dim> &
         get_manager() const;
 
         /**
+         * Sets the threshold for removing particles from cells. Because the
+         * particle world currently does not declare own input parameters this
+         * is read by the Tracer postprocessor and set with this function.
+         */
+        void
+        set_max_particles_per_cell(const unsigned int max_particles_per_cell);
+
+        /**
          * Add a particle to this world. If the specified cell does not exist
          * in the local subdomain an exception will be thrown.
          */
-        void add_particle(const Particle<dim> &particle, const LevelInd &cell);
+        void add_particle(const Particle<dim> &particle,
+                          const LevelInd &cell);
 
         /**
          * Initialize the particle properties.
@@ -98,34 +106,22 @@ namespace aspect
         void update_particles();
 
         /**
+         * Advect the particle positions by one integration step. Needs to be
+         * called until integrator->continue() returns false.
+         */
+        void advect_particles();
+
+        /**
          * Access to particles in this world.
          */
-        std::multimap<LevelInd, Particle<dim> > &get_particles();
+        std::multimap<LevelInd, Particle<dim> > &
+        get_particles();
 
         /**
          * Const access to particles in this world.
          */
-        const std::multimap<LevelInd, Particle<dim> > &get_particles() const;
-
-        /**
-         * Get the names and number of particle properties from the
-         * property_manager.
-         *
-         * @param [inout] names Vector of property names attached to particles
-         * @param [inout] length Number of doubles needed to represent properties
-         */
-        void
-        get_data_info(std::vector<std::string> &names,
-                      std::vector<unsigned int> &length) const;
-
-        /**
-         * Calculate the cells containing each particle for all particles. If
-         * particles moved out of the domain of this process they will be send
-         * to their new process and inserted there. After this function call
-         * every particle is either on its current process and in its current
-         * cell, or deleted (if it could not find its new process or cell).
-         */
-        void find_all_cells();
+        const std::multimap<LevelInd, Particle<dim> > &
+        get_particles() const;
 
         /**
          * Advance particles by the old timestep using the current
@@ -137,44 +133,6 @@ namespace aspect
         void advance_timestep();
 
         /**
-         * TODO: This needs to be implemented in case some particles fall out of the
-         * domain. In particular for periodic boundary conditions.
-         */
-        void move_particles_back_in_mesh();
-
-        /**
-         * Transfer particles that have crossed subdomain boundaries to other
-         * processors. Because subdomains can change drastically during mesh
-         * refinement, particle transfer occurs as follows: - Each subdomain
-         * finds the particles it owns which have fallen outside it - For each
-         * particle outside the subdomain, send the particle to all subdomains
-         * and let them determine which one owns it. This assumes there is no
-         * overlap between subdomains. - Each process determines which of the
-         * received particles is in its subdomain, keeps these and deletes the
-         * others
-         *
-         * @param [in,out] send_particles All particles that should be send
-         * are in this vector.
-         */
-        void send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles);
-
-        /**
-         * Calculates the current and old velocities for each particle at its
-         * current location. The velocities are stored in the vectors given
-         * to the function, ordered in the same way an iterator iterates over
-         * the map of particles. This means the ordering is only correct as
-         * long as the map does not change.
-         *
-         * @param [inout] velocities The current solution vector for this
-         * simulation.
-         * @param [inout] old_velocities A vector of velocities evaluated at
-         * the particle positions according to the given solution.
-         */
-        void
-        get_particle_velocities(std::vector<Tensor<1,dim> > &velocities,
-                                std::vector<Tensor<1,dim> > &old_velocities);
-
-        /**
          * Calculates the global sum of particles over all processes. This is
          * done to monitor the number of particles that have fallen out of the
          * domain.
@@ -184,29 +142,30 @@ namespace aspect
         unsigned int get_global_particle_count() const;
 
         /**
-         * Serialize the contents of this class.
+         * This callback function is called by Simulator to allow us to connect
+         * to the SimulatorSignals.
          */
-        template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
-
-
-        unsigned int
-        get_global_max_tracer_per_cell() const;
-
         void
-        register_store_callback_function(std::list<std::pair<std::size_t,std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                         const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                         void *) > > > &callback_functions);
-
-        void
-        register_load_callback_function(std::list<std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
-                                                                           const typename parallel::distributed::Triangulation<dim>::CellStatus,
-                                                                           const void *) > > &callback_functions);
+        connector_function(aspect::SimulatorSignals<dim> &signals);
 
         /**
-         * Called by listener functions before a refinement step. All tracers
-         * have to be attached to their element to be sent around to the new
-         * processes.
+         * Callback function that is called from Simulator before every
+         * refinement. Allows registering store_tracers() in the triangulation.
+         */
+        void
+        register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+
+        /**
+         * Callback function that is called from Simulator after every
+         * refinement. Allows registering load_tracers() in the triangulation.
+         */
+        void
+        register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+
+        /**
+         * Called by listener functions from Triangulation for every cell
+         * before a refinement step. All tracers have to be attached to their
+         * element to be sent around to the new cell/processes.
          */
         void
         store_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
@@ -222,11 +181,11 @@ namespace aspect
                      const typename parallel::distributed::Triangulation<dim>::CellStatus status,
                      const void *data);
 
-        void
-        connector_function(aspect::SimulatorSignals<dim> &signals);
-
-        void
-        set_max_particles_per_cell(const unsigned int max_particles_per_cell);
+        /**
+         * Serialize the contents of this class.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
 
       private:
         /**
@@ -254,17 +213,11 @@ namespace aspect
         std::multimap<LevelInd, Particle<dim> >      particles;
 
         /**
-         * Find the neighbor processes.
-         */
-        std::vector<types::subdomain_id>
-        find_neighbors() const;
-
-        /**
          * This variable is set by the register_store_callback_function()
          * function and used by the register_load_callback_function() function
-         * to check if any data was saved.
+         * to check where the tracer data was stored.
          */
-        bool stored_tracers;
+        unsigned int data_offset;
 
         /**
          * Limit for how many particles are allowed per cell. This limit is
@@ -273,6 +226,76 @@ namespace aspect
          * refinement and MPI transfer of particles.
          */
         unsigned int max_particles_per_cell;
+
+        /**
+         * Returns the number of particles in the cell that contains the
+         * most tracers in the global model.
+         */
+        unsigned int
+        get_global_max_tracer_per_cell() const;
+
+        /**
+         * Find the neighbor processes.
+         */
+        std::vector<types::subdomain_id>
+        find_neighbors() const;
+
+        /**
+         * Calculate the cells containing each particle for all particles. If
+         * particles moved out of the domain of this process they will be send
+         * to their new process and inserted there. After this function call
+         * every particle is either on its current process and in its current
+         * cell, or deleted (if it could not find its new process or cell).
+         */
+        void find_all_cells();
+
+        /**
+         * TODO: This needs to be implemented in case some particles fall out of the
+         * domain. In particular for periodic boundary conditions.
+         */
+        void move_particles_back_in_mesh();
+
+        /**
+         * Transfer particles that have crossed subdomain boundaries to other
+         * processors. Because subdomains can change drastically during mesh
+         * refinement, particle transfer occurs as follows: - Each subdomain
+         * finds the particles it owns which have fallen outside it - For each
+         * particle outside the subdomain, send the particle to all subdomains
+         * and let them determine which one owns it. This assumes there is no
+         * overlap between subdomains. - Each process determines which of the
+         * received particles is in its subdomain, keeps these and deletes the
+         * others
+         *
+         * @param [in,out] send_particles All particles that should be send
+         * are in this vector.
+         */
+        void send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles);
+
+        /**
+         * Initialize the particle properties of one cell.
+         */
+        void
+        local_initialize_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                   const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                                   const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
+
+        /**
+         * Update the particle properties of one cell.
+         */
+        void
+        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
+
+        /**
+         * Advect the particles of one cell. Performs only one step for
+         * multi-step integrators. Needs to be called until integrator->continue()
+         * evaluates to false.
+         */
+        void
+        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */

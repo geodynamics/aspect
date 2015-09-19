@@ -230,10 +230,11 @@ namespace aspect
           get_particle_size () const;
 
           /**
-           * Add the MPI data description for this particle type to the vector.
+           * Get the names and number of particle properties from the
+           * property_manager.
            *
-           * @param return This function returns a vector of names of the
-           * particle properties.
+           * @param [inout] names Vector of property names attached to particles
+           * @param [inout] length Number of doubles needed to represent properties
            */
           void
           get_data_info (std::vector<std::string> &names,

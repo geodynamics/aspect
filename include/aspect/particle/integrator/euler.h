@@ -37,18 +37,28 @@ namespace aspect
       class EulerIntegrator : public Interface<dim>
       {
         public:
-          virtual bool integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
-                                      const std::vector<Tensor<1,dim> > &old_velocities,
-                                      const std::vector<Tensor<1,dim> > &velocities,
-                                      const double dt);
-
-          virtual unsigned int data_length() const;
-
-          virtual void read_data(const void *&data,
-                                 const unsigned int &id);
-
-          virtual void write_data(void *&data,
-                                  const unsigned int &id) const;
+          /**
+           * Perform an integration step of moving the particles of one cell
+           * by the specified timestep dt. Implementations of this function
+           * must update the particle location. Between calls to this function
+           * the velocity at the updated particle positions is evaluated and
+           * passed to integrate_step during the next call.
+           *
+           * @param [in] begin_particle An iterator to the first particle to be moved.
+           * @param [in] end_particle An iterator to the last particle to be moved.
+           * @param [in] old_velocities The velocities at t_n, i.e. before the
+           * particle movement.
+           * @param [in] velocities The velocities at t_{n+1}, i.e. after the
+           * particle movement.
+           * @param [in] dt The length of the integration timestep.
+           */
+          virtual
+          void
+          local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+                               const std::vector<Tensor<1,dim> > &old_velocities,
+                               const std::vector<Tensor<1,dim> > &velocities,
+                               const double dt);
       };
 
     }
