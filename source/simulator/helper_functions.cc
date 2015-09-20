@@ -836,7 +836,7 @@ namespace aspect
               vector (local_dof_indices[first_pressure_dof]) -= pressure_adjustment;
             }
 
-        vector.compress(VectorOperation::insert);
+        vector.compress(VectorOperation::add);
       }
   }
 
@@ -889,7 +889,7 @@ namespace aspect
             vector(idx) += correction * pressure_shape_function_integrals(idx);
           }
 
-        vector.compress(VectorOperation::insert);
+        vector.compress(VectorOperation::add);
       }
   }
 
