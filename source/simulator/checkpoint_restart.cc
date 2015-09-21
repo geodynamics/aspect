@@ -57,7 +57,8 @@ namespace aspect
     if (my_id == 0)
       {
         // if we have previously written a snapshot, then keep the last
-        // snapshot in case this one fails to save
+        // snapshot in case this one fails to save. Note: static variables
+        // will only be initialied once per model run.
         static bool previous_snapshot_exists = (parameters.resume_computation == true);
 
         if (previous_snapshot_exists == true)
