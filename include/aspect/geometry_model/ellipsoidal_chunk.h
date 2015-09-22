@@ -53,14 +53,11 @@ namespace aspect
             EllipsoidalChunkGeometry();
 
             void
-            set_initial_values(double para_semi_major_axis_a,
-                               double para_eccentricity,
-                               double para_semi_minor_axis_b,
-                               double para_rot_para_to_para_angle,
-                               double para_para_to_rect_angle,
-                               double para_rotation_longitude,
-                               double para_rotation_latitude,
-                               double para_bottom_depth);
+            set_manifold_parameters(const double para_semi_major_axis_a,
+                                    const double para_eccentricity,
+                                    const double para_semi_minor_axis_b,
+                                    const double para_bottom_depth,
+                                    const std::vector<Point<2> > &para_corners);
 
             virtual
             Point<3>
@@ -74,23 +71,12 @@ namespace aspect
             Point<3>
             push_forward(const Point<3> &chart_point) const;
 
-            Point<dim>
-            rotate_rectangle_to_parallelogram(const Point<dim> &x) const;
-
-            Point<dim>
-            rotate_parallelogram(const Point<dim> &x) const;
-
-
-
           private:
             double semi_major_axis_a;
             double eccentricity;
             double semi_minor_axis_b;
-            double rot_para_to_para_angle;
-            double para_to_rect_angle;
-            double rotation_longitude;
-            double rotation_latitude;
             double bottom_depth;
+            std::vector<Point<2> > corners;
 
             Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
             Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
@@ -131,9 +117,16 @@ namespace aspect
         double
         depth(const Point<dim> &position) const;
 
+        /**
+         * Returns a point in the center of the domain.
+         */
         virtual Point<dim>
         representative_point(const double depth) const;
 
+        /**
+         * Returns the bottom depth which was used to create the geometry and
+         * which is defined by the depth parameter.
+         */
         virtual
         double
         maximal_depth() const;
@@ -198,31 +191,14 @@ namespace aspect
 
 
         /**
-         * Retrieve the rot_para_to_para_angle variable.
+         * Retrieve the corners used to create the ellipsoid. This variable
+         * contains four vectors with each two elements. Each set of two
+         * elements represents a longitude and latitude value. The four
+         * vectors represent respectively the point in the North-East,
+         * North-West, South-West and South-East.
          */
-        double
-        get_rot_para_to_para_angle() const;
-
-
-        /**
-         * Retrieve the para_to_rect_angle variable.
-         */
-        double
-        get_para_to_rect_angle() const;
-
-
-        /**
-         * Retrieve the rotation_longitude variable.
-         */
-        double
-        get_rotation_longitude() const;
-
-
-        /**
-         * Retrieve the rotation_latitude variable.
-         */
-        double
-        get_rotation_latitude() const;
+        const std::vector<Point<2> > &
+        get_corners() const;
 
 
         /**
@@ -233,9 +209,7 @@ namespace aspect
 
       private:
         // Declare variables for reading in coordinates of the region of interest.
-        std::vector<std::vector<double> > corners;
-        std::vector<std::vector<double> > corners_parallelogram;
-        std::vector<std::vector<double> > corners_rectangle;
+        std::vector<Point<2> > corners;
         double semi_major_axis_a;
         double eccentricity;
         double semi_minor_axis_b;
@@ -249,9 +223,9 @@ namespace aspect
         double northLatitude;
         double southLatitude;
         // Declare variables for subdividing
-        int EW_subdiv;
-        int NS_subdiv;
-        int depth_subdiv;
+        unsigned int EW_subdiv;
+        unsigned int NS_subdiv;
+        unsigned int depth_subdiv;
 
 
 
@@ -274,6 +248,9 @@ namespace aspect
                  triangulation.begin_active(); cell != triangulation.end(); ++cell)
             cell->set_all_manifold_ids (numbers::invalid_manifold_id);
         }
+
+        void
+        set_boundary_ids(parallel::distributed::Triangulation<dim> &coarse_grid) const;
     };
   }
 }
