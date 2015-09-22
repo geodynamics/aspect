@@ -501,7 +501,7 @@ namespace aspect
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
     const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     FEValues<dim> mesh_points (mapping, finite_element, mesh_support_points, update_quadrature_points);
-    std::vector<unsigned int> cell_dof_indices (finite_element.dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
