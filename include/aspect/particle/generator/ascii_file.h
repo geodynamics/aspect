@@ -75,7 +75,7 @@ namespace aspect
            */
           void
           generate_particle(const Point<dim> &position,
-                            const unsigned int id,
+                            const particle_index id,
                             World<dim> &world);
       };
 

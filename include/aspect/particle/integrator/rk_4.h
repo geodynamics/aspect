@@ -95,7 +95,7 @@ namespace aspect
            * for.
            */
           virtual void read_data(const void *&data,
-                                 const unsigned int id_num);
+                                 const particle_index id_num);
 
           /**
            * Write integration related data to a vector for a particle
@@ -107,7 +107,7 @@ namespace aspect
            * for.
            */
           virtual void write_data(void *&data,
-                                  const unsigned int id_num) const;
+                                  const particle_index id_num) const;
 
         private:
           /**
@@ -120,14 +120,14 @@ namespace aspect
            * used in the following steps and transferred to another process if
            * the tracer leaves the domain during one of the steps.
            */
-          std::map<unsigned int, Point<dim> >    loc0;
+          std::map<particle_index, Point<dim> >    loc0;
 
           /**
            * The intermediate values of the RK4 scheme. These are
            * used in the following steps and transferred to another process if
            * the tracer leaves the domain during one of the steps.
            */
-          std::map<unsigned int, Tensor<1,dim> > k1, k2, k3;
+          std::map<particle_index, Tensor<1,dim> > k1, k2, k3;
 
       };
     }

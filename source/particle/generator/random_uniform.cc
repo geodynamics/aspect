@@ -64,17 +64,17 @@ namespace aspect
         // Calculate start and end IDs so there are no gaps
         // TODO: this can create gaps for certain processor counts because of
         // floating point imprecision, figure out how to fix it
-        const unsigned int  start_id = static_cast<unsigned int>(std::ceil(start_fraction*n_tracers));
-        const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*n_tracers), n_tracers));
-        const unsigned int  subdomain_particles = end_id - start_id;
+        const particle_index start_id = static_cast<particle_index>(std::ceil(start_fraction*n_tracers));
+        const particle_index  end_id   = static_cast<particle_index>(fmin(std::ceil(end_fraction*n_tracers), n_tracers));
+        const particle_index  subdomain_particles = end_id - start_id;
 
         uniform_random_particles_in_subdomain(subdomain_particles, start_id, world);
       }
 
       template <int dim>
       void
-      RandomUniform<dim>::uniform_random_particles_in_subdomain (const unsigned int subdomain_particles,
-                                                                 const unsigned int start_id,
+      RandomUniform<dim>::uniform_random_particles_in_subdomain (const particle_index subdomain_particles,
+                                                                 const particle_index start_id,
                                                                  World<dim> &world)
       {
         std::map<double, LevelInd> roulette_wheel;
@@ -94,8 +94,7 @@ namespace aspect
           }
 
         // Pick cells and assign particles at random points inside them
-        unsigned int cur_id = start_id;
-        for (unsigned int i=0; i<subdomain_particles; ++i)
+        for (particle_index cur_id = start_id; cur_id<start_id+subdomain_particles; ++cur_id)
           {
             // Select a cell based on relative volume
             const double roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
@@ -150,8 +149,6 @@ namespace aspect
             // Add the generated particle to the set
             Particle<dim> new_particle(pt, cur_id);
             world.add_particle(new_particle, select_cell);
-
-            cur_id++;
           }
       }
 

@@ -114,7 +114,7 @@ namespace aspect
           accumulated_cell_weights[i] += start_weight;
 
         // Calculate start and end IDs so there are no gaps
-        const unsigned int start_id = round(n_tracers * start_weight / global_function_integral) + 1;
+        const particle_index start_id = llround(n_tracers * start_weight / global_function_integral) + 1;
 
         uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,n_tracers, 1.1 * start_id,world);
       }
@@ -124,13 +124,12 @@ namespace aspect
       RandomFunction<dim>::uniform_random_particles_in_subdomain (const std::map<double,LevelInd> &cells,
                                                                   const double global_weight,
                                                                   const double start_weight,
-                                                                  const unsigned int num_particles,
-                                                                  const unsigned int start_id,
+                                                                  const particle_index num_particles,
+                                                                  const particle_index start_id,
                                                                   World<dim> &world)
       {
         // Pick cells and assign particles at random points inside them
-        unsigned int cur_id = start_id;
-        for (unsigned int i=0; i<num_particles; ++i)
+        for (particle_index cur_id = start_id; cur_id<start_id+num_particles; ++cur_id)
           {
             // Select a cell based on relative volume
             const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
@@ -189,8 +188,6 @@ namespace aspect
             // Add the generated particle to the set
             Particle<dim> new_particle(pt, cur_id);
             world.add_particle(new_particle, select_cell);
-
-            cur_id++;
           }
       }
 
@@ -235,7 +232,7 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
-            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+            n_tracers    = static_cast<particle_index>(prm.get_double ("Number of tracers"));
 
             prm.enter_subsection("Generator");
             {

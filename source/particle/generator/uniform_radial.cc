@@ -44,7 +44,7 @@ namespace aspect
         // Calculate amount of particles per shell.
         // The number of particles depend on the fraction of the area
         // (or length in 2D) that this shell occupies compared to the total domain
-        std::vector<unsigned int> particles_per_radius(radial_layers);
+        std::vector<particle_index> particles_per_radius(radial_layers);
         if (dim == 2)
           {
             double total_radius = 0;
@@ -70,7 +70,7 @@ namespace aspect
         else
           ExcNotImplemented();
 
-        unsigned int cur_id = 0;
+        particle_index cur_id = 0;
         std_cxx11::array<double,dim> spherical_coordinates;
 
         for (unsigned int i = 0; i < radial_layers; ++i)
@@ -117,7 +117,7 @@ namespace aspect
       template <int dim>
       void
       UniformRadial<dim>::generate_particle(const Point<dim> &position,
-                                            const unsigned int id,
+                                            const particle_index id,
                                             World<dim> &world)
       {
         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
@@ -200,7 +200,7 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
-            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+            n_tracers    = static_cast<particle_index>(prm.get_double ("Number of tracers"));
 
             prm.enter_subsection("Generator");
             {

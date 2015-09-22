@@ -33,6 +33,49 @@ namespace aspect
   {
     using namespace dealii;
 
+
+    /* Type definitions */
+
+#ifdef DEAL_II_WITH_64BIT_INDICES
+    /**
+     * The type used for indices of tracers. While in
+     * sequential computations the 4 billion indices of 32-bit unsigned integers
+     * is plenty, parallel computations using hundreds of processes can overflow
+     * this number and we need a bigger index space. We here utilize the same
+     * build variable that controls the dof indices of deal.II because the number
+     * of degrees of freedom and the number of tracers are typically on the same
+     * order of magnitude.
+     *
+     * The data type always indicates an unsigned integer type.
+     */
+    typedef unsigned long long int particle_index;
+
+    /**
+     * An identifier that denotes the MPI type associated with
+     * types::global_dof_index.
+     */
+#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
+#else
+    /**
+     * The type used for indices of tracers. While in
+     * sequential computations the 4 billion indices of 32-bit unsigned integers
+     * is plenty, parallel computations using hundreds of processes can overflow
+     * this number and we need a bigger index space. We here utilize the same
+     * build variable that controls the dof indices of deal.II because the number
+     * of degrees of freedom and the number of tracers are typically on the same
+     * order of magnitude.
+     *
+     * The data type always indicates an unsigned integer type.
+     */
+    typedef unsigned int particle_index;
+
+    /**
+     * An identifier that denotes the MPI type associated with
+     * types::global_dof_index.
+     */
+#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED
+#endif
+
     /**
      * Base class of particles - represents a particle with position,
      * an ID number and an variable number of properties. This class
@@ -59,7 +102,7 @@ namespace aspect
          * @param[in] new_id Globally unique ID number of particle.
          */
         Particle (const Point<dim> &new_loc,
-                  const double &new_id);
+                  const particle_index &new_id);
 
         /**
          * Constructor for Particle, creates a particle from a data vector.
@@ -136,7 +179,7 @@ namespace aspect
          *
          * @return The id of this particle.
          */
-        unsigned int
+        particle_index
         get_id () const;
 
         /**
@@ -178,7 +221,7 @@ namespace aspect
         /**
          * Globally unique ID of particle
          */
-        unsigned int          id;
+        particle_index          id;
 
         /**
          * The serialized vector of all tracer properties

@@ -68,7 +68,7 @@ namespace aspect
           /**
            * Number of initial particles to create
            */
-          unsigned int n_tracers;
+          particle_index n_tracers;
 
           /**
            * The minimum coordinates of the tracer region.
@@ -86,7 +86,7 @@ namespace aspect
            */
           void
           generate_particle(const Point<dim> &position,
-                            const unsigned int id,
+                            const particle_index id,
                             World<dim> &world);
       };
 

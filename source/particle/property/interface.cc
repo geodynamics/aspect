@@ -171,7 +171,7 @@ namespace aspect
       std::size_t
       Manager<dim>::get_particle_size () const
       {
-        return (data_len-1) * sizeof(double) + sizeof(unsigned int);
+        return (data_len-1) * sizeof(double) + sizeof(particle_index);
       }
 
       template <int dim>

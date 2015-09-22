@@ -93,8 +93,8 @@ namespace aspect
            * @param [inout] world The particle world the particles will exist in
            *
            */
-          void uniform_random_particles_in_subdomain (const unsigned int num_particles,
-                                                      const unsigned int start_id,
+          void uniform_random_particles_in_subdomain (const particle_index num_particles,
+                                                      const particle_index start_id,
                                                       World<dim> &world);
       };
 

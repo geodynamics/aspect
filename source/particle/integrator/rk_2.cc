@@ -47,7 +47,7 @@ namespace aspect
 
         for (; it!=end_particle, vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const unsigned int id_num = it->second.get_id();
+            const particle_index id_num = it->second.get_id();
             const Point<dim> loc = it->second.get_location();
             if (step == 0)
               {
@@ -92,7 +92,7 @@ namespace aspect
       template <int dim>
       void
       RK2Integrator<dim>::read_data(const void *&data,
-                                    const unsigned int id_num)
+                                    const particle_index id_num)
       {
         const double *integrator_data = static_cast<const double *> (data);
 
@@ -106,12 +106,12 @@ namespace aspect
       template <int dim>
       void
       RK2Integrator<dim>::write_data(void *&data,
-                                     const unsigned int id_num) const
+                                     const particle_index id_num) const
       {
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        const typename std::map<unsigned int, Point<dim> >::const_iterator it = loc0.find(id_num);
+        const typename std::map<particle_index, Point<dim> >::const_iterator it = loc0.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it->second(i);
 

@@ -53,7 +53,7 @@ namespace aspect
           }
 
         // Read data lines
-        unsigned int id = 0;
+        particle_index id = 0;
         Point<dim> coordinates;
 
         if (dim == 2)
@@ -77,7 +77,7 @@ namespace aspect
       template <int dim>
       void
       AsciiFile<dim>::generate_particle(const Point<dim> &position,
-                                        const unsigned int id,
+                                        const particle_index id,
                                         World<dim> &world)
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =

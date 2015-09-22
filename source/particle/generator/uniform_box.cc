@@ -38,7 +38,7 @@ namespace aspect
       void
       UniformBox<dim>::generate_particles(World<dim> &world)
       {
-        unsigned int cur_id = 0;
+        particle_index cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
 
         double volume(1.0);
@@ -55,9 +55,9 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
           }
 
-        for (unsigned int i = 0; i < nParticles[0]; ++i)
+        for (particle_index i = 0; i < nParticles[0]; ++i)
           {
-            for (unsigned int j = 0; j < nParticles[1]; ++j)
+            for (particle_index j = 0; j < nParticles[1]; ++j)
               {
                 if (dim == 2)
                   generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]),cur_id++,world);
@@ -74,7 +74,7 @@ namespace aspect
       template <int dim>
       void
       UniformBox<dim>::generate_particle(const Point<dim> &position,
-                                         const unsigned int id,
+                                         const particle_index id,
                                          World<dim> &world)
       {
         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
@@ -145,7 +145,7 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
-            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+            n_tracers    = static_cast<particle_index>(prm.get_double ("Number of tracers"));
 
             prm.enter_subsection("Generator");
             {

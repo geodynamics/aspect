@@ -27,7 +27,7 @@ namespace aspect
     template <int dim>
     inline
     Particle<dim>::Particle (const Point<dim> &new_loc,
-                             const double &new_id)
+                             const particle_index &new_id)
       :
       location (new_loc),
       id (new_id),
@@ -53,7 +53,7 @@ namespace aspect
       :
       val(data_len-dim-1)
     {
-      const unsigned int *id_data = static_cast<const unsigned int *> (data);
+      const particle_index *id_data = static_cast<const particle_index *> (data);
       id = *id_data++;
       const double *pdata = reinterpret_cast<const double *> (id_data);
 
@@ -92,7 +92,7 @@ namespace aspect
     void
     Particle<dim>::write_data (void *&data) const
     {
-      unsigned int *id_data  = static_cast<unsigned int *> (data);
+      particle_index *id_data  = static_cast<particle_index *> (data);
       *id_data = id;
       ++id_data;
       double *pdata = reinterpret_cast<double *> (id_data);
@@ -124,7 +124,7 @@ namespace aspect
     }
 
     template <int dim>
-    unsigned int
+    particle_index
     Particle<dim>::get_id () const
     {
       return id;

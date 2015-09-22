@@ -83,7 +83,7 @@ namespace aspect
           /**
            * Number of particles to create
            */
-          unsigned int n_tracers;
+          particle_index n_tracers;
 
           /**
            * A function object representing the temperature.
@@ -108,8 +108,8 @@ namespace aspect
           void uniform_random_particles_in_subdomain (const std::map<double,LevelInd> &cells,
                                                       const double global_weight,
                                                       const double start_weight,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id,
+                                                      const particle_index num_particles,
+                                                      const particle_index start_id,
                                                       World<dim> &world);
       };
 
