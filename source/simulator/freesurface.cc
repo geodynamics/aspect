@@ -237,7 +237,7 @@ namespace aspect
                        dofs_per_cell = fs_fe_face_values.dofs_per_cell;
 
     //stuff for assembling system
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
@@ -372,7 +372,7 @@ namespace aspect
                        dofs_per_face = sim.finite_element.dofs_per_face,
                        n_q_points    = fe_values.n_quadrature_points;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     std::vector<unsigned int> face_dof_indices (dofs_per_face);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
@@ -471,7 +471,7 @@ namespace aspect
     const unsigned int n_q_points = fe_values.n_quadrature_points,
                        dofs_per_cell = fe_values.dofs_per_cell;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     FEValuesExtractors::Vector extract_vel(0);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
@@ -546,7 +546,7 @@ namespace aspect
           = free_surface_fe.base_element(0).get_unit_support_points();
         FEValues<dim> mesh_points (sim.mapping, free_surface_fe,
                                    mesh_support_points, update_quadrature_points);
-        std::vector<unsigned int> cell_dof_indices (free_surface_fe.dofs_per_cell);
+        std::vector<types::global_dof_index> cell_dof_indices (free_surface_fe.dofs_per_cell);
 
         typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
                                                        endc = free_surface_dof_handler.end();
