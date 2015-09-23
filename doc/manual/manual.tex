@@ -1725,16 +1725,17 @@ The development version of \aspect{} can be downloaded by executing the command
  git clone https://github.com/geodynamics/aspect.git
 \end{verbatim}
 If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
-aspect with
+\aspect{} by running
 \begin{verbatim}
  cmake .
 \end{verbatim}
+in the {\tt{aspect}} directory created by the {\tt{git clone}} command above.
 If you did not set {\tt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
 \begin{verbatim}
  cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
 \end{verbatim}
 
-An alternative would be to configure aspect as an out-of-source build. Similar to
+An alternative would be to configure \aspect{} as an out-of-source build. Similar to
 the configuration of \dealii{}, you would need to create a build directory and
 specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
 instructions in the following sections assume an in-source build, so you need
@@ -1775,7 +1776,7 @@ point for exploring the documentation.
 \begin{verbatim}
  -DDEAL_II_STATIC_EXECUTABLE=ON
 \end{verbatim}
-\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to aspects build procedure. You should see the following cmake output from \aspect{}:
+\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to \aspect{}'s build procedure. You should see the following cmake output from \aspect{}:
 \begin{verbatim}
 -- Creating a statically linked executable
 -- Disabling dynamic loading of plugins from the input file
@@ -5535,7 +5536,7 @@ After reading in the shear wave velocity perturbation one has several options
 to scale this into temperature differences, which are then used to initialize 
 the temperature field. 
 
-\paragraph{Setting up the ASPECT model.}
+\paragraph{Setting up the \aspect{} model.}
 
 For this cookbook we will use the parameter file provided in 
 \url{cookbooks/S20RTS.prm}, which uses a 3d spherical shell 
@@ -5635,7 +5636,7 @@ the \texttt{data/velocity-boundary-conditions/gplates/} directory of
 your \aspect{} installation.
 For a new model setup however, a user eventually needs to create her own data
 files, and so we will briefly discuss the process of acquiring a usable plate
-reconstruction and transferring it into a format usable by ASPECT.
+reconstruction and transferring it into a format usable by \aspect{}.
 Both the necessary software and data are provided by the GPlates project.
 GPlates is an open-source software for interactive visualization of plate
 tectonics. It is developed by the EarthByte Project in the School of Geosciences
@@ -5858,7 +5859,7 @@ can be reproduced with the following parameters.
 \note{\cite{MD04} defines the second invariant of the strain rate in a nonstandard way.
     The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2}
     (\epsilon_{11}^2 + \epsilon_{12}^2)}$, where $\epsilon$ is the strain rate tensor.
-    For consistency, that is also the formulation implemented in Aspect. Because of this
+    For consistency, that is also the formulation implemented in \aspect{}. Because of this
     irregularity it is inadvisable to use this material model for purposes beyond
     reproducing published results.}
 
