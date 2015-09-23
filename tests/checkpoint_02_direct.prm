@@ -1,11 +1,6 @@
 # test checkpoint/resume.
 
-# Like checkpoint_01, but we resume from the first of two snapshots. That way
-# we can actually compare if the checkpoint data of the second checkpoint is
-# identical.
-
-# Note: this requires a patch to Trilinos' ML (at least version 12.2.1 and
-# older) because the preconditioner is not deterministic.
+# Like checkpoint-02, but using a direct solver.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -15,7 +10,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme                = IMPES
-set Use direct solver for Stokes system    = false
+set Use direct solver for Stokes system    = true
 
 
 subsection Boundary temperature model
