@@ -36,9 +36,6 @@ namespace aspect
                    ExcMessage ("This refinement criterion can not be used when no "
                                "compositional fields are active!"));
 
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       indicators = 0;
       const double power = 1.0 + dim/2.0;
 
