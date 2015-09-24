@@ -154,6 +154,7 @@ namespace aspect
         double compressibility;
         double melt_compressibility;
         double melt_bulk_modulus_derivative;
+        bool include_melting_and_freezing;
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;
