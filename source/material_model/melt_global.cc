@@ -112,7 +112,7 @@ namespace aspect
     {
       const double T_solidus  = surface_solidus
                                 + pressure_solidus_change * pressure
-                                + depletion_solidus_change * depletion;
+                                + std::max(depletion_solidus_change * depletion, -200.0);
       const double T_liquidus = T_solidus + 500.0;
 
       double melt_fraction;
@@ -174,7 +174,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho) * temperature_dependence
                              * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          if (this->include_melt_transport())
+          if (this->include_melt_transport() && include_melting_and_freezing)
             {
               AssertThrow(this->introspection().compositional_name_exists("peridotite"),
                           ExcMessage("Material model Melt simple only works if there is a "
@@ -395,6 +395,11 @@ namespace aspect
                              "The value of the pressure derivative of the melt bulk"
                              "modulus. "
                              "Units: None.");
+          prm.declare_entry ("Include melting and freezing", "true",
+                             Patterns::Bool (),
+                             "Whether to include malting and freezing (according to a simplified"
+                             "linear melting approximation in the model (if true), or not (if "
+                             "false).");
         }
         prm.leave_subsection();
       }
@@ -432,6 +437,7 @@ namespace aspect
           compressibility                   = prm.get_double ("Solid compressibility");
           melt_compressibility              = prm.get_double ("Melt compressibility");
           melt_bulk_modulus_derivative      = prm.get_double ("Melt bulk modulus derivative");
+          include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
