@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> New: Ability to automatically resume models from a checkpoint
+ * if previous checkpoint files exist (Resume computation = auto).
+ * <br>
+ * (Jonathan Perry-Houts, 2015/09/25)
+ *
  * <li> Changed: the user can now select a subset of the laterally-
  * averaged quantities to be computed in the DepthAverage postprocessor.
  * <br>
