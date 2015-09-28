@@ -83,10 +83,29 @@ namespace aspect
       x_system[1] = &old_solution;
       x_system[2] = &old_old_solution;
 
+      //If we are using a free surface, include the mesh velocity, which uses the system dof handler
+      if (parameters.free_surface_enabled)
+        x_system.push_back( &free_surface->mesh_velocity );
+
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
 
       system_trans.prepare_serialization (x_system);
+
+      //If we are using a free surface, also serialize the mesh vertices vector, which
+      //uses its own dof handler
+      std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
+      std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
+      if (parameters.free_surface_enabled)
+        {
+          freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
+                                   (free_surface->free_surface_dof_handler));
+
+          x_fs_system[0] = &free_surface->mesh_vertices;
+          x_fs_system[1] = &free_surface->mesh_vertex_velocity;
+
+          freesurface_trans->prepare_serialization(x_fs_system);
+        }
 
       triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
     }
@@ -183,17 +202,23 @@ namespace aspect
     global_volume = GridTools::volume (triangulation, mapping);
     setup_dofs();
 
-
     LinearAlgebra::BlockVector
     distributed_system (system_rhs);
     LinearAlgebra::BlockVector
     old_distributed_system (system_rhs);
     LinearAlgebra::BlockVector
     old_old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector
+    distributed_mesh_velocity (system_rhs);
+
     std::vector<LinearAlgebra::BlockVector *> x_system (3);
     x_system[0] = & (distributed_system);
     x_system[1] = & (old_distributed_system);
     x_system[2] = & (old_old_distributed_system);
+    //If necessary, also include the mesh velocity for deserialization
+    //with the system dof handler
+    if (parameters.free_surface_enabled)
+      x_system.push_back(&distributed_mesh_velocity);
 
     parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
     system_trans (dof_handler);
@@ -203,6 +228,29 @@ namespace aspect
     solution = distributed_system;
     old_solution = old_distributed_system;
     old_old_solution = old_old_distributed_system;
+
+    if (parameters.free_surface_enabled)
+      {
+        //copy the mesh velocity which uses the system dof handler
+        free_surface->mesh_velocity = distributed_mesh_velocity;
+
+        //deserialize and copy the vectors using the free surface dof handler
+        parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> freesurface_trans( free_surface->free_surface_dof_handler );
+        LinearAlgebra::Vector distributed_mesh_vertices( free_surface->mesh_locally_owned,
+                                                         mpi_communicator );
+        LinearAlgebra::Vector distributed_mesh_vertex_velocity( free_surface->mesh_locally_owned,
+                                                                mpi_communicator );
+        std::vector<LinearAlgebra::Vector *> fs_system(2);
+        fs_system[0] = &distributed_mesh_vertices;
+        fs_system[1] = &distributed_mesh_vertex_velocity;
+
+        freesurface_trans.deserialize (fs_system);
+        free_surface->mesh_vertices = distributed_mesh_vertices;
+        free_surface->mesh_vertex_velocity = distributed_mesh_vertex_velocity;
+        //Make sure the mesh conforms to the mesh_vertices vector
+        free_surface->displace_mesh();
+        free_surface->detach_manifolds();
+      }
 
 
     // read zlib compressed resume.z
