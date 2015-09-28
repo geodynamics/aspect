@@ -111,7 +111,7 @@ namespace aspect
                                 "A list of sets of compositional fields which should be output "
                                 "as vectors. Sets are separated from each other by semicolons "
                                 "and vector components within each set are separated by commas "
-                                "(e.g. vec1_x, vec1_y ; vec2_x, vec2_y) where each name must be "
+                                "(e.g. $vec1_x$, $vec1_y$ ; $vec2_x$, $vec2_y$) where each name must be "
                                 "a defined named compositional field. If only one name is given "
                                 "in a set, it is interpreted as the first in a sequence of dim "
                                 "consecutive compositional fields.");

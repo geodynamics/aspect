@@ -96,7 +96,7 @@ subsection Postprocess
     set Time between graphical output = 0.1
     set Number of zones = 10
      # Test outputting a subset of the depth-averaged quantities
-    set List of output variables = velocity_magnitude, temperature
+    set List of output variables = velocity magnitude, temperature
   end
 end
 
