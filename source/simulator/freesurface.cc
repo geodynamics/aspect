@@ -380,6 +380,15 @@ namespace aspect
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
     mesh_matrix.clear ();
+
+    // We are just solving a Laplacian in each spatial direction, so
+    // the degrees of freedom for different dimensions do not couple.
+    Table<2,DoFTools::Coupling> coupling (dim, dim);
+    coupling.fill(DoFTools::none);
+
+    for (unsigned int c=0; c<dim; ++c)
+      coupling[c][c] = DoFTools::always;
+
 #ifdef ASPECT_USE_PETSC
     CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 #else
@@ -389,7 +398,7 @@ namespace aspect
                                           sim.mpi_communicator);
 #endif
     DoFTools::make_sparsity_pattern (free_surface_dof_handler,
-                                     sp,
+                                     coupling, sp,
                                      mesh_displacement_constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(sim.mpi_communicator));
