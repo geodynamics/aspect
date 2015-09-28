@@ -72,12 +72,10 @@ namespace aspect
 
         virtual Tensor<1,dim> value (const Point<dim> &p) const
         {
-          Tensor<1,dim> vel;
           if ( dim == 2)
-            cross_product(vel, p);
+            return cross_product_2d(p);
           else
-            cross_product(vel, axis, p);
-          return vel;
+            return cross_product_3d(axis, p);
         }
     };
 
@@ -473,8 +471,7 @@ namespace aspect
               if (dim == 2)
                 {
                   // Get the velocity perpendicular to the position vector
-                  Tensor<1,dim> r_perp;
-                  cross_product(r_perp, r_vec);
+                  Tensor<1,dim> r_perp = cross_product_2d(r_vec);
 
                   // calculate a signed scalar angular momentum
                   local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * fe.JxW(k);
@@ -484,8 +481,7 @@ namespace aspect
               else
                 {
                   //calculate angular momentum vector
-                  Tensor<1,dim> r_cross_v;
-                  cross_product( r_cross_v, r_vec, in.velocity[k]);
+                  Tensor<1,dim> r_cross_v = cross_product_3d(r_vec, in.velocity[k]);
                   for (unsigned int i=0; i<dim; ++i)
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 

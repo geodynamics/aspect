@@ -65,8 +65,7 @@ namespace aspect
 
         // Compute the normal vector of the plane that contains
         // the origin and the two user-specified points
-        Tensor<1,3> rotated_normal_vector;
-        cross_product(rotated_normal_vector,point_one,point_two);
+        Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one,point_two);
 
         rotated_normal_vector /= rotated_normal_vector.norm();
 
@@ -75,8 +74,7 @@ namespace aspect
             // Calculate the crossing line of the two normals,
             // which will be the rotation axis to transform the one
             // normal into the other
-            Tensor<1,3> rotation_axis;
-            cross_product(rotation_axis,unrotated_normal_vector,rotated_normal_vector);
+            Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector,rotated_normal_vector);
             rotation_axis /= rotation_axis.norm();
 
             // Calculate the rotation angle from the inner product rule
@@ -92,8 +90,7 @@ namespace aspect
             const Tensor<1,3> final_point_one (point_one_coords);
 
             const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
-            Tensor<1,3> second_rotation_axis;
-            cross_product(second_rotation_axis,final_point_one,rotated_point_one);
+            Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one,rotated_point_one);
             second_rotation_axis /= second_rotation_axis.norm();
 
             const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
@@ -430,8 +427,7 @@ namespace aspect
           return data_velocity;
         else
           {
-            Tensor<1,3> local_rotation_axis;
-            cross_product(local_rotation_axis,data_position,point_position);
+            Tensor<1,3> local_rotation_axis = cross_product_3d(data_position,point_position);
             local_rotation_axis /= local_rotation_axis.norm();
 
             // Calculate the rotation angle from the inner product rule
@@ -501,8 +497,7 @@ namespace aspect
       Tensor<1,3>
       GPlatesLookup::rotate_around_axis (const Tensor<1,3> &position, const Tensor<1,3> &rotation_axis, const double angle) const
       {
-        Tensor<1,3> cross;
-        cross_product(cross,rotation_axis,position);
+        Tensor<1,3> cross = cross_product_3d(rotation_axis,position);
         const Tensor<1,3> newpos = (1-std::cos(angle)) * rotation_axis*(rotation_axis*position) +
                                    std::cos(angle) * position + std::sin(angle) * cross;
         return newpos;
