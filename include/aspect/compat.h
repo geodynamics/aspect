@@ -23,13 +23,34 @@
 
 #include <aspect/global.h>
 
+/*
+ * cross_product
+ */
+#if !DEAL_II_VERSION_GTE(8,4,0)
+template <int dim>
+dealii::Tensor<1,dim> cross_product_3d(const dealii::Tensor<1,dim> &a, const dealii::Tensor<1,dim> &b)
+{
+  Assert (dim==3, dealii::ExcInternalError());
+  dealii::Tensor<1,dim> result;
+  dealii::cross_product(result, a, b);
+  return result;
+}
+
+template <int dim>
+dealii::Tensor<1,dim> cross_product_2d(const dealii::Tensor<1,dim> &a)
+{
+  Assert (dim==2, dealii::ExcInternalError());
+  dealii::Tensor<1,dim> result;
+  dealii::cross_product(result, a);
+  return result;
+}
+#endif
+
 
 /*
  * MPI::min() functions
  */
-#if DEAL_II_VERSION_GTE(8,3,0)
-// use deal.II's MPI::min() functions
-#else
+#if !DEAL_II_VERSION_GTE(8,3,0)
 namespace dealii
 {
   namespace Utilities
