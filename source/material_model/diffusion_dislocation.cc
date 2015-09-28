@@ -493,7 +493,7 @@ namespace aspect
                                    " and stress exponents. The effective viscosity is defined as"
                                    " \n\n"
                                    " \\[v_\\text{eff} = \\left(\\frac{1}{v_\\text{eff}^\\text{diff}}+"
-                                   " \\frac{1}{v_\\text{eff}^\\text{dis}\\right)^{-1}\\]"
+                                   " \\frac{1}{v_\\text{eff}^\\text{dis}}\\right)^{-1}\\]"
                                    " where"
                                    " \\[v_\\text{i} = 0.5 * A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i}"
                                    " \\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}}"

@@ -84,13 +84,13 @@ namespace aspect
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             variables.push_back(std::string("C_") + Utilities::int_to_string(c));
 
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic_temperature") != output_variables.end() )
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic temperature") != output_variables.end() )
           variables.push_back("adiabatic_temperature");
 
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity_magnitude") != output_variables.end() )
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
           variables.push_back("velocity_magnitude");
 
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking_velocity") != output_variables.end() )
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
           variables.push_back("sinking_velocity");
 
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end() )
@@ -102,7 +102,7 @@ namespace aspect
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
           variables.push_back("viscosity");
 
-        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical_heat_flux") != output_variables.end() )
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
           variables.push_back("vertical_heat_flux");
       }
 
@@ -264,9 +264,9 @@ namespace aspect
                              "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
           prm.declare_entry("List of output variables", "all",
-                            Patterns::MultipleSelection("all|temperature|composition|adiabatic_temperature|"
-                                                        "velocity_magnitude|sinking_velocity|Vs|Vp|"
-                                                        "viscosity|vertical_heat_flux"),
+                            Patterns::MultipleSelection("all|temperature|composition|adiabatic temperature|"
+                                                        "velocity magnitude|sinking velocity|Vs|Vp|"
+                                                        "viscosity|vertical heat flux"),
                             "A comma separated list which specifies which quantites to "
                             "average in each depth slice. It defaults to averaging all "
                             "availabe quantities, but this can be an expensive operation, "
