@@ -261,10 +261,10 @@ In practice, you should choose the value of this parameter to be so that if you 
 {\it Default:} false
 
 
-{\it Description:} A flag indicating whether the computation should be resumed from a previously saved state (if true) or start from scratch (if false).
+{\it Description:} A flag indicating whether the computation should be resumed from a previously saved state (if true) or start from scratch (if false). If auto is selected, models will be resumed if there is an existing checkpoint file, otherwise started from scratch.
 
 
-{\it Possible values:} [Bool]
+{\it Possible values:} [Selection true|false|auto ]
 \item {\it Parameter name:} {\tt Start time}
 \phantomsection\label{parameters:Start time}
 
