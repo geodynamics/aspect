@@ -7,6 +7,11 @@
  *
  * <ol>
  *
+ * <li> Fixed: certain combinations of boundary conditions with a free surface
+ * could result in accessing nonexistent matrix entries. This is fixed.
+ * <br>
+ * (Ian Rose, 2015/09/28)
+ *
  * <li> New: Ability to automatically resume models from a checkpoint
  * if previous checkpoint files exist (Resume computation = auto).
  * <br>
