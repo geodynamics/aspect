@@ -11,17 +11,17 @@ namespace aspect
     template <int dim>
     class CompressibilityIteratedStokes : public MaterialModel::Simple<dim>
     {
-      public:
+    public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                            MaterialModel::MaterialModelOutputs<dim> &out) const;
 
       /**
         * Return true if the compressibility() function returns something that
         * is not zero.
         */
-        virtual bool
-        is_compressible () const;
+      virtual bool
+      is_compressible () const;
     };
 
   }
@@ -64,6 +64,6 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(CompressibilityIteratedStokes,
                                    "compressibility iterated stokes",
                                    "A simple material model that is like the "
-				   "'Simple' model, but has a non-zero compressibility.")
+                                   "'Simple' model, but has a non-zero compressibility.")
   }
 }

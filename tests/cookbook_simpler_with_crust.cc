@@ -44,48 +44,48 @@ namespace aspect
     template <int dim>
     class SimplerWithCrust : public Interface<dim>
     {
-      public:
+    public:
 
-        virtual bool is_compressible () const;
+      virtual bool is_compressible () const;
 
-        virtual double reference_viscosity () const;
+      virtual double reference_viscosity () const;
 
-        virtual double reference_density () const;
+      virtual double reference_density () const;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const;
+      virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                            typename Interface<dim>::MaterialModelOutputs &out) const;
 
 
-        /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
-         */
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * @name Functions used in dealing with run-time parameters
+       * @{
+       */
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-        /**
-         * @}
-         */
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      virtual
+      void
+      parse_parameters (ParameterHandler &prm);
+      /**
+       * @}
+       */
 
-      private:
-        double reference_rho;
-        double reference_T;
-        double eta_L;
-        double eta_U;
-        double jump_height;
-        double thermal_alpha;
-        double reference_specific_heat;
-        double k_value;
+    private:
+      double reference_rho;
+      double reference_T;
+      double eta_L;
+      double eta_U;
+      double jump_height;
+      double thermal_alpha;
+      double reference_specific_heat;
+      double k_value;
     };
 
 

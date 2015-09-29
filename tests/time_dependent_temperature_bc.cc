@@ -39,63 +39,63 @@ namespace aspect
     template <int dim>
     class Time_Dep_Box : public Interface<dim>, public SimulatorAccess<dim>
     {
-      public:
-        /**
-         * Return the temperature that is to hold at a particular location on
-         * the boundary of the domain. This function returns constant
-         * temperatures at the left and right boundaries.
-         *
-         * @param geometry_model The geometry model that describes the domain.
-         * This may be used to determine whether the boundary temperature
-         * model is implemented for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the temperature.
-         * @param location The location of the point at which we ask for the
-         * temperature.
-         */
-        virtual
-        double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location) const;
+    public:
+      /**
+       * Return the temperature that is to hold at a particular location on
+       * the boundary of the domain. This function returns constant
+       * temperatures at the left and right boundaries.
+       *
+       * @param geometry_model The geometry model that describes the domain.
+       * This may be used to determine whether the boundary temperature
+       * model is implemented for this geometry.
+       * @param boundary_indicator The boundary indicator of the part of the
+       * boundary of the domain on which the point is located at which we
+       * are requesting the temperature.
+       * @param location The location of the point at which we ask for the
+       * temperature.
+       */
+      virtual
+      double temperature (const GeometryModel::Interface<dim> &geometry_model,
+                          const types::boundary_id             boundary_indicator,
+                          const Point<dim>                    &location) const;
 
-        /**
-         * Return the minimal the temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
-         */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      /**
+       * Return the minimal the temperature on that part of the boundary on
+       * which Dirichlet conditions are posed.
+       *
+       * This value is used in computing dimensionless numbers such as the
+       * Nusselt number indicating heat flux.
+       */
+      virtual
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-        /**
-         * Return the maximal the temperature on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
-         */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      /**
+       * Return the maximal the temperature on that part of the boundary on
+       * which Dirichlet conditions are posed.
+       *
+       * This value is used in computing dimensionless numbers such as the
+       * Nusselt number indicating heat flux.
+       */
+      virtual
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-        /**
-         * Declare the parameters this class takes through input files. This
-         * class declares the inner and outer boundary temperatures.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Declare the parameters this class takes through input files. This
+       * class declares the inner and outer boundary temperatures.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      virtual
+      void
+      parse_parameters (ParameterHandler &prm);
 
-      private:
-        double temperature_[2*dim];
+    private:
+      double temperature_[2*dim];
     };
   }
 }
@@ -220,24 +220,24 @@ namespace aspect
         {
           switch (dim)
             {
-              case 2:
-                temperature_[0] = prm.get_double ("Left temperature");
-                temperature_[1] = prm.get_double ("Right temperature");
-                temperature_[2] = prm.get_double ("Bottom temperature");
-                temperature_[3] = prm.get_double ("Top temperature");
-                break;
+            case 2:
+              temperature_[0] = prm.get_double ("Left temperature");
+              temperature_[1] = prm.get_double ("Right temperature");
+              temperature_[2] = prm.get_double ("Bottom temperature");
+              temperature_[3] = prm.get_double ("Top temperature");
+              break;
 
-              case 3:
-                temperature_[0] = prm.get_double ("Left temperature");
-                temperature_[1] = prm.get_double ("Right temperature");
-                temperature_[2] = prm.get_double ("Front temperature");
-                temperature_[3] = prm.get_double ("Back temperature");
-                temperature_[4] = prm.get_double ("Bottom temperature");
-                temperature_[5] = prm.get_double ("Top temperature");
-                break;
+            case 3:
+              temperature_[0] = prm.get_double ("Left temperature");
+              temperature_[1] = prm.get_double ("Right temperature");
+              temperature_[2] = prm.get_double ("Front temperature");
+              temperature_[3] = prm.get_double ("Back temperature");
+              temperature_[4] = prm.get_double ("Bottom temperature");
+              temperature_[5] = prm.get_double ("Top temperature");
+              break;
 
-              default:
-                Assert (false, ExcNotImplemented());
+            default:
+              Assert (false, ExcNotImplemented());
             }
         }
         prm.leave_subsection ();

@@ -9,14 +9,14 @@ template <int dim>
 class MyGravity :
   public aspect::GravityModel::Interface<dim>
 {
-  public:
-    virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const
-      {
-	Tensor<1,dim> ret;
-	ret[0] = position[1];
-	ret[1] = 42.0;
-	return ret;
-      }
+public:
+  virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const
+  {
+    Tensor<1,dim> ret;
+    ret[0] = position[1];
+    ret[1] = 42.0;
+    return ret;
+  }
 };
 
 
