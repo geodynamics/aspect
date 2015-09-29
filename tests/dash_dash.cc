@@ -15,7 +15,7 @@ int f()
   //   ASPECT's 'directory appears not to exist' warning.
   //   consequently, remove the directory if it existed before
   //   and re-create it as an empty directory
-  system ("cd output-dash-dash ; "
+  system ("cd output-dash_dash ; "
           "(cat " ASPECT_SOURCE_DIR "/tests/box_origin.prm "
           " ; "
           " echo 'set Output directory = output.tmp' "
