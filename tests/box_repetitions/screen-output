@@ -1,0 +1,19 @@
+
+Number of active cells: 21 (on 1 levels)
+Number of degrees of freedom: 347 (210+32+105)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-box_repetitions/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

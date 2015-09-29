@@ -45,9 +45,9 @@ namespace aspect
   namespace MaterialModel
   {
 
-  template <int dim>
-  class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
-  {
+    template <int dim>
+    class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
+    {
     public:
 
       TanGurnis();
@@ -171,7 +171,7 @@ namespace aspect
        * The thermal conductivity.
        */
       double k_value;
-  };
+    };
 
     template <int dim>
     TanGurnis<dim>::TanGurnis()
@@ -464,45 +464,45 @@ namespace aspect
   template <int dim>
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
-    public:
-      /**
-       * Return the temperature that is to hold at a particular location on
-       * the boundary of the domain. This function returns constant
-       * temperatures at the left and right boundaries.
-       *
-       * @param geometry_model The geometry model that describes the domain.
-       * This may be used to determine whether the boundary temperature
-       * model is implemented for this geometry.
-       * @param boundary_indicator The boundary indicator of the part of the
-       * boundary of the domain on which the point is located at which we
-       * are requesting the temperature.
-       * @param location The location of the point at which we ask for the
-       * temperature.
-       */
-      virtual
-      double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const types::boundary_id             boundary_indicator,
-                          const Point<dim>                    &location) const;
+  public:
+    /**
+     * Return the temperature that is to hold at a particular location on
+     * the boundary of the domain. This function returns constant
+     * temperatures at the left and right boundaries.
+     *
+     * @param geometry_model The geometry model that describes the domain.
+     * This may be used to determine whether the boundary temperature
+     * model is implemented for this geometry.
+     * @param boundary_indicator The boundary indicator of the part of the
+     * boundary of the domain on which the point is located at which we
+     * are requesting the temperature.
+     * @param location The location of the point at which we ask for the
+     * temperature.
+     */
+    virtual
+    double temperature (const GeometryModel::Interface<dim> &geometry_model,
+                        const types::boundary_id             boundary_indicator,
+                        const Point<dim>                    &location) const;
 
-      /**
-       * Return the minimal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
-      virtual
-      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+    /**
+     * Return the minimal the temperature on that part of the boundary on
+     * which Dirichlet conditions are posed.
+     *
+     * This value is used in computing dimensionless numbers such as the
+     * Nusselt number indicating heat flux.
+     */
+    virtual
+    double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-      /**
-       * Return the maximal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
-      virtual
-      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+    /**
+     * Return the maximal the temperature on that part of the boundary on
+     * which Dirichlet conditions are posed.
+     *
+     * This value is used in computing dimensionless numbers such as the
+     * Nusselt number indicating heat flux.
+     */
+    virtual
+    double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
   };
 
   template <int dim>
@@ -555,10 +555,10 @@ namespace aspect
   template <int dim>
   class TanGurnisPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-    public:
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+  public:
+    virtual
+    std::pair<std::string,std::string>
+    execute (TableHandler &statistics);
   };
 
   template <int dim>
@@ -631,22 +631,22 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-    ASPECT_REGISTER_POSTPROCESSOR(TanGurnisPostprocessor,
-                                  "Tan Gurnis error",
-                                  "A postprocessor that compares the solution of the benchmarks from "
-                                  "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
-                                  "by outputing data that is compared using a matlab script.")
+  ASPECT_REGISTER_POSTPROCESSOR(TanGurnisPostprocessor,
+                                "Tan Gurnis error",
+                                "A postprocessor that compares the solution of the benchmarks from "
+                                "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
+                                "by outputing data that is compared using a matlab script.")
 
-     namespace MaterialModel
-      {
-        ASPECT_REGISTER_MATERIAL_MODEL(TanGurnis,
-                                       "Tan Gurnis",
-                                       "A simple compressible material model based on a benchmark"
-                                       " from the paper of Tan/Gurnis (2007). This does not use the"
-                                       " temperature equation, but has a hardcoded temperature.")
-      }
+  namespace MaterialModel
+  {
+    ASPECT_REGISTER_MATERIAL_MODEL(TanGurnis,
+                                   "Tan Gurnis",
+                                   "A simple compressible material model based on a benchmark"
+                                   " from the paper of Tan/Gurnis (2007). This does not use the"
+                                   " temperature equation, but has a hardcoded temperature.")
+  }
 
-    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(TanGurnisBoundary,
-                                               "Tan Gurnis",
-                                               "A model for the Tan/Gurnis benchmark.")
+  ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(TanGurnisBoundary,
+                                             "Tan Gurnis",
+                                             "A model for the Tan/Gurnis benchmark.")
 }

@@ -542,12 +542,12 @@ namespace aspect
 
 
 
-    /**
-     * The exact solution for the SolKz benchmark.
-     */
-    template <int dim>
-    class FunctionSolKz : public Function<dim>
-    {
+      /**
+       * The exact solution for the SolKz benchmark.
+       */
+      template <int dim>
+      class FunctionSolKz : public Function<dim>
+      {
       public:
         FunctionSolKz () : Function<dim>() {}
 
@@ -563,16 +563,16 @@ namespace aspect
            B,
            &values[0], &values[2], total_stress, strain_rate );
         }
-    };
+      };
 
 
     }
 
 
 
-  template <int dim>
-  class SolKzMaterial : public MaterialModel::InterfaceCompatibility<dim>
-  {
+    template <int dim>
+    class SolKzMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    {
     public:
       /**
        * @name Physical parameters used in the basic equations
@@ -651,143 +651,143 @@ namespace aspect
 
       void
       parse_parameters (ParameterHandler &prm);
-  };
+    };
 
 
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  viscosity (const double,
-             const double,
-             const std::vector<double> &,       /*composition*/
-             const SymmetricTensor<2,dim> &,
-             const Point<dim> &p) const
-  {
-    // defined as given in the Duretz et al. paper
-    static const double B = 0.5 * std::log(1e6);
-    return std::exp(2*B*p[1]);
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    viscosity (const double,
+               const double,
+               const std::vector<double> &,       /*composition*/
+               const SymmetricTensor<2,dim> &,
+               const Point<dim> &p) const
+    {
+      // defined as given in the Duretz et al. paper
+      static const double B = 0.5 * std::log(1e6);
+      return std::exp(2*B*p[1]);
+    }
 
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_viscosity () const
-  {
-    return 1;
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_viscosity () const
+    {
+      return 1;
+    }
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_density () const
-  {
-    return 0;
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_density () const
+    {
+      return 0;
+    }
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_thermal_expansion_coefficient () const
-  {
-    return 0;
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_thermal_expansion_coefficient () const
+    {
+      return 0;
+    }
 
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  specific_heat (const double,
-                 const double,
-                 const std::vector<double> &, /*composition*/
-                 const Point<dim> &) const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_cp () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  thermal_conductivity (const double,
-                        const double,
-                        const std::vector<double> &, /*composition*/
-                        const Point<dim> &) const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  reference_thermal_diffusivity () const
-  {
-    return 0;
-  }
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  density (const double,
-           const double,
-           const std::vector<double> &, /*composition*/
-           const Point<dim> &p) const
-  {
-    // defined as given in the paper
-    return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
-  }
-
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  thermal_expansion_coefficient (const double temperature,
-                                 const double,
-                                 const std::vector<double> &, /*composition*/
-                                 const Point<dim> &) const
-  {
-    return 0;
-  }
-
-
-  template <int dim>
-  double
-  SolKzMaterial<dim>::
-  compressibility (const double,
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    specific_heat (const double,
                    const double,
                    const std::vector<double> &, /*composition*/
                    const Point<dim> &) const
-  {
-    return 0.0;
-  }
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_cp () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    thermal_conductivity (const double,
+                          const double,
+                          const std::vector<double> &, /*composition*/
+                          const Point<dim> &) const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    reference_thermal_diffusivity () const
+    {
+      return 0;
+    }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    density (const double,
+             const double,
+             const std::vector<double> &, /*composition*/
+             const Point<dim> &p) const
+    {
+      // defined as given in the paper
+      return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+    }
 
 
-  template <int dim>
-  bool
-  SolKzMaterial<dim>::
-  is_compressible () const
-  {
-    return false;
-  }
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    thermal_expansion_coefficient (const double temperature,
+                                   const double,
+                                   const std::vector<double> &, /*composition*/
+                                   const Point<dim> &) const
+    {
+      return 0;
+    }
 
-  template <int dim>
-  void
-  SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
-  {
-    // Declare dependencies on solution variables
-    this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
-    this->model_dependence.density = MaterialModel::NonlinearDependence::none;
-    this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
-    this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
-    this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
-  }
+
+    template <int dim>
+    double
+    SolKzMaterial<dim>::
+    compressibility (const double,
+                     const double,
+                     const std::vector<double> &, /*composition*/
+                     const Point<dim> &) const
+    {
+      return 0.0;
+    }
+
+
+    template <int dim>
+    bool
+    SolKzMaterial<dim>::
+    is_compressible () const
+    {
+      return false;
+    }
+
+    template <int dim>
+    void
+    SolKzMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
+    }
 
 
 
@@ -803,13 +803,13 @@ namespace aspect
     template <int dim>
     class SolKzPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-      public:
-        /**
-         * Generate graphical output from the current solution.
-         */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+    public:
+      /**
+       * Generate graphical output from the current solution.
+       */
+      virtual
+      std::pair<std::string,std::string>
+      execute (TableHandler &statistics);
     };
 
     template <int dim>

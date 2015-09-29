@@ -30,52 +30,52 @@ namespace aspect
   namespace GeometryModel
   {
     /**
-     * A class deriving from Box<dim>, which changes the upper boundary 
+     * A class deriving from Box<dim>, which changes the upper boundary
        with a sinusoidal perturbation of a given order and amplitude
      */
     template <int dim>
     class ReboundBox : public Box<dim>
     {
-      public:
-        /**
-         * Generate a coarse mesh for the geometry described by this class.
-         * Makes perturbs the top boundary of the box with a function
-         * of the form z' = amplitude * cos(order * x )
-         */
-        virtual
-        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
+    public:
+      /**
+       * Generate a coarse mesh for the geometry described by this class.
+       * Makes perturbs the top boundary of the box with a function
+       * of the form z' = amplitude * cos(order * x )
+       */
+      virtual
+      void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const;
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Read the parameters this class declares from the parameter
-         * file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter
+       * file.
+       */
+      virtual
+      void
+      parse_parameters (ParameterHandler &prm);
 
-        /**
-         * Give the depth of a point.
-         */
-        virtual
-        double depth( const Point<dim> &position) const;
+      /**
+       * Give the depth of a point.
+       */
+      virtual
+      double depth( const Point<dim> &position) const;
 
-        /**
-         * Give the maximal depth of a point.
-         */
-        virtual
-        double maximal_depth() const;
+      /**
+       * Give the maximal depth of a point.
+       */
+      virtual
+      double maximal_depth() const;
 
-      private:
+    private:
 
-        unsigned int order;  //Order of the perturbation
-        double amplitude;  //amplitude of the perturbation
+      unsigned int order;  //Order of the perturbation
+      double amplitude;  //amplitude of the perturbation
 
     };
 
@@ -84,7 +84,7 @@ namespace aspect
     ReboundBox<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-  
+
       //Call the normal Box mesh generator
       Box<dim>::create_coarse_mesh( coarse_grid );
 
@@ -93,14 +93,14 @@ namespace aspect
 
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
       for (cell = coarse_grid.begin_active();  cell != coarse_grid.end();  ++cell)
-        for(unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
-          if(vertex_touched[cell->vertex_index(v)] == false)
-          {
-            Point<dim> &vertex = cell->vertex(v);
-            vertex[dim-1] = vertex[dim-1] + std::cos(order*2.0*M_PI*vertex[0]/(this->get_extents()[0]))*
-                                            amplitude*vertex[dim-1]/(this->get_extents()[dim-1]);
-            vertex_touched[cell->vertex_index(v)] = true;
-          }
+        for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+          if (vertex_touched[cell->vertex_index(v)] == false)
+            {
+              Point<dim> &vertex = cell->vertex(v);
+              vertex[dim-1] = vertex[dim-1] + std::cos(order*2.0*M_PI*vertex[0]/(this->get_extents()[0]))*
+                              amplitude*vertex[dim-1]/(this->get_extents()[dim-1]);
+              vertex_touched[cell->vertex_index(v)] = true;
+            }
 
     }
 

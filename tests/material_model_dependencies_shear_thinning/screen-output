@@ -1,0 +1,29 @@
+
+Loading shared library <./libmaterial_model_dependencies_shear_thinning.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17 iterations.
+      Nonlinear Stokes residual: 2.73902e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+      Nonlinear Stokes residual: 2.33624e-13
+
+   Postprocessing:
+viscosity depends on strainrate
+density depends on temperature
+compressibility depends on
+specific_heat depends on
+thermal_conductivity depends on
+model is incompressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

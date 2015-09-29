@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: Average nondimensional temperature (K)
+# 16: RMS velocity (m/s)
+# 17: Max. velocity (m/s)
+0 0.0000e+00 64 659 289 0 32 9 3 4.7714e+02 output-boundary_temperature_function/solution-00000 0.00000000e+00 7.92922653e+01 1.92000000e+03 2.26549329e-02 2.78573376e-05 1.19616223e-04 

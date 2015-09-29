@@ -17,9 +17,9 @@ namespace aspect
                           ParameterHandler &prm)
   {
     prm.declare_entry("Switch step", "0",
-                       Patterns::Integer(0),
-                       "Switch the bottom boundary condition from fixed temperature to no-flux"
-                       "at the timestep given.");
+                      Patterns::Integer(0),
+                      "Switch the bottom boundary condition from fixed temperature to no-flux"
+                      "at the timestep given.");
   }
 
   template <int dim>

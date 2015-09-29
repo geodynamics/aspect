@@ -1,5 +1,5 @@
 #########################################################
-# This is a variation of the composition-reaction test,
+# This is a variation of the composition_reaction test,
 # with the exception that we use a reaction term that
 # requires the iterated IMPES solver scheme to reach the 
 # correct reaction rate, which is one for the second 
