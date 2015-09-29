@@ -7,6 +7,10 @@
  *
  * <ol>
  *
+ * <li> Fixed: Free surface computations now work with checkpointing.
+ * <br>
+ * (Ian Rose, 2015/09/29)
+ *
  * <li> Fixed: certain combinations of boundary conditions with a free surface
  * could result in accessing nonexistent matrix entries. This is fixed.
  * <br>
