@@ -1,4 +1,4 @@
-# Like the poiseuille-2d.prm test, but instead of prescribing the
+# Like the poiseuille_2d.prm test, but instead of prescribing the
 # velocity at the left and right ends, prescribe the horizontal
 # component of the traction. At the same time, set the vertical
 # component of the velocity to zero. This should yield the same answer.

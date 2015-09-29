@@ -1,4 +1,4 @@
-# This is a copy of the box-first-time-step test. The difference is this: One
+# This is a copy of the box_first_time_step.prm. The difference is this: One
 # can mark boundaries as having zero velocity, or one can mark them as having
 # Dirichlet velocity boundary conditions and then select that the boundary
 # function should in fact be zero. The result should of course be the

@@ -1,4 +1,4 @@
-# like symbolic-boundary-names-box but use the 'constant' boundary
+# like symbolic_boundary_names_box but use the 'constant' boundary
 # temperature model and use symbolic names there.
 
 set Dimension = 2

@@ -1,5 +1,5 @@
 #########################################################
-# This is a variation of the composition-passive.prm
+# This is a variation of the composition_passive.prm
 # parameter file, with the exception that we also
 # advect along a set of tracers and that we do not longer
 # compute temperature statistics and composition statistics

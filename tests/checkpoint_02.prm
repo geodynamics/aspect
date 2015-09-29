@@ -1,6 +1,6 @@
 # test checkpoint/resume.
 
-# Like checkpoint-01, but we resume from the first of two snapshots. That way
+# Like checkpoint_01, but we resume from the first of two snapshots. That way
 # we can actually compare if the checkpoint data of the second checkpoint is
 # identical.
 

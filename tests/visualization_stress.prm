@@ -4,7 +4,7 @@
 # a constant strain rate [[0,1/2],[1/2,0]]
 #
 # the stress is then simply this tensor times 2*eta plus the pressure and we set
-# eta=42 below. compared to the visualization-shear-stress test, the test
+# eta=42 below. compared to the visualization_shear_stress test, the test
 # also includes a nonzero gravity so that we get a nonconstant pressure
 
 set Dimension = 2

@@ -6,7 +6,7 @@
 # output for this second run will be written into output2.tmp/. Finally,
 # output files will be copied into the main output folder for comparison.
 
-# based on box-end_time_1e7-terminate.prm
+# based on box_end_time_1e7_terminate.prm
 
 set Dimension = 2
 set CFL number                             = 1.0

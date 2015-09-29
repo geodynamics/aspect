@@ -1,4 +1,4 @@
-# Like the poiseuille-2d.prm test, but instead of prescribing the
+# Like the poiseuille_2d.prm test, but instead of prescribing the
 # velocity at the left and right ends, prescribe the pressure. This
 # should yield the same answer, of course.
 # In this case however, there will be pressure singularities

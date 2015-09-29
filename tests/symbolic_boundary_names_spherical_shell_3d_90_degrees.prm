@@ -1,4 +1,4 @@
-# like simpler-box.prm, but use symbolic names for all boundary
+# like simpler_box.prm, but use symbolic names for all boundary
 # components
 
 set Dimension = 3

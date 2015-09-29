@@ -1,4 +1,4 @@
-# Like the poiseuille-2d-horizontal-pressure-bc.prm test, 
+# Like the poiseuille_2d_horizontal_pressure_bc.prm test, 
 # but in 3d. 
 
 set Dimension = 3
