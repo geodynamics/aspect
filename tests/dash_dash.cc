@@ -8,7 +8,7 @@ int f()
   // call ASPECT with "--" and pipe an existing input file into it.
   //
   // notes:
-  // - the box-origin.prm file contains no explicit output directory
+  // - the box_origin.prm file contains no explicit output directory
   //   (nor would that be helpful here), so we also pipe the name
   //   for a temporary output directory into ASPECT
   // - if this directory does not exist, this would trigger
@@ -16,7 +16,7 @@ int f()
   //   consequently, remove the directory if it existed before
   //   and re-create it as an empty directory
   system ("cd output-dash-dash ; "
-          "(cat " ASPECT_SOURCE_DIR "/tests/box-origin.prm "
+          "(cat " ASPECT_SOURCE_DIR "/tests/box_origin.prm "
           " ; "
           " echo 'set Output directory = output.tmp' "
           " ; "
