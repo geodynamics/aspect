@@ -78,7 +78,7 @@ namespace aspect
           /**
            * Number of initial particles to create
            */
-          unsigned int n_tracers;
+          particle_index n_tracers;
 
 
           /**

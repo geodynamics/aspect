@@ -50,26 +50,31 @@ namespace aspect
          */
         ~World();
 
-        /**
-         * Initialize the particle world.
-         */
-        void initialize();
+        enum ParticleLoadBalancing
+        {
+          no_balancing,
+          remove_particles,
+          remove_and_add_particles,
+          repartition
+        };
 
         /**
-         * Set the particle Integrator scheme for this particle world.
+         * Initialize the particle world.
          *
          * @param [in] new_integrator The new Integrator scheme for this
          * world.
-         */
-        void set_integrator(Integrator::Interface<dim> *new_integrator);
-
-        /**
-         * Set the particle property manager for this particle world.
-         *
          * @param [in] new_manager The new property manager for this
          * world.
+         * @param [in] max_part_per_cell Threshold for removing
+         * particles from cells. Because the
+         * particle world currently does not declare own input parameters this
+         * is read by the Tracer postprocessor and set in this function.
          */
-        void set_manager(Property::Manager<dim> *new_manager);
+        void initialize(Integrator::Interface<dim> *new_integrator,
+                        Property::Manager<dim> *new_manager,
+                        const ParticleLoadBalancing &load_balancing,
+                        const unsigned int max_part_per_cell,
+                        const unsigned int weight);
 
         /**
          * Get the particle property manager for this particle world.
@@ -79,14 +84,6 @@ namespace aspect
          */
         const Property::Manager<dim> &
         get_manager() const;
-
-        /**
-         * Sets the threshold for removing particles from cells. Because the
-         * particle world currently does not declare own input parameters this
-         * is read by the Tracer postprocessor and set with this function.
-         */
-        void
-        set_max_particles_per_cell(const unsigned int max_particles_per_cell);
 
         /**
          * Add a particle to this world. If the specified cell does not exist
@@ -164,6 +161,15 @@ namespace aspect
 
         /**
          * Called by listener functions from Triangulation for every cell
+         * before a refinement step. A weight is attached to every cell
+         * depending on the number of contained tracers.
+         */
+        unsigned int
+        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                                const typename parallel::distributed::Triangulation<dim>::CellStatus status);
+
+        /**
+         * Called by listener functions from Triangulation for every cell
          * before a refinement step. All tracers have to be attached to their
          * element to be sent around to the new cell/processes.
          */
@@ -201,12 +207,6 @@ namespace aspect
         Property::Manager<dim>         *property_manager;
 
         /**
-         * Whether the triangulation was changed (e.g. through refinement), in which
-         * case we must treat all recorded particle level/index values as invalid
-         */
-        bool                            triangulation_changed;
-
-        /**
          * Set of particles currently in the local domain, organized by
          * the level/index of the cell they are in
          */
@@ -220,12 +220,23 @@ namespace aspect
         unsigned int data_offset;
 
         /**
+         * Strategy for tracer load balancing.
+         */
+        ParticleLoadBalancing particle_load_balancing;
+
+        /**
          * Limit for how many particles are allowed per cell. This limit is
          * useful for adaptive meshes to prevent coarse cells from slowing down
          * the whole model. It will only be checked and enforced during mesh
          * refinement and MPI transfer of particles.
          */
         unsigned int max_particles_per_cell;
+
+        /**
+         * Weight of a single particle.
+         */
+        unsigned int tracer_weight;
+
 
         /**
          * Returns the number of particles in the cell that contains the

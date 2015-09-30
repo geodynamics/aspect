@@ -38,7 +38,9 @@ namespace aspect
     {
       data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
-      aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
+      aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connector_function,
+                                                                                           std_cxx11::ref(*this),
+                                                                                           std_cxx11::_1));
     }
 
     template <>
@@ -46,7 +48,9 @@ namespace aspect
     {
       data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
-      aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connector_function,std_cxx11::ref(*this),std_cxx11::_1));
+      aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connector_function,
+                                                                                           std_cxx11::ref(*this),
+                                                                                           std_cxx11::_1));
     }
 
     template <int dim>
@@ -55,21 +59,31 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize()
-    {}
-
-    template <int dim>
-    void
-    World<dim>::set_integrator(Integrator::Interface<dim> *new_integrator)
+    World<dim>::initialize(Integrator::Interface<dim> *new_integrator,
+        Property::Manager<dim> *new_manager,
+        const ParticleLoadBalancing &load_balancing,
+        const unsigned int max_part_per_cell,
+        const unsigned int weight)
     {
       integrator = new_integrator;
-    }
-
-    template <int dim>
-    void
-    World<dim>::set_manager(Property::Manager<dim> *new_manager)
-    {
       property_manager = new_manager;
+      particle_load_balancing = load_balancing;
+      max_particles_per_cell = max_part_per_cell;
+      tracer_weight = weight;
+
+#if DEAL_II_VERSION_GTE(8,4,0)
+#else
+      AssertThrow(load_balacing != repartition,
+                  ExcMessage("You tried to select the load balancing strategy 'repartition', "
+                      "which is only available for deal.II 8.4 and newer but the installed version "
+                      "seems to be older. Please update your deal.II or choose a different strategy."));
+#endif
+
+      if (particle_load_balancing == repartition)
+        this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
+                                                            std_cxx11::ref(*this),
+                                                            std_cxx11::_1,
+                                                            std_cxx11::_2));
     }
 
     template <int dim>
@@ -77,13 +91,6 @@ namespace aspect
     World<dim>::get_manager() const
     {
       return *property_manager;
-    }
-
-    template <int dim>
-    void
-    World<dim>::set_max_particles_per_cell(const unsigned int max_part_per_cell)
-    {
-      max_particles_per_cell = max_part_per_cell;
     }
 
     template <int dim>
@@ -206,6 +213,37 @@ namespace aspect
     }
 
     template <int dim>
+    unsigned int
+    World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                            const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+    {
+      if (cell->active() && !cell->is_locally_owned())
+        return 0;
+
+      if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
+          || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
+        {
+          const LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
+          const unsigned int n_particles_in_cell = particles.count(found_cell);
+          return n_particles_in_cell * tracer_weight;
+        }
+      else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
+        {
+          unsigned int n_particles_in_cell = 0;
+
+          for (unsigned int child_index = 0; child_index < cell->number_of_children(); ++child_index)
+            {
+              const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
+              const LevelInd found_cell = std::make_pair<int, int> (child->level(),child->index());
+              n_particles_in_cell += particles.count(found_cell);
+            }
+          return n_particles_in_cell * tracer_weight;
+        }
+
+      return 0;
+    }
+
+    template <int dim>
     void
     World<dim>::store_tracers(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                               const typename parallel::distributed::Triangulation<dim>::CellStatus status,
@@ -246,11 +284,12 @@ namespace aspect
             }
 
           bool reduce_tracers = false;
-          if ((max_particles_per_cell > 0) && (n_particles_in_cell > max_particles_per_cell))
-            {
-              n_particles_in_cell /= coarsen_factor;
-              reduce_tracers = true;
-            }
+          if (particle_load_balancing == remove_particles || particle_load_balancing == remove_and_add_particles)
+            if ((max_particles_per_cell > 0) && (n_particles_in_cell > max_particles_per_cell))
+              {
+                n_particles_in_cell /= coarsen_factor;
+                reduce_tracers = true;
+              }
 
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata++ = n_particles_in_cell;
@@ -312,6 +351,11 @@ namespace aspect
                     {}
                 }
             }
+        }
+
+      if (particle_load_balancing == remove_and_add_particles)
+        {
+          // Add particles
         }
     }
 
@@ -426,7 +470,6 @@ namespace aspect
       // Determine the communication pattern
       const std::vector<types::subdomain_id> neighbors = find_neighbors();
       const unsigned int num_neighbors = neighbors.size();
-      const unsigned int self_rank  = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->data_length() * sizeof(double);
 
       // Determine the amount of data we will send to other processors
@@ -532,16 +575,23 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
-              // Detect if we need to reduce the number of tracers in this cell,
-              // we first reduce the incoming tracers, because they likely came from
-              // a region, where the particle density is higher than in this cell
-              // (otherwise this would not have been triggered).
-              const unsigned int coarsen_factor = (dim == 3) ? 8 : 4;
-              const bool reduce_tracers = (max_particles_per_cell > 0) && (particles.count(found_cell) == max_particles_per_cell);
-              if ( !reduce_tracers || (i % coarsen_factor == 0))
+
+              if (particle_load_balancing == remove_particles || particle_load_balancing == remove_and_add_particles)
                 {
-                  particles.insert(std::make_pair(found_cell, recv_particle));
+                  const unsigned int coarsen_factor = (dim == 3) ? 8 : 4;
+
+                  // Detect if we need to reduce the number of tracers in this cell,
+                  // we first reduce the incoming tracers, because they likely came from
+                  // a region, where the particle density is higher than in this cell
+                  // (otherwise this would not have been triggered).
+                  const bool reduce_tracers = (max_particles_per_cell > 0) && (particles.count(found_cell) >= max_particles_per_cell);
+
+                  if ( !reduce_tracers || (i % coarsen_factor == 0))
+                    particles.insert(std::make_pair(found_cell, recv_particle));
                 }
+              else
+                particles.insert(std::make_pair(found_cell, recv_particle));
+
             }
         }
 

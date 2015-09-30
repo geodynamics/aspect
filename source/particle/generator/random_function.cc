@@ -173,13 +173,9 @@ namespace aspect
                     const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, pt);
                     if (GeometryInfo<dim>::is_inside_unit_cell(p_unit)) break;
                   }
-                catch (...)
+                catch (typename Mapping<dim>::ExcTransformationFailed &)
                   {
-                    // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                    //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
-                    //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
-                    //std::cerr << std::endl;
-                    //***** MPI_Abort(communicator, 1);
+                    // The point is not in this cell. Do nothing, just try again.
                   }
                 num_tries++;
               }

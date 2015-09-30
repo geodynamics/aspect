@@ -79,13 +79,6 @@ namespace aspect
     {
       if (!initialized)
         {
-          // Set up the particle world with the appropriate simulation objects
-          world.set_integrator(integrator);
-          world.set_manager(&property_manager);
-
-          // And initialize the world
-          world.initialize();
-
           // Let the generator add the specified number of particles if we are
           // not resuming from a snapshot (in that case we have stored particles)
           if (world.get_global_particle_count() == 0)
@@ -272,12 +265,30 @@ namespace aspect
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
 
+          prm.declare_entry ("Load balancing strategy", "none",
+                             Patterns::Selection ("none|remove particles| "
+                                 "remove and add particles| repartition"),
+                             "Strategy that is used to balance the computational"
+                             "load across processors for adaptive meshes.");
+          prm.declare_entry ("Minimum tracers per cell", "100",
+                             Patterns::Integer (0),
+                             "Limit for how many particles are allowed per cell. This limit is "
+                             "useful to prevent coarse cells in adaptive meshes from slowing down "
+                             "the whole model. It will only be checked and enforced during "
+                             "mesh refinement and MPI transfer of tracers.");
           prm.declare_entry ("Maximum tracers per cell", "100",
                              Patterns::Integer (0),
                              "Limit for how many particles are allowed per cell. This limit is "
                              "useful to prevent coarse cells in adaptive meshes from slowing down "
                              "the whole model. It will only be checked and enforced during "
                              "mesh refinement and MPI transfer of tracers.");
+          prm.declare_entry ("Tracer weight", "10",
+                             Patterns::Integer (0),
+                             "Weight that is associated with the computational load of "
+                             "a single particle. The sum of tracer weights will be added "
+                             "to the sum of cell weights to determine the partitioning of "
+                             "the mesh. Every cell without tracers is associated with a "
+                             "weight of 1000.");
         }
         prm.leave_subsection ();
       }
@@ -294,20 +305,32 @@ namespace aspect
     void
     PassiveTracers<dim>::parse_parameters (ParameterHandler &prm)
     {
+      unsigned int max_tracers_per_cell,tracer_weight;
+      typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
+
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Tracers");
         {
           data_output_interval = prm.get_double ("Time between data output");
-          unsigned int max_particles_per_cell = prm.get_integer("Maximum tracers per cell");
-          world.set_max_particles_per_cell(max_particles_per_cell);
+
+          max_tracers_per_cell = prm.get_integer("Maximum tracers per cell");
+          tracer_weight = prm.get_integer("Tracer weight");
+
+          if (prm.get ("Load balancing strategy") == "none")
+           load_balancing = Particle::World<dim>::no_balancing;
+          else if (prm.get ("Load balancing strategy") == "remove particles")
+            load_balancing = Particle::World<dim>::remove_particles;
+          else if (prm.get ("Load balancing strategy") == "remove and add particles")
+            load_balancing = Particle::World<dim>::remove_and_add_particles;
+          else if (prm.get ("Load balancing strategy") == "repartition")
+            load_balancing = Particle::World<dim>::repartition;
+          else
+            AssertThrow (false, ExcNotImplemented());
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
-        sim->initialize (this->get_simulator());
 
       // Create a generator object using a random uniform distribution
       generator = Particle::Generator::create_particle_generator<dim>
@@ -333,6 +356,16 @@ namespace aspect
       sim->initialize (this->get_simulator());
       property_manager.parse_parameters(prm);
       property_manager.initialize();
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
+        sim->initialize (this->get_simulator());
+
+      // Set up the particle world with the appropriate settings
+      world.initialize(integrator,
+                       &property_manager,
+                       load_balancing,
+                       max_tracers_per_cell,
+                       tracer_weight);
     }
   }
 }
