@@ -10,16 +10,16 @@ namespace aspect
     template <int dim>
     class NewPostprocessor : public aspect::InclusionBenchmark::SolCxPostprocessor<dim>
     {
-    public:
-      virtual
-      std::list<std::string>
-      required_other_postprocessors () const
-      {
-        // select a postprocessor that is not selected in the .prm file
-        std::list<std::string> deps;
-        deps.push_back ("velocity statistics");
-        return deps;
-      }
+      public:
+        virtual
+        std::list<std::string>
+        required_other_postprocessors () const
+        {
+          // select a postprocessor that is not selected in the .prm file
+          std::list<std::string> deps;
+          deps.push_back ("velocity statistics");
+          return deps;
+        }
     };
   }
 }

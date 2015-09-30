@@ -48,129 +48,129 @@ namespace aspect
     template <int dim>
     class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
     {
-    public:
+      public:
 
-      TanGurnis();
+        TanGurnis();
 
-      /**
-       * @name Physical parameters used in the basic equations
-       * @{
-       */
-      virtual double viscosity (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Point<dim>             &position) const;
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const;
 
-      virtual double compressibility (const double temperature,
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const;
+
+        virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
-      virtual double specific_heat (const double temperature,
-                                    const double pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position) const;
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const;
 
-      virtual double thermal_expansion_coefficient (const double      temperature,
-                                                    const double      pressure,
-                                                    const std::vector<double> &compositional_fields,
-                                                    const Point<dim> &position) const;
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
-      virtual double thermal_conductivity (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const;
-      /**
-       * @}
-       */
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
 
-      /**
-       * @name Qualitative properties one can ask a material model
-       * @{
-       */
+        /**
+         * Return whether the model is compressible or not.  Incompressibility
+         * does not necessarily imply that the density is constant; rather, it
+         * may still depend on temperature or pressure. In the current
+         * context, compressibility means whether we should solve the contuity
+         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
 
-      /**
-       * Return whether the model is compressible or not.  Incompressibility
-       * does not necessarily imply that the density is constant; rather, it
-       * may still depend on temperature or pressure. In the current
-       * context, compressibility means whether we should solve the contuity
-       * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-       * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-       */
-      virtual bool is_compressible () const;
-      /**
-       * @}
-       */
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
 
-      /**
-       * @name Reference quantities
-       * @{
-       */
-      virtual double reference_viscosity () const;
+        virtual double reference_density () const;
 
-      virtual double reference_density () const;
-
-      virtual double reference_thermal_expansion_coefficient () const;
+        virtual double reference_thermal_expansion_coefficient () const;
 
 //TODO: should we make this a virtual function as well? where is it used?
-      double reference_thermal_diffusivity () const;
+        double reference_thermal_diffusivity () const;
 
-      double reference_cp () const;
+        double reference_cp () const;
 
-      double parameter_a() const;
-      double parameter_wavenumber() const;
-      double parameter_Di() const;
-      double parameter_gamma() const;
+        double parameter_a() const;
+        double parameter_wavenumber() const;
+        double parameter_Di() const;
+        double parameter_gamma() const;
 
-      /**
-       * @}
-       */
+        /**
+         * @}
+         */
 
 
-      /**
-       * @name Functions used in dealing with run-time parameters
-       * @{
-       */
-      /**
-       * Declare the parameters this class takes through input files.
-       */
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-      /**
-       * Read the parameters this class declares from the parameter file.
-       */
-      virtual
-      void
-      parse_parameters (ParameterHandler &prm);
-      /**
-       * @}
-       */
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
 
-    private:
+      private:
 
-      double a;
-      double wavenumber;
-      double Di;
-      double gamma;
+        double a;
+        double wavenumber;
+        double Di;
+        double gamma;
 
-      double reference_rho;
-      double reference_T;
-      double eta;
-      double thermal_alpha;
-      double reference_specific_heat;
+        double reference_rho;
+        double reference_T;
+        double eta;
+        double thermal_alpha;
+        double reference_specific_heat;
 
-      /**
-       * The thermal conductivity.
-       */
-      double k_value;
+        /**
+         * The thermal conductivity.
+         */
+        double k_value;
     };
 
     template <int dim>
@@ -464,45 +464,45 @@ namespace aspect
   template <int dim>
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
-  public:
-    /**
-     * Return the temperature that is to hold at a particular location on
-     * the boundary of the domain. This function returns constant
-     * temperatures at the left and right boundaries.
-     *
-     * @param geometry_model The geometry model that describes the domain.
-     * This may be used to determine whether the boundary temperature
-     * model is implemented for this geometry.
-     * @param boundary_indicator The boundary indicator of the part of the
-     * boundary of the domain on which the point is located at which we
-     * are requesting the temperature.
-     * @param location The location of the point at which we ask for the
-     * temperature.
-     */
-    virtual
-    double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                        const types::boundary_id             boundary_indicator,
-                        const Point<dim>                    &location) const;
+    public:
+      /**
+       * Return the temperature that is to hold at a particular location on
+       * the boundary of the domain. This function returns constant
+       * temperatures at the left and right boundaries.
+       *
+       * @param geometry_model The geometry model that describes the domain.
+       * This may be used to determine whether the boundary temperature
+       * model is implemented for this geometry.
+       * @param boundary_indicator The boundary indicator of the part of the
+       * boundary of the domain on which the point is located at which we
+       * are requesting the temperature.
+       * @param location The location of the point at which we ask for the
+       * temperature.
+       */
+      virtual
+      double temperature (const GeometryModel::Interface<dim> &geometry_model,
+                          const types::boundary_id             boundary_indicator,
+                          const Point<dim>                    &location) const;
 
-    /**
-     * Return the minimal the temperature on that part of the boundary on
-     * which Dirichlet conditions are posed.
-     *
-     * This value is used in computing dimensionless numbers such as the
-     * Nusselt number indicating heat flux.
-     */
-    virtual
-    double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      /**
+       * Return the minimal the temperature on that part of the boundary on
+       * which Dirichlet conditions are posed.
+       *
+       * This value is used in computing dimensionless numbers such as the
+       * Nusselt number indicating heat flux.
+       */
+      virtual
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-    /**
-     * Return the maximal the temperature on that part of the boundary on
-     * which Dirichlet conditions are posed.
-     *
-     * This value is used in computing dimensionless numbers such as the
-     * Nusselt number indicating heat flux.
-     */
-    virtual
-    double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      /**
+       * Return the maximal the temperature on that part of the boundary on
+       * which Dirichlet conditions are posed.
+       *
+       * This value is used in computing dimensionless numbers such as the
+       * Nusselt number indicating heat flux.
+       */
+      virtual
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
   };
 
   template <int dim>
@@ -555,10 +555,10 @@ namespace aspect
   template <int dim>
   class TanGurnisPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-  public:
-    virtual
-    std::pair<std::string,std::string>
-    execute (TableHandler &statistics);
+    public:
+      virtual
+      std::pair<std::string,std::string>
+      execute (TableHandler &statistics);
   };
 
   template <int dim>

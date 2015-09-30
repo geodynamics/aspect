@@ -444,7 +444,7 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-   
+
       // Declare dependencies on solution variables
       this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.density = NonlinearDependence::none;

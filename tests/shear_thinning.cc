@@ -10,13 +10,13 @@ namespace aspect
     template <int dim>
     class ShearThinning : public MaterialModel::Simple<dim>
     {
-    public:
+      public:
 
-      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                            MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-      void
-      parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm);
     };
 
   }
@@ -76,10 +76,10 @@ namespace aspect
     template <int dim>
     class ShearThinning : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-    public:
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &);
+      public:
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &);
     };
   }
 }
@@ -126,9 +126,9 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                in.temperature);
+                                                                                         in.temperature);
             fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                in.pressure);
+                                                                                      in.pressure);
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

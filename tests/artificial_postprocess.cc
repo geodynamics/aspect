@@ -18,13 +18,13 @@ namespace aspect
   template <int dim>
   class EVPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-  public:
-    /**
-     * Generate graphical output from the current solution.
-     */
-    virtual
-    std::pair<std::string,std::string>
-    execute (TableHandler &statistics);
+    public:
+      /**
+       * Generate graphical output from the current solution.
+       */
+      virtual
+      std::pair<std::string,std::string>
+      execute (TableHandler &statistics);
   };
 
   template <int dim>
