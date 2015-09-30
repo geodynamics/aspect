@@ -55,6 +55,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
+
         /**
          * A function that is called at the beginning of each time step. For
          * the current plugin, this function loads the next data files if

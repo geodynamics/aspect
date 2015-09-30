@@ -202,7 +202,7 @@ namespace aspect
                                                             "Heating model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
 
           heating_model_objects.back()->parse_parameters (prm);
           heating_model_objects.back()->initialize ();
