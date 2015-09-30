@@ -1,0 +1,128 @@
+# A simple setup for convection in a 3d shell using S4ORTS initial condition.
+# This file was contributed by Shangxin Liu to the ASPECT mailing list around Sep 2015
+#
+#
+#./ Timing information for a typical run:
+# Stokes Solver takes most of the time as below:
+# | Solving Stokes system   | 1 | 1.1e+04 s | 70 %|
+# | Initialization                    | 2  | 4.43e+03 | 28 % |
+#
+# Most of the time is spent in the Stokes solver, but initialization of
+# RTS40 initial condition is still way too expensive to be used in such
+# a large computation.
+# 
+# ./ More statistics:
+# # 4: Number of Stokes degrees of freedom 79'283'080
+# # 7: Iterations for Stokes solver 576
+# # 8: Velocity iterations in Stokes preconditioner 11'835
+# # 9: Schur complement iterations in Stokes preconditioner 6848
+
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+set Adiabatic surface temperature          = 1623
+set Linear solver tolerance                = 5e-5
+set Output directory                       = output
+
+
+subsection Material model
+  set Material averaging = arithmetic average
+  set Model name = depth dependent
+  subsection Depth dependent model
+    set Base model = simple
+    set Depth dependence method = File
+    set Data directory = 
+    set Viscosity depth file = four_layer_visc.txt
+  end
+  subsection Simple model
+    set Reference temperature         = 1623
+    set Reference density             = 3300
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e21
+    set Thermal conductivity          = 4.0
+  end
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3480000
+    set Outer radius  = 6371000
+  end
+end
+
+
+subsection Model settings
+  set Tangential velocity boundary indicators = inner,outer
+  set Prescribed velocity boundary indicators =
+  set Fixed temperature boundary indicators   = inner, outer
+  set Include shear heating                   = false
+  set Include adiabatic heating               = false
+  set Include latent heat                     = false
+  set Remove nullspace                        = net rotation
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2273
+    set Outer temperature = 273
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = S40RTS perturbation
+  subsection S40RTS perturbation
+    set Data directory        = ../../data/initial-conditions/S40RTS/
+    set Reference temperature = 1623
+    set Thermal expansion coefficient in initial temperature scaling = 4e-5
+    set vs to density scaling = 0.18
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0 # 5
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = depth average, dynamic topography, basic statistics, visualization, spherical velocity statistics, velocity boundary statistics, temperature statistics, pressure statistics, heat flux statistics
+
+  subsection Visualization
+    set List of output variables      = dynamic topography, error indicator, viscosity, nonadiabatic temperature, nonadiabatic pressure
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Dynamic Topography
+      set Subtract mean of dynamic topography  = true
+    end
+  end
+
+  subsection Dynamic Topography
+    set Subtract mean of dynamic topography  = true
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones               = 20
+    set Output format                 = gnuplot
+  end
+end
