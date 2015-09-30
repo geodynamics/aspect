@@ -414,7 +414,7 @@ namespace aspect
                                                               "Mesh refinement::Refinement criteria merge operation")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*mesh_refinement_objects.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
 
           mesh_refinement_objects.back()->parse_parameters (prm);
           mesh_refinement_objects.back()->initialize ();

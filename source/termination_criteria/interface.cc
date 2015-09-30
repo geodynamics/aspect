@@ -243,7 +243,7 @@ namespace aspect
                                           .create_plugin (plugin_names[name],
                                                           "Termination criteria::Termination criteria")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
           termination_objects.back()->parse_parameters (prm);
           termination_objects.back()->initialize ();
 

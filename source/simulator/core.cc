@@ -372,26 +372,26 @@ namespace aspect
     // the geometry model is the only model whose runtime parameters are already read
     // at the time it is created
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     geometry_model->initialize ();
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(material_model.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     material_model->parse_parameters (prm);
     material_model->initialize ();
 
-    heating_model_manager.initialize (*this);
+    heating_model_manager.initialize_simulator (*this);
     heating_model_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
     if (boundary_temperature.get())
       {
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature.get()))
-          sim->initialize (*this);
+          sim->initialize_simulator (*this);
         boundary_temperature->parse_parameters (prm);
         boundary_temperature->initialize ();
       }
@@ -399,18 +399,18 @@ namespace aspect
     if (boundary_composition.get())
       {
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition.get()))
-          sim->initialize (*this);
+          sim->initialize_simulator (*this);
         boundary_composition->parse_parameters (prm);
         boundary_composition->initialize ();
       }
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_conditions.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     initial_conditions->parse_parameters (prm);
     initial_conditions->initialize ();
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(compositional_initial_conditions.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     if (compositional_initial_conditions.get())
       {
         compositional_initial_conditions->parse_parameters (prm);
@@ -435,7 +435,7 @@ namespace aspect
 
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(prescribed_stokes_solution.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     if (prescribed_stokes_solution.get())
       {
         prescribed_stokes_solution->parse_parameters (prm);
@@ -444,7 +444,7 @@ namespace aspect
 
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
-      sim->initialize (*this);
+      sim->initialize_simulator (*this);
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
@@ -464,16 +464,16 @@ namespace aspect
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
-    postprocess_manager.initialize (*this);
+    postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
-    mesh_refinement_manager.initialize (*this);
+    mesh_refinement_manager.initialize_simulator (*this);
     mesh_refinement_manager.parse_parameters (prm);
 
-    termination_manager.initialize (*this);
+    termination_manager.initialize_simulator (*this);
     termination_manager.parse_parameters (prm);
 
-    lateral_averaging.initialize (*this);
+    lateral_averaging.initialize_simulator (*this);
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
@@ -487,8 +487,8 @@ namespace aspect
           = VelocityBoundaryConditions::create_velocity_boundary_conditions<dim>
             (p->second.second);
         velocity_boundary_conditions[p->first].reset (bv);
-        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
-          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
+          sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
       }
@@ -501,8 +501,8 @@ namespace aspect
         TractionBoundaryConditions::Interface<dim> *bv
           = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
             (p->second.second);
-        if (dynamic_cast<SimulatorAccess<dim>*>(bv) != 0)
-          dynamic_cast<SimulatorAccess<dim>*>(bv)->initialize(*this);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
+          sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
         traction_boundary_conditions[p->first].reset (bv);

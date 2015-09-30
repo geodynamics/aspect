@@ -235,7 +235,7 @@ namespace aspect
                                      .create_plugin (postprocessor_names[name],
                                                      "Postprocessor plugins")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
           postprocessors.back()->initialize ();

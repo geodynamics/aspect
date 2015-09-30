@@ -43,7 +43,7 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::initialize (const Simulator<dim> &simulator_object)
+  SimulatorAccess<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
   {
     simulator = &simulator_object;
   }

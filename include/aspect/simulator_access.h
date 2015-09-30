@@ -111,7 +111,7 @@ namespace aspect
        *
        * @param simulator_object A reference to the main simulator object.
        */
-      virtual void initialize (const Simulator<dim> &simulator_object);
+      virtual void initialize_simulator (const Simulator<dim> &simulator_object);
 
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
