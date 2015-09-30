@@ -10,17 +10,17 @@ namespace aspect
     template <int dim>
     class Compressibility : public MaterialModel::Simple<dim>
     {
-    public:
+      public:
 
-      virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                            MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-      /**
-        * Return true if the compressibility() function returns something that
-        * is not zero.
-        */
-      virtual bool
-      is_compressible () const;
+        /**
+          * Return true if the compressibility() function returns something that
+          * is not zero.
+          */
+        virtual bool
+        is_compressible () const;
     };
 
   }
@@ -81,10 +81,10 @@ namespace aspect
     template <int dim>
     class Compressibility : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-    public:
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      public:
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
     };
   }
 }
@@ -142,7 +142,7 @@ namespace aspect
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                     in.temperature);
                 fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                    in.pressure);
+                                                                                               in.pressure);
                 fe_face_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                     in.strain_rate);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

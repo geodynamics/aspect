@@ -34,32 +34,32 @@ namespace aspect
   class AMRLeft : public MeshRefinement::Interface<dim>,
     public SimulatorAccess<dim>
   {
-  public:
-    /**
-     * After cells have been marked for coarsening/refinement, apply
-     * additional criteria independent of the error estimate.
-     *
-     */
-    virtual
-    void
-    tag_additional_cells () const;
+    public:
+      /**
+       * After cells have been marked for coarsening/refinement, apply
+       * additional criteria independent of the error estimate.
+       *
+       */
+      virtual
+      void
+      tag_additional_cells () const;
 
-    /**
-     * Declare the parameters this class takes through input files.
-     */
-    static
-    void
-    declare_parameters (ParameterHandler &prm);
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-    /**
-     * Read the parameters this class declares from the parameter
-     * file.
-     */
-    virtual
-    void
-    parse_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter
+       * file.
+       */
+      virtual
+      void
+      parse_parameters (ParameterHandler &prm);
 
-  private:
+    private:
   };
 
 

@@ -30,12 +30,12 @@ namespace aspect
   namespace GeometryModel
   {
     /**
-     * A class deriving from Box<dim>, which changes the upper boundary 
+     * A class deriving from Box<dim>, which changes the upper boundary
        with a sinusoidal perturbation of a given order and amplitude.
        The top surface is initialized with smooth sinusoidal topography.
        Subsequent refinements at the surface would do linear interpolations
-       between the mesh points, potentially affecting the quality of the 
-       sinusoidal perturbation. As such, if this class is used for topographic 
+       between the mesh points, potentially affecting the quality of the
+       sinusoidal perturbation. As such, if this class is used for topographic
        relaxation benchmarks, it makes most sense to do it without mesh
        refinement.
      */
@@ -90,7 +90,7 @@ namespace aspect
     ReboundBox<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-  
+
       //Call the normal Box mesh generator
       Box<dim>::create_coarse_mesh( coarse_grid );
 
@@ -99,14 +99,14 @@ namespace aspect
 
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
       for (cell = coarse_grid.begin_active();  cell != coarse_grid.end();  ++cell)
-        for(unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
-          if(vertex_touched[cell->vertex_index(v)] == false)
-          {
-            Point<dim> &vertex = cell->vertex(v);
-            vertex[dim-1] = vertex[dim-1] + std::cos(order*2.0*M_PI*vertex[0]/(this->get_extents()[0]))*
-                                            amplitude*vertex[dim-1]/(this->get_extents()[dim-1]);
-            vertex_touched[cell->vertex_index(v)] = true;
-          }
+        for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+          if (vertex_touched[cell->vertex_index(v)] == false)
+            {
+              Point<dim> &vertex = cell->vertex(v);
+              vertex[dim-1] = vertex[dim-1] + std::cos(order*2.0*M_PI*vertex[0]/(this->get_extents()[0]))*
+                              amplitude*vertex[dim-1]/(this->get_extents()[dim-1]);
+              vertex_touched[cell->vertex_index(v)] = true;
+            }
 
     }
 

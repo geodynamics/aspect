@@ -66,18 +66,18 @@ namespace aspect
       template <int dim>
       class FunctionInclusion : public Function<dim>
       {
-      public:
-        FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
-        virtual void vector_value (const Point< dim >   &p,
-                                   Vector< double >   &values) const
-        {
-          double pos[2]= {p(0),p(1)};
-          AnalyticSolutions::_Inclusion
-          (pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
-        }
+        public:
+          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+          virtual void vector_value (const Point< dim >   &p,
+                                     Vector< double >   &values) const
+          {
+            double pos[2]= {p(0),p(1)};
+            AnalyticSolutions::_Inclusion
+            (pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
+          }
 
-      private:
-        double eta_B_;
+        private:
+          double eta_B_;
       };
     }
 
@@ -86,21 +86,21 @@ namespace aspect
     template <int dim>
     class InclusionBoundary : public VelocityBoundaryConditions::Interface<dim>
     {
-    public:
-      /**
-       * Constructor.
-       */
-      InclusionBoundary();
+      public:
+        /**
+         * Constructor.
+         */
+        InclusionBoundary();
 
-      /**
-       * Return the boundary velocity as a function of position.
-       */
-      virtual
-      Tensor<1,dim>
-      boundary_velocity (const Point<dim> &position) const;
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        Tensor<1,dim>
+        boundary_velocity (const Point<dim> &position) const;
 
-    private:
-      double eta_B;
+      private:
+        double eta_B;
     };
 
     template <int dim>
@@ -144,107 +144,107 @@ namespace aspect
     template <int dim>
     class InclusionMaterial : public MaterialModel::InterfaceCompatibility<dim>
     {
-    public:
-      /**
-       * @name Physical parameters used in the basic equations
-       * @{
-       */
-      virtual double viscosity (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Point<dim>             &position) const;
+      public:
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const;
 
-      virtual double compressibility (const double temperature,
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const;
+
+        virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
-      virtual double specific_heat (const double temperature,
-                                    const double pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position) const;
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const;
 
-      virtual double thermal_expansion_coefficient (const double      temperature,
-                                                    const double      pressure,
-                                                    const std::vector<double> &compositional_fields,
-                                                    const Point<dim> &position) const;
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
-      virtual double thermal_conductivity (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const;
-      /**
-       * @}
-       */
-
-      /**
-       * @name Qualitative properties one can ask a material model
-       * @{
-       */
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
 
 
-      /**
-       * Return whether the model is compressible or not.
-       * Incompressibility does not necessarily imply that the density is
-       * constant; rather, it may still depend on temperature or pressure.
-       * In the current context, compressibility means whether we should
-       * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
-       * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
-       * (incompressible Stokes).
-       */
-      virtual bool is_compressible () const;
-      /**
-       * @}
-       */
-      /**
-       * Declare the parameters this class takes through input files.
-       */
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+        /**
+         * Return whether the model is compressible or not.
+         * Incompressibility does not necessarily imply that the density is
+         * constant; rather, it may still depend on temperature or pressure.
+         * In the current context, compressibility means whether we should
+         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
+         * (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-      /**
-       * Read the parameters this class declares from the parameter file.
-       */
-      virtual
-      void
-      parse_parameters (ParameterHandler &prm);
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
 
 
-      /**
-       * @name Reference quantities
-       * @{
-       */
-      virtual double reference_viscosity () const;
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
 
-      virtual double reference_density () const;
+        virtual double reference_density () const;
 
-      virtual double reference_thermal_expansion_coefficient () const;
+        virtual double reference_thermal_expansion_coefficient () const;
 
 //TODO: should we make this a virtual function as well? where is it used?
-      double reference_thermal_diffusivity () const;
+        double reference_thermal_diffusivity () const;
 
-      double reference_cp () const;
-      /**
-       * @}
-       */
-      /**
-       * Returns the viscosity value in the inclusion
-       */
-      double get_eta_B() const;
+        double reference_cp () const;
+        /**
+         * @}
+         */
+        /**
+         * Returns the viscosity value in the inclusion
+         */
+        double get_eta_B() const;
 
-    private:
-      /**
-       * viscosity value in the inclusion
-       */
-      double eta_B;
+      private:
+        /**
+         * viscosity value in the inclusion
+         */
+        double eta_B;
     };
 
     template <int dim>
@@ -446,13 +446,13 @@ namespace aspect
     template <int dim>
     class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-    public:
-      /**
-       * Generate graphical output from the current solution.
-       */
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      public:
+        /**
+         * Generate graphical output from the current solution.
+         */
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
     };
 
     template <int dim>

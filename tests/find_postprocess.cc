@@ -37,8 +37,8 @@ namespace aspect
     template <int dim>
     class Box2 : public Box<dim>, public aspect::SimulatorAccess<dim>
     {
-    public:
-      virtual void update();
+      public:
+        virtual void update();
     };
     template <int dim>
     void Box2<dim>::update()

@@ -8,11 +8,11 @@ using namespace aspect;
 
 template <int dim>
 void post_stokes_solver (const SimulatorAccess<dim> &sim,
-			 const bool success,
-			 const std::vector<double> & history)
+                         const bool success,
+                         const std::vector<double> &history)
 {
   std::cout << "\npost_stokes_solver:\n";
-  for (unsigned int i=0;i<history.size();++i)
+  for (unsigned int i=0; i<history.size(); ++i)
     std::cout << history[i] << std::endl;
 }
 
