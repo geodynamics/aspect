@@ -24,6 +24,7 @@
 
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/postprocess/melt_statistics.h>
 
 namespace aspect
 {
@@ -49,6 +50,7 @@ namespace aspect
     template <int dim>
     class MeltSimple : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
+      friend class ::aspect::Postprocess::MeltStatistics<dim>;
       public:
         /**
          * Return true if the viscosity() function returns something that may
@@ -156,7 +158,9 @@ namespace aspect
         double melt_compressibility;
         double melt_bulk_modulus_derivative;
         double depletion_density_change;
+        double depletion_solidus_change;
         bool model_is_compressible;
+        bool fractional_melting;
 
         /**
          * Parameters for anhydrous melting of peridotite after Katz, 2003
