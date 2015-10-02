@@ -110,6 +110,11 @@ namespace aspect
       private:
 
         double reference_T;
+
+        /**
+         * Defining a minimum strain rate stabilizes the viscosity calculation,
+         * which involves a division by the strain rate. Units: $1/s$.
+         */
         double min_strain_rate;
         double min_visc;
         double max_visc;

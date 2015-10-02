@@ -47,13 +47,15 @@ namespace aspect
       // This is equal to the negative of the second principle
       // invariant calculated with the function second_invariant.
 
-      const SymmetricTensor<2,dim> strain_rate_dev = deviator(strain_rate);
-
-      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() == 0.0)
+      const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                             ?
                                             reference_strain_rate * reference_strain_rate
                                             :
-                                            -second_invariant(strain_rate_dev) );
+                                            std::fabs(second_invariant(deviator(strain_rate))));
+
+      // Prevent floating-point exceptions for very small strain rates
+      if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
+        return maximum_viscosity;
 
       // To avoid negative yield strengths and eventually viscosities,
       // we make sure the pressure is not negative
