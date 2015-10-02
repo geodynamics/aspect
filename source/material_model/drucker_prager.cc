@@ -37,23 +37,24 @@ namespace aspect
                const SymmetricTensor<2,dim> &strain_rate,
                const Point<dim> &/*position*/) const
     {
-      // For the very first time this function is called,
-      // we prescribe a representative reference strain rate,
-      // instead of using the input strain rate which
-      // is a zero tensor. This avoids division by zero and produces
+      // For the very first time this function is called
+      // (the first iteration of the first timestep), this function is called
+      // with a zero input strain rate. We provide a representative reference
+      // strain rate for this case, which avoids division by zero and produces
       // a representative first guess of the viscosities.
-      // Otherwise we calculate the second moment invariant
-      // of the deviatoric strain rate tensor.
+      // In later iterations and timesteps we calculate the second moment
+      // invariant of the deviatoric strain rate tensor.
       // This is equal to the negative of the second principle
       // invariant calculated with the function second_invariant.
-
       const double strain_rate_dev_inv2 = ( (this->get_timestep_number() == 0 && strain_rate.norm() <= std::numeric_limits<double>::min())
                                             ?
                                             reference_strain_rate * reference_strain_rate
                                             :
                                             std::fabs(second_invariant(deviator(strain_rate))));
 
-      // Prevent floating-point exceptions for very small strain rates
+      // In later timesteps, we still need to care about cases of very small
+      // strain rates. We expect the viscosity to approach the maximum_viscosity
+      // in these cases. This check prevents a division-by-zero.
       if (std::sqrt(strain_rate_dev_inv2) <= std::numeric_limits<double>::min())
         return maximum_viscosity;
 
