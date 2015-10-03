@@ -39,8 +39,8 @@ namespace aspect
       data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
       aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connector_function,
-                                                                                           std_cxx11::ref(*this),
-                                                                                           std_cxx11::_1));
+                                                                           std_cxx11::ref(*this),
+                                                                           std_cxx11::_1));
     }
 
     template <>
@@ -49,8 +49,8 @@ namespace aspect
       data_offset = aspect::Utilities::signaling_nan<unsigned int>();
       integrator = NULL;
       aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connector_function,
-                                                                                           std_cxx11::ref(*this),
-                                                                                           std_cxx11::_1));
+                                                                           std_cxx11::ref(*this),
+                                                                           std_cxx11::_1));
     }
 
     template <int dim>
@@ -60,30 +60,31 @@ namespace aspect
     template <int dim>
     void
     World<dim>::initialize(Integrator::Interface<dim> *new_integrator,
-        Property::Manager<dim> *new_manager,
-        const ParticleLoadBalancing &load_balancing,
-        const unsigned int max_part_per_cell,
-        const unsigned int weight)
+                           Interpolator::Interface<dim> *new_interpolator,
+                           Property::Manager<dim> *new_manager,
+                           const ParticleLoadBalancing &load_balancing,
+                           const unsigned int max_part_per_cell,
+                           const unsigned int weight)
     {
       integrator = new_integrator;
+      interpolator = new_interpolator;
       property_manager = new_manager;
       particle_load_balancing = load_balancing;
       max_particles_per_cell = max_part_per_cell;
       tracer_weight = weight;
 
 #if DEAL_II_VERSION_GTE(8,4,0)
-#else
-      AssertThrow(load_balacing != repartition,
-                  ExcMessage("You tried to select the load balancing strategy 'repartition', "
-                      "which is only available for deal.II 8.4 and newer but the installed version "
-                      "seems to be older. Please update your deal.II or choose a different strategy."));
-#endif
-
       if (particle_load_balancing == repartition)
         this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
-                                                            std_cxx11::ref(*this),
-                                                            std_cxx11::_1,
-                                                            std_cxx11::_2));
+                                                                              std_cxx11::ref(*this),
+                                                                              std_cxx11::_1,
+                                                                              std_cxx11::_2));
+#else
+      AssertThrow(particle_load_balancing != repartition,
+                  ExcMessage("You tried to select the load balancing strategy 'repartition', "
+                             "which is only available for deal.II 8.4 and newer but the installed version "
+                             "seems to be older. Please update your deal.II or choose a different strategy."));
+#endif
     }
 
     template <int dim>

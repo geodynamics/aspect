@@ -26,6 +26,7 @@
 #include <aspect/particle/definitions.h>
 
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
@@ -71,6 +72,7 @@ namespace aspect
          * is read by the Tracer postprocessor and set in this function.
          */
         void initialize(Integrator::Interface<dim> *new_integrator,
+                        Interpolator::Interface<dim> *new_interpolator,
                         Property::Manager<dim> *new_manager,
                         const ParticleLoadBalancing &load_balancing,
                         const unsigned int max_part_per_cell,
@@ -166,7 +168,7 @@ namespace aspect
          */
         unsigned int
         cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                const typename parallel::distributed::Triangulation<dim>::CellStatus status);
+                    const typename parallel::distributed::Triangulation<dim>::CellStatus status);
 
         /**
          * Called by listener functions from Triangulation for every cell
@@ -198,6 +200,11 @@ namespace aspect
          * Integration scheme for moving particles in this world
          */
         Integrator::Interface<dim>     *integrator;
+
+        /**
+         * Integration scheme for moving particles in this world
+         */
+        Interpolator::Interface<dim>     *interpolator;
 
         /**
          * The property manager stores information about the additional

@@ -267,7 +267,7 @@ namespace aspect
 
           prm.declare_entry ("Load balancing strategy", "none",
                              Patterns::Selection ("none|remove particles| "
-                                 "remove and add particles| repartition"),
+                                                  "remove and add particles| repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum tracers per cell", "100",
@@ -297,6 +297,7 @@ namespace aspect
       Particle::Generator::declare_parameters<dim>(prm);
       Particle::Output::declare_parameters<dim>(prm);
       Particle::Integrator::declare_parameters<dim>(prm);
+      Particle::Interpolator::declare_parameters<dim>(prm);
       Particle::Property::Manager<dim>::declare_parameters(prm);
     }
 
@@ -318,7 +319,7 @@ namespace aspect
           tracer_weight = prm.get_integer("Tracer weight");
 
           if (prm.get ("Load balancing strategy") == "none")
-           load_balancing = Particle::World<dim>::no_balancing;
+            load_balancing = Particle::World<dim>::no_balancing;
           else if (prm.get ("Load balancing strategy") == "remove particles")
             load_balancing = Particle::World<dim>::remove_particles;
           else if (prm.get ("Load balancing strategy") == "remove and add particles")
@@ -352,6 +353,12 @@ namespace aspect
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator))
         sim->initialize (this->get_simulator());
 
+      // Create an interpolator object depending on the specified parameter
+      interpolator = Particle::Interpolator::create_particle_interpolator<dim>
+                     (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator))
+        sim->initialize (this->get_simulator());
+
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&property_manager);
       sim->initialize (this->get_simulator());
       property_manager.parse_parameters(prm);
@@ -362,6 +369,7 @@ namespace aspect
 
       // Set up the particle world with the appropriate settings
       world.initialize(integrator,
+                       interpolator,
                        &property_manager,
                        load_balancing,
                        max_tracers_per_cell,

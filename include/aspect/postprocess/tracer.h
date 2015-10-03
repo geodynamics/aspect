@@ -26,6 +26,7 @@
 #include <aspect/particle/output/interface.h>
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/particle/particle.h>
@@ -131,6 +132,11 @@ namespace aspect
          * The integrator to use in moving the particles
          */
         Particle::Integrator::Interface<dim>  *integrator;
+
+        /**
+         * The interpolator to get particle properties
+         */
+        Particle::Interpolator::Interface<dim>  *interpolator;
 
         /**
          * Pointer to an output object
