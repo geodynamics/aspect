@@ -155,7 +155,7 @@ namespace aspect
       // the empty string) then the value we get here is the empty string. If
       // we don't catch this case here, we end up with awkward downstream
       // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "",
+      AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a material model "
                              "('set Model name' in 'subsection Material model')."));
 
@@ -236,31 +236,23 @@ namespace aspect
       prm.enter_subsection ("Material model");
       {
         const std::string pattern_of_names = get_valid_model_names_pattern<dim>();
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "The name of the material model to be used in "
-                               "this simulation. There are many material models "
-                               "you can choose from, as listed below. They generally "
-                               "fall into two category: (i) models that implement "
-                               "a particular case of material behavior, (ii) models "
-                               "that modify other models in some way. We sometimes "
-                               "call the latter ``compositing models''. An example "
-                               "of a compositing model is the ``depth dependent'' model "
-                               "below in that it takes another, freely choosable "
-                               "model as its base and then modifies that model's "
-                               "output in some way."
-                               "\n\n"
-                               "You can select one of the following models:\n\n"
-                               +
-                               std_cxx11::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "The name of the material model to be used in "
+                           "this simulation. There are many material models "
+                           "you can choose from, as listed below. They generally "
+                           "fall into two category: (i) models that implement "
+                           "a particular case of material behavior, (ii) models "
+                           "that modify other models in some way. We sometimes "
+                           "call the latter ``compositing models''. An example "
+                           "of a compositing model is the ``depth dependent'' model "
+                           "below in that it takes another, freely choosable "
+                           "model as its base and then modifies that model's "
+                           "output in some way."
+                           "\n\n"
+                           "You can select one of the following models:\n\n"
+                           +
+                           std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
