@@ -11,7 +11,6 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set End time                               = 0
 
-
 ############### Parameters describing the model
 # We create a coordinate parallel ellipsoidal chunk with
 # a large eccentricity (0.5).
@@ -19,13 +18,13 @@ set End time                               = 0
 subsection Geometry model
   set Model name = ellipsoidal chunk
     subsection Ellipsoidal chunk
-        set NE corner = -10:30
-	set SW corner = 20:-10
-	set Depth = 1000000
-	set Eccentricity = 0.5
-        set East-West subdivisions = 2
-        set North-South subdivisions = 3
-        set Depth subdivisions = 1
+        set NE corner = 7.5:30
+        set SW corner = -7.5:-10
+        set Depth = 3000000
+        set Eccentricity = 0.5
+        set East-West subdivisions = 1
+        set North-South subdivisions = 2
+        set Depth subdivisions = 3
    end
 end
 
@@ -35,17 +34,16 @@ subsection Model settings
   set Tangential velocity boundary indicators = outer,north,south,east,west
   set Prescribed velocity boundary indicators =
 
-  set Fixed temperature boundary indicators   = inner, outer
+  set Fixed temperature boundary indicators   = inner, outer,north,south,east,west
 
   set Include shear heating                   = false
 end
 
 
 subsection Boundary temperature model
-  set Model name = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 1973
-    set Outer temperature = 973
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
   end
 end
 
@@ -84,8 +82,8 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, velocity statistics, basic statistics
 
   subsection Visualization
-    set List of output variables 	  = density
-    set Output format                 = gnuplot
+    set List of output variables          = density
+    set Output format                     = gnuplot
 
   end
 end
