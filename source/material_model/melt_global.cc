@@ -199,9 +199,10 @@ namespace aspect
 
               for (unsigned int c=0;c<in.composition[i].size();++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep_number() > 0)
-                    out.reaction_terms[i][c] = melting_rate;
-                  else if (c == porosity_idx && this->get_timestep_number() > 0)
+                  if (c == peridotite_idx && this->get_timestep_number() > 1)
+                    out.reaction_terms[i][c] = melting_rate
+                                               - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                  else if (c == porosity_idx && this->get_timestep_number() > 1)
                     out.reaction_terms[i][c] = melting_rate
                 	                       * out.densities[i]  / this->get_timestep();
                   else
@@ -365,7 +366,7 @@ namespace aspect
                              "Solidus for a pressure of zero. "
                              "Units: $K$.");
           prm.declare_entry ("Depletion solidus change", "200.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
                              "values, the solidus gets increased for a positive peridotite field "
                              "(depletion) and lowered for a negative peridotite field (enrichment)."
@@ -373,7 +374,7 @@ namespace aspect
                              "is used. "
                              "Units: $K$.");
           prm.declare_entry ("Pressure solidus change", "6e-8",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The linear solidus temperature change with pressure. For positive "
                              "values, the solidus gets increased for positive pressures. "
                              "Units: $1/Pa$.");
