@@ -337,8 +337,8 @@ namespace aspect
               out.reaction_terms[i][c] = 0.0;
           }
 
-          out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::pressure);
-          out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], in.pressure[i], maximum_melt_fractions[i], NonlinearDependence::temperature);
+          out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fractions[i], NonlinearDependence::pressure);
+          out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fractions[i], NonlinearDependence::temperature);
 
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           out.specific_heat[i] = reference_specific_heat;
