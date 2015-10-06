@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -32,6 +32,8 @@ namespace aspect
     {
       /**
        * A class that sets tracer properties to the current velocity.
+       *
+       * @ingroup ParticleProperties
        */
       template <int dim>
       class Velocity : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
@@ -39,42 +41,75 @@ namespace aspect
         public:
           /**
            * Initialization function. This function is called once at the
-           * beginning of the program after parse_parameters is run.
+           * creation of every particle for every property to initialize its
+           * value.
+           *
+           * @param [in] position The current particle position.
+           *
+           * @param [in] solution The values of the solution variables at the
+           * current particle position.
+           *
+           * @param [in] gradients The gradients of the solution variables at
+           * the current particle position.
+           *
+           * @param [in,out] particle_properties The properties of the particle
+           * that is initialized within the call of this function. The purpose
+           * of this function should be to extend this vector by a number of
+           * properties.
            */
+          virtual
           void
-          initialize_particle (std::vector<double> &data,
-                               const Point<dim> &position,
-                               const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim> > &gradients);
+          initialize_one_particle_property (const Point<dim> &position,
+                                            const Vector<double> &solution,
+                                            const std::vector<Tensor<1,dim> > &gradients,
+                                            std::vector<double> &particle_properties) const;
 
           /**
-           * Update function. This function is called once every timestep
-           * to update the particle properties.
+           * Update function. This function is called every time an update is
+           * request by need_update() for every particle for every property.
+           *
+           * @param [in] data_position An unsigned integer that denotes which
+           * component of the particle property vector is associated with the
+           * current property. For properties that own several components it
+           * denotes the first component of this property, all other components
+           * fill consecutive entries in the @p particle_properties vector.
+           *
+           * @param [in] position The current particle position.
+           *
+           * @param [in] solution The values of the solution variables at the
+           * current particle position.
+           *
+           * @param [in] gradients The gradients of the solution variables at
+           * the current particle position.
+           *
+           * @param [in,out] particle_properties The properties of the particle
+           * that is updated within the call of this function.
            */
+          virtual
           void
-          update_particle (unsigned int &data_position,
-                           std::vector<double> &data,
-                           const Point<dim> &position,
-                           const Vector<double> &solution,
-                           const std::vector<Tensor<1,dim> > &gradients);
+          update_one_particle_property (const unsigned int data_position,
+                                        const Point<dim> &position,
+                                        const Vector<double> &solution,
+                                        const std::vector<Tensor<1,dim> > &gradients,
+                                        std::vector<double> &particle_properties) const;
 
           /**
            * This implementation tells the particle manager that
            * we need to update tracer properties over time.
            */
           UpdateTimeFlags
-          need_update ();
-
-          void
-          data_length(std::vector<unsigned int> &length) const;
+          need_update () const;
 
           /**
-           * Set up the name information for the particle property
+           * Set up the information about the names and number of components
+           * this property requires.
            *
-           * @param [in,out] names Vector that contains the property name
+           * @return A vector that contains pairs of the property names and the
+           * number of components this property plugin defines.
            */
-          void
-          data_names(std::vector<std::string> &names) const;
+          virtual
+          std::vector<std::pair<std::string, unsigned int> >
+          get_property_information() const;
       };
     }
   }

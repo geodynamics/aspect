@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -34,24 +34,24 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::initialize_particle (std::vector<double> &,
-                                           const Point<dim> &,
-                                           const Vector<double> &,
-                                           const std::vector<Tensor<1,dim> > &)
+      Interface<dim>::initialize_one_particle_property (const Point<dim> &,
+                                                        const Vector<double> &,
+                                                        const std::vector<Tensor<1,dim> > &,
+                                                        std::vector<double> &) const
       {}
 
       template <int dim>
       void
-      Interface<dim>::update_particle (unsigned int &,
-                                       std::vector<double> &,
-                                       const Point<dim> &,
-                                       const Vector<double> &,
-                                       const std::vector<Tensor<1,dim> > &)
+      Interface<dim>::update_one_particle_property (const unsigned int,
+                                                    const Point<dim> &,
+                                                    const Vector<double> &,
+                                                    const std::vector<Tensor<1,dim> > &,
+                                                    std::vector<double> &) const
       {}
 
       template <int dim>
       UpdateTimeFlags
-      Interface<dim>::need_update ()
+      Interface<dim>::need_update () const
       {
         return update_never;
       }
@@ -84,72 +84,67 @@ namespace aspect
       void
       Manager<dim>::initialize ()
       {
-        unsigned int old_size = 0;
-        data_len = 0;
+        n_property_components = 0;
 
         // Save the names, lengths and positions of the selected properties
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            positions.push_back(data_len);
+            positions.push_back(n_property_components);
 
             (*p)->initialize();
-            (*p)->data_names(names);
-            (*p)->data_length(length);
 
-            for (unsigned int i = old_size; i < length.size(); ++i)
+            const std::vector<std::pair<std::string,unsigned int> > properties = (*p)->get_property_information();
+            property_component_list.insert(property_component_list.end(),properties.begin(),properties.end());
+
+            for (unsigned int i = 0; i < properties.size(); ++i)
               {
-                property_component_map.insert(std::make_pair(names[i],data_len));
-                data_len += length[i];
+                property_position_map.insert(std::make_pair(properties[i].first,n_property_components));
+                n_property_components += properties[i].second;
               }
-            old_size = length.size();
           }
-
-        // The total length is the selected properties plus the basic properties
-        // position and id.
-        data_len += dim + 1;
       }
 
       template <int dim>
       void
-      Manager<dim>::initialize_particle (Particle<dim> &particle,
-                                         const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim> > &gradients)
+      Manager<dim>::initialize_one_particle (Particle<dim> &particle,
+                                             const Vector<double> &solution,
+                                             const std::vector<Tensor<1,dim> > &gradients) const
       {
         std::vector<double> particle_properties (0);
-        particle.set_data_len(data_len);
+        particle.set_n_property_components(n_property_components);
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            (*p)->initialize_particle(particle_properties,
-                                      particle.get_location(),
-                                      solution,
-                                      gradients);
+            (*p)->initialize_one_particle_property(particle.get_location(),
+                                                   solution,
+                                                   gradients,
+                                                   particle_properties);
           }
         particle.set_properties(particle_properties);
       }
 
       template <int dim>
       void
-      Manager<dim>::update_particle (Particle<dim> &particle,
-                                     const Vector<double> &solution,
-                                     const std::vector<Tensor<1,dim> > &gradients)
+      Manager<dim>::update_one_particle (Particle<dim> &particle,
+                                         const Vector<double> &solution,
+                                         const std::vector<Tensor<1,dim> > &gradients) const
       {
         unsigned int property = 0;
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++property)
           {
-            (*p)->update_particle(positions[property],
-                                  particle.get_properties(),
-                                  particle.get_location(),
-                                  solution,
-                                  gradients);
+            (*p)->update_one_particle_property(positions[property],
+                                               particle.get_location(),
+                                               solution,
+                                               gradients,
+                                               particle.get_properties());
           }
       }
 
       template <int dim>
       UpdateTimeFlags
-      Manager<dim>::need_update ()
+      Manager<dim>::need_update () const
       {
         UpdateTimeFlags update = update_never;
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
@@ -162,25 +157,23 @@ namespace aspect
 
       template <int dim>
       unsigned int
-      Manager<dim>::get_data_len () const
+      Manager<dim>::get_n_property_components () const
       {
-        return data_len;
+        return n_property_components;
       }
 
       template <int dim>
       std::size_t
       Manager<dim>::get_particle_size () const
       {
-        return (data_len-1) * sizeof(double) + sizeof(particle_index);
+        return (n_property_components+dim) * sizeof(double) + sizeof(types::particle_index);
       }
 
       template <int dim>
-      void
-      Manager<dim>::get_data_info (std::vector<std::string>  &data_names,
-                                   std::vector<unsigned int> &data_length) const
+      const std::vector<std::pair<std::string, unsigned int> > &
+      Manager<dim>::get_data_info () const
       {
-        data_names = names;
-        data_length = length;
+        return property_component_list;
       }
 
       template <int dim>
@@ -188,8 +181,8 @@ namespace aspect
       Manager<dim>::get_property_component_by_name(const std::string &name) const
       {
         // see if the given name is defined
-        if (property_component_map.find (name) != property_component_map.end())
-          return property_component_map.find(name)->second;
+        if (property_position_map.find (name) != property_position_map.end())
+          return property_position_map.find(name)->second;
         else
           {
             Assert(false,ExcMessage("The particle property manager was asked for "
@@ -286,7 +279,7 @@ namespace aspect
                                      (particle_property));
 
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
-              sim->initialize (this->get_simulator());
+              sim->initialize_simulator (this->get_simulator());
 
             property_list.back()->parse_parameters (prm);
           }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
        */
       template <int dim>
       std::vector<std::vector<double> >
-      FirstParticle<dim>::properties_at_points(const std::multimap<LevelInd, Particle<dim> > &particles,
+      FirstParticle<dim>::properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                                const std::vector<Point<dim> > &positions,
                                                const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell) const
       {
@@ -46,12 +46,12 @@ namespace aspect
         for (unsigned int point = 0; point < positions.size(); ++point)
           {
             // If the caller has not provided a cell, find the cell for every position
-            if (&found_cell == NULL)
+            if (found_cell == typename parallel::distributed::Triangulation<dim>::cell_iterator())
               {
                 found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), positions[point])).first;
               }
 
-            const LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (cell->level(),cell->index());
+            const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (cell->level(),cell->index());
             const Particle<dim> particle = particles.find(cell_index)->second;
             properties[point] = particle.get_properties();
           }

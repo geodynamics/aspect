@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_property_interface_h
 
 #include <aspect/particle/particle.h>
-#include <aspect/particle/definitions.h>
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
 
@@ -38,19 +37,23 @@ namespace aspect
       enum UpdateTimeFlags
       {
         /**
-         * Never update the initially set properties.
+         * Never update the initially set properties. This is the default
+         * behaviour, which is sufficient for particle properties that are
+         * set at the beginning of the model and constant for the whole
+         * simulation time.
          */
         update_never,
         /**
-         * Update the tracer properties before outputting them. This is
-         * sufficient for all tracer properties that depend on the current
-         * solution, like current velocity or pressure.
+         * Update the tracer properties before every output. This is
+         * sufficient for all passive tracer properties that depend on the
+         * current solution, like the current velocity or pressure.
          */
         update_output_step,
         /**
          * Update the tracer properties every timestep. This is only necessary
          * if the properties at the output time depend on some sort of time
-         * integration of solution properties.
+         * integration of solution properties or time varying particle
+         * properties are used while solving the model problem.
          */
         update_time_step
       };
@@ -60,6 +63,8 @@ namespace aspect
         * class to include related particle data. This allows users to attach
         * scalars/vectors/tensors/etc to particles and ensure they are
         * transmitted correctly over MPI and written to output files.
+        *
+        * @ingroup ParticleProperties
         */
       template <int dim>
       class Interface
@@ -76,51 +81,95 @@ namespace aspect
 
           /**
            * Initialization function. This function is called once at the
-           * creation of every particle to set up it's properties.
+           * creation of every particle for every property to initialize its
+           * value.
+           *
+           * @param [in] position The current particle position.
+           *
+           * @param [in] solution The values of the solution variables at the
+           * current particle position.
+           *
+           * @param [in] gradients The gradients of the solution variables at
+           * the current particle position.
+           *
+           * @param [in,out] particle_properties The properties of the particle
+           * that is initialized within the call of this function. The purpose
+           * of this function should be to extend this vector by a number of
+           * properties.
            */
           virtual
           void
-          initialize_particle (std::vector<double> &data,
-                               const Point<dim> &position,
-                               const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim> > &gradients);
+          initialize_one_particle_property (const Point<dim> &position,
+                                            const Vector<double> &solution,
+                                            const std::vector<Tensor<1,dim> > &gradients,
+                                            std::vector<double> &particle_properties) const;
 
           /**
-           * Update function. This function is called every timestep for
-           * every particle to update it's properties. It is obvious that
+           * Update function. This function is called every time an update is
+           * request by need_update() for every particle for every property.
+           * It is obvious that
            * this function is called a lot, so its code should be efficient.
+           * The interface provides a default implementation that does nothing,
+           * therefore derived plugins that do not require an update do not
+           * need to implement this function.
+           *
+           * @param [in] data_position An unsigned integer that denotes which
+           * component of the particle property vector is associated with the
+           * current property. For properties that own several components it
+           * denotes the first component of this property, all other components
+           * fill consecutive entries in the @p particle_properties vector.
+           *
+           * @param [in] position The current particle position.
+           *
+           * @param [in] solution The values of the solution variables at the
+           * current particle position.
+           *
+           * @param [in] gradients The gradients of the solution variables at
+           * the current particle position.
+           *
+           * @param [in,out] particle_properties The properties of the particle
+           * that is updated within the call of this function.
            */
           virtual
           void
-          update_particle (unsigned int &data_position,
-                           std::vector<double> &particle_properties,
-                           const Point<dim> &position,
-                           const Vector<double> &solution,
-                           const std::vector<Tensor<1,dim> > &gradients);
+          update_one_particle_property (const unsigned int data_position,
+                                        const Point<dim> &position,
+                                        const Vector<double> &solution,
+                                        const std::vector<Tensor<1,dim> > &gradients,
+                                        std::vector<double> &particle_properties) const;
 
           /**
-           * Returns a bool, which is false in the default implementation,
-           * telling the property manager that no update is needed. Every
-           * plugin that implements this function should return true. This
-           * saves considerable computation time in cases, when no plugin needs
-           * to update tracer properties over time.
+           * Returns an enum, which determines at what times particle properties
+           * are updated. The default implementation returns update_never, which
+           * signals that particle properties should never be updated.
+           * See the documentation of UpdateTimeFlags for a list of possible
+           * values and examples for their use. Every
+           * plugin that implements this function should return the value
+           * appropriate for its purpose, unless it does not need any update,
+           * which is the default. This option saves considerable computation
+           * time in cases, when no plugin needs to update tracer properties
+           * over time.
            */
           virtual
           UpdateTimeFlags
-          need_update ();
-
-          virtual
-          void
-          data_length(std::vector<unsigned int> &length) const = 0;
+          need_update () const;
 
           /**
-           * Set up the name information for the particle property
+           * Set up the information about the names and number of components
+           * this property requires. Derived classes need to implement this
+           * function.
            *
-           * @param [in,out] names Vector that contains the property name
+           * The purpose of this function is to return a vector of pairs of a
+           * property name and the number of components associated with this
+           * name (e.g. 1 for scalar properties,
+           * n for n-dimensional vectors).
+           *
+           * @return A vector that contains pairs of the property names and the
+           * number of components this property plugin defines.
            */
           virtual
-          void
-          data_names(std::vector<std::string> &names) const = 0;
+          std::vector<std::pair<std::string, unsigned int> >
+          get_property_information() const = 0;
 
 
           /**
@@ -154,8 +203,9 @@ namespace aspect
 
 
       /**
-       * Manager class of properties - This class sets the data of the particles
-       * and updates it over time if requested by the user selected properties
+       * Manager class of properties - This class sets the data of the
+       * collection of particles and updates it over time if requested by the
+       * user selected properties.
        */
       template <int dim>
       class Manager : public SimulatorAccess<dim>
@@ -169,76 +219,77 @@ namespace aspect
           /**
            * Destructor for Manager
            */
-          virtual
           ~Manager ();
 
           /**
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run.
            */
-          virtual
           void
           initialize ();
 
           /**
            * Initialization function for particle properties. This function is
-           * called once at the creation of a particle
+           * called once for each of the particles of a particle
+           * collection after it was created.
            */
-          virtual
           void
-          initialize_particle (Particle<dim> &particle,
-                               const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim> > &gradients);
+          initialize_one_particle (Particle<dim> &particle,
+                                   const Vector<double> &solution,
+                                   const std::vector<Tensor<1,dim> > &gradients) const;
 
           /**
            * Update function for particle properties. This function is
-           * called once every timestep for every particle
+           * called once every time step for every particle.
            */
-          virtual
           void
-          update_particle (Particle<dim> &particle,
-                           const Vector<double> &solution,
-                           const std::vector<Tensor<1,dim> > &gradients);
+          update_one_particle (Particle<dim> &particle,
+                               const Vector<double> &solution,
+                               const std::vector<Tensor<1,dim> > &gradients) const;
 
           /**
-           * Returns a bool, which is false if no selected plugin needs to
-           * update tracer properties over time. This saves considerable
-           * computation time in cases, when no plugin needs to update tracer
+           * Returns an enum, which denotes at what time this class needs to
+           * update tracer properties. The result of this class is a
+           * combination of the need_update() functions of all individual
+           * properties that are selected. More precise, it will choose to
+           * update the tracer properties as often as the plugin that needs the
+           * most frequent update option requires. This saves considerable
+           * computation time, e.g. in cases when no plugin needs to update tracer
            * properties over time, because the solution does not need to be
-           * evaluated at tracer positions in this case.
+           * evaluated in this case.
            */
-          virtual
           UpdateTimeFlags
-          need_update ();
+          need_update () const;
 
           /**
-           * Get the number of doubles required to represent this particle's
-           * properties for communication.
+           * Get the number of components required to represent this particle's
+           * properties.
            *
-           * @return Number of doubles required to represent this particle
+           * @return Number of doubles required to represent this particle's
+           * additional properties.
            */
           unsigned int
-          get_data_len () const;
+          get_n_property_components () const;
 
           /**
            * Get the size in number of bytes required to represent this
-           * particle's properties for communication.
+           * particle's properties for communication. This is essentially the
+           * space needed for the property components plus the space for the
+           * particle position and the space needed for its ID.
            *
-           * @return Number of bytes required to represent this particle
+           * @return Number of bytes required to represent this particle.
            */
           std::size_t
           get_particle_size () const;
 
           /**
-           * Get the names and number of particle properties from the
-           * property_manager.
+           * Get the names and number of components of particle properties.
            *
-           * @param [inout] names Vector of property names attached to particles
-           * @param [inout] length Number of doubles needed to represent properties
+           * @return A vector of pairs for each property name and the
+           * corresponding number of components attached to particles.
            */
-          void
-          get_data_info (std::vector<std::string> &names,
-                         std::vector<unsigned int> &length) const;
+          const std::vector<std::pair<std::string,unsigned int> > &
+          get_data_info() const;
 
           /**
            * Get the position of the property specified by name in the property
@@ -248,7 +299,7 @@ namespace aspect
           get_property_component_by_name(const std::string &name) const;
 
           /**
-           * A function that is used to register visualization postprocessor
+           * A function that is used to register particle property
            * objects in such a way that the Manager can deal with all of them
            * without having to know them by name. This allows the files in which
            * individual properties are implemented to register these
@@ -283,7 +334,6 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
           parse_parameters (ParameterHandler &prm);
 
@@ -295,33 +345,31 @@ namespace aspect
           std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
 
           /**
-           * A map between names of properties and their data component.
+           * A map between names of properties and the position of their
+           * first data component in the particle property vector.
            */
-          std::map<std::string,unsigned int> property_component_map;
+          std::map<std::string,unsigned int> property_position_map;
 
           /**
-           * The number of doubles needed to represent a typical tracer
+           * The number of doubles needed to represent a tracer's
+           * additional properties.
            */
-          unsigned int data_len;
+          unsigned int n_property_components;
 
           /**
-           * Vector of the names of the properties that are selected in this
-           * model. This vector has as many components as individually named
-           * fields in the properties.
+           * Vector of the names and number of components of the properties
+           * that are selected in this
+           * model. This vector has as many entries as individually named
+           * fields in the properties, which does not need to be the size of
+           * the property_list, because a single property plugin can define
+           * several properties (scalar or vector).
            */
-          std::vector<std::string> names;
-
-          /**
-           * Vector of the data length of the properties that are selected in
-           * this model. This vector has as many components as individually named
-           * fields in the properties.
-           */
-          std::vector<unsigned int> length;
+          std::vector<std::pair<std::string,unsigned int> > property_component_list;
 
           /**
            * Vector of the data positions of individual property plugins.
            * This vector has as many components as property plugins selected.
-           * It can be different from length of names or length, because
+           * It can be different from property_position_map, because
            * single plugins can define multiple data fields.
            */
           std::vector<unsigned int> positions;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 
 #include <boost/random.hpp>
 #include <deal.II/base/std_cxx11/array.h>
-#include <deal.II/grid/grid_tools.h>
 
 
 namespace aspect
@@ -35,10 +34,12 @@ namespace aspect
       UniformBox<dim>::UniformBox() {}
 
       template <int dim>
-      void
-      UniformBox<dim>::generate_particles(World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      UniformBox<dim>::generate_particles()
       {
-        particle_index cur_id = 0;
+        std::multimap<types::LevelInd, Particle<dim> > particles;
+
+        types::particle_index cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
 
         double volume(1.0);
@@ -55,37 +56,27 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
           }
 
-        for (particle_index i = 0; i < nParticles[0]; ++i)
+        for (types::particle_index i = 0; i < nParticles[0]; ++i)
           {
-            for (particle_index j = 0; j < nParticles[1]; ++j)
+            for (types::particle_index j = 0; j < nParticles[1]; ++j)
               {
                 if (dim == 2)
-                  generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]),cur_id++,world);
+                  {
+                    const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]);
+                    particles.insert(this->generate_particle(particle_position,cur_id++));
+                  }
                 else if (dim == 3)
                   for (unsigned int k = 0; k < nParticles[2]; ++k)
-                    generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]),cur_id++,world);
+                    {
+                      const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
+                      particles.insert(this->generate_particle(particle_position,cur_id++));
+                    }
                 else
                   ExcNotImplemented();
               }
           }
-      }
 
-
-      template <int dim>
-      void
-      UniformBox<dim>::generate_particle(const Point<dim> &position,
-                                         const particle_index id,
-                                         World<dim> &world)
-      {
-        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
-
-        if (it->is_locally_owned())
-          {
-            //Only try to add the point if the cell it is in, is on this processor
-            Particle<dim> new_particle(position, id);
-            world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-          }
+        return particles;
       }
 
 
@@ -145,7 +136,7 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
-            n_tracers    = static_cast<particle_index>(prm.get_double ("Number of tracers"));
+            n_tracers    = static_cast<types::particle_index>(prm.get_double ("Number of tracers"));
 
             prm.enter_subsection("Generator");
             {
@@ -185,7 +176,9 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
                                          "uniform box",
                                          "Generate a uniform distribution of particles "
-                                         "over a rectangular domain in 2D or 3D. Note that in order "
+                                         "over a rectangular domain in 2D or 3D. Uniform here means "
+                                         "the particles will be generated with an equal spacing in "
+                                         "each spatial dimension. Note that in order "
                                          "to produce a regular distribution the number of generated "
                                          "tracers might not exactly match the one specified in the "
                                          "input file.")

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -27,11 +27,11 @@ namespace aspect
     template <int dim>
     inline
     Particle<dim>::Particle (const Point<dim> &new_loc,
-                             const particle_index &new_id)
+                             const types::particle_index &new_id)
       :
       location (new_loc),
       id (new_id),
-      val ()
+      properties ()
     {
     }
 
@@ -41,7 +41,7 @@ namespace aspect
       :
       location (),
       id (0),
-      val()
+      properties()
     {
     }
 
@@ -49,19 +49,24 @@ namespace aspect
     template <int dim>
     inline
     Particle<dim>::Particle (const void *&data,
-                             const unsigned int data_len)
-      :
-      val(data_len-dim-1)
+                             const unsigned int data_size)
     {
-      const particle_index *id_data = static_cast<const particle_index *> (data);
+      // The data_size includes the space for position and id, so the number
+      // of properties is the total size minus the space for position and id
+      // divided by the size of one double (currently we only allow doubles as
+      // tracer properties).
+      const unsigned int property_size = data_size - dim * sizeof(double) - sizeof(types::particle_index);
+      properties.resize(property_size / sizeof(double));
+
+      const types::particle_index *id_data = static_cast<const types::particle_index *> (data);
       id = *id_data++;
       const double *pdata = reinterpret_cast<const double *> (id_data);
 
       for (unsigned int i = 0; i < dim; ++i)
         location(i) = *pdata++;
 
-      for (unsigned int i = 0; i < val.size(); ++i)
-        val [i] = *pdata++;
+      for (unsigned int i = 0; i < properties.size(); ++i)
+        properties [i] = *pdata++;
 
       data = static_cast<const void *> (pdata);
     }
@@ -83,16 +88,16 @@ namespace aspect
 
     template <int dim>
     void
-    Particle<dim>::set_data_len (const unsigned int data_len)
+    Particle<dim>::set_n_property_components (const unsigned int n_components)
     {
-      val.resize(data_len - dim - 1);
+      properties.resize(n_components);
     }
 
     template <int dim>
     void
     Particle<dim>::write_data (void *&data) const
     {
-      particle_index *id_data  = static_cast<particle_index *> (data);
+      types::particle_index *id_data  = static_cast<types::particle_index *> (data);
       *id_data = id;
       ++id_data;
       double *pdata = reinterpret_cast<double *> (id_data);
@@ -102,17 +107,10 @@ namespace aspect
         *pdata =location(i);
 
       // Write property data
-      for (unsigned int i = 0; i < val.size(); ++i,++pdata)
-        *pdata = val[i];
+      for (unsigned int i = 0; i < properties.size(); ++i,++pdata)
+        *pdata = properties[i];
 
       data = static_cast<void *> (pdata);
-    }
-
-    template <int dim>
-    unsigned int
-    Particle<dim>::data_len () const
-    {
-      return dim + 1 + val.size();
     }
 
 
@@ -124,7 +122,7 @@ namespace aspect
     }
 
     template <int dim>
-    particle_index
+    types::particle_index
     Particle<dim>::get_id () const
     {
       return id;
@@ -134,21 +132,21 @@ namespace aspect
     void
     Particle<dim>::set_properties (const std::vector<double> &new_properties)
     {
-      val = new_properties;
+      properties = new_properties;
     }
 
     template <int dim>
     const std::vector<double> &
     Particle<dim>::get_properties () const
     {
-      return val;
+      return properties;
     }
 
     template <int dim>
     std::vector<double> &
     Particle<dim>::get_properties ()
     {
-      return val;
+      return properties;
     }
   }
 }

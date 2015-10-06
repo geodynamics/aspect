@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/generator/random_function.h>
+#include <aspect/particle/generator/probability_density_function.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -34,18 +34,57 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      RandomFunction<dim>::RandomFunction()
+      ProbabilityDensityFunction<dim>::ProbabilityDensityFunction()
         :
-        random_number_generator(5432)
+        random_number_generator(5432),
+        n_tracers()
       {}
 
       template <int dim>
-      void
-      RandomFunction<dim>::generate_particles(World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      ProbabilityDensityFunction<dim>::generate_particles()
       {
-        const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-        const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        // Get the local accumulated probabilities for every cell
+        const std::vector<double> accumulated_cell_weights = local_accumulated_cell_weights();
 
+        // Sum the local integrals over all nodes
+        double local_function_integral = accumulated_cell_weights.back();
+        const double global_function_integral = Utilities::MPI::sum (local_function_integral,
+                                                                     this->get_mpi_communicator());
+
+        AssertThrow(global_function_integral > std::numeric_limits<double>::min(),
+                    ExcMessage("The integral of the user prescribed probability density function over the domain equals zero, "
+                               "ASPECT has no way to determine the cell of generated tracers. Please ensure that the provided "
+                               "function is positive in at least a part of the domain, also check the syntax of the function."));
+
+        // Determine the starting weight of this process, which is the sum of
+        // the weights of all processes with a lower rank
+        double start_weight = 0.0;
+        MPI_Scan(&local_function_integral, &start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        start_weight -= local_function_integral;
+
+        // Build the map between integrated probability density and cell
+        std::map<double, types::LevelInd> cell_weights;
+        typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
+                                                       endc = this->get_dof_handler().end();
+        for (unsigned int i = 0; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              // adjust the cell_weights according to the local starting weight
+              cell_weights.insert(std::make_pair(accumulated_cell_weights[i] + start_weight, types::LevelInd(cell->level(),cell->index())));
+              ++i;
+            }
+
+        // Calculate start and end IDs so there are no gaps
+        const types::particle_index start_id = llround(n_tracers * start_weight / global_function_integral) + 1;
+
+        return generate_particles_in_subdomain(cell_weights,global_function_integral,start_weight,n_tracers, 1.1 * start_id);
+      }
+
+      template <int dim>
+      std::vector<double>
+      ProbabilityDensityFunction<dim>::local_accumulated_cell_weights () const
+      {
         //evaluate function at all cell midpoints, sort cells according to weight
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_quadrature_points = quadrature_formula.size();
@@ -81,68 +120,36 @@ namespace aspect
               // Start from the weight of the previous cell
               accumulated_cell_weights.push_back(next_cell_weight);
             }
-
-        double local_function_integral = accumulated_cell_weights.back();
-        double global_function_integral;
-
-        // Sum the local integrals over all nodes
-        MPI_Allreduce(&local_function_integral, &global_function_integral, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
-
-        // Get the local integrals of all processes
-        std::vector<double> local_integrals(world_size);
-        MPI_Allgather(&local_function_integral, 1, MPI_DOUBLE, &(local_integrals[0]), 1, MPI_DOUBLE, this->get_mpi_communicator());
-
-        // Determine the starting weight of this process, which is the sum of
-        // the weights of all processes with a lower rank
-        double start_weight=0.0;
-        for (unsigned int i = 1; i <= self_rank; ++i)
-          start_weight += local_integrals[i-1];
-
-
-        std::map<double, LevelInd> cells;
-        // compute the integral weight by quadrature
-        cell = this->get_dof_handler().begin_active();
-        for (unsigned int i = 0; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              cells.insert(std::make_pair(accumulated_cell_weights[i]+start_weight,LevelInd(cell->level(),cell->index())));
-              i++;
-            }
-
-        // adjust the cell_weights to the local starting weight
-        for (unsigned int i = 0; i < accumulated_cell_weights.size(); ++i)
-          accumulated_cell_weights[i] += start_weight;
-
-        // Calculate start and end IDs so there are no gaps
-        const particle_index start_id = llround(n_tracers * start_weight / global_function_integral) + 1;
-
-        uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,n_tracers, 1.1 * start_id,world);
+        return accumulated_cell_weights;
       }
 
       template <int dim>
-      void
-      RandomFunction<dim>::uniform_random_particles_in_subdomain (const std::map<double,LevelInd> &cells,
-                                                                  const double global_weight,
-                                                                  const double start_weight,
-                                                                  const particle_index num_particles,
-                                                                  const particle_index start_id,
-                                                                  World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::map<double,types::LevelInd> &cells,
+                                                                        const double global_weight,
+                                                                        const double start_weight,
+                                                                        const types::particle_index num_particles,
+                                                                        const types::particle_index start_id)
       {
+        std::multimap<types::LevelInd, Particle<dim> > particles;
+
         // Pick cells and assign particles at random points inside them
-        for (particle_index cur_id = start_id; cur_id<start_id+num_particles; ++cur_id)
+        for (types::particle_index cur_id = start_id; cur_id < start_id + num_particles; ++cur_id)
           {
-            // Select a cell based on relative volume
+            // Draw the random number that determines the cell of the tracer
             const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
 
-            if ((random_weight < start_weight) || (cells.lower_bound(random_weight) == cells.end()))
+            // If the selected cell is not owned by this process, continue with next tracer
+            const std::map<double,types::LevelInd>::const_iterator select_cell_iterator = cells.lower_bound(random_weight);
+            if ((random_weight < start_weight) || (select_cell_iterator == cells.end()))
               continue;
 
-            const LevelInd select_cell = cells.lower_bound(random_weight)->second;
+            const types::LevelInd select_cell = select_cell_iterator->second;
 
             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
             it (&(this->get_triangulation()), select_cell.first, select_cell.second);
 
-            Point<dim> max_bounds, min_bounds, pt;
+            Point<dim> max_bounds, min_bounds;
             // Get the bounds of the cell defined by the vertices
             for (unsigned int d=0; d<dim; ++d)
               {
@@ -151,26 +158,27 @@ namespace aspect
               }
             for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
               {
-                pt = it->vertex(v);
+                const Point<dim> vertex_position = it->vertex(v);
                 for (unsigned int d=0; d<dim; ++d)
                   {
-                    min_bounds[d] = fmin(pt[d], min_bounds[d]);
-                    max_bounds[d] = fmax(pt[d], max_bounds[d]);
+                    min_bounds[d] = fmin(vertex_position[d], min_bounds[d]);
+                    max_bounds[d] = fmax(vertex_position[d], max_bounds[d]);
                   }
               }
 
             // Generate random points in these bounds until one is within the cell
             unsigned int num_tries = 0;
+            Point<dim> particle_position;
             while (num_tries < 100)
               {
                 for (unsigned int d=0; d<dim; ++d)
                   {
-                    pt[d] = uniform_distribution_01(random_number_generator) *
-                            (max_bounds[d]-min_bounds[d]) + min_bounds[d];
+                    particle_position[d] = uniform_distribution_01(random_number_generator) *
+                                           (max_bounds[d]-min_bounds[d]) + min_bounds[d];
                   }
                 try
                   {
-                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, pt);
+                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, particle_position);
                     if (GeometryInfo<dim>::is_inside_unit_cell(p_unit)) break;
                   }
                 catch (typename Mapping<dim>::ExcTransformationFailed &)
@@ -182,16 +190,18 @@ namespace aspect
             AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
 
             // Add the generated particle to the set
-            Particle<dim> new_particle(pt, cur_id);
-            world.add_particle(new_particle, select_cell);
+            const Particle<dim> new_particle(particle_position, cur_id);
+            particles.insert(std::make_pair(select_cell, new_particle));
           }
+
+        return particles;
       }
 
 
 
       template <int dim>
       void
-      RandomFunction<dim>::declare_parameters (ParameterHandler &prm)
+      ProbabilityDensityFunction<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -222,13 +232,13 @@ namespace aspect
 
       template <int dim>
       void
-      RandomFunction<dim>::parse_parameters (ParameterHandler &prm)
+      ProbabilityDensityFunction<dim>::parse_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Tracers");
           {
-            n_tracers    = static_cast<particle_index>(prm.get_double ("Number of tracers"));
+            n_tracers    = static_cast<types::particle_index>(prm.get_double ("Number of tracers"));
 
             prm.enter_subsection("Generator");
             {
@@ -267,8 +277,8 @@ namespace aspect
   {
     namespace Generator
     {
-      ASPECT_REGISTER_PARTICLE_GENERATOR(RandomFunction,
-                                         "random function",
+      ASPECT_REGISTER_PARTICLE_GENERATOR(ProbabilityDensityFunction,
+                                         "probability density function",
                                          "Generate random distribution of "
                                          "particles over entire simulation domain. "
                                          "The particle density is prescribed in the "
@@ -278,7 +288,8 @@ namespace aspect
                                          "Section~\\ref{sec:muparser-format}. The "
                                          "return value of the function is always "
                                          "interpreted as a positive probability "
-                                         "density.")
+                                         "density but it can be set to zero in"
+                                         "parts of the domain.")
     }
   }
 }

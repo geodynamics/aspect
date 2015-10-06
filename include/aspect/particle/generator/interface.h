@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,9 +21,9 @@
 #ifndef __aspect__particle_generator_interface_h
 #define __aspect__particle_generator_interface_h
 
-#include <aspect/particle/world.h>
 #include <aspect/particle/particle.h>
 #include <aspect/plugins.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -31,13 +31,21 @@ namespace aspect
 {
   namespace Particle
   {
+    /**
+     * A namespace in which we define everything that has to do with defining
+     * the particle generation.
+     *
+     * @ingroup ParticleGenerators
+     */
     namespace Generator
     {
       /**
-       * Abstract base class used for classes that generate particles
+       * Abstract base class used for classes that generate particles.
+       *
+       * @ingroup ParticleGenerators
        */
       template <int dim>
-      class Interface
+      class Interface : public SimulatorAccess<dim>
       {
         public:
           /**
@@ -52,20 +60,18 @@ namespace aspect
           virtual ~Interface () {}
 
           /**
-           * Generate a specified number of particles in the specified world
-           * using the type of generation function implemented by this
-           * Generator.
+           * Generate particles. Every derived class
+           * has to decide on the method and number of particles to generate,
+           * for example using input parameters declared in their
+           * declare_parameters and parse_parameters functions. This function
+           * should generate the particles and associate them to their according
+           * cells by inserting them into a multimap between cell and particle.
            *
-           * @param [in] total_num_particles Total number of particles to
-           * generate. The actual number of generated particles may differ,
-           * for example if the generator reads particles from a file this
-           * parameter may be ignored.
-           * @param [inout] world The particle world the particles will exist in
-           *
+           * @return A multimap containing cells and their contained particles.
            */
           virtual
-          void
-          generate_particles(World<dim> &world) = 0;
+          std::multimap<types::LevelInd, Particle<dim> >
+          generate_particles() = 0;
 
 
           /**
@@ -87,6 +93,16 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
+
+        protected:
+          /**
+           * Generate a particle at the specified position and with the
+           * specified id. Many derived classes use this functionality,
+           * therefore it is implemented here to avoid duplication.
+           */
+          std::pair<types::LevelInd,Particle<dim> >
+          generate_particle(const Point<dim> &position,
+                            const types::particle_index id) const;
       };
 
       /**

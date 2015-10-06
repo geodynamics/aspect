@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -20,8 +20,6 @@
 
 #include <aspect/particle/generator/ascii_file.h>
 
-#include <deal.II/grid/grid_tools.h>
-
 
 namespace aspect
 {
@@ -33,8 +31,8 @@ namespace aspect
       AsciiFile<dim>::AsciiFile() {}
 
       template <int dim>
-      void
-      AsciiFile<dim>::generate_particles(World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      AsciiFile<dim>::generate_particles()
       {
         const std::string filename = data_directory+data_filename;
         std::ifstream in(filename.c_str(), std::ios::in);
@@ -45,7 +43,7 @@ namespace aspect
                                              +
                                              ">.")));
 
-        // Read header lines and table size
+        // Read header lines
         while (in.peek() == '#')
           {
             std::string temp;
@@ -53,42 +51,26 @@ namespace aspect
           }
 
         // Read data lines
-        particle_index id = 0;
+        types::particle_index id = 0;
         Point<dim> coordinates;
+        std::multimap<types::LevelInd, Particle<dim> > particles;
 
         if (dim == 2)
           while (in >> coordinates[0] >> coordinates[1])
             {
-              generate_particle(coordinates,id,world);
+              particles.insert(this->generate_particle(coordinates,id));
               id++;
             }
         else if (dim == 3)
           while (in >> coordinates[0] >> coordinates[1] >> coordinates[2])
             {
-              generate_particle(coordinates,id,world);
+              particles.insert(this->generate_particle(coordinates,id));
               id++;
             }
         else
           Assert(false,ExcNotImplemented());
-      }
 
-
-
-      template <int dim>
-      void
-      AsciiFile<dim>::generate_particle(const Point<dim> &position,
-                                        const particle_index id,
-                                        World<dim> &world)
-      {
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
-
-        if (it->is_locally_owned())
-          {
-            //Only try to add the point if the cell it is in, is on this processor
-            Particle<dim> new_particle(position, id);
-            world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-          }
+        return particles;
       }
 
 

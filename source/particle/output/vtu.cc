@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -36,10 +36,9 @@ namespace aspect
 
       template <int dim>
       std::string
-      VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
-                                           const std::vector<std::string> &names,
-                                           const std::vector<unsigned int> &lengths,
-                                           const double &current_time)
+      VTUOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                           const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                           const double current_time)
       {
         const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
         const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
@@ -64,7 +63,7 @@ namespace aspect
         // Go through the particles on this domain and print the position of each one
         output << "      <Points>\n";
         output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
              it=particles.begin(); it!=particles.end(); ++it)
           {
             output << "          " << it->second.get_location();
@@ -98,37 +97,36 @@ namespace aspect
         output << "      <PointData Scalars=\"scalars\">\n";
 
         output << "        <DataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
              it=particles.begin(); it!=particles.end(); ++it)
           output << "          " << it->second.get_id() << "\n" ;
 
         output << "        </DataArray>\n";
 
         // Print the data associated with the particles, skipping the first entry (position)
-        std::vector<std::string>::const_iterator name = names.begin();
-        std::vector<unsigned int>::const_iterator length = lengths.begin();
+        std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
         unsigned int data_offset = 0;
 
-        for (; name!=names.end(); ++name,++length)
+        for (; property!=property_component_list.end(); ++property)
           {
 
-            output << "        <DataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" Format=\"ascii\">\n";
-            for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
+            output << "        <DataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" Format=\"ascii\">\n";
+            for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
                 const std::vector<double> particle_data = it->second.get_properties();
 
                 output << "          ";
 
-                for (unsigned int d=0; d<*length; ++d)
+                for (unsigned int d=0; d < property->second; ++d)
                   {
                     output << particle_data[data_offset+d] << " ";
                   }
-                if (*length == 2)
+                if (property->second == 2)
                   output << "0 ";
                 output << "\n";
               }
-            data_offset += *length;
+            data_offset += property->second;
             output << "        </DataArray>\n";
           }
         output << "      </PointData>\n";
@@ -158,9 +156,9 @@ namespace aspect
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
             pvtu_output << "      <PDataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
 
-            for (name=names.begin(),length=lengths.begin(); name!=names.end(); ++name,++length)
+            for (property=property_component_list.begin(); property!=property_component_list.end(); ++property)
               {
-                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" format=\"ascii\"/>\n";
+                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)

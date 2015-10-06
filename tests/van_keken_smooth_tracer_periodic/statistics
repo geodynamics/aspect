@@ -17,5 +17,5 @@
 # 17: Global mass for composition C_1
 # 18: Number of advected particles
 # 19: Particle file name
-0 0.0000e+00 256 2467 1089 1089 0  0 33 24 4 7.0000e+01 1.81487741e-04 4.04466709e-04  0.00000000e+00 1.00000000e+00 1.82454287e-01 11 output-van-keken-smooth-tracer-radial/output-van-keken-smooth-tracer-radial/particles-00000 
-1 7.0000e+01 256 2467 1089 1089 0 14 33 24 4 3.9382e+01 3.27312910e-04 7.27581702e-04 -2.20654268e-03 1.00187358e+00 1.82473299e-01 11 output-van-keken-smooth-tracer-radial/output-van-keken-smooth-tracer-radial/particles-00001 
+0 0.0000e+00 256 2467 1089 1089 0  0 33 23 27 7.0000e+01 1.54661470e-04 3.81585753e-04  0.00000000e+00 1.00000000e+00 1.82080183e-01 10 output-van_keken_smooth_tracer_periodic/output-van_keken_smooth_tracer_periodic/particles-00000 
+1 7.0000e+01 256 2467 1089 1089 0 14 33 23 27 3.4221e+01 3.41092014e-04 8.41016590e-04 -3.56591229e-03 1.00494083e+00 1.82097734e-01 10 output-van_keken_smooth_tracer_periodic/output-van_keken_smooth_tracer_periodic/particles-00001 

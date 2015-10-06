@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -33,8 +33,8 @@ namespace aspect
       RandomUniform<dim>::RandomUniform() {}
 
       template <int dim>
-      void
-      RandomUniform<dim>::generate_particles(World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      RandomUniform<dim>::generate_particles()
       {
         // Calculate the number of particles in this domain as a fraction of total volume
         double local_volume = 0;
@@ -50,34 +50,33 @@ namespace aspect
           }
 
         // Sum the local volumes over all nodes
-        double total_volume = 0.0;
-        MPI_Allreduce(&local_volume, &total_volume, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        const double total_volume = Utilities::MPI::sum(local_volume,this->get_mpi_communicator());
 
         // Assign this subdomain the appropriate fraction
-        double subdomain_fraction = local_volume/total_volume;
+        double subdomain_fraction = local_volume / total_volume;
 
         // Sum the subdomain fractions so we don't miss particles from rounding and to create unique IDs
         double end_fraction = 0.0;
         MPI_Scan(&subdomain_fraction, &end_fraction, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
-        const double start_fraction = end_fraction-subdomain_fraction;
+        const double start_fraction = end_fraction - subdomain_fraction;
 
         // Calculate start and end IDs so there are no gaps
         // TODO: this can create gaps for certain processor counts because of
         // floating point imprecision, figure out how to fix it
-        const particle_index start_id = static_cast<particle_index>(std::ceil(start_fraction*n_tracers));
-        const particle_index  end_id   = static_cast<particle_index>(fmin(std::ceil(end_fraction*n_tracers), n_tracers));
-        const particle_index  subdomain_particles = end_id - start_id;
+        const types::particle_index start_id = static_cast<types::particle_index>(std::ceil(start_fraction*n_tracers));
+        const types::particle_index end_id   = static_cast<types::particle_index>(fmin(std::ceil(end_fraction*n_tracers), n_tracers));
+        const types::particle_index subdomain_particles = end_id - start_id;
 
-        uniform_random_particles_in_subdomain(subdomain_particles, start_id, world);
+        return uniform_random_particles_in_subdomain(subdomain_particles, start_id);
       }
 
       template <int dim>
-      void
-      RandomUniform<dim>::uniform_random_particles_in_subdomain (const particle_index subdomain_particles,
-                                                                 const particle_index start_id,
-                                                                 World<dim> &world)
+      std::multimap<types::LevelInd, Particle<dim> >
+      RandomUniform<dim>::uniform_random_particles_in_subdomain (const types::particle_index subdomain_particles,
+                                                                 const types::particle_index start_id)
       {
-        std::map<double, LevelInd> roulette_wheel;
+        std::map<double, types::LevelInd> roulette_wheel;
+        std::multimap<types::LevelInd, Particle<dim> > particles;
 
         // Create the roulette wheel based on volumes of local cells
         double total_volume = 0;
@@ -89,21 +88,21 @@ namespace aspect
                 // Assign an index to each active cell for selection purposes
                 total_volume += it->measure();
                 // Save the cell index and level for later access
-                roulette_wheel.insert(std::make_pair(total_volume, std::make_pair(it->level(), it->index())));
+                roulette_wheel.insert(std::make_pair(total_volume, types::LevelInd(it->level(), it->index())));
               }
           }
 
         // Pick cells and assign particles at random points inside them
-        for (particle_index cur_id = start_id; cur_id<start_id+subdomain_particles; ++cur_id)
+        for (types::particle_index cur_id = start_id; cur_id < start_id + subdomain_particles; ++cur_id)
           {
             // Select a cell based on relative volume
             const double roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
-            const LevelInd select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
+            const types::LevelInd select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
 
             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
             it (&(this->get_triangulation()), select_cell.first, select_cell.second);
 
-            Point<dim>            pt, max_bounds, min_bounds;
+            Point<dim> pt, max_bounds, min_bounds;
             // Get the bounds of the cell defined by the vertices
             for (unsigned int d=0; d<dim; ++d)
               {
@@ -143,9 +142,10 @@ namespace aspect
             AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
 
             // Add the generated particle to the set
-            Particle<dim> new_particle(pt, cur_id);
-            world.add_particle(new_particle, select_cell);
+            const Particle<dim> new_particle(pt, cur_id);
+            particles.insert(std::make_pair(select_cell,new_particle));
           }
+        return particles;
       }
 
 

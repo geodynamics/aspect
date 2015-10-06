@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -27,7 +27,7 @@ namespace aspect
     namespace Integrator
     {
       template <int dim>
-      RK2Integrator<dim>::RK2Integrator()
+      RK2<dim>::RK2()
       {
         step = 0;
         loc0.clear();
@@ -35,19 +35,19 @@ namespace aspect
 
       template <int dim>
       void
-      RK2Integrator<dim>::local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
-                                               const std::vector<Tensor<1,dim> > &old_velocities,
-                                               const std::vector<Tensor<1,dim> > &velocities,
-                                               const double dt)
+      RK2<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                                     const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+                                     const std::vector<Tensor<1,dim> > &old_velocities,
+                                     const std::vector<Tensor<1,dim> > &velocities,
+                                     const double dt)
       {
-        typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
+        typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
         for (; it!=end_particle, vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const particle_index id_num = it->second.get_id();
+            const types::particle_index id_num = it->second.get_id();
             const Point<dim> loc = it->second.get_location();
             if (step == 0)
               {
@@ -67,33 +67,31 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      RK2Integrator<dim>::advance_step()
+      bool
+      RK2<dim>::new_integration_step()
       {
         if (step == 1) loc0.clear();
         step = (step+1)%2;
-      }
 
-      template <int dim>
-      bool
-      RK2Integrator<dim>::continue_integration() const
-      {
         // Continue until we're at the last step
         return (step != 0);
       }
 
       template <int dim>
       unsigned int
-      RK2Integrator<dim>::data_length() const
+      RK2<dim>::get_data_size() const
       {
-        return dim;
+        // TODO: If we finished integration we do not need to transfer integrator data. Return 0 in that case.
+        return dim * sizeof(double);
       }
 
       template <int dim>
       void
-      RK2Integrator<dim>::read_data(const void *&data,
-                                    const particle_index id_num)
+      RK2<dim>::read_data(const void *&data,
+                          const types::particle_index id_num)
       {
+        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+
         const double *integrator_data = static_cast<const double *> (data);
 
         // Read location data
@@ -105,13 +103,15 @@ namespace aspect
 
       template <int dim>
       void
-      RK2Integrator<dim>::write_data(void *&data,
-                                     const particle_index id_num) const
+      RK2<dim>::write_data(void *&data,
+                           const types::particle_index id_num) const
       {
+        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        const typename std::map<particle_index, Point<dim> >::const_iterator it = loc0.find(id_num);
+        const typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(id_num);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it->second(i);
 
@@ -129,7 +129,7 @@ namespace aspect
   {
     namespace Integrator
     {
-      ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2Integrator,
+      ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
                                           "rk2",
                                           "Runge Kutta second order integrator, where "
                                           "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "

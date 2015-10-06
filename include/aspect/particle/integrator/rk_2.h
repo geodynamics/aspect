@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -35,93 +35,105 @@ namespace aspect
       /**
        * Runge Kutta second order integrator, where y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n).
        * This scheme requires storing the original location, and the read/write_data functions reflect this.
+       *
+       * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class RK2Integrator : public Interface<dim>, public SimulatorAccess<dim>
+      class RK2 : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
-          RK2Integrator();
+          RK2();
 
           /**
            * Perform an integration step of moving the particles of one cell
-           * by the specified timestep dt. Implementations of this function
-           * must update the particle location. Between calls to this function
-           * the velocity at the updated particle positions is evaluated and
-           * passed to integrate_step during the next call.
+           * by the specified timestep dt. This function implements a
+           * second-order accurate Runge-Kutta integration scheme.
            *
            * @param [in] begin_particle An iterator to the first particle to be moved.
            * @param [in] end_particle An iterator to the last particle to be moved.
            * @param [in] old_velocities The velocities at t_n, i.e. before the
-           * particle movement.
-           * @param [in] velocities The velocities at t_{n+1}, i.e. after the
-           * particle movement.
+           * particle movement, for all particles between @p begin_particle
+           * and @p end_particle at their current position.
+           * @param [in] velocities The velocities at the particle positions
+           * at t_{n+1}, i.e. after the particle movement. Note that this is
+           * the velocity at the old positions, but at the new time. It is the
+           * responsibility of this function to compute the new location of
+           * the particles.
            * @param [in] dt The length of the integration timestep.
            */
           virtual
           void
-          local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
+          local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
                                const std::vector<Tensor<1,dim> > &old_velocities,
                                const std::vector<Tensor<1,dim> > &velocities,
                                const double dt);
 
           /**
            * This function is called at the end of every integration step.
-           * In case of multi-step integrators is signals the beginning of a
-           * new integration step.
+           * For the current class it will either increment the step variable
+           * and return true to request another integration step, or reset the
+           * step variable to 0 and return false if we are already in step 2.
+           *
+           * @return This function returns true if the integrator requires
+           * another integration step. The particle integration will continue
+           * to start new integration steps until this function returns false.
            */
-          virtual void advance_step();
-
-          /**
-           * @return This function returns true if another integration step is required
-           * by the integrator. Its default implementation returns false.
-           */
-          virtual bool continue_integration() const;
+          virtual bool new_integration_step();
 
           /**
            * Return data length of the integration related data required for
-           * communication in terms of number of doubles.
+           * communication in terms of number of bytes. When data about
+           * particles is transported from one processor to another, or stored
+           * on disk for snapshots, integrators get the chance to store
+           * whatever information they need with each particle. This function
+           * returns how many pieces of additional information a concrete
+           * integrator class needs to store for each particle.
            *
-           * @return The number of doubles required to store the relevant
+           * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual unsigned int data_length() const;
+          virtual unsigned int get_data_size() const;
 
           /**
            * Read integration related data for a particle specified by id_num
            * from the data array.
            *
-           * @param [in] data The array of double data to read from.
+           * @param [in, out] data A pointer to the array of data to read from.
+           * The pointer should be advanced by get_data_size() bytes within
+           * this function.
            * @param [in] id_num The id number of the particle to read the data
            * for.
            */
           virtual void read_data(const void *&data,
-                                 const particle_index id_num);
+                                 const types::particle_index id_num);
 
           /**
            * Write integration related data to a vector for a particle
            * specified by id_num.
            *
-           * @param [in,out] data The vector of doubles to write integrator
-           * data into.
+           * @param [in,out] data A pointer to the array of data to write
+           * integrator data into. The pointer should be advanced by
+           * get_data_size() bytes within this function.
            * @param [in] id_num The id number of the particle to write the data
            * for.
            */
           virtual void write_data(void *&data,
-                                  const particle_index id_num) const;
+                                  const types::particle_index id_num) const;
 
         private:
           /**
-           * The current integration step.
+           * The current integration step, i.e for RK2 a number that is either
+           * 0 or 1.
            */
-          unsigned int                          step;
+          unsigned int step;
 
           /**
            * The particle location before the first integration step. This is
            * used in the second step and transferred to another process if
            * the tracer leaves the domain during the first step.
            */
-          std::map<particle_index, Point<dim> >   loc0;
+          std::map<types::particle_index, Point<dim> >   loc0;
 
       };
 

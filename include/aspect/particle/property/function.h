@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -34,6 +34,8 @@ namespace aspect
       /**
        * A class that initializes tracer properties based on a
        * functional description provided in the input file.
+       *
+       * @ingroup ParticleProperties
        */
       template <int dim>
       class Function : public Interface<dim>
@@ -43,24 +45,39 @@ namespace aspect
 
           /**
            * Initialization function. This function is called once at the
-           * beginning of the program after parse_parameters is run.
+           * creation of every particle for every property to initialize its
+           * value.
+           *
+           * @param [in] position The current particle position.
+           *
+           * @param [in] solution The values of the solution variables at the
+           * current particle position.
+           *
+           * @param [in] gradients The gradients of the solution variables at
+           * the current particle position.
+           *
+           * @param [in,out] particle_properties The properties of the particle
+           * that is initialized within the call of this function. The purpose
+           * of this function should be to extend this vector by a number of
+           * properties.
            */
+          virtual
           void
-          initialize_particle (std::vector<double> &data,
-                               const Point<dim> &position,
-                               const Vector<double> &,
-                               const std::vector<Tensor<1,dim> > &);
-
-          void
-          data_length(std::vector<unsigned int> &length) const;
+          initialize_one_particle_property (const Point<dim> &position,
+                                            const Vector<double> &solution,
+                                            const std::vector<Tensor<1,dim> > &gradients,
+                                            std::vector<double> &particle_properties) const;
 
           /**
-           * Set up the name information for the particle property
+           * Set up the information about the names and number of components
+           * this property requires.
            *
-           * @param [in,out] names Vector that contains the property name
+           * @return A vector that contains pairs of the property names and the
+           * number of components this property plugin defines.
            */
-          void
-          data_names(std::vector<std::string> &names) const;
+          virtual
+          std::vector<std::pair<std::string, unsigned int> >
+          get_property_information() const;
 
 
           /**

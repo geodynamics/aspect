@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -40,20 +40,15 @@ namespace aspect
       {}
 
       template <int dim>
-      void
-      Interface<dim>::advance_step()
-      {}
-
-      template <int dim>
       bool
-      Interface<dim>::continue_integration() const
+      Interface<dim>::new_integration_step()
       {
         return false;
       }
 
       template <int dim>
       unsigned int
-      Interface<dim>::data_length() const
+      Interface<dim>::get_data_size() const
       {
         return 0;
       }
@@ -61,13 +56,13 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::read_data(const void *&,
-                                const particle_index )
+                                const types::particle_index )
       {}
 
       template <int dim>
       void
       Interface<dim>::write_data(void *&,
-                                 const particle_index ) const
+                                 const types::particle_index ) const
       {}
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -32,13 +32,13 @@ namespace aspect
        */
       template <int dim>
       void
-      EulerIntegrator<dim>::local_integrate_step(const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                                                 const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle,
-                                                 const std::vector<Tensor<1,dim> > &old_velocities,
-                                                 const std::vector<Tensor<1,dim> > &,
-                                                 const double dt)
+      Euler<dim>::local_integrate_step(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                                       const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+                                       const std::vector<Tensor<1,dim> > &old_velocities,
+                                       const std::vector<Tensor<1,dim> > &,
+                                       const double dt)
       {
-        typename std::multimap<LevelInd, Particle<dim> >::iterator it = begin_particle;
+        typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
         typename std::vector<Tensor<1,dim> >::const_iterator vel = old_velocities.begin();
 
         for (; it!=end_particle, vel!=old_velocities.end(); ++it,++vel)
@@ -59,11 +59,10 @@ namespace aspect
   {
     namespace Integrator
     {
-      ASPECT_REGISTER_PARTICLE_INTEGRATOR(EulerIntegrator,
+      ASPECT_REGISTER_PARTICLE_INTEGRATOR(Euler,
                                           "euler",
-                                          "Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
-                                          "This requires only one step per integration, and doesn't "
-                                          "involve any extra data.")
+                                          "Explicit Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
+                                          "This requires only one integration step per timestep.")
     }
   }
 }

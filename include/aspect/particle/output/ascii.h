@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,6 +30,12 @@ namespace aspect
   {
     namespace Output
     {
+      /**
+       * Class that outputs particles and their properties in a simple text
+       * format.
+       *
+       * @ingroup ParticleOutput
+       */
       template <int dim>
       class ASCIIOutput : public Interface<dim>,
         public SimulatorAccess<dim>
@@ -43,30 +49,52 @@ namespace aspect
           /**
            * Write data about the particles specified in the first argument
            * to a file. If possible, encode the current simulation time
-           * into this file using the data provided in the second argument.
+           * into this file using the data provided in the last argument.
            *
            * @param[in] particles The set of particles to generate a graphical
-           *   representation for
-           * @param [in] data_names The names of the particle properties that
-           *   will be written.
-           * @param [in] data_components The number of property components.
-           *   Equals one for scalar properties and dim for vector properties,
-           *   but any other number is valid as well (e.g. number of compositional
-           *   fields).
+           * representation for.
+           *
+           * @param [in] property_component_list A vector of the names and number
+           * of components of each property. Every name entry represents the
+           * name of one particle property that will be written.The number of
+           * components equals one for scalar properties and dim for
+           * vector properties, but any other number is valid as well
+           * (e.g. number of compositional fields).
+           *
            * @param[in] current_time Current time of the simulation, given as either
-           *   years or seconds, as selected in the input file. In other words,
-           *   output writers do not need to know the units in which time is
-           *   described.
+           * years or seconds, as selected in the input file. In other words,
+           * output writers do not need to know the units in which time is
+           * described.
+           *
            * @return The name of the file that was written, or any other
-           *   information that describes what output was produced if for example
-           *   multiple files were created.
+           * information that describes what output was produced if for example
+           * multiple files were created.
            */
           virtual
           std::string
-          output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
-                               const std::vector<std::string> &names,
-                               const std::vector<unsigned int> &lengths,
-                               const double &current_time);
+          output_particle_data(const std::multimap<types::LevelInd, Particle<dim> >     &particles,
+                               const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                               const double current_time);
+
+          /**
+           * Read or write the data of this object for serialization
+           */
+          template <class Archive>
+          void serialize(Archive &ar, const unsigned int version);
+
+          /**
+           * Save the state of the object.
+           */
+          virtual
+          void
+          save (std::ostringstream &os) const;
+
+          /**
+           * Restore the state of the object.
+           */
+          virtual
+          void
+          load (std::istringstream &is);
 
         private:
           /**

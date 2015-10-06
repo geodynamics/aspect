@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_generator_uniform_box_h
 
 #include <aspect/particle/generator/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -31,11 +30,17 @@ namespace aspect
     namespace Generator
     {
       /**
-       *  Generate an uniform distribution of particles in a box region in the
-       *  model domain.
+       * Generate a uniform distribution of particles in a box region in the
+       * model domain. Uniform here means the particles will be generated with
+       * an equal spacing in each spatial dimension. Note that in order
+       * to produce a regular distribution the number of generated
+       * tracers might not exactly match the one specified in the
+       * input file.
+       *
+       * @ingroup ParticleGenerators
        */
       template <int dim>
-      class UniformBox : public Interface<dim>, public SimulatorAccess<dim>
+      class UniformBox : public Interface<dim>
       {
         public:
           /**
@@ -45,10 +50,12 @@ namespace aspect
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
+           *
+           * @return A multimap containing cells and their contained particles.
            */
           virtual
-          void
-          generate_particles(World<dim> &world);
+          std::multimap<types::LevelInd, Particle<dim> >
+          generate_particles();
 
           /**
            * Declare the parameters this class takes through input files.
@@ -66,28 +73,22 @@ namespace aspect
 
         private:
           /**
-           * Number of initial particles to create
+           * Number of initial particles to create.
            */
-          particle_index n_tracers;
+          types::particle_index n_tracers;
 
           /**
-           * The minimum coordinates of the tracer region.
+           * The minimum coordinates of the tracer region, i.e. one corner of
+           * the n-dimensional box region in which tracers are generated.
            */
           Point<dim> P_min;
 
           /**
-           * The maximum coordinates of the tracer region.
+           * The maximum coordinates of the tracer region, i.e. the opposite
+           * corner of the n-dimensional box region in which tracers are
+           * generated.
            */
           Point<dim> P_max;
-
-          /**
-           * Generate a particle at the specified position and with the
-           * specified id.
-           */
-          void
-          generate_particle(const Point<dim> &position,
-                            const particle_index id,
-                            World<dim> &world);
       };
 
     }

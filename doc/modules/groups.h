@@ -172,3 +172,54 @@
  *
  * @ingroup BoundaryConditions
  */
+
+/**
+ * @defgroup Particle Describing advected particles
+ *
+ * A module that contains everything related to particles.
+ */
+
+/**
+ * @defgroup ParticleGenerators Describing the method to generate particles
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing a method to generate particles in the model domain.
+ *
+ * @ingroup Particle
+ */
+
+/**
+ * @defgroup ParticleIntegrators Describing the method to integrate particles
+ *
+ * A module for the definition of functions and classes that have to do with
+ * integrating the particle positions through time.
+ *
+ * @ingroup Particle
+ */
+
+/**
+ * @defgroup ParticleInterpolators Describing the method to interpolate particle properties to arbitrary positions
+ *
+ * A module for the definition of functions and classes that have to do with
+ * interpolating particle properties to arbitrary positions.
+ *
+ * @ingroup Particle
+ */
+
+/**
+ * @defgroup ParticleOutput Describing the output method of particles
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing a method to output the particles.
+ *
+ * @ingroup Particle
+ */
+
+/**
+ * @defgroup ParticleProperties Describing the properties of particles
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing the properties of the advected particles.
+ *
+ * @ingroup Particle
+ */

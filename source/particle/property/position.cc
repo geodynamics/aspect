@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,10 +28,10 @@ namespace aspect
     {
       template <int dim>
       void
-      Position<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &position,
-                                         const Vector<double> &,
-                                         const std::vector<Tensor<1,dim> > &)
+      Position<dim>::initialize_one_particle_property(const Point<dim> &position,
+                                                      const Vector<double> &,
+                                                      const std::vector<Tensor<1,dim> > &,
+                                                      std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(position[i]);
@@ -39,11 +39,11 @@ namespace aspect
 
       template <int dim>
       void
-      Position<dim>::update_particle(unsigned int &data_position,
-                                     std::vector<double> &data,
-                                     const Point<dim> &position,
-                                     const Vector<double> &,
-                                     const std::vector<Tensor<1,dim> > &)
+      Position<dim>::update_one_particle_property(const unsigned int data_position,
+                                                  const Point<dim> &position,
+                                                  const Vector<double> &,
+                                                  const std::vector<Tensor<1,dim> > &,
+                                                  std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position+i] = position[i];
@@ -51,23 +51,17 @@ namespace aspect
 
       template <int dim>
       UpdateTimeFlags
-      Position<dim>::need_update()
+      Position<dim>::need_update() const
       {
         return update_output_step;
       }
 
       template <int dim>
-      void
-      Position<dim>::data_length(std::vector<unsigned int> &length) const
+      std::vector<std::pair<std::string, unsigned int> >
+      Position<dim>::get_property_information() const
       {
-        length.push_back(dim);
-      }
-
-      template <int dim>
-      void
-      Position<dim>::data_names(std::vector<std::string> &names) const
-      {
-        names.push_back("position");
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("position",dim));
+        return property_information;
       }
     }
   }

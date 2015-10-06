@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -40,10 +40,9 @@ namespace aspect
 
       template <int dim>
       std::string
-      HDF5Output<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
-                                            const std::vector<std::string>  &/*data_names*/,
-                                            const std::vector<unsigned int> &/*data_components*/,
-                                            const double &current_time)
+      HDF5Output<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                            const std::vector<std::pair<std::string, unsigned int> > &/*property_component_list*/,
+                                            const double current_time)
       {
         // avoid warnings about unused variables
         (void)current_time;
@@ -143,7 +142,7 @@ namespace aspect
         vel_data = new double[3*particles.size()];
         id_data = new double[particles.size()];
 
-        typename std::multimap<LevelInd, Particle<dim> >::const_iterator it;
+        typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it;
         for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
           {
             for (d=0; d<dim; ++d)
@@ -191,6 +190,8 @@ namespace aspect
 
             entry.add_attribute("velocity", 3);
             entry.add_attribute("id", 1);
+
+            std::vector<XDMFEntry> xdmf_entries;
             xdmf_entries.push_back(entry);
 
             data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->get_mpi_communicator());
@@ -205,6 +206,32 @@ namespace aspect
         file_index++;
 
         return output_path_prefix;
+      }
+
+
+      template <int dim>
+      template <class Archive>
+      void HDF5Output<dim>::serialize (Archive &ar, const unsigned int)
+      {
+        // invoke serialization of the base class
+        ar &file_index
+        ;
+      }
+
+      template <int dim>
+      void
+      HDF5Output<dim>::save (std::ostringstream &os) const
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      template <int dim>
+      void
+      HDF5Output<dim>::load (std::istringstream &is)
+      {
+        aspect::iarchive ia (is);
+        ia >> (*this);
       }
     }
   }

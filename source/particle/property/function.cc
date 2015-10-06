@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -34,27 +34,20 @@ namespace aspect
 
       template <int dim>
       void
-      Function<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &position,
-                                         const Vector<double> &,
-                                         const std::vector<Tensor<1,dim> > &)
+      Function<dim>::initialize_one_particle_property(const Point<dim> &position,
+                                                      const Vector<double> &,
+                                                      const std::vector<Tensor<1,dim> > &,
+                                                      std::vector<double> &data) const
       {
         data.push_back(function.value(position));
       }
 
       template <int dim>
-      void
-      Function<dim>::data_length(std::vector<unsigned int> &length) const
+      std::vector<std::pair<std::string, unsigned int> >
+      Function<dim>::get_property_information() const
       {
-        length.push_back(1);
-      }
-
-      template <int dim>
-      void
-      Function<dim>::data_names(std::vector<std::string> &names) const
-      {
-        // Then add our own
-        names.push_back("function");
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("function",1));
+        return property_information;
       }
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -35,10 +35,9 @@ namespace aspect
 
       template <int dim>
       std::string
-      ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
-                                             const std::vector<std::string> &names,
-                                             const std::vector<unsigned int> &lengths,
-                                             const double &)
+      ASCIIOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                             const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                             const double /*time*/)
       {
         const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
         const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
@@ -54,24 +53,23 @@ namespace aspect
 
         output << "id ";
 
-        std::vector<std::string>::const_iterator  name = names.begin();
-        std::vector<unsigned int>::const_iterator length = lengths.begin();
-        for (; name!=names.end(),length!=lengths.end(); ++name,++length)
+        std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
+        for (; property!=property_component_list.end(); ++property)
           {
             // If it's a 1D element, print just the name, otherwise use []
-            if (*length == 1)
+            if (property->second == 1)
               {
-                output << *name << " ";
+                output << property->first << " ";
               }
             else
               {
-                for (unsigned int i=0; i<*length; ++i) output << *name << "[" << i << "] ";
+                for (unsigned int i=0; i<property->second; ++i) output << property->first << "[" << i << "] ";
               }
           }
         output << "\n";
 
         // And print the data for each particle
-        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
           {
             const Point<dim> position = it->second.get_location();
 
@@ -80,7 +78,7 @@ namespace aspect
 
             output << it->second.get_id() << " ";
 
-            const std::vector<double>  properties = it->second.get_properties();
+            const std::vector<double> properties = it->second.get_properties();
 
             for (unsigned int i = 0; i < properties.size(); ++i)
               output << properties[i] << " ";
@@ -93,6 +91,31 @@ namespace aspect
         file_index++;
 
         return output_path_prefix;
+      }
+
+      template <int dim>
+      template <class Archive>
+      void ASCIIOutput<dim>::serialize (Archive &ar, const unsigned int)
+      {
+        // invoke serialization of the base class
+        ar &file_index
+        ;
+      }
+
+      template <int dim>
+      void
+      ASCIIOutput<dim>::save (std::ostringstream &os) const
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
+
+      template <int dim>
+      void
+      ASCIIOutput<dim>::load (std::istringstream &is)
+      {
+        aspect::iarchive ia (is);
+        ia >> (*this);
       }
     }
   }

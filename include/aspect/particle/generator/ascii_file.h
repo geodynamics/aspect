@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_generator_ascii_file_h
 
 #include <aspect/particle/generator/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -33,9 +32,11 @@ namespace aspect
       /**
        *  Generate a distribution of particles that is determined by the
        *  coordinates given in an ascii data file.
+       *
+       * @ingroup ParticleGenerators
        */
       template <int dim>
-      class AsciiFile : public Interface<dim>, public SimulatorAccess<dim>
+      class AsciiFile : public Interface<dim>
       {
         public:
           /**
@@ -46,10 +47,12 @@ namespace aspect
           /**
            * Reads in a file and generate a set of particles at the prescribed
            * positions.
+           *
+           * @return A multimap containing cells and their contained particles.
            */
           virtual
-          void
-          generate_particles(World<dim> &world);
+          std::multimap<types::LevelInd, Particle<dim> >
+          generate_particles();
 
           /**
            * Declare the parameters this class takes through input files.
@@ -68,15 +71,6 @@ namespace aspect
         private:
           std::string data_directory;
           std::string data_filename;
-
-          /**
-           * Generate a single particle at the specified position with the
-           * specified id.
-           */
-          void
-          generate_particle(const Point<dim> &position,
-                            const particle_index id,
-                            World<dim> &world);
       };
 
     }

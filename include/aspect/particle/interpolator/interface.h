@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_interpolator_interface_h
 
 #include <aspect/particle/particle.h>
-#include <aspect/particle/definitions.h>
 #include <aspect/plugins.h>
 #include <aspect/global.h>
 
@@ -40,7 +39,9 @@ namespace aspect
 
       /**
        * An abstract class defining virtual methods for performing
-       * interpolation of particle properties to arbitrary points
+       * interpolation of particle properties to arbitrary points.
+       *
+       * @ingroup ParticleInterpolators
        */
       template <int dim>
       class Interface
@@ -64,17 +65,21 @@ namespace aspect
            * of doubles which contains a somehow computed
            * value of all particle properties at all given positions.
            *
-           * @param [in] cell An iterator to the first particle to be moved.
+           * @param [in] particles Reference to the particle map.
            * @param [in] positions The vector of positions where the properties
            * should be evaluated.
-           * @param [out] return The interpolated properties at the given
-           * position.
+           * @param [in] cell An optional iterator to the cell containing the
+           * particles. Not all callers will know the cell of the particles,
+           * but providing the cell when known speeds up the interpolation
+           * significantly.
+           * @return A vector with as many entries as @p positions. Every entry
+           * is a vector of interpolated tracer properties at this position.
            */
           virtual
           std::vector<std::vector<double> >
-          properties_at_points(const std::multimap<LevelInd, Particle<dim> > &particles,
+          properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
-                               const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell = NULL) const = 0;
+                               const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::cell_iterator()) const = 0;
 
           /**
            * Declare the parameters this class takes through input files. The

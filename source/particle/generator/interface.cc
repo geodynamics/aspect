@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 #include <aspect/particle/generator/interface.h>
 
 #include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/grid/grid_tools.h>
 
 
 namespace aspect
@@ -29,6 +30,34 @@ namespace aspect
   {
     namespace Generator
     {
+      template <int dim>
+      std::pair<types::LevelInd,Particle<dim> >
+      Interface<dim>::generate_particle(const Point<dim> &position,
+                                        const types::particle_index id) const
+      {
+        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
+
+        //Only try to add the point if the cell it is in, is on this processor
+        if (it->is_locally_owned())
+          {
+            const Particle<dim> particle(position, id);
+            const types::LevelInd cell(it->level(), it->index());
+            return std::make_pair(cell,particle);
+          }
+
+        AssertThrow(false,
+                    ExcMessage("A particle generator plugin tried to create a particle in"
+                               "a location that is not owned by the current processor. Please "
+                               "check that your particle generator ensures correct locations "
+                               "for the generated particles."));
+
+        // Avoid warnings about missing return
+        const Particle<dim> particle;
+        const types::LevelInd cell(0,0);
+        return std::make_pair(cell,particle);
+      }
+
       template <int dim>
       void
       Interface<dim>::declare_parameters (ParameterHandler &)

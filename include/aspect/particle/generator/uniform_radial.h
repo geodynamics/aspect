@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_generator_uniform_radial_h
 
 #include <aspect/particle/generator/interface.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/std_cxx11/array.h>
 
@@ -35,10 +34,21 @@ namespace aspect
       using namespace dealii;
 
       /**
-       * Generate uniform radial distribution of particles over entire simulation domain.
+       * Generate a uniform radial distribution of particles over the entire
+       * simulation domain. Uniform here means
+       * the particles will be generated with an equal spacing in
+       * each spherical spatial dimension, i.e. the particles are
+       * created at coordinates that increase linearly with equal
+       * spacing in radius, colatitude and longitude around a
+       * certain center point. Note that in order
+       * to produce a regular distribution the number of generated
+       * tracers might not exactly match the one specified in the
+       * input file.
+       *
+       * @ingroup ParticleGenerators
        */
       template <int dim>
-      class UniformRadial : public Interface<dim>, public SimulatorAccess<dim>
+      class UniformRadial : public Interface<dim>
       {
         public:
           /**
@@ -48,11 +58,13 @@ namespace aspect
 
           /**
            * Generate a uniformly distributed set of particles in the current circular or
-           * spherical domain
+           * spherical domain.
+           *
+           * @return A multimap containing cells and their contained particles.
            */
           virtual
-          void
-          generate_particles(World<dim> &world);
+          std::multimap<types::LevelInd, Particle<dim> >
+          generate_particles();
 
           /**
            * Declare the parameters this class takes through input files.
@@ -71,12 +83,16 @@ namespace aspect
         private:
 
           /**
-           * The minimum spherical coordinates of the tracer region.
+           * The minimum spherical coordinates of the tracer region, i.e.
+           * the first radius, colatitude and longitude from the given
+           * center position P_center where tracers are generated.
            */
           std_cxx11::array<double,dim> P_min;
 
           /**
-           * The maximum spherical coordinates of the tracer region.
+           * The maximum spherical coordinates of the tracer region, i.e.
+           * the last radius, colatitude and longitude from the given
+           * center position P_center where tracers are generated.
            */
           std_cxx11::array<double,dim> P_max;
 
@@ -87,22 +103,18 @@ namespace aspect
 
           /**
            * The number of radial layers of particles that will be generated.
+           * In particular this parameter determines the radial spacing between
+           * particle layers as Pmax[0] - P_min[0] / radial$_$layers.
            */
           unsigned int radial_layers;
 
           /**
-           * Number of particles to create
+           * Number of particles to create in total. To preserve the equal
+           * spacing (in spherical coordinates) between particles, the number
+           * of actually generated
+           * particles can differ slightly from this number.
            */
-          particle_index n_tracers;
-
-          /**
-           * Generate a particle at the specified position and with the
-           * specified id.
-           */
-          void
-          generate_particle(const Point<dim> &position,
-                            const particle_index id,
-                            World<dim> &world);
+          types::particle_index n_tracers;
       };
 
     }

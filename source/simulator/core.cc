@@ -21,7 +21,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -51,6 +50,7 @@
 #include <iomanip>
 #include <locale>
 #include <string>
+#include "../../include/aspect/postprocess/tracers.h"
 
 
 using namespace dealii;

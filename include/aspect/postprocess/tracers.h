@@ -24,10 +24,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>
 #include <aspect/particle/output/interface.h>
-#include <aspect/particle/generator/interface.h>
-#include <aspect/particle/integrator/interface.h>
-#include <aspect/particle/interpolator/interface.h>
-#include <aspect/particle/property/interface.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/particle/particle.h>
 
@@ -35,19 +32,28 @@ namespace aspect
 {
   namespace Postprocess
   {
+    /**
+     * A Postprocessor that creates tracer particles, which follow the
+     * velocity field of the simulation. The particles can be generated
+     * and propagated in various ways and they can carry a number of
+     * constant or time-varying properties. The postprocessor can write
+     * output positions and properties of all tracers at chosen intervals,
+     * although this is not mandatory. It also allows other parts of the
+     * code to query the tracers for information.
+     */
     template <int dim>
-    class PassiveTracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Tracers : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        PassiveTracers();
+        Tracers();
 
         /**
          * Destructor.
          */
-        ~PassiveTracers();
+        ~Tracers();
 
         /**
          *
@@ -56,15 +62,17 @@ namespace aspect
         initialize();
 
         /**
-         * Returns a reference to the particle world, in case anyone wants to
-         * query something about tracers.
+         * Returns a const reference to the particle world, in case anyone
+         * wants to query something about tracers.
          */
         const Particle::World<dim> &
         get_particle_world() const;
 
         /**
          * Returns a reference to the particle world, in case anyone wants to
-         * query something about tracers.
+         * change something within the particle world. Use with care, usually
+         * you want to only let the functions within the particle subsystem
+         * change member variables of the particle world.
          */
         Particle::World<dim> &
         get_particle_world();
@@ -126,35 +134,19 @@ namespace aspect
         /**
          * The world holding the particles
          */
-        Particle::World<dim>              world;
-
-        /**
-         * The integrator to use in moving the particles
-         */
-        Particle::Integrator::Interface<dim>  *integrator;
-
-        /**
-         * The interpolator to get particle properties
-         */
-        Particle::Interpolator::Interface<dim>  *interpolator;
+        Particle::World<dim> world;
 
         /**
          * Pointer to an output object
          */
-        Particle::Output::Interface<dim>      *output;
+        std_cxx11::unique_ptr<Particle::Output::Interface<dim> >       output;
 
         /**
-         * Pointer to a generator object
-         */
-        Particle::Generator::Interface<dim>   *generator;
-
-        /**
-         * Pointer to a properties object
-         */
-        Particle::Property::Manager<dim>   property_manager;
-
-        /**
-         * Whether this set has been initialized yet or not
+         * Whether particles have been created and initialized yet or not.
+         * We can not simply use the number of particles in the domain to
+         * check this, because all particles could leave the domain through an
+         * open boundary. This variable is initialized to false and set to
+         * true in the first call of execute().
          */
         bool                            initialized;
 
@@ -163,16 +155,6 @@ namespace aspect
          * parameter is set, otherwise seconds)
          */
         double                          data_output_interval;
-
-        /**
-         * Output format for particle data
-         */
-        std::string                     data_output_format;
-
-        /**
-         * Integration scheme to move particles
-         */
-        std::string                     integration_scheme;
 
         /**
          * Records time for next output to occur

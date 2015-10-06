@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -29,27 +29,21 @@ namespace aspect
     {
       template <int dim>
       void
-      InitialPosition<dim>::initialize_particle(std::vector<double> &data,
-                                                const Point<dim> &position,
-                                                const Vector<double> &,
-                                                const std::vector<Tensor<1,dim> > &)
+      InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position,
+                                                             const Vector<double> &,
+                                                             const std::vector<Tensor<1,dim> > &,
+                                                             std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; i++)
           data.push_back(position[i]);
       }
 
       template <int dim>
-      void
-      InitialPosition<dim>::data_length(std::vector<unsigned int> &length) const
+      std::vector<std::pair<std::string, unsigned int> >
+      InitialPosition<dim>::get_property_information() const
       {
-        length.push_back(dim);
-      }
-
-      template <int dim>
-      void
-      InitialPosition<dim>::data_names(std::vector<std::string> &names) const
-      {
-        names.push_back("initial position");
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("initial position",static_cast<unsigned int> (dim)));
+        return property_information;
       }
     }
   }

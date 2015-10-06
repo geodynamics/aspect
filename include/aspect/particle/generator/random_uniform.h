@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,6 @@
 #define __aspect__particle_generator_random_uniform_h
 
 #include <aspect/particle/generator/interface.h>
-#include <aspect/simulator_access.h>
 
 #include <boost/random.hpp>
 
@@ -34,9 +33,11 @@ namespace aspect
     {
       /**
        * Generate random uniform distribution of particles over entire simulation domain.
+       *
+       * @ingroup ParticleGenerators
        */
       template <int dim>
-      class RandomUniform : public Interface<dim>, public SimulatorAccess<dim>
+      class RandomUniform : public Interface<dim>
       {
         public:
           /**
@@ -46,10 +47,12 @@ namespace aspect
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
+           *
+           * @return A multimap containing cells and their contained particles.
            */
           virtual
-          void
-          generate_particles(World<dim> &world);
+          std::multimap<types::LevelInd, Particle<dim> >
+          generate_particles();
 
 
           /**
@@ -78,7 +81,7 @@ namespace aspect
           /**
            * Number of initial particles to create
            */
-          particle_index n_tracers;
+          types::particle_index n_tracers;
 
 
           /**
@@ -90,12 +93,13 @@ namespace aspect
            *
            * @param [in] num_particles The number of particles to generate in this subdomain
            * @param [in] start_id The starting ID to assign to generated particles
-           * @param [inout] world The particle world the particles will exist in
+           *
+           * @return A multimap containing cells and their contained particles.
            *
            */
-          void uniform_random_particles_in_subdomain (const particle_index num_particles,
-                                                      const particle_index start_id,
-                                                      World<dim> &world);
+          std::multimap<types::LevelInd, Particle<dim> >
+          uniform_random_particles_in_subdomain (const types::particle_index num_particles,
+                                                 const types::particle_index start_id);
       };
 
     }

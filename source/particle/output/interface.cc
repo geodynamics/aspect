@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -112,8 +112,11 @@ namespace aspect
         }
         prm.leave_subsection ();
 
-        return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                      "Particle::Output name");
+        if (name != "no output")
+          return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+                                                                        "Particle::Output name");
+        else
+          return NULL;
       }
 
 
@@ -131,8 +134,10 @@ namespace aspect
               = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Data output format", "vtu",
-                               Patterns::Selection (pattern_of_names),
+                               Patterns::Selection (pattern_of_names + "|no output"),
                                "File format to output raw particle data in. "
+                               "If you select 'no output' no output will be "
+                               "written."
                                "Select one of the following models:\n\n"
                                +
                                std_cxx1x::get<dim>(registered_plugins).get_description_string());

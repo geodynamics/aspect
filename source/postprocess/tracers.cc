@@ -19,8 +19,13 @@
  */
 
 #include <aspect/global.h>
-#include <aspect/postprocess/tracer.h>
+#include <aspect/postprocess/tracers.h>
 #include <aspect/simulator_access.h>
+
+#include <aspect/particle/generator/interface.h>
+#include <aspect/particle/integrator/interface.h>
+#include <aspect/particle/interpolator/interface.h>
+#include <aspect/particle/property/interface.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -33,60 +38,49 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    PassiveTracers<dim>::PassiveTracers ()
+    Tracers<dim>::Tracers ()
       :
-      integrator(NULL),
-      output(NULL),
-      generator(NULL),
-      property_manager(),
       initialized(false),
       next_data_output_time(std::numeric_limits<double>::quiet_NaN())
     {}
 
 
     template <int dim>
-    PassiveTracers<dim>::~PassiveTracers ()
+    Tracers<dim>::~Tracers ()
     {
-      if (integrator) delete integrator;
-      if (output) delete output;
-      if (generator) delete generator;
     }
 
     template <int dim>
     void
-    PassiveTracers<dim>::initialize()
+    Tracers<dim>::initialize()
     {
 
     }
 
     template <int dim>
     const Particle::World<dim> &
-    PassiveTracers<dim>::get_particle_world() const
+    Tracers<dim>::get_particle_world() const
     {
       return world;
     }
 
     template <int dim>
     Particle::World<dim> &
-    PassiveTracers<dim>::get_particle_world()
+    Tracers<dim>::get_particle_world()
     {
       return world;
     }
 
     template <int dim>
     std::pair<std::string,std::string>
-    PassiveTracers<dim>::execute (TableHandler &statistics)
+    Tracers<dim>::execute (TableHandler &statistics)
     {
+      // Let the generator add the specified number of particles if we have not
+      // already done so
       if (!initialized)
         {
-          // Let the generator add the specified number of particles if we are
-          // not resuming from a snapshot (in that case we have stored particles)
-          if (world.get_global_particle_count() == 0)
-            {
-              generator->generate_particles(world);
-              world.initialize_particles();
-            }
-
+          world.generate_particles();
+          world.initialize_particles();
           initialized = true;
           next_data_output_time = this->get_time();
         }
@@ -94,43 +88,37 @@ namespace aspect
       // Advance the particles in the world to the current time
       world.advance_timestep();
 
-      const unsigned int num_particles = world.get_global_particle_count();
-      statistics.add_value("Advected particles",num_particles);
-      std::ostringstream result_string;
-      result_string << num_particles;
+      statistics.add_value("Number of advected particles",world.get_global_particle_count());
 
       // If it's time to generate an output file, call the appropriate functions and reset the timer
-      if (this->get_time() >= next_data_output_time)
+      if ((this->get_time() >= next_data_output_time) && (output != NULL))
         {
-          if (property_manager.need_update() == Particle::Property::update_output_step)
+          if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
             world.update_particles();
 
           set_next_data_output_time (this->get_time());
 
-          std::vector<std::string> names;
-          std::vector<unsigned int> length;
-
-          property_manager.get_data_info(names,
-                                         length);
+          const double output_time = (this->convert_output_to_years() ?
+                                      this->get_time() / year_in_seconds :
+                                      this->get_time());
 
           const std::string data_file_name = output->output_particle_data(world.get_particles(),
-                                                                          names,
-                                                                          length,
-                                                                          (this->convert_output_to_years() ?
-                                                                           this->get_time() / year_in_seconds :
-                                                                           this->get_time()));
+                                                                          world.get_property_manager().get_data_info(),
+                                                                          output_time);
 
-          result_string << ". Writing particle graphical output " + data_file_name;
+          // record the file base file name in the output file
+          statistics.add_value ("Particle file name",
+                                this->get_output_directory() + data_file_name);
+          return std::make_pair("Writing particle output: ", data_file_name);
         }
-
-      return std::make_pair("Advected particles: ", result_string.str());
+      return std::make_pair("","");
     }
 
 
 
     template <int dim>
     void
-    PassiveTracers<dim>::set_next_data_output_time (const double current_time)
+    Tracers<dim>::set_next_data_output_time (const double current_time)
     {
       // if output_interval is positive, then set the next output interval to
       // a positive multiple.
@@ -150,16 +138,17 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void PassiveTracers<dim>::serialize (Archive &ar, const unsigned int)
+    void Tracers<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &next_data_output_time
+      &initialized
       ;
     }
 
 
     template <int dim>
     void
-    PassiveTracers<dim>::save (std::map<std::string, std::string> &status_strings) const
+    Tracers<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
       aspect::oarchive oa (os);
@@ -192,7 +181,8 @@ namespace aspect
             }
 
           oa << (*this);
-          output->save(os);
+          if (output != NULL)
+            output->save(os);
         }
       else
         // on other processors, send the serialized data to processor zero.
@@ -208,7 +198,7 @@ namespace aspect
 
     template <int dim>
     void
-    PassiveTracers<dim>::load (const std::map<std::string, std::string> &status_strings)
+    Tracers<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("Tracers") != status_strings.end())
@@ -243,14 +233,15 @@ namespace aspect
             }
 
           ia >> (*this);
-          output->load(is);
+          if (output != NULL)
+            output->load(is);
         }
     }
 
 
     template <int dim>
     void
-    PassiveTracers<dim>::declare_parameters (ParameterHandler &prm)
+    Tracers<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -264,10 +255,9 @@ namespace aspect
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
-
           prm.declare_entry ("Load balancing strategy", "none",
-                             Patterns::Selection ("none|remove particles| "
-                                                  "remove and add particles| repartition"),
+                             Patterns::Selection ("none|remove particles|"
+                                                  "remove and add particles|repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum tracers per cell", "100",
@@ -304,7 +294,7 @@ namespace aspect
 
     template <int dim>
     void
-    PassiveTracers<dim>::parse_parameters (ParameterHandler &prm)
+    Tracers<dim>::parse_parameters (ParameterHandler &prm)
     {
       unsigned int max_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
@@ -333,44 +323,62 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // Create a generator object using a random uniform distribution
-      generator = Particle::Generator::create_particle_generator<dim>
-                  (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator))
-        sim->initialize (this->get_simulator());
+      // Create a generator object depending on what the parameters specify
+      std_cxx11::shared_ptr<Particle::Generator::Interface<dim> > generator
+      (Particle::Generator::create_particle_generator<dim> (prm));
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+        sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
 
+
       // Create an output object depending on what the parameters specify
-      output = Particle::Output::create_particle_output<dim>
-               (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output))
-        sim->initialize (this->get_simulator());
-      output->initialize();
+      output.reset(Particle::Output::create_particle_output<dim>
+                   (prm));
+
+      // We allow to not generate any output plugin, in which case output is
+      // a null pointer. Only initialize output if it was created.
+      if (output != NULL)
+        {
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
+            sim->initialize_simulator (this->get_simulator());
+          output->initialize();
+        }
+
 
       // Create an integrator object depending on the specified parameter
-      integrator = Particle::Integrator::create_particle_integrator<dim>
-                   (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator))
-        sim->initialize (this->get_simulator());
+      std_cxx11::shared_ptr<Particle::Integrator::Interface<dim> >   integrator
+      (Particle::Integrator::create_particle_integrator<dim> (prm));
+
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      integrator->parse_parameters(prm);
 
       // Create an interpolator object depending on the specified parameter
-      interpolator = Particle::Interpolator::create_particle_interpolator<dim>
-                     (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator))
-        sim->initialize (this->get_simulator());
+      std_cxx11::shared_ptr<Particle::Interpolator::Interface<dim> > interpolator
+      (Particle::Interpolator::create_particle_interpolator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      interpolator->parse_parameters(prm);
 
-      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&property_manager);
-      sim->initialize (this->get_simulator());
-      property_manager.parse_parameters(prm);
-      property_manager.initialize();
 
+      // Creaty an property_manager object and initialize its properties
+      std_cxx11::shared_ptr<Particle::Property::Manager<dim> > property_manager (new Particle::Property::Manager<dim> ());
+      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+      sim->initialize_simulator (this->get_simulator());
+      property_manager->parse_parameters(prm);
+      property_manager->initialize();
+
+
+      // Initialize the particle world with the appropriate settings
+      // Ownership of generator, integrator, interpolator and property_manager
+      // is transferred to world here
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
-        sim->initialize (this->get_simulator());
-
-      // Set up the particle world with the appropriate settings
-      world.initialize(integrator,
+        sim->initialize_simulator (this->get_simulator());
+      world.initialize(generator,
+                       integrator,
                        interpolator,
-                       &property_manager,
+                       property_manager,
                        load_balancing,
                        max_tracers_per_cell,
                        tracer_weight);
@@ -384,9 +392,14 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(PassiveTracers,
+    ASPECT_REGISTER_POSTPROCESSOR(Tracers,
                                   "tracers",
-                                  "Postprocessor that propagates passive tracer particles based on the "
-                                  "velocity field.")
+                                  "A Postprocessor that creates tracer particles, which follow the "
+                                  "velocity field of the simulation. The particles can be generated "
+                                  "and propagated in various ways and they can carry a number of "
+                                  "constant or time-varying properties. The postprocessor can write "
+                                  "output positions and properties of all tracers at chosen intervals, "
+                                  "although this is not mandatory. It also allows other parts of the "
+                                  "code to query the tracers for information.")
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,33 +28,29 @@ namespace aspect
     {
       template <int dim>
       void
-      InitialComposition<dim>::initialize_particle(std::vector<double> &data,
-                                                   const Point<dim> &,
-                                                   const Vector<double> &solution,
-                                                   const std::vector<Tensor<1,dim> > &)
+      InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &,
+                                                                const Vector<double> &solution,
+                                                                const std::vector<Tensor<1,dim> > &,
+                                                                std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
       }
 
       template <int dim>
-      void
-      InitialComposition<dim>::data_length(std::vector<unsigned int> &length) const
+      std::vector<std::pair<std::string, unsigned int> >
+      InitialComposition<dim>::get_property_information() const
       {
-        for (unsigned i = 0; i < this->n_compositional_fields(); ++i)
-          length.push_back(1);
-      }
+        std::vector<std::pair<std::string,unsigned int> > property_information;
 
-      template <int dim>
-      void
-      InitialComposition<dim>::data_names(std::vector<std::string> &names) const
-      {
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
             std::ostringstream field_name;
             field_name << "initial C_" << i;
-            names.push_back(field_name.str());
+            property_information.push_back(std::make_pair(field_name.str(),1));
           }
+
+        return property_information;
       }
     }
   }

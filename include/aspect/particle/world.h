@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+ Copyright (C) 2012 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -23,11 +23,12 @@
 
 #include <aspect/global.h>
 #include <aspect/particle/particle.h>
-#include <aspect/particle/definitions.h>
 
+#include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
 
@@ -37,6 +38,17 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * This class manages the storage and handling of particles. It provides
+     * interfaces to generate and store tracers, functions to initialize,
+     * update and advect them, and ways to retrieve information about the
+     * particles. The implementation of most of these methods is outsourced
+     * to different plugin systems, this class is mostly concerned with
+     * managing the interactions of the different systems with the code
+     * outside the particle world.
+     *
+     * @ingroup Particle
+     */
     template <int dim>
     class World : public SimulatorAccess<dim>
     {
@@ -60,20 +72,29 @@ namespace aspect
         };
 
         /**
-         * Initialize the particle world.
+         * Initialize the particle world. Most of the arguments are read by the
+         * Tracer postprocessor and handed to this function, because the
+         * particle world currently does not declare own input parameters.
          *
-         * @param [in] new_integrator The new Integrator scheme for this
-         * world.
-         * @param [in] new_manager The new property manager for this
-         * world.
+         * @param [in] integrator The Integrator scheme for this world.
+         * @param [in] interpolator The Interpolator scheme for this
+         * world. This object defines how particle properties are interpolated
+         * to arbitrary positions within the domain. An example could be to
+         * take the properties of the closest particle, but more complicated
+         * schemes are possible.
+         *
+         * @param [in] manager The property manager for this world.
+         * @param [in] load_balancing The strategy used to balance the
+         * computational load for particle advection across processes.
          * @param [in] max_part_per_cell Threshold for removing
-         * particles from cells. Because the
-         * particle world currently does not declare own input parameters this
-         * is read by the Tracer postprocessor and set in this function.
+         * particles from cells.
+         * @param [in] weight The computational load that is associated with
+         * integrating and updating one particle.
          */
-        void initialize(Integrator::Interface<dim> *new_integrator,
-                        Interpolator::Interface<dim> *new_interpolator,
-                        Property::Manager<dim> *new_manager,
+        void initialize(std_cxx11::shared_ptr<Generator::Interface<dim> > generator,
+                        std_cxx11::shared_ptr<Integrator::Interface<dim> > integrator,
+                        std_cxx11::shared_ptr<Interpolator::Interface<dim> > interpolator,
+                        std_cxx11::shared_ptr<Property::Manager<dim> > manager,
                         const ParticleLoadBalancing &load_balancing,
                         const unsigned int max_part_per_cell,
                         const unsigned int weight);
@@ -81,45 +102,30 @@ namespace aspect
         /**
          * Get the particle property manager for this particle world.
          *
-         * @param return manager The property manager for this
-         * world.
+         * @return The property manager for this world.
          */
         const Property::Manager<dim> &
-        get_manager() const;
+        get_property_manager() const;
 
         /**
-         * Add a particle to this world. If the specified cell does not exist
-         * in the local subdomain an exception will be thrown.
+         * Initialize the particle properties.
          */
-        void add_particle(const Particle<dim> &particle,
-                          const LevelInd &cell);
-
+        void generate_particles();
         /**
          * Initialize the particle properties.
          */
         void initialize_particles();
 
         /**
-         * Update the particle properties if necessary.
-         */
-        void update_particles();
-
-        /**
-         * Advect the particle positions by one integration step. Needs to be
-         * called until integrator->continue() returns false.
-         */
-        void advect_particles();
-
-        /**
          * Access to particles in this world.
          */
-        std::multimap<LevelInd, Particle<dim> > &
+        std::multimap<types::LevelInd, Particle<dim> > &
         get_particles();
 
         /**
          * Const access to particles in this world.
          */
-        const std::multimap<LevelInd, Particle<dim> > &
+        const std::multimap<types::LevelInd, Particle<dim> > &
         get_particles() const;
 
         /**
@@ -132,20 +138,27 @@ namespace aspect
         void advance_timestep();
 
         /**
-         * Calculates the global sum of particles over all processes. This is
-         * done to monitor the number of particles that have fallen out of the
-         * domain.
+         * Count the total number of particles in the simulation by summing
+         * over the local numbers for all MPI processes. This function is
+         * useful, for example, for monitoring how many particles have been
+         * lost by falling out of the domain.
          *
          * @return Total number of particles in simulation.
          */
-        unsigned int get_global_particle_count() const;
+        types::particle_index get_global_particle_count() const;
 
         /**
-         * This callback function is called by Simulator to allow us to connect
-         * to the SimulatorSignals.
+         * This callback function is registered within Simulator by the
+         * constructor of this class and will be
+         * called from Simulator during construction. It allows to attach slot
+         * functions to the provided SimulatorSignals. This world will register
+         * the register_store_callback_function() and
+         * register_load_callback_function() to the
+         * pre_refinement_store_user_data signal and the
+         * post_refinement_load_user_data signal respectively.
          */
         void
-        connector_function(aspect::SimulatorSignals<dim> &signals);
+        connect_to_signals(aspect::SimulatorSignals<dim> &signals);
 
         /**
          * Callback function that is called from Simulator before every
@@ -190,6 +203,11 @@ namespace aspect
                      const void *data);
 
         /**
+         * Update the particle properties if necessary.
+         */
+        void update_particles();
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
@@ -197,27 +215,32 @@ namespace aspect
 
       private:
         /**
-         * Integration scheme for moving particles in this world
+         * Generation scheme for creating particles in this world
          */
-        Integrator::Interface<dim>     *integrator;
+        std_cxx11::shared_ptr<Generator::Interface<dim> > generator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        Interpolator::Interface<dim>     *interpolator;
+        std_cxx11::shared_ptr<Integrator::Interface<dim> > integrator;
+
+        /**
+         * Integration scheme for moving particles in this world
+         */
+        std_cxx11::shared_ptr<Interpolator::Interface<dim> > interpolator;
 
         /**
          * The property manager stores information about the additional
          * particle properties and handles the initialization and update of
          * these properties.
          */
-        Property::Manager<dim>         *property_manager;
+        std_cxx11::shared_ptr<Property::Manager<dim> > property_manager;
 
         /**
          * Set of particles currently in the local domain, organized by
          * the level/index of the cell they are in
          */
-        std::multimap<LevelInd, Particle<dim> >      particles;
+        std::multimap<types::LevelInd, Particle<dim> > particles;
 
         /**
          * This variable is set by the register_store_callback_function()
@@ -240,64 +263,82 @@ namespace aspect
         unsigned int max_particles_per_cell;
 
         /**
-         * Weight of a single particle.
+         * The computational cost of a single particle. This is an input
+         * parameter that is set during initialization and is only used if the
+         * particle_load_balancing strategy 'repartition' is used. This value
+         * determines how costly the computation of a single tracer is compared
+         * to the computation of a whole cell, which is arbitrarily defined
+         * to represent a cost of 1000.
          */
         unsigned int tracer_weight;
-
 
         /**
          * Returns the number of particles in the cell that contains the
          * most tracers in the global model.
          */
         unsigned int
-        get_global_max_tracer_per_cell() const;
+        get_global_max_tracers_per_cell() const;
 
         /**
-         * Calculate the cells containing each particle for all particles. If
-         * particles moved out of the domain of this process they will be send
+         * Finds the cells containing each particle for all particles. If
+         * particles moved out of this subdomain they will be sent
          * to their new process and inserted there. After this function call
          * every particle is either on its current process and in its current
          * cell, or deleted (if it could not find its new process or cell).
          */
-        void find_all_cells();
+        void
+        sort_particles_in_subdomains_and_cells();
 
         /**
-         * TODO: This needs to be implemented in case some particles fall out of the
-         * domain. In particular for periodic boundary conditions.
+         * TODO: Implement this for arbitrary meshes.
+         * This function checks if the @p lost_particles moved across a
+         * periodic boundary and tries to reinsert them into
+         * @p moved_particles_cell or @p moved_particles_domain. All particles
+         * that can not be found are discarded.
          */
-        void move_particles_back_in_mesh();
+        void
+        move_particles_back_in_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
+                                    std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
+                                    std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
-         * processors. Because subdomains can change drastically during mesh
-         * refinement, particle transfer occurs as follows: - Each subdomain
-         * finds the particles it owns which have fallen outside it - For each
-         * particle outside the subdomain, send the particle to all subdomains
-         * and let them determine which one owns it. This assumes there is no
-         * overlap between subdomains. - Each process determines which of the
-         * received particles is in its subdomain, keeps these and deletes the
-         * others
+         * processors. The transfer occurs in two steps. As a first step all
+         * processes notify their neighbor processes how many particles will
+         * be sent to them. Because neighbor processes are defined as the owner
+         * of ghost cells of the current process, this also handles
+         * periodic boundaries correctly. Afterwards the transfer is done in the
+         * same way as local communication between neighbor processes.
+         * All received particles will immediately be inserted into the
+         * particles member variable.
          *
-         * @param [in,out] send_particles All particles that should be send
-         * are in this vector.
+         * @param [in] sent_particles All particles that should be sent and
+         * their new subdomain_ids are in this map.
          */
-        void send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles);
+        void
+        send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &sent_particles);
+
+        /**
+         * Advect the particle positions by one integration step. Needs to be
+         * called until integrator->continue() returns false.
+         */
+        void advect_particles();
 
         /**
          * Initialize the particle properties of one cell.
          */
         void
         local_initialize_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                   const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                                   const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
+                                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                                   const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
 
         /**
          * Update the particle properties of one cell.
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -306,8 +347,8 @@ namespace aspect
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
     };
 
     /* -------------------------- inline and template functions ---------------------- */

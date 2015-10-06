@@ -13,29 +13,29 @@ Number of degrees of freedom: 31 (18+4+9)
    Solving temperature system... 0 iterations.
 
    Postprocessing:
-     RMS, max velocity:   0.1 m/s, 0.1 m/s
-     Advected particles:  1. Writing particle graphical output output-tracer_linear_accelerated_flow_rk2/particle-00000
+     RMS, max velocity:        0.1 m/s, 0.1 m/s
+     Writing particle output:  output-tracer_linear_accelerated_flow_rk2/particle-00000
 
 *** Timestep 1:  t=1 seconds
    Solving temperature system... 0 iterations.
 
    Postprocessing:
-     RMS, max velocity:   1.1 m/s, 1.1 m/s
-     Advected particles:  1. Writing particle graphical output output-tracer_linear_accelerated_flow_rk2/particle-00001
+     RMS, max velocity:        1.1 m/s, 1.1 m/s
+     Writing particle output:  output-tracer_linear_accelerated_flow_rk2/particle-00001
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.056s |            |
+| Total wallclock time elapsed since start    |    0.0637s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble temperature system     |         2 |   0.00526s |       9.4% |
-| Build temperature preconditioner|         2 |  0.000446s |       0.8% |
-| Solve temperature system        |         2 |   0.00061s |       1.1% |
-| Initialization                  |         2 |    0.0401s |        72% |
-| Postprocessing                  |         2 |    0.0039s |         7% |
-| Setup dof systems               |         1 |   0.00302s |       5.4% |
+| Assemble temperature system     |         2 |   0.00293s |       4.6% |
+| Build temperature preconditioner|         2 |   0.00055s |      0.86% |
+| Solve temperature system        |         2 |  0.000557s |      0.87% |
+| Initialization                  |         2 |    0.0535s |        84% |
+| Postprocessing                  |         2 |   0.00127s |         2% |
+| Setup dof systems               |         1 |   0.00257s |         4% |
 +---------------------------------+-----------+------------+------------+
 
