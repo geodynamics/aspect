@@ -228,7 +228,7 @@ namespace aspect
               if (this->get_timestep_number() == 0 )  //Write the header if this is the first step
                 {
                   f.open(filename.c_str(), std::ofstream::out);
-                  f << "depth       " << "time        ";
+                  f << "# depth     " << "time        ";
                   for ( unsigned int i = 0; i < variables.size(); ++i)
                     {
                       f << variables[i] << " ";
@@ -237,7 +237,7 @@ namespace aspect
                 }
               else f.open(filename.c_str(), std::ofstream::app);
 
-              double depth = max_depth/double(data_point.values[0].size())/2.0;
+              double depth = max_depth/static_cast<double>(data_point.values[0].size())/2.0;
               for (unsigned int d = 0; d < data_point.values[0].size(); ++d)
                 {
                   f << std::setw(12) << depth << " " << std::setw(12) <<
@@ -245,7 +245,7 @@ namespace aspect
                   for ( unsigned int i = 0; i < variables.size(); ++i )
                     f << std::setw(12) << data_point.values[i][d] << " ";
                   f << std::endl;
-                  depth+= max_depth/double(data_point.values[0].size() );
+                  depth+= max_depth/static_cast<double>(data_point.values[0].size() );
                 }
               f.close();
             }
