@@ -104,7 +104,7 @@ namespace aspect
       // the empty string) then the value we get here is the empty string. If
       // we don't catch this case here, we end up with awkward downstream
       // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "",
+      AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a boundary model for the composition "
                              "('set Model name' in 'subsection Boundary composition model')."));
 
@@ -123,19 +123,11 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               +
-                               std_cxx11::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "Select one of the following models:\n\n"
+                           +
+                           std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
