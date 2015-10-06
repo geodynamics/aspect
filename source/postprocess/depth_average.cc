@@ -224,29 +224,29 @@ namespace aspect
           else
             {
               const std::string filename = (this->get_output_directory() + "depth_average.txt");
-              std::ofstream f;
-              if (this->get_timestep_number() == 0 )  //Write the header if this is the first step
-                {
-                  f.open(filename.c_str(), std::ofstream::out);
-                  f << "#       time" << "       depth";
-                  for ( unsigned int i = 0; i < variables.size(); ++i)
-                    {
-                      f << " " << variables[i];
-                    }
-                  f << std::endl;
-                }
-              else f.open(filename.c_str(), std::ofstream::app);
+              std::ofstream f(filename.c_str(), std::ofstream::out);
 
-              double depth = max_depth/static_cast<double>(data_point.values[0].size())/2.0;
-              for (unsigned int d = 0; d < data_point.values[0].size(); ++d)
+              //Write the header
+              f << "#       time" << "       depth";
+              for ( unsigned int i = 0; i < variables.size(); ++i)
+                f << " " << variables[i];
+              f << std::endl;
+
+              //Output each data point in the entries object
+              for (typename std::vector<DataPoint>::const_iterator point = entries.begin();
+                   point != entries.end(); ++point)
                 {
-                  f << std::setw(12)
-                    << (this->convert_output_to_years() ? data_point.time/year_in_seconds : data_point.time)
-                    << std::setw(12) << depth;
-                  for ( unsigned int i = 0; i < variables.size(); ++i )
-                    f << std::setw(12) << data_point.values[i][d];
-                  f << std::endl;
-                  depth+= max_depth/static_cast<double>(data_point.values[0].size() );
+                  double depth = max_depth/static_cast<double>(point->values[0].size())/2.0;
+                  for (unsigned int d = 0; d < point->values[0].size(); ++d)
+                    {
+                      f << std::setw(12)
+                        << (this->convert_output_to_years() ? point->time/year_in_seconds : point->time)
+                        << std::setw(12) << depth;
+                      for ( unsigned int i = 0; i < variables.size(); ++i )
+                        f << std::setw(12) << point->values[i][d];
+                      f << std::endl;
+                      depth+= max_depth/static_cast<double>(point->values[0].size() );
+                    }
                 }
               f.close();
             }
