@@ -253,12 +253,6 @@ namespace aspect
         get_global_max_tracer_per_cell() const;
 
         /**
-         * Find the neighbor processes.
-         */
-        std::vector<types::subdomain_id>
-        find_neighbors() const;
-
-        /**
          * Calculate the cells containing each particle for all particles. If
          * particles moved out of the domain of this process they will be send
          * to their new process and inserted there. After this function call

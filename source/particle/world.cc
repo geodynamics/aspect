@@ -21,6 +21,7 @@
 #include <aspect/particle/world.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/compat.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -361,34 +362,6 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<types::subdomain_id>
-    World<dim>::find_neighbors() const
-    {
-      std::vector<types::subdomain_id> neighbors;
-
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = this->get_triangulation().begin_active();
-           cell != this->get_triangulation().end(); ++cell)
-        {
-          if (cell->is_ghost())
-            {
-              bool neighbor_already_marked = false;
-
-              for (unsigned int i = 0; i < neighbors.size(); ++i)
-                if (neighbors[i] == cell->subdomain_id())
-                  {
-                    neighbor_already_marked = true;
-                    break;
-                  }
-
-              if (!neighbor_already_marked)
-                neighbors.push_back(cell->subdomain_id());
-            }
-        }
-      return neighbors;
-    }
-
-    template <int dim>
     void
     World<dim>::find_all_cells()
     {
@@ -469,7 +442,14 @@ namespace aspect
     World<dim>::send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles)
     {
       // Determine the communication pattern
-      const std::vector<types::subdomain_id> neighbors = find_neighbors();
+#if DEAL_II_VERSION_GTE(8,4,0)
+      const std::vector<types::subdomain_id> neighbors (this->get_triangulation().ghost_owners().begin(),
+                                                        this->get_triangulation().ghost_owners().end());
+#else
+      const std::set<types::subdomain_id> ghost_owner = ghost_owners(this->get_triangulation());
+      const std::vector<types::subdomain_id> neighbors (ghost_owner.begin(),
+                                                        ghost_owner.end());
+#endif
       const unsigned int num_neighbors = neighbors.size();
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->data_length() * sizeof(double);
 

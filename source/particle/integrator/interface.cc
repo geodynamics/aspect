@@ -61,13 +61,13 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::read_data(const void *&,
-                                const unsigned int )
+                                const particle_index )
       {}
 
       template <int dim>
       void
       Interface<dim>::write_data(void *&,
-                                 const unsigned int ) const
+                                 const particle_index ) const
       {}
 
 
