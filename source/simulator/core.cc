@@ -1126,7 +1126,7 @@ namespace aspect
     setup_nullspace_constraints(constraints);
 
     // TODO: make this optional
-    if (parameters.include_melt_transport)
+    if (false && parameters.include_melt_transport)
     { // add a single pressure DoF
       const types::global_dof_index global_idx = introspection.system_dofs_per_block[0];
 
