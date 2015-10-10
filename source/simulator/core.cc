@@ -1797,7 +1797,7 @@ namespace aspect
                                                  C_preconditioner);
 
                   if (iteration == 0)
-                    initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+                      initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
                   composition_residual[c]
                     = solve_advection(AdvectionField::composition(c));
@@ -1838,11 +1838,22 @@ namespace aspect
 
               pcout << std::endl;
 
-
               double max = 0.0;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                if (initial_composition_residual[c]>0)
-                  max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                {
+                  // in models with melt migration the melt advection equation includes the divergence of the velocity
+                  // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+                  // thus, we set a threshold for the initial composition residual.
+                  // this only plays a role if the right-hand side of the advection equation is very small.
+                  const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                            ?
+                                            parameters.linear_stokes_solver_tolerance * time_step
+                                            :
+                                            0.0);
+                  if (initial_composition_residual[c]>threshold)
+                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                }
+
               if (initial_stokes_residual>0)
                 max = std::max(stokes_residual/initial_stokes_residual, max);
               if (initial_temperature_residual>0)

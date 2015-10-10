@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__model_melt_simple_h
-#define __aspect__model_melt_simple_h
+#ifndef __aspect__model_melt_global_h
+#define __aspect__model_melt_global_h
 
 #include <aspect/material_model/melt_interface.h>
 #include <aspect/simulator_access.h>
@@ -34,13 +34,9 @@ namespace aspect
 
     /**
      * A material model that implements a simple formulation of the
-     * material parameters required for the modelling of melt transport,
-     * including a source term for the porosity according to the melting
-     * model for dry peridotite of Katz, 2003.
-     *
-     * Most of the material properties are constant, except for the shear,
-     * compaction and melt viscosities and the permeability, which depend on
-     * the porosity.
+     * material parameters required for the modelling of melt transport
+     * in a global model, including a source term for the porosity according
+     * a simplified linear melting model.
      *
      * The model is considered incompressible, following the definition
      * described in Interface::is_compressible.
@@ -48,7 +44,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltSimple : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    class MeltGlobal : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       friend class ::aspect::Postprocess::MeltStatistics<dim>;
       public:
@@ -153,41 +149,14 @@ namespace aspect
         double thermal_conductivity;
         double reference_permeability;
         double alpha_phi;
-        double extraction_depth;
+        double depletion_density_change;
+        double depletion_solidus_change;
+        double pressure_solidus_change;
+        double surface_solidus;
         double compressibility;
         double melt_compressibility;
         double melt_bulk_modulus_derivative;
-        double depletion_density_change;
-        double depletion_solidus_change;
-        bool model_is_compressible;
-        bool fractional_melting;
-
-        /**
-         * Parameters for anhydrous melting of peridotite after Katz, 2003
-         */
-
-        // for the solidus temperature
-        double A1;   // °C
-        double A2; // °C/Pa
-        double A3; // °C/(Pa^2)
-
-        // for the lherzolite liquidus temperature
-        double B1;   // °C
-        double B2;   // °C/Pa
-        double B3; // °C/(Pa^2)
-
-        // for the liquidus temperature
-        double C1;   // °C
-        double C2;  // °C/Pa
-        double C3; // °C/(Pa^2)
-
-        // for the reaction coefficient of pyroxene
-        double r1;     // cpx/melt
-        double r2;     // cpx/melt/GPa
-        double M_cpx;  // mass fraction of pyroxene
-
-        // melt fraction exponent
-        double beta;
+        bool include_melting_and_freezing;
 
         // entropy change upon melting
         double peridotite_melting_entropy_change;
@@ -195,14 +164,8 @@ namespace aspect
         virtual
         double
         melt_fraction (const double temperature,
-                       const double pressure) const;
-
-        virtual
-        double
-        entropy_change (const double temperature,
-                        const double pressure,
-                        const double maximum_melt_fraction,
-                        const NonlinearDependence::Dependence dependence) const;
+                       const double pressure,
+                       const double depletion) const;
     };
 
   }
