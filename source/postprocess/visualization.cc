@@ -64,10 +64,11 @@ namespace aspect
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
                 {
-                  if (this->include_melt_transport())
-                    computed_quantities[q][i]=uh[q][i] * ((i < dim || (i > dim+1 && i < dim+2+dim)) ? velocity_scaling_factor : 1.0);
+                  if (this->introspection().component_masks.velocities[i] ||
+                      (this->include_melt_transport() && this->introspection().component_masks.fluid_velocities[i]))
+                    computed_quantities[q][i]=uh[q][i] * velocity_scaling_factor;
                   else
-                    computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
+                    computed_quantities[q][i]=uh[q][i];
                 }
           }
 
