@@ -354,7 +354,7 @@ namespace aspect
                              "Reference permeability of the solid host rock."
                              "Units: $m^2$.");
           prm.declare_entry ("Depletion density change", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "
                              "depletion of zero. Negative values indicate lower densities of"
                              "depleted material. Depletion is indicated by the compositional"
