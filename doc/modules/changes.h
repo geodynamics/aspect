@@ -6,6 +6,10 @@
  *
  *
  * <ol>
+ * <li> New: The DepthAverage postprocessor can now output as a plain
+ * ascii text table.
+ * <br>
+ * (Ian Rose, 2015/10/05)
  *
  * <li> Fixed: Free surface computations now work with checkpointing.
  * <br>
