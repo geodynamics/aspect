@@ -32,6 +32,9 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
+#if DEAL_II_VERSION_GTE(8,3,0)
+#include <deal.II/numerics/vector_tools.templates.h>
+#endif
 
 using namespace dealii;
 
