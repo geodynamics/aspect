@@ -172,11 +172,27 @@ namespace aspect
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
+    std::set<types::boundary_id> vert_free_prescribed_vel;
     //Zero out the displacement for the prescribed velocity
     for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
          p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
-      VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+    {
+     if ((p->second.first.find("z") && dim == 3) || (p->second.first.find("y") && dim == 2) || p->second.first.empty())
+     VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
+     else
+    {
+    	 vert_free_prescribed_vel.insert(p->first);
+
+    // In 3D what about the free y component, it could be prescribed
+    }
+    }
+
+    VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
+                                                         /* first_vector_component= */
+                                                         0,
+                                                         vert_free_prescribed_vel,
+                                                         mesh_displacement_constraints, sim.mapping);
 
     //make the tangential boundary indicators no displacement normal to the boundary
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
