@@ -281,6 +281,7 @@ namespace aspect
                                  update_JxW_values),
 
           local_dof_indices (finite_element.dofs_per_cell),
+
           phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<double>()),
           grad_phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
           hessian_phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<Tensor<2,dim> >()),
@@ -761,9 +762,6 @@ namespace aspect
     if (advection_field.field_type == AdvectionField::compositional_field)
       Assert(parameters.n_compositional_fields > advection_field.compositional_variable, ExcInternalError());
 
-    Vector<float> viscosity_per_cell_temp;
-    viscosity_per_cell_temp.reinit(triangulation.n_active_cells());
-
     viscosity_per_cell = 0.0;
 
     const std::pair<double,double>
@@ -787,23 +785,6 @@ namespace aspect
                                               (parameters.stokes_velocity_degree+1)/2),
                                   parameters.n_compositional_fields);
 
-    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-
-    // also have the number of dofs that correspond just to the element for
-    // the system we are currently trying to assemble
-    const unsigned int advection_dofs_per_cell = scratch.phi_field.size();
-    (void)advection_dofs_per_cell;
-    Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
-    Assert (scratch.hessian_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-    Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-    Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-
-    const FEValuesExtractors::Scalar solution_field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]);
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (unsigned int cellidx=0; cellidx<triangulation.n_active_cells(); ++cellidx, ++cell)
       {
@@ -812,8 +793,26 @@ namespace aspect
             viscosity_per_cell[cellidx]=-1;
             continue;
           }
-        scratch.finite_element_values.reinit (cell);
 
+        const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+        // also have the number of dofs that correspond just to the element for
+        // the system we are currently trying to assemble
+        const unsigned int advection_dofs_per_cell = scratch.phi_field.size();
+        (void)advection_dofs_per_cell;
+        Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
+        Assert (scratch.hessian_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+        Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+        Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+
+        const FEValuesExtractors::Scalar solution_field
+          = (advection_field.is_temperature()
+             ?
+             introspection.extractors.temperature
+             :
+             introspection.extractors.compositional_fields[advection_field.compositional_variable]);
+
+        scratch.finite_element_values.reinit (cell);
 
         // get all dof indices on the current cell, then extract those
         // that correspond to the solution_field we are interested in
@@ -908,6 +907,8 @@ namespace aspect
                                                         cell->diameter(),
                                                         advection_field);
       }
+
+
   }
 
 
@@ -1162,7 +1163,6 @@ namespace aspect
     const bool is_compressible = material_model->is_compressible();
 
     scratch.finite_element_values.reinit (cell);
-
 
     if (rebuild_stokes_matrix)
       data.local_matrix = 0;
@@ -1674,7 +1674,7 @@ namespace aspect
         if (parameters.use_supg == true)
           {
             double h = cell->diameter();
-            double fe_order = 1; // TODO: make this not 2
+            double fe_order = parameters.temperature_degree;
             if (norm_of_advection_field>1e-8)
               if (conductivity>1e-8)
                 tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*conductivity))-
