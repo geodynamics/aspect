@@ -1,0 +1,160 @@
+/*
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file doc/COPYING.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+
+#include <aspect/postprocess/stokes_residual.h>
+#include <aspect/simulator_access.h>
+#include <aspect/simulator.h>
+#include <aspect/global.h>
+
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/tria.h>
+#include <deal.II/fe/fe_dgq.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/numerics/data_out_stack.h>
+
+
+#include <math.h>
+
+namespace aspect
+{
+  namespace Postprocess
+  {
+    template <int dim>
+    template <class Archive>
+    void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
+                                                  const unsigned int)
+    {
+      ar &time &values;
+    }
+
+
+    template <int dim>
+    StokesResidual<dim>::StokesResidual ()
+    {
+
+    }
+
+
+
+
+    template <int dim>
+    std::pair<std::string,std::string>
+    StokesResidual<dim>::execute (TableHandler &)
+    {
+
+//      DataPoint data_point;
+//      data_point.time       = this->get_time();
+//      data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
+
+//      entries.push_back (data_point);
+
+
+      // On the root process, write out the file.
+//      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+//        {
+//      for (unsigned int i=0; i<entries.size(); ++i)
+//        {
+//              entries[i].values.begin(),
+      //        }
+
+
+      // return what should be printed to the screen. note that we had
+      // just incremented the number, so use the previous value
+      return std::make_pair (std::string ("Writing stokes residual"),
+                             this->get_output_directory() +
+                             "TODO");
+    }
+
+
+    template <int dim>
+    void
+    StokesResidual<dim>::declare_parameters (ParameterHandler &prm)
+    {
+
+    }
+
+    template <int dim>
+    void post_stokes_solver (const SimulatorAccess<dim> &sim,
+                             const bool success,
+                             const std::vector<double> &history)
+    {
+      std::cout << "\npost_stokes_solver:\n";
+      for (unsigned int i=0; i<history.size(); ++i)
+        std::cout << history[i] << std::endl;
+    }
+
+    template <int dim>
+    void
+    StokesResidual<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      this->get_signals().post_stokes_solver.connect(&post_stokes_solver<dim>);
+
+    }
+
+
+    template <int dim>
+    template <class Archive>
+    void StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar & entries;
+    }
+
+
+    template <int dim>
+    void
+    StokesResidual<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      aspect::oarchive oa (os);
+      oa << (*this);
+
+      status_strings["StokesResidual"] = os.str();
+    }
+
+
+    template <int dim>
+    void
+    StokesResidual<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // see if something was saved
+      if (status_strings.find("StokesResidual") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("StokesResidual")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+        }
+    }
+
+
+  }
+}
+
+
+// explicit instantiations
+namespace aspect
+{
+  namespace Postprocess
+  {
+    ASPECT_REGISTER_POSTPROCESSOR(StokesResidual,
+                                  "stokes residual",
+                                  "A postprocessor that outputs the Stokes residuals during the iterative solver algorithm.")
+  }
+}
