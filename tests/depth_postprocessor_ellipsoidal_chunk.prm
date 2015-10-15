@@ -1,0 +1,83 @@
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = constant 
+  subsection Constant
+    set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
+  end
+end
+
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+
+subsection Geometry model
+  set Model name = ellipsoidal chunk
+  subsection Ellipsoidal chunk
+    set NE corner = 5:30
+    set NW corner = 0:0
+    set SE corner = 10:-10
+    set Depth = 3000000
+    set Eccentricity = 0.5
+    set East-West subdivisions = 2
+    set North-South subdivisions = 2
+    set Depth subdivisions = 2
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1000
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Strategy = temperature
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = depth
+    set Output format = gnuplot
+  end
+end
+
