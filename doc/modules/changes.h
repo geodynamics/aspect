@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> New: Add depth postprocessor which visually outputs the 
+ * depth for all points inside the domain, as determined by the 
+ * geometry model.
+ * <br>
+ * (Menno Fraters, 2015/10/15)
+ *
  * <li> New: The "Stokes residual" postprocessor will output the convergence
  * of the Stokes residual of each linear solve.
  * <br>
