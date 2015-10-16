@@ -907,83 +907,238 @@ namespace aspect
 
 
     // compute fluid_velocity
-    {
-      // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+    // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+    if (true)
+      {
+        // solve mass matrix problem
 
-      const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.fluid_velocities).get_unit_support_points());
+        // TODO: lots of cleanup/optimization opportunities here:
+        // - store matrix?
+        // - reuse system matrix/sparsity pattern?
+        // - only construct matrix for specific u_f block?
+        // - clean up solver/preconditioner
 
-      typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
-      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
 
-      std::vector<double> porosity_values(quadrature.size());
-      std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
-      std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+        LinearAlgebra::BlockSparseMatrix matrix;
+        LinearAlgebra::BlockCompressedSparsityPattern sp;
+#ifdef ASPECT_USE_PETSC
+        sp.reinit (introspection.index_sets.system_relevant_partitioning);
+#else
+        sp.reinit (introspection.index_sets.system_partitioning,
+                   introspection.index_sets.system_partitioning,
+                   introspection.index_sets.system_relevant_partitioning,
+                   mpi_communicator);
+#endif
 
-      FEValues<dim> fe_values (mapping,
-                               finite_element,
-                               quadrature,
-                               update_quadrature_points | update_values | update_gradients);
-      std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = dof_handler.begin_active(),
-      endc = dof_handler.end();
-      for (; cell != endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit(cell);
-            cell->get_dof_indices (local_dof_indices);
-            fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
-              solution, porosity_values);
-            fe_values[introspection.extractors.velocities].get_function_values (
-              solution, u_s_values);
-            fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
-              solution, grad_p_f_values);
-            compute_material_model_input_values (solution,
-                                                 fe_values,
-                                                 cell,
-                                                 true, // TODO: use rebuild_stokes_matrix here?
-                                                 in);
+        const typename Introspection<dim>::ComponentIndices &x
+          = introspection.component_indices;
 
-            typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
-            melt_mat->evaluate_with_melt(in, out);
+        Table<2,DoFTools::Coupling> coupling (introspection.n_components,
+                                              introspection.n_components);
+        for (unsigned int c=0; c<dim; ++c)
+          for (unsigned int d=0; d<dim; ++d)
+            coupling[x.fluid_velocities[c]][x.fluid_velocities[d]] = DoFTools::always;
 
-            for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
-              {
-                std::pair<unsigned int, unsigned int> base_index
-                  = finite_element.system_to_base_index(j).first;
-                if (base_index.first != introspection.base_elements.fluid_velocities)
-                  continue;
-                const unsigned int q = finite_element.system_to_base_index(j).second;
-                const unsigned int d = base_index.second;
-                Assert(q < quadrature.size(), ExcInternalError());
+        DoFTools::make_sparsity_pattern (dof_handler,
+                                         coupling, sp,
+                                         current_constraints, false,
+                                         Utilities::MPI::
+                                         this_mpi_process(mpi_communicator));
 
-                // skip entries that are not locally owned:
-                if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[j]))
-                  continue;
+#ifdef ASPECT_USE_PETSC
+        SparsityTools::distribute_sparsity_pattern(sp,
+                                                   dof_handler.locally_owned_dofs_per_processor(),
+                                                   mpi_communicator, introspection.index_sets.system_relevant_set);
 
-                const double phi = std::max(0.0, porosity_values[q]);
+        sp.compress();
+        matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
+#else
+        sp.compress();
+        matrix.reinit (sp);
+#endif
 
-                double value = 0.0;
-                // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                if (phi > parameters.melt_transport_threshold)
+        LinearAlgebra::BlockVector rhs, distributed_solution;
+        rhs.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+        distributed_solution.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
+
+        const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+
+        FEValues<dim> fe_values (mapping,
+                                 finite_element,
+                                 quadrature,
+                                 update_quadrature_points | update_values | update_gradients);
+
+        const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
+                           n_q_points    = fe_values.n_quadrature_points;
+
+        std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+        Vector<double> cell_vector (dofs_per_cell);
+        FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+
+        std::vector<double> porosity_values(quadrature.size());
+        std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
+        std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+
+        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
+        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
+
+        typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
+                                                       endc = dof_handler.end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              cell_vector = 0;
+              cell_matrix = 0;
+              cell->get_dof_indices (cell_dof_indices);
+              fe_values.reinit (cell);
+
+              fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+                solution, porosity_values);
+              fe_values[introspection.extractors.velocities].get_function_values (
+                solution, u_s_values);
+              fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
+                solution, grad_p_f_values);
+              compute_material_model_input_values (solution,
+                                                   fe_values,
+                                                   cell,
+                                                   true, // TODO: use rebuild_stokes_matrix here?
+                                                   in);
+
+              typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+              melt_mat->evaluate_with_melt(in, out);
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
                   {
-                    const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
-                    const double gravity_d = this->gravity_model->gravity_vector(in.position[q])[d];
-                    // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
-                    value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - out.fluid_densities[q] * gravity_d) / phi;
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      cell_matrix(i,j) += fe_values[introspection.extractors.fluid_velocities].value(j,q) *
+                                          fe_values[introspection.extractors.fluid_velocities].value(i,q) *
+                                          fe_values.JxW(q);
+
+                    const double phi = std::max(0.0, porosity_values[q]);
+
+                    // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+                    if (phi > parameters.melt_transport_threshold)
+                      {
+                        const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                        const Tensor<1,dim>  gravity = this->gravity_model->gravity_vector(in.position[q]);
+                        cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - out.fluid_densities[q]*gravity) / phi)
+                                          * fe_values[introspection.extractors.fluid_velocities].value(i,q)
+                                          * fe_values.JxW(q);
+                      }
+
                   }
 
-                distributed_vector(local_dof_indices[j]) = value;
-              }
-          }
-      distributed_vector.block(introspection.block_indices.fluid_velocities).compress(VectorOperation::insert);
-      solution.block(introspection.block_indices.fluid_velocities) = distributed_vector.block(introspection.block_indices.fluid_velocities);
-    }
+              current_constraints.distribute_local_to_global (cell_matrix, cell_vector,
+                                                              cell_dof_indices, matrix, rhs, false);
+            }
+
+        rhs.compress (VectorOperation::add);
+        matrix.compress (VectorOperation::add);
+
+
+
+        LinearAlgebra::PreconditionAMG preconditioner;
+        LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+#ifdef ASPECT_USE_PETSC
+        Amg_data.symmetric_operator = false;
+#else
+        //Amg_data.constant_modes = constant_modes;
+        Amg_data.elliptic = true;
+        Amg_data.higher_order_elements = false;
+        Amg_data.smoother_sweeps = 2;
+        Amg_data.aggregation_threshold = 0.02;
+#endif
+        const unsigned int block_idx = introspection.block_indices.fluid_velocities;
+        preconditioner.initialize(matrix.block(block_idx, block_idx));
+
+        SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
+        SolverCG<LinearAlgebra::Vector> cg(solver_control);
+
+        cg.solve (matrix.block(block_idx, block_idx), distributed_solution.block(block_idx), rhs.block(block_idx), preconditioner);
+        pcout << "   Solving for u_f in " << solver_control.last_step() <<" iterations."<< std::endl;
+
+        current_constraints.distribute (distributed_solution);
+        solution.block(introspection.block_indices.fluid_velocities) = distributed_solution.block(introspection.block_indices.fluid_velocities);
+      }
+    else
+      {
+        // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+
+        const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.fluid_velocities).get_unit_support_points());
+
+        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
+        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
+
+        std::vector<double> porosity_values(quadrature.size());
+        std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
+        std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+
+        FEValues<dim> fe_values (mapping,
+                                 finite_element,
+                                 quadrature,
+                                 update_quadrature_points | update_values | update_gradients);
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = dof_handler.begin_active(),
+        endc = dof_handler.end();
+        for (; cell != endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit(cell);
+              cell->get_dof_indices (local_dof_indices);
+              fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
+                solution, porosity_values);
+              fe_values[introspection.extractors.velocities].get_function_values (
+                solution, u_s_values);
+              fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
+                solution, grad_p_f_values);
+              compute_material_model_input_values (solution,
+                                                   fe_values,
+                                                   cell,
+                                                   true, // TODO: use rebuild_stokes_matrix here?
+                                                   in);
+
+              typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+              melt_mat->evaluate_with_melt(in, out);
+
+              for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
+                {
+                  std::pair<unsigned int, unsigned int> base_index
+                    = finite_element.system_to_base_index(j).first;
+                  if (base_index.first != introspection.base_elements.fluid_velocities)
+                    continue;
+                  const unsigned int q = finite_element.system_to_base_index(j).second;
+                  const unsigned int d = base_index.second;
+                  Assert(q < quadrature.size(), ExcInternalError());
+
+                  // skip entries that are not locally owned:
+                  if (!dof_handler.locally_owned_dofs().is_element(local_dof_indices[j]))
+                    continue;
+
+                  const double phi = std::max(0.0, porosity_values[q]);
+
+                  double value = 0.0;
+                  // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+                  if (phi > parameters.melt_transport_threshold)
+                    {
+                      const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                      const double gravity_d = this->gravity_model->gravity_vector(in.position[q])[d];
+                      // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
+                      value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - out.fluid_densities[q] * gravity_d) / phi;
+                    }
+
+                  distributed_vector(local_dof_indices[j]) = value;
+                }
+            }
+        distributed_vector.block(introspection.block_indices.fluid_velocities).compress(VectorOperation::insert);
+        solution.block(introspection.block_indices.fluid_velocities) = distributed_vector.block(introspection.block_indices.fluid_velocities);
+      }
 
     //compute solid pressure
     {
       const unsigned int block_p = introspection.block_indices.pressure;
-    // current_constraints.distribute.
+      // current_constraints.distribute.
 
       // Think what we need to do if the pressure is not an FE_Q...
       Assert(parameters.use_locally_conservative_discretization == false, ExcNotImplemented());
