@@ -682,7 +682,7 @@ namespace aspect
                                        expansion_matrix);
           }
 
-      average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
+        average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
         average (operation, projection_matrix, expansion_matrix,
                  values_out.densities);
         average (operation, projection_matrix, expansion_matrix,
@@ -798,18 +798,18 @@ namespace aspect
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
                   MaterialModelOutputs<dim>      &values_out); \
-  template                \
-  void average (const AveragingOperation operation, \
-                const DoFHandler<dim>::active_cell_iterator &cell, \
-                const Quadrature<dim>     &quadrature_formula, \
-                const Mapping<dim>        &mapping, \
-                MeltMaterialModelOutputs<dim>      &values_out); \
-  template                \
-  void average (const AveragingOperation operation, \
-                const DoFHandler<dim>::active_cell_iterator &cell, \
-                const Quadrature<dim>     &quadrature_formula, \
-                const Mapping<dim>        &mapping, \
-                std::vector<double>       &values_out); \
+    template                \
+    void average (const AveragingOperation operation, \
+                  const DoFHandler<dim>::active_cell_iterator &cell, \
+                  const Quadrature<dim>     &quadrature_formula, \
+                  const Mapping<dim>        &mapping, \
+                  MeltMaterialModelOutputs<dim>      &values_out); \
+    template                \
+    void average (const AveragingOperation operation, \
+                  const DoFHandler<dim>::active_cell_iterator &cell, \
+                  const Quadrature<dim>     &quadrature_formula, \
+                  const Mapping<dim>        &mapping, \
+                  std::vector<double>       &values_out); \
   }
 
 

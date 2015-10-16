@@ -41,8 +41,8 @@ namespace aspect
 
     template <int dim>
     MeltMaterialModelOutputs<dim>::MeltMaterialModelOutputs(const unsigned int n_points,
-                                                               const unsigned int n_comp)
-    : MaterialModelOutputs<dim>(n_points, n_comp)
+                                                            const unsigned int n_comp)
+      : MaterialModelOutputs<dim>(n_points, n_comp)
     {
       compaction_viscosities.resize(n_points);
       fluid_viscosities.resize(n_points);

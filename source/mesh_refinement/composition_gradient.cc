@@ -60,7 +60,7 @@ namespace aspect
               {
                 fe_values.reinit(cell);
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_gradients (this->get_solution(),
-                                                                                                            composition_gradients);
+                    composition_gradients);
 
                 // for each composition dof, write into the output
                 // vector the compositon gradient. Note that quadrature points and

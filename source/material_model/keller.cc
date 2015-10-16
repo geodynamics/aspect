@@ -106,7 +106,7 @@ namespace aspect
     Keller<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      for (unsigned int i=0;i<in.position.size();++i)
+      for (unsigned int i=0; i<in.position.size(); ++i)
         {
           if (this->include_melt_transport())
             {
@@ -122,8 +122,8 @@ namespace aspect
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = thermal_conductivity;
           out.compressibilities[i] = 0.0;
-	  for (unsigned int c=0;c<in.composition[i].size();++c)
-	    out.reaction_terms[i][c] = 0.0;
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
         }
     }
 
@@ -135,7 +135,7 @@ namespace aspect
       evaluate(in, out);
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      for (unsigned int i=0;i<in.position.size();++i)
+      for (unsigned int i=0; i<in.position.size(); ++i)
         {
           double porosity = in.composition[i][porosity_idx];
 

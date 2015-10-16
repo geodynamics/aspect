@@ -112,11 +112,11 @@ namespace aspect
 
             double melt_fraction;
             if (this->introspection().compositional_name_exists("pyroxenite"))
-            {
-              const unsigned int pyroxenite_index = this->introspection().compositional_index_for_name("pyroxenite");
-              melt_fraction = composition[pyroxenite_index] * pyroxenite_melt_fraction +
-                              (1-composition[pyroxenite_index]) * peridotite_melt_fraction;
-            }
+              {
+                const unsigned int pyroxenite_index = this->introspection().compositional_index_for_name("pyroxenite");
+                melt_fraction = composition[pyroxenite_index] * pyroxenite_melt_fraction +
+                                (1-composition[pyroxenite_index]) * peridotite_melt_fraction;
+              }
             else
               melt_fraction = peridotite_melt_fraction;
 

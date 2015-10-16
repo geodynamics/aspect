@@ -45,10 +45,10 @@ namespace aspect
          */
         virtual
         void fluid_pressure_gradient (
-            const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-            const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-            std::vector<Tensor<1,dim> > & output
-            ) const;
+          const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+          const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+          std::vector<Tensor<1,dim> > &output
+        ) const;
 
         /**
          * Declare the parameters this class takes through input files.

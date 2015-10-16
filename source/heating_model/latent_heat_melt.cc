@@ -38,7 +38,7 @@ namespace aspect
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          if(this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
+          if (this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
             {
               // with melt migration the reaction term is a mass reaction rate
               const double porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -48,7 +48,7 @@ namespace aspect
 
               // without melt migration, the reaction term is a constant value in terms of volume,
               // and we have to scale it to the correct units
-              if(!this->include_melt_transport())
+              if (!this->include_melt_transport())
                 heating_model_outputs.heating_source_terms[q] *= material_model_outputs.densities[q] / this->get_timestep();
             }
           else

@@ -52,7 +52,7 @@ namespace aspect
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-    	AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
 
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -60,9 +60,9 @@ namespace aspect
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
         typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                       this->n_compositional_fields());
+                                                                           this->n_compositional_fields());
         typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                         this->n_compositional_fields());
+                                                                             this->n_compositional_fields());
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
@@ -76,7 +76,7 @@ namespace aspect
           }
 
         in.cell = NULL; // we do not know the cell index
-        const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
+        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
         melt_mat->evaluate_with_melt(in, out);
 
@@ -87,162 +87,162 @@ namespace aspect
       template <int dim>
       CompactionViscosity<dim>::
       CompactionViscosity ()
-         :
-         DataPostprocessorScalar<dim> ("compaction_viscosity",
-                                       update_values | update_gradients | update_q_points)
-       {}
+        :
+        DataPostprocessorScalar<dim> ("compaction_viscosity",
+                                      update_values | update_gradients | update_q_points)
+      {}
 
-       template <int dim>
-       void
-       CompactionViscosity<dim>::
-       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                          const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                          const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                          const std::vector<Point<dim> >                  &/*normals*/,
-                                          const std::vector<Point<dim> >                  &evaluation_points,
-                                          std::vector<Vector<double> >                    &computed_quantities) const
-       {
-       	 AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+      template <int dim>
+      void
+      CompactionViscosity<dim>::
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
+                                         const std::vector<Point<dim> >                  &/*normals*/,
+                                         const std::vector<Point<dim> >                  &evaluation_points,
+                                         std::vector<Vector<double> >                    &computed_quantities) const
+      {
+        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
 
-         const unsigned int n_quadrature_points = uh.size();
-         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-         Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
+        const unsigned int n_quadrature_points = uh.size();
+        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
 
-         typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                        this->n_compositional_fields());
-         typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                          this->n_compositional_fields());
-
-         in.position = evaluation_points;
-         for (unsigned int q=0; q<n_quadrature_points; ++q)
-           {
-             Tensor<2,dim> grad_u;
-             for (unsigned int d=0; d<dim; ++d)
-               grad_u[d] = duh[q][d];
-             in.strain_rate[q] = symmetrize (grad_u);
-
-             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-
-             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
-           }
-
-         in.cell = NULL; // we do not know the cell index
-         const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-         melt_mat->evaluate_with_melt(in, out);
-
-         for (unsigned int q=0; q<n_quadrature_points; ++q)
-           computed_quantities[q](0) = out.compaction_viscosities[q];
-       }
-
-       template <int dim>
-       Permeability<dim>::
-       Permeability ()
-         :
-         DataPostprocessorScalar<dim> ("permeability",
-                                       update_values | update_q_points)
-       {}
-
-       template <int dim>
-       void
-       Permeability<dim>::
-       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                          const std::vector<std::vector<Tensor<1,dim> > > &/*duh*/,
-                                          const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                          const std::vector<Point<dim> >                  &/*normals*/,
-                                          const std::vector<Point<dim> >                  &evaluation_points,
-                                          std::vector<Vector<double> >                    &computed_quantities) const
-       {
-       	 AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
-
-    	 const unsigned int n_quadrature_points = uh.size();
-         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-
-         typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                        this->n_compositional_fields());
-         typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                          this->n_compositional_fields());
-
-         in.position = evaluation_points;
-         in.strain_rate.resize(0); // we do not need the viscosity
-         for (unsigned int q=0; q<n_quadrature_points; ++q)
-           {
-             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-
-             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
-           }
-
-         in.cell = NULL; // we do not know the cell index
-         const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-         AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-         melt_mat->evaluate_with_melt(in, out);
-
-         for (unsigned int q=0; q<n_quadrature_points; ++q)
-           computed_quantities[q](0) = out.permeabilities[q];
-       }
-
-       template <int dim>
-       MeltViscosity<dim>::
-       MeltViscosity ()
-          :
-          DataPostprocessorScalar<dim> ("melt_viscosity",
-                                        update_values | update_gradients | update_q_points)
-        {}
-
-        template <int dim>
-        void
-        MeltViscosity<dim>::
-        compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                           const std::vector<std::vector<Tensor<1,dim> > > & duh,
-                                           const std::vector<std::vector<Tensor<2,dim> > > & /*dduh*/,
-                                           const std::vector<Point<dim> >                  &/*normals*/,
-                                           const std::vector<Point<dim> >                  &evaluation_points,
-                                           std::vector<Vector<double> >                    &computed_quantities) const
-        {
-          AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
-
-          const unsigned int n_quadrature_points = uh.size();
-          Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-          Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-          Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-          Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
-
-          typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                         this->n_compositional_fields());
-          typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
+        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
                                                                            this->n_compositional_fields());
+        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
+                                                                             this->n_compositional_fields());
 
-          in.position = evaluation_points;
-          for (unsigned int q=0; q<n_quadrature_points; ++q)
-            {
-              Tensor<2,dim> grad_u;
-              for (unsigned int d=0; d<dim; ++d)
-                grad_u[d] = duh[q][d];
-              in.strain_rate[q] = symmetrize (grad_u);
+        in.position = evaluation_points;
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = duh[q][d];
+            in.strain_rate[q] = symmetrize (grad_u);
 
-              in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-              in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
+            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
 
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
-            }
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+          }
 
-          in.cell = NULL; // we do not know the cell index
-          const typename MaterialModel::MeltInterface<dim> * melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-          AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-          melt_mat->evaluate_with_melt(in, out);
+        in.cell = NULL; // we do not know the cell index
+        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
+        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+        melt_mat->evaluate_with_melt(in, out);
 
-          for (unsigned int q=0; q<n_quadrature_points; ++q)
-            computed_quantities[q](0) = out.fluid_viscosities[q];
-        }
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          computed_quantities[q](0) = out.compaction_viscosities[q];
+      }
+
+      template <int dim>
+      Permeability<dim>::
+      Permeability ()
+        :
+        DataPostprocessorScalar<dim> ("permeability",
+                                      update_values | update_q_points)
+      {}
+
+      template <int dim>
+      void
+      Permeability<dim>::
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &/*duh*/,
+                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
+                                         const std::vector<Point<dim> >                  &/*normals*/,
+                                         const std::vector<Point<dim> >                  &evaluation_points,
+                                         std::vector<Vector<double> >                    &computed_quantities) const
+      {
+        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
+        const unsigned int n_quadrature_points = uh.size();
+        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
+
+        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
+                                                                           this->n_compositional_fields());
+        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
+                                                                             this->n_compositional_fields());
+
+        in.position = evaluation_points;
+        in.strain_rate.resize(0); // we do not need the viscosity
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
+            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
+            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+          }
+
+        in.cell = NULL; // we do not know the cell index
+        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
+        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+        melt_mat->evaluate_with_melt(in, out);
+
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          computed_quantities[q](0) = out.permeabilities[q];
+      }
+
+      template <int dim>
+      MeltViscosity<dim>::
+      MeltViscosity ()
+        :
+        DataPostprocessorScalar<dim> ("melt_viscosity",
+                                      update_values | update_gradients | update_q_points)
+      {}
+
+      template <int dim>
+      void
+      MeltViscosity<dim>::
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
+                                         const std::vector<std::vector<Tensor<2,dim> > > & /*dduh*/,
+                                         const std::vector<Point<dim> >                  &/*normals*/,
+                                         const std::vector<Point<dim> >                  &evaluation_points,
+                                         std::vector<Vector<double> >                    &computed_quantities) const
+      {
+        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+
+        const unsigned int n_quadrature_points = uh.size();
+        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
+        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
+
+        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
+                                                                           this->n_compositional_fields());
+        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
+                                                                             this->n_compositional_fields());
+
+        in.position = evaluation_points;
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          {
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = duh[q][d];
+            in.strain_rate[q] = symmetrize (grad_u);
+
+            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
+            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+          }
+
+        in.cell = NULL; // we do not know the cell index
+        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
+        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+        melt_mat->evaluate_with_melt(in, out);
+
+        for (unsigned int q=0; q<n_quadrature_points; ++q)
+          computed_quantities[q](0) = out.fluid_viscosities[q];
+      }
 
     }
   }

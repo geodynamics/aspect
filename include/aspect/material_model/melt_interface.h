@@ -72,8 +72,8 @@ namespace aspect
          */
         virtual ~MeltInterface();
 
-      typedef aspect::MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
-      typedef MeltMaterialModelOutputs<dim> MaterialModelOutputs;
+        typedef aspect::MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
+        typedef MeltMaterialModelOutputs<dim> MaterialModelOutputs;
 
 
 
@@ -89,7 +89,7 @@ namespace aspect
         virtual void evaluate_with_melt(const MaterialModelInputs &in, MaterialModelOutputs &out) const = 0;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-            typename Interface<dim>::MaterialModelOutputs &out) const = 0;
+                              typename Interface<dim>::MaterialModelOutputs &out) const = 0;
 
     };
   }

@@ -313,16 +313,16 @@ namespace aspect
 
     template <int dim>
     struct MeltMaterialModelOutputs: public MaterialModelOutputs<dim>
-     {
-        MeltMaterialModelOutputs (const unsigned int n_points,
-                              const unsigned int n_comp);
+    {
+      MeltMaterialModelOutputs (const unsigned int n_points,
+                                const unsigned int n_comp);
 
-        std::vector<double> compaction_viscosities;
-        std::vector<double> fluid_viscosities;
-        std::vector<double> permeabilities;
-        std::vector<double> fluid_densities;
-        std::vector<double> fluid_compressibilities;
-     };
+      std::vector<double> compaction_viscosities;
+      std::vector<double> fluid_viscosities;
+      std::vector<double> permeabilities;
+      std::vector<double> fluid_densities;
+      std::vector<double> fluid_compressibilities;
+    };
 
     /**
      * A namespace in which we define how material model outputs should be

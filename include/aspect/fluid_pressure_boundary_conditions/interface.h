@@ -74,10 +74,10 @@ namespace aspect
          */
         virtual
         void fluid_pressure_gradient (
-            const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-            const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-            std::vector<Tensor<1,dim> > & output
-            ) const = 0;
+          const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+          const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+          std::vector<Tensor<1,dim> > &output
+        ) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -119,9 +119,9 @@ namespace aspect
     template <int dim>
     void
     register_fluid_pressure_boundary (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ());
+                                      const std::string &description,
+                                      void (*declare_parameters_function) (ParameterHandler &),
+                                      Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an

@@ -212,7 +212,7 @@ namespace aspect
        */
       bool
       include_melt_transport () const;
-      
+
       /**
        * Return the stokes velocity degree.
        */

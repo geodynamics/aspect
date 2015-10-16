@@ -34,8 +34,8 @@ namespace aspect
       ArtificialViscosityComposition<dim>::execute() const
       {
         Assert(this->n_compositional_fields()>0,
-            ExcMessage ("The artificial viscosity for compositional fields can "
-            "only be calculated if compositional fields are used in the simulation."));
+               ExcMessage ("The artificial viscosity for compositional fields can "
+                           "only be calculated if compositional fields are used in the simulation."));
 
         std::pair<std::string, Vector<float> *>
         return_value ("artificial_viscosity_composition",

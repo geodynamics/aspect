@@ -46,7 +46,7 @@ namespace aspect
     template <int dim>
     class MeltGlobal : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-      friend class ::aspect::Postprocess::MeltStatistics<dim>;
+        friend class ::aspect::Postprocess::MeltStatistics<dim>;
       public:
         /**
          * Return true if the viscosity() function returns something that may

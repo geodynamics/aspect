@@ -81,17 +81,18 @@ namespace aspect
           // A single block if not split. Note that fluid and compaction pressure
           // are in the same block even when not using a direct solver so that we
           // deal with a 2x2 Stokes matrix for the Schur complement system.
-          b.velocities = block; block += split;
+          b.velocities = block;
+          block += split;
           b.fluid_pressure = block;
           b.compaction_pressure = block++;
 
           b.fluid_velocities = block++;
         }
       else
-      {
+        {
           b.velocities = block;
           block += split;
-      }
+        }
       b.pressure = block++;
       b.temperature = block++;
       for (unsigned int i=0; i<n_compositional_fields; ++i)
@@ -113,7 +114,7 @@ namespace aspect
 
       unsigned int base_element = 0;
       if (parameters.include_melt_transport)
-    {
+        {
           // u
           fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
           multiplicities.push_back(dim);
@@ -140,14 +141,14 @@ namespace aspect
           multiplicities.push_back(dim);
           bes.fluid_velocities = base_element++;
 
-}
+        }
       else
-      {
+        {
           // u
           fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
           multiplicities.push_back(dim);
           bes.velocities = base_element++;
-      }
+        }
 
       // p
       if (parameters.use_locally_conservative_discretization)
@@ -193,40 +194,40 @@ namespace aspect
                                const unsigned int n_components,
                                const bool include_melt_transport)
     {
-        std::vector<unsigned int> components_to_blocks;
-        const unsigned int n_compositional_fields = component_indices.compositional_fields.size();
+      std::vector<unsigned int> components_to_blocks;
+      const unsigned int n_compositional_fields = component_indices.compositional_fields.size();
 
-        // components_to_blocks
-        components_to_blocks.resize(n_components, dealii::numbers::invalid_unsigned_int);
+      // components_to_blocks
+      components_to_blocks.resize(n_components, dealii::numbers::invalid_unsigned_int);
 
-        for (unsigned int d=0; d<dim; ++d)
-            components_to_blocks[component_indices.velocities[d]] = block_indices.velocities;
-        components_to_blocks[component_indices.pressure] = block_indices.pressure;
-        components_to_blocks[component_indices.temperature] = block_indices.temperature;
-        for (unsigned int c=0; c<n_compositional_fields; ++c)
-            components_to_blocks[component_indices.compositional_fields[c]] = block_indices.compositional_fields[c];
+      for (unsigned int d=0; d<dim; ++d)
+        components_to_blocks[component_indices.velocities[d]] = block_indices.velocities;
+      components_to_blocks[component_indices.pressure] = block_indices.pressure;
+      components_to_blocks[component_indices.temperature] = block_indices.temperature;
+      for (unsigned int c=0; c<n_compositional_fields; ++c)
+        components_to_blocks[component_indices.compositional_fields[c]] = block_indices.compositional_fields[c];
 
-        if (include_melt_transport)
+      if (include_melt_transport)
         {
-            for (unsigned int d=0; d<dim; ++d)
-                components_to_blocks[component_indices.fluid_velocities[d]] = block_indices.fluid_velocities;
-            components_to_blocks[component_indices.fluid_pressure] = block_indices.fluid_pressure;
-            components_to_blocks[component_indices.compaction_pressure] = block_indices.compaction_pressure;
+          for (unsigned int d=0; d<dim; ++d)
+            components_to_blocks[component_indices.fluid_velocities[d]] = block_indices.fluid_velocities;
+          components_to_blocks[component_indices.fluid_pressure] = block_indices.fluid_pressure;
+          components_to_blocks[component_indices.compaction_pressure] = block_indices.compaction_pressure;
         }
 
 #ifdef DEBUG
-        // check we assigned all components
-        for (unsigned int c=0; c<n_components; ++c)
-            Assert(components_to_blocks[c]!=dealii::numbers::invalid_unsigned_int, ExcInternalError());
+      // check we assigned all components
+      for (unsigned int c=0; c<n_components; ++c)
+        Assert(components_to_blocks[c]!=dealii::numbers::invalid_unsigned_int, ExcInternalError());
 #endif
 
-        return components_to_blocks;
+      return components_to_blocks;
     }
   }
 
   template <int dim>
   Introspection<dim>::Introspection(const Parameters<dim> &parameters)
-      :
+    :
     n_components (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).first),
     component_indices (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).second),
     n_blocks (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).first),

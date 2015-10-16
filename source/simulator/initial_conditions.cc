@@ -203,12 +203,12 @@ namespace aspect
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
 
-	const unsigned int pressure_comp =
-	  parameters.include_melt_transport ?
-	   introspection.component_indices.fluid_pressure
-	   :
-	   introspection.component_indices.pressure;
-	
+        const unsigned int pressure_comp =
+          parameters.include_melt_transport ?
+          introspection.component_indices.fluid_pressure
+          :
+          introspection.component_indices.pressure;
+
         VectorTools::interpolate (mapping, dof_handler,
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                                                                std_cxx11::cref (*adiabatic_conditions),
@@ -220,9 +220,9 @@ namespace aspect
         // we may have hanging nodes, so apply constraints
         constraints.distribute (system_tmp);
 
-	const unsigned int pressure_block = (parameters.include_melt_transport ?
-					     introspection.block_indices.fluid_pressure
-					     : introspection.block_indices.pressure);
+        const unsigned int pressure_block = (parameters.include_melt_transport ?
+                                             introspection.block_indices.fluid_pressure
+                                             : introspection.block_indices.pressure);
         old_solution.block(pressure_block) = system_tmp.block(pressure_block);
       }
     else

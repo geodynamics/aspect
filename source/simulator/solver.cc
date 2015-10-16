@@ -663,7 +663,7 @@ namespace aspect
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
                                         solver_tolerance, true);
     const unsigned int max_its = system_matrix.block(block_vel,block_p).m() +
-        system_matrix.block(block_p,block_vel).m();
+                                 system_matrix.block(block_p,block_vel).m();
     SolverControl solver_control_expensive (100*max_its, solver_tolerance, true);
 
     unsigned int its_A = 0, its_S = 0;
@@ -689,11 +689,11 @@ namespace aspect
 //               AdditionalData(30, true));
 
         solver.connect(
-                    std_cxx11::bind (&Simulator<dim>::solver_callback,
-                                     this,
-                                     std_cxx11::_1,
-                                     std_cxx11::_2,
-                                     std_cxx11::_3));
+          std_cxx11::bind (&Simulator<dim>::solver_callback,
+                           this,
+                           std_cxx11::_1,
+                           std_cxx11::_2,
+                           std_cxx11::_3));
 
         solver.solve (stokes_block,
                       distributed_stokes_solution,
@@ -723,14 +723,14 @@ namespace aspect
         /*
         SolverBicgstab<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem);
-*/
+        */
 
         solver.connect(
-                    std_cxx11::bind (&Simulator<dim>::solver_callback,
-                                     this,
-                                     std_cxx11::_1,
-                                     std_cxx11::_2,
-                                     std_cxx11::_3));
+          std_cxx11::bind (&Simulator<dim>::solver_callback,
+                           this,
+                           std_cxx11::_1,
+                           std_cxx11::_2,
+                           std_cxx11::_3));
         try
           {
             solver.solve(stokes_block,
@@ -745,16 +745,16 @@ namespace aspect
           {
 
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-            {
+              {
                 // output solver history
                 std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
-                for (unsigned int i=0;i<solver_history.size();++i)
-                {
+                for (unsigned int i=0; i<solver_history.size(); ++i)
+                  {
                     if (solver_history[i]<0)
-                        f << "\n";
+                      f << "\n";
                     else
-                        f << i << " " << solver_history[i] << "\n";
-                }
+                      f << i << " " << solver_history[i] << "\n";
+                  }
                 f.close();
 
                 std::cout << "See " << parameters.output_directory+"solver_history.txt"
@@ -765,9 +765,9 @@ namespace aspect
                                                      "did not converge. It reported the following error:\n\n")
                                          +
                                          exc.what()))
-            }
-              else
-                throw QuietException();
+              }
+            else
+              throw QuietException();
           }
 
 

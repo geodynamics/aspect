@@ -296,10 +296,10 @@ namespace aspect
     FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
                              update_values | update_gradients |
                              ((parameters.use_conduction_timestep || parameters.include_melt_transport)
-                                              ?
-                                              update_quadrature_points
-                                              :
-                                              update_default));
+                              ?
+                              update_quadrature_points
+                              :
+                              update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_velocity_values(n_q_points);
     std::vector<Tensor<1,dim> > pressure_gradients(n_q_points);
     std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);

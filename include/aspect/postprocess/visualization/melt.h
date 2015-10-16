@@ -74,7 +74,7 @@ namespace aspect
           public Interface<dim>
       {
         public:
-    	  CompactionViscosity ();
+          CompactionViscosity ();
 
           virtual
           void
@@ -100,7 +100,7 @@ namespace aspect
           public Interface<dim>
       {
         public:
-    	  Permeability ();
+          Permeability ();
 
           virtual
           void
@@ -126,7 +126,7 @@ namespace aspect
           public Interface<dim>
       {
         public:
-    	  MeltViscosity ();
+          MeltViscosity ();
 
           virtual
           void

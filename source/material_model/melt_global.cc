@@ -136,12 +136,12 @@ namespace aspect
 
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
-      if(this->include_melt_transport() && in.cell
-                                        && this->get_timestep_number() > 0)
+      if (this->include_melt_transport() && in.cell
+          && this->get_timestep_number() > 0)
         {
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-            fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
+          fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
 
           AssertThrow(this->introspection().compositional_name_exists("porosity"),
                       ExcMessage("Material model Melt simple with melt transport only "
@@ -154,7 +154,7 @@ namespace aspect
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
 
-      for (unsigned int i=0;i<in.position.size();++i)
+      for (unsigned int i=0; i<in.position.size(); ++i)
         {
           // calculate density first, we need it for the reaction term
           // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
@@ -194,17 +194,17 @@ namespace aspect
               double melting_rate = eq_melt_fraction - old_porosity[i];
 
               // do not allow negative porosity
-              if(old_porosity[i] + melting_rate < 0)
+              if (old_porosity[i] + melting_rate < 0)
                 melting_rate = -old_porosity[i];
 
-              for (unsigned int c=0;c<in.composition[i].size();++c)
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
                   if (c == peridotite_idx && this->get_timestep_number() > 1)
                     out.reaction_terms[i][c] = melting_rate
                                                - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
                   else if (c == porosity_idx && this->get_timestep_number() > 1)
                     out.reaction_terms[i][c] = melting_rate
-                	                       * out.densities[i]  / this->get_timestep();
+                                               * out.densities[i]  / this->get_timestep();
                   else
                     out.reaction_terms[i][c] = 0.0;
                 }
@@ -213,11 +213,11 @@ namespace aspect
               out.viscosities[i] = eta_0 * exp(- alpha_phi * porosity);
             }
           else
-          {
-            out.viscosities[i] = eta_0;
-            for (unsigned int c=0;c<in.composition[i].size();++c)
-              out.reaction_terms[i][c] = 0.0;
-          }
+            {
+              out.viscosities[i] = eta_0;
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                out.reaction_terms[i][c] = 0.0;
+            }
 
           out.entropy_derivative_pressure[i]    = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
@@ -249,7 +249,7 @@ namespace aspect
       evaluate(in, out);
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      for (unsigned int i=0;i<in.position.size();++i)
+      for (unsigned int i=0; i<in.position.size(); ++i)
         {
           double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
@@ -267,11 +267,11 @@ namespace aspect
           out.fluid_densities[i] = reference_rho_f * temperature_dependence
                                    * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-/*
-          const double phi_0 = 0.05;
-          porosity = std::max(std::min(porosity,0.995),1e-4);
-          out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
-*/
+          /*
+                    const double phi_0 = 0.05;
+                    porosity = std::max(std::min(porosity,0.995),1e-4);
+                    out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+          */
           out.compaction_viscosities[i] = xi_0 * exp(- alpha_phi * porosity);
 
           double visc_temperature_dependence = 1.0;

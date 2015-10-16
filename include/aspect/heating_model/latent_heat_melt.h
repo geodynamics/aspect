@@ -75,7 +75,7 @@ namespace aspect
          * @}
          */
 
-    private:
+      private:
         // entropy change upon melting
         double melting_entropy_change;
     };

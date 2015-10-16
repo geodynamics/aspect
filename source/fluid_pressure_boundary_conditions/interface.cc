@@ -71,9 +71,9 @@ namespace aspect
     template <int dim>
     void
     register_fluid_pressure_boundary (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ())
+                                      const std::string &description,
+                                      void (*declare_parameters_function) (ParameterHandler &),
+                                      Interface<dim> *(*factory_function) ())
     {
       std_cxx1x::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -105,12 +105,12 @@ namespace aspect
     {
       prm.enter_subsection ("Fluid Pressure Boundary Condition");
       const std::string pattern_of_names
-	= std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
+        = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
       prm.declare_entry ("Plugin name", "density",
-			 Patterns::Selection (pattern_of_names),
-			 "Select one of the following plugins:\n\n"
-			 +
-			 std_cxx1x::get<dim>(registered_plugins).get_description_string());
+                         Patterns::Selection (pattern_of_names),
+                         "Select one of the following plugins:\n\n"
+                         +
+                         std_cxx1x::get<dim>(registered_plugins).get_description_string());
       prm.leave_subsection ();
 
       std_cxx1x::get<dim>(registered_plugins).declare_parameters (prm);
@@ -143,9 +143,9 @@ namespace aspect
   template \
   void \
   register_fluid_pressure_boundary<dim> (const std::string &, \
-                                      const std::string &, \
-                                      void ( *) (ParameterHandler &), \
-                                      Interface<dim> *( *) ()); \
+                                         const std::string &, \
+                                         void ( *) (ParameterHandler &), \
+                                         Interface<dim> *( *) ()); \
   \
   template  \
   void \

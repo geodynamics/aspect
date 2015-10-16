@@ -34,18 +34,18 @@ namespace aspect
     void
     Density<dim>::
     fluid_pressure_gradient (
-                const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-                const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-                std::vector<Tensor<1,dim> > & output
-                ) const
+      const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+      const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+      std::vector<Tensor<1,dim> > &output
+    ) const
     {
       for (unsigned int q=0; q<output.size(); ++q)
-      {
-    	const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);
-        output[q] = (((include_rho_s) ? material_model_outputs.densities[q] : 0.0)
-                   + ((include_rho_f) ? material_model_outputs.fluid_densities[q] : 0.0))
-                   * gravity;
-      }
+        {
+          const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);
+          output[q] = (((include_rho_s) ? material_model_outputs.densities[q] : 0.0)
+                       + ((include_rho_f) ? material_model_outputs.fluid_densities[q] : 0.0))
+                      * gravity;
+        }
     }
 
     template <int dim>
@@ -57,17 +57,17 @@ namespace aspect
         prm.enter_subsection("Density");
         {
           prm.declare_entry ("Include Fluid Density", "false", Patterns::Bool(),
-              "Prescribing the gradient of the fluid pressure as "
-              "fluid density times gravity causes melt to flow in "
-              "with the same velocity as inflowing solid material, "
-              "or no melt flowing in or out if the solid velocity "
-              "normal to the boundary is zero.");
+                             "Prescribing the gradient of the fluid pressure as "
+                             "fluid density times gravity causes melt to flow in "
+                             "with the same velocity as inflowing solid material, "
+                             "or no melt flowing in or out if the solid velocity "
+                             "normal to the boundary is zero.");
           prm.declare_entry ("Include Solid Density", "true", Patterns::Bool(),
-              "Prescribing the gradient of the fluid pressure as "
-              "solid density times gravity (which is the lithostatic "
-              "pressure) leads to approximately the same pressure in "
-              "the melt as in the solid, so that fluid is only flowing "
-              "in or out due to differences in dynamic pressure. ");
+                             "Prescribing the gradient of the fluid pressure as "
+                             "solid density times gravity (which is the lithostatic "
+                             "pressure) leads to approximately the same pressure in "
+                             "the melt as in the solid, so that fluid is only flowing "
+                             "in or out due to differences in dynamic pressure. ");
         }
         prm.leave_subsection ();
       }
@@ -108,9 +108,9 @@ namespace aspect
   namespace FluidPressureBoundaryConditions
   {
     ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(Density,
-                                               "density",
-                                               "A plugin that prescribes the fluid pressure gradient at "
-                                               "the boundary based on fluid/solid density from the material "
-                                               "model. ")
+                                                       "density",
+                                                       "A plugin that prescribes the fluid pressure gradient at "
+                                                       "the boundary based on fluid/solid density from the material "
+                                                       "model. ")
   }
 }

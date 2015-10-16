@@ -59,7 +59,7 @@ namespace aspect
               {
                 fe_values.reinit(cell);
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                                                                                                         composition_values);
+                    composition_values);
 
                 // if the composition exceeds the threshold, cell is marked for refinement
                 for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)

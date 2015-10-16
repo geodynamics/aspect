@@ -80,11 +80,11 @@ namespace aspect
               {
                 solution_names.push_back ("p_f");
                 solution_names.push_back ("p_c");
-                for (unsigned int i=0;i<dim;++i)
-                    solution_names.push_back ("u_f");
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_names.push_back ("u_f");
               }
             solution_names.push_back ("p");
-              
+
             solution_names.push_back ("T");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               solution_names.push_back (this->introspection().name_for_compositional_index(c));
@@ -100,12 +100,12 @@ namespace aspect
             interpretation (dim,
                             DataComponentInterpretation::component_is_part_of_vector);
             if (this->include_melt_transport())
-            {
+              {
                 interpretation.push_back (DataComponentInterpretation::component_is_scalar);
                 interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-                for (unsigned int i=0;i<dim;++i)
-                    interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
-            }
+                for (unsigned int i=0; i<dim; ++i)
+                  interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+              }
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
