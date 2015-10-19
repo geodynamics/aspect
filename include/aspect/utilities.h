@@ -170,6 +170,14 @@ namespace aspect
 
     template <>
     inline
+    unsigned int
+    signaling_nan<unsigned int>()
+    {
+      return std::numeric_limits<unsigned int>::signaling_NaN();
+    }
+
+    template <>
+    inline
     SymmetricTensor<2,2>
     signaling_nan<SymmetricTensor<2,2> >()
     {
