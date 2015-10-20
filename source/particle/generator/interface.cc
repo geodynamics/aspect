@@ -47,15 +47,10 @@ namespace aspect
           }
 
         AssertThrow(false,
-                    ExcMessage("A particle generator plugin tried to create a particle in"
-                               "a location that is not owned by the current processor. Please "
-                               "check that your particle generator ensures correct locations "
-                               "for the generated particles."));
+                    ExcParticlePointNotInDomain());
 
         // Avoid warnings about missing return
-        const Particle<dim> particle;
-        const types::LevelInd cell(0,0);
-        return std::make_pair(cell,particle);
+        return std::pair<types::LevelInd,Particle<dim> >();
       }
 
       template <int dim>

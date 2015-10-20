@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/exceptions.h>
 
 namespace aspect
 {
@@ -39,6 +40,17 @@ namespace aspect
      */
     namespace Generator
     {
+      /**
+       * Exception denoting a division by zero.
+       */
+      DeclExceptionMsg (ExcParticlePointNotInDomain,
+                        "You requested to generate a particle at a position that "
+                        "is not owned by this process, therefore the "
+                        "Particle::Generator::Interface::generate_particle() function "
+                        "refused to create it. You can circumvent this error message "
+                        "by catching the ExcParticlePointNotInDomain exception and "
+                        "do whatever you think is appropriate in this case.");
+
       /**
        * Abstract base class used for classes that generate particles.
        *

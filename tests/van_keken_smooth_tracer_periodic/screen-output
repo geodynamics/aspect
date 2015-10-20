@@ -34,21 +34,21 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      1.06s |            |
+| Total wallclock time elapsed since start    |      1.38s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.175s |        16% |
-| Assemble composition system     |         2 |     0.225s |        21% |
-| Assemble temperature system     |         2 |      0.23s |        22% |
-| Build Stokes preconditioner     |         1 |    0.0662s |       6.2% |
-| Build composition preconditioner|         2 |   0.00302s |      0.28% |
-| Build temperature preconditioner|         2 |   0.00328s |      0.31% |
-| Solve Stokes system             |         2 |     0.133s |        12% |
-| Solve composition system        |         2 |   0.00781s |      0.73% |
-| Solve temperature system        |         2 |   0.00237s |      0.22% |
-| Initialization                  |         2 |    0.0736s |       6.9% |
-| Postprocessing                  |         2 |   0.00553s |      0.52% |
-| Setup dof systems               |         1 |    0.0919s |       8.6% |
+| Assemble Stokes system          |         2 |     0.272s |        20% |
+| Assemble composition system     |         2 |     0.281s |        20% |
+| Assemble temperature system     |         2 |     0.173s |        13% |
+| Build Stokes preconditioner     |         1 |     0.161s |        12% |
+| Build composition preconditioner|         2 |   0.00407s |       0.3% |
+| Build temperature preconditioner|         2 |   0.00523s |      0.38% |
+| Solve Stokes system             |         2 |      0.24s |        17% |
+| Solve composition system        |         2 |   0.00507s |      0.37% |
+| Solve temperature system        |         2 |    0.0032s |      0.23% |
+| Initialization                  |         2 |    0.0437s |       3.2% |
+| Postprocessing                  |         2 |    0.0368s |       2.7% |
+| Setup dof systems               |         1 |     0.108s |       7.8% |
 +---------------------------------+-----------+------------+------------+
 

@@ -90,8 +90,9 @@ namespace aspect
 
       statistics.add_value("Number of advected particles",world.get_global_particle_count());
 
-      // If it's time to generate an output file, call the appropriate functions and reset the timer
-      if ((this->get_time() >= next_data_output_time) && (output != NULL))
+      // If it's time to generate an output file and we created an output
+      // object, call the appropriate functions and reset the timer
+      if ((this->get_time() >= next_data_output_time) && output)
         {
           if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
             world.update_particles();
@@ -181,7 +182,7 @@ namespace aspect
             }
 
           oa << (*this);
-          if (output != NULL)
+          if (output)
             output->save(os);
         }
       else
@@ -233,7 +234,7 @@ namespace aspect
             }
 
           ia >> (*this);
-          if (output != NULL)
+          if (output)
             output->load(is);
         }
     }
@@ -338,7 +339,7 @@ namespace aspect
 
       // We allow to not generate any output plugin, in which case output is
       // a null pointer. Only initialize output if it was created.
-      if (output != NULL)
+      if (output)
         {
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
             sim->initialize_simulator (this->get_simulator());

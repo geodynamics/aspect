@@ -43,7 +43,7 @@ namespace aspect
                                              +
                                              ">.")));
 
-        // Read header lines
+        // Skip header lines
         while (in.peek() == '#')
           {
             std::string temp;
@@ -58,13 +58,29 @@ namespace aspect
         if (dim == 2)
           while (in >> coordinates[0] >> coordinates[1])
             {
-              particles.insert(this->generate_particle(coordinates,id));
+              // Try to add the particle, if it is not in this domain, do not
+              // worry about it and move on to next point.
+              try
+              {
+                  particles.insert(this->generate_particle(coordinates,id));
+              }
+              catch (ExcParticlePointNotInDomain &)
+              {}
+
               id++;
             }
         else if (dim == 3)
           while (in >> coordinates[0] >> coordinates[1] >> coordinates[2])
             {
-              particles.insert(this->generate_particle(coordinates,id));
+              // Try to add the particle, if it is not in this domain, do not
+              // worry about it and move on to next point.
+              try
+              {
+                  particles.insert(this->generate_particle(coordinates,id));
+              }
+              catch (ExcParticlePointNotInDomain &)
+              {}
+
               id++;
             }
         else
