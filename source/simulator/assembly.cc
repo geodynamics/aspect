@@ -1577,6 +1577,7 @@ namespace aspect
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
     double nu = 0.0;
+    double tau = 0.0;
     if (parameters.use_supg == false)
       {
         nu = compute_viscosity (scratch,
@@ -1586,13 +1587,59 @@ namespace aspect
                                 global_entropy_variation,
                                 cell->diameter(),
                                 advection_field);
-      }
-    Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
-    // Compute norm of advection field
-    double norm_of_advection_field = 0.0;
-    for (unsigned int q=0; q<n_q_points; ++q)
-      norm_of_advection_field = std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field);
+        Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+      }
+    else
+      {
+        // Compute norm of advection field
+        double norm_of_advection_field = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          norm_of_advection_field =
+            ((advection_field.is_temperature())
+             ?
+             std::max(scratch.current_velocity_values[q].norm()*
+                      (scratch.material_model_outputs.densities[q] *
+                       scratch.material_model_outputs.specific_heat[q] +
+                       heating_model_outputs.lhs_latent_heat_terms[q]),
+                      norm_of_advection_field)
+             :
+             std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field));
+
+        // things needed for the calculating of tau for SUPG loop
+        double max_conductivity_on_cell = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            max_conductivity_on_cell =
+              ((advection_field.is_temperature())
+               ?
+               std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell)
+               :
+               0.0);
+          }
+
+        double fe_order
+          = (advection_field.is_temperature()
+             ?
+             parameters.temperature_degree
+             :
+             parameters.composition_degree
+            );
+
+        // Compute tau for SUPG
+        if (parameters.use_supg == true)
+          {
+            double h = cell->diameter();
+            if (norm_of_advection_field>1e-8)
+              if (max_conductivity_on_cell>1e-8)
+                tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                                                  1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
+              else
+                tau = 1*(h/fe_order)/(2*norm_of_advection_field);
+          }
+        Assert (tau >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
+      }
+
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         // precompute the values of shape functions and their gradients.
@@ -1669,20 +1716,13 @@ namespace aspect
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 
-        // Compute tau for SUPG
-        double tau = 0.0;
-        if (parameters.use_supg == true)
-          {
-            double h = cell->diameter();
-            double fe_order = parameters.temperature_degree;
-            if (norm_of_advection_field>1e-8)
-              if (conductivity>1e-8)
-                tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*conductivity))-
-                                                                  1/(norm_of_advection_field*(h/fe_order)/(2*conductivity)));
-              else
-                tau = 1*(h/fe_order)/(2*norm_of_advection_field);
-          }
-        Assert (tau >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
+        double fe_order
+          = (advection_field.is_temperature()
+             ?
+             parameters.temperature_degree
+             :
+             parameters.composition_degree
+            );
 
         // do the actual assembly. note that we only need to loop over the advection
         // shape functions because these are the only contributions we compute here
@@ -1698,7 +1738,7 @@ namespace aspect
                 +
                 tau *
                 (
-                  current_u *
+                  (current_u * (density_c_P + latent_heat_LHS)) *
                   scratch.grad_phi_field[i] *
                   (
                     field_term_for_rhs
@@ -1724,7 +1764,7 @@ namespace aspect
                      +
                      tau *
                      (
-                       current_u *
+                       (current_u * (density_c_P + latent_heat_LHS)) *
                        scratch.grad_phi_field[i] *
                        (
                          -time_step * conductivity * trace(scratch.hessian_phi_field[j])
