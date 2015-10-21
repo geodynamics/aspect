@@ -94,11 +94,19 @@ namespace aspect
         struct DataPoint
         {
           double time;
+          unsigned int solve_index;
           std::vector<double> values;
 
           template <class Archive>
           void serialize (Archive &ar, const unsigned int version);
         };
+
+        /**
+         *
+         */
+        void stokes_solver_callback (const SimulatorAccess<dim> &sim,
+                                 const bool success,
+                                 const std::vector<double> &history);
 
         /**
          * An array of all the past values

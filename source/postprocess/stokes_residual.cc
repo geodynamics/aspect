@@ -32,6 +32,7 @@
 
 
 #include <math.h>
+#include <vector>
 
 namespace aspect
 {
@@ -42,15 +43,13 @@ namespace aspect
     void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
                                                   const unsigned int)
     {
-      ar &time &values;
+      ar & time & solve_index & values;
     }
 
 
     template <int dim>
     StokesResidual<dim>::StokesResidual ()
-    {
-
-    }
+    {}
 
 
 
@@ -59,54 +58,62 @@ namespace aspect
     std::pair<std::string,std::string>
     StokesResidual<dim>::execute (TableHandler &)
     {
-
-//      DataPoint data_point;
-//      data_point.time       = this->get_time();
-//      data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
-
-//      entries.push_back (data_point);
-
-
       // On the root process, write out the file.
-//      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-//        {
-//      for (unsigned int i=0; i<entries.size(); ++i)
-//        {
-//              entries[i].values.begin(),
-      //        }
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          std::ofstream f((this->get_output_directory() +
+                           "stokes_residuals.txt").c_str());
+          f << "# time solveidx residual\n";
+          for (unsigned int i=0; i<entries.size(); ++i)
+            {
+              for (unsigned int j=0; j<entries[i].values.size(); ++j)
+                f << entries[i].time << " "
+                  << entries[i].solve_index << " "
+                  << entries[i].values[j] << "\n";
 
+              f << "\n";
+            }
+          f.close();
+        }
 
-      // return what should be printed to the screen. note that we had
-      // just incremented the number, so use the previous value
-      return std::make_pair (std::string ("Writing stokes residual"),
+      return std::make_pair (std::string ("Writing stokes residuals"),
                              this->get_output_directory() +
-                             "TODO");
+                             "stokes_residuals.txt");
     }
 
 
     template <int dim>
     void
-    StokesResidual<dim>::declare_parameters (ParameterHandler &prm)
+    StokesResidual<dim>::declare_parameters (ParameterHandler &/*prm*/)
     {
-
     }
 
     template <int dim>
-    void post_stokes_solver (const SimulatorAccess<dim> &sim,
-                             const bool success,
-                             const std::vector<double> &history)
+    void StokesResidual<dim>::stokes_solver_callback (const SimulatorAccess<dim> &sim,
+                             const bool /*success*/,
+                             const std::vector<double> &history/*,
+                             std::vector<StokesResidual<dim>::Da8taPoint> & dest*/)
     {
-      std::cout << "\npost_stokes_solver:\n";
-      for (unsigned int i=0; i<history.size(); ++i)
-        std::cout << history[i] << std::endl;
+      std::cout << "\npost_stokes_solver\n";
+
+      unsigned int current_solve_index = 0;
+      if (entries.size()>0 && entries.back().time == sim.get_time())
+        current_solve_index = entries.back().solve_index+1;
+
+      typename StokesResidual<dim>::DataPoint data_point;
+      data_point.time = sim.get_time();
+      data_point.solve_index = current_solve_index;
+      data_point.values = history;
+      entries.push_back(data_point);
     }
 
     template <int dim>
     void
-    StokesResidual<dim>::parse_parameters (ParameterHandler &prm)
+    StokesResidual<dim>::parse_parameters (ParameterHandler &/*&prm*/)
     {
-      this->get_signals().post_stokes_solver.connect(&post_stokes_solver<dim>);
-
+      this->get_signals().post_stokes_solver.connect(
+            std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback, this, std_cxx11::_1, std_cxx11::_2, std_cxx11::_3)
+            );
     }
 
 
