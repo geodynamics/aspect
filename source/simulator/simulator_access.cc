@@ -55,6 +55,14 @@ namespace aspect
     return *simulator;
   }
 
+  template <int dim>
+  SimulatorSignals<dim> &
+  SimulatorAccess<dim>::get_signals() const
+  {
+    // Our reference to the Simulator is const, but we need to
+    // be able to connect to the signals so a cast is required.
+    return const_cast<SimulatorSignals<dim>&>(simulator->signals);
+  }
 
 
   template <int dim>

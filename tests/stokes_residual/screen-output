@@ -1,0 +1,66 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+8 iterations.
+      Nonlinear residuals: 8.85886e-15, 8.54747e-07
+      Total relative nonlinear residual: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 5 iterations.
+      Nonlinear residuals: 8.85886e-15, 3.47769e-14
+      Total relative nonlinear residual: 4.06868e-08
+
+
+
+   Postprocessing:
+     Writing graphical output:           output-stokes_residual/solution-00000
+     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
+     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Writing stokes residuals            output-stokes_residual/stokes_residuals.txt
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 7 iterations.
+      Nonlinear residuals: 7.73448e-07, 1.33087e-14
+      Total relative nonlinear residual: 2.49163e-07
+
+
+
+   Postprocessing:
+     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
+     Heat fluxes through boundary parts: 1.672e-07 W, 4.017e-05 W, 2.408e-07 W, 2.408e-07 W
+     Writing stokes residuals            output-stokes_residual/stokes_residuals.txt
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.565s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         3 |     0.123s |        22% |
+| Assemble temperature system     |         3 |    0.0683s |        12% |
+| Build Stokes preconditioner     |         1 |    0.0758s |        13% |
+| Build temperature preconditioner|         3 |    0.0221s |       3.9% |
+| Solve Stokes system             |         3 |     0.137s |        24% |
+| Solve temperature system        |         3 |   0.00384s |      0.68% |
+| Initialization                  |         2 |    0.0306s |       5.4% |
+| Postprocessing                  |         2 |    0.0262s |       4.6% |
+| Setup dof systems               |         1 |    0.0522s |       9.2% |
++---------------------------------+-----------+------------+------------+
+
