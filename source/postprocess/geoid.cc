@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/geoid.h>
 #include <aspect/utilities.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -95,13 +96,11 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    Geoid<dim>::execute (TableHandler &statistics)
+    Geoid<dim>::execute (TableHandler &/*statistics*/)
     {
       // create a quadrature formula based on the temperature element alone.
       const QMidpoint<dim> quadrature_formula;
       const QMidpoint<dim-1> quadrature_formula_face;
-
-      const unsigned int n_q_points = quadrature_formula.size();
 
       Assert(quadrature_formula.size()==1, ExcInternalError());
 
@@ -140,7 +139,7 @@ namespace aspect
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       std::vector<double> average_densities(number_of_layers);
-      this->get_depth_average_density(average_densities);
+      this->get_lateral_averaging().get_density_averages(average_densities);
 
       // Some constant that are used several times
       const double inner_radius = geometry_model->inner_radius();
