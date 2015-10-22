@@ -138,11 +138,11 @@ namespace aspect
       // experience the same strain rate (isostrain).
 
       // If strain rate is zero (like during the first time step) set it to some very small number
-      const double edot_ii = (strain_rate.norm() == 0.0
-                              ?
-                              2.0*std::numeric_limits<double>::min()
-                              :
-                              std::sqrt(abs(second_invariant(strain_rate))));
+      // to prevent a division-by-zero, and a floating point exception.
+      // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
+      // strain rate (often simplified as epsilondot_ii)
+      const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+                                      min_strain_rate * min_strain_rate);
 
 
       // Find effective viscosities for each of the individual phases
