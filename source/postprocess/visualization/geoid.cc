@@ -44,10 +44,10 @@ namespace aspect
       template <int dim>
       void
       Geoid<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &,
+      compute_derived_quantities_vector (const std::vector<Vector<double> > &,
                                          const std::vector<std::vector<Tensor<1,dim> > > &,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
-                                         const std::vector<Point<dim> >                  &,
+                                         const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
@@ -57,7 +57,7 @@ namespace aspect
         for (unsigned int q=0; q<evaluation_points.size(); ++q)
           {
             const std_cxx11::array<double,dim> spherical_position =
-                Utilities::spherical_coordinates(evaluation_points[q]);
+              Utilities::spherical_coordinates(evaluation_points[q]);
 
             unsigned int i = 0;
             unsigned int j = 0;
@@ -65,12 +65,12 @@ namespace aspect
 
             computed_quantities[q](0) = 0.0;
 
-            while(k<geoid_coefficients.sine_coefficients.size())
+            while (k<geoid_coefficients.sine_coefficients.size())
               {
                 computed_quantities[q](0) += geoid_coefficients.cosine_coefficients[k]
-                                          * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1])
-                                          + geoid_coefficients.sine_coefficients[k]
-                                          * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
+                                             * boost::math::spherical_harmonic_r(i,j,spherical_position[2],spherical_position[1])
+                                             + geoid_coefficients.sine_coefficients[k]
+                                             * boost::math::spherical_harmonic_i(i,j,spherical_position[2],spherical_position[1]);
                 if (j<i)
                   ++j;
                 else
