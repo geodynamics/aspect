@@ -50,6 +50,7 @@ namespace aspect
 
   // forward declaration
   template <int dim> class Simulator;
+  template <int dim> class SimulatorSignals;
   template <int dim> class LateralAveraging;
   namespace HeatingModel
   {
@@ -135,6 +136,12 @@ namespace aspect
        */
       const Simulator<dim> &
       get_simulator() const;
+
+
+      /**
+       * Get Access to the structure containing the signals of the simulator.
+       */
+      SimulatorSignals<dim> &get_signals() const;
 
       /**
        * Return the MPI communicator for this simulation.

@@ -6,6 +6,11 @@
  *
  *
  * <ol>
+ * <li> New: The "Stokes residual" postprocessor will output the convergence
+ * of the Stokes residual of each linear solve.
+ * <br>
+ * (Timo Heister, 2015/10/21)
+ *
  * <li> New: The DepthAverage postprocessor can now output as a plain
  * ascii text table.
  * <br>
