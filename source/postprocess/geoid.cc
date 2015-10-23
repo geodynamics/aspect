@@ -58,7 +58,7 @@ namespace aspect
       {}
 
       // Add a quadrature evaluation to the multipole expansion in 3D using spherical
-      // multipole moments. It will also expand in internal or external harmonics, 
+      // multipole moments. It will also expand in internal or external harmonics,
       //depending upon whether the position vector is at a larger radius than evaluation_radius.
       template <>
       void
@@ -94,7 +94,7 @@ namespace aspect
       }
 
       // Add a quadrature evaluation to the multipole expansion in 3D using spherical
-      // multipole moments. It will also expand in internal or external harmonics, 
+      // multipole moments. It will also expand in internal or external harmonics,
       //depending upon whether the position vector is at a larger radius than evaluation_radius.
       template <>
       void
@@ -149,9 +149,9 @@ namespace aspect
 
       }
 
-      //Return a reference to the internal representation of the multipole expansion 
+      //Return a reference to the internal representation of the multipole expansion
       template <int dim>
-      const HarmonicCoefficients<dim>&
+      const HarmonicCoefficients<dim> &
       MultipoleExpansion<dim>::get_coefficients () const
       {
         return coefficients;
@@ -271,13 +271,13 @@ namespace aspect
       bottom_potential_expansion->clear();
 
       boundary_pressure_postprocessor = this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
-      boundary_density_postprocessor = this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >(); 
-      
+      boundary_density_postprocessor = this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >();
+
       AssertThrow(boundary_pressure_postprocessor != NULL,
                   ExcMessage("Could not find BoundaryPressures postprocessor"));
       AssertThrow(boundary_density_postprocessor != NULL,
                   ExcMessage("Could not find BoundaryDensities postprocessor"));
-      
+
       compute_internal_density_expansions();
       compute_topography_expansions();
       compute_geoid_expansions();
@@ -431,8 +431,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
- //     std::ofstream bfile ("bottom.out");
- //     std::ofstream sfile ("surface.out");
+//     std::ofstream bfile ("bottom.out");
+//     std::ofstream sfile ("surface.out");
 
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
@@ -584,7 +584,7 @@ namespace aspect
       const double G = constants::big_g;
       const double surface_density = boundary_density_postprocessor->density_at_top();
       const double bottom_density = boundary_density_postprocessor->density_at_bottom();
-      
+
       const double delta_rho_top = surface_density-density_above;
       const double delta_rho_bottom = density_below-bottom_density;
 
@@ -597,22 +597,22 @@ namespace aspect
 
       if ( dim == 3)
         {
-        for ( unsigned int l = 2; l <= max_degree; ++l)
-          {
-            s[l] = 1.0;
-            bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
-            surface_potential_at_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
+          for ( unsigned int l = 2; l <= max_degree; ++l)
+            {
+              s[l] = 1.0;
+              bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
+              surface_potential_at_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
 
-            surface_potential_expansion->clear();
-            surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
-            surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
-            surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+              surface_potential_expansion->clear();
+              surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
+              surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
+              surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
 
-            bottom_potential_expansion->clear();
-            bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
-            bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-            bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
-          }
+              bottom_potential_expansion->clear();
+              bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
+              bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+              bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
+            }
         }
       else
         {
@@ -621,23 +621,23 @@ namespace aspect
             {
 
               s[n] = 1.0;
-              bottom_potential_at_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * 
+              bottom_potential_at_surface[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) *
                                                delta_rho_bottom * inner_radius / static_cast<double>(n);
-              surface_potential_at_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) * 
+              surface_potential_at_bottom[n] = -gravity_constant * std::pow(inner_radius/outer_radius, static_cast<double>(n)) *
                                                delta_rho_top * outer_radius / static_cast<double>(n);
               bottom_potential_at_bottom[n] = -gravity_constant * inner_radius * delta_rho_bottom / static_cast<double>(n);
               surface_potential_at_surface[n] = -gravity_constant * outer_radius * delta_rho_top / static_cast<double>(n);
             }
 
-              surface_potential_expansion->clear();
-              surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
-              surface_potential_expansion->sadd( s, surface_potential_at_surface, *surface_topography_expansion );
-              surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+          surface_potential_expansion->clear();
+          surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
+          surface_potential_expansion->sadd( s, surface_potential_at_surface, *surface_topography_expansion );
+          surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
 
-              bottom_potential_expansion->clear();
-              bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
-              bottom_potential_expansion->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
-              bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
+          bottom_potential_expansion->clear();
+          bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
+          bottom_potential_expansion->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
+          bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
         }
     }
 

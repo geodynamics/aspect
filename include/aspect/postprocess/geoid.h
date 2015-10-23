@@ -77,7 +77,7 @@ namespace aspect
           /**
            * Return a reference to the internal representation of the mulipole expansion.
            */
-          const HarmonicCoefficients<dim>& get_coefficients () const;
+          const HarmonicCoefficients<dim> &get_coefficients () const;
 
           /*
            * Set all the multipole coefficients to zero.
@@ -145,7 +145,7 @@ namespace aspect
 
         /**
          * Let the postprocessor manager know about the other postprocessors
-         * which this one depends on.  Specifically, BoundaryPressures and 
+         * which this one depends on.  Specifically, BoundaryPressures and
          * BoundaryDensities.
          */
         virtual
@@ -160,19 +160,19 @@ namespace aspect
         void compute_internal_density_expansions();
 
         /**
-         * Compute the harmonic expansion of the dynamic topography on the 
+         * Compute the harmonic expansion of the dynamic topography on the
          * top and bottom boundaries.
          */
         void compute_topography_expansions();
 
-        /** 
-         * Compute the geoid at the top and bottom of the domain.  This has 
+        /**
+         * Compute the geoid at the top and bottom of the domain.  This has
          * contributions from internal density structure, the bottom topography,
          * and the top topography.
          */
         void compute_geoid_expansions();
- 
-        /** 
+
+        /**
          * Write the geoid and associated information to an output file.
          */
         void output_geoid_information();
@@ -183,14 +183,14 @@ namespace aspect
          */
         bool include_topography_contribution;
 
-        /** 
-         * The density below the bottom boundary (typically the density of 
+        /**
+         * The density below the bottom boundary (typically the density of
          * liquid iron).
          */
         double density_below;
 
         /**
-         * The density above the top boundary (typically the density of 
+         * The density above the top boundary (typically the density of
          * air or water).
          */
         double density_above;
@@ -204,13 +204,13 @@ namespace aspect
          * A pointer to the postprocessor for computing boundary
          * pressures.
          */
-        BoundaryPressures<dim>* boundary_pressure_postprocessor;
+        BoundaryPressures<dim> *boundary_pressure_postprocessor;
 
         /**
          * A pointer to the postprocessor for computing boundary
          * densities.
          */
-        BoundaryDensities<dim>* boundary_density_postprocessor;
+        BoundaryDensities<dim> *boundary_density_postprocessor;
 
         /**
          * The multipole expansion of internal density anomalies, evaluated at the bottom.
