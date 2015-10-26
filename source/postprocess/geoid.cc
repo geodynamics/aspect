@@ -431,9 +431,6 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-//     std::ofstream bfile ("bottom.out");
-//     std::ofstream sfile ("surface.out");
-
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
@@ -531,15 +528,6 @@ namespace aspect
 
                     // Add topography contribution
                     surface_topography_expansion->add_quadrature_point(location/location.norm(),dynamic_topography, fe_face_values.JxW(q)/scale_surface_area, 1.0);
-//                    const double r = location.norm();
-//                    const double theta = std::atan2(location[1],location[0]);
-//                    sfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
-
-//        const double r = location.norm();
-//        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
-//        const double theta = std::acos(location[2]/r)*180.0/M_PI;
-//                        sfile<<phi<<" "<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
-
                   }
 
                 // if this is a cell at the bottom, add the topography to
@@ -553,14 +541,6 @@ namespace aspect
 
                     // Add topography contribution
                     bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, fe_face_values.JxW(q)/scale_bottom_area, 1.0);
-
-//                    const double r = location.norm();
-//                    const double theta = std::atan2(location[1],location[0]);
-//                    bfile<<theta<<" "<<surface_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
-//        const double r = location.norm();
-//        const double phi = std::atan2(location[1], location[0])*180.0/M_PI;
-//        const double theta = std::acos(location[2]/r)*180.0/M_PI;
-//                        bfile<<phi<<" "<<theta<<" "<<bottom_pressure<<" "<<sigma_rr<<" "<<dynamic_pressure<<" "<<dynamic_topography<<std::endl;
                   }
               }
           }
