@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,6 +67,19 @@ namespace aspect
         double length_scale () const;
 
 
+        /**
+         * Return the depth that corresponds to the given
+         * position. The documentation of the base class (see
+         * GeometryModel::Interface::depth()) describes in detail how
+         * "depth" is interpreted in general.
+         *
+         * Computing a depth requires a geometry model to define a
+         * "vertical" direction. The current class considers the
+         * $(0,1)^T$ vector in 2d (and the $(0,0,1)^T$ vector in 3d)
+         * as vertical and considers the "top" boundary as the
+         * "surface". In almost all cases one will use a gravity model
+         * that also matches these definitions.
+         */
         virtual
         double depth(const Point<dim> &position) const;
 
