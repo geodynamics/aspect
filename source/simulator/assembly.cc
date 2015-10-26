@@ -997,19 +997,14 @@ namespace aspect
 
         const double eta = scratch.material_model_outputs.viscosities[q];
 
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+        const SymmetricTensor<4,dim> &C = scratch.material_model_outputs.stress_strain_directors[q];
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           for (unsigned int j=0; j<dofs_per_cell; ++j)
             if (finite_element.system_to_component_index(i).first
                 ==
                 finite_element.system_to_component_index(j).first)
-              data.local_matrix(i,j) += ((use_tensor ?
-                                          eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                          :
-                                          eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+              data.local_matrix(i,j) += (eta * (scratch.grads_phi_u[i] * C * scratch.grads_phi_u[j])
                                          +
                                          (1./eta) *
                                          pressure_scaling *
@@ -1209,9 +1204,7 @@ namespace aspect
                             :
                             std::numeric_limits<double>::quiet_NaN());
 
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+        const SymmetricTensor<4,dim> &C = scratch.material_model_outputs.stress_strain_directors[q];
 
         const Tensor<1,dim>
         gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
@@ -1227,23 +1220,16 @@ namespace aspect
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
-              data.local_matrix(i,j) += ( (use_tensor ?
-                                           eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                           :
-                                           eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                          - (is_compressible
-                                             ?
-                                             (use_tensor ?
-                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                              :
-                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                             )
-                                             :
-                                             0)
-                                          - (pressure_scaling *
-                                             scratch.div_phi_u[i] * scratch.phi_p[j])
-                                          - (pressure_scaling *
-                                             scratch.phi_p[i] * scratch.div_phi_u[j]))
+              data.local_matrix(i,j) += (eta * 2.0 * (scratch.grads_phi_u[i] * C * scratch.grads_phi_u[j])
+                                         - (is_compressible
+                                            ?
+                                            eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(C * scratch.grads_phi_u[j]))
+                                            :
+                                            0)
+                                         - (pressure_scaling *
+                                            scratch.div_phi_u[i] * scratch.phi_p[j])
+                                         - (pressure_scaling *
+                                            scratch.phi_p[i] * scratch.div_phi_u[j]))
                                         * scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
