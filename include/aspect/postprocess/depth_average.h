@@ -124,6 +124,11 @@ namespace aspect
         bool output_all_variables;
 
         /**
+         * Whether to use plain ascii text output
+         */
+        bool ascii_output;
+
+        /**
          * A structure for a single time step record.
          */
         struct DataPoint

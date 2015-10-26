@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_depth_average_h
-#define __aspect__postprocess_depth_average_h
+#ifndef __aspect__postprocess_stokes_residual_h
+#define __aspect__postprocess_stokes_residual_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,7 +34,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that outputs Stokes residuals
+     * A postprocessor that outputs Stokes residuals to a file stokes_residuals.txt.
      *
      * @ingroup Postprocessing
      */
@@ -48,25 +48,16 @@ namespace aspect
         StokesResidual ();
 
         /**
-         * Generate graphical output from the current solution.
+         * This attaches to the Stokes solver signal.
+         */
+        virtual void initialize();
+
+        /**
+         * Generate the output file.
          */
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
 
         /**
          * Save the state of this object.
@@ -102,11 +93,11 @@ namespace aspect
         };
 
         /**
-         *
+         * Callback function to collect the data.
          */
         void stokes_solver_callback (const SimulatorAccess<dim> &sim,
-                                 const bool success,
-                                 const std::vector<double> &history);
+                                     const bool success,
+                                     const std::vector<double> &history);
 
         /**
          * An array of all the past values

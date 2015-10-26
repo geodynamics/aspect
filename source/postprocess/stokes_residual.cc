@@ -41,9 +41,9 @@ namespace aspect
     template <int dim>
     template <class Archive>
     void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
-                                                  const unsigned int)
+                                                    const unsigned int)
     {
-      ar & time & solve_index & values;
+      ar &time &solve_index &values;
     }
 
 
@@ -67,11 +67,11 @@ namespace aspect
           for (unsigned int i=0; i<entries.size(); ++i)
             {
               for (unsigned int j=0; j<entries[i].values.size(); ++j)
-                f << entries[i].time << " "
-                  << entries[i].solve_index << " "
-                  << entries[i].values[j] << "\n";
+                f << entries[i].time << ' '
+                  << entries[i].solve_index << ' '
+                  << entries[i].values[j] << '\n';
 
-              f << "\n";
+              f << '\n';
             }
           f.close();
         }
@@ -81,26 +81,16 @@ namespace aspect
                              "stokes_residuals.txt");
     }
 
-
-    template <int dim>
-    void
-    StokesResidual<dim>::declare_parameters (ParameterHandler &/*prm*/)
-    {
-    }
-
     template <int dim>
     void StokesResidual<dim>::stokes_solver_callback (const SimulatorAccess<dim> &sim,
-                             const bool /*success*/,
-                             const std::vector<double> &history/*,
-                             std::vector<StokesResidual<dim>::Da8taPoint> & dest*/)
+                                                      const bool /*success*/,
+                                                      const std::vector<double> &history)
     {
-      std::cout << "\npost_stokes_solver\n";
-
       unsigned int current_solve_index = 0;
       if (entries.size()>0 && entries.back().time == sim.get_time())
         current_solve_index = entries.back().solve_index+1;
 
-      typename StokesResidual<dim>::DataPoint data_point;
+      DataPoint data_point;
       data_point.time = sim.get_time();
       data_point.solve_index = current_solve_index;
       data_point.values = history;
@@ -109,19 +99,18 @@ namespace aspect
 
     template <int dim>
     void
-    StokesResidual<dim>::parse_parameters (ParameterHandler &/*&prm*/)
+    StokesResidual<dim>::initialize ()
     {
       this->get_signals().post_stokes_solver.connect(
-            std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback, this, std_cxx11::_1, std_cxx11::_2, std_cxx11::_3)
-            );
+        std_cxx11::bind(&StokesResidual<dim>::stokes_solver_callback, this, std_cxx11::_1, std_cxx11::_2, std_cxx11::_3)
+      );
     }
-
 
     template <int dim>
     template <class Archive>
     void StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar & entries;
+      ar &entries;
     }
 
 
@@ -161,7 +150,7 @@ namespace aspect
   namespace Postprocess
   {
     ASPECT_REGISTER_POSTPROCESSOR(StokesResidual,
-                                  "stokes residual",
-                                  "A postprocessor that outputs the Stokes residuals during the iterative solver algorithm.")
+                                  "Stokes residual",
+                                  "A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.")
   }
 }

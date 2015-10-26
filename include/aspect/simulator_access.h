@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
 
   // forward declaration
   template <int dim> class Simulator;
-  template <int dim> class SimulatorSignals;
+  template <int dim> struct SimulatorSignals;
   template <int dim> class LateralAveraging;
   namespace HeatingModel
   {
@@ -139,9 +139,9 @@ namespace aspect
 
 
       /**
-       *
+       * Get Access to the structure containing the signals of the simulator.
        */
-      SimulatorSignals<dim> & get_signals() const;
+      SimulatorSignals<dim> &get_signals() const;
 
       /**
        * Return the MPI communicator for this simulation.

@@ -59,8 +59,9 @@ namespace aspect
   SimulatorSignals<dim> &
   SimulatorAccess<dim>::get_signals() const
   {
-    // TODO: do not const_cast
-    return const_cast<Simulator<dim>*>(simulator)->signals;
+    // Our reference to the Simulator is const, but we need to
+    // be able to connect to the signals so a cast is required.
+    return const_cast<SimulatorSignals<dim>&>(simulator->signals);
   }
 
 
