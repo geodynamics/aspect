@@ -582,17 +582,17 @@ namespace aspect
               s[l] = 1.0;
               bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
               surface_potential_at_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
-
-              surface_potential_expansion->clear();
-              surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
-              surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
-              surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
-
-              bottom_potential_expansion->clear();
-              bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
-              bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-              bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
             }
+
+          surface_potential_expansion->clear();
+          surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
+          surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
+          surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+
+          bottom_potential_expansion->clear();
+          bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
+          bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
+          bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
         }
       else
         {
