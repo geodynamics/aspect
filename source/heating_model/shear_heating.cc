@@ -42,7 +42,7 @@ namespace aspect
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           const SymmetricTensor<4,dim> &C = material_model_outputs.stress_strain_directors[q];
-          const SymmetricTensor<2,dim> &directed_strain_rate = ((C == dealii::identity_tensor<dim> ())
+          const SymmetricTensor<2,dim> &directed_strain_rate = ((C != dealii::identity_tensor<dim> ())
                                                                 ?
                                                                 C * material_model_inputs.strain_rate[q]
                                                                 :
