@@ -8,27 +8,27 @@
 --style=gnu
 
 # use spaces instead of tabs:
---convert-tabs
---indent-preprocessor
---indent=spaces=2
---indent-namespaces
---indent-labels
---min-conditional-indent=0
+        --convert-tabs
+        --indent-preprocessor
+        --indent=spaces=2
+                        --indent-namespaces
+                        --indent-labels
+                        --min-conditional-indent=0
 
 # add a space between if/for/while and following '(':
---pad-header
+                                --pad-header
 
 # indent the 'public/protected/private' specifiers, and further indent the
 # rest of the declarations
---indent-classes
+                                --indent-classes
 
 # indent case labels in a switch statement
---indent-switches
+                                --indent-switches
 
 # write things as 'char *p', not 'char* p'
---align-pointer=name
---align-reference=name
+                                --align-pointer=name
+                                        --align-reference=name
 
---max-instatement-indent=80
---suffix=none
---quiet
+                                                --max-instatement-indent=80
+                                                        --suffix=none
+                                                                --quiet
