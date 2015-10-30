@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<VTKFile type="PUnstructuredGrid" version="0.1" byte_order="LittleEndian">
+  <PUnstructuredGrid GhostLevel="0">
+    <PPoints>
+      <PDataArray type="Float64" NumberOfComponents="3" format="ascii"/>
+    </PPoints>
+    <PPointData Scalars="scalars">
+      <PDataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii"/>
+      <PDataArray type="Float64" Name="velocity" NumberOfComponents="3" format="ascii"/>
+      <PDataArray type="Float64" Name="function" NumberOfComponents="1" format="ascii"/>
+      <PDataArray type="Float64" Name="initial C_0" NumberOfComponents="1" format="ascii"/>
+      <PDataArray type="Float64" Name="initial position" NumberOfComponents="3" format="ascii"/>
+    </PPointData>
+    <Piece Source="particles-00000.0000.vtu"/>
+    <Piece Source="particles-00000.0001.vtu"/>
+  </PUnstructuredGrid>
+</VTKFile>

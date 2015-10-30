@@ -1,71 +1,43 @@
 <?xml version="1.0"?>
 <VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
   <UnstructuredGrid>
-    <Piece NumberOfPoints="10" NumberOfCells="10">
+    <Piece NumberOfPoints="2" NumberOfCells="2">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.699274 0.0966801 0.0
-          0.631096 0.221701 0.0
-          0.373162 0.936319 0.0
-          0.675018 0.643564 0.0
-          0.758467 0.556612 0.0
-          0.945437 0.560554 0.0
-          0.576315 0.914522 0.0
-          0.944366 0.780336 0.0
-          0.997981 0.822351 0.0
-          0.934844 0.999779 0.0
+          0.512935 0.493386 0.0
+          0.211773 0.708395 0.0
         </DataArray>
       </Points>
       <Cells>
         <DataArray type="Int32" Name="connectivity" Format="ascii">
           0
           1
-          2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
         </DataArray>
         <DataArray type="Int32" Name="offsets" Format="ascii">
           1
           2
-          3
-          4
-          5
-          6
-          7
-          8
-          9
-          10
         </DataArray>
         <DataArray type="UInt8" Name="types" Format="ascii">
-          1
-          1
-          1
-          1
-          1
-          1
-          1
-          1
           1
           1
         </DataArray>
       </Cells>
       <PointData Scalars="scalars">
         <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
-          4
-          3
-          7
-          9
           0
           1
-          2
-          8
-          6
-          5
+        </DataArray>
+        <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
+          0 
+          0 
+        </DataArray>
+        <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
+          6.97344e-14 
+          0 
+        </DataArray>
+        <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
+          0.5 0.5 0 
+          0.2 0.7 0 
         </DataArray>
       </PointData>
     </Piece>

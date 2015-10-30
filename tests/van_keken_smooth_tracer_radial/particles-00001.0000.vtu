@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian">
+  <UnstructuredGrid>
+    <Piece NumberOfPoints="11" NumberOfCells="11">
+      <Points>
+        <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
+          0.222542 0.202744 0.0
+          0.252656 0.105463 0.0
+          0.342865 0.0537232 0.0
+          0.350655 0.151459 0.0
+          0.348546 0.239971 0.0
+          0.420237 0.197051 0.0
+          0.266363 0.293933 0.0
+          0.348742 0.345112 0.0
+          0.442317 0.339548 0.0
+          0.52351 0.191763 0.0
+          0.511033 0.280244 0.0
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type="Int32" Name="connectivity" Format="ascii">
+          0
+          1
+          2
+          3
+          4
+          5
+          6
+          7
+          8
+          9
+          10
+        </DataArray>
+        <DataArray type="Int32" Name="offsets" Format="ascii">
+          1
+          2
+          3
+          4
+          5
+          6
+          7
+          8
+          9
+          10
+          11
+        </DataArray>
+        <DataArray type="UInt8" Name="types" Format="ascii">
+          1
+          1
+          1
+          1
+          1
+          1
+          1
+          1
+          1
+          1
+          1
+        </DataArray>
+      </Cells>
+      <PointData Scalars="scalars">
+        <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
+          8
+          9
+          10
+          2
+          1
+          0
+          7
+          6
+          5
+          3
+          4
+        </DataArray>
+        <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
+          1 
+          1 
+          1 
+          1 
+          0 
+          1 
+          0 
+          0 
+          0 
+          0 
+          0 
+        </DataArray>
+        <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
+          0.893133 
+          0.999964 
+          1 
+          1.00279 
+          0.0349546 
+          0.46503 
+          0.00105949 
+          2.73509e-06 
+          5.88187e-07 
+          0.360367 
+          -0.000258542 
+        </DataArray>
+        <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
+          0.250396 0.189106 0 
+          0.28679 0.101595 0 
+          0.368381 0.0533705 0 
+          0.38946 0.151123 0 
+          0.368591 0.238904 0 
+          0.45 0.2 0 
+          0.273728 0.280966 0 
+          0.347471 0.340502 0 
+          0.442185 0.343946 0 
+          0.55 0.2 0 
+          0.520058 0.289923 0 
+        </DataArray>
+      </PointData>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>
