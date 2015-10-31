@@ -39,7 +39,6 @@ namespace aspect
       {
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
-        types::particle_index cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
 
         double volume(1.0);
@@ -56,6 +55,8 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
           }
 
+        types::particle_index particle_index = 0;
+
         for (types::particle_index i = 0; i < nParticles[0]; ++i)
           {
             for (types::particle_index j = 0; j < nParticles[1]; ++j)
@@ -63,13 +64,29 @@ namespace aspect
                 if (dim == 2)
                   {
                     const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]);
-                    particles.insert(this->generate_particle(particle_position,cur_id++));
+
+                    // Try to add the particle. If it is not in this domain, do not
+                    // worry about it and move on to next point.
+                    try
+                      {
+                        particles.insert(this->generate_particle(particle_position,particle_index++));
+                      }
+                    catch (ExcParticlePointNotInDomain &)
+                      {}
                   }
                 else if (dim == 3)
                   for (unsigned int k = 0; k < nParticles[2]; ++k)
                     {
                       const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
-                      particles.insert(this->generate_particle(particle_position,cur_id++));
+
+                      // Try to add the particle. If it is not in this domain, do not
+                      // worry about it and move on to next point.
+                      try
+                        {
+                          particles.insert(this->generate_particle(particle_position,particle_index++));
+                        }
+                      catch (ExcParticlePointNotInDomain &)
+                        {}
                     }
                 else
                   ExcNotImplemented();

@@ -51,37 +51,33 @@ namespace aspect
           }
 
         // Read data lines
-        types::particle_index id = 0;
-        Point<dim> coordinates;
+        types::particle_index particle_index = 0;
+        Point<dim> particle_position;
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
         if (dim == 2)
-          while (in >> coordinates[0] >> coordinates[1])
+          while (in >> particle_position[0] >> particle_position[1])
             {
-              // Try to add the particle, if it is not in this domain, do not
+              // Try to add the particle. If it is not in this domain, do not
               // worry about it and move on to next point.
               try
-              {
-                  particles.insert(this->generate_particle(coordinates,id));
-              }
+                {
+                  particles.insert(this->generate_particle(particle_position,particle_index++));
+                }
               catch (ExcParticlePointNotInDomain &)
-              {}
-
-              id++;
+                {}
             }
         else if (dim == 3)
-          while (in >> coordinates[0] >> coordinates[1] >> coordinates[2])
+          while (in >> particle_position[0] >> particle_position[1] >> particle_position[2])
             {
-              // Try to add the particle, if it is not in this domain, do not
+              // Try to add the particle. If it is not in this domain, do not
               // worry about it and move on to next point.
               try
-              {
-                  particles.insert(this->generate_particle(coordinates,id));
-              }
+                {
+                  particles.insert(this->generate_particle(particle_position,particle_index++));
+                }
               catch (ExcParticlePointNotInDomain &)
-              {}
-
-              id++;
+                {}
             }
         else
           Assert(false,ExcNotImplemented());
@@ -177,12 +173,9 @@ namespace aspect
                                          "ascii file",
                                          "Generates a distribution of tracers from coordinates "
                                          "specified in an Ascii data file. The file format is "
-                                         "identical to the one from other ascii data plugins, "
-                                         "except that it only needs to contain as many columns as "
-                                         "dimensions to specify the position of each tracer. Note "
-                                         "that this plugin does ignore the number of tracers set in "
-                                         "the input file and instead generates as many particles "
-                                         "as there are readable lines in the ascii file.")
+                                         "a simple text file, with as many columns as spatial "
+                                         "dimensions and as many lines as tracers to be generated.
+                                         "Initial comment lines starting with '#' will be discarded.")
     }
   }
 }

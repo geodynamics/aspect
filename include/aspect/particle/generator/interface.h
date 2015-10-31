@@ -111,6 +111,9 @@ namespace aspect
            * Generate a particle at the specified position and with the
            * specified id. Many derived classes use this functionality,
            * therefore it is implemented here to avoid duplication.
+           * In case the position is not in the local domain this function
+           * throws an exception of type ExcParticlePointNotInDomain, which
+           * can be catched in the calling plugin.
            */
           std::pair<types::LevelInd,Particle<dim> >
           generate_particle(const Point<dim> &position,

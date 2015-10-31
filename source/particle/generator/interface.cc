@@ -35,19 +35,30 @@ namespace aspect
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const
       {
-        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-          (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
-
-        //Only try to add the point if the cell it is in, is on this processor
-        if (it->is_locally_owned())
+        // Try to find the cell of the given position. If the position is not
+        // in the domain on the local process, throw a ExcParticlePointNotInDomain
+        // exception.
+        try
           {
-            const Particle<dim> particle(position, id);
-            const types::LevelInd cell(it->level(), it->index());
-            return std::make_pair(cell,particle);
-          }
+            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;
 
-        AssertThrow(false,
-                    ExcParticlePointNotInDomain());
+            //Only try to add the point if the cell it is in, is on this processor
+            if (it->is_locally_owned())
+              {
+                const Particle<dim> particle(position, id);
+                const types::LevelInd cell(it->level(), it->index());
+                return std::make_pair(cell,particle);
+              }
+            else
+              AssertThrow(false,
+                          ExcParticlePointNotInDomain());
+          }
+        catch (GridTools::ExcPointNotFound<dim> &)
+          {
+            AssertThrow(false,
+                        ExcParticlePointNotInDomain());
+          }
 
         // Avoid warnings about missing return
         return std::pair<types::LevelInd,Particle<dim> >();

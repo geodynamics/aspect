@@ -42,7 +42,7 @@ namespace aspect
         // Calculate amount of particles per shell.
         // The number of particles depend on the fraction of the area
         // (or length in 2D) that this shell occupies compared to the total domain
-        std::vector<types::particle_index> particles_per_radius(radial_layers);
+        std::vector<unsigned int> particles_per_radius(radial_layers);
         if (dim == 2)
           {
             double total_radius = 0;
@@ -71,7 +71,7 @@ namespace aspect
         // Generate particles
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
-        types::particle_index cur_id = 0;
+        types::particle_index particle_index = 0;
         std_cxx11::array<double,dim> spherical_coordinates;
         for (unsigned int i = 0; i < radial_layers; ++i)
           {
@@ -83,9 +83,16 @@ namespace aspect
                 for (unsigned int j = 0; j < particles_per_radius[i]; ++j)
                   {
                     spherical_coordinates[1] = P_min[1] + j * phi_spacing;
-                    const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-                    particles.insert(this->generate_particle(newPoint,cur_id++));
-                  }
+                    const Point<dim> particle_position = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
+
+                    // Try to add the particle. If it is not in this domain, do not
+                    // worry about it and move on to next point.
+                    try
+                      {
+                        particles.insert(this->generate_particle(particle_position,particle_index++));
+                      }
+                    catch (ExcParticlePointNotInDomain &)
+                      {}                  }
               }
             else if (dim == 3)
               {
@@ -103,8 +110,16 @@ namespace aspect
                     for (unsigned int k = 0; k < adjusted_phi_particles; ++k)
                       {
                         spherical_coordinates[1] = P_min[1] + k * phi_spacing;
-                        const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-                        particles.insert(this->generate_particle(newPoint,cur_id++));
+                        const Point<dim> particle_position = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
+
+                        // Try to add the particle. If it is not in this domain, do not
+                        // worry about it and move on to next point.
+                        try
+                          {
+                            particles.insert(this->generate_particle(particle_position,particle_index++));
+                          }
+                        catch (ExcParticlePointNotInDomain &)
+                          {}
                       }
                   }
               }
