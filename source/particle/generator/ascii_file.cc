@@ -174,8 +174,12 @@ namespace aspect
                                          "Generates a distribution of tracers from coordinates "
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
-                                         "dimensions and as many lines as tracers to be generated.
-                                         "Initial comment lines starting with '#' will be discarded.")
+                                         "dimensions and as many lines as tracers to be generated. "
+                                         "Initial comment lines starting with '#' will be discarded."
+                                         "All of the values that define this generator are read "
+                                         "from a section ``Particle generator/Ascii file'' in the "
+                                         "input file, see "
+                                         "Section~\\ref{parameters:Particle_20generator/Ascii_20file}.")
     }
   }
 }

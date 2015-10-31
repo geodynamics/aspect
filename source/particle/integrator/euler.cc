@@ -38,13 +38,18 @@ namespace aspect
                                        const std::vector<Tensor<1,dim> > &,
                                        const double dt)
       {
-        typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-        typename std::vector<Tensor<1,dim> >::const_iterator vel = old_velocities.begin();
+        Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
+            ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+                "to the number of particles to advect. For some unknown reason they are different, "
+                "most likely something went wrong in the calling function."));
 
-        for (; it!=end_particle, vel!=old_velocities.end(); ++it,++vel)
+        typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
+
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+            it != end_particle; ++it, ++old_velocity)
           {
             const Point<dim> loc = it->second.get_location();
-            it->second.set_location(loc + dt*(*vel));
+            it->second.set_location(loc + dt * (*old_velocity));
           }
       }
     }
@@ -62,7 +67,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(Euler,
                                           "euler",
                                           "Explicit Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
-                                          "This requires only one integration step per timestep.")
+                                          "This requires only one integration substep per timestep.")
     }
   }
 }

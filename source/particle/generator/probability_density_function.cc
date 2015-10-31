@@ -25,6 +25,7 @@
 #include <deal.II/base/geometry_info.h>
 
 #include <boost/random.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 namespace aspect
@@ -45,7 +46,7 @@ namespace aspect
       ProbabilityDensityFunction<dim>::generate_particles()
       {
         // Get the local accumulated probabilities for every cell
-        const std::vector<double> accumulated_cell_weights = local_accumulated_cell_weights();
+        const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
 
         // Sum the local integrals over all nodes
         double local_function_integral = accumulated_cell_weights.back();
@@ -71,31 +72,23 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               // adjust the cell_weights according to the local starting weight
-              cell_weights.insert(std::make_pair(accumulated_cell_weights[i] + start_weight, types::LevelInd(cell->level(),cell->index())));
+              cell_weights.insert(std::make_pair(accumulated_cell_weights[i], types::LevelInd(cell->level(),cell->index())));
               ++i;
             }
 
-        // Calculate start and end IDs so there are no gaps
-        const types::particle_index start_id = llround(n_tracers * start_weight / global_function_integral) + 1;
+        // Calculate start id and number of local particles
+        const types::particle_index start_id = llround(static_cast<double> (n_tracers)  * start_weight / global_function_integral);
+        const types::particle_index n_local_particles = llround(static_cast<double> (n_tracers) * local_function_integral / global_function_integral);
 
-        return generate_particles_in_subdomain(cell_weights,global_function_integral,start_weight,n_tracers, 1.1 * start_id);
+        return generate_particles_in_subdomain(cell_weights,start_id,n_local_particles);
       }
 
       template <int dim>
       std::vector<double>
-      ProbabilityDensityFunction<dim>::local_accumulated_cell_weights () const
+      ProbabilityDensityFunction<dim>::compute_local_accumulated_cell_weights () const
       {
-        //evaluate function at all cell midpoints, sort cells according to weight
-        const QMidpoint<dim> quadrature_formula;
-        const unsigned int n_quadrature_points = quadrature_formula.size();
-
-        FEValues<dim> fe_values (this->get_mapping(),
-                                 this->get_fe(),
-                                 quadrature_formula,
-                                 update_quadrature_points |
-                                 update_JxW_values);
-
         std::vector<double> accumulated_cell_weights;
+        accumulated_cell_weights.reserve(this->get_triangulation().n_locally_owned_active_cells());
 
         // compute the integral weight by quadrature
         typename DoFHandler<dim>::active_cell_iterator
@@ -104,9 +97,6 @@ namespace aspect
         for (; cell!=endc; ++cell)
           if (cell->is_locally_owned())
             {
-              fe_values.reinit (cell);
-              const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
-
               // Then add the weight of the current cell. Weights are always
               // interpreted positively, even if the function evaluates to a
               // negative number.
@@ -114,8 +104,7 @@ namespace aspect
               if (accumulated_cell_weights.size() > 0)
                 next_cell_weight = accumulated_cell_weights.back();
 
-              for (unsigned int q = 0; q < n_quadrature_points; ++q)
-                next_cell_weight += std::fabs(function.value(position[q]) * fe_values.JxW(q));
+              next_cell_weight += std::fabs(get_cell_weight(cell));
 
               // Start from the weight of the previous cell
               accumulated_cell_weights.push_back(next_cell_weight);
@@ -124,41 +113,62 @@ namespace aspect
       }
 
       template <int dim>
+      double
+      ProbabilityDensityFunction<dim>::get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const
+      {
+        // Evaluate function at all cell midpoints, sort cells according to weight
+        const QMidpoint<dim> quadrature_formula;
+
+        // In the simplest case we do not even need a FEValues object, because
+        // using cell->center() and cell->measure() would be equivalent. This
+        // fails however for higher-order mappings like we use.
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature_formula,
+                                 update_quadrature_points |
+                                 update_JxW_values);
+
+        fe_values.reinit (cell);
+        const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
+        const double quadrature_point_weight = function.value(position[0]);
+
+        AssertThrow(quadrature_point_weight >= 0.0,
+                    ProbabilityFunctionNegative<dim>(position[0]));
+
+        return quadrature_point_weight * fe_values.JxW(0);
+      }
+
+      template <int dim>
       std::multimap<types::LevelInd, Particle<dim> >
-      ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::map<double,types::LevelInd> &cells,
-                                                                        const double global_weight,
-                                                                        const double start_weight,
-                                                                        const types::particle_index num_particles,
-                                                                        const types::particle_index start_id)
+      ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::map<double,types::LevelInd> &accumulated_cell_map,
+                                                                        types::particle_index start_id,
+                                                                        types::particle_index n_local_particles)
       {
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
         // Pick cells and assign particles at random points inside them
-        for (types::particle_index cur_id = start_id; cur_id < start_id + num_particles; ++cur_id)
+        for (types::particle_index cur_id = 0; cur_id < n_local_particles; ++cur_id)
           {
             // Draw the random number that determines the cell of the tracer
-            const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
+            const double random_weight =  accumulated_cell_map.rbegin()->first * uniform_distribution_01(random_number_generator);
 
-            // If the selected cell is not owned by this process, continue with next tracer
-            const std::map<double,types::LevelInd>::const_iterator select_cell_iterator = cells.lower_bound(random_weight);
-            if ((random_weight < start_weight) || (select_cell_iterator == cells.end()))
-              continue;
-
-            const types::LevelInd select_cell = select_cell_iterator->second;
+            const std::map<double,types::LevelInd>::const_iterator selected_cell_map_entry = accumulated_cell_map.lower_bound(random_weight);
+            const types::LevelInd selected_cell = selected_cell_map_entry->second;
 
             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-            it (&(this->get_triangulation()), select_cell.first, select_cell.second);
+            cell (&(this->get_triangulation()), selected_cell.first, selected_cell.second);
 
             Point<dim> max_bounds, min_bounds;
             // Get the bounds of the cell defined by the vertices
             for (unsigned int d=0; d<dim; ++d)
               {
-                min_bounds[d] = INFINITY;
-                max_bounds[d] = -INFINITY;
+                min_bounds[d] = std::numeric_limits<double>::max();
+                max_bounds[d] = - std::numeric_limits<double>::max();
               }
+
             for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
               {
-                const Point<dim> vertex_position = it->vertex(v);
+                const Point<dim> vertex_position = cell->vertex(v);
                 for (unsigned int d=0; d<dim; ++d)
                   {
                     min_bounds[d] = fmin(vertex_position[d], min_bounds[d]);
@@ -167,9 +177,9 @@ namespace aspect
               }
 
             // Generate random points in these bounds until one is within the cell
-            unsigned int num_tries = 0;
+            unsigned int n_tries = 0;
             Point<dim> particle_position;
-            while (num_tries < 100)
+            while (n_tries < 100)
               {
                 for (unsigned int d=0; d<dim; ++d)
                   {
@@ -178,20 +188,25 @@ namespace aspect
                   }
                 try
                   {
-                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, particle_position);
-                    if (GeometryInfo<dim>::is_inside_unit_cell(p_unit)) break;
+                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
+                    if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+                      break;
                   }
                 catch (typename Mapping<dim>::ExcTransformationFailed &)
                   {
                     // The point is not in this cell. Do nothing, just try again.
                   }
-                num_tries++;
+                n_tries++;
               }
-            AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
+            AssertThrow (n_tries < 100,
+                         ExcMessage ("Couldn't generate particle (unusual cell shape?). "
+                                     "The ratio between the bounding box volume in which the tracer is generated and the "
+                                     "actual cell volume is approximately: " +
+                                     boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
 
             // Add the generated particle to the set
-            const Particle<dim> new_particle(particle_position, cur_id);
-            particles.insert(std::make_pair(select_cell, new_particle));
+            const Particle<dim> new_particle(particle_position, cur_id + start_id);
+            particles.insert(std::make_pair(selected_cell, new_particle));
           }
 
         return particles;
@@ -216,7 +231,7 @@ namespace aspect
 
             prm.enter_subsection("Generator");
             {
-              prm.enter_subsection("Random function");
+              prm.enter_subsection("Probability density function");
               {
                 Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
               }
@@ -242,7 +257,7 @@ namespace aspect
 
             prm.enter_subsection("Generator");
             {
-              prm.enter_subsection("Random function");
+              prm.enter_subsection("Probability density function");
               {
                 try
                   {
@@ -251,7 +266,7 @@ namespace aspect
                 catch (...)
                   {
                     std::cerr << "ERROR: FunctionParser failed to parse\n"
-                              << "\t'Initial conditions.Function'\n"
+                              << "\t'Particle.Generator.Probability density function'\n"
                               << "with expression\n"
                               << "\t'" << prm.get("Function expression") << "'";
                     throw;
@@ -279,16 +294,16 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(ProbabilityDensityFunction,
                                          "probability density function",
-                                         "Generate random distribution of "
-                                         "particles over entire simulation domain. "
+                                         "Generate a random distribution of "
+                                         "particles over the entire simulation domain. "
                                          "The particle density is prescribed in the "
                                          "form of a user-prescribed function. The "
                                          "format of this function follows the syntax "
                                          "understood by the muparser library, see "
                                          "Section~\\ref{sec:muparser-format}. The "
                                          "return value of the function is always "
-                                         "interpreted as a positive probability "
-                                         "density but it can be set to zero in"
+                                         "checked to be a non-negative probability "
+                                         "density but it can be zero in"
                                          "parts of the domain.")
     }
   }

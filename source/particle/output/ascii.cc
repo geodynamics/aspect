@@ -42,9 +42,15 @@ namespace aspect
         const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
         const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
         const std::string full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) + ".txt";
+
         std::ofstream output (full_filename.c_str());
-        if (!output)
-          std::cout << "ERROR: proc " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) << " could not create " << full_filename << std::endl;
+
+        AssertThrow (output,
+                     ExcMessage (std::string("Couldn't open ascii particle output file <"
+                                             +
+                                             full_filename
+                                             +
+                                             ">.")));
 
         // Print the header line
         output << "# ";
@@ -63,7 +69,8 @@ namespace aspect
               }
             else
               {
-                for (unsigned int i=0; i<property->second; ++i) output << property->first << "[" << i << "] ";
+                for (unsigned int i=0; i<property->second; ++i)
+                  output << property->first << "[" << i << "] ";
               }
           }
         output << "\n";
@@ -71,17 +78,12 @@ namespace aspect
         // And print the data for each particle
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
           {
-            const Point<dim> position = it->second.get_location();
-
-            for (unsigned int i = 0; i < dim; ++i)
-              output << position[i] << " ";
-
-            output << it->second.get_id() << " ";
-
             const std::vector<double> properties = it->second.get_properties();
 
+            output << it->second.get_location();
+            output << " " << it->second.get_id();
             for (unsigned int i = 0; i < properties.size(); ++i)
-              output << properties[i] << " ";
+              output << " " << properties[i];
 
             output << "\n";
           }

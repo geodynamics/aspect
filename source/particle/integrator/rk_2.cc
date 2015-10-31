@@ -28,10 +28,9 @@ namespace aspect
     {
       template <int dim>
       RK2<dim>::RK2()
-      {
-        step = 0;
-        loc0.clear();
-      }
+      :
+      integrator_substep(0)
+      {}
 
       template <int dim>
       void
@@ -41,22 +40,32 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
       {
-        typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-        typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
-        typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
+        Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
+            ExcMessage("The particle integrator expects the old velocity vector to be of equal size"
+                "to the number of particles to advect. For some unknown reason they are different, "
+                "most likely something went wrong in the calling function."));
 
-        for (; it!=end_particle, vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
+        Assert(std::distance(begin_particle, end_particle) == velocities.size(),
+            ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+                "to the number of particles to advect. For some unknown reason they are different, "
+                "most likely something went wrong in the calling function."));
+
+        typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
+
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+            it != end_particle; ++it, ++velocity, ++old_velocity)
           {
             const types::particle_index id_num = it->second.get_id();
             const Point<dim> loc = it->second.get_location();
-            if (step == 0)
+            if (integrator_substep == 0)
               {
                 loc0[id_num] = loc;
-                it->second.set_location(loc + 0.5 * dt * (*old_vel));
+                it->second.set_location(loc + 0.5 * dt * (*old_velocity));
               }
-            else if (step == 1)
+            else if (integrator_substep == 1)
               {
-                it->second.set_location(loc0[id_num] + dt * (*old_vel + *vel)/2.0);
+                it->second.set_location(loc0[id_num] + dt * (*old_velocity + *velocity) / 2.0);
               }
             else
               {
@@ -70,18 +79,23 @@ namespace aspect
       bool
       RK2<dim>::new_integration_step()
       {
-        if (step == 1) loc0.clear();
-        step = (step+1)%2;
+        if (integrator_substep == 1) loc0.clear();
+        integrator_substep = (integrator_substep + 1) % 2;
 
         // Continue until we're at the last step
-        return (step != 0);
+        return (integrator_substep != 0);
       }
 
       template <int dim>
       unsigned int
       RK2<dim>::get_data_size() const
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return 0 in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 1)
+          return 0;
+
         return dim * sizeof(double);
       }
 
@@ -90,7 +104,11 @@ namespace aspect
       RK2<dim>::read_data(const void *&data,
                           const types::particle_index id_num)
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 1)
+          return;
 
         const double *integrator_data = static_cast<const double *> (data);
 
@@ -106,7 +124,11 @@ namespace aspect
       RK2<dim>::write_data(void *&data,
                            const types::particle_index id_num) const
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 1)
+          return;
 
         double *integrator_data = static_cast<double *> (data);
 
@@ -132,9 +154,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
                                           "rk2",
                                           "Runge Kutta second order integrator, where "
-                                          "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "
-                                          "This scheme requires storing the original location, "
-                                          "and the read/write_data functions reflect this.")
+                                          "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n).")
     }
   }
 }

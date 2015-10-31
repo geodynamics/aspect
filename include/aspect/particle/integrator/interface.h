@@ -90,7 +90,7 @@ namespace aspect
            * false, which is ok for single-step integration methods.
            *
            * @return This function returns true if the integrator requires
-           * another integration step. The particle integration will continue
+           * another integration step. The particle world will continue
            * to start new integration steps until this function returns false.
            */
           virtual bool new_integration_step();
@@ -111,7 +111,8 @@ namespace aspect
 
           /**
            * Read integration related data for a particle specified by id_num
-           * from the data array.
+           * from the data array. This function is called after transferring
+           * a particle to the local domain during an integration step.
            *
            * @param [in, out] data A pointer to the array of data to read from.
            * The pointer should be advanced by get_data_size() bytes within
@@ -124,7 +125,9 @@ namespace aspect
 
           /**
            * Write integration related data to a vector for a particle
-           * specified by id_num.
+           * specified by id_num. This function is called in cases where
+           * particles leave the local domain during an integration step to
+           * transfer this data to another process.
            *
            * @param [in,out] data A pointer to the array of data to write
            * integrator data into. The pointer should be advanced by

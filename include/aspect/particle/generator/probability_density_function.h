@@ -34,6 +34,17 @@ namespace aspect
     namespace Generator
     {
       /**
+       * Exception
+       */
+      template <int dim>
+      DeclException1 (ProbabilityFunctionNegative,
+                      Point<dim>,
+                      << "Your probability density function in the particle generator "
+                      "returned a negative probability density for the following position: "
+                      << arg1 << ". Please check your function expression.");
+
+
+      /**
        * Generates a random distribution of particles over the simulation
        * domain. The particle density is determined by a user-defined
        * probability density function in the parameter file. This is done using
@@ -87,6 +98,16 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+        protected:
+
+          /**
+           * Returns the weight of one cell, which is interpreted as the probability
+           * to generate particles in this cell.
+           */
+          virtual
+          double
+          get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const;
+
         private:
           /**
            * Random number generator and an object that describes a
@@ -121,10 +142,8 @@ namespace aspect
            */
           std::multimap<types::LevelInd, Particle<dim> >
           generate_particles_in_subdomain (const std::map<double,types::LevelInd> &cells,
-                                           const double global_weight,
-                                           const double start_weight,
-                                           const types::particle_index num_particles,
-                                           const types::particle_index start_id);
+                                           types::particle_index start_id,
+                                           types::particle_index local_particles);
 
           /**
            * This function loops over all active cells in the local subdomain
@@ -133,7 +152,7 @@ namespace aspect
            * volume for every cell it loops over.
            */
           std::vector<double>
-          local_accumulated_cell_weights () const;
+          compute_local_accumulated_cell_weights () const;
       };
 
     }

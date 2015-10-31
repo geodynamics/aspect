@@ -511,22 +511,22 @@ namespace aspect
       const std::vector<types::subdomain_id> neighbors (ghost_owner.begin(),
                                                         ghost_owner.end());
 #endif
-      const unsigned int num_neighbors = neighbors.size();
+      const unsigned int n_neighbors = neighbors.size();
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size();
 
       // Determine the amount of data we will send to other processors
-      std::vector<int> num_send_data(num_neighbors);
-      std::vector<int> num_recv_data(num_neighbors);
+      std::vector<int> n_send_data(n_neighbors);
+      std::vector<int> n_recv_data(n_neighbors);
 
-      std::vector<int> send_offsets(num_neighbors);
-      std::vector<int> recv_offsets(num_neighbors);
+      std::vector<int> send_offsets(n_neighbors);
+      std::vector<int> recv_offsets(n_neighbors);
 
       // Allocate space for sending and receiving particle data
       std::vector<char> send_data(send_particles.size() * particle_size);
       void *data = static_cast<void *> (&send_data.front());
 
       int total_send_data = 0;
-      for (types::subdomain_id neighbor_id = 0; neighbor_id < num_neighbors; ++neighbor_id)
+      for (types::subdomain_id neighbor_id = 0; neighbor_id < n_neighbors; ++neighbor_id)
         {
           send_offsets[neighbor_id] = total_send_data;
 
@@ -534,9 +534,9 @@ namespace aspect
               const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator>
               send_particle_range = send_particles.equal_range(neighbors[neighbor_id]);
 
-          int num_send_particles = std::distance(send_particle_range.first,send_particle_range.second);
-          num_send_data[neighbor_id] = num_send_particles * particle_size;
-          total_send_data += num_send_particles * particle_size;
+          int n_send_particles = std::distance(send_particle_range.first,send_particle_range.second);
+          n_send_data[neighbor_id] = n_send_particles * particle_size;
+          total_send_data += n_send_particles * particle_size;
 
           // Copy the particle data into the send array
           typename std::multimap<types::subdomain_id,Particle<dim> >::const_iterator particle = send_particle_range.first;
@@ -552,42 +552,42 @@ namespace aspect
                              "is inconsistent with the number and size of particles."));
 
       // Notify other processors how many particles we will send
-      MPI_Request *num_requests = new MPI_Request[2*num_neighbors];
-      for (unsigned int i=0; i<num_neighbors; ++i)
-        MPI_Irecv(&(num_recv_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(num_requests[2*i]));
-      for (unsigned int i=0; i<num_neighbors; ++i)
-        MPI_Isend(&(num_send_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(num_requests[2*i+1]));
-      MPI_Waitall(2*num_neighbors,num_requests,MPI_STATUSES_IGNORE);
-      delete[] num_requests;
+      MPI_Request *n_requests = new MPI_Request[2*n_neighbors];
+      for (unsigned int i=0; i<n_neighbors; ++i)
+        MPI_Irecv(&(n_recv_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i]));
+      for (unsigned int i=0; i<n_neighbors; ++i)
+        MPI_Isend(&(n_send_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i+1]));
+      MPI_Waitall(2*n_neighbors,n_requests,MPI_STATUSES_IGNORE);
+      delete[] n_requests;
 
       // Determine how many particles and data we will receive
       int total_recv_data = 0;
-      for (unsigned int neighbor_id=0; neighbor_id<num_neighbors; ++neighbor_id)
+      for (unsigned int neighbor_id=0; neighbor_id<n_neighbors; ++neighbor_id)
         {
           recv_offsets[neighbor_id] = total_recv_data;
-          total_recv_data += num_recv_data[neighbor_id];
+          total_recv_data += n_recv_data[neighbor_id];
         }
-      const int num_recv_particles = total_recv_data / particle_size;
+      const int n_recv_particles = total_recv_data / particle_size;
 
       // Set up the space for the received particle data
       std::vector<char> recv_data(total_recv_data);
 
       // Exchange the particle data between domains
-      MPI_Request *requests = new MPI_Request[2*num_neighbors];
+      MPI_Request *requests = new MPI_Request[2*n_neighbors];
       unsigned int send_ops = 0;
       unsigned int recv_ops = 0;
 
-      for (unsigned int i=0; i<num_neighbors; ++i)
-        if (num_recv_data[i] > 0)
+      for (unsigned int i=0; i<n_neighbors; ++i)
+        if (n_recv_data[i] > 0)
           {
-            MPI_Irecv(&(recv_data[recv_offsets[i]]), num_recv_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops]));
+            MPI_Irecv(&(recv_data[recv_offsets[i]]), n_recv_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops]));
             send_ops++;
           }
 
-      for (unsigned int i=0; i<num_neighbors; ++i)
-        if (num_send_data[i] > 0)
+      for (unsigned int i=0; i<n_neighbors; ++i)
+        if (n_send_data[i] > 0)
           {
-            MPI_Isend(&(send_data[send_offsets[i]]), num_send_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops+recv_ops]));
+            MPI_Isend(&(send_data[send_offsets[i]]), n_send_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops+recv_ops]));
             recv_ops++;
           }
       MPI_Waitall(send_ops+recv_ops,requests,MPI_STATUSES_IGNORE);
@@ -596,7 +596,7 @@ namespace aspect
       // Put the received particles into the domain if they are in the triangulation
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());
 
-      for (int i=0; i<num_recv_particles; ++i)
+      for (int i=0; i<n_recv_particles; ++i)
         {
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
           integrator->read_data(recv_data_it, recv_particle.get_id());

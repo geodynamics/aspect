@@ -126,7 +126,7 @@ namespace aspect
            * The current integration step, i.e for RK2 a number that is either
            * 0 or 1.
            */
-          unsigned int step;
+          unsigned int integrator_substep;
 
           /**
            * The particle location before the first integration step. This is

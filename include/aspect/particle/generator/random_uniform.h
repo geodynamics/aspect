@@ -21,7 +21,7 @@
 #ifndef __aspect__particle_generator_random_uniform_h
 #define __aspect__particle_generator_random_uniform_h
 
-#include <aspect/particle/generator/interface.h>
+#include <aspect/particle/generator/probability_density_function.h>
 
 #include <boost/random.hpp>
 
@@ -37,69 +37,18 @@ namespace aspect
        * @ingroup ParticleGenerators
        */
       template <int dim>
-      class RandomUniform : public Interface<dim>
+      class RandomUniform : public ProbabilityDensityFunction<dim>
       {
         public:
-          /**
-           * Constructor.
-           */
-          RandomUniform();
-
-          /**
-           * Generate a uniformly randomly distributed set of particles in the current triangulation.
-           *
-           * @return A multimap containing cells and their contained particles.
-           */
-          virtual
-          std::multimap<types::LevelInd, Particle<dim> >
-          generate_particles();
-
-
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
 
         private:
           /**
-           * Random number generator and an object that describes a
-           * uniform distribution on the interval [0,1]. These
-           * will be used to generate particle locations at random.
+           * Returns the weight of one cell, which is interpreted as the probability
+           * to generate particles in this cell.
            */
-          boost::mt19937            random_number_generator;
-          boost::uniform_01<double> uniform_distribution_01;
-
-          /**
-           * Number of initial particles to create
-           */
-          types::particle_index n_tracers;
-
-
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           *
-           * @return A multimap containing cells and their contained particles.
-           *
-           */
-          std::multimap<types::LevelInd, Particle<dim> >
-          uniform_random_particles_in_subdomain (const types::particle_index num_particles,
-                                                 const types::particle_index start_id);
+          virtual
+          double
+          get_cell_weight (typename DoFHandler<dim>::active_cell_iterator &cell) const;
       };
 
     }

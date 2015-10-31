@@ -30,7 +30,7 @@ namespace aspect
     {
       /**
        * Return the properties of the first tracer of the cell containing the
-       * given positions
+       * given positions.
        */
       template <int dim>
       std::vector<std::vector<double> >
@@ -52,6 +52,9 @@ namespace aspect
               }
 
             const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (cell->level(),cell->index());
+
+            // Find will only return the first particle it finds in that particular cell,
+            // it is *not* the closest particle to the given position.
             const Particle<dim> particle = particles.find(cell_index)->second;
             properties[point] = particle.get_properties();
           }

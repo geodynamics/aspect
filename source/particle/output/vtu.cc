@@ -103,7 +103,7 @@ namespace aspect
 
         output << "        </DataArray>\n";
 
-        // Print the data associated with the particles, skipping the first entry (position)
+        // Print the data associated with the particles
         std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
         unsigned int data_offset = 0;
 
@@ -120,10 +120,14 @@ namespace aspect
 
                 for (unsigned int d=0; d < property->second; ++d)
                   {
-                    output << particle_data[data_offset+d] << " ";
+                    output << particle_data[data_offset+d];
+
+                    if (d+1 < property->second)
+                      output << " ";
                   }
+
                 if (property->second == 2)
-                  output << "0 ";
+                  output << " 0";
                 output << "\n";
               }
             data_offset += property->second;

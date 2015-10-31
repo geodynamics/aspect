@@ -45,21 +45,21 @@ namespace aspect
         for (unsigned int i = 0; i < dim; ++i)
           volume *= P_diff[i];
 
-        std_cxx11::array<double,dim> nParticles;
+        std_cxx11::array<unsigned int,dim> n_particles_per_direction;
         std_cxx11::array<double,dim> spacing;
 
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            nParticles[i] = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
-            spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
+            n_particles_per_direction[i] = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
+            spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
         types::particle_index particle_index = 0;
 
-        for (types::particle_index i = 0; i < nParticles[0]; ++i)
+        for (unsigned int i = 0; i < n_particles_per_direction[0]; ++i)
           {
-            for (types::particle_index j = 0; j < nParticles[1]; ++j)
+            for (unsigned int j = 0; j < n_particles_per_direction[1]; ++j)
               {
                 if (dim == 2)
                   {
@@ -75,7 +75,7 @@ namespace aspect
                       {}
                   }
                 else if (dim == 3)
-                  for (unsigned int k = 0; k < nParticles[2]; ++k)
+                  for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
                     {
                       const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
 

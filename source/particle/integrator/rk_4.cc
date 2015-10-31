@@ -28,13 +28,9 @@ namespace aspect
     {
       template <int dim>
       RK4<dim>::RK4()
-      {
-        step = 0;
-        loc0.clear();
-        k1.clear();
-        k2.clear();
-        k3.clear();
-      }
+      :
+      integrator_substep(0)
+      {}
 
       template <int dim>
       void
@@ -44,33 +40,45 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
       {
-        typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+        Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
+            ExcMessage("The particle integrator expects the old velocity vector to be of equal size"
+                "to the number of particles to advect. For some unknown reason they are different, "
+                "most likely something went wrong in the calling function."));
+
+        Assert(std::distance(begin_particle, end_particle) == velocities.size(),
+            ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+                "to the number of particles to advect. For some unknown reason they are different, "
+                "most likely something went wrong in the calling function."));
+
+        // TODO: currently old_velocity is not used in this scheme, but it should,
+        // to make it at least second-order accurate in time.
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
-        for (; it!=end_particle, vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
+        for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+            it != end_particle; ++it, ++vel, ++old_vel)
           {
             const types::particle_index id_num = it->second.get_id();
-            if (step == 0)
+            if (integrator_substep == 0)
               {
                 loc0[id_num] = it->second.get_location();
-                k1[id_num] = dt*(*vel);
+                k1[id_num] = dt * (*vel);
                 it->second.set_location(it->second.get_location() + 0.5*k1[id_num]);
               }
-            else if (step == 1)
+            else if (integrator_substep == 1)
               {
-                k2[id_num] = dt*(*vel);
+                k2[id_num] = dt * (*vel);
                 it->second.set_location(loc0[id_num] + 0.5*k2[id_num]);
               }
-            else if (step == 2)
+            else if (integrator_substep == 2)
               {
-                k3[id_num] = dt*(*vel);
+                k3[id_num] = dt * (*vel);
                 it->second.set_location(loc0[id_num] + k3[id_num]);
               }
-            else if (step == 3)
+            else if (integrator_substep == 3)
               {
-                const Tensor<1,dim> k4 = dt*(*vel);
-                it->second.set_location(loc0[id_num] + (k1[id_num]+2.0*k2[id_num]+2.0*k3[id_num]+k4)/6.0);
+                const Tensor<1,dim> k4 = dt * (*vel);
+                it->second.set_location(loc0[id_num] + (k1[id_num] + 2.0*k2[id_num] + 2.0*k3[id_num] + k4)/6.0);
               }
             else
               {
@@ -84,8 +92,7 @@ namespace aspect
       bool
       RK4<dim>::new_integration_step()
       {
-        step = (step+1)%4;
-        if (step == 0)
+        if (integrator_substep == 3)
           {
             loc0.clear();
             k1.clear();
@@ -93,15 +100,21 @@ namespace aspect
             k3.clear();
           }
 
+        integrator_substep = (integrator_substep+1)%4;
+
         // Continue until we're at the last step
-        return (step != 0);
+        return (integrator_substep != 0);
       }
 
       template <int dim>
       unsigned int
       RK4<dim>::get_data_size() const
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return 0 in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 3)
+          return 0;
 
         return 4*dim*sizeof(double);
       }
@@ -111,7 +124,11 @@ namespace aspect
       RK4<dim>::read_data(const void *&data,
                           const types::particle_index id_num)
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 3)
+          return;
 
         const double *integrator_data = static_cast<const double *> (data);
 
@@ -137,7 +154,11 @@ namespace aspect
       RK4<dim>::write_data(void *&data,
                            const types::particle_index id_num) const
       {
-        // TODO: If we finished integration we do not need to transfer integrator data. Return early in that case.
+        // If integration is finished, we do not need to transfer integrator
+        // data to other processors, because it will be deleted soon anyway.
+        // Skip the MPI transfer in this case.
+        if (integrator_substep == 3)
+          return;
 
         double *integrator_data = static_cast<double *> (data);
 
@@ -177,10 +198,7 @@ namespace aspect
                                           "rk4",
                                           "Runge Kutta fourth order integrator, where "
                                           "y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4 "
-                                          "and k1, k2, k3, k4 are defined as usual. "
-                                          "This scheme requires storing the original location "
-                                          "and intermediate k1, k2, k3 values, so the "
-                                          "read/write_data functions reflect this.")
+                                          "and k1, k2, k3, k4 are defined as usual.")
     }
   }
 }

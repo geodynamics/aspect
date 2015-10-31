@@ -114,7 +114,7 @@ subsection Postprocess
     set Particle generator name = probability density function
 
     subsection Generator
-      subsection Random function
+      subsection Probability density function
         set Variable names      = x,z
         set Function expression = x*x*z
       end

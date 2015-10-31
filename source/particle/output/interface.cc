@@ -112,7 +112,7 @@ namespace aspect
         }
         prm.leave_subsection ();
 
-        if (name != "no output")
+        if (name != "none")
           return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
                                                                         "Particle::Output name");
         else
@@ -134,9 +134,9 @@ namespace aspect
               = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Data output format", "vtu",
-                               Patterns::Selection (pattern_of_names + "|no output"),
+                               Patterns::Selection (pattern_of_names + "|none"),
                                "File format to output raw particle data in. "
-                               "If you select 'no output' no output will be "
+                               "If you select 'none' no output will be "
                                "written."
                                "Select one of the following models:\n\n"
                                +
