@@ -459,15 +459,20 @@ namespace aspect
   }
 
 
-
-  template <int dim>
-  dealii::SolverControl::State
-  Simulator<dim>::solver_callback (const unsigned int iteration,
-                                   const double        check_value,
-                                   const LinearAlgebra::BlockVector       &current_iterate)
+  namespace
   {
-    solver_history.push_back(check_value);
-    return dealii::SolverControl::success;
+    /**
+     * Helper function used in solve_stokes().
+     */
+    dealii::SolverControl::State
+    solver_callback (const unsigned int /*iteration*/,
+                     const double check_value,
+                     const LinearAlgebra::BlockVector &/*current_iterate*/,
+                     std::vector<double> &solver_history)
+    {
+      solver_history.push_back(check_value);
+      return dealii::SolverControl::success;
+    }
   }
 
   template <int dim>
@@ -476,6 +481,8 @@ namespace aspect
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
     solver_history.clear();
+
+    std::vector<double> solver_history;
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -686,14 +693,14 @@ namespace aspect
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(200, true));
-//               AdditionalData(30, true));
 
         solver.connect(
-          std_cxx11::bind (&Simulator<dim>::solver_callback,
-                           this,
+          std_cxx11::bind (&solver_callback,
                            std_cxx11::_1,
                            std_cxx11::_2,
-                           std_cxx11::_3));
+                           std_cxx11::_3,
+                           std_cxx11::ref(solver_history)));
+
 
         solver.solve (stokes_block,
                       distributed_stokes_solution,
@@ -708,7 +715,8 @@ namespace aspect
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
-        solver_history.push_back(-1);
+        // this additional entry serves as a marker between cheap and expensive Stokes solver
+        solver_history.push_back(-1.0);
 
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
@@ -726,11 +734,11 @@ namespace aspect
         */
 
         solver.connect(
-          std_cxx11::bind (&Simulator<dim>::solver_callback,
-                           this,
+          std_cxx11::bind (&solver_callback,
                            std_cxx11::_1,
                            std_cxx11::_2,
-                           std_cxx11::_3));
+                           std_cxx11::_3,
+                           std_cxx11::ref(solver_history)));
         try
           {
             solver.solve(stokes_block,
@@ -743,6 +751,7 @@ namespace aspect
         // processors
         catch (const std::exception &exc)
           {
+            signals.post_stokes_solver(*this, false, solver_history);
 
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
               {
@@ -764,7 +773,9 @@ namespace aspect
                              ExcMessage (std::string("The iterative Stokes solver "
                                                      "did not converge. It reported the following error:\n\n")
                                          +
-                                         exc.what()))
+                                         exc.what()
+                                         + "\n See " + parameters.output_directory+"solver_history.txt"
+                                         + " for convergence history."));
               }
             else
               throw QuietException();
@@ -774,6 +785,9 @@ namespace aspect
         its_A += preconditioner.n_iterations_A();
         its_S += preconditioner.n_iterations_S();
       }
+
+    // signal successful solver
+    signals.post_stokes_solver(*this, true, solver_history);
 
     // distribute hanging node and
     // other constraints

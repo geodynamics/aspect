@@ -290,7 +290,7 @@ namespace aspect
 
 
       internal::BaseVariablePostprocessor<dim> base_variables;
-      dynamic_cast<SimulatorAccess<dim>*>(&base_variables)->initialize(this->get_simulator());
+      base_variables.initialize_simulator (this->get_simulator());
 
       std_cxx1x::shared_ptr<internal::FreeSurfacePostprocessor<dim> > free_surface_variables;
 
@@ -307,7 +307,7 @@ namespace aspect
       if ( this->get_free_surface_boundary_indicators().empty() == false && output_mesh_velocity)
         {
           free_surface_variables.reset( new internal::FreeSurfacePostprocessor<dim>);
-          free_surface_variables->initialize(this->get_simulator());
+          free_surface_variables->initialize_simulator(this->get_simulator());
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *free_surface_variables);
         }
@@ -846,7 +846,7 @@ namespace aspect
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
         }

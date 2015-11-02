@@ -237,7 +237,7 @@ namespace aspect
                        dofs_per_cell = fs_fe_face_values.dofs_per_cell;
 
     //stuff for assembling system
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
@@ -262,7 +262,9 @@ namespace aspect
     CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
 
 #else
-    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
+    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
+                                          mesh_locally_owned,
+                                          mesh_locally_relevant,
                                           sim.mpi_communicator);
 #endif
     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
@@ -372,12 +374,44 @@ namespace aspect
                        dofs_per_face = sim.finite_element.dofs_per_face,
                        n_q_points    = fe_values.n_quadrature_points;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     std::vector<unsigned int> face_dof_indices (dofs_per_face);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-    mesh_matrix = 0;
+    mesh_matrix.clear ();
+
+    // We are just solving a Laplacian in each spatial direction, so
+    // the degrees of freedom for different dimensions do not couple.
+    Table<2,DoFTools::Coupling> coupling (dim, dim);
+    coupling.fill(DoFTools::none);
+
+    for (unsigned int c=0; c<dim; ++c)
+      coupling[c][c] = DoFTools::always;
+
+#ifdef ASPECT_USE_PETSC
+    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+#else
+    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
+                                          mesh_locally_owned,
+                                          mesh_locally_relevant,
+                                          sim.mpi_communicator);
+#endif
+    DoFTools::make_sparsity_pattern (free_surface_dof_handler,
+                                     coupling, sp,
+                                     mesh_displacement_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(sim.mpi_communicator));
+#ifdef ASPECT_USE_PETSC
+    SparsityTools::distribute_sparsity_pattern(sp,
+                                               free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                               sim.mpi_communicator, mesh_locally_relevant);
+    sp.compress();
+    mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
+#else
+    sp.compress();
+    mesh_matrix.reinit (sp);
+#endif
 
     //carry out the solution
     FEValuesExtractors::Vector extract_vel(0);
@@ -471,7 +505,7 @@ namespace aspect
     const unsigned int n_q_points = fe_values.n_quadrature_points,
                        dofs_per_cell = fe_values.dofs_per_cell;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     FEValuesExtractors::Vector extract_vel(0);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
@@ -546,7 +580,7 @@ namespace aspect
           = free_surface_fe.base_element(0).get_unit_support_points();
         FEValues<dim> mesh_points (sim.mapping, free_surface_fe,
                                    mesh_support_points, update_quadrature_points);
-        std::vector<unsigned int> cell_dof_indices (free_surface_fe.dofs_per_cell);
+        std::vector<types::global_dof_index> cell_dof_indices (free_surface_fe.dofs_per_cell);
 
         typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
                                                        endc = free_surface_dof_handler.end();
@@ -572,44 +606,6 @@ namespace aspect
     make_constraints();
 
     // matrix
-    {
-      mesh_matrix.clear ();
-
-      Table<2,DoFTools::Coupling> coupling (dim, dim);
-      coupling.fill(DoFTools::none);
-
-      for (unsigned int c=0; c<dim; ++c)
-        coupling[c][c] = DoFTools::always;
-
-#ifdef ASPECT_USE_PETSC
-      CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
-
-#else
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
-                                            sim.mpi_communicator);
-#endif
-
-      DoFTools::make_sparsity_pattern (free_surface_dof_handler,
-                                       coupling, sp,
-                                       mesh_displacement_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(sim.mpi_communicator));
-
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 sim.mpi_communicator, mesh_locally_relevant);
-
-      sp.compress();
-
-      mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
-#else
-      sp.compress();
-
-      mesh_matrix.reinit (sp);
-#endif
-
-    }
 
 
   }

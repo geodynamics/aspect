@@ -144,13 +144,13 @@ namespace aspect
 
         const std::string model_name = prm.get ("Model name");
 
-        Assert(model_name.empty() || model_names.size() == 0,
-               ExcMessage ("The parameter 'Model name' is only used for reasons"
-                           "of backwards compatibility and can not be used together with "
-                           "the new functionality 'List of model names'. Please add your "
-                           "heating model to the list instead."));
+        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
+                     ExcMessage ("The parameter 'Model name' is only used for reasons"
+                                 "of backwards compatibility and can not be used together with "
+                                 "the new functionality 'List of model names'. Please add your "
+                                 "heating model to the list instead."));
 
-        if (!model_name.empty())
+        if (!(model_name == "unspecified"))
           model_names.push_back(model_name);
 
       }
@@ -202,7 +202,7 @@ namespace aspect
                                                             "Heating model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
-            sim->initialize (this->get_simulator());
+            sim->initialize_simulator (this->get_simulator());
 
           heating_model_objects.back()->parse_parameters (prm);
           heating_model_objects.back()->initialize ();
@@ -285,22 +285,14 @@ namespace aspect
                           +
                           std_cxx11::get<dim>(registered_plugins).get_description_string());
 
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               "Warning: This is the old formulation of specifying "
-                               "heating models and shouldn't be used. Please use 'List of"
-                               "model names' instead."
-                               +
-                               std_cxx11::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "Select one of the following models:\n\n"
+                           "Warning: This is the old formulation of specifying "
+                           "heating models and shouldn't be used. Please use 'List of"
+                           "model names' instead."
+                           +
+                           std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 

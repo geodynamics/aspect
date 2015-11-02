@@ -69,9 +69,11 @@ namespace aspect
                        "library.");
 
     prm.declare_entry ("Resume computation", "false",
-                       Patterns::Bool (),
+                       Patterns::Selection ("true|false|auto"),
                        "A flag indicating whether the computation should be resumed from "
-                       "a previously saved state (if true) or start from scratch (if false).");
+                       "a previously saved state (if true) or start from scratch (if false). "
+                       "If auto is selected, models will be resumed if there is an existing "
+                       "checkpoint file, otherwise started from scratch.");
 
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
@@ -700,14 +702,6 @@ namespace aspect
     AssertThrow (prm.get_integer("Dimension") == dim,
                  ExcInternalError());
 
-    resume_computation      = prm.get_bool ("Resume computation");
-#ifndef DEAL_II_WITH_ZLIB
-    AssertThrow (resume_computation == false,
-                 ExcMessage ("You need to have deal.II configured with the 'libz' "
-                             "option if you want to resume a computation from a checkpoint, but deal.II "
-                             "did not detect its presence when you called 'cmake'."));
-#endif
-
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
@@ -734,7 +728,7 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
-    max_nonlinear_iterations_in_prerefinment = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+    max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
 
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
@@ -769,6 +763,25 @@ namespace aspect
         AssertThrow (error==0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
+
+    if (prm.get ("Resume computation") == "true")
+      resume_computation = true;
+    else if (prm.get ("Resume computation") == "false")
+      resume_computation = false;
+    else if (prm.get ("Resume computation") == "auto")
+      {
+        std::fstream check_file((output_directory+"restart.mesh").c_str());
+        resume_computation = check_file.is_open();
+        check_file.close();
+      }
+    else
+      AssertThrow (false, ExcMessage ("Resume computation parameter must be either 'true', 'false', or 'auto'."));
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
 
     surface_pressure              = prm.get_double ("Surface pressure");
     adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");

@@ -1,0 +1,15 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for Stokes solver
+# 7: Velocity iterations in Stokes preconditioner
+# 8: Schur complement iterations in Stokes preconditioner
+# 9: Time step size (seconds)
+# 10: Average shear heating rate (W/kg) 
+# 11: Total shear heating rate (W) 
+# 12: Total viscous dissipation (W)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+0 0.0000e+00 1024 9539 4225 45 1106 16 7.6305e-03 4.70996240e+00 6.19299173e+00 4.72697927e+01 1.22476546e+00 2.04950484e+00 

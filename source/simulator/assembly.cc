@@ -1143,14 +1143,19 @@ namespace aspect
                           0.0);
             double viscosity_c = melt_outputs.compaction_viscosities[q];
 
+        const SymmetricTensor<4,dim> &stress_strain_director =
+          scratch.material_model_outputs.stress_strain_directors[q];
+        const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+
             for (unsigned int i=0; i<dofs_per_cell; ++i)
               for (unsigned int j=0; j<dofs_per_cell; ++j)
                 if (finite_element.system_to_component_index(i).first
                     ==
                     finite_element.system_to_component_index(j).first)
-                  data.local_matrix(i,j) += (eta *
-                                             (scratch.grads_phi_u[i] *
-                                              scratch.grads_phi_u[j])
+              data.local_matrix(i,j) += ((use_tensor ?
+                                          eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                          :
+                                          eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                              +
                                              (1./eta *
                                               pressure_scaling *
@@ -1468,15 +1473,21 @@ namespace aspect
               }
           }
 
+        // Viscosity scalar
         const double eta = (rebuild_stokes_matrix
                             ?
                             outputs->viscosities[q]
                             :
                             std::numeric_limits<double>::quiet_NaN());
 
+        const SymmetricTensor<4,dim> &stress_strain_director =
+          scratch.material_model_outputs.stress_strain_directors[q];
+        const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+
         Tensor<1,dim> gravity;
         for (unsigned int d=0; d<dim; ++d)
           gravity[d] = gravity_values[d][q];
+
 
         const double compressibility
           = (is_compressible
@@ -1519,10 +1530,17 @@ namespace aspect
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             for (unsigned int j=0; j<dofs_per_cell; ++j)
-              data.local_matrix(i,j) += ( eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
-                                          - ((is_compressible || parameters.include_melt_transport)
+              data.local_matrix(i,j) += ( (use_tensor ?
+                                           eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                           :
+                                           eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                          - ((is_compressible|| parameters.include_melt_transport)
                                              ?
-                                             eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                             (use_tensor ?
+                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                              :
+                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                             )
                                              :
                                              0)
                                           - (pressure_scaling *

@@ -21,7 +21,7 @@
 
 #include <aspect/material_model/steinberger.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/lateral_averaging.h>
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
@@ -434,7 +434,7 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_depth_average_temperature(avg_temp);
+        this->get_lateral_averaging().get_temperature_averages(avg_temp);
     }
 
 
@@ -769,80 +769,6 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
     is_compressible () const
     {
       return compressible;
@@ -1001,6 +927,13 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
+        // Declare dependencies on solution variables
+        this->model_dependence.viscosity = NonlinearDependence::temperature;
+        this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       }
     }
   }

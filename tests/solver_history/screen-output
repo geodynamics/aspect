@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libsolver_history.so>
+
+Connecting signals
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 
+post_stokes_solver:
+4.30549e-07
+4.29777e-07
+4.29207e-07
+4.26588e-07
+4.15948e-07
+3.95221e-07
+3.7013e-07
+3.13502e-07
+2.15859e-07
+1.53156e-07
+1.18936e-07
+8.33093e-08
+5.01955e-08
+3.1172e-08
+2.09542e-08
+1.53074e-08
+1.10199e-08
+6.96632e-09
+4.10842e-09
+2.65276e-09
+1.87224e-09
+1.34178e-09
+9.4782e-10
+6.03066e-10
+3.71778e-10
+2.33403e-10
+1.51829e-10
+1.06127e-10
+7.63826e-11
+4.97925e-11
+4.97925e-11
+3.69443e-11
+-1
+3.69443e-11
+2.40324e-11
+9.13505e-12
+4.31326e-12
+2.56122e-12
+9.97441e-13
+2.43948e-13
+9.55434e-14
+3.69097e-14
+30+8 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-solver_history/solution-00000
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 
+post_stokes_solver:
+4.02487e-14
+4.02417e-14
+3.9633e-14
+2.95676e-14
+1.79505e-14
+1.23573e-14
+8.16265e-15
+4.66368e-15
+2.5529e-15
+1.83007e-15
+9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      2.98s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |      0.76s |        26% |
+| Assemble temperature system     |         2 |     0.407s |        14% |
+| Build Stokes preconditioner     |         1 |     0.431s |        14% |
+| Build temperature preconditioner|         2 |   0.00921s |      0.31% |
+| Solve Stokes system             |         2 |     0.176s |       5.9% |
+| Solve temperature system        |         2 |   0.00403s |      0.14% |
+| Initialization                  |         2 |     0.179s |         6% |
+| Postprocessing                  |         2 |     0.232s |       7.8% |
+| Setup dof systems               |         1 |     0.424s |        14% |
++---------------------------------+-----------+------------+------------+
+

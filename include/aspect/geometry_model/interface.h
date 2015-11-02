@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014, 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -92,9 +92,39 @@ namespace aspect
         double length_scale () const = 0;
 
         /**
-         * Returns the depth that corresponds to the given position. The
-         * returned value is between 0 and maximal_depth(), where 0 denotes
-         * the surface.
+         * Return the depth that corresponds to the given position. The
+         * returned value is between 0 and maximal_depth(), where points
+         * with a zero depth correspond to the "surface" of the model.
+         *
+         * Computing a depth requires a geometry model to define a
+         * "vertical" direction. For example, the Box model considers
+         * the $(0,1)^T$ vector in 2d (and the $(0,0,1)^T$ vector in
+         * 3d) as vertical and considers the "top" boundary as the
+         * "surface". Similarly, the spherical shell takes the radial
+         * vector as "vertical" and the outer boundary as "surface".
+         * In most cases, how geometry models define "vertical" and
+         * "surface" will be intuitive and obvious. In almost all
+         * cases one will use a gravity model that also matches these
+         * definitions.
+         *
+         * @note Implementations of this function in derived classes can
+         * only compute the depth with regard to the <i>reference
+         * configuration</i> of the geometry, i.e., the geometry initially
+         * created. If you are using a dynamic topography in your models
+         * that changes in every time step, then the <i>actual</i> depth
+         * of a point with regard to this dynamic topography will not
+         * match the value this function returns. This is so because
+         * computing the actual depth is difficult: In parallel computations,
+         * the processor on which you want to evaluate the depth of a point
+         * may know nothing about the displacement of the surface anywhere
+         * if it happens to store only interior cells. furthermore, it is
+         * not even clear what "depth" one would compute in such situations:
+         * The distance to the closest surface point? The vertical distance
+         * to the surface point directly above? Or the length of the line
+         * from the given point to a surface point that is locally always
+         * parallel to the gravity vector? For all of these reasons, this
+         * function simply returns the geometric vertical depth of a point
+         * in the known and fixed reference geometry.
          */
         virtual
         double depth(const Point<dim> &position) const = 0;

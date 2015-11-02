@@ -1,5 +1,5 @@
 #########################################################
-# This is a variation of the composition-active.prm
+# This is a variation of the composition_active.prm
 # parameter file, with the exception that we use the
 # material model composition reaction that accounts for
 # reactions between the two compositional fields. 

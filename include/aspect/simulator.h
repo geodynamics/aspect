@@ -41,6 +41,7 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/melt_interface.h>
@@ -418,11 +419,6 @@ namespace aspect
        */
       double solve_advection (const AdvectionField &advection_field);
 
-      dealii::SolverControl::State
-      solver_callback (const unsigned int iteration,
-                       const double        check_value,
-                       const LinearAlgebra::BlockVector       &current_iterate);
-
       /**
        * Solve the Stokes linear system. Return the initial nonlinear
        * residual, i.e., if the linear system to be solved is $Ax=b$, then
@@ -711,123 +707,6 @@ namespace aspect
        */
       void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
                                      const AdvectionField &advection_field) const;
-
-      /**
-       * Internal routine to compute the depth average of a certain quantitiy.
-       *
-       * The functor @p fctr must be an object of a user defined type that can
-       * be arbitrary but has to satisfy certain requirements. In essence,
-       * this class type needs to implement the following interface of member
-       * functions:
-       * @code
-       * template <int dim>
-       * class Functor
-       * {
-       *   public:
-       *     // operator() will have @p in and @p out filled out if @p true
-       *     bool need_material_properties() const;
-       *
-       *     // called once at the beginning with the number of quadrature points
-       *     void setup(const unsigned int q_points);
-       *
-       *     // fill @p output for each quadrature point
-       *     void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-       *        const MaterialModel::MaterialModelOutputs<dim> &out,
-       *        FEValues<dim> &fe_values,
-       *        const LinearAlgebra::BlockVector &solution,
-       *        std::vector<double> &output);
-       * };
-       * @endcode
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       * @param fctr Instance of a class satisfying the signature above.
-       */
-      template<class FUNCTOR>
-      void compute_depth_average(std::vector<double> &values,
-                                 FUNCTOR &fctr) const;
-
-      /**
-       * Compute a depth average of the current temperature/composition. The
-       * function fills a vector that contains average
-       * temperatures/compositions over slices of the domain of same depth.
-       * The function resizes the output vector to match the number of depth
-       * slices.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param advection_field Temperature or compositional field to average.
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_field(const AdvectionField &advection_field,
-                                       std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current viscosity. The function fills
-       * a vector that contains average viscosities over slices of the domain
-       * of same depth. The function resizes the output vector to match the
-       * number of depth slices.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_viscosity(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current velocity magnitude.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_velocity_magnitude(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the current sinking velocity.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_sinking_velocity(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the seismic shear wave speed, Vs
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_Vs(std::vector<double> &values) const;
-
-      /**
-       * Compute a depth average of the seismic pressure wave speed, Vp
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_depth_average_Vp(std::vector<double> &values) const;
 
       /**
        * Compute the seismic shear wave speed, Vs anomaly per element. we
@@ -1269,6 +1148,15 @@ namespace aspect
        * @{
        */
       TerminationCriteria::Manager<dim>                         termination_manager;
+      /**
+       * @}
+       */
+
+      /**
+       * @name Variables for doing lateral averaging
+       * @{
+       */
+      LateralAveraging<dim>                                     lateral_averaging;
       /**
        * @}
        */

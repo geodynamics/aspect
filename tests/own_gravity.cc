@@ -11,12 +11,12 @@ class MyGravity :
 {
   public:
     virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const
-      {
-	Tensor<1,dim> ret;
-	ret[0] = position[1];
-	ret[1] = 42.0;
-	return ret;
-      }
+    {
+      Tensor<1,dim> ret;
+      ret[0] = position[1];
+      ret[1] = 42.0;
+      return ret;
+    }
 };
 
 

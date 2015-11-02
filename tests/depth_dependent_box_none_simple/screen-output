@@ -1,0 +1,32 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  5.73e-12 m/year, 9.5e-12 m/year
+     Temperature min/avg/max:            273 K, 1523 K, 2773 K
+     Heat fluxes through boundary parts: -0.01859 W, 0.01859 W, -1e+04 W, 1e+04 W
+     Writing depth average               output-depth_dependent_box_none_simple/depth_average.gnuplot
+
+*** Timestep 1:  t=1e+08 years
+   Solving temperature system... 5 iterations.
+   Solving Stokes system... 24 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  5.69e-12 m/year, 9.4e-12 m/year
+     Temperature min/avg/max:            273 K, 1523 K, 2773 K
+     Heat fluxes through boundary parts: -0.0192 W, 0.0192 W, -1e+04 W, 1e+04 W
+     Writing depth average               output-depth_dependent_box_none_simple/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

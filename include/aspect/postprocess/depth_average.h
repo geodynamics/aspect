@@ -90,22 +90,16 @@ namespace aspect
 
       private:
         /**
-         * Interval between the generation of output. This parameter is read
+         * Interval between the generation of output in seconds. This parameter is read
          * from the input file and consequently is not part of the state that
          * needs to be saved and restored.
-         *
-         * For technical reasons, this value is stored as given in the input
-         * file and upon use is either interpreted as seconds or years,
-         * depending on how the global flag in the input parameter file is
-         * set.
          */
         double output_interval;
 
         /**
-         * A time (in years) after which the next time step should produce
-         * graphical output again.
+         * A time (in seconds) the last output has been produced.
          */
-        double next_output_time;
+        double last_output_time;
 
         /**
          * The format in which to produce graphical output. This also
@@ -118,6 +112,21 @@ namespace aspect
          * average.
          */
         unsigned int n_depth_zones;
+
+        /**
+         * List of the quantities to calculate for each depth zone.
+         */
+        std::vector<std::string> output_variables;
+
+        /**
+         * Whether to calculate all available quantites when averaging.
+         */
+        bool output_all_variables;
+
+        /**
+         * Whether to use plain ascii text output
+         */
+        bool ascii_output;
 
         /**
          * A structure for a single time step record.
@@ -137,13 +146,14 @@ namespace aspect
         std::vector<DataPoint> entries;
 
         /**
-         * Compute the next output time from the current one. In the simplest
-         * case, this is simply the previous next output time plus the
-         * interval, but in general we'd like to ensure that it is larger than
-         * the current time to avoid falling behind with next_output_time and
-         * having to catch up once the time step becomes larger.
+         * Set the time output was supposed to be written. In the simplest
+         * case, this is the previous last output time plus the interval, but
+         * in general we'd like to ensure that it is the largest supposed
+         * output time, which is smaller than the current time, to avoid
+         * falling behind with last_output_time and having to catch up once
+         * the time step becomes larger. This is done after every output.
          */
-        void set_next_output_time (const double current_time);
+        void set_last_output_time (const double current_time);
     };
   }
 }

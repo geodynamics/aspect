@@ -1,8 +1,9 @@
-subsection %%\hyperref[parameters:Geometry_20model_20set_20Model_20name_20=_20spherical_20shell]{Geometry model set Model name = spherical shell}% 
+subsection %%\hyperref[parameters:Geometry_20model]{Geometry model}%
+  set %%\hyperref[parameters:Geometry model/Model name]{Model name}% = spherical shell %% \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
 
-  subsection %%\hyperref[parameters:Geometry_20model_20set_20Model_20name_20=_20spherical_20shell/Spherical_20shell]{Spherical shell}%
-    set %%\hyperref[parameters:Geometry model set Model name = spherical shell/Spherical shell/Inner radius]{Inner radius}%  = 3481000 %% \index[prmindex]{Inner radius} \index[prmindexfull]{Geometry model set Model name = spherical shell!Spherical shell!Inner radius} %
-    set %%\hyperref[parameters:Geometry model set Model name = spherical shell/Spherical shell/Outer radius]{Outer radius}%  = 6336000 %% \index[prmindex]{Outer radius} \index[prmindexfull]{Geometry model set Model name = spherical shell!Spherical shell!Outer radius} %
+  subsection %%\hyperref[parameters:Geometry_20model/Spherical_20shell]{Spherical shell}%
+    set %%\hyperref[parameters:Geometry model/Spherical shell/Inner radius]{Inner radius}%  = 3481000 %% \index[prmindex]{Inner radius} \index[prmindexfull]{Geometry model!Spherical shell!Inner radius} %
+    set %%\hyperref[parameters:Geometry model/Spherical shell/Outer radius]{Outer radius}%  = 6336000 %% \index[prmindex]{Outer radius} \index[prmindexfull]{Geometry model!Spherical shell!Outer radius} %
   end
 end
 

@@ -33,6 +33,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataInitial<dim>::initialize;
+
         /**
          For the current class, this function returns value from the text files.
          */

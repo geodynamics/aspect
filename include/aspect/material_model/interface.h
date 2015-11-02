@@ -51,46 +51,98 @@ namespace aspect
     namespace NonlinearDependence
     {
       /**
+       *
        * An enum whose members are used in querying the nonlinear dependence
        * of physical parameters on other solution variables.
        *
        * The values of this enum are used in the
-       * MaterialModel::Interface::viscosity_depends_on and similar functions
-       * to query if a coefficient, here the viscosity, depends on the
+       * NonlinearDependence::model_dependence, queried by get_model_dependence()
+       * to see if a coefficient like the viscosity, depends on the
        * temperature, pressure, strain rate, or compositional field value.
-       * While these functions can be queried multiple times with each
-       * possible dependence repeatedly, for efficiency, these functions may
-       * also be called with a combination of flags, for example as in
-       * @code
-       *   material_model.viscosity_depends_on (temperature | strain_rate);
-       * @endcode
-       * where the operation in passing the argument concatenates the two
-       * values by performing a bitwise 'or' operation. Because the values of
-       * the enum are chosen so that they represent single bits in an integer,
-       * the result here is a number that can be represented in base-2 as 101
-       * (the number 100=4 for the strain rate and 001=1 for the temperature).
-       * The functions taking such arguments are required to return
-       * <code>true</code> whenever the coefficient represented by this
-       * function depends on <i>any</i> of the variables identified in the
-       * argument.
+       * Because the values of the enum are chosen so that they represent
+       * single bits in an integer, the result here is a number that can be
+       * represented in base-2 as 101 (the number 100=4 for the strain rate and
+       * 001=1 for the temperature).
        *
        * To query nonlinear dependence of a coefficient on any other variable,
        * you can use
        * @code
-       *   material_model.viscosity_depends_on (any_variable);
+       *   material_model.get_model_dependence();
        * @endcode
-       * Here, <code>any_variable</code> is a value that has its bits set for
-       * all possible dependencies.
+       * and compare the result to NonlinearDependence::Dependence::Variable.
        */
       enum Dependence
       {
-        none                 = 0,
-        temperature          = 1,
-        pressure             = 2,
-        strain_rate          = 4,
-        compositional_fields = 8,
+        uninitialized        = 0,
 
-        any_variable         = 0xffff
+        none                 = 1,
+        temperature          = 2,
+        pressure             = 4,
+        strain_rate          = 8,
+        compositional_fields = 16,
+
+        any_variable         = temperature | pressure | strain_rate | compositional_fields
+      };
+
+
+      /**
+       * Provide an operator that or's two Dependence variables.
+       */
+      inline Dependence operator | (const Dependence d1,
+                                    const Dependence d2)
+      {
+        return Dependence((int)d1 | (int)d2);
+      }
+
+      inline Dependence operator |= (Dependence &d1,
+                                     const Dependence d2)
+      {
+        d1 = (d1 | d2);
+        return d1;
+      }
+
+      /**
+       * A structure that, for every output variable of a material model,
+       * describes which input variable it depends on.
+       */
+      struct ModelDependence
+      {
+        /**
+         * A field that describes which input variable the viscosity
+         * of a material model depends on.
+         */
+        Dependence viscosity;
+
+        /**
+         * A field that describes which input variable the density
+         * of a material model depends on.
+         */
+        Dependence density;
+
+        /**
+         * A field that describes which input variable the compressibility
+         * of a material model depends on.
+         */
+        Dependence compressibility;
+
+        /**
+         * A field that describes which input variable the specific heat
+         * of a material model depends on.
+         */
+        Dependence specific_heat;
+
+        /**
+         * A field that describes which input variable the thermal conductivity
+         * of a material model depends on.
+         */
+        Dependence thermal_conductivity;
+
+        /**
+         * Default constructor. Sets all dependencies to invalid values in
+         * order to ensure that material models really correctly specify
+         * which input variables their output variables depend on.
+         */
+        ModelDependence ();
       };
 
       /**
@@ -220,6 +272,20 @@ namespace aspect
        * Viscosity $\eta$ values at the given positions.
        */
       std::vector<double> viscosities;
+
+      /**
+       * Stress-strain "director" tensors at the given positions. This
+       * variable can be used to implement exotic rheologies such as
+       * anisotropic viscosity.
+       *
+       * @note The strain rate term in equation (1) of the manual will be
+       * multiplied by this tensor *and* the viscosity scalar ($\eta$), as
+       * described in the manual secion titled "Constitutive laws". This
+       * variable is assigned the rank-four identity tensor by default.
+       * This leaves the isotropic constitutive law unchanged if the material
+       * model does not explicitly assign a value.
+       */
+      std::vector<SymmetricTensor<4,dim> > stress_strain_directors;
 
       /**
        * Density values at the given positions.
@@ -445,8 +511,8 @@ namespace aspect
      * The second option is more efficient in general, but it is okay to use
      * option one for simple material models.
      *
-     * In all cases, *_depends_on(), is_compressible(), reference_viscosity(),
-     * and reference_density() need to be implemented.
+     * In all cases, model_dependence values, is_compressible(), reference_viscosity(),
+     * reference_density() need to be implemented.
      *
      * @ingroup MaterialModels
      */
@@ -515,88 +581,13 @@ namespace aspect
          */
 
         /**
-         * Return true if the viscosity() function returns something that may
-         * depend on the variable identified by the argument.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the viscosity depends on <i>any</i> of the variables
-         * identified in @p dependence.
+         * Return a structure that describes how each of the model's
+         * output variables (such as viscosity, density, etc) depend
+         * on the input variables pressure, temperature, strain rate,
+         * and compositional fields.
          */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identified by the argument.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the density depends on <i>any</i> of the variables
-         * identified in @p dependence.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identified by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the compressibility depends on <i>any</i> of the variables
-         * identified in @p dependence.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        /**
-         * Return true if the specific_heat() function returns something that
-         * may depend on the variable identified by the argument.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the specific heat depends on <i>any</i> of the variables
-         * identified in @p dependence.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identified by the
-         * argument.
-         *
-         * @param[in] dependence A variable that represents which dependence
-         * on other variables is being queried. Note that this argument may
-         * either identify just a single dependence (e.g. on the temperature
-         * or the strain rate) but also a combination of values (see the
-         * documentation of the NonlinearDependence::Dependence enum for more
-         * information). In the latter case, this function should return
-         * whether the thermal conductivity depends on <i>any</i> of the
-         * variables identified in @p dependence.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
+        const NonlinearDependence::ModelDependence &
+        get_model_dependence () const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -624,6 +615,13 @@ namespace aspect
          * Specifically, the reference viscosity appears in the factor scaling
          * the pressure against the velocity. It is also used in computing
          * dimension-less quantities.
+         *
+         * @note The reference viscosity should take into account the complete
+         * constitutive relationship, defined as the scalar viscosity times the
+         * constitutive tensor. In most cases, the constitutive tensor will simply
+         * be the identity tensor (this is the default case), but this may become
+         * important for material models with anisotropic viscosities, if the
+         * constitutive tensor is not normalized.
          */
         virtual double reference_viscosity () const = 0;
 
@@ -737,6 +735,24 @@ namespace aspect
         /**
          * @}
          */
+
+      protected:
+        /**
+         * A structure that describes how each of the model's
+         * output variables (such as viscosity, density, etc) depend
+         * on the input variables pressure, temperature, strain rate,
+         * and compositional fields.
+         *
+         * The constructor of this class calls the default
+         * constructor of this member variable which in turn
+         * initializes the object to invalid values. Derived classes
+         * then need to fill it either in their constructor (if they
+         * already know the correct dependences at that time) or
+         * at the end of their parse_parameter() functions where
+         * they know the correct material parameters they will
+         * use.
+         */
+        NonlinearDependence::ModelDependence model_dependence;
     };
 
 

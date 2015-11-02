@@ -63,9 +63,10 @@ namespace aspect
          * This information is used to determine what boundary indicators can
          * be used in the input file.
          *
-         * The box model uses boundary indicators zero through 2*dim-1, with
-         * the first two being the faces perpendicular to the x-axis, the next
-         * two perpendicular to the y-axis, etc.
+         * The chunk model uses boundary indicators zero through 2*dim-1, with
+         * the first two being the faces perpendicular to the radius of the shell,
+         * the next two along lines of longitude and, in 3d, the next two
+         * along lines of latitude.
          */
         virtual
         std::set<types::boundary_id>
@@ -78,10 +79,10 @@ namespace aspect
          * describing which parts of the boundary have to satisfy which
          * boundary conditions.
          *
-         * This geometry returns the map <code>{{"left"->0}, {"right"->1},
-         * {"bottom"->2}, {"top"->3}}</code> in 2d, and <code>{{"left"->0},
-         * {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4},
-         * {"top"->5}}</code> in 3d.
+         * This geometry returns the map <code>{{"inner"->0}, {"outer"->1},
+         * {"west"->2}, {"east"->3}}</code> in 2d, and <code>{{"inner"->0},
+         * {"outer"->1}, {"west"->2}, {"east"->3}, {"south"->4},
+         * {"north"->5}}</code> in 3d.
          */
         virtual
         std::map<std::string,types::boundary_id>
@@ -101,7 +102,19 @@ namespace aspect
         virtual
         double length_scale () const;
 
-
+        /**
+         * Return the depth that corresponds to the given
+         * position. The documentation of the base class (see
+         * GeometryModel::Interface::depth()) describes in detail how
+         * "depth" is interpreted in general.
+         *
+         * Computing a depth requires a geometry model to define a
+         * "vertical" direction. The current class considers the
+         * radial vector away from the origin as vertical and
+         * considers the "outer" boundary as the "surface". In almost
+         * all cases one will use a gravity model that also matches
+         * these definitions.
+         */
         virtual
         double depth(const Point<dim> &position) const;
 
@@ -175,7 +188,7 @@ namespace aspect
         /**
          * @copydoc Interface::has_curved_elements()
          *
-         * A box has only straight boundaries and cells, so return false.
+         * A chunk has curved boundaries and cells, so return true.
          */
         virtual
         bool

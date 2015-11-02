@@ -21,38 +21,38 @@ namespace aspect
       {
         public:
           MyPostprocessor ()
-	    :
-	    DataPostprocessorScalar<dim> ("my_postprocessor",
-					  update_default)
-	  {}
+            :
+            DataPostprocessorScalar<dim> ("my_postprocessor",
+                                          update_default)
+          {}
 
           virtual
           void
-          compute_derived_quantities_vector (const std::vector<Vector<double> >              &,
+          compute_derived_quantities_vector (const std::vector<Vector<double> > &,
                                              const std::vector<std::vector<Tensor<1,dim> > > &,
                                              const std::vector<std::vector<Tensor<2,dim> > > &,
-                                             const std::vector<Point<dim> >                  &,
-                                             const std::vector<Point<dim> >                  &,
+                                             const std::vector<Point<dim> > &,
+                                             const std::vector<Point<dim> > &,
                                              std::vector<Vector<double> >                    &computed_quantities) const
-	{
-	  Assert (computed_quantities[0].size() == 1, ExcInternalError());
-	  
-	  for (unsigned int q=0; q<computed_quantities.size(); ++q)
-	    {
-	      // not important what we do here :-)
-	      computed_quantities[q](0) = 0;
-	    }
-	}
+          {
+            Assert (computed_quantities[0].size() == 1, ExcInternalError());
 
-	virtual
-	std::list<std::string>
-	required_other_postprocessors () const
-	{
-	  // select a postprocessor that is not selected in the .prm file
-	  std::list<std::string> deps;
-	  deps.push_back ("velocity statistics");
-	  return deps;
-	}
+            for (unsigned int q=0; q<computed_quantities.size(); ++q)
+              {
+                // not important what we do here :-)
+                computed_quantities[q](0) = 0;
+              }
+          }
+
+          virtual
+          std::list<std::string>
+          required_other_postprocessors () const
+          {
+            // select a postprocessor that is not selected in the .prm file
+            std::list<std::string> deps;
+            deps.push_back ("velocity statistics");
+            return deps;
+          }
       };
     }
   }
@@ -66,8 +66,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MyPostprocessor,
-						  "my postprocessor",
-						  ".")
+                                                  "my postprocessor",
+                                                  ".")
     }
   }
 }

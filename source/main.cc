@@ -25,6 +25,8 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 
+#include <string>
+
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
 #include <fenv.h>
@@ -83,6 +85,11 @@ get_last_value_of_parameter(const std::string &parameters,
       // we'd expect an equals size here
       if ((line.size() < 1) || (line[0] != '='))
         continue;
+
+      // remove comment
+      std::string::size_type pos = line.find('#');
+      if (pos != std::string::npos)
+        line.erase (pos);
 
       // trim the equals sign at the beginning and possibly following spaces
       // as well as spaces at the end

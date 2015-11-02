@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Iterations for composition solver 3
+# 11: Iterations for composition solver 4
+# 12: Iterations for composition solver 5
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Time step size (years)
+# 17: Visualization file name
+0 0.0000e+00 64 2312 729 3645 0 0 0 0 0 0 33 32 4 1.1968e+14 output-compositional_vectors_3d/solution-00000 

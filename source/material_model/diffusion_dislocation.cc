@@ -138,11 +138,11 @@ namespace aspect
       // experience the same strain rate (isostrain).
 
       // If strain rate is zero (like during the first time step) set it to some very small number
-      const double edot_ii = (strain_rate.norm() == 0.0
-                              ?
-                              2.0*std::numeric_limits<double>::min()
-                              :
-                              std::sqrt(abs(second_invariant(strain_rate))));
+      // to prevent a division-by-zero, and a floating point exception.
+      // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
+      // strain rate (often simplified as epsilondot_ii)
+      const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+                                      min_strain_rate * min_strain_rate);
 
 
       // Find effective viscosities for each of the individual phases
@@ -284,69 +284,6 @@ namespace aspect
     reference_density () const
     {
       return densities[0];
-    }
-
-    template <int dim>
-    bool
-    DiffusionDislocation<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    DiffusionDislocation<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    DiffusionDislocation<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    DiffusionDislocation<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    DiffusionDislocation<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
     }
 
     template <int dim>
@@ -531,9 +468,22 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
     }
+  }
+}
 
-
+// explicit instantiations
+namespace aspect
+{
+  namespace MaterialModel
+  {
     ASPECT_REGISTER_MATERIAL_MODEL(DiffusionDislocation,
                                    "diffusion dislocation",
                                    " An implementation of a viscous rheology including diffusion"
@@ -543,7 +493,7 @@ namespace aspect
                                    " and stress exponents. The effective viscosity is defined as"
                                    " \n\n"
                                    " \\[v_\\text{eff} = \\left(\\frac{1}{v_\\text{eff}^\\text{diff}}+"
-                                   " \\frac{1}{v_\\text{eff}^\\text{dis}\\right)^{-1}\\]"
+                                   " \\frac{1}{v_\\text{eff}^\\text{dis}}\\right)^{-1}\\]"
                                    " where"
                                    " \\[v_\\text{i} = 0.5 * A^{-\\frac{1}{n_i}} d^\\frac{m_i}{n_i}"
                                    " \\dot{\\varepsilon_i}^{\\frac{1-n_i}{n_i}}"

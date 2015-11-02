@@ -45,7 +45,7 @@
 % files in the aspect tree without having to specify the
 % location relative to the directory where the pdf actually
 % resides
-\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,baseurl=../]{hyperref}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue,baseurl=../]{hyperref}
 
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
@@ -321,9 +321,16 @@ which \aspect{} builds heavily have been supported through many other grants
 that are equally gratefully acknowledged.
 
 Please acknowledge CIG as follows:
-\begin{lstlisting}[frame=single,language=tex]
-ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG) which is supported by the National Science Foundation award NSF-094946.
-\end{lstlisting}
+{\parindent0pt
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}[c]{0.9\linewidth}
+ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG)
+which is supported by the National Science Foundation award NSF-094946.
+      \end{minipage}
+    }
+  \end{center}
+}
 
 \section{Equations, models, coefficients}
 \label{sec:models}
@@ -1131,6 +1138,54 @@ all sorts of components of models that go beyond the simple Stokes plus
 temperature set of equations. Play with them!
 
 
+\subsection{Constitutive laws}
+
+Equation \eqref{eq:stokes-1} describes buoyancy-driven flow in an isotropic
+fluid where strain rate is related to stress by a scalar (possibly spatially variable)
+multiplier, $\eta$. For some material models it is useful to generalize this
+relationship to anisotropic materials, or other exotic constitutive laws.
+For these cases \aspect{} can optionally include a generalized, fourth-order
+tensor field as a material model state variable which changes equation
+\eqref{eq:stokes-1} to
+\begin{align}
+  \label{eq:stokes-1-anisotropic}
+  -\nabla \cdot \left[2\eta \left(C \varepsilon(\mathbf u)
+                                  - \frac{1}{3}(tr(C \varepsilon(\mathbf u)))\mathbf 1\right)
+                \right] + \nabla p &=
+  \rho \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$}
+\end{align}
+and the shear heating term in equation \eqref{eq:temperature} to
+\begin{align}
+  \label {eq:temperature-anisotropic}
+  \dots
+  \notag
+  \\
+  + 2 \eta
+  \left(C \varepsilon(\mathbf u) - \frac{1}{3}(tr(C \varepsilon(\mathbf u)))\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  \\
+  \dots
+  \notag
+\end{align}
+where $C = C_{ijkl}$ is defined by the material model. For physical reasons, $C$ needs
+to be a symmetric rank-4 tensor: i.e., when multiplied by a symmetric (strain rate)
+tensor of rank 2 it needs to return another symmetric tensor of rank 2. In mathematical
+terms this, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
+also require that $C$ is positive definite: i.e., for any $\varepsilon \neq 0$, the
+scalar $\varepsilon : (C \varepsilon)$ must be positive.
+
+This functionality can be optionally invoked by any material model that chooses to
+define a $C$ field, and falls back to the default case ($C=\mathbb I$) if no such
+field is defined. It should be noted that $\eta$ still appears in equations
+\eqref{eq:stokes-1-anisotropic} and \eqref{eq:temperature-anisotropic}. $C$ is
+therefore intended to be thought of as a ``director'' tensor rather than a
+replacement for the viscosity field, although in practice either interpretation
+is okay.
+
+
 \subsection{Numerical methods}
 
 There is no shortage in the literature for methods to solve the equations
@@ -1842,16 +1897,17 @@ The development version of \aspect{} can be downloaded by executing the command
  git clone https://github.com/geodynamics/aspect.git
 \end{verbatim}
 If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
-aspect with
+\aspect{} by running
 \begin{verbatim}
  cmake .
 \end{verbatim}
+in the {\tt{aspect}} directory created by the {\tt{git clone}} command above.
 If you did not set {\tt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
 \begin{verbatim}
  cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
 \end{verbatim}
 
-An alternative would be to configure aspect as an out-of-source build. Similar to
+An alternative would be to configure \aspect{} as an out-of-source build. Similar to
 the configuration of \dealii{}, you would need to create a build directory and
 specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
 instructions in the following sections assume an in-source build, so you need
@@ -1892,7 +1948,7 @@ point for exploring the documentation.
 \begin{verbatim}
  -DDEAL_II_STATIC_EXECUTABLE=ON
 \end{verbatim}
-\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to aspects build procedure. You should see the following cmake output from \aspect{}:
+\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to \aspect{}'s build procedure. You should see the following cmake output from \aspect{}:
 \begin{verbatim}
 -- Creating a statically linked executable
 -- Disabling dynamic loading of plugins from the input file
@@ -5652,7 +5708,7 @@ After reading in the shear wave velocity perturbation one has several options
 to scale this into temperature differences, which are then used to initialize 
 the temperature field. 
 
-\paragraph{Setting up the ASPECT model.}
+\paragraph{Setting up the \aspect{} model.}
 
 For this cookbook we will use the parameter file provided in 
 \url{cookbooks/S20RTS.prm}, which uses a 3d spherical shell 
@@ -5752,7 +5808,7 @@ the \texttt{data/velocity-boundary-conditions/gplates/} directory of
 your \aspect{} installation.
 For a new model setup however, a user eventually needs to create her own data
 files, and so we will briefly discuss the process of acquiring a usable plate
-reconstruction and transferring it into a format usable by ASPECT.
+reconstruction and transferring it into a format usable by \aspect{}.
 Both the necessary software and data are provided by the GPlates project.
 GPlates is an open-source software for interactive visualization of plate
 tectonics. It is developed by the EarthByte Project in the School of Geosciences
@@ -5975,7 +6031,7 @@ can be reproduced with the following parameters.
 \note{\cite{MD04} defines the second invariant of the strain rate in a nonstandard way.
     The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2}
     (\epsilon_{11}^2 + \epsilon_{12}^2)}$, where $\epsilon$ is the strain rate tensor.
-    For consistency, that is also the formulation implemented in Aspect. Because of this
+    For consistency, that is also the formulation implemented in \aspect{}. Because of this
     irregularity it is inadvisable to use this material model for purposes beyond
     reproducing published results.}
 
@@ -6037,9 +6093,19 @@ to the following boundary conditions:
 
 Note that compressive boundary conditions are simply achieved by reversing  
 the sign of the imposed velocity.
-We also make use of the strain rate-based mesh refinement plugin:
+
+The free surface will be advected up and down according to the solution of the Stokes solve.
+We have a choice whether to advect the free surface in the direction of the surface normal
+or in the direction of the local vertical (i.e., in the direction of gravity).
+For small deformations, these directions are almost the same, but in this example the deformations 
+are quite large. We have found that when the deformation is large, advecting the surface vertically 
+results in a better behaved mesh, so we set the following in the free surface subsection:
 
 \lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm}
+
+We also make use of the strain rate-based mesh refinement plugin:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm}
 
 Setting 
 {\tt   set Initial adaptive refinement        = 4}
@@ -6207,10 +6273,10 @@ the current directory.
 Timo Heister and Wolfgang Bangerth.}
 
 One of the most widely used benchmarks for mantle convection codes is the
-isoviscous Rayleight-Taylor case (``case 1a'') published by van Keken \textit{et
+isoviscous Rayleigh-Taylor case (``case 1a'') published by van Keken \textit{et
 al.} in \cite{KKSCND97}.
 The benchmark considers a 2d situation where a lighter fluid underlies a heavier
-one with a non-horizontal interface between the two of them. The instable
+one with a non-horizontal interface between the two of them. This unstable
 layering causes the lighter fluid to start rising at the point where the
 interface is highest. Fig.~\ref{fig:vk-1} shows a time series of images to
 illustrate this.
@@ -8010,23 +8076,6 @@ Specifically, your new class needs to implement the following interface:
         // Physical parameters used in the basic equations
         virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const=0;
 
-
-        // Qualitative properties one can ask a material model
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
         virtual bool is_compressible () const = 0;
 
 
@@ -8095,13 +8144,6 @@ temperature, pressure, position, compositional fields and, in the case of the vi
 rate (all handed in by MaterialModelInputs). Implementations of evaluate() may of course choose to ignore
 dependencies on any of these arguments.
 
-The block ``qualitative properties'' in the interface description above describes
-the nonlinear dependence of the various coefficients on pressure, temperature,
-or strain rate, and the next block then provides the numerical values of these
-dependencies. This information will be used in future versions of \aspect{} to
-implement a fully nonlinear solution scheme based on, for example, a Newton
-iteration.
-
 The remaining functions are used in postprocessing as well as
 handling run-time parameters. The exact meaning of these member functions is
 documented in the
@@ -8127,6 +8169,18 @@ initialize() is called once during the initialization of \aspect{} and
 can be used to allocate memory, initialize state, or read information from
 an external file. The function update() is called at the beginning of
 every time step.
+
+Additionally, every material model has a member variable ``model\textunderscore dependence'',
+declared in the Interface class, which can be accessed from the plugin as
+``this$\rightarrow$model\textunderscore dependence''. This structure describes the
+nonlinear dependence of the various coefficients on pressure, temperature, composition
+or strain rate. This information will be used in future versions of \aspect{} to
+implement a fully nonlinear solution scheme based on, for example, a Newton
+iteration. The initialization of this variable is optional, but only plugins
+that declare correct dependencies can benefit from these solver types. All
+packaged material models declare their dependencies in the 
+parse\textunderscore parameters() function and can be used as a
+starting point for implementations of new material models.
 
 Older versions of \aspect{} used to have individual functions like viscosity()
 instead of the evaluate() function discussed above. They are now a deprecated

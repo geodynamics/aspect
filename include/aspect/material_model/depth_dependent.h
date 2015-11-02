@@ -33,6 +33,7 @@ namespace aspect
   namespace MaterialModel
   {
     using namespace dealii;
+
     /**
      * A material model that applies a depth-dependent viscosity to a ''base model''
      * chosen from any of the other available material models. This depth-dependent
@@ -42,7 +43,6 @@ namespace aspect
      * other properties are derived from the base model.
      * @ingroup MaterialModels
      */
-
     template <int dim>
     class DepthDependent : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -68,41 +68,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Method to determine viscosity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine density dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine compressibility dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine specific heat capacity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine thermal conductivity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */
@@ -123,13 +88,22 @@ namespace aspect
         virtual double reference_density () const;
 
       private:
-        enum
+
+        /**
+         * An enum to describe where the depth dependency of the viscosity is coming from.
+         */
+        enum ViscositySource
         {
           Function,
           File,
           List,
           None
-        } viscosity_method;
+        };
+
+        /**
+         * Currently chosen source for the viscosity.
+         **/
+        ViscositySource viscosity_source;
 
         /**
          * Function to read depth-dependent lookup table and set up interpolating function
@@ -144,11 +118,15 @@ namespace aspect
          */
         std_cxx11::shared_ptr< Functions::InterpolatedTensorProductGridData<1> > viscosity_file_function;
 
-        /* Function to calculate viscosity at depth using values provided as List input */
+        /**
+         * Function to calculate viscosity at depth using values provided as List input
+         */
         double
         viscosity_from_list(const double &depth) const;
 
-        /* function to calculate viscosity at depth using values provided from File input */
+        /**
+         * function to calculate viscosity at depth using values provided from File input
+         */
         double
         viscosity_from_file(const double &depth) const;
 
