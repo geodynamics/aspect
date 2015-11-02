@@ -257,6 +257,20 @@ namespace aspect
                        "if you make it larger, they do. For most cases, the default "
                        "value should be sufficient. In fact, a tolerance of 1e-4 "
                        "might be accurate enough.");
+
+    prm.declare_entry ("Linear solver A block tolerance", "1e-2",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the A block "
+                       "of the Stokes system is computed. This approximate A is used in the "
+                       "preconditioning used in the GMRES solver.");
+
+    prm.declare_entry ("Linear solver S block tolerance", "1e-6",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the S block "
+                       "(Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. "
+                       "This approximate inverse of the S block is used in the preconditioning "
+                       "used in the GMRES solver.");
+
     prm.declare_entry ("Number of cheap Stokes solver steps", "30",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
@@ -773,25 +787,27 @@ namespace aspect
                              "did not detect its presence when you called 'cmake'."));
 #endif
 
-    surface_pressure              = prm.get_double ("Surface pressure");
-    adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
-    pressure_normalization        = prm.get("Pressure normalization");
+    surface_pressure                = prm.get_double ("Surface pressure");
+    adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
+    pressure_normalization          = prm.get("Pressure normalization");
 
-    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
-    linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
-    n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
-    temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
-    composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
+    use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
+    linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
+    linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
+    linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+    n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
+    temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
+    composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {
-      initial_global_refinement   = prm.get_integer ("Initial global refinement");
-      initial_adaptive_refinement = prm.get_integer ("Initial adaptive refinement");
+      initial_global_refinement    = prm.get_integer ("Initial global refinement");
+      initial_adaptive_refinement  = prm.get_integer ("Initial adaptive refinement");
 
-      adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
-      refinement_fraction         = prm.get_double ("Refinement fraction");
-      coarsening_fraction         = prm.get_double ("Coarsening fraction");
-      min_grid_level              = prm.get_integer ("Minimum refinement level");
+      adaptive_refinement_interval = prm.get_integer ("Time steps between mesh refinement");
+      refinement_fraction          = prm.get_double ("Refinement fraction");
+      coarsening_fraction          = prm.get_double ("Coarsening fraction");
+      min_grid_level               = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
                   ExcMessage("Refinement/coarsening fractions must be positive."));
