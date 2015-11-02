@@ -6,6 +6,13 @@
  *
  *
  * <ol>
+ * <li> New: The tolerance of the preconditioners of the A and S block 
+ * are now available as parameters in the prm file. There is now also 
+ * a section added to the manual on how to use these parameters to 
+ * make ASPECT in certain situation faster.
+ * <br>
+ * (Menno Fraters, 2015/11/08)
+ *
  * <li> Changed: The DynamicTopography postprocessor and visualization
  * plugins now use the more accurate Gaussian quadrature rule for evaluating
  * cell averages of the surface stress.
