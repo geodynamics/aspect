@@ -233,6 +233,12 @@ namespace aspect
         is_temperature () const;
 
         /**
+         * Return whether this object refers to a field discretized by discontinuous finite elements.
+         */
+        bool
+        is_discontinuous (const Introspection<dim> &introspection) const;
+
+        /**
          * Look up the component index for this temperature or compositional
          * field. See Introspection::component_indices for more information.
          */
@@ -645,6 +651,18 @@ namespace aspect
 
       /**
        * Compute the integrals for one advection matrix and right hand side on
+       * the faces of a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_advection_face_terms(const AdvectionField &advection_field,
+                                          const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      /**
+       * Compute the integrals for one advection matrix and right hand side on
        * a single cell.
        *
        * This function is implemented in
@@ -665,7 +683,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      copy_local_to_global_advection_system (const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      copy_local_to_global_advection_system (const AdvectionField &advection_field,
+                                             const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
       /**
        * @}

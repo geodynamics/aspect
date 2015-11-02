@@ -96,6 +96,18 @@ namespace aspect
     return (field_type == temperature_field);
   }
 
+  template <int dim>
+  bool
+  Simulator<dim>::AdvectionField::is_discontinuous(const Introspection<dim> &introspection) const
+  {
+    if (field_type == temperature_field)
+      return introspection.use_discontinuous_temperature_discretization;
+    else if (field_type == compositional_field)
+      return introspection.use_discontinuous_composition_discretization;
+
+    Assert (false, ExcInternalError());
+    return false;
+  }
 
   template <int dim>
   unsigned int
