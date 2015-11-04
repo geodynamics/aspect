@@ -114,8 +114,8 @@ namespace aspect
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
-                  const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
-                  const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+                  //const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
+                  //const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
                   coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
                                                          * sph_harm.real() * JxW;
@@ -133,8 +133,8 @@ namespace aspect
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
                   std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
-                  const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
-                  const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+                  //const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
+                  //const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
 
                   coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
                                                          //   * std::cos(static_cast<double>(m)*phi)
@@ -261,7 +261,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    Geoid<dim>::execute (TableHandler &statistics)
+    Geoid<dim>::execute (TableHandler &/*statistics*/)
     {
       internal_density_expansion_surface->clear();
       internal_density_expansion_bottom->clear();
@@ -440,7 +440,6 @@ namespace aspect
             // see if the cell is at the *top* or *bottom* boundary
             bool surface_cell = false;
             bool bottom_cell = false;
-            unsigned int q = 0;
 
             unsigned int f = 0;
             for (; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -552,7 +551,7 @@ namespace aspect
                 if (surface_cell)
                   {
                     const double dynamic_pressure = face_pressure - surface_pressure;
-                    const double sigma_rr           = cell_surface_normal_viscous_stress;// - dynamic_pressure;
+                    const double sigma_rr           = cell_surface_normal_viscous_stress - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / face_gravity / (face_density - density_above);
 
 	            // Add topography contribution
@@ -565,7 +564,7 @@ namespace aspect
                 if (bottom_cell)
                   {
                     const double dynamic_pressure   = face_pressure - bottom_pressure;
-                    const double sigma_rr           = cell_surface_normal_viscous_stress;// - dynamic_pressure;
+                    const double sigma_rr           = cell_surface_normal_viscous_stress - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / face_gravity / (face_density - density_below);
 
                     // Add topography contribution
