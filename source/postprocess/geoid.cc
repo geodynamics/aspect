@@ -17,15 +17,13 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <complex>
-
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/math/special_functions/gamma.hpp>
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <aspect/utilities.h>
 #include <aspect/postprocess/geoid.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
@@ -105,7 +103,7 @@ namespace aspect
       {
         const double r = position.norm();
         const double phi = std::atan2(position[1],position[0]);
-        const double cos_theta = position[2]/r;
+        const double theta = std::acos(position[2]/r);
         const bool is_external = ( r<= evaluation_radius);  //determine whether external or internal
 
         if ( is_external && evaluation_radius > 0.)
@@ -113,18 +111,12 @@ namespace aspect
             for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
-                  //const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
-                  //const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+                  std::pair<double,double> coeffs = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
 
                   coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                         * sph_harm.real() * JxW;
-                  //                                                   * std::cos(static_cast<double>(m)*phi) *
-                  //                                                  (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
+                                                         * coeffs.first * JxW;
                   coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                       * sph_harm.imag() * JxW;
-                  //                                              * std::sin(static_cast<double>(m)*phi)
-                  //                                            * 2.0 * prefix * plm * JxW;
+                                                       * coeffs.second * JxW;
                 }
           }
         else if ( !is_external && r > 0. )
@@ -132,18 +124,12 @@ namespace aspect
             for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  std::complex<double> sph_harm = boost::math::spherical_harmonic( l, m, std::acos(cos_theta), phi );
-                  //const double plm = boost::math::legendre_p<double>(l, m, cos_theta);
-                  //const double prefix = boost::math::tgamma_delta_ratio(static_cast<double>(l - m + 1), static_cast<double>(2 * m));
+                  std::pair<double,double> coeffs = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
 
                   coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                         //   * std::cos(static_cast<double>(m)*phi)
-                                                         //     * (m==0 ? 1.0 : 2.0) * prefix * plm * JxW;
-                                                         * sph_harm.real() * JxW;
+                                                         * coeffs.first * JxW;
                   coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                       //     * std::sin(static_cast<double>(m)*phi)
-                                                       //       * 2.0 * prefix * plm * JxW;
-                                                       * sph_harm.imag() * JxW;
+                                                       * coeffs.second * JxW;
                 }
           }
 
@@ -525,7 +511,7 @@ namespace aspect
                 face_pressure /= face_area;
                 face_density /= face_area;
                 face_gravity /= face_area;
-                
+
                 //Calculate the average viscous stress over the volume of the surface cell.
                 //The volume avoids certain polynomial overshoot problems with evaluating
                 //second order shape functions at the surface
@@ -533,10 +519,10 @@ namespace aspect
                 double cell_surface_normal_viscous_stress = 0.;
                 for ( unsigned int q = 0; q < center_quadrature_formula.size(); ++q)
                   {
-		    const double viscosity = out_center.viscosities[q];
+                    const double viscosity = out_center.viscosities[q];
 
-		    const SymmetricTensor<2,dim> strain_rate = in_center.strain_rate[q] - 1./3 * trace(in_center.strain_rate[q]) * unit_symmetric_tensor<dim>();
-		    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
+                    const SymmetricTensor<2,dim> strain_rate = in_center.strain_rate[q] - 1./3 * trace(in_center.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                    const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
 
                     gravity = this->get_gravity_model().gravity_vector(fe_center_values.quadrature_point(q));
                     gravity_direction = (gravity.norm() == 0.0 ? Tensor<1,dim>() : gravity/gravity.norm());
@@ -554,10 +540,10 @@ namespace aspect
                     const double sigma_rr           = cell_surface_normal_viscous_stress - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / face_gravity / (face_density - density_above);
 
-	            // Add topography contribution
+                    // Add topography contribution
                     const Point<dim> location = cell->face(f)->center();
                     surface_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_surface_area, 1.0);
-		  }
+                  }
 
                 // if this is a cell at the bottom, add the topography to
                 // the bottom expansion
