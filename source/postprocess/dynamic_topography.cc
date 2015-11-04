@@ -33,10 +33,9 @@ namespace aspect
     std::pair<std::string,std::string>
     DynamicTopography<dim>::execute (TableHandler &)
     {
-      const QMidpoint<dim> quadrature_formula;
-      const QMidpoint<dim-1> quadrature_formula_face;
-
-      Assert(quadrature_formula_face.size()==1, ExcInternalError());
+      const unsigned int quadrature_degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree;
+      const QGauss<dim> quadrature_formula(quadrature_degree);
+      const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
