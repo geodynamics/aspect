@@ -414,11 +414,11 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
     template <int dim>
@@ -468,7 +468,7 @@ namespace aspect
       else
         {
           AssertThrow(false,
-                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+                      ExcMessage("Postprocessor only works with the inclusion material model."));
         }
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
