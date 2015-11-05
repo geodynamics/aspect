@@ -50,66 +50,127 @@ namespace aspect
       };
 
       /**
-       * A class to expand arbitrary fields of doubles into multipole
+       * Abstract base struct to expand arbitrary fields of doubles into multipole
        * moments.  In 3D this is spherical multipole moments, and in
        * 2D it is cylindrical multipole moments.
        */
       template <int dim>
-      class MultipoleExpansion
+      struct MultipoleExpansion
       {
-        public:
-          MultipoleExpansion(const unsigned int max_degree);
+        MultipoleExpansion(const unsigned int max_degree);
 
-          /**
-           *Do the multipole expansion at a particular quadrature point.
-           *
-           *@param position The location of the quadrature point.
-           *
-           *@param value  The value of the function being expanded.
-           *
-           *@param JxW The Jacobian and weight given to the quadrature point
-           *
-           *@param evaluation_radius The radius at which we expand the multipole.
-           */
-          void add_quadrature_point (const Point<dim> &position, const double value,
-                                     const double JxW, const double evaluation_radius);
+        /**
+         *Do the multipole expansion at a particular quadrature point.
+         *
+         *@param position The location of the quadrature point.
+         *
+         *@param value  The value of the function being expanded.
+         *
+         *@param weigth The Jacobian and weight given to the quadrature point
+         *
+         */
+        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight);
 
-          /**
-           * Return a reference to the internal representation of the mulipole expansion.
-           */
-          const HarmonicCoefficients<dim> &get_coefficients () const;
+        /**
+         * Evaluate the multipole expansion at point p
+         */
+        virtual double evaluate( const Point<dim> &p ) const;
 
-          /*
-           * Set all the multipole coefficients to zero.
-           */
-          void clear();
+        /**
+         * Get the maximum degree of the expansion
+         */
+        unsigned int degree() const;
 
-          /*
-           * Scalar add another multipole expansion to this one.
-           * Computes this = s*this + a*M for each coefficient.
-           */
-          void sadd( double s, double a, const MultipoleExpansion &M);
+        /**
+         * Return a reference to the internal representation of the mulipole expansion.
+         */
+        const HarmonicCoefficients<dim> &get_coefficients () const;
 
-          /*
-           * Scalar add another multipole expansion to this one.
-           * Each degree can have a different scalar factor, so
-           * the size of s and a are expected to be max_degree+1.
-           * Computes this = s[l]*this + a[l]*M for each coefficient.
-           */
-          void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
+        /*
+         * Set all the multipole coefficients to zero.
+         */
+        void clear();
 
-          void
+        /*
+         * Scalar add another multipole expansion to this one.
+         * Computes this = s*this + a*M for each coefficient.
+         */
+        void sadd( double s, double a, const MultipoleExpansion &M);
 
-          /**
-           * Perform an MPI sum on the coefficents.
-           */
-          mpi_sum_coefficients (MPI_Comm mpi_communicator);
+        /*
+         * Scalar add another multipole expansion to this one.
+         * Each degree can have a different scalar factor, so
+         * the size of s and a are expected to be max_degree+1.
+         * Computes this = s[l]*this + a[l]*M for each coefficient.
+         */
+        void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
 
-        private:
-          const unsigned int max_degree;  //expansion degree
-          HarmonicCoefficients<dim> coefficients; //sine and cosine coefficients
 
+        /**
+         * Perform an MPI sum on the coefficents.
+         */
+        void mpi_sum_coefficients (MPI_Comm mpi_communicator);
+
+        const unsigned int max_degree;  //expansion degree
+        HarmonicCoefficients<dim> coefficients; //sine and cosine coefficients
       };
+
+      /**
+       * Multipole expansion for the case where the evaluation point
+       * is external to the sources.
+       */
+      template <int dim>
+      struct ExternalMultipoleExpansion : public MultipoleExpansion<dim>
+      {
+        ExternalMultipoleExpansion ( const unsigned int max_degree, const double evaluation_radius );
+        /**
+         *Do the multipole expansion at a particular quadrature point.
+         *
+         *@param position The location of the quadrature point.
+         *
+         *@param value  The value of the function being expanded.
+         *
+         *@param weigth The Jacobian and weight given to the quadrature point
+         *
+         */
+        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight);
+
+        /**
+         * Evaluate the multipole expansion at point p
+         */
+        virtual double evaluate( const Point<dim> &p ) const;
+
+        const double evaluation_radius;
+      };
+
+      /**
+       * Multipole expansion for the case where the evaluation point
+       * is internal to the sources.
+       */
+      template <int dim>
+      struct InternalMultipoleExpansion : public MultipoleExpansion<dim>
+      {
+        InternalMultipoleExpansion ( const unsigned int max_degree, const double evaluation_radius );
+        /**
+         *Do the multipole expansion at a particular quadrature point.
+         *
+         *@param position The location of the quadrature point.
+         *
+         *@param value  The value of the function being expanded.
+         *
+         *@param weigth The Jacobian and weight given to the quadrature point
+         *
+         */
+        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight);
+
+        /**
+         * Evaluate the multipole expansion at point p
+         */
+        virtual double evaluate( const Point<dim> &p ) const;
+
+        const double evaluation_radius;
+      };
+
     }
 
     /**
@@ -142,6 +203,20 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Get a reference to the multipole expansion of the potential
+         * at the surface.
+         */
+        const internal::ExternalMultipoleExpansion<dim> &
+        get_surface_potential_expansion();
+
+        /**
+         * Get a reference to the multipole expansion of the potential
+         * at the CMB.
+         */
+        const internal::InternalMultipoleExpansion<dim> &
+        get_cmb_potential_expansion();
 
         /**
          * Let the postprocessor manager know about the other postprocessors
@@ -201,6 +276,16 @@ namespace aspect
         unsigned int max_degree;
 
         /**
+         * The inner radius of the planet
+         */
+        double inner_radius;
+
+        /**
+         * The outer radius of the planet
+         */
+        double outer_radius;
+
+        /**
          * A pointer to the postprocessor for computing boundary
          * pressures.
          */
@@ -215,32 +300,32 @@ namespace aspect
         /**
          * The multipole expansion of internal density anomalies, evaluated at the bottom.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_bottom;
+        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > internal_density_expansion_bottom;
 
         /**
          * The multipole expansion of internal density anomalies, evaluated at the surface.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > internal_density_expansion_surface;
+        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > internal_density_expansion_surface;
 
         /**
          * The harmonic expansion of surface topography.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_topography_expansion;
+        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_topography_expansion;
 
         /**
          * The harmonic expansion of bottom topography.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_topography_expansion;
+        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_topography_expansion;
 
         /**
          * The harmonic expansion of the gravitational potential at the bottom.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > bottom_potential_expansion;
+        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_potential_expansion;
 
         /**
          * The harmonic expansion of the gravitational potential at the surface.
          */
-        std_cxx11::shared_ptr< internal::MultipoleExpansion<dim> > surface_potential_expansion;
+        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_potential_expansion;
     };
   }
 }

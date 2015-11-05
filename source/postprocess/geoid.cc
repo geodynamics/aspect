@@ -17,9 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <boost/math/special_functions/legendre.hpp>
-#include <boost/math/special_functions/gamma.hpp>
-
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
@@ -27,13 +24,14 @@
 #include <aspect/postprocess/geoid.h>
 #include <aspect/geometry_model/spherical_shell.h>
 
-
 namespace aspect
 {
   namespace Postprocess
   {
     namespace internal
     {
+      /* Definitions for HarmonicCoefficients */
+
       template <int dim>
       HarmonicCoefficients<dim>::HarmonicCoefficients(const unsigned int max_degree)
       {
@@ -47,6 +45,9 @@ namespace aspect
         cosine_coefficients.resize(k);
       }
 
+
+      /* Definitions for the MultipoleExpansion base class */
+
       // Constructor.  Just need the initialize the coefficients struct.
       template <int dim>
       MultipoleExpansion<dim>::MultipoleExpansion(const unsigned int max_degree)
@@ -55,84 +56,19 @@ namespace aspect
         coefficients(max_degree)
       {}
 
-      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
-      // multipole moments. It will also expand in internal or external harmonics,
-      //depending upon whether the position vector is at a larger radius than evaluation_radius.
-      template <>
+      template <int dim>
       void
-      MultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
-                                                   const double value,
-                                                   const double JxW,
-                                                   const double evaluation_radius)
+      MultipoleExpansion<dim>::add_quadrature_point( const Point<dim> &, const double, const double )
       {
-        const double r = position.norm();
-        const double theta = std::atan2(position[1],position[0]);
-        const bool is_external = ( r<= evaluation_radius);  //determine whether external or internal
-
-        if ( is_external && evaluation_radius > 0.)
-          {
-            for (unsigned int n = 2; n <= max_degree; ++n)
-              {
-                const double factor = value * std::pow( r / evaluation_radius, static_cast<double>(n) )
-                                      / static_cast<double>(n) * JxW;
-                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
-                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
-              }
-          }
-        else if ( !is_external && r > 0. )
-          {
-            for (unsigned int n = 2; n <= max_degree; ++n)
-              {
-                const double factor = value * std::pow( evaluation_radius/r, static_cast<double>(n) )
-                                      / static_cast<double>(n) * JxW;
-                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
-                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
-              }
-          }
+        AssertThrow(false, ExcNotImplemented() );
       }
 
-      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
-      // multipole moments. It will also expand in internal or external harmonics,
-      //depending upon whether the position vector is at a larger radius than evaluation_radius.
-      template <>
-      void
-      MultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
-                                                   const double value,
-                                                   const double JxW,
-                                                   const double evaluation_radius)
+      template <int dim>
+      double
+      MultipoleExpansion<dim>::evaluate( const Point<dim> &) const
       {
-        const double r = position.norm();
-        const double phi = std::atan2(position[1],position[0]);
-        const double theta = std::acos(position[2]/r);
-        const bool is_external = ( r<= evaluation_radius);  //determine whether external or internal
-
-        if ( is_external && evaluation_radius > 0.)
-          {
-            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
-              for (unsigned int m = 0; m <= l; ++m, ++k)
-                {
-                  std::pair<double,double> coeffs = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
-
-                  coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                         * coeffs.first * JxW;
-                  coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                       * coeffs.second * JxW;
-                }
-          }
-        else if ( !is_external && r > 0. )
-          {
-            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
-              for (unsigned int m = 0; m <= l; ++m, ++k)
-                {
-                  std::pair<double,double> coeffs = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
-
-                  coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                         * coeffs.first * JxW;
-                  coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                       * coeffs.second * JxW;
-                }
-          }
-
+        AssertThrow(false, ExcNotImplemented() );
+        return 0.0;
       }
 
       //Return a reference to the internal representation of the multipole expansion
@@ -141,6 +77,13 @@ namespace aspect
       MultipoleExpansion<dim>::get_coefficients () const
       {
         return coefficients;
+      }
+
+      template <int dim>
+      unsigned int
+      MultipoleExpansion<dim>::degree () const
+      {
+        return max_degree;
       }
 
       //Zero out the expansion in 2D
@@ -243,12 +186,234 @@ namespace aspect
         dealii::Utilities::MPI::sum(coefficients.sine_coefficients,mpi_communicator,coefficients.sine_coefficients);
         dealii::Utilities::MPI::sum(coefficients.cosine_coefficients,mpi_communicator,coefficients.cosine_coefficients);
       }
+
+
+
+      /* Implementations for doing an external multipole expansion */
+
+      template <int dim>
+      ExternalMultipoleExpansion<dim>::ExternalMultipoleExpansion(const unsigned int max_degree,
+                                                                  const double evaluation_radius)
+        : MultipoleExpansion<dim>(max_degree),
+          evaluation_radius(evaluation_radius)
+      {}
+
+      template <>
+      void
+      ExternalMultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        const double r = position.norm();
+        const double theta = std::atan2(position[1],position[0]);
+
+        Assert(r < evaluation_radius,
+               ExcMessage("Can't do an external multipole expansion with this radius") );
+
+        if ( evaluation_radius > 0.)
+          {
+            for (unsigned int n = 2; n <= max_degree; ++n)
+              {
+                const double factor = value * std::pow( r / evaluation_radius, static_cast<double>(n) )
+                                      / static_cast<double>(n) * weight;
+                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
+              }
+          }
+      }
+
+      template <>
+      void
+      ExternalMultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        const double r = position.norm();
+        const double phi = std::atan2(position[1],position[0]);
+        const double theta = std::acos(position[2]/r);
+
+        Assert(r < evaluation_radius,
+               ExcMessage("Can't do an external multipole expansion with this radius") );
+
+        if ( evaluation_radius > 0.)
+          {
+            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+              for (unsigned int m = 0; m <= l; ++m, ++k)
+                {
+                  std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+
+                  coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                         * val.first * weight;
+                  coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                       * val.second * weight;
+                }
+          }
+      }
+      template <>
+      double
+      ExternalMultipoleExpansion<2>::evaluate( const Point<2> &p ) const
+      {
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[1];
+        double value = 0.;
+
+        for (unsigned int n = 2; n <= max_degree; ++n)
+          {
+            value += coefficients.cosine_coefficients[n] * std::cos( static_cast<double>(n) * theta) +
+                     coefficients.sine_coefficients[n] * std::sin( static_cast<double>(n) * theta);
+          }
+        return value;
+      }
+
+      template <>
+      double
+      ExternalMultipoleExpansion<3>::evaluate( const Point<3> &p ) const
+      {
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[2];
+        const double phi = scoord[1];
+        double value = 0.;
+
+        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+
+              value += coefficients.cosine_coefficients[k] * val.first +
+                       coefficients.sine_coefficients[k] * val.second;
+
+            }
+        return value;
+      }
+
+      /* Implementations for doing an internal multipole expansion */
+
+      template <int dim>
+      InternalMultipoleExpansion<dim>::InternalMultipoleExpansion(const unsigned int max_degree,
+                                                                  const double evaluation_radius)
+        : MultipoleExpansion<dim>(max_degree),
+          evaluation_radius(evaluation_radius)
+      {}
+
+
+      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
+      // multipole moments.
+      template <>
+      void
+      InternalMultipoleExpansion<2>::add_quadrature_point (const Point<2> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        const double r = position.norm();
+        const double theta = std::atan2(position[1],position[0]);
+
+        Assert(r > evaluation_radius,
+               ExcMessage("Can't do an internal multipole expansion with this radius") );
+
+        if ( r > 0. )
+          {
+            for (unsigned int n = 2; n <= max_degree; ++n)
+              {
+                const double factor = value * std::pow( evaluation_radius/r, static_cast<double>(n) )
+                                      / static_cast<double>(n) * weight;
+                coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
+                coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
+              }
+          }
+      }
+
+
+      // Add a quadrature evaluation to the multipole expansion in 3D using spherical
+      // multipole moments. It will also expand in internal or external harmonics,
+      //depending upon whether the position vector is at a larger radius than evaluation_radius.
+      template <>
+      void
+      InternalMultipoleExpansion<3>::add_quadrature_point (const Point<3> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        const double r = position.norm();
+        const double phi = std::atan2(position[1],position[0]);
+        const double theta = std::acos(position[2]/r);
+
+        Assert(r > evaluation_radius,
+               ExcMessage("Can't do an internal multipole expansion with this radius") );
+
+        if ( r > 0. )
+          {
+            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+              for (unsigned int m = 0; m <= l; ++m, ++k)
+                {
+                  std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+
+                  coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
+                                                         * val.first * weight;
+                  coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
+                                                       * val.second * weight;
+                }
+          }
+      }
+
+      template <>
+      double
+      InternalMultipoleExpansion<2>::evaluate( const Point<2> &p ) const
+      {
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[1];
+        double value = 0.;
+
+        for (unsigned int n = 2; n <= max_degree; ++n)
+          {
+            value += coefficients.cosine_coefficients[n] * std::cos( static_cast<double>(n) * theta) +
+                     coefficients.sine_coefficients[n] * std::sin( static_cast<double>(n) * theta);
+          }
+        return value;
+      }
+
+      template <>
+      double
+      InternalMultipoleExpansion<3>::evaluate( const Point<3> &p ) const
+      {
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[2];
+        const double phi = scoord[1];
+        double value = 0.;
+
+        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+
+              value += coefficients.cosine_coefficients[k] * val.first +
+                       coefficients.sine_coefficients[k] * val.second;
+
+            }
+        return value;
+      }
+
     }
 
     template <int dim>
     std::pair<std::string,std::string>
     Geoid<dim>::execute (TableHandler &/*statistics*/)
     {
+      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
+                                                                 (&this->get_geometry_model());
+      AssertThrow (geometry_model != 0,
+                   ExcMessage("The geoid postprocessor is currently only implemented for "
+                              "the spherical shell geometry model."));
+
+      const double outer_radius = geometry_model->outer_radius();
+      const double inner_radius = geometry_model->inner_radius();
+
+      internal_density_expansion_surface.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
+      internal_density_expansion_bottom.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
+      surface_topography_expansion.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, 1.0) );
+      bottom_topography_expansion.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, 1.0) );
+
+      surface_potential_expansion.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
+      bottom_potential_expansion.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
+
       internal_density_expansion_surface->clear();
       internal_density_expansion_bottom->clear();
       surface_topography_expansion->clear();
@@ -281,14 +446,6 @@ namespace aspect
                                                  .base_element(this->introspection().base_elements.temperature)
                                                  .degree+1); //Need to do the volume integration with this quadrature
 
-      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                 (&this->get_geometry_model());
-      AssertThrow (geometry_model != 0,
-                   ExcMessage("The geoid postprocessor is currently only implemented for "
-                              "the spherical shell geometry model."));
-
-      // TODO AssertThrow (no_free_surface);
-
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                cell_quadrature_formula,
@@ -303,10 +460,6 @@ namespace aspect
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (cell_quadrature_formula.size()));
-
-      // Some constant that are used several times
-      const double inner_radius = geometry_model->inner_radius();
-      const double outer_radius = geometry_model->outer_radius();
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top surface, evaluate the stress at its center
@@ -350,8 +503,8 @@ namespace aspect
                 const Point<dim> location = fe_values.quadrature_point(q);
                 const double density   = out.densities[q];
 
-                internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q), outer_radius );
-                internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q), inner_radius );
+                internal_density_expansion_surface->add_quadrature_point( location, density, fe_values.JxW(q) );
+                internal_density_expansion_bottom->add_quadrature_point( location, density, fe_values.JxW(q) );
               }
 
           }
@@ -542,7 +695,7 @@ namespace aspect
 
                     // Add topography contribution
                     const Point<dim> location = cell->face(f)->center();
-                    surface_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_surface_area, 1.0);
+                    surface_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_surface_area);
                   }
 
                 // if this is a cell at the bottom, add the topography to
@@ -555,7 +708,7 @@ namespace aspect
 
                     // Add topography contribution
                     const Point<dim> location = cell->face(f)->center();
-                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_bottom_area, 1.0);
+                    bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_bottom_area);
                   }
               }
           }
@@ -568,14 +721,6 @@ namespace aspect
     void
     Geoid<dim>::compute_geoid_expansions()
     {
-      const GeometryModel::SphericalShell<dim> *geometry_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>
-                                                                 (&this->get_geometry_model());
-      AssertThrow (geometry_model != 0,
-                   ExcMessage("The geoid postprocessor is currently only implemented for "
-                              "the spherical shell geometry model."));
-
-      const double outer_radius = geometry_model->outer_radius();
-      const double inner_radius = geometry_model->inner_radius();
       const double G = constants::big_g;
       const double surface_density = boundary_density_postprocessor->density_at_top();
       const double bottom_density = boundary_density_postprocessor->density_at_bottom();
@@ -714,6 +859,24 @@ namespace aspect
     }
 
     template <int dim>
+    const internal::ExternalMultipoleExpansion<dim> &
+    Geoid<dim>::get_surface_potential_expansion()
+    {
+      //return *surface_potential_expansion;
+      //return *internal_density_expansion_surface;
+      return *surface_topography_expansion;
+    }
+
+    template <int dim>
+    const internal::InternalMultipoleExpansion<dim> &
+    Geoid<dim>::get_cmb_potential_expansion()
+    {
+      //return *bottom_potential_expansion;
+      //return *internal_density_expansion_bottom;
+      return *bottom_topography_expansion;
+    }
+
+    template <int dim>
     void
     Geoid<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -762,13 +925,6 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      internal_density_expansion_surface.reset(new internal::MultipoleExpansion<dim>(max_degree) );
-      internal_density_expansion_bottom.reset(new internal::MultipoleExpansion<dim>(max_degree) );
-      surface_topography_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
-      bottom_topography_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
-
-      surface_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
-      bottom_potential_expansion.reset(new internal::MultipoleExpansion<dim>(max_degree) );
     }
 
     template <int dim>
@@ -784,7 +940,6 @@ namespace aspect
   }
 }
 
-
 // explicit instantiations
 namespace aspect
 {
@@ -794,5 +949,14 @@ namespace aspect
                                   "geoid",
                                   "A postprocessor that computes a measure of geoid height "
                                   "based on the internal buoyancy and top and bottom topography")
+
+    template class internal::MultipoleExpansion<2>;
+    template class internal::MultipoleExpansion<3>;
+    template class internal::ExternalMultipoleExpansion<2>;
+    template class internal::ExternalMultipoleExpansion<3>;
+    template class internal::InternalMultipoleExpansion<2>;
+    template class internal::InternalMultipoleExpansion<3>;
+    template struct internal::HarmonicCoefficients<2>;
+    template struct internal::HarmonicCoefficients<3>;
   }
 }
