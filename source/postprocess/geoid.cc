@@ -403,8 +403,8 @@ namespace aspect
                    ExcMessage("The geoid postprocessor is currently only implemented for "
                               "the spherical shell geometry model."));
 
-      const double outer_radius = geometry_model->outer_radius();
-      const double inner_radius = geometry_model->inner_radius();
+      outer_radius = geometry_model->outer_radius();
+      inner_radius = geometry_model->inner_radius();
 
       internal_density_expansion_surface.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
       internal_density_expansion_bottom.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
@@ -543,8 +543,6 @@ namespace aspect
                                         update_q_points |
                                         update_JxW_values);
 
-      //AssertThrow( fe_center_values.n_quadrature_points == fe_face_values.n_quadrature_points == 1,
-      //             ExcInternalError() );
 
       //Material model in/out for the gauss quadrature rule evaluations
       typename MaterialModel::Interface<dim>::MaterialModelInputs in_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
@@ -862,18 +860,14 @@ namespace aspect
     const internal::ExternalMultipoleExpansion<dim> &
     Geoid<dim>::get_surface_potential_expansion()
     {
-      //return *surface_potential_expansion;
-      //return *internal_density_expansion_surface;
-      return *surface_topography_expansion;
+      return *surface_potential_expansion;
     }
 
     template <int dim>
     const internal::InternalMultipoleExpansion<dim> &
     Geoid<dim>::get_cmb_potential_expansion()
     {
-      //return *bottom_potential_expansion;
-      //return *internal_density_expansion_bottom;
-      return *bottom_topography_expansion;
+      return *bottom_potential_expansion;
     }
 
     template <int dim>
