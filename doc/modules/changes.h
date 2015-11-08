@@ -6,6 +6,12 @@
  *
  *
  * <ol>
+ * <li> Changed: The DynamicTopography postprocessor and visualization
+ * plugins now use the more accurate Gaussian quadrature rule for evaluating
+ * cell averages of the surface stress.
+ * <br>
+ * (Ian Rose, 2015/11/04)
+ *
  * <li> New: Add depth postprocessor which visually outputs the 
  * depth for all points inside the domain, as determined by the 
  * geometry model.
