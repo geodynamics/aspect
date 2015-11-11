@@ -1592,6 +1592,9 @@ namespace aspect
       }
     else
       {
+    	// RG: remove me
+    	//nu = 1e-3;
+
         // Compute norm of advection field
         double norm_of_advection_field = 0.0;
         for (unsigned int q=0; q<n_q_points; ++q)
@@ -1630,13 +1633,47 @@ namespace aspect
         if (parameters.use_supg == true)
           {
             double h = cell->diameter();
+            //nu = .1*h*h*norm_of_advection_field; //RG: temp
             if (norm_of_advection_field>1e-8)
+            {
               if (max_conductivity_on_cell>1e-8)
                 tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
                                                                   1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
               else
+              {
                 tau = 1*(h/fe_order)/(2*norm_of_advection_field);
+                //nu = h*h*norm_of_advection_field; //SOV
+              }
+            }
+            else
+            {
+            	std::cout << "Cell " << cell->index() << " has advection field below 1e-8" << std::endl;
+            	norm_of_advection_field=1e-8; // can do as max (old,10-8)
+                if (max_conductivity_on_cell>1e-8)
+                            tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                                                              1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
+                          else
+                          {
+                            tau = 1*(h/fe_order)/(2*norm_of_advection_field);
+                            //nu = h*h*norm_of_advection_field; //SOV
+                          }
+            }
           }
+        if (tau < 0) // RG: delete me eventually
+        {
+        	std::cout << "tau = " << tau <<std::endl;
+        	std::cout << "tau long = " << 1*(cell->diameter()/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)))<<std::endl;
+        	std::cout << "norm_of_advection_field = " << norm_of_advection_field <<std::endl;
+        	std::cout << "h = " << cell->diameter() <<std::endl;
+        	std::cout << "fe_order = " << fe_order <<std::endl;
+        	std::cout << "max_conductivity_on_cell = " << max_conductivity_on_cell <<std::endl;
+        	std::cout << "first term = " << 1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+        	std::cout << "second term = " << 1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+        	std::cout << "first and second term = " << (1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))) <<std::endl;
+        }
+
         Assert (tau >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
       }
 
