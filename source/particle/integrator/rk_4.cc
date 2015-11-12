@@ -28,8 +28,8 @@ namespace aspect
     {
       template <int dim>
       RK4<dim>::RK4()
-      :
-      integrator_substep(0)
+        :
+        integrator_substep(0)
       {}
 
       template <int dim>
@@ -41,14 +41,14 @@ namespace aspect
                                      const double dt)
       {
         Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
-            ExcMessage("The particle integrator expects the old velocity vector to be of equal size"
-                "to the number of particles to advect. For some unknown reason they are different, "
-                "most likely something went wrong in the calling function."));
+               ExcMessage("The particle integrator expects the old velocity vector to be of equal size"
+                          "to the number of particles to advect. For some unknown reason they are different, "
+                          "most likely something went wrong in the calling function."));
 
         Assert(std::distance(begin_particle, end_particle) == velocities.size(),
-            ExcMessage("The particle integrator expects the velocity vector to be of equal size"
-                "to the number of particles to advect. For some unknown reason they are different, "
-                "most likely something went wrong in the calling function."));
+               ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+                          "to the number of particles to advect. For some unknown reason they are different, "
+                          "most likely something went wrong in the calling function."));
 
         // TODO: currently old_velocity is not used in this scheme, but it should,
         // to make it at least second-order accurate in time.
@@ -56,7 +56,7 @@ namespace aspect
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 
         for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-            it != end_particle; ++it, ++vel, ++old_vel)
+             it != end_particle; ++it, ++vel, ++old_vel)
           {
             const types::particle_index id_num = it->second.get_id();
             if (integrator_substep == 0)

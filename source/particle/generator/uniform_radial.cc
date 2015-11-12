@@ -226,7 +226,7 @@ namespace aspect
 
                 AssertThrow(P_max[1] > P_min[1],
                             ExcMessage("The maximum longitude you prescribed in the uniform radial"
-                                "tracer generator has to be higher than the minimum longitude."));
+                                       "tracer generator has to be higher than the minimum longitude."));
 
                 if (dim ==3)
                   {
@@ -237,7 +237,7 @@ namespace aspect
 
                     AssertThrow(P_max[2] > P_min[2],
                                 ExcMessage("The maximum latitude you prescribed in the uniform radial"
-                                    "tracer generator has to be higher than the minimum latitude."));
+                                           "tracer generator has to be higher than the minimum latitude."));
                   }
 
                 radial_layers   = prm.get_integer("Radial layers");

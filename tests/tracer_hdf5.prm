@@ -1,27 +1,25 @@
-# This is a modification of the van-keken-tracer tests.
-# It tests that the 'no output' tracer output option works, i.e.
-# that no tracer output is written, but the tracers are generated and
-# advected. Since we can not test for not existing files the only test is
-# that no tracer output file is mentioned in the screen output.
+# A simple test that checks the hdf5 output option for tracers in parallel
+
+# MPI: 2
 
 set Dimension                              = 2
-set Start time                             = 0
-set End time                               = 10
+set End time                               = 70
 set Use years in output instead of seconds = false
 
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent  = 1.0
-    set Y extent  = 1.0
+    set X extent  = 0.9142
+    set Y extent  = 1.0000
   end
 end
 
 subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
   set Tangential velocity boundary indicators = left, right
   set Zero velocity boundary indicators       = bottom, top
 end
-
 
 subsection Material model
   set Model name = simple
@@ -66,7 +64,7 @@ end
 subsection Compositional initial conditions
   set Model name = function
   subsection Function
-    set Variable names      = x,y,z
+    set Variable names      = x,z
     set Function constants  = pi=3.1415926
     set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
   end
@@ -84,28 +82,28 @@ end
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Strategy                           = composition
-  set Initial global refinement          = 2
+  set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
   set Coarsening fraction                = 0.05
   set Refinement fraction                = 0.3
 end
 
-
-
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,tracers
+  set List of postprocessors = tracers
 
   subsection Tracers
-    set Number of tracers = 30
-    set Time between data output = 0
-    set Data output format = none
+    set Number of tracers = 10
+    set Time between data output = 70
+    set Data output format = hdf5
     set List of tracer properties = function, initial composition, initial position
+
     subsection Function
-      set Variable names      = x,y,z
+      set Variable names      = x,z
       set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
     end
 
+    set Particle generator name = random uniform
   end
 end

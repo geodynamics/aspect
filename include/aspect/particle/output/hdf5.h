@@ -24,7 +24,7 @@
 #include <aspect/particle/output/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/data_out_base.h>
+#include <deal.II/numerics/data_out.h>
 
 namespace aspect
 {
@@ -107,6 +107,12 @@ namespace aspect
            * Internal index of file output number.
            */
           unsigned int file_index;
+
+          /**
+           * Vector of so far created xdmf_entries (one per written output
+           * file).
+           */
+          std::vector<XDMFEntry> xdmf_entries;
       };
     }
   }

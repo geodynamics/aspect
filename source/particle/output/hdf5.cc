@@ -20,10 +20,11 @@
 
 #include <aspect/particle/output/hdf5.h>
 
-#include <deal.II/numerics/data_out.h>
+// TODO: Remove
+#define DEAL_II_WITH_HDF5
 
-#ifdef DEAL_II_HAVE_HDF5
-#  include <hdf5.h>
+#ifdef DEAL_II_WITH_HDF5
+ #include <hdf5.h>
 #endif
 
 namespace aspect
@@ -32,180 +33,228 @@ namespace aspect
   {
     namespace Output
     {
+
+      // Define the hdf5 type of the partice index output
+#ifdef DEAL_II_WITH_HDF5
+
+#ifdef DEAL_II_WITH_64BIT_INDICES
+#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_ULLONG
+#else
+#  define HDF5_PARTICLE_INDEX_TYPE H5T_NATIVE_UINT
+#endif
+
+#endif
+
       template <int dim>
       HDF5Output<dim>::HDF5Output()
         :
         file_index(0)
-      {}
+      {
+
+#ifndef DEAL_II_WITH_HDF5
+        AssertThrow (false,
+                     ExcMessage ("deal.ii was not compiled with HDF5 support, "
+                                 "so HDF5 output is not possible. Please "
+                                 "recompile deal.ii with HDF5 support turned on "
+                                 "or select a different tracer output format."));
+#endif
+
+      }
 
       template <int dim>
       std::string
       HDF5Output<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                            const std::vector<std::pair<std::string, unsigned int> > &/*property_component_list*/,
+                                            const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
                                             const double current_time)
       {
-        // avoid warnings about unused variables
-        (void)current_time;
+#ifdef DEAL_II_WITH_HDF5
+        // Create the filename
+        const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
+        const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
+        const std::string h5_filename = output_path_prefix+".h5";
 
-        std::string             output_file_prefix, output_path_prefix, full_filename;
+        // Create the hdf5 output size information
+        types::particle_index n_local_particles = particles.size();
+        const types::particle_index n_global_particles = Utilities::MPI::sum(n_local_particles,this->get_mpi_communicator());
 
-        output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
-        output_path_prefix = this->get_output_directory() + output_file_prefix;
-#ifdef DEAL_II_HAVE_HDF5
-        // TODO: error checking for H5 calls
-        hid_t   h5_file_id;
-        hid_t   plist_id, xfer_plist_id, position_dataset_id, velocity_dataset_id, pid_dataset_id;
-        hid_t   file_dataspace_id, pos_file_dataspace_id, vel_file_dataspace_id, pid_file_dataspace_id;
-        hid_t   dim_dataspace_id, one_dim_ds_id;
-        hid_t   dim_mem_ds_id, one_dim_mem_ds_id;
-        hid_t   pattr_id;
-        hsize_t dims[2], offset[2], count[2];
-        unsigned int  mpi_offset, mpi_count, local_particle_count, global_particle_count, d, i;
+        hsize_t global_dataset_size[2];
+        global_dataset_size[0] = n_global_particles;
+        global_dataset_size[1] = 3;
 
-        double  *pos_data, *vel_data, *id_data;
+        hsize_t local_dataset_size[2];
+        local_dataset_size[0] = n_local_particles;
+        local_dataset_size[1] = 3;
 
-        std::string h5_filename = output_path_prefix+".h5";
+        // Get the offset of the local particles among all processes
+        types::particle_index local_particle_index_offset;
+        MPI_Scan(&n_local_particles, &local_particle_index_offset, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+
+        hsize_t offset[2];
+        offset[0] = local_particle_index_offset - n_local_particles;
+        offset[1] = 0;
+
+        // Prepare the output data
+        std::vector<double> position_data (3 * n_local_particles,0.0);
+        std::vector<types::particle_index> index_data (n_local_particles);
+        std::vector<std::vector<double> > property_data(property_component_list.size());
+
+        for (unsigned int property = 0; property < property_component_list.size(); ++property)
+          {
+            const unsigned int data_components = (property_component_list[property].second != 2
+                ?
+                    property_component_list[property].second
+                    :
+                    3);
+
+            property_data[property].resize(data_components * n_local_particles,0.0);
+          }
+
+        typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
+        for (unsigned int i = 0; it != particles.end(); ++i, ++it)
+          {
+            for (unsigned int d = 0; d < dim; ++d)
+              position_data[i*3+d] = it->second.get_location()(d);
+
+            index_data[i] = it->second.get_id();
+
+            const std::vector<double> properties = it->second.get_properties();
+            unsigned int particle_property_index = 0;
+
+            for (unsigned int property = 0; property < property_component_list.size(); ++property)
+              {
+
+                const unsigned int data_components = (property_component_list[property].second != 2
+                    ?
+                        property_component_list[property].second
+                        :
+                        3);
+
+                for (unsigned int component = 0; component < property_component_list[property].second; ++component,++particle_property_index)
+                  property_data[property][i * data_components + component] = properties[particle_property_index];
+
+              }
+          }
 
         // Create parallel file access
-        plist_id = H5Pcreate(H5P_FILE_ACCESS);
+        const hid_t plist_id = H5Pcreate(H5P_FILE_ACCESS);
+        // Create property list for collective dataset write
+        const hid_t write_properties = H5Pcreate(H5P_DATASET_XFER);
 #ifdef H5_HAVE_PARALLEL
         H5Pset_fapl_mpio(plist_id, this->get_mpi_communicator(), MPI_INFO_NULL);
+        H5Pset_dxpl_mpio(write_properties, H5FD_MPIO_COLLECTIVE);
 #endif
 
         // Create the file
-        h5_file_id = H5Fcreate(h5_filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
+        const hid_t h5_file = H5Fcreate(h5_filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, plist_id);
+        H5Pclose(plist_id);
 
-        // Create the file dataspace descriptions
-        local_particle_count = particles.size();
-        // TODO: error checking on MPI call
-        MPI_Comm com = this->get_mpi_communicator();
-        MPI_Allreduce(&local_particle_count, &global_particle_count, 1, MPI_UNSIGNED, MPI_SUM, com);
-        dims[0] = global_particle_count;
-        dims[1] = 3;
-        one_dim_ds_id = H5Screate_simple(1, dims, NULL);
-        dim_dataspace_id = H5Screate_simple(2, dims, NULL);
+        // Write the position data
+        const hid_t position_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
+        const hid_t local_position_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
 
-        // Create the datasets
 #if H5Dcreate_vers == 1
-        position_dataset_id = H5Dcreate(h5_file_id, "nodes", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT);
-        velocity_dataset_id = H5Dcreate(h5_file_id, "velocity", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT);
-        pid_dataset_id = H5Dcreate(h5_file_id, "id", H5T_NATIVE_DOUBLE, one_dim_ds_id, H5P_DEFAULT);
+        hid_t position_dataset = H5Dcreate(h5_file, "nodes", H5T_NATIVE_DOUBLE, position_dataspace, H5P_DEFAULT);
 #else
-        position_dataset_id = H5Dcreate(h5_file_id, "nodes", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-        velocity_dataset_id = H5Dcreate(h5_file_id, "velocity", H5T_NATIVE_DOUBLE, dim_dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-        pid_dataset_id = H5Dcreate(h5_file_id, "id", H5T_NATIVE_DOUBLE, one_dim_ds_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        hid_t position_dataset = H5Dcreate(h5_file, "nodes", H5T_NATIVE_DOUBLE, position_dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #endif
 
-        // Close the file dataspaces
-        H5Sclose(dim_dataspace_id);
-        H5Sclose(one_dim_ds_id);
+        // Select the local hyperslab from the dataspace
+        H5Sselect_hyperslab(position_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
 
-        // Just in case we forget what they are
-        count[0] = 1;
-        file_dataspace_id = H5Screate_simple (1, count, NULL);
-#if H5Acreate_vers == 1
-        pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT);
+        // Write position data to the HDF5 file
+        H5Dwrite(position_dataset, H5T_NATIVE_DOUBLE, local_position_dataspace, position_dataspace, write_properties, &position_data[0]);
+
+        H5Sclose(local_position_dataspace);
+        H5Sclose(position_dataspace);
+        H5Dclose(position_dataset);
+
+        // Write the index data
+        const hid_t index_dataspace = H5Screate_simple(1, global_dataset_size, NULL);
+        const hid_t local_index_dataspace = H5Screate_simple(1, local_dataset_size, NULL);
+#if H5Dcreate_vers == 1
+        const hid_t particle_index_dataset = H5Dcreate(h5_file, "id", HDF5_PARTICLE_INDEX_TYPE, index_dataspace, H5P_DEFAULT);
 #else
-        pattr_id = H5Acreate(h5_file_id, "Ermahgerd! Pertecrs!", H5T_NATIVE_INT, file_dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
-#endif
-        H5Aclose(pattr_id);
-        H5Sclose(file_dataspace_id);
-
-        // Count the number of particles on this process and get the offset among all processes
-        mpi_count = particles.size();
-        MPI_Scan(&mpi_count, &mpi_offset, 1, MPI_UNSIGNED, MPI_SUM, this->get_mpi_communicator());
-        count[0] = mpi_count;
-        count[1] = 3;
-        offset[0] = mpi_offset-mpi_count;
-        offset[1] = 0;
-
-        // Select the appropriate dataspace for this process
-        one_dim_mem_ds_id = H5Screate_simple(1, count, NULL);
-        dim_mem_ds_id = H5Screate_simple(2, count, NULL);
-        pos_file_dataspace_id = H5Dget_space(position_dataset_id);
-        vel_file_dataspace_id = H5Dget_space(velocity_dataset_id);
-        pid_file_dataspace_id = H5Dget_space(pid_dataset_id);
-
-        // And select the hyperslabs from each dataspace
-        H5Sselect_hyperslab(pos_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
-        H5Sselect_hyperslab(vel_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
-        H5Sselect_hyperslab(pid_file_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
-
-        // Create property list for collective dataset write
-        xfer_plist_id = H5Pcreate(H5P_DATASET_XFER);
-#ifdef H5_HAVE_PARALLEL
-        H5Pset_dxpl_mpio(xfer_plist_id, H5FD_MPIO_COLLECTIVE);
+        const hid_t particle_index_dataset = H5Dcreate(h5_file, "id", HDF5_PARTICLE_INDEX_TYPE, index_dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #endif
 
-        // Read the local particle data
-        pos_data = new double[3*particles.size()];
-        vel_data = new double[3*particles.size()];
-        id_data = new double[particles.size()];
+        // Select the local hyperslab from the dataspace
+        H5Sselect_hyperslab(index_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
 
-        typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it;
-        for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
+        // Write index data to the HDF5 file
+        H5Dwrite(particle_index_dataset, HDF5_PARTICLE_INDEX_TYPE, local_index_dataspace, index_dataspace, write_properties, &index_data[0]);
+
+        H5Sclose(local_index_dataspace);
+        H5Sclose(index_dataspace);
+        H5Dclose(particle_index_dataset);
+
+        // Write the property data
+        for (unsigned int property = 0; property != property_component_list.size(); ++property)
           {
-            for (d=0; d<dim; ++d)
-              {
-                pos_data[i*3+d] = it->second.get_location()(d);
-                vel_data[i*3+d] = 0; //it->second.get_velocity()(d);
-              }
-            if (dim < 3)
-              {
-                pos_data[i*3+2] = 0;
-                vel_data[i*3+2] = 0;
-              }
-            id_data[i] = it->second.get_id();
+            const unsigned int data_components = (property_component_list[property].second != 2
+                ?
+                    property_component_list[property].second
+                    :
+                    3);
+
+            global_dataset_size[1] = data_components;
+            local_dataset_size[1] = data_components;
+
+            const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
+            const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
+#if H5Dcreate_vers == 1
+            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_component_list[property].first.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
+#else
+            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_component_list[property].first.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#endif
+
+            // Select the local hyperslab from the dataspace
+            H5Sselect_hyperslab(property_dataspace, H5S_SELECT_SET, offset, NULL, local_dataset_size, NULL);
+
+            // Write index data to the HDF5 file
+            H5Dwrite(particle_property_dataset, H5T_NATIVE_DOUBLE, local_property_dataspace, property_dataspace, write_properties, &property_data[property][0]);
+
+            H5Sclose(local_property_dataspace);
+            H5Sclose(property_dataspace);
+            H5Dclose(particle_property_dataset);
           }
 
-        // Write particle data to the HDF5 file
-        H5Dwrite(position_dataset_id, H5T_NATIVE_DOUBLE, dim_mem_ds_id, pos_file_dataspace_id, xfer_plist_id, pos_data);
-        H5Dwrite(velocity_dataset_id, H5T_NATIVE_DOUBLE, dim_mem_ds_id, vel_file_dataspace_id, xfer_plist_id, vel_data);
-        H5Dwrite(pid_dataset_id, H5T_NATIVE_DOUBLE, one_dim_mem_ds_id, pid_file_dataspace_id, xfer_plist_id, id_data);
-
-        // Clear allocated resources
-        delete[] pos_data;
-        delete[] vel_data;
-        delete[] id_data;
-
-        H5Pclose(xfer_plist_id);
-        H5Sclose(one_dim_mem_ds_id);
-        H5Sclose(dim_mem_ds_id);
-        H5Sclose(pos_file_dataspace_id);
-        H5Sclose(vel_file_dataspace_id);
-        H5Sclose(pid_file_dataspace_id);
-        H5Dclose(position_dataset_id);
-        H5Dclose(velocity_dataset_id);
-        H5Dclose(pid_dataset_id);
-        H5Pclose(plist_id);
-        H5Fclose(h5_file_id);
+        H5Pclose(write_properties);
+        H5Fclose(h5_file);
 
         // Record and output XDMF info on root process
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
-            std::string local_h5_filename = output_file_prefix+".h5";
-            XDMFEntry   entry(local_h5_filename, current_time, global_particle_count, 0, 3);
+            const std::string local_h5_filename = output_file_prefix + ".h5";
+            XDMFEntry   entry(local_h5_filename, current_time, n_global_particles, 0, 3);
             DataOut<dim> data_out;
             const std::string xdmf_filename = (this->get_output_directory() + "particle.xdmf");
 
-            entry.add_attribute("velocity", 3);
             entry.add_attribute("id", 1);
 
-            std::vector<XDMFEntry> xdmf_entries;
+            for (unsigned int property = 0; property < property_component_list.size(); ++property)
+              {
+                const unsigned int data_components = (property_component_list[property].second != 2
+                    ?
+                        property_component_list[property].second
+                        :
+                        3);
+
+                entry.add_attribute(property_component_list[property].first, data_components);
+              }
+
             xdmf_entries.push_back(entry);
 
             data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->get_mpi_communicator());
           }
 
-#else
-        // avoid warnings about unused variables
-        (void)particles;
-        (void)current_time;
-#endif
-
         file_index++;
 
         return output_path_prefix;
+#else
+        (void) particles;
+        (void) current_time;
+        return "";
+#endif
       }
 
 
@@ -215,6 +264,7 @@ namespace aspect
       {
         // invoke serialization of the base class
         ar &file_index
+           &xdmf_entries
         ;
       }
 

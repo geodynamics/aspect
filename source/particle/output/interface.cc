@@ -100,13 +100,6 @@ namespace aspect
           prm.enter_subsection ("Tracers");
           {
             name = prm.get ("Data output format");
-
-#ifndef DEAL_II_HAVE_HDF5
-            AssertThrow (name != "hdf5",
-                         ExcMessage ("deal.ii was not compiled with HDF5 support, "
-                                     "so HDF5 output is not possible. Please "
-                                     "recompile deal.ii with HDF5 support turned on."));
-#endif
           }
           prm.leave_subsection ();
         }
