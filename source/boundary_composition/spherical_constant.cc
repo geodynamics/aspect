@@ -21,6 +21,7 @@
 
 #include <aspect/boundary_composition/spherical_constant.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 
 #include <utility>
 #include <limits>
@@ -42,23 +43,24 @@ namespace aspect
     {
       (void)geometry_model;
 
-      // verify that the geometry is in fact a spherical shell since only
-      // for this geometry do we know for sure what boundary indicators it
-      // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model)
-              != 0,
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "in fact a spherical shell."));
+      // verify that the geometry is a spherical shell or a chunk since only
+      // for geometries based on spherical shells do we know which boundary indicators are
+      // used and what they mean
+      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(&geometry_model) != 0),
+              ExcMessage ("This boundary model is only implemented if the geometry "
+                          "is a spherical shell or chunk."));
 
-      switch (boundary_indicator)
+      const std::string boundary_name = geometry_model.translate_id_to_symbol_name(boundary_indicator);
+
+      if (boundary_name == "inner")
+        return inner_composition;
+      else if (boundary_name =="outer")
+        return outer_composition;
+      else
         {
-          case 0:
-            return inner_composition;
-          case 1:
-            return outer_composition;
-          default:
-            Assert (false, ExcMessage ("Unknown boundary indicator. The given boundary indicator should be 0 or 1."));
-            return std::numeric_limits<double>::quiet_NaN();
+          Assert (false, ExcMessage ("Unknown boundary indicator. The given boundary should be ``inner'' or ``outer''."));
+          return std::numeric_limits<double>::quiet_NaN();
         }
     }
 
@@ -130,7 +132,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(SphericalConstant,
                                                "spherical constant",
                                                "A model in which the composition is chosen constant on "
-                                               "the inner and outer boundaries of a spherical shell. "
+                                               "the inner and outer boundaries of a spherical shell or chunk. "
                                                "Parameters are read from subsection 'Spherical constant'.")
   }
 }

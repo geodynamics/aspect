@@ -34,7 +34,7 @@ namespace aspect
                        "at the center of each cell, and all DOFs associated with "
                        "the specified velocity component at the indicated cells "
                        "are constrained."
-                       );
+                      );
 
     prm.enter_subsection ("Prescribed velocities");
     {
@@ -69,40 +69,40 @@ namespace aspect
       prm.enter_subsection("Indicator function");
       {
         try
-        {
-          if (dim == 2)
-            prescribed_velocity_indicator_function_2d.parse_parameters (prm);
-          else
-            prescribed_velocity_indicator_function_3d.parse_parameters (prm);
-        }
+          {
+            if (dim == 2)
+              prescribed_velocity_indicator_function_2d.parse_parameters (prm);
+            else
+              prescribed_velocity_indicator_function_3d.parse_parameters (prm);
+          }
         catch (...)
-        {
-          std::cerr << "ERROR: FunctionParser failed to parse\n"
-                    << "\t'Prescribed velocities.Indicator function'\n"
-                    << "with expression\n"
-                    << "\t'" << prm.get("Function expression") << "'";
-          throw;
-        }
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Prescribed velocities.Indicator function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
       }
       prm.leave_subsection();
 
       prm.enter_subsection("Velocity function");
       {
         try
-        {
-          if (dim == 2)
-            prescribed_velocity_function_2d.parse_parameters (prm);
-          else
-            prescribed_velocity_function_3d.parse_parameters (prm);
-        }
+          {
+            if (dim == 2)
+              prescribed_velocity_function_2d.parse_parameters (prm);
+            else
+              prescribed_velocity_function_3d.parse_parameters (prm);
+          }
         catch (...)
-        {
-          std::cerr << "ERROR: FunctionParser failed to parse\n"
-                    << "\t'Prescribed velocities.Velocity function'\n"
-                    << "with expression\n"
-                    << "\t'" << prm.get("Function expression") << "'";
-          throw;
-        }
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Prescribed velocities.Velocity function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
       }
       prm.leave_subsection();
     }
@@ -119,85 +119,85 @@ namespace aspect
                                       ConstraintMatrix &current_constraints)
   {
     if (prescribe_internal_velocities)
-    {
-      Quadrature<dim> quadrature (simulator_access.get_fe().get_unit_support_points());
-      FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_q_points);
-      typename DoFHandler<dim>::active_cell_iterator cell;
+      {
+        Quadrature<dim> quadrature (simulator_access.get_fe().get_unit_support_points());
+        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_q_points);
+        typename DoFHandler<dim>::active_cell_iterator cell;
 
-      // Loop over all cells
-      for (cell = simulator_access.get_dof_handler().begin_active();
-           cell != simulator_access.get_dof_handler().end();
-           ++cell)
-        if (! cell->is_artificial())
-        {
-          fe_values.reinit (cell);
-          std::vector<unsigned int> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
-          cell->get_dof_indices (local_dof_indices);
-
-          for (unsigned int q=0; q<quadrature.size(); q++)
-            // If it's okay to constrain this DOF
-            if (current_constraints.can_store_line(local_dof_indices[q]) &&
-                !current_constraints.is_constrained(local_dof_indices[q]))
+        // Loop over all cells
+        for (cell = simulator_access.get_dof_handler().begin_active();
+             cell != simulator_access.get_dof_handler().end();
+             ++cell)
+          if (! cell->is_artificial())
             {
-              // Get the velocity component index
-              const unsigned int c_idx =
-                simulator_access.get_fe().system_to_component_index(q).first;
+              fe_values.reinit (cell);
+              std::vector<unsigned int> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
+              cell->get_dof_indices (local_dof_indices);
 
-              // If we're on one of the velocity DOFs
-              if (c_idx >= simulator_access.introspection().component_indices.velocities[0] &&
-                  c_idx <= simulator_access.introspection().component_indices.velocities[dim-1])
-              {
-                // Which velocity component is this DOF associated with?
-                const unsigned int component_direction = c_idx
-                  - simulator_access.introspection().component_indices.velocities[0];
+              for (unsigned int q=0; q<quadrature.size(); q++)
+                // If it's okay to constrain this DOF
+                if (current_constraints.can_store_line(local_dof_indices[q]) &&
+                    !current_constraints.is_constrained(local_dof_indices[q]))
+                  {
+                    // Get the velocity component index
+                    const unsigned int c_idx =
+                      simulator_access.get_fe().system_to_component_index(q).first;
 
-                // we get time passed as seconds (always) but may want
-                // to reinterpret it in years
-                double time = simulator_access.get_time();
-                if (simulator_access.convert_output_to_years())
-                  time /= year_in_seconds;
+                    // If we're on one of the velocity DOFs
+                    if (c_idx >= simulator_access.introspection().component_indices.velocities[0] &&
+                        c_idx <= simulator_access.introspection().component_indices.velocities[dim-1])
+                      {
+                        // Which velocity component is this DOF associated with?
+                        const unsigned int component_direction = c_idx
+                                                                 - simulator_access.introspection().component_indices.velocities[0];
 
-                prescribed_velocity_indicator_function_2d.set_time (time);
-                prescribed_velocity_indicator_function_3d.set_time (time);
-                prescribed_velocity_function_2d.set_time (time);
-                prescribed_velocity_function_3d.set_time (time);
+                        // we get time passed as seconds (always) but may want
+                        // to reinterpret it in years
+                        double time = simulator_access.get_time();
+                        if (simulator_access.convert_output_to_years())
+                          time /= year_in_seconds;
 
-                const Point<dim> p = fe_values.quadrature_point(q);
+                        prescribed_velocity_indicator_function_2d.set_time (time);
+                        prescribed_velocity_indicator_function_3d.set_time (time);
+                        prescribed_velocity_function_2d.set_time (time);
+                        prescribed_velocity_function_3d.set_time (time);
 
-                // Because we defined and parsed our parameter file differently for 2d and 3d
-                // we need to be sure to query the correct object for function values. The
-                // function parser objects expect points of a certain dimension, but Point p
-                // will be compiled for both 2d and 3d, so we need some careful casts to make
-                // this compile. Casting Point objects between 2d and 3d is somewhat meaningless
-                // but the offending casts will never actually be executed because they are
-                // protected by the if/else statements.
-                double indicator, u_i;
-                if (dim == 2)
-                {
-                  indicator = prescribed_velocity_indicator_function_2d.value
-                    (reinterpret_cast<const Point<2>&>(p), component_direction);
-                  u_i = prescribed_velocity_function_2d.value
-                    (reinterpret_cast<const Point<2>&>(p), component_direction);
-                }
-                else
-                {
-                  indicator = prescribed_velocity_indicator_function_3d.value
-                    (reinterpret_cast<const Point<3>&>(p), component_direction);
-                  u_i = prescribed_velocity_function_3d.value
-                    (reinterpret_cast<const Point<3>&>(p), component_direction);
-                }
+                        const Point<dim> p = fe_values.quadrature_point(q);
 
-                if (indicator > 0.5)
-                {
-                  // Add a constraint of the form dof[q] = u_i
-                  // to the list of constraints.
-                  current_constraints.add_line (local_dof_indices[q]);
-                  current_constraints.set_inhomogeneity (local_dof_indices[q], u_i);
-                }
-              }
+                        // Because we defined and parsed our parameter file differently for 2d and 3d
+                        // we need to be sure to query the correct object for function values. The
+                        // function parser objects expect points of a certain dimension, but Point p
+                        // will be compiled for both 2d and 3d, so we need some careful casts to make
+                        // this compile. Casting Point objects between 2d and 3d is somewhat meaningless
+                        // but the offending casts will never actually be executed because they are
+                        // protected by the if/else statements.
+                        double indicator, u_i;
+                        if (dim == 2)
+                          {
+                            indicator = prescribed_velocity_indicator_function_2d.value
+                                        (reinterpret_cast<const Point<2>&>(p), component_direction);
+                            u_i = prescribed_velocity_function_2d.value
+                                  (reinterpret_cast<const Point<2>&>(p), component_direction);
+                          }
+                        else
+                          {
+                            indicator = prescribed_velocity_indicator_function_3d.value
+                                        (reinterpret_cast<const Point<3>&>(p), component_direction);
+                            u_i = prescribed_velocity_function_3d.value
+                                  (reinterpret_cast<const Point<3>&>(p), component_direction);
+                          }
+
+                        if (indicator > 0.5)
+                          {
+                            // Add a constraint of the form dof[q] = u_i
+                            // to the list of constraints.
+                            current_constraints.add_line (local_dof_indices[q]);
+                            current_constraints.set_inhomogeneity (local_dof_indices[q], u_i);
+                          }
+                      }
+                  }
             }
-        }
-    }
+      }
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.

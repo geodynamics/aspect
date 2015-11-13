@@ -116,15 +116,22 @@ FILE(GLOB _tests *.prm)
 SET(_n_tests "0")
 LIST(SORT _tests)
 FOREACH(_test ${_tests})
+  SET(_test_full ${_test})
   GET_FILENAME_COMPONENT(_test ${_test} NAME_WE)
-
+  IF ("${_test}" STREQUAL "")
+    MESSAGE("Ignoring invalid .prm '${_test_full}'...")
+    CONTINUE()
+  ENDIF()
   SET(_use_test ON)
   SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm)
 
   IF(_use_test)
 
-    # main target for this test:
-    ADD_CUSTOM_TARGET(tests.${_test})
+    # Create main target for this test. We let it depend on the screen output
+    # even if the folder with reference data for this test doesn't contain any
+    # files. This is useful when you are constructing a new test.
+    ADD_CUSTOM_TARGET(tests.${_test}
+	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output)
 
     MATH(EXPR _n_tests "${_n_tests} + 1")
 
@@ -167,6 +174,8 @@ FOREACH(_test ${_tests})
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
 		 ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+      COMMAND echo ''
+		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo 'set Output directory = output-${_test}'
 		 >> ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND echo '${_testlib}'
@@ -195,7 +204,7 @@ FOREACH(_test ${_tests})
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
         SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/default.sh")
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default.sh")
     ENDIF()
 
     IF("${_mpi_count}" STREQUAL "1")
@@ -280,7 +289,7 @@ FOREACH(_test ${_tests})
       # create the target that compares the .notime with the saved file
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	COMMAND
-	    ${CMAKE_CURRENT_SOURCE_DIR}/diff_test.sh 
+	    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh 
 		${TEST_DIFF}
 		${_test}/${_output}
 		${CMAKE_CURRENT_SOURCE_DIR}
@@ -316,4 +325,10 @@ FOREACH(_test ${_tests})
   ENDIF()
 ENDFOREACH()
 
-MESSAGE(STATUS "Added ${_n_tests} tests")
+# display as important for 'make setup_tests' (stdout is hidden)
+IF(PRINT_TEST_SUMMARY_AS_IMPORTANT)
+  SET(PRINT_TEST_SUMMARY_AS_IMPORTANT OFF CACHE INTERNAL "" FORCE)
+  MESSAGE("Added ${_n_tests} tests.")
+ELSE()
+  MESSAGE(STATUS "Added ${_n_tests} tests.")
+ENDIF()

@@ -1,0 +1,29 @@
+
+Loading shared library <./libmaterial_model_dependencies_morency_doin.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29 iterations.
+      Nonlinear Stokes residual: 0.0158179
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+      Nonlinear Stokes residual: 1.28113e-09
+
+   Postprocessing:
+viscosity depends on temperature strainrate composition
+density depends on temperature composition
+compressibility depends on
+specific_heat depends on
+thermal_conductivity depends on temperature composition
+model is incompressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

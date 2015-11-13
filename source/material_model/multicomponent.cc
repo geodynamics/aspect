@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/multicomponent.h>
 #include <aspect/simulator.h>
-#include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
 
@@ -222,63 +221,6 @@ namespace aspect
       return thermal_conductivities[0] /( densities[0]* specific_heats[0] ); //background
     }
 
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-
     template <int dim>
     bool
     Multicomponent<dim>::
@@ -379,6 +321,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
     }
   }
 }

@@ -1,0 +1,77 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 2,804 (2,210+297+297)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+   Residual after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+20 iterations.
+   Residual after nonlinear iteration 2: 0.00977024
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+   Residual after nonlinear iteration 3: 0.00232696
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+   Residual after nonlinear iteration 4: 0.00102811
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+11 iterations.
+   Residual after nonlinear iteration 5: 0.000883826
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+10 iterations.
+   Residual after nonlinear iteration 6: 0.000797159
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+9 iterations.
+   Residual after nonlinear iteration 7: 0.000729936
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+9 iterations.
+   Residual after nonlinear iteration 8: 0.000677242
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+9 iterations.
+   Residual after nonlinear iteration 9: 0.000633528
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+8 iterations.
+   Residual after nonlinear iteration 10: 0.000597176
+
+
+   Postprocessing:
+     RMS, max velocity:                  1.8e-11 m/s, 2e-11 m/s
+     Mass fluxes through boundary parts: -0.00054 kg/s, -0.00054 kg/s, 0 kg/s, 0.00108 kg/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      4.28s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        10 |      1.83s |        43% |
+| Assemble temperature system     |         1 |    0.0499s |       1.2% |
+| Build Stokes preconditioner     |        10 |      1.47s |        34% |
+| Build temperature preconditioner|         1 |  0.000808s |     0.019% |
+| Solve Stokes system             |        10 |     0.666s |        16% |
+| Solve temperature system        |         1 |   0.00101s |     0.024% |
+| Initialization                  |         2 |     0.115s |       2.7% |
+| Postprocessing                  |         1 |    0.0114s |      0.27% |
+| Setup dof systems               |         1 |    0.0818s |       1.9% |
++---------------------------------+-----------+------------+------------+
+

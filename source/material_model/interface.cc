@@ -40,6 +40,8 @@ namespace aspect
       bool
       identifies_single_variable(const Dependence dependence)
       {
+        Assert (dependence != uninitialized,
+                ExcMessage ("You cannot call this function on an uninitialized dependence value!"));
         return ((dependence == temperature)
                 ||
                 (dependence == pressure)
@@ -49,7 +51,17 @@ namespace aspect
                 (dependence == compositional_fields));
       }
 
+
+      ModelDependence::ModelDependence ()
+        :
+        viscosity (uninitialized),
+        density (uninitialized),
+        compressibility (uninitialized),
+        specific_heat (uninitialized),
+        thermal_conductivity (uninitialized)
+      {}
     }
+
 
     template <int dim>
     Interface<dim>::~Interface ()
@@ -143,7 +155,7 @@ namespace aspect
       // the empty string) then the value we get here is the empty string. If
       // we don't catch this case here, we end up with awkward downstream
       // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "",
+      AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a material model "
                              "('set Model name' in 'subsection Material model')."));
 
@@ -161,6 +173,15 @@ namespace aspect
                      const Point<dim> &) const
     {
       return 1.0;
+    }
+
+
+    template <int dim>
+    const NonlinearDependence::ModelDependence &
+    Interface<dim>::
+    get_model_dependence() const
+    {
+      return model_dependence;
     }
 
 
@@ -215,31 +236,23 @@ namespace aspect
       prm.enter_subsection ("Material model");
       {
         const std::string pattern_of_names = get_valid_model_names_pattern<dim>();
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "The name of the material model to be used in "
-                               "this simulation. There are many material models "
-                               "you can choose from, as listed below. They generally "
-                               "fall into two category: (i) models that implement "
-                               "a particular case of material behavior, (ii) models "
-                               "that modify other models in some way. We sometimes "
-                               "call the latter ``compositing models''. An example "
-                               "of a compositing model is the ``depth dependent'' model "
-                               "below in that it takes another, freely choosable "
-                               "model as its base and then modifies that model's "
-                               "output in some way."
-                               "\n\n"
-                               "You can select one of the following models:\n\n"
-                               +
-                               std_cxx11::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "The name of the material model to be used in "
+                           "this simulation. There are many material models "
+                           "you can choose from, as listed below. They generally "
+                           "fall into two category: (i) models that implement "
+                           "a particular case of material behavior, (ii) models "
+                           "that modify other models in some way. We sometimes "
+                           "call the latter ``compositing models''. An example "
+                           "of a compositing model is the ``depth dependent'' model "
+                           "below in that it takes another, freely choosable "
+                           "model as its base and then modifies that model's "
+                           "output in some way."
+                           "\n\n"
+                           "You can select one of the following models:\n\n"
+                           +
+                           std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 
@@ -272,6 +285,7 @@ namespace aspect
                                                     const unsigned int n_comp)
     {
       viscosities.resize(n_points, aspect::Utilities::signaling_nan<double>());
+      stress_strain_directors.resize(n_points, dealii::identity_tensor<dim> ());
       densities.resize(n_points, aspect::Utilities::signaling_nan<double>());
       thermal_expansion_coefficients.resize(n_points, aspect::Utilities::signaling_nan<double>());
       specific_heat.resize(n_points, aspect::Utilities::signaling_nan<double>());
@@ -340,7 +354,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average";
       }
 
 
@@ -358,6 +372,8 @@ namespace aspect
           return pick_largest;
         else if (s == "project to Q1")
           return project_to_Q1;
+        else if (s == "log average")
+          return log_average;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -499,6 +515,28 @@ namespace aspect
                 for (unsigned int i=0; i<N; ++i)
                   values_out[i] = x(i);
 
+                break;
+              }
+
+              case log_average:
+              {
+                double sum = 0;
+                for (unsigned int i=0; i<N; ++i)
+                  {
+                    if (values_out[i] == 0.0)
+                      {
+                        sum = -std::numeric_limits<double>::infinity();
+                        break;
+                      }
+                    Assert (values_out[i] > 0.0,
+                            ExcMessage ("Computing the log average "
+                                        "only makes sense for positive "
+                                        "quantities."));
+                    sum += std::log10(values_out[i]);
+                  }
+                const double log_value_average = std::pow (10., sum/N);
+                for (unsigned int i=0; i<N; ++i)
+                  values_out[i] = log_value_average;
                 break;
               }
 

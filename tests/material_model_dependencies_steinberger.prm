@@ -1,0 +1,112 @@
+# Evaluate the nonlinear dependencies of the material model used here
+
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = test-steinberger-compressible/testdata.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Compressible                     = true
+    set Reference viscosity              = 1e21
+  end
+end
+subsection Postprocess
+  set List of postprocessors = material model dependencies
+end
+
+
+#############################
+# Otherwise use a mixture of the setup of SolCX and steinberger-viscosity
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = Stokes only
+set Adiabatic surface temperature          = 1600.0
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4250
+    set Outer temperature = 273
+  end
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 2                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false # default: true
+
+
+  set Fixed temperature boundary indicators   = 0, 1
+
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+end
+
+
+

@@ -4,7 +4,7 @@
 # material models, which should be able to reproduce it.
 # The material model used here is already tested by
 # simple_compressibility_iterated_stokes.
-# Currently there is the steinberger-compressible test
+# Currently there is the steinberger_compressible test
 # reproducing this test.
 
 set CFL number                             = 1.0

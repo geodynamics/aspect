@@ -130,7 +130,7 @@ namespace aspect
                                                  "\n\n"
                                                  "The formula you describe in the mentioned "
                                                  "section is a semicolon separated list of velocities "
-                                                 "for each of the $d$ component of the velocity vector. "
+                                                 "for each of the $d$ components of the velocity vector. "
                                                  "These $d$ formulas are interpreted as having units "
                                                  "m/s, unless the global input parameter ``Use "
                                                  "years in output instead of seconds'' is set, in "

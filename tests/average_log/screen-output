@@ -1,0 +1,42 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+12 iterations.
+
+   Postprocessing:
+     Pressure min/avg/max: -1.561 Pa, 7.999e-14 Pa, 1.561 Pa
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.408s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0348s |       8.5% |
+| Assemble composition system     |         1 |    0.0197s |       4.8% |
+| Assemble temperature system     |         1 |    0.0228s |       5.6% |
+| Build Stokes preconditioner     |         1 |    0.0369s |       9.1% |
+| Build composition preconditioner|         1 |   0.00335s |      0.82% |
+| Build temperature preconditioner|         1 |   0.00502s |       1.2% |
+| Solve Stokes system             |         1 |     0.131s |        32% |
+| Solve composition system        |         1 |  0.000632s |      0.16% |
+| Solve temperature system        |         1 |   0.00124s |       0.3% |
+| Initialization                  |         2 |    0.0646s |        16% |
+| Postprocessing                  |         1 |  0.000853s |      0.21% |
+| Setup dof systems               |         1 |    0.0749s |        18% |
++---------------------------------+-----------+------------+------------+
+

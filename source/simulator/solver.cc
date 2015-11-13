@@ -188,12 +188,18 @@ namespace aspect
          * @param Apreconditioner Preconditioner object for the matrix A.
          * @param do_solve_A A flag indicating whether we should actually solve with
          *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the A block.
+         * @param S_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the S block (Schur complement matrix).
          **/
         BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix  &S,
                                   const LinearAlgebra::BlockSparseMatrix  &Spre,
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
-                                  const bool                                  do_solve_A);
+                                  const bool                                  do_solve_A,
+                                  const double                                A_block_tolerance,
+                                  const double                                S_block_tolerance);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -220,6 +226,8 @@ namespace aspect
         const bool do_solve_A;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
+        const double A_block_tolerance;
+        const double S_block_tolerance;
     };
 
 
@@ -229,7 +237,9 @@ namespace aspect
                               const LinearAlgebra::BlockSparseMatrix  &Spre,
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
-                              const bool                                  do_solve_A)
+                              const bool                                  do_solve_A,
+                              const double                                A_block_tolerance,
+                              const double                                S_block_tolerance)
       :
       stokes_matrix     (S),
       stokes_preconditioner_matrix     (Spre),
@@ -237,7 +247,9 @@ namespace aspect
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
       n_iterations_A_(0),
-      n_iterations_S_(0)
+      n_iterations_S_(0),
+      A_block_tolerance(A_block_tolerance),
+      S_block_tolerance(S_block_tolerance)
     {}
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -247,6 +259,7 @@ namespace aspect
     {
       return n_iterations_A_;
     }
+
     template <class PreconditionerA, class PreconditionerMp>
     unsigned int
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
@@ -254,7 +267,6 @@ namespace aspect
     {
       return n_iterations_S_;
     }
-
 
     template <class PreconditionerA, class PreconditionerMp>
     void
@@ -267,7 +279,7 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
+        SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
 #ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
@@ -321,7 +333,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -458,13 +470,29 @@ namespace aspect
   }
 
 
-
+  namespace
+  {
+    /**
+     * Helper function used in solve_stokes().
+     */
+    dealii::SolverControl::State
+    solver_callback (const unsigned int /*iteration*/,
+                     const double check_value,
+                     const LinearAlgebra::BlockVector &/*current_iterate*/,
+                     std::vector<double> &solver_history)
+    {
+      solver_history.push_back(check_value);
+      return dealii::SolverControl::success;
+    }
+  }
 
   template <int dim>
   double Simulator<dim>::solve_stokes ()
   {
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
+
+    std::vector<double> solver_history;
 
     if (parameters.use_direct_stokes_solver)
       {
@@ -645,12 +673,22 @@ namespace aspect
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
-                              false);
+                              false,
+                              parameters.linear_solver_A_block_tolerance,
+                              parameters.linear_solver_S_block_tolerance);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(30, true));
+
+        solver.connect(
+          std_cxx11::bind (&solver_callback,
+                           std_cxx11::_1,
+                           std_cxx11::_2,
+                           std_cxx11::_3,
+                           std_cxx11::ref(solver_history)));
+
         solver.solve (stokes_block,
                       distributed_stokes_solution,
                       distributed_stokes_rhs,
@@ -664,17 +702,28 @@ namespace aspect
     // the simple solver failed
     catch (SolverControl::NoConvergence)
       {
+        // this additional entry serves as a marker between cheap and expensive Stokes solver
+        solver_history.push_back(-1.0);
+
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
-                              true);
+                              true,
+                              parameters.linear_solver_A_block_tolerance,
+                              parameters.linear_solver_S_block_tolerance);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
                AdditionalData(50, true));
 
+        solver.connect(
+          std_cxx11::bind (&solver_callback,
+                           std_cxx11::_1,
+                           std_cxx11::_2,
+                           std_cxx11::_3,
+                           std_cxx11::ref(solver_history)));
         try
           {
             solver.solve(stokes_block,
@@ -687,20 +736,40 @@ namespace aspect
         // processors
         catch (const std::exception &exc)
           {
+            signals.post_stokes_solver(*this, false, solver_history);
+
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-              AssertThrow (false,
-                           ExcMessage (std::string("The iterative Stokes solver "
-                                                   "did not converge. It reported the following error:\n\n")
-                                       +
-                                       exc.what()))
-              else
-                throw QuietException();
+              {
+                // output solver history
+                std::ofstream f((parameters.output_directory+"solver_history.txt").c_str());
+                for (unsigned int i=0; i<solver_history.size(); ++i)
+                  {
+                    if (solver_history[i]<0)
+                      f << "\n";
+                    else
+                      f << i << " " << solver_history[i] << "\n";
+                  }
+                f.close();
+
+                AssertThrow (false,
+                             ExcMessage (std::string("The iterative Stokes solver "
+                                                     "did not converge. It reported the following error:\n\n")
+                                         +
+                                         exc.what()
+                                         + "\n See " + parameters.output_directory+"solver_history.txt"
+                                         + " for convergence history."));
+              }
+            else
+              throw QuietException();
           }
 
 
         its_A += preconditioner.n_iterations_A();
         its_S += preconditioner.n_iterations_S();
       }
+
+    // signal successful solver
+    signals.post_stokes_solver(*this, true, solver_history);
 
     // distribute hanging node and
     // other constraints

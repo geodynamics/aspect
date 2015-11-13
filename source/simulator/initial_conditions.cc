@@ -112,10 +112,6 @@ namespace aspect
                      compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),n-1));
                   initial_solution(local_dof_indices[system_local_dof]) = value;
 
-                  if (!advf.is_temperature())
-                    Assert (value >= 0,
-                            ExcMessage("Invalid initial conditions: Composition is negative"));
-
                   // if it is specified in the parameter file that the sum of all compositional fields
                   // must not exceed one, this should be checked
                   if (parameters.normalized_fields.size()>0 && n == 1)

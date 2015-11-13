@@ -22,6 +22,7 @@
 #include <aspect/initial_conditions/adiabatic.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
 
 #include <cmath>
 
@@ -139,6 +140,32 @@ namespace aspect
                     }
                 }
             }
+          else if (const GeometryModel::Chunk<dim> *
+                   chunk_geometry_model = dynamic_cast <const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+            {
+              const double inner_radius = chunk_geometry_model->inner_radius();
+
+              const double west_longitude = chunk_geometry_model->west_longitude(); // in radians
+              const double longitude_range = chunk_geometry_model->longitude_range(); // in radians
+              const double longitude_midpoint = west_longitude + 0.5 * longitude_range;
+
+              if (dim==2)
+                {
+                  // choose the center of the perturbation at half angle along the inner radius
+                  mid_point(0) = inner_radius * std::cos(longitude_midpoint),
+                  mid_point(1) = inner_radius * std::sin(longitude_midpoint);
+                }
+              else if (dim==3)
+                {
+
+                  const double south_latitude = chunk_geometry_model->south_latitude(); // in radians
+                  const double latitude_range = chunk_geometry_model->latitude_range(); // in radians
+                  const double latitude_midpoint = south_latitude + 0.5 * latitude_range;
+                  mid_point(0) = inner_radius * std::cos(latitude_midpoint) * std::cos(longitude_midpoint);
+                  mid_point(1) = inner_radius * std::cos(latitude_midpoint) * std::sin(longitude_midpoint);
+                  mid_point(2) = inner_radius * std::sin(latitude_midpoint);
+                }
+            }
           else if (const GeometryModel::Box<dim> *
                    box_geometry_model = dynamic_cast <const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
             {
@@ -161,11 +188,11 @@ namespace aspect
 
       // add the subadiabaticity
       const double zero_depth = 0.174;
-      const double nondimesional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
-                                         / (1.0 - zero_depth);
+      const double nondimensional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
+                                          / (1.0 - zero_depth);
       double subadiabatic_T = 0.0;
-      if (nondimesional_depth > 0)
-        subadiabatic_T = -subadiabaticity * nondimesional_depth * nondimesional_depth;
+      if (nondimensional_depth > 0)
+        subadiabatic_T = -subadiabaticity * nondimensional_depth * nondimensional_depth;
 
       // If adiabatic heating is disabled, apply all perturbations to
       // constant adiabatic surface temperature instead of adiabatic profile.

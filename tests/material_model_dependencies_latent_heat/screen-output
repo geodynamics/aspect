@@ -1,0 +1,69 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmaterial_model_dependencies_latent_heat.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16 iterations.
+      Nonlinear Stokes residual: 5.76746
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.214574
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.176343
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.14704
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19 iterations.
+      Nonlinear Stokes residual: 0.151941
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19 iterations.
+      Nonlinear Stokes residual: 0.132214
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.120574
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19 iterations.
+      Nonlinear Stokes residual: 0.115803
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.13266
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+      Nonlinear Stokes residual: 0.153063
+
+   Postprocessing:
+viscosity depends on temperature composition 
+density depends on pressure temperature composition 
+compressibility depends on 
+specific_heat depends on 
+thermal_conductivity depends on 
+model is incompressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.121s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |        10 |    0.0248s |        20% |
+| Build Stokes preconditioner     |        10 |    0.0501s |        41% |
+| Solve Stokes system             |        10 |    0.0224s |        19% |
+| Initialization                  |         2 |    0.0189s |        16% |
+| Postprocessing                  |         1 |  8.61e-05s |     0.071% |
+| Setup dof systems               |         1 |   0.00285s |       2.4% |
++---------------------------------+-----------+------------+------------+
+

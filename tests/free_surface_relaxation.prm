@@ -1,4 +1,4 @@
-# Test for relaxin topography of the free surface after an 
+# Test for relaxing topography of the free surface after an 
 # initial sinusoidal perturbation
 
 set Dimension = 2

@@ -6,6 +6,7 @@ subsection Initial conditions
     set Variable names      = x,y
     set Function expression = if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
+end
 
 subsection Free surface
   set Free surface stabilization theta = 0.5

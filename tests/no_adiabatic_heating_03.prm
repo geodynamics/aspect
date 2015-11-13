@@ -125,7 +125,7 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics, velocity statistics, basic statistics,  visualization
+  set List of postprocessors = temperature statistics, velocity statistics, basic statistics, depth average
 
   subsection Visualization
     set Time between graphical output = 0.1

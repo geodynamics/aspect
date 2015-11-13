@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
+
 #include <aspect/material_model/morency_doin.h>
 
 using namespace dealii;
@@ -73,42 +74,62 @@ namespace aspect
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+
           SymmetricTensor<2,dim> strain_rate;
           if (in.strain_rate.size())
             strain_rate = in.strain_rate[i];
 
-          const double z = this->get_geometry_model().depth(position); // units: m
+          const double depth = this->get_geometry_model().depth(position); // units: m
 
-          double activation_energy = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            activation_energy += volume_fractions[j] * activation_energies[j] * 1e3; // Converted to J/mol to make units work
-          double nv = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            nv += volume_fractions[j] * nvs[j];
-          double np = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            np += volume_fractions[j] * nps[j];
+          // Calculate viscosity
+          {
+            double activation_energy = 0.0;
+            for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              activation_energy += volume_fractions[j] * activation_energies[j] * 1e3; // Converted to J/mol to make units work
+            double nv = 0.0;
+            for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              nv += volume_fractions[j] * nvs[j];
+            double np = 0.0;
+            for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              np += volume_fractions[j] * nps[j];
 
-          const double tauy = tau_0 + gamma*reference_density()*g*z;
-          const double e2inv = std::sqrt(std::pow(second_invariant(strain_rate),2) + std::pow(min_strain_rate,2));
-          double one_over_veffv = 0.0;
-          if (temperature != 0.0)
-            one_over_veffv = 1.0 /
-                             (B * std::pow(e2inv/ref_strain_rate, -1.0+1.0/nv) * std::exp((activation_energy+activation_volume*reference_density()*g*z)/(nv*R*temperature)));
-          const double veffp = tauy * (std::pow(e2inv, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np));
-          // Effective viscosity = harmonic mean of diffusion and dislocation creep. Range is limited to 1e17-1e28 for stability.
-          const double veff = std::min(std::max(veff_coefficient * std::pow((1.0/veffp + one_over_veffv), -1.0), min_visc), max_visc);
-          out.viscosities[i] = veff;
+            const double tauy = tau_0 + gamma*reference_density()*g*depth;
 
-          double density = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              //not strictly correct if thermal expansivities are different, since we are interpreting
-              //these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
-              density += volume_fractions[j] * densities[j] * temperature_factor;
-            }
-          out.densities[i] = density;
+            /**
+             * Note: The actual second invariant of strain rate is defined as $e_{00}e_{11} - e_{01}^2$,
+             * (maybe times 1/2 depending on the convention) where e is the second order strain rate
+             * tensor. The function used here reflects the equations defined in (Morency and Doin, 2004)
+             * but is otherwise unjustified. Use at your own risk.
+             */
+            const double e2inv = std::sqrt((strain_rate[0][0]*strain_rate[0][0] + strain_rate[0][1]*strain_rate[0][1])/2.0);
+
+            const double edot = std::sqrt(std::pow(e2inv,2) + std::pow(min_strain_rate,2));
+
+            // Calculate 1/(v_eff^v) and 1/(v_eff^p)
+            double one_over_veffv = 0.0;
+            if (temperature != 0.0)
+              one_over_veffv = 1.0 / (B * std::pow(edot/ref_strain_rate, -1.0+1.0/nv))
+                               * std::exp(-(activation_energy+activation_volume*reference_density()*g*depth)/(nv*R*temperature));
+            const double one_over_veffp = 1.0 / (tauy * (std::pow(edot, -1.0+1.0/np) / std::pow(ref_strain_rate, 1.0/np)));
+            // Effective viscosity = harmonic mean of diffusion and dislocation creep.
+            // = (1/(v_eff^v) + 1/(v_eff^p))^-1
+            const double veff = std::pow((one_over_veffv + one_over_veffp), -1.0);
+
+            out.viscosities[i] = veff;
+          }
+
+          // Calculate density
+          {
+            double density = 0.0;
+            for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              {
+                //not strictly correct if thermal expansivities are different, since we are interpreting
+                //these compositions as volume fractions, but the error introduced should not be too bad.
+                const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_T));
+                density += volume_fractions[j] * densities[j] * temperature_factor;
+              }
+            out.densities[i] = density;
+          }
 
           // Thermal expansion coefficients at the given positions.
           double thermal_expansivity = 0.0;
@@ -118,7 +139,7 @@ namespace aspect
           // Specific heat at the given positions.
           out.specific_heat[i] = heat_capacity;
           // Thermal conductivity at the given positions.
-          out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * density;
+          out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * out.densities[i];
           // Compressibility at the given positions.
           // The compressibility is given as
           // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
@@ -149,69 +170,6 @@ namespace aspect
     reference_density () const
     {
       return densities[0];
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the viscosity() function
-      // to see the dependencies
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::strain_rate) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else if (((dependence & NonlinearDependence::pressure) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    MorencyDoin<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
     }
 
     template <int dim>
@@ -258,16 +216,13 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0), "Units: $m^2/s$");
           prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J / (K * kg)$");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: $m^3 / mol$");
-          prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\varepsilon}_{ref}$). Units: $1 / s$");
+          prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_{ref}$). Units: $1 / s$");
           prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");
           prm.declare_entry ("Coefficient of yield stress increase with depth", "0.25", Patterns::Double(0), "($\\gamma$). Units: None");
           prm.declare_entry ("Cohesive strength of rocks at the surface", "117", Patterns::Double(0), "($\\tau_0$). Units: $Pa$");
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0), "For calculating density by thermal expansivity. Units: $K$");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0), "Stabilizes strain dependent viscosity. Units: $1 / s$");
 
-          prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double(0), "Lower cutoff for effective viscosity. Units: $Pa s$");
-          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double(0), "Upper cutoff for effective viscosity. Units: $Pa s$");
-          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::Double(0), "Scaling coefficient for effective viscosity.");
           prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0), "Reference viscosity for nondimensionalization.");
         }
         prm.leave_subsection();
@@ -298,9 +253,6 @@ namespace aspect
           min_strain_rate = prm.get_double("Minimum strain rate");
           reference_T = prm.get_double("Reference temperature");
 
-          min_visc = prm.get_double ("Minimum viscosity");
-          max_visc = prm.get_double ("Maximum viscosity");
-          veff_coefficient = prm.get_double ("Effective viscosity coefficient");
           ref_visc = prm.get_double ("Reference viscosity");
 
           std::vector<double> x_values;
@@ -351,34 +303,53 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-    }
 
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+    }
+  }
+}
+
+// explicit instantiations
+namespace aspect
+{
+  namespace MaterialModel
+  {
     ASPECT_REGISTER_MATERIAL_MODEL(MorencyDoin,
                                    "Morency and Doin",
                                    "An implementation of the visco-plastic rheology described by (Morency"
                                    " and Doin, 2004). Compositional fields can each be assigned individual"
-                                   " activation energies, reference densities, thermal expansivities,"
-                                   " and stress exponents. The effective viscosity is defined as"
-                                   "\n\n"
+                                   " activation energies, reference densities, thermal expansivities, and"
+                                   " stress exponents. The effective viscosity is defined as"
                                    " \\[v_{eff} = \\left(\\frac{1}{v_{eff}^v}+\\frac{1}{v_{eff}^p}\\right)^{-1}\\]"
                                    " where"
-                                   " \\[v_{eff}^v = B \\left(\\frac{\\dot{\\varepsilon}}{\\dot{\\varepsilon}_{ref}}\\right)^{-1+1/n_v}"
-                                   " exp\\left(\\frac{E_a +V_a \\rho_m g z}{n_v R T}\\right) \\]"
-                                   " \\[v_{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\varepsilon}^{-1+1/n_p}}"
-                                   " {\\dot{\\varepsilon}_{ref}^{1/n_p}} \\right) \\]"
-                                   "\n\n"
-                                   " Where $B$ is a scaling constant, $\\dot{\\varepsilon}$ is"
-                                   " related to the second invariant of the strain rate tensor, $\\dot{\\varepsilon}_{ref}$ is a"
-                                   " reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,"
-                                   " $V_a$ is the activation volume, $\\rho_m$ is the mantle density, $R$ is the gas constant, $T$"
-                                   " is temperature, $\\tau_0$ is the cohestive strength of rocks at the surface, $\\gamma$ is a"
-                                   " coefficient of yield stress increase with depth, and $z$ is depth."
+                                   " \\[v_{eff}^v = B \\left(\\frac{\\dot{\\epsilon}}{\\dot{\\epsilon}_{ref}}"
+                                   " \\right)^{-1+1/n_v} exp\\left(\\frac{E_a +V_a \\rho_m g z}{n_v R T}\\right) \\]"
+                                   " \\[v_{eff}^p = (\\tau_0 + \\gamma \\rho_m g z) \\left( \\frac{\\dot{\\epsilon}^{-1+1/n_p}}"
+                                   " {\\dot{\\epsilon}_{ref}^{1/n_p}} \\right) \\]"
+                                   " where $B$ is a scaling constant; $\\dot{\\epsilon}$ is defined as"
+                                   " the quadratic sum of the second invariant of the strain rate tensor and"
+                                   " a minimum strain rate, $\\dot{\\epsilon}_0$; $\\dot{\\epsilon}_{ref}$"
+                                   " is a reference strain rate; $n_v$, and $n_p$ are stress exponents; $E_a$"
+                                   " is the activation energy; $V_a$ is the activation volume; $\\rho_m$ is the"
+                                   " mantle density; $R$ is the gas constant; $T$ is temperature; $\\tau_0$ is"
+                                   " the cohestive strength of rocks at the surface; $\\gamma$ is a coefficient"
+                                   " of yield stress increase with depth; and $z$ is depth."
+                                   " \n\n"
+                                   " Note: (Morency and Doin, 2004) defines the second invariant of the strain"
+                                   " rate in a nonstandard way. The formulation in the paper is given as"
+                                   " $\\epsilon_{II} = \\sqrt{\\frac{1}{2} (\\epsilon_{11}^2 +"
+                                   " \\epsilon_{12}^2)}$ where $\\epsilon$ is the strain rate tensor."
+                                   " For consistency, that is also the formulation implemented in this material model."
                                    " \n\n"
                                    " Morency, C., and M‐P. Doin. \"Numerical simulations of the mantle lithosphere delamination.\""
                                    " Journal of Geophysical Research: Solid Earth (1978–2012) 109.B3 (2004)."
-                                   "\n\n"
-                                   " The value for the components of this formula and additional"
-                                   " parameters are read from the parameter file in subsection"
-                                   " 'Material model/Morency and Doin'.")
+                                   " \n\n"
+                                   " The value for the components of this formula and additional parameters are"
+                                   " read from the parameter file in subsection 'Material model/Morency and Doin'.")
   }
 }

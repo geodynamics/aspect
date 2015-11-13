@@ -1,0 +1,95 @@
+# This test checks that we do not divide by zero when computing
+# the conduction timestep in a model, where the thermal conductivity is
+# set to zero. We simply use the convection timestep in this case
+# (or fall back to the original default, when the velocity is zero as well).
+# Otherwise this test is identical to constant_composition_convergence.prm
+
+set Dimension                              = 2
+set End time                               = 2e8
+set Use years in output instead of seconds = true
+set Use conduction timestep                = true
+
+set Adiabatic surface temperature          = 1600
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400000
+    set Y extent = 400000
+  end
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   =
+  set Fixed composition boundary indicators   = 
+  set Zero velocity boundary indicators       = 
+  set Tangential velocity boundary indicators = 0, 1, 2 ,3
+  set Prescribed velocity boundary indicators = 
+
+  set Include shear heating = false
+  set Include adiabatic heating = false
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 1600 + 100*sin(x*pi/200000.0)
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  
+  subsection Function
+    set Function expression = 0.5
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density                = 3000
+    set Thermal conductivity             = 0
+    set Thermal expansion coefficient    = 4e-5
+    set Viscosity                        = 1e23
+    set Reference temperature            = 1600
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end
+
+

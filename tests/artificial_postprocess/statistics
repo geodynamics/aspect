@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Time step size (years)
+# 14: Minimal value for composition comp1
+# 15: Maximal value for composition comp1
+# 16: Global mass for composition comp1
+# 17: Minimal value for composition comp2
+# 18: Maximal value for composition comp2
+# 19: Global mass for composition comp2
+0 0.0000e+00 16 187 81 162  0 0  0 18 19 18 2.1388e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.00000000e+01 1.00000000e+02 1.82291667e+13 
+1 2.1388e+10 16 187 81 162 18 0 13 20 21 21 4.5259e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 4.70371454e+01 1.02741804e+02 1.82266350e+13 
+2 6.6647e+10 16 187 81 162 19 0 12 20 21 21 3.3353e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.00297830e+01 1.00008335e+02 1.82293883e+13 
+3 1.0000e+11 16 187 81 162 16 0  8 16 17 17 4.7061e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.00635450e+01 9.99997055e+01 1.82300462e+13 

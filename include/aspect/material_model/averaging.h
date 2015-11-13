@@ -55,12 +55,16 @@ namespace aspect
     * quadrature point to \f[ \bar x = \max_{1\le q\le Q} x_q \f] where
     * $x_q$ are the values at the $Q$ quadrature points.
     *
+    * - Log average: Set the values of each output quantity at every
+    * quadrature point to \f[ \bar x = {10}^{\frac 1Q \sum_{q=1}^Q \log_{10} x_q} \f]
+    * where $x_q$ are the values at the $Q$ quadrature points.
+    *
     * - NWD Arithmetic averaging: Set the values of each output quantity at
-    * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q}]
+    * every quadrature point to \f[ \bar x = \frac {\sum_{q=1}^Q W_q * x_q} {\sum_{q=1}^Q W_q} \f]
     * where $x_q$ are the values and $w$ the weights at the $Q$ quadrature points.
     *
     * - NWD Harmonic averaging: Set the values of each output quantity at every
-    * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q \frac{w_q}{x_q}}
+    * quadrature point to \f[ \bar x = \frac{\sum_{q=1}^Q w_q }{ \sum_{q=1}^Q \frac{w_q}{x_q}} \f]
     *  where $x_q$ are the values and $w$ the weights
     * at the $Q$ quadrature points.
     *
@@ -76,6 +80,7 @@ namespace aspect
       harmonic_average,
       geometric_average,
       pick_largest,
+      log_average,
       nwd_arithmetic_average,
       nwd_harmonic_average,
       nwd_geometric_average
@@ -110,41 +115,6 @@ namespace aspect
          */
         virtual void
         parse_parameters (ParameterHandler &prm);
-
-        /**
-         * Method to determine viscosity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine density dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine compressibility dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine specific heat capacity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Method to determine thermal conductivity dependencies of material model
-         * These are derived from the base model.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible

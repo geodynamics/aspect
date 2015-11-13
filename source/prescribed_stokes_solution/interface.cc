@@ -39,6 +39,12 @@ namespace aspect
 
     template <int dim>
     void
+    Interface<dim>::update ()
+    {}
+
+
+    template <int dim>
+    void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &/*prm*/)
     {}
@@ -89,7 +95,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      if (model_name == "")
+      if (model_name == "unspecified")
         return NULL;
 
       Interface<dim> *plugin = std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
@@ -108,19 +114,11 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               +
-                               std_cxx1x::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "Select one of the following models:\n\n"
+                           +
+                           std_cxx1x::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 

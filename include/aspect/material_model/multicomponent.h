@@ -65,33 +65,18 @@ namespace aspect
     {
       public:
 
+        /**
+         * Function to compute the material properties in @p out given the
+         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
+         * 0, then the viscosity does not need to be computed.
+         */
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-
-        /**
-         * @}
-         */
 
         /**
          * @name Qualitative properties one can ask a material model
          * @{
          */
-
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
          * This model is not compressible, so this returns false.

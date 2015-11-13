@@ -20,7 +20,6 @@
 
 #include <deal.II/base/std_cxx11/array.h>
 #include <aspect/material_model/depth_dependent.h>
-#include <deal.II/base/parameter_handler.h>
 #include <utility>
 #include <limits>
 
@@ -35,7 +34,6 @@ namespace aspect
     DepthDependent<dim>::read_viscosity_file(const std::string &filename)
     {
       /* This method is used for the Table method of depth dependent viscosity */
-      std::string temp;
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
                    ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
@@ -60,9 +58,9 @@ namespace aspect
           visc_vec.push_back( visc );
         }
       /* Check to make sure that limits of depth-dependence table encompass entire domain. */
-      Assert( min_depth <= 0.0, ExcMessage("Minumum depth in viscosity file must be <= 0.0") );
-      Assert( max_depth >= this->get_geometry_model().maximal_depth(),
-              ExcMessage("Maximum depth in viscosity file must be >= maximal depth of model") );
+      AssertThrow( min_depth <= 0.0, ExcMessage("Minimum depth in viscosity file must be <= 0.0") );
+      AssertThrow( max_depth >= this->get_geometry_model().maximal_depth(),
+                   ExcMessage("Maximum depth in viscosity file must be >= maximal depth of model") );
 
       Table<1,double> viscosity_table( depth_table[0].size() );
 
@@ -99,22 +97,22 @@ namespace aspect
       /* The depth dependent prefactor is the multiplicative factor by which the
        * viscosity computed by the base model's evaluate mathod will be scaled */
       const double reference_viscosity = base_model->reference_viscosity();
-      if ( viscosity_method == File )
+      if ( viscosity_source == File )
         {
           return viscosity_from_file(depth)/reference_viscosity;
         }
-      else if ( viscosity_method == Function )
+      else if ( viscosity_source == Function )
         {
           const Point<1> dpoint(depth);
           const double viscosity_depth_prefactor = viscosity_function.value(dpoint);
           Assert (viscosity_depth_prefactor > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
           return viscosity_depth_prefactor/reference_viscosity;
         }
-      else if (viscosity_method == List)
+      else if (viscosity_source == List)
         {
           return viscosity_from_list(depth)/reference_viscosity;
         }
-      else if (viscosity_method == None)
+      else if (viscosity_source == None)
         {
           return 1.0;
         }
@@ -169,7 +167,7 @@ namespace aspect
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
                              "files located in the 'data/' subdirectory of ASPECT. ");
-          prm.declare_entry("Viscosity depth file", "visc_depth.txt",
+          prm.declare_entry("Viscosity depth file", "visc-depth.txt",
                             Patterns::Anything (),
                             "The name of the file containing depth-dependent viscosity data. ");
 
@@ -205,30 +203,22 @@ namespace aspect
       {
         prm.enter_subsection("Depth dependent model");
         {
-          Assert( prm.get("Base model") != "depth dependent",
-                  ExcMessage("You may not use ``depth dependent'' as the base model for "
-                             "a depth-dependent model.") );
+          AssertThrow( prm.get("Base model") != "depth dependent",
+                       ExcMessage("You may not use ``depth dependent'' as the base model for "
+                                  "a depth-dependent model.") );
 
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
           if ( prm.get("Depth dependence method") == "Function" )
-            {
-              viscosity_method = Function;
-            }
+            viscosity_source = Function;
           else if ( prm.get("Depth dependence method") == "File" )
-            {
-              viscosity_method = File;
-            }
+            viscosity_source = File;
           else if ( prm.get("Depth dependence method") == "List" )
-            {
-              viscosity_method = List;
-            }
+            viscosity_source = List;
           else if (  prm.get("Depth dependence method") == "None" )
-            {
-              viscosity_method = None;
-            }
+            viscosity_source = None;
           else
             {
-              Assert(false, ExcMessage("Unknown method for depth dependence."));
+              AssertThrow(false, ExcMessage("Unknown method for depth dependence."));
             }
 
           depth_values     = Utilities::string_to_double(Utilities::split_string_list(prm.get("Depth list")));
@@ -236,21 +226,21 @@ namespace aspect
           /*
            * check sanity of viscosity list values and depth list values input
            */
-          if ( viscosity_method == List)
+          if (viscosity_source == List)
             {
               /* check that length of depth values and viscosity values are compatible */
-              Assert( depth_values.size() == viscosity_values.size() ,
-                      ExcMessage("Depth list must be same size as Viscosity list"));
+              AssertThrow( depth_values.size() == viscosity_values.size() ,
+                           ExcMessage("Depth list must be same size as Viscosity list"));
               /* check that list is in ascending order */
               for (unsigned int i=1; i<depth_values.size(); i++)
-                Assert(depth_values[i] > depth_values[i-1],
-                       ExcMessage("Viscosity depth values must be strictly ascending"));
+                AssertThrow(depth_values[i] > depth_values[i-1],
+                            ExcMessage("Viscosity depth values must be strictly ascending"));
               /* check that last layer includes base of model */
-              Assert( *(depth_values.end()-1) >= this->get_geometry_model().maximal_depth(),
-                      ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
+              AssertThrow( *(depth_values.end()-1) >= this->get_geometry_model().maximal_depth(),
+                           ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
             }
 
-          if (viscosity_method == File )
+          if (viscosity_source == File)
             {
               std::string datadirectory                = prm.get ("Data directory");
               const std::string radial_viscosity_file_name   = prm.get ("Viscosity depth file");
@@ -285,49 +275,11 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->viscosity_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->density_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->compressibility_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->specific_heat_depends_on(dependence);
-    }
-
-    template <int dim>
-    bool
-    DepthDependent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return base_model->thermal_conductivity_depends_on(dependence);
+      this-> model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>

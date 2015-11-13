@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
+--     . version 1.4.pre
 --     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
@@ -15,6 +15,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26 iterations.
+   Residual after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21 iterations.
@@ -46,131 +47,54 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      reference_cp:                                  1
      reference_thermal_diffusivity:                 1e-06
 
-     Temperature min/avg/max:  0 K, 0 K, 0 K
-     RMS, max velocity:        1.05 m/s, 1.1 m/s
-     Writing graphical output: output-no_adiabatic_heating_03/solution-00000
+     Temperature min/avg/max: 0 K, 0 K, 0 K
+     RMS, max velocity:       1.05 m/s, 1.1 m/s
+     Writing depth average    output-no_adiabatic_heating_03/depth_average.gnuplot
 
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
-   Residual after nonlinear iteration 2: 0.463546
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.398348
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.398348
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.398348
-
+   Residual after nonlinear iteration 1: 2.20615e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.003842 K, 0.004154 K
+     Temperature min/avg/max: 0 K, 0.003202 K, 0.003462 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568181 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.267625
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.267625
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.267625
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.267625
-
+   Residual after nonlinear iteration 1: 2.09917e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.007599 K, 0.008302 K
+     Temperature min/avg/max: 0 K, 0.006333 K, 0.006918 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 0.30113
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 0.30113
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 0.30113
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 0.30113
-
+   Residual after nonlinear iteration 1: 2.12537e-07
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 0.01125 K, 0.01244 K
+     Temperature min/avg/max: 0 K, 0.009376 K, 0.01037 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.1 seconds
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 1
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 3: 1
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 4: 1
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 5: 1
-
+   Solving Stokes system... 1 iterations.
+   Residual after nonlinear iteration 1: 1.12544e-07
 
    Postprocessing:
-     Temperature min/avg/max:  0 K, 0.01311 K, 0.01459 K
-     RMS, max velocity:        1.05 m/s, 1.1 m/s
-     Writing graphical output: output-no_adiabatic_heating_03/solution-00001
+     Temperature min/avg/max: 0 K, 0.01093 K, 0.01215 K
+     RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      27.8s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        25 |      15.4s |        55% |
-| Assemble temperature system     |         5 |      1.55s |       5.6% |
-| Build Stokes preconditioner     |        25 |      9.19s |        33% |
-| Build temperature preconditioner|         5 |    0.0223s |      0.08% |
-| Solve Stokes system             |        25 |     0.439s |       1.6% |
-| Solve temperature system        |         5 |    0.0368s |      0.13% |
-| Initialization                  |         2 |     0.135s |      0.49% |
-| Postprocessing                  |         5 |     0.245s |      0.88% |
-| Setup dof systems               |         1 |     0.172s |      0.62% |
 +---------------------------------+-----------+------------+------------+
 

@@ -1,0 +1,100 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libartificial_postprocess.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 430 (162+25+81+81+81)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving comp1 system ... 0 iterations.
+   Solving comp2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+EV temperature: 
+1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 1.296e+01 
+EV composition 0: 
+0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+EV composition 1: 
+0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 0.0000000000e+00 
+     Compositions min/max/mass: 0/0/0 // 50/100/1.823e+13
+     EV norms:                  51.8451 0 0 
+
+*** Timestep 1:  t=2.13881e+10 years
+   Solving temperature system... 18 iterations.
+   Solving comp1 system ... 0 iterations.
+   Solving comp2 system ... 13 iterations.
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+EV temperature: 
+1.742e-03 2.580e-03 2.280e-03 1.784e-03 2.507e-03 1.556e-03 1.679e-03 1.970e-03 2.280e-03 1.784e-03 1.742e-03 2.580e-03 1.679e-03 1.970e-03 2.507e-03 1.556e-03 
+EV composition 0: 
+4.2915968002e-10 6.3428395869e-10 5.6160720519e-10 4.3868700339e-10 6.1596738821e-10 3.8228487043e-10 4.1249051397e-10 4.8395909502e-10 5.6160720519e-10 4.3868700339e-10 4.2915968002e-10 6.3428395869e-10 4.1249051397e-10 4.8395909502e-10 6.1596738821e-10 3.8228487043e-10 
+EV composition 1: 
+4.2915968002e-10 6.3428395869e-10 5.6160720519e-10 4.3868700339e-10 6.1596738821e-10 3.8228487043e-10 4.1249051397e-10 4.8395909502e-10 5.6160720519e-10 4.3868700339e-10 4.2915968002e-10 6.3428395869e-10 4.1249051397e-10 4.8395909502e-10 6.1596738821e-10 3.8228487043e-10 
+     Compositions min/max/mass: 0/0/0 // 47.04/102.7/1.823e+13
+     EV norms:                  0.00818249 2.0121e-09 2.0121e-09 
+
+*** Timestep 2:  t=6.66473e+10 years
+   Solving temperature system... 19 iterations.
+   Solving comp1 system ... 0 iterations.
+   Solving comp2 system ... 12 iterations.
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+EV temperature: 
+2.432e-03 3.539e-03 3.365e-03 2.453e-03 3.449e-03 2.196e-03 2.342e-03 2.880e-03 3.382e-03 2.483e-03 2.512e-03 3.789e-03 2.381e-03 2.895e-03 3.690e-03 2.268e-03 
+EV composition 0: 
+5.9897586890e-10 8.7070639587e-10 8.2862611217e-10 6.0336030616e-10 8.4812140644e-10 5.3991106030e-10 5.7575250123e-10 7.0809003105e-10 8.3278622887e-10 6.1086530279e-10 6.1873772772e-10 9.3170648974e-10 5.8527566127e-10 7.1165973115e-10 9.0668805797e-10 5.5729204584e-10 
+EV composition 1: 
+5.5062926441e-10 8.7070639587e-10 2.1470678013e-10 6.0336030616e-10 8.4812140644e-10 5.2981152798e-10 5.7575250123e-10 1.8882739816e-10 3.1410168910e-10 6.1086530279e-10 6.1873772772e-10 9.3170648974e-10 5.8527566127e-10 2.2934662502e-10 9.0668805797e-10 3.5844335833e-10 
+     Compositions min/max/mass: 0/0/0 // 50.03/100/1.823e+13
+     EV norms:                  0.0117204 2.8828e-09 2.43045e-09 
+
+*** Timestep 3:  t=1e+11 years
+   Solving temperature system... 16 iterations.
+   Solving comp1 system ... 0 iterations.
+   Solving comp2 system ... 8 iterations.
+   Solving Stokes system... 16 iterations.
+
+   Postprocessing:
+EV temperature: 
+1.323e-03 1.828e-03 2.083e-03 1.294e-03 1.795e-03 1.225e-03 1.276e-03 1.747e-03 2.119e-03 1.344e-03 1.553e-03 2.345e-03 1.351e-03 1.778e-03 2.293e-03 1.373e-03 
+EV composition 0: 
+3.2570296460e-10 4.4990483561e-10 5.1291138004e-10 3.1851471460e-10 4.4181266978e-10 3.0151969810e-10 3.1391697575e-10 4.2981260218e-10 5.2178761312e-10 3.3076760775e-10 3.8242006783e-10 5.7667043363e-10 3.3232985808e-10 4.3726672283e-10 5.6343357757e-10 3.3730609972e-10 
+EV composition 1: 
+3.2570296460e-10 4.4990483561e-10 3.9133457586e-10 3.1851471460e-10 4.4181266978e-10 3.0151969810e-10 3.1391697575e-10 4.0772496490e-10 3.2638267089e-10 3.3076760775e-10 3.8242006783e-10 5.7667043363e-10 3.3232985808e-10 2.1574507458e-10 5.6343357757e-10 2.6261270936e-10 
+     Compositions min/max/mass: 0/0/0 // 50.06/100/1.823e+13
+     EV norms:                  0.00684474 1.68397e-09 1.53366e-09 
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.143s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         4 |   0.00835s |       5.8% |
+| Assemble composition system     |         8 |    0.0283s |        20% |
+| Assemble temperature system     |         4 |    0.0148s |        10% |
+| Build Stokes preconditioner     |         1 |   0.00916s |       6.4% |
+| Build composition preconditioner|         8 |   0.00132s |      0.92% |
+| Build temperature preconditioner|         4 |  0.000856s |       0.6% |
+| Solve Stokes system             |         4 |    0.0114s |         8% |
+| Solve composition system        |         8 |   0.00188s |       1.3% |
+| Solve temperature system        |         4 |   0.00159s |       1.1% |
+| Initialization                  |         2 |    0.0232s |        16% |
+| Postprocessing                  |         4 |    0.0299s |        21% |
+| Setup dof systems               |         1 |   0.00557s |       3.9% |
++---------------------------------+-----------+------------+------------+
+

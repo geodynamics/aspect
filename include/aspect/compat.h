@@ -22,14 +22,207 @@
 #define __aspect__compat_h
 
 #include <aspect/global.h>
+/*
+ * Fixed colorization of parallelepiped
+ */
+#if !DEAL_II_VERSION_GTE(8,4,0)
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/grid_reordering.h>
+namespace dealii
+{
+  namespace GridGenerator
+  {
+    // Parallelepiped implementation in 1d, 2d, and 3d. @note The
+    // implementation in 1d is similar to hyper_rectangle(), and in 2d is
+    // similar to parallelogram().
+    //
+    // The GridReordering::reorder_grid is made use of towards the end of
+    // this function. Thus the triangulation is explicitly constructed for
+    // all dim here since it is slightly different in that respect
+    // (cf. hyper_rectangle(), parallelogram()).
+    template<int dim>
+    void
+    subdivided_parallelepiped (Triangulation<dim>  &tria,
+#ifndef _MSC_VER
+                               const unsigned int(&n_subdivisions)[dim],
+#else
+                               const unsigned int *n_subdivisions,
+#endif
+                               const Point<dim>   (&corners) [dim],
+                               const bool           colorize)
+    {
+      // Zero n_subdivisions is the origin only, which makes no sense
+      for (unsigned int i=0; i<dim; ++i)
+        Assert (n_subdivisions[i]>0, ExcInvalidRepetitions(n_subdivisions[i]));
+
+      // Check corners do not overlap (unique)
+      for (unsigned int i=0; i<dim; ++i)
+        for (unsigned int j=i+1; j<dim; ++j)
+          Assert ((corners[i]!=corners[j]),
+                  ExcMessage ("Invalid distance between corner points of parallelepiped."));
+
+      // Create a list of points
+      Point<dim> delta[dim];
+
+      for (unsigned int i=0; i<dim; ++i)
+        delta[i] = corners[i]/n_subdivisions[i];
+      std::vector<Point<dim> > points;
+
+      switch (dim)
+        {
+          case 1:
+            for (unsigned int x=0; x<=n_subdivisions[0]; ++x)
+              points.push_back (double(x)*delta[0]);
+            break;
+
+          case 2:
+            for (unsigned int y=0; y<=n_subdivisions[1]; ++y)
+              for (unsigned int x=0; x<=n_subdivisions[0]; ++x)
+                points.push_back (double(x)*delta[0] + double(y)*delta[1]);
+            break;
+
+          case 3:
+            for (unsigned int z=0; z<=n_subdivisions[2]; ++z)
+              for (unsigned int y=0; y<=n_subdivisions[1]; ++y)
+                for (unsigned int x=0; x<=n_subdivisions[0]; ++x)
+                  points.push_back (double(x)*delta[0] + double(y)*delta[1] + double(z)*delta[2]);
+            break;
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      // Prepare cell data
+      unsigned int n_cells = 1;
+      for (unsigned int i=0; i<dim; ++i)
+        n_cells *= n_subdivisions[i];
+      std::vector<CellData<dim> > cells (n_cells);
+
+      // Create fixed ordering of
+      switch (dim)
+        {
+          case 1:
+            for (unsigned int x=0; x<n_subdivisions[0]; ++x)
+              {
+                cells[x].vertices[0] = x;
+                cells[x].vertices[1] = x+1;
+
+                // wipe material id
+                cells[x].material_id = 0;
+              }
+            break;
+
+          case 2:
+          {
+            // Shorthand
+            const unsigned int n_dy = n_subdivisions[1];
+            const unsigned int n_dx = n_subdivisions[0];
+
+            for (unsigned int y=0; y<n_dy; ++y)
+              for (unsigned int x=0; x<n_dx; ++x)
+                {
+                  const unsigned int    c = y*n_dx         + x;
+                  cells[c].vertices[0] = y*(n_dx+1)     + x;
+                  cells[c].vertices[1] = y*(n_dx+1)     + x+1;
+                  cells[c].vertices[2] = (y+1)*(n_dx+1) + x;
+                  cells[c].vertices[3] = (y+1)*(n_dx+1) + x+1;
+
+                  // wipe material id
+                  cells[c].material_id = 0;
+                }
+          }
+          break;
+
+          case 3:
+          {
+            // Shorthand
+            const unsigned int n_dz = n_subdivisions[2];
+            const unsigned int n_dy = n_subdivisions[1];
+            const unsigned int n_dx = n_subdivisions[0];
+
+            for (unsigned int z=0; z<n_dz; ++z)
+              for (unsigned int y=0; y<n_dy; ++y)
+                for (unsigned int x=0; x<n_dx; ++x)
+                  {
+                    const unsigned int    c = z*n_dy*n_dx             + y*n_dx         + x;
+
+                    cells[c].vertices[0] = z*(n_dy+1)*(n_dx+1)     + y*(n_dx+1)     + x;
+                    cells[c].vertices[1] = z*(n_dy+1)*(n_dx+1)     + y*(n_dx+1)     + x+1;
+                    cells[c].vertices[2] = z*(n_dy+1)*(n_dx+1)     + (y+1)*(n_dx+1) + x;
+                    cells[c].vertices[3] = z*(n_dy+1)*(n_dx+1)     + (y+1)*(n_dx+1) + x+1;
+                    cells[c].vertices[4] = (z+1)*(n_dy+1)*(n_dx+1) + y*(n_dx+1)     + x;
+                    cells[c].vertices[5] = (z+1)*(n_dy+1)*(n_dx+1) + y*(n_dx+1)     + x+1;
+                    cells[c].vertices[6] = (z+1)*(n_dy+1)*(n_dx+1) + (y+1)*(n_dx+1) + x;
+                    cells[c].vertices[7] = (z+1)*(n_dy+1)*(n_dx+1) + (y+1)*(n_dx+1) + x+1;
+
+                    // wipe material id
+                    cells[c].material_id = 0;
+                  }
+            break;
+          }
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      // Create triangulation
+      // reorder the cells to ensure that they satisfy the convention for
+      // edge and face directions
+      GridReordering<dim>::reorder_cells(cells, true);
+      tria.create_triangulation (points, cells, SubCellData());
+
+      // Finally assign boundary indicators according to hyper_rectangle
+      if (colorize)
+        {
+          typename Triangulation<dim>::active_cell_iterator
+          cell = tria.begin_active(),
+          endc = tria.end();
+          for (; cell!=endc; ++cell)
+            {
+              for (unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+                {
+                  if (cell->face(face)->at_boundary())
+#if DEAL_II_VERSION_GTE(8,3,0)
+                    cell->face(face)->set_boundary_id(face);
+#else
+                    cell->face(face)->set_boundary_indicator (face);
+#endif
+                }
+            }
+        }
+    }
+  }
+}
+#endif
+
+/*
+ * cross_product
+ */
+#if !DEAL_II_VERSION_GTE(8,4,0)
+template <int dim>
+dealii::Tensor<1,dim> cross_product_3d(const dealii::Tensor<1,dim> &a, const dealii::Tensor<1,dim> &b)
+{
+  Assert (dim==3, dealii::ExcInternalError());
+  dealii::Tensor<1,dim> result;
+  dealii::cross_product(result, a, b);
+  return result;
+}
+
+template <int dim>
+dealii::Tensor<1,dim> cross_product_2d(const dealii::Tensor<1,dim> &a)
+{
+  Assert (dim==2, dealii::ExcInternalError());
+  dealii::Tensor<1,dim> result;
+  dealii::cross_product(result, a);
+  return result;
+}
+#endif
 
 
 /*
  * MPI::min() functions
  */
-#if DEAL_II_VERSION_GTE(8,3,0)
-// use deal.II's MPI::min() functions
-#else
+#if !DEAL_II_VERSION_GTE(8,3,0)
 namespace dealii
 {
   namespace Utilities

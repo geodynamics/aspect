@@ -1,0 +1,29 @@
+
+Loading shared library <./libmaterial_model_dependencies_diffusion_dislocation.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13 iterations.
+      Nonlinear Stokes residual: 0.00882742
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+      Nonlinear Stokes residual: 2.96991e-10
+
+   Postprocessing:
+viscosity depends on pressure temperature strainrate composition
+density depends on pressure temperature composition
+compressibility depends on
+specific_heat depends on
+thermal_conductivity depends on pressure temperature composition
+model is incompressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

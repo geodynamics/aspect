@@ -1,0 +1,91 @@
+# A simple setup for convection in a 3d ellipsoidal chunk. See the
+# manual for more information.
+
+############### Global parameters
+# We use a 3d setup. Since we are only interested
+# the shape of the grid, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+
+
+############### Parameters describing the model
+# We create a coordinate parallel ellipsoidal chunk with
+# a large eccentricity (0.5).
+
+subsection Geometry model
+  set Model name = ellipsoidal chunk
+    subsection Ellipsoidal chunk
+        set NE corner = 5:30
+        set NW corner = 0:0
+        set SW corner = 10:-10
+        set Depth = 3000000
+        set Eccentricity = 0.5
+        set East-West subdivisions = 1
+        set North-South subdivisions = 2
+        set Depth subdivisions = 3
+   end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer,north,south,east,west
+  set Prescribed velocity boundary indicators =
+
+  set Fixed temperature boundary indicators   = inner, outer, east, west, north, south
+
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary temperature model
+  set Model name = constant 
+  subsection Constant
+    set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1.473e3
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+############### Parameters describing the discretization
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 1
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 15
+end
+
+############### Parameters describing the what to do with the solution
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, velocity statistics, basic statistics
+
+  subsection Visualization
+    set List of output variables          = density
+    set Output format                     = gnuplot
+
+  end
+end

@@ -1,0 +1,175 @@
+
+Number of active cells: 640 (on 4 levels)
+Number of degrees of freedom: 8,716 (5,346+697+2,673)
+
+Number of free surface degrees of freedom: 1394
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+Number of active cells: 232 (on 5 levels)
+Number of degrees of freedom: 3,502 (2,146+283+1,073)
+
+Number of free surface degrees of freedom: 566
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+
+Number of active cells: 166 (on 5 levels)
+Number of degrees of freedom: 2,690 (1,650+215+825)
+
+Number of free surface degrees of freedom: 430
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             4e-05
+     Temperature contrast across model domain (K):  0
+     Model domain depth (m):                        200000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     1e+21
+     Ra number:                                     0
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Topography min/max: 0 m, 0 m, 
+     RMS, max velocity:  0.000713 m/year, 0.00231 m/year
+
+*** Timestep 1:  t=675842 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 26 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+   Postprocessing:
+     Topography min/max: -395.5 m, 890.2 m, 
+     RMS, max velocity:  0.000764 m/year, 0.00213 m/year
+
+*** Timestep 2:  t=2.29103e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 31 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+11 iterations.
+
+   Postprocessing:
+     Topography min/max: -2699 m, 1301 m, 
+     RMS, max velocity:  0.00124 m/year, 0.00312 m/year
+
+*** Timestep 3:  t=2.8707e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 21 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+   Postprocessing:
+     Topography min/max: -814.8 m, 384.3 m, 
+     RMS, max velocity:  0.00109 m/year, 0.00263 m/year
+
+*** Timestep 4:  t=3.47318e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+   Postprocessing:
+     Topography min/max: -379.2 m, 773.4 m, 
+     RMS, max velocity:  0.000754 m/year, 0.00204 m/year
+
+*** Timestep 5:  t=5.7604e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+
+   Postprocessing:
+     Topography min/max: -4103 m, 2176 m, 
+     RMS, max velocity:  0.0013 m/year, 0.00328 m/year
+
+Number of active cells: 220 (on 5 levels)
+Number of degrees of freedom: 3,433 (2,106+274+1,053)
+
+Number of free surface degrees of freedom: 548
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 6:  t=6.47464e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 23 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -1607 m, 836.6 m, 
+     RMS, max velocity:  0.00162 m/year, 0.00409 m/year
+
+*** Timestep 7:  t=6.96032e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 18 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -243.6 m, 416 m, 
+     RMS, max velocity:  0.000544 m/year, 0.00132 m/year
+
+*** Timestep 8:  t=9.27108e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+
+   Postprocessing:
+     Topography min/max: -2667 m, 1731 m, 
+     RMS, max velocity:  0.000984 m/year, 0.00224 m/year
+
+*** Timestep 9:  t=1.0185e+07 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 24 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -598.9 m, 381.6 m, 
+     RMS, max velocity:  0.000647 m/year, 0.00136 m/year
+
+*** Timestep 10:  t=1.13343e+07 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 23 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -556.1 m, 873.7 m, 
+     RMS, max velocity:  0.000544 m/year, 0.00137 m/year
+
+Number of active cells: 295 (on 5 levels)
+Number of degrees of freedom: 4,420 (2,712+352+1,356)
+
+Number of free surface degrees of freedom: 704
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
