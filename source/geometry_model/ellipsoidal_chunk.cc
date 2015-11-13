@@ -171,7 +171,7 @@ namespace aspect
        * points with it) to the correct location at corner[0] at a
        * negative depth.
        */
-      const Point<3> base_point = {corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth};
+      const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
