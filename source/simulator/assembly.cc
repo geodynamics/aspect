@@ -1578,6 +1578,7 @@ namespace aspect
     // timestep for iterative solvers)
     double nu = 0.0;
     double tau = 0.0;
+    double term= 0.0;
     if (parameters.use_supg == false)
       {
         nu = compute_viscosity (scratch,
@@ -1650,8 +1651,11 @@ namespace aspect
             	std::cout << "Cell " << cell->index() << " has advection field below 1e-8" << std::endl;
             	norm_of_advection_field=1e-8; // can do as max (old,10-8)
                 if (max_conductivity_on_cell>1e-8)
-                            tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
-                                                                              1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
+                {
+                	        term = std::max((1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                    1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))),term);
+                            tau = 1*(h/fe_order)/(2*norm_of_advection_field)*term;
+                }
                           else
                           {
                             tau = 1*(h/fe_order)/(2*norm_of_advection_field);
@@ -1847,6 +1851,9 @@ namespace aspect
     const unsigned int block_idx = advection_field.block_index(introspection);
     system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
+
+    //Vector<float> tau_per_cell;
+    //tau_per_cell.reinit(dof_handler.n_dofs());
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
