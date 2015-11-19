@@ -23,7 +23,6 @@
 #define __aspect__simulator_access_h
 
 #include <deal.II/base/conditional_ostream.h>
-#include <deal.II/base/std_cxx11/unique_ptr.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/fe.h>

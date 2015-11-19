@@ -26,7 +26,6 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/symmetric_tensor.h>
-#include <deal.II/base/std_cxx11/unique_ptr.h>
 
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
