@@ -682,7 +682,7 @@ namespace aspect
 
         max_residual = std::max      (residual,        max_residual);
         max_velocity = std::max      (std::sqrt (u*u), max_velocity);
-        max_density  = std::max      (density,         max_density);
+        max_density  = std::max      (reference_rho,         max_density);
         max_specific_heat = std::max (c_P,             max_specific_heat);
         max_conductivity = std::max  (conductivity,    max_conductivity);
       }
