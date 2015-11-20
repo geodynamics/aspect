@@ -255,28 +255,28 @@ namespace aspect
                 || (bottom_face_idx != numbers::invalid_unsigned_int))
               {
                 const unsigned int face_index = (top_face_idx != numbers::invalid_unsigned_int)
-                        ?
-                            top_face_idx
-                            :
-                            bottom_face_idx;
+                                                ?
+                                                top_face_idx
+                                                :
+                                                bottom_face_idx;
 
                 fe_face_values.reinit (cell,face_index);
 
                 // get the various components of the solution, then
                 // evaluate the material properties there
                 fe_face_values[this->introspection().extractors.temperature]
-                               .get_function_values (this->get_solution(), face_in.temperature);
+                .get_function_values (this->get_solution(), face_in.temperature);
                 fe_face_values[this->introspection().extractors.pressure]
-                               .get_function_values (this->get_solution(), face_in.pressure);
+                .get_function_values (this->get_solution(), face_in.pressure);
                 fe_face_values[this->introspection().extractors.velocities]
-                               .get_function_symmetric_gradients (this->get_solution(), face_in.strain_rate);
+                .get_function_symmetric_gradients (this->get_solution(), face_in.strain_rate);
 
                 face_in.position = fe_face_values.get_quadrature_points();
 
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]]
-                                 .get_function_values(this->get_solution(),
-                                     face_composition_values[c]);
+                  .get_function_values(this->get_solution(),
+                                       face_composition_values[c]);
                 for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
                   {
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
