@@ -133,8 +133,8 @@ namespace dealii
 
         template<class Y>
         explicit unique_ptr (Y *p)
-        :
-        boost::scoped_ptr<T>(p)
+          :
+          boost::scoped_ptr<T>(p)
         {}
     };
 
