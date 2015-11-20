@@ -25,7 +25,6 @@ namespace aspect
   namespace Particle
   {
     template <int dim>
-    inline
     Particle<dim>::Particle (const Point<dim> &new_loc,
                              const types::particle_index &new_id)
       :
@@ -36,7 +35,6 @@ namespace aspect
     }
 
     template <int dim>
-    inline
     Particle<dim>::Particle ()
       :
       location (),
@@ -47,7 +45,6 @@ namespace aspect
 
 
     template <int dim>
-    inline
     Particle<dim>::Particle (const void *&data,
                              const unsigned int data_size)
     {
@@ -73,7 +70,6 @@ namespace aspect
 
 
     template <int dim>
-    inline
     Particle<dim>::~Particle ()
     {
     }

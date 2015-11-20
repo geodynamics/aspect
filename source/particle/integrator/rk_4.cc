@@ -120,15 +120,15 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      RK4<dim>::read_data(const void *&data,
+      const void*
+      RK4<dim>::read_data(const void *data,
                           const types::particle_index id_num)
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
         // Skip the MPI transfer in this case.
         if (integrator_substep == 3)
-          return;
+          return data;
 
         const double *integrator_data = static_cast<const double *> (data);
 
@@ -146,19 +146,19 @@ namespace aspect
         for (unsigned int i=0; i<dim; ++i)
           k3[id_num][i] = *integrator_data++;
 
-        data = static_cast<const void *> (integrator_data);
+        return static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
-      void
-      RK4<dim>::write_data(void *&data,
+      void*
+      RK4<dim>::write_data(void *data,
                            const types::particle_index id_num) const
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
         // Skip the MPI transfer in this case.
         if (integrator_substep == 3)
-          return;
+          return data;
 
         double *integrator_data = static_cast<double *> (data);
 
@@ -180,7 +180,7 @@ namespace aspect
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 
-        data = static_cast<void *> (integrator_data);
+        return static_cast<void *> (integrator_data);
       }
     }
   }
@@ -197,8 +197,8 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK4,
                                           "rk4",
                                           "Runge Kutta fourth order integrator, where "
-                                          "y_{n+1} = y_n + (1/6)*k1 + (1/3)*k2 + (1/3)*k3 + (1/6)*k4 "
-                                          "and k1, k2, k3, k4 are defined as usual.")
+                                          "$y_{n+1} = y_n + (1/6)*k_1 + (1/3)*k_2 + (1/3)*k_3 + (1/6)*k_4$ "
+                                          "and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.")
     }
   }
 }

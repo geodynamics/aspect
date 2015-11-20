@@ -64,16 +64,12 @@ namespace aspect
           {
             // If it's a 1D element, print just the name, otherwise use []
             if (property->second == 1)
-              {
-                output << property->first << " ";
-              }
+              output << property->first << ' ';
             else
-              {
-                for (unsigned int i=0; i<property->second; ++i)
-                  output << property->first << "[" << i << "] ";
-              }
+              for (unsigned int component_index=0; component_index<property->second; ++component_index)
+                output << property->first << "[" << component_index << "] ";
           }
-        output << "\n";
+        output << '\n';
 
         // And print the data for each particle
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
@@ -81,14 +77,12 @@ namespace aspect
             const std::vector<double> properties = it->second.get_properties();
 
             output << it->second.get_location();
-            output << " " << it->second.get_id();
+            output << ' ' << it->second.get_id();
             for (unsigned int i = 0; i < properties.size(); ++i)
-              output << " " << properties[i];
+              output << ' ' << properties[i];
 
-            output << "\n";
+            output << '\n';
           }
-
-        output.close();
 
         file_index++;
 

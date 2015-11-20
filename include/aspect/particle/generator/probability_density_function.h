@@ -132,24 +132,24 @@ namespace aspect
            * Generate a set of particles distributed within the local domain
            * according to the probability density function.
            *
-           * @param [in] cells Map between accumulated cell weight and cell index
-           * @param [in] global_weight The integrated probability function
-           * @param [in] start_weight The starting weight of the first cell of the local process.
-           * @param [in] num_particles The total number of particles to generate.
-           * @param [in] start_id The starting ID to assign to generated particles of the local process.
-           * @return The particle world the particles will exist in.
+           * @param [in] local_weights_map Map between accumulated cell weight and cell index
+           * for all locally owned active cells.
+           * @param [in] local_start_id The starting ID to assign to generated particles of the local process.
+           * @param [in] n_local_particles The local number of particles to generate.
+           * @return A map between cells and all generated particles.
            *
            */
           std::multimap<types::LevelInd, Particle<dim> >
-          generate_particles_in_subdomain (const std::map<double,types::LevelInd> &cells,
-                                           types::particle_index start_id,
-                                           types::particle_index local_particles);
+          generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
+                                           const types::particle_index local_start_id,
+                                           const types::particle_index n_local_particles);
 
           /**
            * This function loops over all active cells in the local subdomain
-           * and returns a vector of accumulated cell weights. This is done
-           * by adding the return value of function multiplied with the cell
-           * volume for every cell it loops over.
+           * and returns a vector of accumulated cell weights with the size
+           * n_locally_owned_active_cells(). This vector is calculated
+           * by looping over all locally owned cells and accumulating the
+           * return value of get_cell_weight(cell).
            */
           std::vector<double>
           compute_local_accumulated_cell_weights () const;

@@ -54,16 +54,20 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      Interface<dim>::read_data(const void *&,
-                                const types::particle_index )
-      {}
+      const void*
+      Interface<dim>::read_data(const void *data,
+                                const types::particle_index /*id*/)
+      {
+        return data;
+      }
 
       template <int dim>
-      void
-      Interface<dim>::write_data(void *&,
-                                 const types::particle_index ) const
-      {}
+      void*
+      Interface<dim>::write_data(void *data,
+                                 const types::particle_index /*id*/) const
+      {
+        return data;
+      }
 
 
 

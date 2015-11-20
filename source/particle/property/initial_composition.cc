@@ -67,8 +67,9 @@ namespace aspect
                                         "initial composition",
                                         "Implementation of a plugin in which the tracer "
                                         "property is given as the initial composition "
-                                        "at this position. The tracer gets as many "
-                                        "properties as compositional fields."
+                                        "at the particle's initial position. The tracer "
+                                        "gets as many properties as there are "
+                                        "compositional fields."
                                         "\n\n")
     }
   }

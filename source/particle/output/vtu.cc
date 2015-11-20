@@ -123,7 +123,7 @@ namespace aspect
                     output << particle_data[data_offset+d];
 
                     if (d+1 < property->second)
-                      output << " ";
+                      output << ' ';
                   }
 
                 if (property->second == 2)

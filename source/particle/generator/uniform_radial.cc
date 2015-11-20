@@ -89,7 +89,8 @@ namespace aspect
                     // worry about it and move on to next point.
                     try
                       {
-                        particles.insert(this->generate_particle(particle_position,particle_index++));
+                        particles.insert(this->generate_particle(particle_position,particle_index));
+                        particle_index++;
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
@@ -117,7 +118,8 @@ namespace aspect
                         // worry about it and move on to next point.
                         try
                           {
-                            particles.insert(this->generate_particle(particle_position,particle_index++));
+                            particles.insert(this->generate_particle(particle_position,particle_index));
+                            particle_index++;
                           }
                         catch (ExcParticlePointNotInDomain &)
                           {}
@@ -267,7 +269,7 @@ namespace aspect
                                          "Generate a uniform distribution of particles"
                                          "over a spherical domain in 2D or 3D. Uniform here means "
                                          "the particles will be generated with an equal spacing in "
-                                         "each spherical spatial dimension, i.e. the particles are "
+                                         "each spherical spatial dimension, i.e., the particles are "
                                          "created at positions that increase linearly with equal "
                                          "spacing in radius, colatitude and longitude around a "
                                          "certain center point. Note that in order "

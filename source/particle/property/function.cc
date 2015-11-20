@@ -112,8 +112,9 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(Function,
                                         "function",
                                         "Implementation of a model in which the tracer "
-                                        "property is given in terms of an explicit formula "
-                                        "that is elaborated in the parameters in section "
+                                        "property is set by evaluating an explicit function "
+                                        "at the initial position of each particle. The "
+                                        "function is defined in the parameters in section "
                                         "``Tracers|Function''. The format of these "
                                         "functions follows the syntax understood by the "
                                         "muparser library, see Section~\\ref{sec:muparser-format}."

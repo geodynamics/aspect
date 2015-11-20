@@ -186,8 +186,8 @@ namespace aspect
         else
           {
             Assert(false,ExcMessage("The particle property manager was asked for "
-                                    "the property called: " + name +". This property does not exist "
-                                    "in this model."));
+                                    "the property called <" + name + ">. This "
+                                    "property does not exist in this model."));
             return 0;
           }
       }
@@ -217,9 +217,9 @@ namespace aspect
             prm.declare_entry("List of tracer properties",
                               "",
                               Patterns::MultipleSelection(pattern_of_names),
-                              "A comma separated list of tracer properties that should be tracked "
-                              ". By default none is selected, which means only position, velocity "
-                              " and id of the tracers are outputted. \n\n"
+                              "A comma separated list of tracer properties that should be tracked. "
+                              "By default none is selected, which means only position, velocity "
+                              "and id of the tracers are output. \n\n"
                               "The following properties are available:\n\n"
                               +
                               std_cxx11::get<dim>(registered_plugins).get_description_string());

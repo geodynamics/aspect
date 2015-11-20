@@ -83,6 +83,7 @@ namespace aspect
          * take the properties of the closest particle, but more complicated
          * schemes are possible.
          *
+         * @param [in] generator The particle generator for this world.
          * @param [in] manager The property manager for this world.
          * @param [in] load_balancing The strategy used to balance the
          * computational load for particle advection across processes.
@@ -145,7 +146,7 @@ namespace aspect
          *
          * @return Total number of particles in simulation.
          */
-        types::particle_index get_global_particle_count() const;
+        types::particle_index n_global_particles() const;
 
         /**
          * This callback function is registered within Simulator by the
@@ -238,9 +239,15 @@ namespace aspect
 
         /**
          * Set of particles currently in the local domain, organized by
-         * the level/index of the cell they are in
+         * the level/index of the cell they are in.
          */
         std::multimap<types::LevelInd, Particle<dim> > particles;
+
+        /**
+         * This variable stores how many particles are stored globally. It is
+         * calculated by update_n_global_particles().
+         */
+        types::particle_index global_number_of_particles;
 
         /**
          * This variable is set by the register_store_callback_function()
@@ -276,6 +283,13 @@ namespace aspect
          * Returns the number of particles in the cell that contains the
          * most tracers in the global model.
          */
+        void
+        update_n_global_particles();
+
+        /**
+         * Returns the number of particles in the cell that contains the
+         * most tracers in the global model.
+         */
         unsigned int
         get_global_max_tracers_per_cell() const;
 
@@ -297,7 +311,7 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_in_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
+        move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
                                     std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
                                     std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
 

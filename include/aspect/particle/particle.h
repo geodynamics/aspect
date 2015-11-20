@@ -129,7 +129,8 @@ namespace aspect
          * to read the information that completely describes a particle.
          * This class then de-serializes its data from this memory location,
          * using @p data_size as the length of the memory block from which to
-         * read the data.
+         * read the data. @p begin_data is advanced by @p data_size bytes in
+         * this constructor.
 
          * @param[in] data_size Size in bytes of the begin_data array
          * that will be read in by this particle.

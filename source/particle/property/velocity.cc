@@ -78,11 +78,8 @@ namespace aspect
                                         "velocity",
                                         "Implementation of a plugin in which the tracer "
                                         "property is defined as the recent velocity at "
-                                        "this position. This is used for example for "
-                                        "multi-step particle integrators, because at "
-                                        "the time of particle movement this property is "
-                                        "not updated yet, so it can be used as the old "
-                                        "velocity in the integrator.\n\n")
+                                        "this position."
+                                        "\n\n")
     }
   }
 }

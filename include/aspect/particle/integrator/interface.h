@@ -120,8 +120,10 @@ namespace aspect
            * @param [in] id_num The id number of the particle to read the data
            * for.
            */
-          virtual void read_data(const void *&data,
-                                 const types::particle_index id_num);
+          virtual
+          const void*
+          read_data(const void *data,
+                    const types::particle_index id_num);
 
           /**
            * Write integration related data to a vector for a particle
@@ -135,8 +137,10 @@ namespace aspect
            * @param [in] id_num The id number of the particle to write the data
            * for.
            */
-          virtual void write_data(void *&data,
-                                  const types::particle_index id_num) const;
+          virtual
+          void*
+          write_data(void *data,
+                     const types::particle_index id_num) const;
 
 
           /**

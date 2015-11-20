@@ -88,7 +88,7 @@ namespace aspect
       // Advance the particles in the world to the current time
       world.advance_timestep();
 
-      statistics.add_value("Number of advected particles",world.get_global_particle_count());
+      statistics.add_value("Number of advected particles",world.n_global_particles());
 
       // If it's time to generate an output file and we created an output
       // object, call the appropriate functions and reset the timer
@@ -112,7 +112,7 @@ namespace aspect
                                 this->get_output_directory() + data_file_name);
           return std::make_pair("Writing particle output: ", data_file_name);
         }
-      return std::make_pair("","");
+      return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
     }
 
 
@@ -395,7 +395,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(Tracers,
                                   "tracers",
-                                  "A Postprocessor that creates tracer particles, which follow the "
+                                  "A Postprocessor that creates tracer particles that follow the "
                                   "velocity field of the simulation. The particles can be generated "
                                   "and propagated in various ways and they can carry a number of "
                                   "constant or time-varying properties. The postprocessor can write "

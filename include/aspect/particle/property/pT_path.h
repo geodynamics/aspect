@@ -34,7 +34,7 @@ namespace aspect
        * Implementation of a plugin in which the tracer
        * property is defined as the current pressure and
        * temperature at this position. This can be used
-       * to calculate pressure-temperature paths of
+       * to generate pressure-temperature paths of
        * material points over time.
        *
        * @ingroup ParticleProperties
