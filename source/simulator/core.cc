@@ -779,8 +779,11 @@ namespace aspect
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+           std_cxx11::bind (static_cast<Tensor<1,dim> (VelocityBoundaryConditions::Interface<dim>::*)(
+                              const types::boundary_id,
+                              const Point<dim> &) const> (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity),
                             p->second,
+                            p->first,
                             std_cxx11::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
