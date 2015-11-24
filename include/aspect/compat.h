@@ -88,7 +88,9 @@ namespace dealii
  * auto_ptr in CXX17. We need this to silence deprecation warnings in new
  * compilers.
  */
-#if !DEAL_II_VERSION_GTE(8,3,0)
+#if DEAL_II_VERSION_GTE(8,3,0)
+#include <deal.II/base/std_cxx11/unique_ptr.h>
+#else
 #ifdef DEAL_II_WITH_CXX11
 
 #  include <memory>
