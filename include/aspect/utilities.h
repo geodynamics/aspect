@@ -156,7 +156,6 @@ namespace aspect
      * that is not initialized.
      **/
     template <class T>
-    inline
     T
     signaling_nan();
 
