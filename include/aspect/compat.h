@@ -196,8 +196,6 @@ namespace dealii
 }
 #endif
 
-#include <deal.II/distributed/tria.h>
-
 /*
  * cross_product
  */
@@ -220,6 +218,7 @@ dealii::Tensor<1,dim> cross_product_2d(const dealii::Tensor<1,dim> &a)
   return result;
 }
 #endif
+
 
 /*
  * MPI::min() functions
@@ -324,6 +323,9 @@ namespace dealii
  * parallel::distributed::Triangulation::ghost_owners() function
  */
 #if !DEAL_II_VERSION_GTE(8,4,0)
+
+#include <deal.II/distributed/tria.h>
+
 namespace aspect
 {
   namespace Particle

@@ -37,9 +37,9 @@ namespace aspect
   {
     template <>
     World<2>::World()
-    :
-    global_number_of_particles(0),
-    data_offset(numbers::invalid_unsigned_int)
+      :
+      global_number_of_particles(0),
+      data_offset(numbers::invalid_unsigned_int)
     {
 
       aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connect_to_signals,
@@ -49,9 +49,9 @@ namespace aspect
 
     template <>
     World<3>::World()
-    :
-    global_number_of_particles(0),
-    data_offset(numbers::invalid_unsigned_int)
+      :
+      global_number_of_particles(0),
+      data_offset(numbers::invalid_unsigned_int)
     {
       aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connect_to_signals,
                                                                            std_cxx11::ref(*this),
@@ -64,18 +64,18 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize(std_cxx11::shared_ptr<Generator::Interface<dim> > particle_generator,
-                           std_cxx11::shared_ptr<Integrator::Interface<dim> > particle_integrator,
-                           std_cxx11::shared_ptr<Interpolator::Interface<dim> > property_interpolator,
-                           std_cxx11::shared_ptr<Property::Manager<dim> > manager,
+    World<dim>::initialize(Generator::Interface<dim> *particle_generator,
+                           Integrator::Interface<dim> *particle_integrator,
+                           Interpolator::Interface<dim> *property_interpolator,
+                           Property::Manager<dim> *manager,
                            const ParticleLoadBalancing &load_balancing,
                            const unsigned int max_part_per_cell,
                            const unsigned int weight)
     {
-      generator = particle_generator;
-      integrator = particle_integrator;
-      interpolator = property_interpolator;
-      property_manager = manager;
+      generator.reset(particle_generator);
+      integrator.reset(particle_integrator);
+      interpolator.reset(property_interpolator);
+      property_manager.reset(manager);
       particle_load_balancing = load_balancing;
       max_particles_per_cell = max_part_per_cell;
       tracer_weight = weight;
@@ -335,12 +335,12 @@ namespace aspect
                              const typename parallel::distributed::Triangulation<dim>::CellStatus status,
                              const void *data)
     {
-      const unsigned int *n_particles_in_cell = static_cast<const unsigned int *> (data);
-      const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell + 1);
+      const unsigned int *n_particles_in_cell_ptr = static_cast<const unsigned int *> (data);
+      const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell_ptr + 1);
 
       // Load all particles from the data stream and store them in the local
       // particle map.
-      for (unsigned int i = 0; i < *n_particles_in_cell; ++i)
+      for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
         {
           Particle<dim> p(pdata,property_manager->get_particle_size());
 
@@ -425,7 +425,12 @@ namespace aspect
               // If we can find no cell for this particle it has left the domain due
               // to an integration error or an open boundary.
               lost_particles.insert(*it);
-              particles.erase(it++);
+
+              // Now remove the lost particle and continue with next particle.
+              // Also make sure we do not invalidate the iterator we are increasing.
+              const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+              it++;
+              particles.erase(particle_to_delete);
               continue;
             }
 
@@ -440,15 +445,19 @@ namespace aspect
           else
             moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),it->second));
 
-          particles.erase(it++);
+          // Now remove the lost particle and continue with next particle.
+          // Also make sure we do not invalidate the iterator we are increasing.
+          const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+          it++;
+          particles.erase(particle_to_delete);
         }
 
       // If particles fell out of the mesh, put them back in if they have crossed
       // a periodic boundary. If they have left the mesh otherwise, they will be
       // discarded by being deleted from lost_particles, and not inserted anywhere.
       move_particles_back_into_mesh(lost_particles,
-                                  moved_particles_cell,
-                                  moved_particles_domain);
+                                    moved_particles_cell,
+                                    moved_particles_domain);
 
       // Reinsert all local particles with their cells
       particles.insert(moved_particles_cell.begin(),moved_particles_cell.end());
@@ -460,9 +469,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
-                                            std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
-                                            std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain)
+    World<dim>::move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >          &lost_particles,
+                                              std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
+                                              std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain)
     {
       // TODO: fix this to work with arbitrary meshes. Currently periodic boundaries only work for boxes.
       // If the geometry is not a box, we simply discard particles that have left the
@@ -581,13 +590,12 @@ namespace aspect
                              "is inconsistent with the number and size of particles."));
 
       // Notify other processors how many particles we will send
-      MPI_Request *n_requests = new MPI_Request[2*n_neighbors];
+      std::vector<MPI_Request> n_requests(2*n_neighbors);
       for (unsigned int i=0; i<n_neighbors; ++i)
         MPI_Irecv(&(n_recv_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i]));
       for (unsigned int i=0; i<n_neighbors; ++i)
         MPI_Isend(&(n_send_data[i]), 1, MPI_INT, neighbors[i], 0, this->get_mpi_communicator(), &(n_requests[2*i+1]));
-      MPI_Waitall(2*n_neighbors,n_requests,MPI_STATUSES_IGNORE);
-      delete[] n_requests;
+      MPI_Waitall(2*n_neighbors,&n_requests[0],MPI_STATUSES_IGNORE);
 
       // Determine how many particles and data we will receive
       int total_recv_data = 0;
@@ -602,7 +610,7 @@ namespace aspect
       std::vector<char> recv_data(total_recv_data);
 
       // Exchange the particle data between domains
-      MPI_Request *requests = new MPI_Request[2*n_neighbors];
+      std::vector<MPI_Request> requests(2*n_neighbors);
       unsigned int send_ops = 0;
       unsigned int recv_ops = 0;
 
@@ -619,8 +627,7 @@ namespace aspect
             MPI_Isend(&(send_data[send_offsets[i]]), n_send_data[i], MPI_CHAR, neighbors[i], 1, this->get_mpi_communicator(),&(requests[send_ops+recv_ops]));
             recv_ops++;
           }
-      MPI_Waitall(send_ops+recv_ops,requests,MPI_STATUSES_IGNORE);
-      delete[] requests;
+      MPI_Waitall(send_ops+recv_ops,&requests[0],MPI_STATUSES_IGNORE);
 
       // Put the received particles into the domain if they are in the triangulation
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());
@@ -631,7 +638,7 @@ namespace aspect
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 
           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
 
           Assert(cell->is_locally_owned(),
                  ExcMessage("Another process sent us a particle, but the particle is not in our domain."));

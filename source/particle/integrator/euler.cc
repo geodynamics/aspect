@@ -39,7 +39,7 @@ namespace aspect
                                        const double dt)
       {
         Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
-               ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+               ExcMessage("The particle integrator expects the velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 

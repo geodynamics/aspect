@@ -96,34 +96,38 @@ namespace aspect
           virtual unsigned int get_data_size() const;
 
           /**
-           * Read integration related data for a particle specified by id_num
-           * from the data array.
+           * Read integration related data for a particle specified by particle_id
+           * from the data array. This function is called after transferring
+           * a particle to the local domain during an integration step.
            *
-           * @param [in, out] data A pointer to the array of data to read from.
-           * The pointer should be advanced by get_data_size() bytes within
-           * this function.
-           * @param [in] id_num The id number of the particle to read the data
+           * @param [in] data A pointer into the data array. The pointer
+           * marks the position where this function starts reading.
+           * @param [in] particle_id The id number of the particle to read the data
            * for.
+           * @return The updated position of the pointer into the data array.
+           * The return value is @p data advanced by get_data_size() bytes.
            */
           virtual
-          const void*
+          const void *
           read_data(const void *data,
-                    const types::particle_index id_num);
+                    const types::particle_index particle_id);
 
           /**
            * Write integration related data to a vector for a particle
-           * specified by id_num.
+           * specified by particle_id. This function is called in cases where
+           * particles leave the local domain during an integration step to
+           * transfer this data to another process.
            *
-           * @param [in,out] data A pointer to the array of data to write
-           * integrator data into. The pointer should be advanced by
-           * get_data_size() bytes within this function.
-           * @param [in] id_num The id number of the particle to write the data
+           * @param [in] data A pointer into the array of integrator data.
+           * @param [in] particle_id The id number of the particle to write the data
            * for.
+           * @return The updated position of the pointer into the data array.
+           * The return value is @p data advanced by get_data_size() bytes.
            */
           virtual
-          void*
+          void *
           write_data(void *data,
-                     const types::particle_index id_num) const;
+                     const types::particle_index particle_id) const;
 
         private:
           /**

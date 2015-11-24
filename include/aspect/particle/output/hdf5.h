@@ -24,7 +24,7 @@
 #include <aspect/particle/output/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/numerics/data_out.h>
+#include <deal.II/base/data_out_base.h>
 
 namespace aspect
 {
@@ -34,9 +34,6 @@ namespace aspect
     {
       /**
        * Class that outputs particles and their properties in hdf5 format.
-       * TODO: This class can not output tracer properties yet, but I know too
-       * little about hdf5 to do something about it. If anyone wants to implement
-       * that I would appreciate it.
        *
        * @ingroup ParticleOutput
        */

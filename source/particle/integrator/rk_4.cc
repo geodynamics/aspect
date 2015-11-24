@@ -41,12 +41,12 @@ namespace aspect
                                      const double dt)
       {
         Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
-               ExcMessage("The particle integrator expects the old velocity vector to be of equal size"
+               ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        Assert(std::distance(begin_particle, end_particle) == velocities.size(),
-               ExcMessage("The particle integrator expects the velocity vector to be of equal size"
+        Assert(old_velocities.size() == velocities.size(),
+               ExcMessage("The particle integrator expects the velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
@@ -58,27 +58,27 @@ namespace aspect
         for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
              it != end_particle; ++it, ++vel, ++old_vel)
           {
-            const types::particle_index id_num = it->second.get_id();
+            const types::particle_index particle_id = it->second.get_id();
             if (integrator_substep == 0)
               {
-                loc0[id_num] = it->second.get_location();
-                k1[id_num] = dt * (*vel);
-                it->second.set_location(it->second.get_location() + 0.5*k1[id_num]);
+                loc0[particle_id] = it->second.get_location();
+                k1[particle_id] = dt * (*vel);
+                it->second.set_location(it->second.get_location() + 0.5*k1[particle_id]);
               }
             else if (integrator_substep == 1)
               {
-                k2[id_num] = dt * (*vel);
-                it->second.set_location(loc0[id_num] + 0.5*k2[id_num]);
+                k2[particle_id] = dt * (*vel);
+                it->second.set_location(loc0[particle_id] + 0.5*k2[particle_id]);
               }
             else if (integrator_substep == 2)
               {
-                k3[id_num] = dt * (*vel);
-                it->second.set_location(loc0[id_num] + k3[id_num]);
+                k3[particle_id] = dt * (*vel);
+                it->second.set_location(loc0[particle_id] + k3[particle_id]);
               }
             else if (integrator_substep == 3)
               {
                 const Tensor<1,dim> k4 = dt * (*vel);
-                it->second.set_location(loc0[id_num] + (k1[id_num] + 2.0*k2[id_num] + 2.0*k3[id_num] + k4)/6.0);
+                it->second.set_location(loc0[particle_id] + (k1[particle_id] + 2.0*k2[particle_id] + 2.0*k3[particle_id] + k4)/6.0);
               }
             else
               {
@@ -120,9 +120,9 @@ namespace aspect
       }
 
       template <int dim>
-      const void*
+      const void *
       RK4<dim>::read_data(const void *data,
-                          const types::particle_index id_num)
+                          const types::particle_index particle_id)
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -134,25 +134,25 @@ namespace aspect
 
         // Read location data
         for (unsigned int i=0; i<dim; ++i)
-          loc0[id_num](i) = *integrator_data++;
+          loc0[particle_id](i) = *integrator_data++;
 
         // Read k1, k2 and k3
         for (unsigned int i=0; i<dim; ++i)
-          k1[id_num][i] = *integrator_data++;
+          k1[particle_id][i] = *integrator_data++;
 
         for (unsigned int i=0; i<dim; ++i)
-          k2[id_num][i] = *integrator_data++;
+          k2[particle_id][i] = *integrator_data++;
 
         for (unsigned int i=0; i<dim; ++i)
-          k3[id_num][i] = *integrator_data++;
+          k3[particle_id][i] = *integrator_data++;
 
         return static_cast<const void *> (integrator_data);
       }
 
       template <int dim>
-      void*
+      void *
       RK4<dim>::write_data(void *data,
-                           const types::particle_index id_num) const
+                           const types::particle_index particle_id) const
       {
         // If integration is finished, we do not need to transfer integrator
         // data to other processors, because it will be deleted soon anyway.
@@ -163,20 +163,20 @@ namespace aspect
         double *integrator_data = static_cast<double *> (data);
 
         // Write location data
-        typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(id_num);
+        typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle_id);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it->second(i);
 
         // Write k1, k2 and k3
-        typename std::map<types::particle_index, Tensor<1,dim> >::const_iterator it_k = k1.find(id_num);
+        typename std::map<types::particle_index, Tensor<1,dim> >::const_iterator it_k = k1.find(particle_id);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 
-        it_k = k2.find(id_num);
+        it_k = k2.find(particle_id);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 
-        it_k = k3.find(id_num);
+        it_k = k3.find(particle_id);
         for (unsigned int i=0; i<dim; ++i,++integrator_data)
           *integrator_data = it_k->second[i];
 

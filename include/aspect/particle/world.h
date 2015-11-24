@@ -76,14 +76,13 @@ namespace aspect
          * Tracer postprocessor and handed to this function, because the
          * particle world currently does not declare own input parameters.
          *
+         * @param [in] generator The particle generator for this world.
          * @param [in] integrator The Integrator scheme for this world.
          * @param [in] interpolator The Interpolator scheme for this
          * world. This object defines how particle properties are interpolated
          * to arbitrary positions within the domain. An example could be to
          * take the properties of the closest particle, but more complicated
          * schemes are possible.
-         *
-         * @param [in] generator The particle generator for this world.
          * @param [in] manager The property manager for this world.
          * @param [in] load_balancing The strategy used to balance the
          * computational load for particle advection across processes.
@@ -91,11 +90,15 @@ namespace aspect
          * particles from cells.
          * @param [in] weight The computational load that is associated with
          * integrating and updating one particle.
+         *
+         * @note World takes ownership of the @p generator, @p integrator, @p
+         * interpolator, and @p manager object in this function.
+         *
          */
-        void initialize(std_cxx11::shared_ptr<Generator::Interface<dim> > generator,
-                        std_cxx11::shared_ptr<Integrator::Interface<dim> > integrator,
-                        std_cxx11::shared_ptr<Interpolator::Interface<dim> > interpolator,
-                        std_cxx11::shared_ptr<Property::Manager<dim> > manager,
+        void initialize(Generator::Interface<dim> *generator,
+                        Integrator::Interface<dim> *integrator,
+                        Interpolator::Interface<dim> *interpolator,
+                        Property::Manager<dim> *manager,
                         const ParticleLoadBalancing &load_balancing,
                         const unsigned int max_part_per_cell,
                         const unsigned int weight);
@@ -139,10 +142,13 @@ namespace aspect
         void advance_timestep();
 
         /**
-         * Count the total number of particles in the simulation by summing
-         * over the local numbers for all MPI processes. This function is
-         * useful, for example, for monitoring how many particles have been
-         * lost by falling out of the domain.
+         * Return the total number of particles in the simulation. This
+         * function is useful for monitoring how many particles have been
+         * lost by falling out of the domain. Not that this function does
+         * not compute the number of particles, because that is an expensive
+         * global MPI operation. Instead it returns the number, which is
+         * updated internally every time it might change by a call to
+         * update_n_global_particles().
          *
          * @return Total number of particles in simulation.
          */
@@ -218,24 +224,24 @@ namespace aspect
         /**
          * Generation scheme for creating particles in this world
          */
-        std_cxx11::shared_ptr<Generator::Interface<dim> > generator;
+        std_cxx11::unique_ptr<Generator::Interface<dim> > generator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        std_cxx11::shared_ptr<Integrator::Interface<dim> > integrator;
+        std_cxx11::unique_ptr<Integrator::Interface<dim> > integrator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        std_cxx11::shared_ptr<Interpolator::Interface<dim> > interpolator;
+        std_cxx11::unique_ptr<Interpolator::Interface<dim> > interpolator;
 
         /**
          * The property manager stores information about the additional
          * particle properties and handles the initialization and update of
          * these properties.
          */
-        std_cxx11::shared_ptr<Property::Manager<dim> > property_manager;
+        std_cxx11::unique_ptr<Property::Manager<dim> > property_manager;
 
         /**
          * Set of particles currently in the local domain, organized by
@@ -280,8 +286,7 @@ namespace aspect
         unsigned int tracer_weight;
 
         /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
+         * Calculates the number of particles in the global model domain.
          */
         void
         update_n_global_particles();
@@ -312,8 +317,8 @@ namespace aspect
          */
         void
         move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
-                                    std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
-                                    std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
+                                      std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
+                                      std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other

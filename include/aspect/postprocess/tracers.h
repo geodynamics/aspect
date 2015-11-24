@@ -151,31 +151,22 @@ namespace aspect
         std_cxx11::shared_ptr<Particle::Output::Interface<dim> > output;
 
         /**
-         * Whether particles have been created and initialized yet or not.
-         * We can not simply use the number of particles in the domain to
-         * check this, because all particles could leave the domain through an
-         * open boundary. This variable is initialized to false and set to
-         * true in the first call of execute().
-         */
-        bool                            initialized;
-
-        /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)
          */
-        double                          data_output_interval;
+        double                          output_interval;
 
         /**
          * Records time for next output to occur
          */
-        double                          next_data_output_time;
+        double                          last_output_time;
 
         /**
-         * Compute the next time output should be generated assuming that
+         * Save the last time output was generated assuming that
          * output was generated at current_time, and set the result in the
-         * next_data_output_time variable.
+         * last_output_time variable.
          */
-        void set_next_data_output_time (const double current_time);
+        void set_last_output_time (const double current_time);
     };
   }
 }

@@ -40,20 +40,18 @@ namespace aspect
     template <int dim>
     Tracers<dim>::Tracers ()
       :
-      initialized(false),
-      next_data_output_time(std::numeric_limits<double>::quiet_NaN())
-    {}
 
+      last_output_time(std::numeric_limits<double>::quiet_NaN())
+    {}
 
     template <int dim>
     Tracers<dim>::~Tracers ()
-    {
-    }
+    {}
 
     template <int dim>
     void
-    Tracers<dim>::initialize()
-    {
+    Tracers<dim>::initialize ()
+    {}
 
     template <int dim>
     void
@@ -81,12 +79,12 @@ namespace aspect
     std::pair<std::string,std::string>
     Tracers<dim>::execute (TableHandler &statistics)
     {
-      // Let the generator add the specified number of particles if we have not
-      // already done so
-      if (!initialized)
+      // if this is the first time we get here, set the last output time
+      // to the current time - output_interval. this makes sure we
+      // always produce data during the first time step
+      if (std::isnan(last_output_time))
         {
-          initialized = true;
-          next_data_output_time = this->get_time();
+          last_output_time = this->get_time() - output_interval;
         }
 
       // Advance the particles in the world to the current time
@@ -94,49 +92,49 @@ namespace aspect
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
-      // If it's time to generate an output file and we created an output
-      // object, call the appropriate functions and reset the timer
-      if ((this->get_time() >= next_data_output_time) && output)
-        {
-          if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
-            world.update_particles();
+      // If it's not time to generate an output file or we do not write output
+      // return early with the number of particles that were advected
+      if ((this->get_time() < last_output_time + output_interval) || !output)
+        return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
 
-          set_next_data_output_time (this->get_time());
 
-          const double output_time = (this->convert_output_to_years() ?
-                                      this->get_time() / year_in_seconds :
-                                      this->get_time());
+      if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
+        world.update_particles();
 
-          const std::string data_file_name = output->output_particle_data(world.get_particles(),
-                                                                          world.get_property_manager().get_data_info(),
-                                                                          output_time);
+      set_last_output_time (this->get_time());
 
-          // record the file base file name in the output file
-          statistics.add_value ("Particle file name",
-                                this->get_output_directory() + data_file_name);
-          return std::make_pair("Writing particle output: ", data_file_name);
-        }
-      return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
+      const double output_time = (this->convert_output_to_years() ?
+                                  this->get_time() / year_in_seconds :
+                                  this->get_time());
+
+      const std::string data_file_name = output->output_particle_data(world.get_particles(),
+                                                                      world.get_property_manager().get_data_info(),
+                                                                      output_time);
+
+      // record the file base file name in the output file
+      statistics.add_value ("Particle file name",
+                            this->get_output_directory() + data_file_name);
+      return std::make_pair("Writing particle output: ", data_file_name);
     }
 
 
 
     template <int dim>
     void
-    Tracers<dim>::set_next_data_output_time (const double current_time)
+    Tracers<dim>::set_last_output_time (const double current_time)
     {
-      // if output_interval is positive, then set the next output interval to
-      // a positive multiple.
-      if (data_output_interval > 0)
+      // if output_interval is positive, then update the last supposed output
+      // time
+      if (output_interval > 0)
         {
-          // the current time is always in seconds, so we need to convert the output_interval to the same unit
-          const double output_interval_in_s = (this->convert_output_to_years() ?
-                                               (data_output_interval*year_in_seconds) :
-                                               data_output_interval);
-
-          // we need to compute the smallest integer that is bigger than current_time/my_output_interval,
-          // even if it is a whole number already (otherwise we output twice in a row)
-          next_data_output_time = (std::floor(current_time/output_interval_in_s)+1.0) * output_interval_in_s;
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
         }
     }
 
@@ -145,8 +143,7 @@ namespace aspect
     template <class Archive>
     void Tracers<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &next_data_output_time
-      &initialized
+      ar &last_output_time
       ;
     }
 
@@ -301,6 +298,22 @@ namespace aspect
     void
     Tracers<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // First do some error checking. The current algorithm does not find
+      // the cells around particles, if the particles moved more than one
+      // cell in one timestep and we are running in parallel, because they
+      // skip the layer of ghost cells around our local domain. Assert this
+      // is not possible.
+      const double CFL_number = prm.get_double ("CFL number");
+      const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+      AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
+                  ExcMessage("The current tracer algorithm does not work in "
+                             "parallel if the CFL number is larger than 1.0, because "
+                             "in this case tracers can move more than one cell's "
+                             "diameter in one time step and therefore skip the layer "
+                             "of ghost cells around the local subdomain."));
+
+      // Parameters that are handed down to the particle world in this function
       unsigned int max_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
 
@@ -308,7 +321,9 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          data_output_interval = prm.get_double ("Time between data output");
+          output_interval = prm.get_double ("Time between data output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
 
           max_tracers_per_cell = prm.get_integer("Maximum tracers per cell");
           tracer_weight = prm.get_integer("Tracer weight");
@@ -329,10 +344,10 @@ namespace aspect
       prm.leave_subsection ();
 
       // Create a generator object depending on what the parameters specify
-      std_cxx11::shared_ptr<Particle::Generator::Interface<dim> > generator
-      (Particle::Generator::create_particle_generator<dim> (prm));
+      Particle::Generator::Interface<dim> *generator
+        = Particle::Generator::create_particle_generator<dim> (prm);
 
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator))
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
 
@@ -352,34 +367,35 @@ namespace aspect
 
 
       // Create an integrator object depending on the specified parameter
-      std_cxx11::shared_ptr<Particle::Integrator::Interface<dim> >   integrator
-      (Particle::Integrator::create_particle_integrator<dim> (prm));
+      Particle::Integrator::Interface<dim> *integrator =
+        Particle::Integrator::create_particle_integrator<dim> (prm);
 
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator))
         sim->initialize_simulator (this->get_simulator());
       integrator->parse_parameters(prm);
 
       // Create an interpolator object depending on the specified parameter
-      std_cxx11::shared_ptr<Particle::Interpolator::Interface<dim> > interpolator
-      (Particle::Interpolator::create_particle_interpolator<dim> (prm));
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+      Particle::Interpolator::Interface<dim> *interpolator =
+        Particle::Interpolator::create_particle_interpolator<dim> (prm);
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator))
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);
 
 
       // Creaty an property_manager object and initialize its properties
-      std_cxx11::shared_ptr<Particle::Property::Manager<dim> > property_manager (new Particle::Property::Manager<dim> ());
-      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+      Particle::Property::Manager<dim> *property_manager = new Particle::Property::Manager<dim> ();
+      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager);
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);
       property_manager->initialize();
 
 
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
+        sim->initialize_simulator (this->get_simulator());
+
       // Initialize the particle world with the appropriate settings
       // Ownership of generator, integrator, interpolator and property_manager
       // is transferred to world here
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&world))
-        sim->initialize_simulator (this->get_simulator());
       world.initialize(generator,
                        integrator,
                        interpolator,

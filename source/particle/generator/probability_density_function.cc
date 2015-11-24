@@ -174,8 +174,9 @@ namespace aspect
 
             // Generate random points in these bounds until one is within the cell
             unsigned int iteration = 0;
+            const unsigned int maximum_iterations = 100;
             Point<dim> particle_position;
-            while (iteration < 100)
+            while (iteration < maximum_iterations)
               {
                 for (unsigned int d=0; d<dim; ++d)
                   {
@@ -194,7 +195,7 @@ namespace aspect
                   }
                 iteration++;
               }
-            AssertThrow (iteration < 100,
+            AssertThrow (iteration < maximum_iterations,
                          ExcMessage ("Couldn't generate particle (unusual cell shape?). "
                                      "The ratio between the bounding box volume in which the tracer is "
                                      "generated and the actual cell volume is approximately: " +

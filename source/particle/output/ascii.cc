@@ -46,7 +46,7 @@ namespace aspect
         std::ofstream output (full_filename.c_str());
 
         AssertThrow (output,
-                     ExcMessage (std::string("Couldn't open ascii particle output file <"
+                     ExcMessage (std::string("Could not open ascii particle output file <"
                                              +
                                              full_filename
                                              +
@@ -62,14 +62,14 @@ namespace aspect
         std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
         for (; property!=property_component_list.end(); ++property)
           {
-            // If it's a 1D element, print just the name, otherwise use []
+            // If it is a 1D element, print just the name, otherwise use []
             if (property->second == 1)
               output << property->first << ' ';
             else
               for (unsigned int component_index=0; component_index<property->second; ++component_index)
                 output << property->first << "[" << component_index << "] ";
           }
-        output << '\n';
+        output << "\n";
 
         // And print the data for each particle
         for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it=particles.begin(); it!=particles.end(); ++it)
@@ -81,7 +81,7 @@ namespace aspect
             for (unsigned int i = 0; i < properties.size(); ++i)
               output << ' ' << properties[i];
 
-            output << '\n';
+            output << "\n";
           }
 
         file_index++;

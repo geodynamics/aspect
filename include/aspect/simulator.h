@@ -314,12 +314,13 @@ namespace aspect
        * to happen before the first timestep in case other properties depend
        * on them, but it can only happen after the other initial conditions
        * have been set up, because tracer properties likely depend on the
-       * initial conditions.
+       * initial conditions. If the tracer postprocessor has not been selected
+       * this function simply does nothing.
        *
        * This function is implemented in
        * <code>source/simulator/initial_conditions.cc</code>.
        */
-      void initialize_tracers_if_selected ();
+      void initialize_tracers ();
 
       /**
        * A function that initializes the pressure variable before the first
