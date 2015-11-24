@@ -194,10 +194,9 @@ namespace aspect
     void
     World<dim>::register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
     {
-      Assert(particles.size() == 0,
-             ExcMessage("We are in the process of mesh refinement. All tracers "
-                        "should have been serialized and stored, but there are still some "
-                        "around. Is there a bug in the storage function?"));
+      // All particles have been stored, when we reach this point. Empty the
+      // map and fill with new particles.
+      particles.clear();
 
       // Check if something was stored and load it
       if (data_offset != numbers::invalid_unsigned_int)
@@ -260,8 +259,7 @@ namespace aspect
     {
       unsigned int n_particles_in_cell(0);
 
-      // If the cell persist or is refined store all tracers of the current cell
-      // and remove the from the local particle map
+      // If the cell persist or is refined store all tracers of the current cell.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
@@ -279,13 +277,12 @@ namespace aspect
             {
               particle->second.write_data(data);
             }
-          particles.erase(particles_in_cell.first,particles_in_cell.second);
         }
       // If this cell is the parent of children that will be coarsened, collect
       // the tracers of all children.
       // First check if the maximum number of particles per cell is exceeded for
       // the new cell, and if that is the case, only store every 2^dim 'th
-      // particle and remove all from the local particle map..
+      // particle.
       else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
         {
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
@@ -325,8 +322,6 @@ namespace aspect
                   if (!reduce_tracers || (particle_index % GeometryInfo<dim>::max_children_per_cell == 0))
                     particle->second.write_data(data);
                 }
-
-              particles.erase(particles_in_cell.first,particles_in_cell.second);
             }
         }
       else
