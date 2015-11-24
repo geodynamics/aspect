@@ -55,6 +55,12 @@ namespace aspect
     Tracers<dim>::initialize()
     {
 
+    template <int dim>
+    void
+    Tracers<dim>::generate_and_initialize_particles()
+    {
+      world.generate_particles();
+      world.initialize_particles();
     }
 
     template <int dim>
@@ -79,8 +85,6 @@ namespace aspect
       // already done so
       if (!initialized)
         {
-          world.generate_particles();
-          world.initialize_particles();
           initialized = true;
           next_data_output_time = this->get_time();
         }
