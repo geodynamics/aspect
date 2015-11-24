@@ -21,7 +21,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -51,6 +50,7 @@
 #include <iomanip>
 #include <locale>
 #include <string>
+#include "../../include/aspect/postprocess/tracers.h"
 
 
 using namespace dealii;
@@ -1456,6 +1456,9 @@ namespace aspect
                                  (free_surface->free_surface_dof_handler));
       }
 
+    // Possibly store data of plugins associated with cells
+    signals.pre_refinement_store_user_data(triangulation);
+
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
 
@@ -1530,6 +1533,9 @@ namespace aspect
           //make sure the mesh is consistent with mesh_vertices
           free_surface->displace_mesh ();
         }
+
+      // Possibly load data of plugins associated with cells
+      signals.post_refinement_load_user_data(triangulation);
     }
     computing_timer.exit_section();
 
