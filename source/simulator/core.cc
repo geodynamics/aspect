@@ -1446,7 +1446,7 @@ namespace aspect
     system_trans(dof_handler);
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-    std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+    std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
     freesurface_trans;
 
     if (parameters.free_surface_enabled)

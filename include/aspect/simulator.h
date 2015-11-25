@@ -1011,16 +1011,16 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
-      const IntermediaryConstructorAction                            post_geometry_model_creation_action;
-      const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
-      const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
-      const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
-      const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
-      const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
-      const std::auto_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
-      const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
-      const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
+      const std_cxx11::unique_ptr<GeometryModel::Interface<dim> >             geometry_model;
+      const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
+      const std_cxx11::unique_ptr<MaterialModel::Interface<dim> >             material_model;
+      const std_cxx11::unique_ptr<GravityModel::Interface<dim> >              gravity_model;
+      const std_cxx11::unique_ptr<BoundaryTemperature::Interface<dim> >       boundary_temperature;
+      const std_cxx11::unique_ptr<BoundaryComposition::Interface<dim> >       boundary_composition;
+      const std_cxx11::unique_ptr<InitialConditions::Interface<dim> >         initial_conditions;
+      const std_cxx11::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
+      const std_cxx11::unique_ptr<CompositionalInitialConditions::Interface<dim> >                     compositional_initial_conditions;
+      const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > traction_boundary_conditions;
 
