@@ -36,7 +36,7 @@ namespace aspect
       /* This method is used for the Table method of depth dependent viscosity */
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
-                   ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
+                   ExcMessage (std::string("Could not open file <") + filename + ">."));
 
       double min_depth=std::numeric_limits<double>::max();
       double max_depth=-std::numeric_limits<double>::max();

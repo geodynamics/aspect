@@ -549,7 +549,7 @@ namespace aspect
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
         AssertThrow (prm_out,
-                     ExcMessage (std::string("Couldn't open file <") +
+                     ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
       }
@@ -557,7 +557,7 @@ namespace aspect
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
         AssertThrow (prm_out,
-                     ExcMessage (std::string("Couldn't open file <") +
+                     ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
