@@ -390,7 +390,13 @@ namespace aspect
                   ExcMessage("You may not use ``averaging'' as the base model for "
                              "a averaging model.") );
 
+          // create the base model and initialize its SimulatorAccess base
+          // class; it will get a chance to read its parameters below after we
+          // leave the current section
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
+            sim->initialize_simulator (this->get_simulator());
+
           averaging_operation = Averaging<dim>::parse_averaging_operation_name(prm.get ("Averaging operation"));
           bell_shape_limit = prm.get_double ("Bell shape limit");
         }
