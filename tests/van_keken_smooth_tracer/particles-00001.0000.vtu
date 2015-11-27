@@ -4,16 +4,16 @@
     <Piece NumberOfPoints="10" NumberOfCells="10">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.699274 0.0966801 0.0
-          0.631096 0.221701 0.0
-          0.373162 0.936319 0.0
-          0.675018 0.643564 0.0
-          0.758467 0.556612 0.0
-          0.945437 0.560554 0.0
-          0.576315 0.914522 0.0
-          0.944366 0.780336 0.0
-          0.997981 0.822351 0.0
-          0.934844 0.999779 0.0
+          0.612612 0.0924565 0.0
+          0.555974 0.211007 0.0
+          0.347022 0.936534 0.0
+          0.630194 0.635269 0.0
+          0.702551 0.542693 0.0
+          0.866497 0.54373 0.0
+          0.534257 0.914114 0.0
+          0.865608 0.774307 0.0
+          0.912429 0.818107 0.0
+          0.854639 0.999779 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -66,6 +66,42 @@
           8
           6
           5
+        </DataArray>
+        <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
+          1 
+          0 
+          0 
+          0 
+          0 
+          0 
+          0 
+          0 
+          0 
+          0 
+        </DataArray>
+        <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
+          0.999831 
+          0.0379215 
+          0 
+          0 
+          -1.30487e-15 
+          -3.13454e-16 
+          0 
+          0 
+          0 
+          0 
+        </DataArray>
+        <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
+          0.639276 0.0966801 0 
+          0.576948 0.221701 0 
+          0.341145 0.936319 0 
+          0.617101 0.643564 0 
+          0.693391 0.556612 0 
+          0.864318 0.560554 0 
+          0.526867 0.914522 0 
+          0.86334 0.780336 0 
+          0.912354 0.822351 0 
+          0.854635 0.999779 0 
         </DataArray>
       </PointData>
     </Piece>
