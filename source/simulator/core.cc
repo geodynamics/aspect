@@ -150,7 +150,11 @@ namespace aspect
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
                     Triangulation<dim>::smoothing_on_coarsening),
-                   parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
+                   typename parallel::distributed::Triangulation<dim>::Settings (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning
+#if DEAL_II_VERSION_GTE(8,4,0)
+                                                                                 | parallel::distributed::Triangulation<dim>::no_automatic_repartitioning
+#endif
+                                                                                )),
 
     //Fourth order mapping doesn't really make sense for free surface
     //calculations (we disable curved boundaries) or we we only have straight
@@ -1463,6 +1467,10 @@ namespace aspect
       freesurface_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
     triangulation.execute_coarsening_and_refinement ();
+#if DEAL_II_VERSION_GTE(8,4,0)
+    triangulation.repartition();
+#endif
+
     computing_timer.exit_section();
 
     setup_dofs ();
@@ -2012,6 +2020,9 @@ namespace aspect
 
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
+#if DEAL_II_VERSION_GTE(8,4,0)
+            triangulation.repartition();
+#endif
           }
 
         global_volume = GridTools::volume (triangulation, mapping);
