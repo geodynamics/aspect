@@ -210,7 +210,7 @@ namespace aspect
         std::string velos = pt.get<std::string>("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:rangeSet.gml:DataBlock.gml:tupleList");
         std::stringstream in(velos, std::ios::in);
         AssertThrow (in,
-                     ExcMessage (std::string("Couldn't find velocities. Is file native gpml format for velocities?")));
+                     ExcMessage (std::string("Could not find velocities. Is this file in native gpml format for the velocities?")));
 
         // The lat-lon mesh has changed its starting longitude in gplates1.4
         // correct for this while reading in the velocity data

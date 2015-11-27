@@ -170,7 +170,7 @@ namespace aspect
                       }
                     num_tries++;
                   }
-                AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
+                AssertThrow (num_tries < 100, ExcMessage ("Could not generate particle (unusual cell shape?)."));
 
                 // Add the generated particle to the set
                 T new_particle(pt, cur_id);
