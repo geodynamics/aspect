@@ -33,45 +33,50 @@ namespace aspect
     {}
 
 
-
     template <int dim>
-    double
+    void
     RadioactiveDecay<dim>::
-    specific_heating_rate (const double,
-                           const double,
-                           const std::vector<double> &composition,
-                           const Point<dim> &position) const
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      double time = this->get_time();
-      // we get time passed as seconds (always) but may want
-      // to reinterpret it in years
-      if (this->convert_output_to_years())
-        time/=year_in_seconds;
-      double timedependent_radioactive_heating_rates=0;
-      if (n_radio_heating_elements!=0)
-        {
-          double crust_fraction=0;
-          if (is_crust_defined_by_composition)
-            {
-              AssertThrow(crust_composition_num < composition.size(), ExcMessage("The composition number of crust is "
-                                                                                 " larger than number of composition fields."));
-              crust_fraction=composition[crust_composition_num];
-              if (crust_fraction<0)crust_fraction=0;
-              if (crust_fraction>1)crust_fraction=1;
-            }
-          else if ((this->get_geometry_model()).depth(position) < crust_depth)
-            crust_fraction=1.;
+      AssertThrow(crust_composition_num < material_model_inputs.composition[0].size(),
+                  ExcMessage("The composition number of crust is larger than number of composition fields."));
 
-          for (unsigned i_radio=0; i_radio<n_radio_heating_elements; i_radio++)
-            timedependent_radioactive_heating_rates+=
-              radioactive_heating_rates[i_radio]
-              *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
-                +radioactive_initial_concentrations_crust[i_radio]*crust_fraction)*1e-6
-              //1e-6 above is used to change concentration from ppm
-              *std::pow(0.5,time/half_decay_times[i_radio]);
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          double time = this->get_time();
+          // we get time passed as seconds (always) but may want
+          // to reinterpret it in years
+          if (this->convert_output_to_years())
+            time/=year_in_seconds;
+          double timedependent_radioactive_heating_rates=0;
+
+          if (n_radio_heating_elements!=0)
+            {
+              double crust_fraction=0;
+              if (is_crust_defined_by_composition)
+                {
+                  crust_fraction=material_model_inputs.composition[q][crust_composition_num];
+                  if (crust_fraction<0)crust_fraction=0;
+                  if (crust_fraction>1)crust_fraction=1;
+                }
+              else if ((this->get_geometry_model()).depth(material_model_inputs.position[q]) < crust_depth)
+                crust_fraction=1.;
+
+              for (unsigned i_radio=0; i_radio<n_radio_heating_elements; i_radio++)
+                timedependent_radioactive_heating_rates+=
+                  radioactive_heating_rates[i_radio]
+                  *(radioactive_initial_concentrations_mantle[i_radio]*(1-crust_fraction)
+                    +radioactive_initial_concentrations_crust[i_radio]*crust_fraction)*1e-6
+                  //1e-6 above is used to change concentration from ppm
+                  *std::pow(0.5,time/half_decay_times[i_radio]);
+            }
+          heating_model_outputs.heating_source_terms[q] = timedependent_radioactive_heating_rates
+                                                          * material_model_outputs.densities[q];
         }
-      return (timedependent_radioactive_heating_rates);
     }
+
 
     template <int dim>
     void
