@@ -583,13 +583,13 @@ namespace aspect
 
         normalize_pressure(solution);
 
+        pcout << "done." << std::endl;
+
         // convert melt pressures:
         if (parameters.include_melt_transport)
           {
             compute_melt_variables(solution);
           }
-
-        pcout << "done." << std::endl;
 
         computing_timer.exit_section();
 
@@ -805,12 +805,6 @@ namespace aspect
 
     normalize_pressure(solution);
 
-    // convert melt pressures:
-    if (parameters.include_melt_transport)
-      {
-        compute_melt_variables(solution);
-      }
-
     // print the number of iterations to screen and record it in the
     // statistics file
     if (solver_control_expensive.last_step() == 0)
@@ -819,6 +813,12 @@ namespace aspect
       pcout << solver_control_cheap.last_step() << '+'
             << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
+
+    // convert melt pressures:
+    if (parameters.include_melt_transport)
+      {
+        compute_melt_variables(solution);
+      }
 
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());
