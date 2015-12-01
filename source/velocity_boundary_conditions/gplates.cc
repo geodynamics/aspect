@@ -892,7 +892,8 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     GPlates<dim>::
-    boundary_velocity (const Point<dim> &position) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<dim> &position) const
     {
       if (time_relative_to_vel_file_start_time >= 0.0)
         return scale_factor * lookup->surface_velocity(position,time_weight);
