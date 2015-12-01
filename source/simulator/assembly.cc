@@ -2312,6 +2312,12 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
+  template void Simulator<dim>::compute_material_model_input_values <FEValues<dim> > ( \
+                                                                      const LinearAlgebra::BlockVector                      &input_solution, \
+                                                                      const FEValues<dim>                                   &input_finite_element_values, \
+                                                                      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
+                                                                      const bool                                             compute_strainrate, \
+                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
    
 
 
