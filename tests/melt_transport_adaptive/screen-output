@@ -1,74 +1,121 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Loading shared library <./libmelt_transport_adaptive.so>
 
 Number of active cells: 256 (on 5 levels)
-Number of degrees of freedom: 7,401 (2,756+2,178+289+1,089+1,089)
+Number of degrees of freedom: 7,401 (2,178+578+2,178+289+1,089+1,089)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 7.08627e-17, 524.003
-      Total relative nonlinear residual: 1
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+23 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 1.5684e-18, 81.7669
+      Total relative nonlinear residual: 0.996992
 
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 7.08627e-17, 1.76373e-12
-      Total relative nonlinear residual: 3.36589e-15
-
-
-
-Number of active cells: 400 (on 6 levels)
-Number of degrees of freedom: 11,955 (4,444+3,526+459+1,763+1,763)
-
-*** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 4.84734e-17, 514.652
-      Total relative nonlinear residual: 1
-
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 4.84734e-17, 1.42671e-12
-      Total relative nonlinear residual: 2.77219e-15
-
-
-
-Number of active cells: 844 (on 7 levels)
-Number of degrees of freedom: 25,317 (9,396+7,482+957+3,741+3,741)
-
-*** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 4.5537e-17, 516.374
-      Total relative nonlinear residual: 1
-
-
-   Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 4.5537e-17, 4.68431e-11
-      Total relative nonlinear residual: 9.07154e-14
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 1.5684e-18, 3.89863e-11
+      Total relative nonlinear residual: 4.75364e-13
 
 
 
    Postprocessing:
-     Writing graphical output:                               output-melt_transport_adaptive/solution-00000
-     RMS, max velocity:                                      8.19 m/s, 14.8 m/s
-     Pressure min/avg/max:                                   0.6064 Pa, 1.043 Pa, 1.65 Pa
-     Max and min velocity along boundary parts:              14.87 m/s, 13.45 m/s, 14.87 m/s, 13.45 m/s, 14.33 m/s, 0.427 m/s, 14.33 m/s, 0.427 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.392946e-01, 2.322511e-02, 2.704712e-02, 8.684274e-03, 1.216258e-03, 1.430571e-01
+     RMS, max velocity:                         1.32 m/s, 1.96 m/s
+     Pressure min/avg/max:                      -0.0003984 Pa, 1 Pa, 2 Pa
+     Max and min velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.967 m/s, 1.414 m/s, 1.686 m/s, 1.368 m/s, 1.981 m/s, 1.718 m/s
+     Errors                                     ndofs= 7401 u_L2= 2.664717e-04 p_L2= 3.547905e-03 p_f_L2= 6.917689e-03 p_c_L= 2.747528e-03 phi_L2= 2.988517e-03 u_f_L2= 1.588159e-01
+
+Number of active cells: 307 (on 6 levels)
+Number of degrees of freedom: 9,414 (2,774+728+2,774+364+1,387+1,387)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+23 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 1.17536e-18, 81.5057
+      Total relative nonlinear residual: 0.996543
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 1.17536e-18, 3.8506e-11
+      Total relative nonlinear residual: 4.708e-13
+
+
+
+   Postprocessing:
+     RMS, max velocity:                         1.32 m/s, 1.96 m/s
+     Pressure min/avg/max:                      -0.0004057 Pa, 1 Pa, 2.001 Pa
+     Max and min velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.967 m/s, 1.414 m/s, 1.686 m/s, 1.368 m/s, 1.981 m/s, 1.718 m/s
+     Errors                                     ndofs= 9414 u_L2= 2.340028e-04 p_L2= 3.090440e-03 p_f_L2= 4.524770e-03 p_c_L= 2.143371e-03 phi_L2= 2.251494e-03 u_f_L2= 1.030045e-01
+
+Number of active cells: 448 (on 6 levels)
+Number of degrees of freedom: 13,239 (3,906+1,014+3,906+507+1,953+1,953)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+23 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 6.9705e-19, 80.7383
+      Total relative nonlinear residual: 0.994442
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 0, 6.9705e-19, 3.91097e-11
+      Total relative nonlinear residual: 4.81708e-13
+
+
+
+   Postprocessing:
+     RMS, max velocity:                         1.32 m/s, 1.96 m/s
+     Pressure min/avg/max:                      -0.0003059 Pa, 1 Pa, 2 Pa
+     Max and min velocity along boundary parts: 1.967 m/s, 1.414 m/s, 1.967 m/s, 1.414 m/s, 1.686 m/s, 1.368 m/s, 1.981 m/s, 1.718 m/s
+     Errors                                     ndofs= 13239 u_L2= 9.995881e-05 p_L2= 1.415369e-03 p_f_L2= 2.448629e-03 p_c_L= 1.216648e-03 phi_L2= 5.074203e-04 u_f_L2= 6.536765e-02
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      4.09s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |     0.897s |        22% |
+| Assemble composition system     |         6 |     0.176s |       4.3% |
+| Assemble temperature system     |         6 |     0.174s |       4.2% |
+| Build Stokes preconditioner     |         6 |     0.272s |       6.7% |
+| Build composition preconditioner|         6 |    0.0114s |      0.28% |
+| Build temperature preconditioner|         6 |    0.0114s |      0.28% |
+| Solve Stokes system             |         6 |       2.2s |        54% |
+| Solve composition system        |         6 |   0.00346s |     0.084% |
+| Solve temperature system        |         6 |   0.00333s |     0.081% |
+| Initialization                  |         4 |    0.0508s |       1.2% |
+| Postprocessing                  |         3 |     0.154s |       3.8% |
+| Refine mesh structure, part 1   |         2 |    0.0357s |      0.87% |
+| Refine mesh structure, part 2   |         2 |   0.00517s |      0.13% |
+| Setup dof systems               |         3 |    0.0841s |       2.1% |
 +---------------------------------+-----------+------------+------------+
 
