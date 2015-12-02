@@ -46,6 +46,10 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
+# prescribe the fluid pressure as in the analytical solution
+subsection Fluid Pressure Boundary Condition
+  set Plugin name = PressureBdry
+end
 
 subsection Boundary temperature model
   set Model name = initial temperature
@@ -147,7 +151,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, visualization, MMPostprocessor
+  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, MMPostprocessor
 
   subsection Visualization
 

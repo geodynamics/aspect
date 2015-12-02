@@ -3,9 +3,6 @@
 # with zero velocity boundary conditions at the bottom boundary, 
 # tangential velocities at the sides and an open boundary at the top.
 #
-# This also checks the correct size of the time step, which depends
-# both on the melt and the solid velocity.
-#
 # We the choose a Darcy coefficient (= permeability divided by fluid
 # viscosity) of (1+y^2)/2 and otherwise constant material parameters 
 # so that the gradient of the fluid pressure is -1. The velocity
@@ -40,6 +37,10 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
+# prescribe the fluid pressure as in the analytical solution
+subsection Fluid Pressure Boundary Condition
+  set Plugin name = PressureBdry
+end
 
 subsection Boundary temperature model
   set Model name = initial temperature

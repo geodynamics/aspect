@@ -2,7 +2,7 @@
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -98,6 +98,28 @@ namespace aspect
 
   };
   
+  template <int dim>
+  class PressureBdry:
+
+      public FluidPressureBoundaryConditions::Interface<dim>
+  {
+    public:
+      virtual
+      void fluid_pressure_gradient (
+        const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+        const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+        std::vector<Tensor<1,dim> > & output
+      ) const
+        {
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              Tensor<1,dim> gradient;
+              gradient[0] = 0.0;
+              gradient[1] = 0.0;
+              output[q] = gradient;
+            }
+        }
+  };
   
 }
 
@@ -110,4 +132,10 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(MeltMaterial,
                                    "MeltMaterial2",
 				   "")
+
+    ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
+                                                       "PressureBdry",
+                                                       "A fluid pressure boundary condition that prescribes the "
+                                                       "gradient of the fluid pressure at the boundaries as "
+                                                       "calculated in the analytical solution. ")
 }
