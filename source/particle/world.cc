@@ -809,24 +809,27 @@ namespace aspect
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
 
-      // Loop over all cells and initialize the particles cell-wise
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      if (property_manager->get_n_property_components() > 0)
+        {
+          // Loop over all cells and initialize the particles cell-wise
+          typename DoFHandler<dim>::active_cell_iterator
+          cell = this->get_dof_handler().begin_active(),
+          endc = this->get_dof_handler().end();
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+          for (; cell!=endc; ++cell)
+            if (cell->is_locally_owned())
+              {
+                std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
+                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
+                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
 
-            // Only initialize particles, if there are any in this cell
-            if (particle_range_in_cell.first != particle_range_in_cell.second)
-              local_initialize_particles(cell,
-                                         particle_range_in_cell.first,
-                                         particle_range_in_cell.second);
-          }
+                // Only initialize particles, if there are any in this cell
+                if (particle_range_in_cell.first != particle_range_in_cell.second)
+                  local_initialize_particles(cell,
+                                             particle_range_in_cell.first,
+                                             particle_range_in_cell.second);
+              }
+        }
     }
 
     template <int dim>
@@ -835,24 +838,27 @@ namespace aspect
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
 
-      // Loop over all cells and update the particles cell-wise
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      if (property_manager->get_n_property_components() > 0)
+        {
+          // Loop over all cells and update the particles cell-wise
+          typename DoFHandler<dim>::active_cell_iterator
+          cell = this->get_dof_handler().begin_active(),
+          endc = this->get_dof_handler().end();
 
-      for (; cell!=endc; ++cell)
-        if (cell->is_locally_owned())
-          {
-            std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+          for (; cell!=endc; ++cell)
+            if (cell->is_locally_owned())
+              {
+                std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
+                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
+                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
 
-            // Only update particles, if there are any in this cell
-            if (particle_range_in_cell.first != particle_range_in_cell.second)
-              local_update_particles(cell,
-                                     particle_range_in_cell.first,
-                                     particle_range_in_cell.second);
-          }
+                // Only update particles, if there are any in this cell
+                if (particle_range_in_cell.first != particle_range_in_cell.second)
+                  local_update_particles(cell,
+                                         particle_range_in_cell.first,
+                                         particle_range_in_cell.second);
+              }
+        }
     }
 
     template <int dim>

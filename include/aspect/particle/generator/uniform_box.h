@@ -49,9 +49,11 @@ namespace aspect
           UniformBox();
 
           /**
-           * Generate a uniformly randomly distributed set of particles in the current triangulation.
+           * Generate a uniformly randomly distributed set of particles in a
+           * box-like subdomain of the global domain.
            *
-           * @return A multimap containing cells and their contained particles.
+           * @param [in,out] particles A multimap between cells and their
+           * particles. This map will be filled in this function.
            */
           virtual
           void

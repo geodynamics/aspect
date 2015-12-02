@@ -78,7 +78,8 @@ namespace aspect
            * and then calls generate_particles_in_subdomain() to generate
            * the local particles.
            *
-           * @return A multimap containing cells and their contained particles.
+           * @param [in,out] particles A multimap between cells and their
+           * particles. This map will be filled in this function.
            */
           virtual
           void

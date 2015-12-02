@@ -82,8 +82,12 @@ namespace aspect
            * declare_parameters and parse_parameters functions. This function
            * should generate the particles and associate them to their according
            * cells by inserting them into a multimap between cell and particle.
+           * This map becomes very large if the particle count per process
+           * is large, so we hand it over by reference instead of returning
+           * the multimap.
            *
-           * @return A multimap containing cells and their contained particles.
+           * @param [in,out] particles A multimap between cells and their
+           * particles. This map will be filled in this function.
            */
           virtual
           void

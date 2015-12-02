@@ -57,10 +57,11 @@ namespace aspect
           UniformRadial();
 
           /**
-           * Generate a uniformly distributed set of particles in the current circular or
-           * spherical domain.
+           * Generate a uniformly distributed set of particles in a
+           * circular or spherical subdomain of the global domain.
            *
-           * @return A multimap containing cells and their contained particles.
+           * @param [in,out] particles A multimap between cells and their
+           * particles. This map will be filled in this function.
            */
           virtual
           void

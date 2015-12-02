@@ -362,6 +362,7 @@ namespace aspect
         {
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
             sim->initialize_simulator (this->get_simulator());
+          output->parse_parameters(prm);
           output->initialize();
         }
 

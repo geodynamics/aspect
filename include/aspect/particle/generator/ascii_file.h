@@ -48,7 +48,8 @@ namespace aspect
            * Reads in a file and generate a set of particles at the prescribed
            * positions.
            *
-           * @return A multimap containing cells and their contained particles.
+           * @param [in,out] particles A multimap between cells and their
+           * particles. This map will be filled in this function.
            */
           virtual
           void
