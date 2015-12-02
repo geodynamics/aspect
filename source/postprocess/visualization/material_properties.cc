@@ -261,7 +261,7 @@ namespace aspect
                                                   "This is inefficient if one wants to output more than just "
                                                   "one or two of the fields provided by the material model. "
                                                   "The current postprocessor allows to output a (potentially "
-                                                  "large) subsets of all of the information provided by "
+                                                  "large) subset of all of the information provided by "
                                                   "material models at once, with just a single material model "
                                                   "evaluation per output point.")
     }
