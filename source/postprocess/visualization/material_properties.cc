@@ -149,6 +149,9 @@ namespace aspect
                 else if (property_names[i] == "thermal conductivity")
                   computed_quantities[q][output_index] = out.thermal_conductivities[q];
 
+                else if (property_names[i] == "thermal diffusivity")
+                  computed_quantities[q][output_index] = out.thermal_conductivities[q]/(out.densities[q]*out.specific_heat[q]);
+
                 else if (property_names[i] == "compressibility")
                   computed_quantities[q][output_index] = out.compressibilities[q];
 
@@ -185,8 +188,8 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "viscosity|density|thermal expansivity|specific heat|"
-                  "thermal conductivity|compressibility|entropy derivative temperature|"
-                  "entropy derivative pressure|reaction terms";
+                  "thermal conductivity|thermal diffusivity|compressibility|"
+                  "entropy derivative temperature|entropy derivative pressure|reaction terms";
 
               prm.declare_entry("List of material properties",
                                 "density,thermal expansivity,specific heat,viscosity",
