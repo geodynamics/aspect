@@ -11,8 +11,6 @@
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
-const double c = 1.0;
-const double pi = 3.14159265359;
 
 namespace aspect
 {
@@ -74,12 +72,13 @@ namespace aspect
                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        double c = 1.0;
         for (unsigned int i=0;i<in.position.size();++i)
           {
             const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
             const double z = in.position[i](1);
-            out.viscosities[i] = std::exp(c * porosity);
+            out.viscosities[i] = exp(c*porosity);
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -88,36 +87,34 @@ namespace aspect
             // This is the RHS we need to use for the manufactured solution.
             // We calculated it by subtracting the first term of the RHS (\Nabla (K_D \rho_f g)) from the LHS
             // we computed using our analytical solution.
-            for (unsigned int c=0;c<in.composition[i].size();++c)
-              out.reaction_terms[i][c] = 0.1e1 - (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * exp((double) z / 0.10e2) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.50e2 - pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * exp((double) z / 0.10e2) / 0.100e3 + (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * (-0.1166666667e0 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) - 0.1000000000e0 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.1000000000e1 * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z)) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.10e2 + pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * (0.1166666667e0 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (double) (2 * x + 4 * z) - 0.5833333335e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) + 0.1000000000e0 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) * (double) (2 * x + 4 * z) - 0.5000000000e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z)) + (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2) * (-0.3333333333e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) - 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.1000000000e0 * exp((double) z / 0.10e2)) / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) / 0.5e1 + pow(0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2, 0.2e1) * (0.3333333333e-1 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (double) (4 * x + 8 * z) - 0.3333333333e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) + 0.5000000000e-1 * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) * (double) (4 * x + 8 * z) - 0.5000000000e-2 * c * c * (double) (int) pow((double) (1 + (int) pow((double) (x + 2 * z), (double) 2)), (double) (-2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * (cos((double) z) + 0.1e1) + 0.5000000000e-1 * c / (double) (1 + (int) pow((double) (x + 2 * z), (double) 2)) * exp(c * (0.15e0 + pi / 0.40e2 + atan((double) (x + 2 * z)) / 0.20e2)) * sin((double) z) + 0.1000000000e-1 * exp((double) z / 0.10e2));
+            out.reaction_terms[i][porosity_idx] =
+                    0.1000000000e1 + 0.1000000000e0 * (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1))) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) - 0.1000000000e1 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.10e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.20e0 * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.25e-2 * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.50e-2 * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) - 0.50e-2 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.3e1) * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) - 0.10e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.20e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * pow(x + 0.20e1 * z, 0.3e1)) + 0.1000000000e0 * (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z)) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) - 0.1000000000e1 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.4000e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.400e0 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.25e-2 * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.50e-2 * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) - 0.50e-2 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.3e1) * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) - 0.4000e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.400e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * pow(x + 0.20e1 * z, 0.3e1) + 0.2500000000e-2 * exp(0.5000000000e-1 * z)) - 0.5000000000e-1 * (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.1166666666e0 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.100e1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * sin(z) + 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1))) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e0 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.2333333332e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.4666666664e0 * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.5833333330e-2 * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.20000e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) - 0.2000e0 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) * pow(x + 0.20e1 * z, 0.3e1) - 0.2500e-2 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * (0.2e1 * x + 0.40e1 * z) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) - 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * sin(z) + 0.10e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.20e0 * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.25e-2 * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.50e-2 * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) - 0.50e-2 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.3e1) * pow(0.2e1 * x + 0.40e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) - 0.10e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.20e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * pow(x + 0.20e1 * z, 0.3e1)) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.1250000000e-1 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.1166666666e0 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.100e1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * sin(z) + 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1))) * pow(0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) - 0.5000000000e-1 * (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.1666666667e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z)) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e0 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.1333333334e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.1333333334e0 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.8333333335e-3 * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.20000e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) - 0.40000e0 * (0.2e1 * x + 0.40e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) * pow(x + 0.20e1 * z, 0.3e1) - 0.2500e-2 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * (0.2e1 * x + 0.40e1 * z) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) - 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * sin(z) + 0.4000e0 / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.400e0 * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(x + 0.20e1 * z, 0.3e1) - 0.25e-2 * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.50e-2 * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) - 0.50e-2 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.3e1) * pow(0.40e1 * x + 0.800e1 * z, 0.2e1) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) - 0.4000e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.400e0 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) * pow(0.1e1 + pow(x + 0.20e1 * z, 0.4e1), -0.2e1) * pow(x + 0.20e1 * z, 0.3e1) + 0.2500000000e-2 * exp(0.5000000000e-1 * z)) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.1250000000e-1 * pow(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), 0.2e1) * (0.1666666667e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z)) * pow(0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1));
+
           }
       }
 
       virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
           typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
       {
+          double c = 1.0;
         evaluate(in, out);
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
         for (unsigned int i=0;i<in.position.size();++i)
           {
             double porosity = in.composition[i][porosity_idx];
-            out.compaction_viscosities[i] = std::exp(c * porosity);
+            out.compaction_viscosities[i] = exp(c*porosity);
             out.fluid_viscosities[i] = 1.0;
             out.permeabilities[i] = porosity * porosity;
             out.fluid_compressibilities[i] = 0.0;
-            out.fluid_densities[i] = 1.0;
+            out.fluid_densities[i] = 0.5;
           }
 
       }
 
-
-      private:
-
-
   };
-  
-  
+
+
 
 
       template <int dim>
@@ -130,21 +127,20 @@ namespace aspect
           {
             double x = p(0);
             double z = p(1);
-            double porosity = 0.15+1.0/20.0 * (pi/2.0 * std::atan(x + 2*z));
 
-            values[0]= x + std::sin(z);       //x vel
-            values[1]= x;    //z vel
-            values[2]= std::exp(z/10.0);  // p_f
-            values[3]= - std::exp(c * porosity);  // p_c
-            values[4]= 0;       //x melt vel
-            values[5]= 0;    //y melt vel
-            values[6]= 0;  // p_s
-            values[7]= 0; // T
-            values[8]= porosity;
+            values[0] = x + sin(z);
+            values[1] = x;
+            values[2] = -exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + exp(0.5000000000e-1 * z);
+            values[3] = -exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)));
+            values[4] = x + sin(z) - (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) - 0.5e0 * (0.1166666666e0 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.100e1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * sin(z) + 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1))) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))));
+            values[5] = x - (0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z) - 0.5e0 * (0.1666666667e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * (cos(z) + 0.1e1) + 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z)) / (0.95e0 + 0.25e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))));
+            values[6] = exp(0.5000000000e-1 * z);
+            values[7] = 0;
+            values[8] = 0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1));
+
           }
       };
 
-     
 
 
     /**
@@ -162,7 +158,6 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
 
-
     };
 
     template <int dim>
@@ -174,7 +169,6 @@ namespace aspect
 
       RefFunction<dim> ref_func;
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
-
       const unsigned int n_total_comp = this->introspection().n_components;
 
       Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
@@ -185,13 +179,14 @@ namespace aspect
       Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          n_total_comp);
-      ComponentSelectFunction<dim> comp_p_f(dim, n_total_comp);
-      ComponentSelectFunction<dim> comp_p_c(dim+1, n_total_comp);
-      ComponentSelectFunction<dim> comp_u_f(std::pair<unsigned int, unsigned int>(dim+2,dim+2+dim),
-                                          n_total_comp);
-      ComponentSelectFunction<dim> comp_p(dim+2+dim, n_total_comp);
-      ComponentSelectFunction<dim> comp_porosity(dim+2+dim+2, n_total_comp);
+                                                n_total_comp);
+            ComponentSelectFunction<dim> comp_p_f(dim, n_total_comp);
+            ComponentSelectFunction<dim> comp_p_c(dim+1, n_total_comp);
+            ComponentSelectFunction<dim> comp_u_f(std::pair<unsigned int, unsigned int>(dim+2,dim+2+
+      dim),
+                                                n_total_comp);
+            ComponentSelectFunction<dim> comp_p(dim+2+dim, n_total_comp);
+            ComponentSelectFunction<dim> comp_porosity(dim+2+dim+2, n_total_comp);
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
@@ -247,32 +242,33 @@ namespace aspect
       return std::make_pair("Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2:", os.str());
     }
 
-  
+
   template <int dim>
   class PressureBdry:
-      
+
       public FluidPressureBoundaryConditions::Interface<dim>
   {
     public:
       virtual
       void fluid_pressure_gradient (
-	const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-	const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-	std::vector<Tensor<1,dim> > & output
+    const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
+    const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+    std::vector<Tensor<1,dim> > & output
       ) const
-	{
-	  for (unsigned int q=0; q<output.size(); ++q)
-	    {
-	      const double z = material_model_inputs.position[q][1];
-	      Tensor<1,dim> gravity;
-	      gravity[0] = 0.0;
-	      gravity[dim-1] = 1.0;
-	      output[q] = 0.1 * std::exp(z/10.0) * gravity;
-	    }	  
-	}
-      
+    {
+      for (unsigned int q=0; q<output.size(); ++q)
+        {
+          const double x = material_model_inputs.position[q][0];
+          const double z = material_model_inputs.position[q][1];
+          Tensor<1,dim> gradient;
+          gradient[0] = 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1));
+          gradient[1] = 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z);
+          output[q] = gradient;
+        }
+    }
 
-      
+
+
   };
 
 }
@@ -283,7 +279,7 @@ namespace aspect
 
     ASPECT_REGISTER_MATERIAL_MODEL(TestMeltMaterial,
                                    "test melt material",
-				   "")
+                   "")
 
 
     ASPECT_REGISTER_POSTPROCESSOR(ConvergenceMeltPostprocessor,
@@ -293,9 +289,9 @@ namespace aspect
                                   "in the manuscript and reports the error.")
 
     ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
-						       "PressureBdry",
-						       "A fluid pressure boundary condition that prescribes the "
-						       "gradient of the fluid pressure at the boundaries as "
-						       "calculated in the analytical solution. ")
-						       
+                               "PressureBdry",
+                               "A fluid pressure boundary condition that prescribes the "
+                               "gradient of the fluid pressure at the boundaries as "
+                               "calculated in the analytical solution. ")
+
 }

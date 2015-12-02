@@ -6,20 +6,22 @@
 # 6: Number of degrees of freedom for all compositions
 # 7: Iterations for temperature solver
 # 8: Iterations for composition solver 1
-# 9: Time step size (seconds)
-# 10: Visualization file name
-# 11: RMS velocity (m/s)
-# 12: Max. velocity (m/s)
-# 13: Minimal pressure (Pa)
-# 14: Average pressure (Pa)
-# 15: Maximal pressure (Pa)
-# 16: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 17: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 18: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 19: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 20: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 21: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 22: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-# 23: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-0 0.0000e+00 1024 11717 4225 4225 0 0 0.0000e+00                                                    "" 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00    0     0    0    0 0 0 2.0535e-02 output-melt_transport_convergence_test/solution-00000 8.19403683e+00 1.47675104e+01 -1.22274836e+00 -4.80515378e-01 7.77158979e-01 1.48660433e+01 1.34536471e+01 1.48660433e+01 1.34536471e+01 1.44323291e+01 3.88919368e-01 1.44323291e+01 3.88919368e-01 
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Time step size (seconds)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal pressure (Pa)
+# 16: Average pressure (Pa)
+# 17: Maximal pressure (Pa)
+# 18: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 19: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 20: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 21: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 22: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 23: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 24: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 25: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.0000e+00 1024 9539 4225 4225 0 0 18 263 57 0.0000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0    0    0    0 0 0  0   0  0 2.0949e-02 8.19412473e+00 1.47665356e+01 6.06262683e-01 1.04232910e+00 1.64918633e+00 1.48660433e+01 1.34536471e+01 1.48660433e+01 1.34536471e+01 1.44323291e+01 3.88919368e-01 1.44323291e+01 3.88919368e-01 

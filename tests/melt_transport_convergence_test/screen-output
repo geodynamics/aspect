@@ -1,36 +1,61 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Loading shared library <./libmelt_transport_convergence_test.so>
 
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
+Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 2.15237e-16, 521.815
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+18 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.1174e-17, 468.034
       Total relative nonlinear residual: 1
 
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
-      Nonlinear residuals: 0, 2.15237e-16, 1.30821e-12
-      Total relative nonlinear residual: 2.50703e-15
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.1174e-17, 0.000408408
+      Total relative nonlinear residual: 8.72602e-07
 
 
 
    Postprocessing:
-     Writing graphical output:                               output-melt_transport_convergence_test/solution-00000
      RMS, max velocity:                                      8.19 m/s, 14.8 m/s
-     Pressure min/avg/max:                                   -1.223 Pa, -0.4805 Pa, 0.7772 Pa
+     Pressure min/avg/max:                                   0.6063 Pa, 1.042 Pa, 1.649 Pa
      Max and min velocity along boundary parts:              14.87 m/s, 13.45 m/s, 14.87 m/s, 13.45 m/s, 14.43 m/s, 0.3889 m/s, 14.43 m/s, 0.3889 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.040094e-01, 1.345335e+01, 2.481093e-01, 1.993599e+00, 1.761742e+00, 1.642781e+02
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 2.064628e-02, 4.161180e-02, 8.977550e-02, 3.999050e-02, 8.032470e-03, 4.842306e-02
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      6.61s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |      1.05s |        16% |
+| Assemble composition system     |         2 |     0.528s |         8% |
+| Assemble temperature system     |         2 |     0.525s |       7.9% |
+| Build Stokes preconditioner     |         2 |     0.399s |         6% |
+| Build composition preconditioner|         2 |   0.00962s |      0.15% |
+| Build temperature preconditioner|         2 |   0.00999s |      0.15% |
+| Solve Stokes system             |         2 |      3.77s |        57% |
+| Solve composition system        |         2 |   0.00204s |     0.031% |
+| Solve temperature system        |         2 |   0.00236s |     0.036% |
+| Initialization                  |         2 |    0.0508s |      0.77% |
+| Postprocessing                  |         1 |     0.178s |       2.7% |
+| Setup dof systems               |         1 |    0.0682s |         1% |
 +---------------------------------+-----------+------------+------------+
 
