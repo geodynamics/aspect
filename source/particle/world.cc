@@ -799,7 +799,7 @@ namespace aspect
     void
     World<dim>::generate_particles()
     {
-      particles = generator->generate_particles();
+      generator->generate_particles(particles);
       update_n_global_particles();
     }
 

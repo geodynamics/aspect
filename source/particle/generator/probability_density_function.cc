@@ -41,8 +41,8 @@ namespace aspect
       {}
 
       template <int dim>
-      std::multimap<types::LevelInd, Particle<dim> >
-      ProbabilityDensityFunction<dim>::generate_particles()
+      void
+      ProbabilityDensityFunction<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
         // Get the local accumulated probabilities for every cell
         const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
@@ -83,7 +83,7 @@ namespace aspect
         const types::particle_index start_id = llround(static_cast<double> (n_tracers)  * start_weight / global_function_integral);
         const types::particle_index n_local_particles = llround(static_cast<double> (n_tracers) * local_function_integral / global_function_integral);
 
-        return generate_particles_in_subdomain(cell_weights,start_id,n_local_particles);
+        generate_particles_in_subdomain(cell_weights,start_id,n_local_particles,particles);
       }
 
       template <int dim>
@@ -135,13 +135,12 @@ namespace aspect
       }
 
       template <int dim>
-      std::multimap<types::LevelInd, Particle<dim> >
+      void
       ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
                                                                         const types::particle_index first_particle_index,
-                                                                        const types::particle_index n_local_particles)
+                                                                        const types::particle_index n_local_particles,
+                                                                        std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
-        std::multimap<types::LevelInd, Particle<dim> > particles;
-
         // Pick cells and assign particles at random points inside them
         for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
           {
@@ -205,8 +204,6 @@ namespace aspect
             const Particle<dim> new_particle(particle_position, current_particle_index + first_particle_index);
             particles.insert(std::make_pair(selected_cell, new_particle));
           }
-
-        return particles;
       }
 
 

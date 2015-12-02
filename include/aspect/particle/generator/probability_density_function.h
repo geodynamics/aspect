@@ -81,8 +81,8 @@ namespace aspect
            * @return A multimap containing cells and their contained particles.
            */
           virtual
-          std::multimap<types::LevelInd, Particle<dim> >
-          generate_particles();
+          void
+          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -139,10 +139,11 @@ namespace aspect
            * @return A map between cells and all generated particles.
            *
            */
-          std::multimap<types::LevelInd, Particle<dim> >
+          void
           generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
                                            const types::particle_index local_start_id,
-                                           const types::particle_index n_local_particles);
+                                           const types::particle_index n_local_particles,
+                                           std::multimap<types::LevelInd, Particle<dim> > &particles);
 
           /**
            * This function loops over all active cells in the local subdomain

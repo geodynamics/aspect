@@ -33,8 +33,8 @@ namespace aspect
       UniformRadial<dim>::UniformRadial() {}
 
       template <int dim>
-      std::multimap<types::LevelInd, Particle<dim> >
-      UniformRadial<dim>::generate_particles()
+      void
+      UniformRadial<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
         // Create the array of shell to deal with
         const double radial_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);
@@ -69,7 +69,6 @@ namespace aspect
           ExcNotImplemented();
 
         // Generate particles
-        std::multimap<types::LevelInd, Particle<dim> > particles;
 
         types::particle_index particle_index = 0;
         std_cxx11::array<double,dim> spherical_coordinates;
@@ -129,8 +128,6 @@ namespace aspect
             else
               ExcNotImplemented();
           }
-
-        return particles;
       }
 
 

@@ -86,8 +86,8 @@ namespace aspect
            * @return A multimap containing cells and their contained particles.
            */
           virtual
-          std::multimap<types::LevelInd, Particle<dim> >
-          generate_particles() = 0;
+          void
+          generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles) = 0;
 
 
           /**

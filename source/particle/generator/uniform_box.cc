@@ -34,11 +34,9 @@ namespace aspect
       UniformBox<dim>::UniformBox() {}
 
       template <int dim>
-      std::multimap<types::LevelInd, Particle<dim> >
-      UniformBox<dim>::generate_particles()
+      void
+      UniformBox<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
-        std::multimap<types::LevelInd, Particle<dim> > particles;
-
         const Tensor<1,dim> P_diff = P_max - P_min;
 
         double volume(1.0);
@@ -94,8 +92,6 @@ namespace aspect
                   ExcNotImplemented();
               }
           }
-
-        return particles;
       }
 
 

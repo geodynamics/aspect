@@ -31,8 +31,8 @@ namespace aspect
       AsciiFile<dim>::AsciiFile() {}
 
       template <int dim>
-      std::multimap<types::LevelInd, Particle<dim> >
-      AsciiFile<dim>::generate_particles()
+      void
+      AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
         const std::string filename = data_directory+data_filename;
         std::ifstream in(filename.c_str(), std::ios::in);
@@ -53,7 +53,6 @@ namespace aspect
         // Read data lines
         types::particle_index particle_index = 0;
         Point<dim> particle_position;
-        std::multimap<types::LevelInd, Particle<dim> > particles;
 
         while (in >> particle_position)
           {
@@ -66,8 +65,6 @@ namespace aspect
             catch (ExcParticlePointNotInDomain &)
               {}
           }
-
-        return particles;
       }
 
 
