@@ -218,9 +218,20 @@ namespace aspect
         {
           prm.enter_subsection("Visualization");
           {
+            // Find out which variables are registered separately
+            std::vector<std::string> variable_names;
+            variable_names = Utilities::split_string_list(prm.get("List of output variables"));
+
             prm.enter_subsection("Material properties");
             {
+              // Get property names and compare against variable names
               property_names = Utilities::split_string_list(prm.get ("List of material properties"));
+              for (std::vector<std::string>::const_iterator p = variable_names.begin();
+                   p != variable_names.end(); ++p)
+                AssertThrow((std::find(property_names.begin(),property_names.end(),*p)) == property_names.end(),
+                            ExcMessage("Visualization postprocessor "
+                                       + *p
+                                       + " is listed separately and in the list of material properties."));
             }
             prm.leave_subsection();
           }
