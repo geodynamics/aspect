@@ -1,71 +1,98 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
 
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 32,842 (10,628+8,450+1,089+4,225+4,225+4,225)
+Number of degrees of freedom: 26,570 (10,628+8,450+1,089+4,225+1,089+1,089)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00000
-     Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0/0
+     Compositions min/max/mass: 0/0.3/3.739e+10 // 0/0/0
 
 *** Timestep 1:  t=1.29422e+09 years
    Solving temperature system... 374 iterations.
-   Solving peridotite system ... 15 iterations.
-   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 5 iterations.
+   Solving porosity system ... 6 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00001
-     Compositions min/max/mass: -0.02531/0.3252/3.749e+10 // 0/0/0
+     Compositions min/max/mass: -0.03445/0.3343/3.739e+10 // -6.909e-14/1.114e-13/-3.373e-07
 
 *** Timestep 2:  t=3.4666e+09 years
    Solving temperature system... 330 iterations.
-   Solving peridotite system ... 12 iterations.
-   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00002
-     Compositions min/max/mass: -0.02071/0.3189/3.749e+10 // 0/0/0
+     Compositions min/max/mass: -0.02971/0.3246/3.739e+10 // -2.291e-13/2.87e-13/-6.794e-07
 
 *** Timestep 3:  t=6.38209e+09 years
    Solving temperature system... 268 iterations.
-   Solving peridotite system ... 11 iterations.
-   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00003
-     Compositions min/max/mass: -0.01785/0.3151/3.749e+10 // 0/0/0
+     Compositions min/max/mass: -0.02188/0.317/3.739e+10 // -3.114e-13/2.151e-13/-7.633e-07
 
 *** Timestep 4:  t=9.41048e+09 years
    Solving temperature system... 357 iterations.
-   Solving peridotite system ... 15 iterations.
-   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 4 iterations.
+   Solving porosity system ... 5 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00004
-     Compositions min/max/mass: -0.01431/0.3136/3.749e+10 // 0/0/0
+     Compositions min/max/mass: -0.01745/0.3126/3.739e+10 // -2.842e-13/4.461e-13/-8.683e-07
 
 *** Timestep 5:  t=1e+10 years
    Solving temperature system... 176 iterations.
-   Solving peridotite system ... 10 iterations.
-   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 3 iterations.
+   Solving porosity system ... 4 iterations.
    Solving Stokes system... done.
+   Solving for u_f in 0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-melt_transport/solution-00005
-     Compositions min/max/mass: -0.01133/0.3133/3.749e+10 // 0/0/0
+     Compositions min/max/mass: -0.01683/0.3135/3.739e+10 // -2.7e-13/3.896e-13/-9.438e-07
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      7.35s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      2.33s |        32% |
+| Assemble composition system     |        12 |     0.449s |       6.1% |
+| Assemble temperature system     |         6 |     0.282s |       3.8% |
+| Build composition preconditioner|        12 |     0.011s |      0.15% |
+| Build temperature preconditioner|         6 |    0.0297s |       0.4% |
+| Solve Stokes system             |         6 |      3.15s |        43% |
+| Solve composition system        |        12 |   0.00978s |      0.13% |
+| Solve temperature system        |         6 |     0.365s |         5% |
+| Initialization                  |         2 |    0.0306s |      0.42% |
+| Postprocessing                  |         6 |     0.605s |       8.2% |
+| Setup dof systems               |         1 |    0.0614s |      0.83% |
 +---------------------------------+-----------+------------+------------+
 
