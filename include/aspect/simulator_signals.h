@@ -84,6 +84,35 @@ namespace aspect
                                   Parameters<dim> &parameters)>  edit_parameters_pre_setup_dofs;
 
     /**
+    * A signal that is called before every mesh_refinement.
+    * This signal allows for registering functions that store data
+    * that is related to mesh cells and needs to be transferred with the cells
+    * during the repartitioning.
+
+    * The functions that connect to this signal must take a list of pairs of
+    * a size and a callback function that has the signature of the
+    * parallel::distributed::Triangulation::register_attach_data function.
+    * The intention of the function should be to add another pair, describing
+    * the amount of space per cell that needs to be send and a function
+    * that is called for every cell by the Triangulation.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_refinement_store_user_data;
+
+    /**
+    * A signal that is called after every mesh_refinement.
+    * This signal allows for registering functions that load data
+    * that is related to mesh cells and was transferred with the cells
+    * during the repartitioning.
+
+    * The functions that connect to this signal must take a list of callback
+    * functions that have the signature of the
+    * parallel::distributed::Triangulation::register_attach_data function.
+    * The intention of the function should be to add another function,
+    * that is called for every cell by the Triangulation.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_refinement_load_user_data;
+
+    /**
      * A signal that is called at the beginning of the program. It
      * gives user extensions the ability to declare additional
      * parameters via the provided argument. User extensions connected to

@@ -1,0 +1,86 @@
+# This test prescribes a velocity field in x direction of the form:
+# vx = 0.1 + t, where t is time. Therefore the position of
+# the single tracer in this test follows:
+# x(t) = 0.5*t^2 + 0.1 * t, which results to:
+# x(1) = 0.6, for a tracer starting at x(0)=0
+# Because the position is a polynom of second order, and we use
+# a second-order time-accurate integrator (rk2), the tracer arrives
+# at the exact end position.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1
+set Use years in output instead of seconds = false
+set CFL number                             = 1.0
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Prescribed Stokes solution  
+  set Model name = function
+  subsection Velocity function
+    set Variable names = x,y,t
+    set Function expression = 0.1+t;0
+  end
+end
+
+set Nonlinear solver scheme                = Advection only
+
+subsection Initial conditions
+  set Model name = function
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, tracers
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set List of output variables      = partition
+  end
+
+  subsection Tracers
+    set Number of tracers = 1
+    set Time between data output = 1
+    set Data output format = ascii
+
+    set Particle generator name = uniform box
+    set Integration scheme = rk2
+
+    subsection Generator
+      subsection Uniform box
+        set Minimal x = 0.0
+        set Maximal x = 0.1
+        set Minimal y = 0.5
+        set Maximal y = 0.55
+      end
+    end
+  end
+end

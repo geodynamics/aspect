@@ -22,6 +22,7 @@
 #define __aspect__compat_h
 
 #include <aspect/global.h>
+
 /*
  * Fixed colorization of parallelepiped
  */
@@ -318,6 +319,38 @@ namespace dealii
 #endif
 #endif
 
+/*
+ * parallel::distributed::Triangulation::ghost_owners() function
+ */
+#if !DEAL_II_VERSION_GTE(8,4,0)
 
+#include <deal.II/distributed/tria.h>
+
+namespace aspect
+{
+  namespace Particle
+  {
+    using namespace dealii;
+
+    template <int dim>
+    std::set<types::subdomain_id>
+    ghost_owners(const parallel::distributed::Triangulation<dim> &triangulation)
+    {
+      std::set<types::subdomain_id> neighbors;
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = triangulation.begin_active();
+           cell != triangulation.end(); ++cell)
+        {
+          if (cell->is_ghost())
+            {
+              neighbors.insert(cell->subdomain_id());
+            }
+        }
+      return neighbors;
+    }
+  }
+}
+#endif
 
 #endif
