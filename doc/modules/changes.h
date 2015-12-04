@@ -10,7 +10,6 @@
  * <br>
  * (Anne Glerum, 2015/12/03)
  *
- * <ol>
  * <li> New: The tracer architecture has been completely overhauled. It is now
  * more flexible and allows for easier modification. Additionally tracers
  * now carry properties with them, which allows for a variety of new use cases.
