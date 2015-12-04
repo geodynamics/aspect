@@ -1849,7 +1849,7 @@ namespace aspect
     if ((!advection_field.is_porosity(introspection)) || (!parameters.include_melt_transport))
       return 0.0;
 
-    Assert (scratch.material_model_outputs.densities[q_point] > 0,
+    Assert (material_model_outputs.densities[q_point] > 0,
             ExcMessage ("The density needs to be a positive quantity "
                         "when melt transport is included in the simulation."));
 
@@ -1975,26 +1975,54 @@ namespace aspect
                                                                            scratch.old_field_laplacians);
     scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                            scratch.old_old_field_laplacians);
-
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         true,
-                                         scratch.material_model_inputs);
-
-    material_model->evaluate(scratch.material_model_inputs,
-                             scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                               cell,
-                                               scratch.finite_element_values.get_quadrature(),
-                                               scratch.finite_element_values.get_mapping(),
-                                               scratch.material_model_outputs);
-
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.current_velocity_divergences);
+
+    typename MaterialModel::MeltInterface<dim>::MaterialModelInputs melt_inputs(n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(n_q_points, parameters.n_compositional_fields);
+    typename MaterialModel::Interface<dim>::MaterialModelOutputs *material_model_outputs;
+    typename MaterialModel::Interface<dim>::MaterialModelInputs *material_model_inputs;
+
+    if (!parameters.include_melt_transport)
+      {
+        compute_material_model_input_values (current_linearization_point,
+                                             scratch.finite_element_values,
+                                             cell,
+                                             true,
+                                             scratch.material_model_inputs);
+        material_model_inputs = &scratch.material_model_inputs;
+
+        material_model->evaluate(scratch.material_model_inputs,
+                                 scratch.material_model_outputs);
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.material_model_outputs);
+        material_model_outputs = &scratch.material_model_outputs;
+      }
+    else
+      {
+        compute_material_model_input_values (current_linearization_point,
+                                             scratch.finite_element_values,
+                                             cell,
+                                             true,
+                                             melt_inputs);
+        material_model_inputs = &melt_inputs;
+        // TODO: fill other inputs
+        typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
+        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
+        melt_mat->evaluate_with_melt(melt_inputs, melt_outputs);
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   melt_outputs);
+        material_model_outputs = &melt_outputs;
+      }
 
     std::vector<std::vector<double> > gravity_values (dim, std::vector<double>(scratch.finite_element_values.n_quadrature_points));
     average_gravity_vector(scratch.finite_element_values.get_quadrature(),
@@ -2004,8 +2032,8 @@ namespace aspect
                            gravity_values);
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model_manager.evaluate(scratch.material_model_inputs,
-                                   scratch.material_model_outputs,
+    heating_model_manager.evaluate(*material_model_inputs,
+                                   *material_model_outputs,
                                    heating_model_outputs);
 
     // set up scratch.explicit_material_model_*
@@ -2058,11 +2086,20 @@ namespace aspect
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
           }
 
+        double bulk_density = material_model_outputs->densities[q];
+
+        if (parameters.include_melt_transport)
+          {
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            const double porosity = std::max(melt_inputs.composition[q][porosity_index],0.000);
+            bulk_density = (1.0 - porosity) * material_model_outputs->densities[q] + porosity * melt_outputs.fluid_densities[q];
+          }
+
         const double density_c_P              =
           ((advection_field.is_temperature())
            ?
-           scratch.material_model_outputs.densities[q] *
-           scratch.material_model_outputs.specific_heat[q]
+           bulk_density *
+           material_model_outputs->specific_heat[q]
            :
            1.0);
 
@@ -2073,7 +2110,7 @@ namespace aspect
         const double conductivity =
           (advection_field.is_temperature()
            ?
-           scratch.material_model_outputs.thermal_conductivities[q]
+           material_model_outputs->thermal_conductivities[q]
            :
            0.0);
         const double latent_heat_LHS =
@@ -2099,15 +2136,15 @@ namespace aspect
            ?
            0.0
            :
-           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+           material_model_outputs->reaction_terms[q][advection_field.compositional_variable]);
 
         Tensor<1,dim> gravity;
         for (unsigned int d=0; d<dim; ++d)
           gravity[d] = gravity_values[d][q];
 
         const double melt_transport_RHS = compute_melting_RHS (scratch,
-                                                               scratch.material_model_inputs,
-                                                               scratch.material_model_outputs,
+                                                               *material_model_inputs,
+                                                               *material_model_outputs,
                                                                advection_field,
                                                                q,
                                                                gravity);
@@ -2136,8 +2173,8 @@ namespace aspect
            scratch.current_velocity_divergences[q]
            + (material_model->is_compressible()
               ?
-              scratch.material_model_outputs.compressibilities[q]
-              * scratch.material_model_outputs.densities[q]
+              material_model_outputs->compressibilities[q]
+              * material_model_outputs->densities[q]
               * current_u
               * gravity
               :
