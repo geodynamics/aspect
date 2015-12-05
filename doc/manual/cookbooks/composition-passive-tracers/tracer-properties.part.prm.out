@@ -1,0 +1,6 @@
+    set %%\hyperref[parameters:List of tracer properties]{List of tracer properties}% = function, initial composition, initial position, pT path%% \index[prmindex]{List of tracer properties} \index[prmindexfull]{List of tracer properties} %
+
+    subsection %%\hyperref[parameters:Function]{Function}%
+      set %%\hyperref[parameters:Function/Variable names]{Variable names}%      = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Function!Variable names} %
+      set %%\hyperref[parameters:Function/Function expression]{Function expression}% = if(y<0.2, 1, 0)%% \index[prmindex]{Function expression} \index[prmindexfull]{Function!Function expression} %
+    end

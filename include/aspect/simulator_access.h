@@ -163,10 +163,16 @@ namespace aspect
       double get_time () const;
 
       /**
-       * Return the size of the last time step.
+       * Return the size of the current time step.
        */
       double
       get_timestep () const;
+
+      /**
+       * Return the size of the last time step.
+       */
+      double
+      get_old_timestep () const;
 
       /**
        * Return the current number of a time step.

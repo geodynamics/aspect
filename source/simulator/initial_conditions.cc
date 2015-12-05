@@ -23,6 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
+#include <aspect/postprocess/tracers.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/function.h>
@@ -173,6 +174,18 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::initialize_tracers ()
+  {
+    Postprocess::Tracers<dim> *tracer_postprocessor = const_cast<Postprocess::Tracers<dim> *>
+                                                      (postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >());
+
+    // If the tracer postprocessor has been selected
+    if (tracer_postprocessor != 0)
+      tracer_postprocessor->generate_and_initialize_particles();
+  }
+
+
+  template <int dim>
   void Simulator<dim>::compute_initial_pressure_field ()
   {
     // Note that this code will overwrite the velocity solution with 0 if
@@ -318,7 +331,8 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
-  template void Simulator<dim>::compute_initial_pressure_field();
+  template void Simulator<dim>::compute_initial_pressure_field(); \
+  template void Simulator<dim>::initialize_tracers();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
