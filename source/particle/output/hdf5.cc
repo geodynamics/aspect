@@ -250,6 +250,7 @@ namespace aspect
 
         return output_path_prefix;
 #else
+        (void) property_component_list;
         (void) particles;
         (void) current_time;
         return "";
