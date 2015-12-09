@@ -25,9 +25,9 @@
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -764,12 +764,19 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
+        // Create the directory. We could call the 'mkdir()' function directly, but
+        // this can only create a single level of directories. If someone has specified
         // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        // do not exist, this would fail. Working around this is easiest by just calling
+        // 'mkdir -p' from the command line.
+        int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+
+        // If no command-line exists (such as on compute nodes of IBM BlueGene/Q), or
+        // mkdir is not available on the command-line, fall back to mkdir().
+        if (error != 0)
+          {
+            error = mkdir(output_directory.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+          }
 
         AssertThrow (error==0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));

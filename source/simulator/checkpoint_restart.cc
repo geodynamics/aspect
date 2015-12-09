@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
@@ -39,7 +40,17 @@ namespace aspect
     void move_file (const std::string &old_name,
                     const std::string &new_name)
     {
-      const int error = system (("mv " + old_name + " " + new_name).c_str());
+      int error = system (("mv " + old_name + " " + new_name).c_str());
+
+      // If the above call failed, e.g. because there is no command-line
+      // available, try with internal functions.
+      if (error != 0)
+        {
+          if (Utilities::fexists(new_name))
+            error = remove(new_name.c_str());
+
+          error = rename(old_name.c_str(),new_name.c_str());
+        }
 
       AssertThrow (error == 0, ExcMessage(std::string ("Can't move files: ")
                                           +
