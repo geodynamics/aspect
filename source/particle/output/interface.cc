@@ -28,7 +28,7 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      Interface<dim>::Interface ()
+      Interface<dim>::~Interface ()
       {}
 
       template <int dim>
