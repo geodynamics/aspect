@@ -40,11 +40,6 @@ namespace aspect
       {
         public:
           /**
-           * Constructor.
-           */
-          AsciiFile();
-
-          /**
            * Reads in a file and generate a set of particles at the prescribed
            * positions.
            *

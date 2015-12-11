@@ -31,9 +31,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      UniformBox<dim>::UniformBox() {}
-
-      template <int dim>
       void
       UniformBox<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {

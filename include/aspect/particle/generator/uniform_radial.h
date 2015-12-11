@@ -52,11 +52,6 @@ namespace aspect
       {
         public:
           /**
-           * Constructor.
-           */
-          UniformRadial();
-
-          /**
            * Generate a uniformly distributed set of particles in a
            * circular or spherical subdomain of the global domain.
            *

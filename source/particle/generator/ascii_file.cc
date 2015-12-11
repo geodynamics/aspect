@@ -28,9 +28,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      AsciiFile<dim>::AsciiFile() {}
-
-      template <int dim>
       void
       AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
