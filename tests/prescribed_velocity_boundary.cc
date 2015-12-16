@@ -2,8 +2,6 @@
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/gravity_model/interface.h>
-
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -13,152 +11,136 @@
 #include <deal.II/numerics/vector_tools.h>
 
 
-
 namespace aspect
 {
-  /**
-   * This is the "Burstedde" benchmark defined in the following paper:
-   * @code
-   *  @Article{busa13,
-   *    author =       {Burstedde, Carsten and Stadler, Georg and Alisic, Laura and Wilcox, Lucas C and Tan, Eh and Gurnis, Michael and Ghattas, Omar},
-   *    title =        {Large-scale adaptive mantle convection simulation},
-   *    journal =      {Geophysical Journal International},
-   *    year =         2013,
-   *    volume =       192,
-   *    number =       {3},
-   *    publisher =    {Oxford University Press},
-   *    pages =        {889--906}}
-   * @endcode
-   *
-   */
-  namespace BursteddeBenchmark
+  namespace InclusionBenchmark
   {
     using namespace dealii;
 
     namespace AnalyticSolutions
     {
-      Tensor<1,3>
-      burstedde_velocity (const Point<3> &pos,
-                          const double eta)
+      // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
+      void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
       {
-        const double x = pos[0];
-        const double y = pos[1];
-        const double z = pos[2];
-
-        // create a Point<3> (because it has a constructor that takes
-        // three doubles) and return it (it automatically converts to
-        // the necessary Tensor<1,3>).
-        return Point<3> (x+x*x+x*y+x*x*x*y,
-                         y+x*y+y*y+x*x*y*y,
-                         -2.*z-3.*x*z-3.*y*z-5.*x*x*y*z);
-      }
-
-      double
-      burstedde_pressure (const Point<3> &pos,
-                          const double eta)
-      {
-        const double x = pos[0];
-        const double y = pos[1];
-        const double z = pos[2];
-
         const double min_eta = 1.0;
         const double max_eta = eta;
+        const double epsilon = 1; //strain rate
         const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
+        std::complex<double> phi, psi, dphi;
+        const double offset[2]= {1.0, 1.0};
+        double r2_inclusion = r_inclusion * r_inclusion;
 
-        return x*y*z+x*x*x*y*y*y*z-5./32.;
+        double x = pos[0]-offset[0];
+        double y = pos[1]-offset[1];
+        double r2 = x*x+y*y;
+
+        std::complex<double> z(x,y);
+        if (r2<r2_inclusion)
+          {
+            //inside the inclusion
+            phi=0;
+            dphi=0;
+            psi=-4*epsilon*(max_eta*min_eta/(min_eta+max_eta))*z;
+          }
+        else
+          {
+            //outside the inclusion
+            phi=-2*epsilon*A*r2_inclusion/z;
+            dphi=-phi/z;
+            psi=-2*epsilon*(min_eta*z+A*r2_inclusion*r2_inclusion/(z*z*z));
+          }
+        double visc = (r2<r2_inclusion)? max_eta : 1.0;
+        std::complex<double> v = (phi - z*conj(dphi) - conj(psi))/(2.0*visc);
+        *vx=v.real();
+        *vy=v.imag();
+        *p=-2*epsilon*dphi.real();
       }
+
+
+
 
 
       /**
-       * The exact solution for the Burstedde benchmark.
+       * The exact solution for the Inclusion benchmark.
        */
       template <int dim>
-      class FunctionBurstedde : public Function<dim>
+      class FunctionInclusion : public Function<dim>
       {
         public:
-          FunctionBurstedde (const double beta)
-            :
-            Function<dim>(dim+2),
-            beta_(beta)
-          {}
-
-          virtual void vector_value (const Point< dim >   &pos,
+          FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
+          virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
-            Assert (dim == 3, ExcNotImplemented());
-            Assert (values.size() >= 4, ExcInternalError());
-
-            const Point<3> p (pos[0], pos[1], pos[2]);
-
-            const Tensor<1,3> v = AnalyticSolutions::burstedde_velocity (p, beta_);
-            values[0] = v[0];
-            values[1] = v[1];
-            values[2] = v[2];
-
-            values[3] = AnalyticSolutions::burstedde_pressure (p, beta_);
+            double pos[2]= {p(0),p(1)};
+            AnalyticSolutions::_Inclusion
+            (pos,0.2,eta_B_, &values[0], &values[1], &values[2]);
           }
 
         private:
-          const double beta_;
+          double eta_B_;
       };
     }
 
 
 
     template <int dim>
-    class BursteddeBoundary : public VelocityBoundaryConditions::Interface<dim>
+    class InclusionBoundary : public VelocityBoundaryConditions::Interface<dim>
     {
       public:
         /**
          * Constructor.
          */
-        BursteddeBoundary();
+        InclusionBoundary(): eta_B (1e3)
+	  {}
+	
 
         /**
          * Return the boundary velocity as a function of position.
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id boundary_id,
                            const Point<dim> &position) const;
 
+	virtual void initialize ()
+	  { }
+	
+	
       private:
-        const double beta;
+
+        double eta_B;
     };
 
+
     template <int dim>
-    BursteddeBoundary<dim>::BursteddeBoundary ()
-      :
-      beta (0)
-    {}
-
-
-
-    template <>
-    Tensor<1,2>
-    BursteddeBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<2> &p) const
+    Tensor<1,dim>
+    InclusionBoundary<dim>::
+    boundary_velocity (const types::boundary_id boundary_id,
+                       const Point<dim> &p) const
     {
-      Assert (false, ExcNotImplemented());
-      return Tensor<1,2>();
-    }
+      Assert (dim == 2, ExcNotImplemented());
+      
+      std::cout << "Boundary_velocity called with boundary_id ="
+                << static_cast<int>(boundary_id) << std::endl;
+      
+      return Tensor<1,dim>();
+      double pos[2]= {p(0),p(1)};
 
+      Tensor<1,dim> velocity;
+      double pressure;
+      AnalyticSolutions::_Inclusion
+      (pos,0.2,eta_B, &velocity[0], &velocity[1], &pressure);
 
-
-    template <>
-    Tensor<1,3>
-    BursteddeBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<3> &p) const
-    {
-      return AnalyticSolutions::burstedde_velocity (p, beta);
+      return velocity;
     }
 
 
 
 
     /**
+     * A material model that describes the "Pure shear/Inclusion" benchmark
+     * of the paper cited in the documentation of the DuretzEtAl namespace.
+     *
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are
      * therefore set to zero in the implementation of this class.
@@ -166,7 +148,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class BursteddeMaterial : public MaterialModel::InterfaceCompatibility<dim>
+    class InclusionMaterial : public MaterialModel::InterfaceCompatibility<dim>
     {
       public:
         /**
@@ -212,6 +194,7 @@ namespace aspect
          * @{
          */
 
+
         /**
          * Return whether the model is compressible or not.
          * Incompressibility does not necessarily imply that the density is
@@ -251,6 +234,7 @@ namespace aspect
 
         virtual double reference_thermal_expansion_coefficient () const;
 
+//TODO: should we make this a virtual function as well? where is it used?
         double reference_thermal_diffusivity () const;
 
         double reference_cp () const;
@@ -260,47 +244,48 @@ namespace aspect
         /**
          * Returns the viscosity value in the inclusion
          */
-        double get_beta() const;
+        double get_eta_B() const;
 
+      private:
         /**
          * viscosity value in the inclusion
          */
-        double beta;
+        double eta_B;
     };
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     viscosity (const double,
                const double,
                const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
-      const double mu = exp(1. - beta * (p(0)*(1.-p(0))+p(1)*(1.-p(1)) + p(2)*(1.-p(2))));
-      return mu;
+      const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
+      return (r2<0.2*0.2)? eta_B : 1.0;
     }
 
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     reference_viscosity () const
     {
-      return 1.;
+      return 1;
     }
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     reference_density () const
     {
-      return 1.;
+      return 0;
     }
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     reference_thermal_expansion_coefficient () const
     {
       return 0;
@@ -308,7 +293,7 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     specific_heat (const double,
                    const double,
                    const std::vector<double> &, /*composition*/
@@ -319,7 +304,7 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     reference_cp () const
     {
       return 0;
@@ -327,7 +312,7 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     thermal_conductivity (const double,
                           const double,
                           const std::vector<double> &, /*composition*/
@@ -338,7 +323,7 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     reference_thermal_diffusivity () const
     {
       return 0;
@@ -346,19 +331,19 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     density (const double,
              const double,
              const std::vector<double> &, /*composition*/
              const Point<dim> &p) const
     {
-      return 1;
+      return 0;
     }
 
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     thermal_expansion_coefficient (const double temperature,
                                    const double,
                                    const std::vector<double> &, /*composition*/
@@ -370,7 +355,7 @@ namespace aspect
 
     template <int dim>
     double
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     compressibility (const double,
                      const double,
                      const std::vector<double> &, /*composition*/
@@ -382,7 +367,7 @@ namespace aspect
 
     template <int dim>
     bool
-    BursteddeMaterial<dim>::
+    InclusionMaterial<dim>::
     is_compressible () const
     {
       return false;
@@ -390,30 +375,34 @@ namespace aspect
 
     template <int dim>
     void
-    BursteddeMaterial<dim>::declare_parameters (ParameterHandler &prm)
+    InclusionMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
-      //create a global section in the parameter file for parameters
-      //that describe this benchmark. note that we declare them here
-      //in the material model, but other kinds of plugins (e.g., the gravity
-      //model below) may also read these parameters even though they do not
-      //declare them
-      prm.enter_subsection("Burstedde benchmark");
+      prm.enter_subsection("Material model");
       {
-        prm.declare_entry("Viscosity parameter", "20",
-                          Patterns::Double (0),
-                          "Viscosity in the Burstedde benchmark.");
+        prm.enter_subsection("Inclusion");
+        {
+          prm.declare_entry ("Viscosity jump", "1e3",
+                             Patterns::Double (0),
+                             "Viscosity in the Inclusion.");
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
 
 
+
     template <int dim>
     void
-    BursteddeMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    InclusionMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Burstedde benchmark");
+      prm.enter_subsection("Material model");
       {
-        beta = prm.get_double ("Viscosity parameter");
+        prm.enter_subsection("Inclusion");
+        {
+          eta_B = prm.get_double ("Viscosity jump");
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
 
@@ -425,101 +414,43 @@ namespace aspect
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
-
     template <int dim>
     double
-    BursteddeMaterial<dim>::get_beta() const
+    InclusionMaterial<dim>::get_eta_B() const
     {
-      return beta;
+      return eta_B;
     }
 
-    /**
-     *gravity model for the Burstedde benchmark
-    */
 
-    template <int dim>
-    class BursteddeGravity : public aspect::GravityModel::Interface<dim>
-    {
-      public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-        */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
-        double beta;
-    };
-
-    template <int dim>
-    Tensor<1,dim>
-    BursteddeGravity<dim>::
-    gravity_vector(const Point<dim> &pos) const
-    {
-
-      const double x=pos[0];
-      const double y=pos[1];
-      const double z=pos[2];
-      const double mu=exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
-
-      const double dmudx=-beta*(1.-2.*x)*mu;
-      const double dmudy=-beta*(1.-2.*y)*mu;
-      const double dmudz=-beta*(1.-2.*z)*mu;
-
-      Tensor<1,dim> g;
-
-      g[0]=((y*z+3.*std::pow(x,2)*std::pow(y,3)*z)- mu*(2.+6.*x*y))
-           -dmudx*(2.+4.*x+2.*y+6.*std::pow(x,2)*y)
-           -dmudy*(x+std::pow(x,3)+y+2.*x*std::pow(y,2))
-           -dmudz*(-3.*z-10.*x*y*z);
-
-      g[1]=((x*z+3.*std::pow(x,3)*std::pow(y,2)*z)- mu*(2.+2.*std::pow(x,2)+2.*std::pow(y,2)))
-           -dmudx*(x+std::pow(x,3)+y+2.*x*std::pow(y,2))
-           -dmudy*(2.+2.*x+4.*y+4.*std::pow(x,2)*y)
-           -dmudz*(-3.*z-5.*std::pow(x,2)*z);
-
-      g[2]=((x*y+std::pow(x,3)*std::pow(y,3)) - mu*(-10.*y*z))
-           -dmudx*(-3.*z-10.*x*y*z)
-           -dmudy*(-3.*z-5.*std::pow(x,2)*z)
-           -dmudz*(-4.-6.*x-6.*y-10.*std::pow(x,2)*y);
-
-      return g;
-    }
-
-    template <int dim>
-    void
-    BursteddeGravity<dim>::declare_parameters (ParameterHandler &prm)
-    {
-      //nothing to declare here. This plugin will however, read parameters
-      //declared by the material model in the "Burstedde benchmark" section
-    }
-
-    template <int dim>
-    void
-    BursteddeGravity<dim>::parse_parameters (ParameterHandler &prm)
-    {
-      prm.enter_subsection("Burstedde benchmark");
-      {
-        beta = prm.get_double ("Viscosity parameter");
-      }
-      prm.leave_subsection();
-    }
 
 
     /**
-      * A postprocessor that evaluates the accuracy of the solution.
+      * A postprocessor that evaluates the accuracy of the solution of the
+      * aspect::MaterialModel::DuretzEtAl::Inclusion material models.
       *
       * The implementation of error evaluators that correspond to the
-      * benchmarks defined in the paper Duretz et al. reference above.
+      * benchmarks defined in the following paper:
+      * @code
+      *  @Article{DMGT11,
+      *    author =       {T. Duretz and D. A. May and T. V. Gerya and P. J. Tackley},
+      *    title =        {Discretization errors and free surface stabilization in the
+      *                  finite difference and marker-in-cell method for applied
+      *                  geodynamics: {A} numerical study},
+      *    journal =      {Geochemistry Geophysics Geosystems},
+      *    year =         2011,
+      *    volume =       12,
+      *    pages =        {Q07004/1--26}}
+      * @endcode
+      *
+      * @note While this paper summarizes the benchmarks used here, some of the
+      * benchmarks actually originate in earlier papers. For the original
+      * references, see the bibliography of the paper above.
+      * @ingroup Postprocessing
       */
     template <int dim>
-    class BursteddePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -532,16 +463,25 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    BursteddePostprocessor<dim>::execute (TableHandler &statistics)
+    InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std_cxx1x::shared_ptr<Function<dim> > ref_func;
-      {
-        const BursteddeMaterial<dim> *
-        material_model
-          = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
+      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
+                  ExcNotImplemented());
 
-        ref_func.reset (new AnalyticSolutions::FunctionBurstedde<dim>(material_model->get_beta()));
-      }
+      std_cxx1x::shared_ptr<Function<dim> > ref_func;
+      if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
+        {
+          const InclusionMaterial<dim> *
+          material_model
+            = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
+
+          ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(material_model->get_eta_B()));
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));
+        }
 
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
@@ -549,11 +489,6 @@ namespace aspect
       Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
-
-      double u_l1;
-      double p_l1;
-      double u_l2;
-      double p_l2;
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           dim+2);
@@ -588,21 +523,15 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
-      p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
-      u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));
-      p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));
-
       std::ostringstream os;
-
-
-      os << std::scientific <<  u_l1
-         << ", " << p_l1
-         << ", " << u_l2
-         << ", " << p_l2;
+      os << std::scientific << cellwise_errors_u.l1_norm()
+         << ", " << cellwise_errors_p.l1_norm()
+         << ", " << cellwise_errors_ul2.l2_norm()
+         << ", " << cellwise_errors_pl2.l2_norm();
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
+
 
   }
 }
@@ -612,28 +541,27 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace BursteddeBenchmark
+  namespace InclusionBenchmark
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(BursteddeMaterial,
-                                   "BursteddeMaterial",
-                                   "A material model that corresponds to the `Burstedde' benchmark. "
-                                   "See the manual for more information.")
+    ASPECT_REGISTER_MATERIAL_MODEL(InclusionMaterial,
+                                   "InclusionMaterial",
+                                   "A material model that corresponds to the 'Inclusion' benchmark "
+                                   "defined in Duretz et al., G-Cubed, 2011.")
 
-    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(BursteddeBoundary,
-                                                 "BursteddeBoundary",
+    ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS(InclusionBoundary,
+                                                 "InclusionBoundary",
                                                  "Implementation of the velocity boundary conditions for the "
-                                                 "`Burstedde' benchmark. See the manual for more information about this "
+                                                 "``inclusion'' benchmark. See the manual and the Kronbichler, Heister "
+                                                 "and Bangerth paper on ASPECT for more information about this "
                                                  "benchmark.")
 
-    ASPECT_REGISTER_POSTPROCESSOR(BursteddePostprocessor,
-                                  "BursteddePostprocessor",
-                                  "A postprocessor that compares the solution of the `Burstedde' benchmark "
-                                  "with the one computed by ASPECT "
-                                  "and reports the error. See the manual for more information.")
-    ASPECT_REGISTER_GRAVITY_MODEL(BursteddeGravity,
-                                  "BursteddeGravity",
-                                  "A gravity model in corresponding to the `Burstedde' benchmark. "
-                                  "See the manual for more information.")
+    ASPECT_REGISTER_POSTPROCESSOR(InclusionPostprocessor,
+                                  "InclusionPostprocessor",
+                                  "A postprocessor that compares the solution of the benchmarks from "
+                                  "the Duretz et al., G-Cubed, 2011, paper with the one computed by ASPECT "
+                                  "and reports the error. Specifically, it can compute the errors for "
+                                  "the SolCx, SolKz and inclusion benchmarks. The postprocessor inquires "
+                                  "which material model is currently being used and adjusts "
+                                  "which exact solution to use accordingly.")
   }
 }
-

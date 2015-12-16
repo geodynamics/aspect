@@ -5,6 +5,13 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: The boundary_velocity(const Point<dim> &position) const 
+ * function has now been deprecated in favor of the new function 
+ * boundary_velocity (const types::boundary_id boundary_indicator, 
+ * const Point<dim> &position) const. 
+ * <br>
+ * (Menno Fraters, 2015/12/16)
+ * 
  * <li> New: Visualization postprocessors for thermal conductivity and 
  * thermal diffusivity. 
  * <br>
