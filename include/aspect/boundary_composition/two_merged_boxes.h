@@ -38,8 +38,7 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class TwoMergedBoxes : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class TwoMergedBoxes : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -48,10 +47,9 @@ namespace aspect
          * @copydoc aspect::BoundaryComposition::Interface::composition()
          */
         virtual
-        double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location,
-                            const unsigned int                   compositional_field) const;
+        double boundary_composition (const types::boundary_id             boundary_indicator,
+                                     const Point<dim>                    &location,
+                                     const unsigned int                   compositional_field) const;
 
         /**
          * Declare the parameters this class takes through input files. This

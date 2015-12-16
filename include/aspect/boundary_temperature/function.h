@@ -53,9 +53,8 @@ namespace aspect
          */
         virtual
         double
-        temperature (const GeometryModel::Interface<dim> &geometry_model,
-                     const types::boundary_id             boundary_indicator,
-                     const Point<dim>                    &position) const;
+        boundary_temperature (const types::boundary_id             boundary_indicator,
+                              const Point<dim>                    &position) const;
 
         /**
          * A function that is called at the beginning of each time step to

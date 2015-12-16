@@ -32,9 +32,8 @@ namespace aspect
     template <int dim>
     double
     InitialTemperature<dim>::
-    temperature (const GeometryModel::Interface<dim> &,
-                 const types::boundary_id             ,
-                 const Point<dim>                    &location) const
+    boundary_temperature (const types::boundary_id             ,
+                          const Point<dim>                    &location) const
     {
       return this->get_initial_conditions().initial_temperature(location);
     }

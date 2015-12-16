@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 #include <aspect/boundary_temperature/interface.h>
 
+#include <aspect/utilities.h>
+
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
@@ -46,6 +48,30 @@ namespace aspect
     void
     Interface<dim>::initialize ()
     {}
+
+    template <int dim>
+    double
+    Interface<dim>::temperature (const GeometryModel::Interface<dim> &/*geometry_model*/,
+                                 const types::boundary_id             boundary_indicator,
+                                 const Point<dim>                    &position) const
+    {
+      /**
+       * Call the new-style function without the geometry model
+       * to maintain backwards compatibility. Normally the derived class should
+       * override the called function, but if it overrides this function, the
+       * new interface will not be used.
+       */
+
+      return this->boundary_temperature(boundary_indicator,position);
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::boundary_temperature (const types::boundary_id             /*boundary_indicator*/,
+                                          const Point<dim>                    &/*position*/) const
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
 
 
     template <int dim>

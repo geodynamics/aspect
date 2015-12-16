@@ -73,10 +73,9 @@ namespace aspect
          * current class, this function returns value from the text files.
          */
         double
-        composition (const GeometryModel::Interface<dim> &geometry_model,
-                     const types::boundary_id             boundary_indicator,
-                     const Point<dim>                    &position,
-                     const unsigned int                   compositional_field) const;
+        boundary_composition (const types::boundary_id             boundary_indicator,
+                              const Point<dim>                    &position,
+                              const unsigned int                   compositional_field) const;
 
 
         /**

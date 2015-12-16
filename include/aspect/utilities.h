@@ -45,6 +45,7 @@ namespace aspect
   namespace Utilities
   {
     using namespace dealii;
+    using namespace dealii::Utilities;
 
     /**
      * Returns spherical coordinates of a cartesian point. The returned array

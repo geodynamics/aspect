@@ -23,7 +23,7 @@
 #define __aspect__boundary_composition_initial_composition_h
 
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -39,7 +39,7 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class InitialComposition : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class InitialComposition : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -49,10 +49,9 @@ namespace aspect
          * @copydoc aspect::BoundaryComposition::Interface::composition()
          */
         virtual
-        double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location,
-                            const unsigned int                   compositional_field) const;
+        double boundary_composition (const types::boundary_id             boundary_indicator,
+                                     const Point<dim>                    &location,
+                                     const unsigned int                   compositional_field) const;
 
         /**
          * Return the minimal composition on that part of the boundary on
