@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # execute with old and new version number. Example:
-# ./increment_version.sh 1.0 1.1
+# ./increment_version.sh 1.3 1.4.0
 
 OLDVERSION=$1
 NEWVERSION=$2
