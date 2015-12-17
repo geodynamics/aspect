@@ -104,6 +104,7 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
             in.position = fe_values.get_quadrature_points();
+            in.cell = &cell;
 
             this->get_material_model().evaluate(in, out);
 
