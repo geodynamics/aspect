@@ -91,8 +91,8 @@ namespace aspect
          * Constructor.
          */
         InclusionBoundary(): eta_B (1e3)
-	  {}
-	
+        {}
+
 
         /**
          * Return the boundary velocity as a function of position.
@@ -102,10 +102,10 @@ namespace aspect
         boundary_velocity (const types::boundary_id boundary_id,
                            const Point<dim> &position) const;
 
-	virtual void initialize ()
-	  { }
-	
-	
+        virtual void initialize ()
+        { }
+
+
       private:
 
         double eta_B;
@@ -119,10 +119,10 @@ namespace aspect
                        const Point<dim> &p) const
     {
       Assert (dim == 2, ExcNotImplemented());
-      
+
       std::cout << "Boundary_velocity called with boundary_id ="
                 << static_cast<int>(boundary_id) << std::endl;
-      
+
       return Tensor<1,dim>();
       double pos[2]= {p(0),p(1)};
 
