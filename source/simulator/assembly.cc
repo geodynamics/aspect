@@ -747,6 +747,590 @@ namespace aspect
       }
   }
 
+  namespace internal
+  {
+    namespace Assembly
+    {
+      /**
+       * Extract the values of temperature, pressure, composition and optional
+       * strain rate for the current linearization point. These values are
+       * stored as input arguments for the material model. The compositional
+       * fields are extracted with the individual compositional fields as
+       * outer vectors and the values at each quadrature point as inner
+       * vectors, but the material model needs it the other way round. Hence,
+       * this vector of vectors is transposed.
+       *
+       * @param[in] input_solution A solution vector (or linear combination of
+       * such vectors) with as many entries as there are degrees of freedom in
+       * the mesh. It will be evaluated on the cell with which the FEValues
+       * object was last re-initialized.
+       * @param[in] input_finite_element_values The FEValues object that
+       * describes the finite element space in use and that is used to
+       * evaluate the solution values at the quadrature points of the current
+       * cell.
+       * @param[in] cell The cell on which we are currently evaluating
+       * the material model.
+       * @param[in] compute_strainrate A flag determining whether the strain
+       * rate should be computed or not in the output structure.
+       * @param[out] material_model_inputs The output structure that contains
+       * the solution values evaluated at the quadrature points.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      template <int dim>
+      void
+      compute_material_model_input_values (const SimulatorAccess<dim>                                  &simulator_access,
+                                           const LinearAlgebra::BlockVector                            &input_solution,
+                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
+                                           const bool                                                   compute_strainrate,
+                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs)
+      {
+        const unsigned int n_q_points = material_model_inputs.temperature.size();
+
+        material_model_inputs.position = input_finite_element_values.get_quadrature_points();
+
+        input_finite_element_values[simulator_access.introspection().extractors.temperature].get_function_values (input_solution,
+            material_model_inputs.temperature);
+        input_finite_element_values[simulator_access.introspection().extractors.pressure].get_function_values(input_solution,
+            material_model_inputs.pressure);
+        input_finite_element_values[simulator_access.introspection().extractors.velocities].get_function_values(input_solution,
+            material_model_inputs.velocity);
+        input_finite_element_values[simulator_access.introspection().extractors.pressure].get_function_gradients (input_solution,
+            material_model_inputs.pressure_gradient);
+
+        // only the viscosity in the material can depend on the strain_rate
+        // if this is not needed, we can save some time here. By setting the
+        // length of the strain_rate vector to 0, we signal to evaluate()
+        // that we do not need to access the viscosity.
+        if (compute_strainrate)
+          input_finite_element_values[simulator_access.introspection().extractors.velocities].get_function_symmetric_gradients(input_solution,
+              material_model_inputs.strain_rate);
+        else
+          material_model_inputs.strain_rate.resize(0);
+
+        // the values of the compositional fields are stored as blockvectors for each field
+        // we have to extract them in this structure
+        std::vector<std::vector<double> > composition_values (simulator_access.get_parameters().n_compositional_fields,
+                                                              std::vector<double> (n_q_points));
+
+        for (unsigned int c=0; c<simulator_access.get_parameters().n_compositional_fields; ++c)
+          input_finite_element_values[simulator_access.introspection().extractors.compositional_fields[c]].get_function_values(input_solution,
+              composition_values[c]);
+
+        // then we copy these values to exchange the inner and outer vector, because for the material
+        // model we need a vector with values of all the compositional fields for every quadrature point
+        for (unsigned int q=0; q<n_q_points; ++q)
+          for (unsigned int c=0; c<simulator_access.get_parameters().n_compositional_fields; ++c)
+            material_model_inputs.composition[q][c] = composition_values[c][q];
+
+        material_model_inputs.cell = &cell;
+      }
+
+
+
+      template <int dim>
+      void
+      CompleteEquationsAssembler<dim>::
+      local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                            const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                            const double                                          pressure_scaling,
+                                            internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                            internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
+      {
+        const unsigned int   dofs_per_cell   = this->get_fe().dofs_per_cell;
+        const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
+
+        scratch.finite_element_values.reinit (cell);
+
+        data.local_matrix = 0;
+
+        compute_material_model_input_values (*this,
+                                             current_linearization_point,
+                                             scratch.finite_element_values,
+                                             cell,
+                                             true,
+                                             scratch.material_model_inputs);
+
+        this->get_material_model().evaluate(scratch.material_model_inputs,
+                                            scratch.material_model_outputs);
+        MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.material_model_outputs);
+
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            for (unsigned int k=0; k<dofs_per_cell; ++k)
+              {
+                scratch.grads_phi_u[k] = scratch.finite_element_values[this->introspection().extractors.velocities].symmetric_gradient(k,q);
+                scratch.phi_p[k]       = scratch.finite_element_values[this->introspection().extractors.pressure].value (k, q);
+              }
+
+            const double eta = scratch.material_model_outputs.viscosities[q];
+
+            const SymmetricTensor<4,dim> &stress_strain_director =
+              scratch.material_model_outputs.stress_strain_directors[q];
+            const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+              for (unsigned int j=0; j<dofs_per_cell; ++j)
+                if (this->get_fe().system_to_component_index(i).first
+                    ==
+                    this->get_fe().system_to_component_index(j).first)
+                  data.local_matrix(i,j) += ((use_tensor ?
+                                              eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                              :
+                                              eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                             +
+                                             (1./eta) *
+                                             pressure_scaling *
+                                             pressure_scaling *
+                                             (scratch.phi_p[i] * scratch.phi_p[j]))
+                                            * scratch.finite_element_values.JxW(q);
+          }
+
+        cell->get_dof_indices (data.local_dof_indices);
+      }
+
+
+      template <int dim>
+      void
+      CompleteEquationsAssembler<dim>::
+      local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                    const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                    const double                                          pressure_scaling,
+                                    const bool                                            rebuild_stokes_matrix,
+                                    const bool                                            do_pressure_rhs_compatibility_modification,
+                                    internal::Assembly::Scratch::StokesSystem<dim> &scratch,
+                                    internal::Assembly::CopyData::StokesSystem<dim> &data) const
+      {
+        const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+        const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+        const bool is_compressible = this->get_material_model().is_compressible();
+
+        scratch.finite_element_values.reinit (cell);
+
+        if (rebuild_stokes_matrix)
+          data.local_matrix = 0;
+        data.local_rhs = 0;
+        if (do_pressure_rhs_compatibility_modification)
+          data.local_pressure_shape_function_integrals = 0;
+
+        // we only need the strain rates for the viscosity,
+        // which we only need when rebuilding the matrix
+        compute_material_model_input_values (*this,
+                                             current_linearization_point,
+                                             scratch.finite_element_values,
+                                             cell,
+                                             rebuild_stokes_matrix,
+                                             scratch.material_model_inputs);
+
+        this->get_material_model().evaluate(scratch.material_model_inputs,
+                                            scratch.material_model_outputs);
+        MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.material_model_outputs);
+
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_values(current_linearization_point,
+            scratch.velocity_values);
+
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            for (unsigned int k=0; k<dofs_per_cell; ++k)
+              {
+                scratch.phi_u[k] = scratch.finite_element_values[this->introspection().extractors.velocities].value (k,q);
+                scratch.phi_p[k] = scratch.finite_element_values[this->introspection().extractors.pressure].value (k, q);
+                if (rebuild_stokes_matrix)
+                  {
+                    scratch.grads_phi_u[k] = scratch.finite_element_values[this->introspection().extractors.velocities].symmetric_gradient(k,q);
+                    scratch.div_phi_u[k]   = scratch.finite_element_values[this->introspection().extractors.velocities].divergence (k, q);
+                  }
+              }
+
+            // Viscosity scalar
+            const double eta = (rebuild_stokes_matrix
+                                ?
+                                scratch.material_model_outputs.viscosities[q]
+                                :
+                                std::numeric_limits<double>::quiet_NaN());
+
+            const SymmetricTensor<4,dim> &stress_strain_director =
+              scratch.material_model_outputs.stress_strain_directors[q];
+            const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+
+            const Tensor<1,dim>
+            gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+            const double compressibility
+              = (is_compressible
+                 ?
+                 scratch.material_model_outputs.compressibilities[q]
+                 :
+                 std::numeric_limits<double>::quiet_NaN() );
+            const double density = scratch.material_model_outputs.densities[q];
+
+            if (rebuild_stokes_matrix)
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                  data.local_matrix(i,j) += ( (use_tensor ?
+                                               eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                               :
+                                               eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                              - (is_compressible
+                                                 ?
+                                                 (use_tensor ?
+                                                  eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                                  :
+                                                  eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                 )
+                                                 :
+                                                 0)
+                                              - (pressure_scaling *
+                                                 scratch.div_phi_u[i] * scratch.phi_p[j])
+                                              - (pressure_scaling *
+                                                 scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                            * scratch.finite_element_values.JxW(q);
+
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+              data.local_rhs(i) += (
+                                     (density * gravity * scratch.phi_u[i])
+                                     + (is_compressible
+                                        ?
+                                        (pressure_scaling *
+                                         compressibility * density *
+                                         (scratch.velocity_values[q] * gravity) *
+                                         scratch.phi_p[i])
+                                        :
+                                        0)
+                                   )
+                                   * scratch.finite_element_values.JxW(q);
+
+            if (do_pressure_rhs_compatibility_modification)
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
+          }
+
+        // add stabilization terms for free boundaries if necessary.
+        if (this->get_parameters().free_surface_enabled)
+          this->get_free_surface_handler().apply_stabilization(cell, data.local_matrix);
+
+        // see if any of the faces are traction boundaries for which
+        // we need to assemble force terms for the right hand side
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            if (this->get_traction_boundary_conditions()
+                .find (
+#if DEAL_II_VERSION_GTE(8,3,0)
+                  cell->face(f)->boundary_id()
+#else
+                  cell->face(f)->boundary_indicator()
+#endif
+                )
+                !=
+                this->get_traction_boundary_conditions().end())
+              {
+                scratch.face_finite_element_values.reinit (cell, f);
+
+                for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+                  {
+                    const Tensor<1,dim> traction
+                      = this->get_traction_boundary_conditions().find(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                          cell->face(f)->boundary_id()
+#else
+                          cell->face(f)->boundary_indicator()
+#endif
+                        )
+                        ->second
+                        ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                    scratch.face_finite_element_values.normal_vector(q));
+                    for (unsigned int i=0; i<dofs_per_cell; ++i)
+                      data.local_rhs(i) += scratch.face_finite_element_values[this->introspection().extractors.velocities].value(i,q) *
+                                           traction *
+                                           scratch.face_finite_element_values.JxW(q);
+                  }
+              }
+
+        cell->get_dof_indices (data.local_dof_indices);
+      }
+
+
+
+      template <int dim>
+      void CompleteEquationsAssembler<dim>::
+      local_assemble_advection_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                       const typename Simulator<dim>::AdvectionField        &advection_field,
+                                       const std::pair<double,double>                        global_field_range,
+                                       const double                                          global_max_velocity,
+                                       const double                                          global_entropy_variation,
+                                       internal::Assembly::Scratch::AdvectionSystem<dim>    &scratch,
+                                       internal::Assembly::CopyData::AdvectionSystem<dim>   &data) const
+      {
+        const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
+
+        const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+        // also have the number of dofs that correspond just to the element for
+        // the system we are currently trying to assemble
+        const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+        Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
+        Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+        Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+
+        const unsigned int solution_component
+          = (advection_field.is_temperature()
+             ?
+             this->introspection().component_indices.temperature
+             :
+             this->introspection().component_indices.compositional_fields[advection_field.compositional_variable]
+            );
+
+        const FEValuesExtractors::Scalar solution_field
+          = (advection_field.is_temperature()
+             ?
+             this->introspection().extractors.temperature
+             :
+             this->introspection().extractors.compositional_fields[advection_field.compositional_variable]
+            );
+
+        scratch.finite_element_values.reinit (cell);
+
+        // get all dof indices on the current cell, then extract those
+        // that correspond to the solution_field we are interested in
+        cell->get_dof_indices (scratch.local_dof_indices);
+        for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+          data.local_dof_indices[i] = scratch.local_dof_indices[scratch.finite_element_values.get_fe().component_to_system_index(solution_component, i)];
+
+        data.local_matrix = 0;
+        data.local_rhs = 0;
+
+        scratch.finite_element_values[this->introspection().extractors.temperature].get_function_values (this->get_old_solution(),
+            scratch.old_temperature_values);
+        scratch.finite_element_values[this->introspection().extractors.temperature].get_function_values (this->get_old_old_solution(),
+            scratch.old_old_temperature_values);
+
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_old_solution(),
+            scratch.old_strain_rates);
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_old_old_solution(),
+            scratch.old_old_strain_rates);
+        scratch.finite_element_values[this->introspection().extractors.pressure].get_function_values (this->get_old_solution(),
+            scratch.old_pressure);
+        scratch.finite_element_values[this->introspection().extractors.pressure].get_function_values (this->get_old_old_solution(),
+            scratch.old_old_pressure);
+        for (unsigned int c=0; c<this->get_parameters().n_compositional_fields; ++c)
+          {
+            scratch.finite_element_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_old_solution(),
+                scratch.old_composition_values[c]);
+            scratch.finite_element_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_old_old_solution(),
+                scratch.old_old_composition_values[c]);
+          }
+        scratch.finite_element_values[this->introspection().extractors.pressure].get_function_gradients (this->get_old_solution(),
+            scratch.old_pressure_gradients);
+        scratch.finite_element_values[this->introspection().extractors.pressure].get_function_gradients (this->get_old_old_solution(),
+            scratch.old_old_pressure_gradients);
+        scratch.finite_element_values[this->introspection().extractors.pressure].get_function_gradients (current_linearization_point,
+            scratch.current_pressure_gradients);
+
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
+            scratch.old_velocity_values);
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_values (this->get_old_old_solution(),
+            scratch.old_old_velocity_values);
+        scratch.finite_element_values[this->introspection().extractors.velocities].get_function_values(current_linearization_point,
+            scratch.current_velocity_values);
+
+        //get the mesh velocity, as we need to subtract it off of the advection systems
+        if (this->get_parameters().free_surface_enabled)
+          scratch.finite_element_values[this->introspection().extractors.velocities].get_function_values(this->get_free_surface().mesh_velocity,
+              scratch.mesh_velocity_values);
+
+
+        scratch.old_field_values = ((advection_field.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[advection_field.compositional_variable]);
+        scratch.old_old_field_values = ((advection_field.is_temperature()) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[advection_field.compositional_variable]);
+
+        scratch.finite_element_values[solution_field].get_function_gradients (this->get_old_solution(),
+                                                                              scratch.old_field_grads);
+        scratch.finite_element_values[solution_field].get_function_gradients (this->get_old_old_solution(),
+                                                                              scratch.old_old_field_grads);
+
+        scratch.finite_element_values[solution_field].get_function_laplacians (this->get_old_solution(),
+                                                                               scratch.old_field_laplacians);
+        scratch.finite_element_values[solution_field].get_function_laplacians (this->get_old_old_solution(),
+                                                                               scratch.old_old_field_laplacians);
+
+        compute_material_model_input_values (*this,
+                                             current_linearization_point,
+                                             scratch.finite_element_values,
+                                             cell,
+                                             true,
+                                             scratch.material_model_inputs);
+        this->get_material_model().evaluate(scratch.material_model_inputs,
+                                            scratch.material_model_outputs);
+        MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.material_model_outputs);
+
+        HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->get_parameters().n_compositional_fields);
+        this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
+                                                   scratch.material_model_outputs,
+                                                   heating_model_outputs);
+
+        // set up scratch.explicit_material_model_*
+        {
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
+              scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
+              scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
+              scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
+              scratch.explicit_material_model_inputs.pressure_gradient[q] = (scratch.old_pressure_gradients[q] + scratch.old_old_pressure_gradients[q]) / 2;
+
+              for (unsigned int c=0; c<this->get_parameters().n_compositional_fields; ++c)
+                scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
+              scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
+            }
+          scratch.explicit_material_model_inputs.cell = &cell;
+
+          this->get_material_model().evaluate(scratch.explicit_material_model_inputs,
+                                              scratch.explicit_material_model_outputs);
+          MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
+                                                     cell,
+                                                     scratch.finite_element_values.get_quadrature(),
+                                                     scratch.finite_element_values.get_mapping(),
+                                                     scratch.explicit_material_model_outputs);
+        }
+
+        // TODO: Compute artificial viscosity once per timestep instead of each time
+        // temperature system is assembled (as this might happen more than once per
+        // timestep for iterative solvers)
+        const double nu
+          = compute_viscosity (scratch,
+                               global_max_velocity,
+                               global_field_range.second - global_field_range.first,
+                               0.5 * (global_field_range.second + global_field_range.first),
+                               global_entropy_variation,
+                               cell->diameter(),
+                               advection_field);
+        Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            // precompute the values of shape functions and their gradients.
+            // We only need to look up values of shape functions if they
+            // belong to 'our' component. They are zero otherwise anyway.
+            // Note that we later only look at the values that we do set here.
+            for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+              {
+                scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
+                scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
+              }
+
+            const double density_c_P              =
+              ((advection_field.is_temperature())
+               ?
+               scratch.material_model_outputs.densities[q] *
+               scratch.material_model_outputs.specific_heat[q]
+               :
+               1.0);
+
+            Assert (density_c_P >= 0,
+                    ExcMessage ("The product of density and c_P needs to be a "
+                                "non-negative quantity."));
+
+            const double conductivity =
+              ((advection_field.is_temperature())
+               ?
+               scratch.material_model_outputs.thermal_conductivities[q]
+               :
+               0.0);
+            const double latent_heat_LHS =
+              ((advection_field.is_temperature())
+               ?
+               heating_model_outputs.lhs_latent_heat_terms[q]
+               :
+               0.0);
+            Assert (density_c_P + latent_heat_LHS >= 0,
+                    ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                "to the left hand side needs to be a non-negative quantity."));
+
+            const double gamma =
+              ((advection_field.is_temperature())
+               ?
+               heating_model_outputs.heating_source_terms[q]
+               :
+               0.0);
+
+            const double reaction_term =
+              ((advection_field.is_temperature())
+               ?
+               0.0
+               :
+               scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+            const double field_term_for_rhs
+              = (use_bdf2_scheme ?
+                 ((*scratch.old_field_values)[q] *
+                  (1 + this->get_timestep()/this->get_old_timestep())
+                  -
+                  (*scratch.old_old_field_values)[q] *
+                  (this->get_timestep() * this->get_timestep()) /
+                  (this->get_old_timestep() * (this->get_timestep() + this->get_old_timestep())))
+                 :
+                 (*scratch.old_field_values)[q])
+                *
+                (density_c_P + latent_heat_LHS);
+
+            Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+            //Subtract off the mesh velocity for ALE corrections if necessary
+            if (this->get_parameters().free_surface_enabled)
+              current_u -= scratch.mesh_velocity_values[q];
+
+            const double factor = (use_bdf2_scheme)? ((2*this->get_timestep() + this->get_old_timestep()) /
+                                                      (this->get_timestep() + this->get_old_timestep())) : 1.0;
+
+            // do the actual assembly. note that we only need to loop over the advection
+            // shape functions because these are the only contributions we compute here
+            for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+              {
+                data.local_rhs(i)
+                += (field_term_for_rhs * scratch.phi_field[i]
+                    + this->get_timestep() *
+                    scratch.phi_field[i]
+                    * gamma
+                    + scratch.phi_field[i]
+                    * reaction_term)
+                   *
+                   scratch.finite_element_values.JxW(q);
+
+                for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                  {
+                    data.local_matrix(i,j)
+                    += (
+                         (this->get_timestep() * (conductivity + nu)
+                          * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                         + ((this->get_timestep() * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                            + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                         (density_c_P + latent_heat_LHS)
+                       )
+                       * scratch.finite_element_values.JxW(q);
+                  }
+              }
+          }
+      }
+
+    }
+  }
+
+
+
   template <int dim>
   void
   Simulator<dim>::
@@ -871,11 +1455,12 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                                scratch.old_old_field_laplacians);
 
-        compute_material_model_input_values (current_linearization_point,
-                                             scratch.finite_element_values,
-                                             cell,
-                                             true,
-                                             scratch.material_model_inputs);
+        internal::Assembly::compute_material_model_input_values (SimulatorAccess<dim>(*this),
+                                                                 current_linearization_point,
+                                                                 scratch.finite_element_values,
+                                                                 cell,
+                                                                 true,
+                                                                 scratch.material_model_inputs);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
 
         for (unsigned int q=0; q<n_q_points; ++q)
@@ -902,123 +1487,6 @@ namespace aspect
                                                         cell->diameter(),
                                                         advection_field);
       }
-
-
-  }
-
-
-
-  template <int dim>
-  void
-  Simulator<dim>::
-  compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                       const FEValues<dim>                                         &input_finite_element_values,
-                                       const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                       const bool                                                   compute_strainrate,
-                                       MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
-  {
-    const unsigned int n_q_points = material_model_inputs.temperature.size();
-
-    material_model_inputs.position = input_finite_element_values.get_quadrature_points();
-
-    input_finite_element_values[introspection.extractors.temperature].get_function_values (input_solution,
-        material_model_inputs.temperature);
-    input_finite_element_values[introspection.extractors.pressure].get_function_values(input_solution,
-        material_model_inputs.pressure);
-    input_finite_element_values[introspection.extractors.velocities].get_function_values(input_solution,
-        material_model_inputs.velocity);
-    input_finite_element_values[introspection.extractors.pressure].get_function_gradients (input_solution,
-        material_model_inputs.pressure_gradient);
-
-    // only the viscosity in the material can depend on the strain_rate
-    // if this is not needed, we can save some time here. By setting the
-    // length of the strain_rate vector to 0, we signal to evaluate()
-    // that we do not need to access the viscosity.
-    if (compute_strainrate)
-      input_finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients(input_solution,
-          material_model_inputs.strain_rate);
-    else
-      material_model_inputs.strain_rate.resize(0);
-
-    // the values of the compositional fields are stored as blockvectors for each field
-    // we have to extract them in this structure
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
-
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,
-          composition_values[c]);
-
-    // then we copy these values to exchange the inner and outer vector, because for the material
-    // model we need a vector with values of all the compositional fields for every quadrature point
-    for (unsigned int q=0; q<n_q_points; ++q)
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        material_model_inputs.composition[q][c] = composition_values[c][q];
-
-    material_model_inputs.cell = &cell;
-  }
-
-
-  template <int dim>
-  void
-  Simulator<dim>::
-  local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                        internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
-                                        internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
-  {
-    const unsigned int   dofs_per_cell   = finite_element.dofs_per_cell;
-    const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
-
-    scratch.finite_element_values.reinit (cell);
-
-    data.local_matrix = 0;
-
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         true,
-                                         scratch.material_model_inputs);
-
-    material_model->evaluate(scratch.material_model_inputs,
-                             scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                               cell,
-                                               scratch.finite_element_values.get_quadrature(),
-                                               scratch.finite_element_values.get_mapping(),
-                                               scratch.material_model_outputs);
-
-    for (unsigned int q=0; q<n_q_points; ++q)
-      {
-        for (unsigned int k=0; k<dofs_per_cell; ++k)
-          {
-            scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-            scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-          }
-
-        const double eta = scratch.material_model_outputs.viscosities[q];
-
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
-
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-          for (unsigned int j=0; j<dofs_per_cell; ++j)
-            if (finite_element.system_to_component_index(i).first
-                ==
-                finite_element.system_to_component_index(j).first)
-              data.local_matrix(i,j) += ((use_tensor ?
-                                          eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                          :
-                                          eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                         +
-                                         (1./eta) *
-                                         pressure_scaling *
-                                         pressure_scaling *
-                                         (scratch.phi_p[i] * scratch.phi_p[j]))
-                                        * scratch.finite_element_values.JxW(q);
-      }
-
-    cell->get_dof_indices (data.local_dof_indices);
   }
 
 
@@ -1052,10 +1520,12 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
+         std_cxx11::bind (&internal::Assembly::LocalEquationAssembler<dim>::
                           local_assemble_stokes_preconditioner,
-                          this,
+                          local_equation_assembler.get(),
                           std_cxx11::_1,
+                          std_cxx11::cref(current_linearization_point),
+                          pressure_scaling,
                           std_cxx11::_2,
                           std_cxx11::_3),
          std_cxx11::bind (&Simulator<dim>::
@@ -1151,164 +1621,6 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void
-  Simulator<dim>::
-  local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                internal::Assembly::Scratch::StokesSystem<dim> &scratch,
-                                internal::Assembly::CopyData::StokesSystem<dim> &data)
-  {
-    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-    const bool is_compressible = material_model->is_compressible();
-
-    scratch.finite_element_values.reinit (cell);
-
-    if (rebuild_stokes_matrix)
-      data.local_matrix = 0;
-    data.local_rhs = 0;
-    if (do_pressure_rhs_compatibility_modification)
-      data.local_pressure_shape_function_integrals = 0;
-
-    // we only need the strain rates for the viscosity,
-    // which we only need when rebuilding the matrix
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         rebuild_stokes_matrix,
-                                         scratch.material_model_inputs);
-
-    material_model->evaluate(scratch.material_model_inputs,
-                             scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                               cell,
-                                               scratch.finite_element_values.get_quadrature(),
-                                               scratch.finite_element_values.get_mapping(),
-                                               scratch.material_model_outputs);
-
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-        scratch.velocity_values);
-
-    for (unsigned int q=0; q<n_q_points; ++q)
-      {
-        for (unsigned int k=0; k<dofs_per_cell; ++k)
-          {
-            scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-            scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-            if (rebuild_stokes_matrix)
-              {
-                scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
-              }
-          }
-
-        // Viscosity scalar
-        const double eta = (rebuild_stokes_matrix
-                            ?
-                            scratch.material_model_outputs.viscosities[q]
-                            :
-                            std::numeric_limits<double>::quiet_NaN());
-
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
-
-        const Tensor<1,dim>
-        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
-
-        const double compressibility
-          = (is_compressible
-             ?
-             scratch.material_model_outputs.compressibilities[q]
-             :
-             std::numeric_limits<double>::quiet_NaN() );
-        const double density = scratch.material_model_outputs.densities[q];
-
-        if (rebuild_stokes_matrix)
-          for (unsigned int i=0; i<dofs_per_cell; ++i)
-            for (unsigned int j=0; j<dofs_per_cell; ++j)
-              data.local_matrix(i,j) += ( (use_tensor ?
-                                           eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                           :
-                                           eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                          - (is_compressible
-                                             ?
-                                             (use_tensor ?
-                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                              :
-                                              eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                             )
-                                             :
-                                             0)
-                                          - (pressure_scaling *
-                                             scratch.div_phi_u[i] * scratch.phi_p[j])
-                                          - (pressure_scaling *
-                                             scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                        * scratch.finite_element_values.JxW(q);
-
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-          data.local_rhs(i) += (
-                                 (density * gravity * scratch.phi_u[i])
-                                 + (is_compressible
-                                    ?
-                                    (pressure_scaling *
-                                     compressibility * density *
-                                     (scratch.velocity_values[q] * gravity) *
-                                     scratch.phi_p[i])
-                                    :
-                                    0)
-                               )
-                               * scratch.finite_element_values.JxW(q);
-
-        if (do_pressure_rhs_compatibility_modification)
-          for (unsigned int i=0; i<dofs_per_cell; ++i)
-            data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
-      }
-
-    // add stabilization terms for free boundaries if necessary.
-    if (parameters.free_surface_enabled)
-      free_surface->apply_stabilization(cell, data.local_matrix);
-
-    // see if any of the faces are traction boundaries for which
-    // we need to assemble force terms for the right hand side
-    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-      if (cell->at_boundary(f))
-        if (traction_boundary_conditions
-            .find (
-#if DEAL_II_VERSION_GTE(8,3,0)
-              cell->face(f)->boundary_id()
-#else
-              cell->face(f)->boundary_indicator()
-#endif
-            )
-            !=
-            traction_boundary_conditions.end())
-          {
-            scratch.face_finite_element_values.reinit (cell, f);
-
-            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
-              {
-                const Tensor<1,dim> traction
-                  = traction_boundary_conditions[
-#if DEAL_II_VERSION_GTE(8,3,0)
-                      cell->face(f)->boundary_id()
-#else
-                      cell->face(f)->boundary_indicator()
-#endif
-                    ]
-                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
-                                scratch.face_finite_element_values.normal_vector(q));
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                                       traction *
-                                       scratch.face_finite_element_values.JxW(q);
-              }
-          }
-
-    cell->get_dof_indices (data.local_dof_indices);
-  }
-
-
 
   template <int dim>
   void
@@ -1358,10 +1670,14 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
+         std_cxx11::bind (&internal::Assembly::LocalEquationAssembler<dim>::
                           local_assemble_stokes_system,
-                          this,
+                          local_equation_assembler.get(),
                           std_cxx11::_1,
+                          std_cxx11::cref(current_linearization_point),
+                          pressure_scaling,
+                          rebuild_stokes_matrix,
+                          do_pressure_rhs_compatibility_modification,
                           std_cxx11::_2,
                           std_cxx11::_3),
          std_cxx11::bind (&Simulator<dim>::
@@ -1439,268 +1755,6 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void Simulator<dim>::
-  local_assemble_advection_system (const AdvectionField     &advection_field,
-                                   const std::pair<double,double> global_field_range,
-                                   const double                   global_max_velocity,
-                                   const double                   global_entropy_variation,
-                                   const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                   internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
-                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data)
-  {
-    const bool use_bdf2_scheme = (timestep_number > 1);
-
-    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-
-    // also have the number of dofs that correspond just to the element for
-    // the system we are currently trying to assemble
-    const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
-
-    Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
-    Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-    Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
-
-    const unsigned int solution_component
-      = (advection_field.is_temperature()
-         ?
-         introspection.component_indices.temperature
-         :
-         introspection.component_indices.compositional_fields[advection_field.compositional_variable]
-        );
-
-    const FEValuesExtractors::Scalar solution_field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
-
-    scratch.finite_element_values.reinit (cell);
-
-    // get all dof indices on the current cell, then extract those
-    // that correspond to the solution_field we are interested in
-    cell->get_dof_indices (scratch.local_dof_indices);
-    for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-      data.local_dof_indices[i] = scratch.local_dof_indices[scratch.finite_element_values.get_fe().component_to_system_index(solution_component, i)];
-
-    data.local_matrix = 0;
-    data.local_rhs = 0;
-
-    scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_solution,
-        scratch.old_temperature_values);
-    scratch.finite_element_values[introspection.extractors.temperature].get_function_values (old_old_solution,
-        scratch.old_old_temperature_values);
-
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_solution,
-        scratch.old_strain_rates);
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients (old_old_solution,
-        scratch.old_old_strain_rates);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_solution,
-        scratch.old_pressure);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_values (old_old_solution,
-        scratch.old_old_pressure);
-    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-      {
-        scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_solution,
-            scratch.old_composition_values[c]);
-        scratch.finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(old_old_solution,
-            scratch.old_old_composition_values[c]);
-      }
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_solution,
-        scratch.old_pressure_gradients);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
-        scratch.old_old_pressure_gradients);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
-        scratch.current_pressure_gradients);
-
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
-        scratch.old_velocity_values);
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_old_solution,
-        scratch.old_old_velocity_values);
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-        scratch.current_velocity_values);
-
-    //get the mesh velocity, as we need to subtract it off of the advection systems
-    if (parameters.free_surface_enabled)
-      scratch.finite_element_values[introspection.extractors.velocities].get_function_values(free_surface->mesh_velocity,
-          scratch.mesh_velocity_values);
-
-
-    scratch.old_field_values = ((advection_field.is_temperature()) ? &scratch.old_temperature_values : &scratch.old_composition_values[advection_field.compositional_variable]);
-    scratch.old_old_field_values = ((advection_field.is_temperature()) ? &scratch.old_old_temperature_values : &scratch.old_old_composition_values[advection_field.compositional_variable]);
-
-    scratch.finite_element_values[solution_field].get_function_gradients (old_solution,
-                                                                          scratch.old_field_grads);
-    scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
-                                                                          scratch.old_old_field_grads);
-
-    scratch.finite_element_values[solution_field].get_function_laplacians (old_solution,
-                                                                           scratch.old_field_laplacians);
-    scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
-                                                                           scratch.old_old_field_laplacians);
-
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         true,
-                                         scratch.material_model_inputs);
-    material_model->evaluate(scratch.material_model_inputs,
-                             scratch.material_model_outputs);
-    MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                               cell,
-                                               scratch.finite_element_values.get_quadrature(),
-                                               scratch.finite_element_values.get_mapping(),
-                                               scratch.material_model_outputs);
-
-    HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model_manager.evaluate(scratch.material_model_inputs,
-                                   scratch.material_model_outputs,
-                                   heating_model_outputs);
-
-    // set up scratch.explicit_material_model_*
-    {
-      for (unsigned int q=0; q<n_q_points; ++q)
-        {
-          scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
-          scratch.explicit_material_model_inputs.position[q] = scratch.finite_element_values.quadrature_point(q);
-          scratch.explicit_material_model_inputs.pressure[q] = (scratch.old_pressure[q] + scratch.old_old_pressure[q]) / 2;
-          scratch.explicit_material_model_inputs.velocity[q] = (scratch.old_velocity_values[q] + scratch.old_old_velocity_values[q]) / 2;
-          scratch.explicit_material_model_inputs.pressure_gradient[q] = (scratch.old_pressure_gradients[q] + scratch.old_old_pressure_gradients[q]) / 2;
-
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-            scratch.explicit_material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
-          scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
-        }
-      scratch.explicit_material_model_inputs.cell = &cell;
-
-      material_model->evaluate(scratch.explicit_material_model_inputs,
-                               scratch.explicit_material_model_outputs);
-      MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                                 cell,
-                                                 scratch.finite_element_values.get_quadrature(),
-                                                 scratch.finite_element_values.get_mapping(),
-                                                 scratch.explicit_material_model_outputs);
-    }
-
-    // TODO: Compute artificial viscosity once per timestep instead of each time
-    // temperature system is assembled (as this might happen more than once per
-    // timestep for iterative solvers)
-    const double nu
-      = compute_viscosity (scratch,
-                           global_max_velocity,
-                           global_field_range.second - global_field_range.first,
-                           0.5 * (global_field_range.second + global_field_range.first),
-                           global_entropy_variation,
-                           cell->diameter(),
-                           advection_field);
-    Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
-
-    for (unsigned int q=0; q<n_q_points; ++q)
-      {
-        // precompute the values of shape functions and their gradients.
-        // We only need to look up values of shape functions if they
-        // belong to 'our' component. They are zero otherwise anyway.
-        // Note that we later only look at the values that we do set here.
-        for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
-          {
-            scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
-            scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
-          }
-
-        const double density_c_P              =
-          ((advection_field.is_temperature())
-           ?
-           scratch.material_model_outputs.densities[q] *
-           scratch.material_model_outputs.specific_heat[q]
-           :
-           1.0);
-
-        Assert (density_c_P >= 0,
-                ExcMessage ("The product of density and c_P needs to be a "
-                            "non-negative quantity."));
-
-        const double conductivity =
-          ((advection_field.is_temperature())
-           ?
-           scratch.material_model_outputs.thermal_conductivities[q]
-           :
-           0.0);
-        const double latent_heat_LHS =
-          ((advection_field.is_temperature())
-           ?
-           heating_model_outputs.lhs_latent_heat_terms[q]
-           :
-           0.0);
-        Assert (density_c_P + latent_heat_LHS >= 0,
-                ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                            "to the left hand side needs to be a non-negative quantity."));
-
-        const double gamma =
-          ((advection_field.is_temperature())
-           ?
-           heating_model_outputs.heating_source_terms[q]
-           :
-           0.0);
-
-        const double reaction_term =
-          ((advection_field.is_temperature())
-           ?
-           0.0
-           :
-           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
-
-        const double field_term_for_rhs
-          = (use_bdf2_scheme ?
-             ((*scratch.old_field_values)[q] *
-              (1 + time_step/old_time_step)
-              -
-              (*scratch.old_old_field_values)[q] *
-              (time_step * time_step) /
-              (old_time_step * (time_step + old_time_step)))
-             :
-             (*scratch.old_field_values)[q])
-            *
-            (density_c_P + latent_heat_LHS);
-
-        Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-        //Subtract off the mesh velocity for ALE corrections if necessary
-        if (parameters.free_surface_enabled)
-          current_u -= scratch.mesh_velocity_values[q];
-
-        const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
-                                                  (time_step + old_time_step)) : 1.0;
-
-        // do the actual assembly. note that we only need to loop over the advection
-        // shape functions because these are the only contributions we compute here
-        for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-          {
-            data.local_rhs(i)
-            += (field_term_for_rhs * scratch.phi_field[i]
-                + time_step *
-                scratch.phi_field[i]
-                * gamma
-                + scratch.phi_field[i]
-                * reaction_term)
-               *
-               scratch.finite_element_values.JxW(q);
-
-            for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
-              {
-                data.local_matrix(i,j)
-                += (
-                     (time_step * (conductivity + nu)
-                      * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                     + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                        + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                     (density_c_P + latent_heat_LHS)
-                   )
-                   * scratch.finite_element_values.JxW(q);
-              }
-          }
-      }
-  }
 
   template <int dim>
   void
@@ -1741,9 +1795,11 @@ namespace aspect
                      dof_handler.begin_active()),
          CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.end()),
-         std_cxx11::bind (&Simulator<dim>::
+         std_cxx11::bind (&internal::Assembly::LocalEquationAssembler<dim>::
                           local_assemble_advection_system,
-                          this,
+                          local_equation_assembler.get(),
+                          std_cxx11::_1,
+                          std_cxx11::cref(current_linearization_point),
                           advection_field,
                           global_field_range,
                           get_maximal_velocity(old_solution),
@@ -1753,7 +1809,6 @@ namespace aspect
                           get_entropy_variation ((global_field_range.first +
                                                   global_field_range.second) / 2,
                                                  advection_field),
-                          std_cxx11::_1,
                           std_cxx11::_2,
                           std_cxx11::_3),
          std_cxx11::bind (&Simulator<dim>::
@@ -1805,18 +1860,10 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
-                                                                       const DoFHandler<dim>::active_cell_iterator &cell, \
-                                                                       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch, \
-                                                                       internal::Assembly::CopyData::StokesPreconditioner<dim> &data); \
   template void Simulator<dim>::copy_local_to_global_stokes_preconditioner ( \
                                                                              const internal::Assembly::CopyData::StokesPreconditioner<dim> &data); \
   template void Simulator<dim>::assemble_stokes_preconditioner (); \
   template void Simulator<dim>::build_stokes_preconditioner (); \
-  template void Simulator<dim>::local_assemble_stokes_system ( \
-                                                               const DoFHandler<dim>::active_cell_iterator &cell, \
-                                                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
-                                                               internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::copy_local_to_global_stokes_system ( \
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
@@ -1824,18 +1871,14 @@ namespace aspect
                                                           const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
-  template void Simulator<dim>::local_assemble_advection_system ( \
-                                                                  const AdvectionField          &advection_field, \
-                                                                  const std::pair<double,double> global_field_range, \
-                                                                  const double                   global_max_velocity, \
-                                                                  const double                   global_entropy_variation, \
-                                                                  const DoFHandler<dim>::active_cell_iterator &cell, \
-                                                                  internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
-                                                                  internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
-   
+  namespace internal { \
+    namespace Assembly { \
+      template class CompleteEquationsAssembler<dim>; \
+    } \
+  }
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)

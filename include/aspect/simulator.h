@@ -85,6 +85,108 @@ namespace aspect
         template <int dim>      struct AdvectionSystem;
 
       }
+
+
+      /**
+       * A base class for classes the implement the concrete assembly of particular sets of
+       * equations and preconditioner matrices. Specifically, there are derived classes for
+       * the full set of equations as well as for approximations such as the (extended) Boussinesq
+       * equations, or the (truncated) anelastic liquid approximation (ALA and TALA).
+       */
+      template <int dim>
+      class LocalEquationAssembler
+      {
+        public:
+          /**
+           * Compute the integrals for the preconditioner for the Stokes system on
+           * a single cell.
+           *
+           * Instances of this function implemented in derived classes are implemented in
+           * <code>source/simulator/assembly.cc</code>.
+           */
+          virtual
+          void
+          local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                                const double                                          pressure_scaling,
+                                                internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                                internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const = 0;
+
+          /**
+           * Compute the integrals for the Stokes matrix and right hand side on a
+           * single cell.
+           *
+           * Instances of this function implemented in derived classes are implemented in
+           * <code>source/simulator/assembly.cc</code>.
+           */
+          virtual
+          void
+          local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                        const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                        const double                                          pressure_scaling,
+                                        const bool                                            rebuild_stokes_matrix,
+                                        const bool                                            do_pressure_rhs_compatibility_modification,
+                                        internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                        internal::Assembly::CopyData::StokesSystem<dim> &data) const = 0;
+
+          /**
+           * Compute the integrals for one advection matrix and right hand side on
+           * a single cell.
+           *
+           * Instances of this function implemented in derived classes are implemented in
+           * <code>source/simulator/assembly.cc</code>.
+           */
+          virtual
+          void
+          local_assemble_advection_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                           const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                           const typename Simulator<dim>::AdvectionField        &advection_field,
+                                           const std::pair<double,double>                        global_field_range,
+                                           const double                                          global_max_velocity,
+                                           const double                                          global_entropy_variation,
+                                           internal::Assembly::Scratch::AdvectionSystem<dim>    &scratch,
+                                           internal::Assembly::CopyData::AdvectionSystem<dim>   &data) const = 0;
+      };
+
+
+      /**
+       * Define a class that assembles the complete set of equations, no further approximations
+       * than just the omission of inertial terms
+       */
+      template <int dim>
+      class CompleteEquationsAssembler : public LocalEquationAssembler<dim>,
+        public SimulatorAccess<dim>
+      {
+        public:
+          virtual
+          void
+          local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                                const double                                          pressure_scaling,
+                                                internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
+                                                internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+
+          virtual
+          void
+          local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                        const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                        const double                                          pressure_scaling,
+                                        const bool                                            rebuild_stokes_matrix,
+                                        const bool                                            do_pressure_rhs_compatibility_modification,
+                                        internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                        internal::Assembly::CopyData::StokesSystem<dim> &data) const;
+
+          virtual
+          void
+          local_assemble_advection_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                           const LinearAlgebra::BlockVector                     &current_linearization_point,
+                                           const typename Simulator<dim>::AdvectionField        &advection_field,
+                                           const std::pair<double,double>                        global_field_range,
+                                           const double                                          global_max_velocity,
+                                           const double                                          global_entropy_variation,
+                                           internal::Assembly::Scratch::AdvectionSystem<dim>    &scratch,
+                                           internal::Assembly::CopyData::AdvectionSystem<dim>   &data) const;
+      };
     }
   }
 
@@ -158,8 +260,7 @@ namespace aspect
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
-    private:
-
+    public:
       /**
        * A structure that is used as an argument to functions that can work on
        * both the temperature and the compositional variables and that need to
@@ -247,6 +348,7 @@ namespace aspect
         unsigned int base_element(const Introspection<dim> &introspection) const;
       };
 
+    private:
 
       /**
        * A class that is empty but that can be used as a member variable and
@@ -546,9 +648,10 @@ namespace aspect
        */
 
       /**
-       * @name Functions used in the assembly of linear systems
+       * @name Functions and classes used in the assembly of linear systems
        * @{
        */
+
       /**
        * Initiate the assembly of the preconditioner for the Stokes system.
        *
@@ -556,18 +659,6 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void assemble_stokes_preconditioner ();
-
-      /**
-       * Compute the integrals for the preconditioner for the Stokes system on
-       * a single cell.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                            internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch,
-                                            internal::Assembly::CopyData::StokesPreconditioner<dim> &data);
 
       /**
        * Copy the contribution to the preconditioner for the Stokes system
@@ -580,18 +671,6 @@ namespace aspect
       copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data);
 
       /**
-       * Compute the integrals for the Stokes matrix and right hand side on a
-       * single cell.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                    internal::Assembly::CopyData::StokesSystem<dim> &data);
-
-      /**
        * Copy the contribution to the Stokes system from a single cell into
        * the global matrix that stores these elements.
        *
@@ -600,23 +679,6 @@ namespace aspect
        */
       void
       copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data);
-
-      /**
-       * Compute the integrals for one advection matrix and right hand side on
-       * a single cell.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      local_assemble_advection_system (const AdvectionField &advection_field,
-                                       const std::pair<double,double> global_field_range,
-                                       const double                   global_max_velocity,
-                                       const double                   global_entropy_variation,
-                                       const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                       internal::Assembly::CopyData::AdvectionSystem<dim> &data);
-
 
       /**
        * Copy the contribution to the advection system from a single cell into
@@ -877,41 +939,6 @@ namespace aspect
                                         double                             &conductivity) const;
 
       /**
-       * Extract the values of temperature, pressure, composition and optional
-       * strain rate for the current linearization point. These values are
-       * stored as input arguments for the material model. The compositional
-       * fields are extracted with the individual compositional fields as
-       * outer vectors and the values at each quadrature point as inner
-       * vectors, but the material model needs it the other way round. Hence,
-       * this vector of vectors is transposed.
-       *
-       * @param[in] input_solution A solution vector (or linear combination of
-       * such vectors) with as many entries as there are degrees of freedom in
-       * the mesh. It will be evaluated on the cell with which the FEValues
-       * object was last re-initialized.
-       * @param[in] input_finite_element_values The FEValues object that
-       * describes the finite element space in use and that is used to
-       * evaluate the solution values at the quadrature points of the current
-       * cell.
-       * @param[in] cell The cell on which we are currently evaluating
-       * the material model.
-       * @param[in] compute_strainrate A flag determining whether the strain
-       * rate should be computed or not in the output structure.
-       * @param[out] material_model_inputs The output structure that contains
-       * the solution values evaluated at the quadrature points.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValues<dim,dim>                                     &input_finite_element_values,
-                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                           const bool                                                   compute_strainrate,
-                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
-
-
-      /**
        * Return whether the Stokes matrix depends on the values of the
        * solution at the previous time step. This is the case is the
        * coefficients that appear in the matrix (i.e., the viscosity and, in
@@ -1038,6 +1065,8 @@ namespace aspect
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > traction_boundary_conditions;
 
+      std_cxx11::unique_ptr<internal::Assembly::LocalEquationAssembler<dim> > local_equation_assembler;
+
       /**
        * @}
        */
@@ -1161,6 +1190,7 @@ namespace aspect
        * @}
        */
 
+    public:
       /**
        * A member class that isolates the functions and variables that deal
        * with the free surface implementation.  If there are no free surface
@@ -1361,8 +1391,10 @@ namespace aspect
           friend class SimulatorAccess<dim>;
       };
 
+    private:
+
       /**
-       * Shared pointer for an instance of the FreeSurfaceHandler. this way,
+       * A pointer to an instance of the FreeSurfaceHandler. this way,
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
@@ -1373,6 +1405,7 @@ namespace aspect
       friend class FreeSurfaceHandler;  //FreeSurfaceHandler needs access to the internals of the Simulator
       friend struct Parameters<dim>;
   };
+
 }
 
 
