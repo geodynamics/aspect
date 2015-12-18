@@ -448,6 +448,13 @@ namespace aspect
     adiabatic_conditions->initialize ();
 
 
+    // now also create and initialize an object that can assemble linear systems
+    // TODO: select which object to choose based on run-time parameters
+    local_equation_assembler.reset (new internal::Assembly::CompleteEquationsAssembler<dim>());
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(local_equation_assembler.get()))
+      sim->initialize_simulator (*this);
+
+
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
