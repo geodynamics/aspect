@@ -77,6 +77,16 @@ namespace aspect
 
 
   template <int dim>
+  const typename Simulator<dim>::FreeSurfaceHandler &
+  SimulatorAccess<dim>::get_free_surface_handler () const
+  {
+    Assert (simulator->parameters.free_surface_enabled,
+            ExcMessage("You cannot get the free surface handler with no free surface."));
+    return simulator->free_surface;
+  }
+
+
+  template <int dim>
   const Introspection<dim> &
   SimulatorAccess<dim>::introspection () const
   {
