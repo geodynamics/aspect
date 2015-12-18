@@ -152,6 +152,13 @@ namespace aspect
       get_signals() const;
 
       /**
+       * Return a reference to the free surface handler object (if one
+       * exists in the simulation, otherwise an exception will be thrown).
+       */
+      const typename Simulator<dim>::FreeSurfaceHandler &
+      get_free_surface_handler () const;
+
+      /**
        * Return the MPI communicator for this simulation.
        */
       MPI_Comm
