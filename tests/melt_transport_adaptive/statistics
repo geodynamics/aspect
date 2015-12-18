@@ -6,24 +6,26 @@
 # 6: Number of degrees of freedom for all compositions
 # 7: Iterations for temperature solver
 # 8: Iterations for composition solver 1
-# 9: Time step size (seconds)
-# 10: Visualization file name
-# 11: RMS velocity (m/s)
-# 12: Max. velocity (m/s)
-# 13: Minimal pressure (Pa)
-# 14: Average pressure (Pa)
-# 15: Maximal pressure (Pa)
-# 16: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 17: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
-# 18: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 19: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
-# 20: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 21: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
-# 22: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-# 23: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
-0 0.0000e+00 256  3045 1089 1089 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00 400  4903 1763 1763 0 0 4.2013e-02                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00   0     0    0    0 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00 844 10353 3741 3741 0 0 2.0949e-02                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00   0     0    0    0 0 0 0.0000e+00                                            "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.0000e+00   0     0    0    0 0 0 1.0475e-02 output-melt_transport_adaptive/solution-00000 8.19403702e+00 1.48162276e+01 6.06357262e-01 1.04261507e+00 1.65008159e+00 1.48660146e+01 1.34536471e+01 1.48660146e+01 1.34536471e+01 1.43327496e+01 4.27049717e-01 1.43327496e+01 4.27049717e-01 
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Time step size (seconds)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal pressure (Pa)
+# 16: Average pressure (Pa)
+# 17: Maximal pressure (Pa)
+# 18: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 19: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 20: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 21: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 22: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 23: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 24: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 25: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.0000e+00 256 2467 1089 1089 0 0 23 323 263 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 307 3138 1387 1387 0 0  0   0   0 3.1437e-02 1.32072275e+00 1.96034039e+00 -3.98441331e-04 1.00035977e+00 2.00044962e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 
+0 0.0000e+00   0    0    0    0 0 0 23 409 342 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00 448 4413 1953 1953 0 0  0   0   0 1.6365e-02 1.32072374e+00 1.96034045e+00 -4.05692294e-04 1.00022516e+00 2.00052001e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 
+0 0.0000e+00   0    0    0    0 0 0 23 376 417 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00   0    0    0    0 0 0  0   0   0 1.6713e-02 1.32073355e+00 1.96034043e+00 -3.05864823e-04 1.00039460e+00 2.00044718e+00 1.96746305e+00 1.41427468e+00 1.96746305e+00 1.41427468e+00 1.68615456e+00 1.36795198e+00 1.98103899e+00 1.71833958e+00 

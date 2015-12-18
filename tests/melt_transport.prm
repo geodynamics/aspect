@@ -133,7 +133,7 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization,composition statistics
+  set List of postprocessors = composition statistics
 
   subsection Visualization
 
