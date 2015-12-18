@@ -27,7 +27,6 @@
 # below.
 # -----------------------------------------------------------------
 
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
 FIND_PACKAGE(Aspect QUIET HINTS ${ASPECT_DIR} ../ $ENV{ASPECT_DIR})

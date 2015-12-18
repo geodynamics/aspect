@@ -7995,18 +7995,7 @@ do:
     is a hassle, and a much easier way is in fact to set up a mini-CMake project
     for this. To this end, simply copy the file \url{doc/plugin-CMakeLists.txt}
     to the directory where you have your plugin source files and rename it to
-    \texttt{CMakeLists.txt}. In essence, this file just has the following
-    content:
-    \begin{lstlisting}[frame=single]
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
-
-FIND_PACKAGE(Aspect REQUIRED HINTS ${ASPECT_DIR} ../ $ENV{ASPECT_DIR})
-DEAL_II_INITIALIZE_CACHED_VARIABLES()
-
-PROJECT(my_plugin)
-ADD_LIBRARY(my_plugin SHARED source_1.cc source_2.cc)
-ASPECT_SETUP_PLUGIN(my_plugin)
-    \end{lstlisting}
+    \texttt{CMakeLists.txt}.
   \end{itemize}
   You can then just run the commands
     \begin{verbatim}
