@@ -37,20 +37,20 @@ namespace aspect
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       AssertThrow(this->include_melt_transport(),
-             ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
+                  ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
 
       // TODO: we do not have the cell in the postprocessor, so it will always use a melt velocity of zero
       // get the melt velocity from the solution vector
       std::vector<Tensor<1,dim> > melt_velocity (material_model_inputs.position.size());
 
-      if(material_model_inputs.cell && this->get_timestep_number() > 0)
+      if (material_model_inputs.cell && this->get_timestep_number() > 0)
         {
           // we have to create a long vector, because that is the only way to extract the velocities
           // from the solution vector
           std::vector<std::vector<double> > melt_velocitiy_vector (dim, std::vector<double>(material_model_inputs.position.size()));
           // Prepare the field function
           Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-            fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
+          fe_value(this->get_dof_handler(), this->get_solution(), this->get_mapping());
 
           fe_value.set_active_cell(*material_model_inputs.cell);
 
@@ -67,7 +67,7 @@ namespace aspect
       // compute melt density, which is needed for the simplified adiabatic heating
       typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(material_model_inputs.position.size(),
                                                                                     this->n_compositional_fields());
-      if(simplified_adiabatic_heating)
+      if (simplified_adiabatic_heating)
         {
           const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
           AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));

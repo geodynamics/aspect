@@ -1351,7 +1351,7 @@ namespace aspect
     // side.
 
     return (material_model->get_model_dependence().viscosity != MaterialModel::NonlinearDependence::none)
-        || parameters.include_melt_transport;
+           || parameters.include_melt_transport;
   }
 }
 

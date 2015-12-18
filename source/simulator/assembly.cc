@@ -1143,19 +1143,19 @@ namespace aspect
                           0.0);
             double viscosity_c = melt_outputs.compaction_viscosities[q];
 
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+            const SymmetricTensor<4,dim> &stress_strain_director =
+              scratch.material_model_outputs.stress_strain_directors[q];
+            const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
 
             for (unsigned int i=0; i<dofs_per_cell; ++i)
               for (unsigned int j=0; j<dofs_per_cell; ++j)
                 if (finite_element.system_to_component_index(i).first
                     ==
                     finite_element.system_to_component_index(j).first)
-              data.local_matrix(i,j) += ((use_tensor ?
-                                          eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                          :
-                                          eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                  data.local_matrix(i,j) += ((use_tensor ?
+                                              eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                              :
+                                              eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                              +
                                              (1./eta *
                                               pressure_scaling *
@@ -2350,11 +2350,11 @@ namespace aspect
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
   template void Simulator<dim>::compute_material_model_input_values <FEValues<dim> > ( \
-                                                                      const LinearAlgebra::BlockVector                      &input_solution, \
-                                                                      const FEValues<dim>                                   &input_finite_element_values, \
-                                                                      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
-                                                                      const bool                                             compute_strainrate, \
-                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
+      const LinearAlgebra::BlockVector                      &input_solution, \
+      const FEValues<dim>                                   &input_finite_element_values, \
+      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
+      const bool                                             compute_strainrate, \
+      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
    
 
 

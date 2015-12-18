@@ -16,7 +16,7 @@ namespace aspect
 {
   template <int dim>
   class MeltMaterial:
-      public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
@@ -66,10 +66,10 @@ namespace aspect
         return 1.0;
       }
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
 
-        for (unsigned int i=0;i<in.position.size();++i)
+        for (unsigned int i=0; i<in.position.size(); ++i)
           {
             out.viscosities[i] = 3.0/4.0;
             out.densities[i] = 4.0;
@@ -77,16 +77,16 @@ namespace aspect
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
             out.compressibilities[i] = 0.0;
-            for (unsigned int c=0;c<in.composition[i].size();++c)
+            for (unsigned int c=0; c<in.composition[i].size(); ++c)
               out.reaction_terms[i][c] = 0.0;
           }
       }
 
       virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-          typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
+                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
       {
         evaluate(in, out);
-        for (unsigned int i=0;i<in.position.size();++i)
+        for (unsigned int i=0; i<in.position.size(); ++i)
           {
             out.compaction_viscosities[i] = 1.0;
             out.fluid_viscosities[i]= 2.0;
@@ -98,30 +98,30 @@ namespace aspect
       }
 
   };
-  
+
   template <int dim>
   class PressureBdry:
 
-      public FluidPressureBoundaryConditions::Interface<dim>
+    public FluidPressureBoundaryConditions::Interface<dim>
   {
     public:
       virtual
       void fluid_pressure_gradient (
         const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
         const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-        std::vector<Tensor<1,dim> > & output
+        std::vector<Tensor<1,dim> > &output
       ) const
-        {
-          for (unsigned int q=0; q<output.size(); ++q)
-            {
-              Tensor<1,dim> gradient;
-              gradient[0] = 0.0;
-              gradient[1] = -1.0;
-              output[q] = gradient;
-            }
-        }
+      {
+        for (unsigned int q=0; q<output.size(); ++q)
+          {
+            Tensor<1,dim> gradient;
+            gradient[0] = 0.0;
+            gradient[1] = -1.0;
+            output[q] = gradient;
+          }
+      }
   };
-  
+
 }
 
 
@@ -130,13 +130,13 @@ namespace aspect
 namespace aspect
 {
 
-    ASPECT_REGISTER_MATERIAL_MODEL(MeltMaterial,
-                                   "MeltMaterial3",
-				   "")
+  ASPECT_REGISTER_MATERIAL_MODEL(MeltMaterial,
+                                 "MeltMaterial3",
+                                 "")
 
-    ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
-                                                       "PressureBdry",
-                                                       "A fluid pressure boundary condition that prescribes the "
-                                                       "gradient of the fluid pressure at the boundaries as "
-                                                       "calculated in the analytical solution. ")
+  ASPECT_REGISTER_FLUID_PRESSURE_BOUNDARY_CONDITIONS(PressureBdry,
+                                                     "PressureBdry",
+                                                     "A fluid pressure boundary condition that prescribes the "
+                                                     "gradient of the fluid pressure at the boundaries as "
+                                                     "calculated in the analytical solution. ")
 }

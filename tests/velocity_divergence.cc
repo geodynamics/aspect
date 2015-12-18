@@ -6,9 +6,9 @@ namespace aspect
 {
   template <int dim>
   class TestMaterial:
-      public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      public:
+    public:
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
       {
@@ -59,9 +59,9 @@ namespace aspect
         return 3000;
       }
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
-        for (unsigned int i=0;i<in.position.size();++i)
+        for (unsigned int i=0; i<in.position.size(); ++i)
           {
             out.viscosities[i] = 1e19;
             out.thermal_expansion_coefficients[i] = 0.0;
@@ -69,9 +69,9 @@ namespace aspect
             out.thermal_conductivities[i] = 1e-4;
             out.compressibilities[i] = 0.0;
             out.densities[i] = 3000;
-            for (unsigned int c=0;c<in.composition[i].size();++c)
+            for (unsigned int c=0; c<in.composition[i].size(); ++c)
               {
-                if(in.strain_rate.size())
+                if (in.strain_rate.size())
                   out.reaction_terms[i][c] = trace(in.strain_rate[i]) * this->get_timestep();
                 else
                   out.reaction_terms[i][c] = 0.0;
@@ -86,8 +86,8 @@ namespace aspect
 namespace aspect
 {
 
-    ASPECT_REGISTER_MATERIAL_MODEL(TestMaterial,
-                                   "test material",
-				   "")
-						       
+  ASPECT_REGISTER_MATERIAL_MODEL(TestMaterial,
+                                 "test material",
+                                 "")
+
 }

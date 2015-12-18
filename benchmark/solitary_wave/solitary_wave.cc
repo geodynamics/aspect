@@ -16,45 +16,45 @@
  * Computes MPI_MAX of @p local_max like Allreduce, but also transmits the @p local_data from the rank with the largest @local_max to every rank (returned in @p global_data).
  */
 template <class T1, class T2>
-void MPI_max_and_data(const T1 & local_max,
-		      const T2 & local_data,
-		      T1 & global_max,
-		      T2 & global_data)
+void MPI_max_and_data(const T1 &local_max,
+                      const T2 &local_data,
+                      T1 &global_max,
+                      T2 &global_data)
 {
-  AssertThrow(false, dealii::ExcNotImplemented()); 
+  AssertThrow(false, dealii::ExcNotImplemented());
 }
 
 void myop_func(void *invec,
-	       void *inoutvec,
-	       int *len,
-	       MPI_Datatype *datatype)
+               void *inoutvec,
+               int *len,
+               MPI_Datatype *datatype)
 {
   AssertThrow(*len > 1, dealii::ExcNotImplemented());
   AssertThrow(*datatype == MPI_DOUBLE, dealii::ExcNotImplemented());
-  
-  double * indata = static_cast<double*>(invec);
-  double * inoutdata = static_cast<double*>(inoutvec);
+
+  double *indata = static_cast<double *>(invec);
+  double *inoutdata = static_cast<double *>(inoutvec);
 
   if (indata[0]>inoutdata[0])
     {
-      for (int i=0;i<*len;++i)
-	inoutdata[i] = indata[i];
-    }  
+      for (int i=0; i<*len; ++i)
+        inoutdata[i] = indata[i];
+    }
 }
- 
+
 
 template <>
-void MPI_max_and_data(const double & local_max,
-		      const double & local_data,
-		      double & global_max,
-		      double & global_data)
+void MPI_max_and_data(const double &local_max,
+                      const double &local_data,
+                      double &global_max,
+                      double &global_data)
 {
   MPI_Op myop;
   MPI_Op_create(&myop_func, /* commutes? */ 1 ,&myop);
 
   double local[] = {local_max, local_data};
   double global[2];
-  
+
   MPI_Allreduce(local, global, 2, MPI_DOUBLE, myop, MPI_COMM_WORLD);
   global_max = global[0];
   global_data = global[1];
@@ -399,7 +399,7 @@ namespace aspect
               out.specific_heat[i] = 1.0;
               out.thermal_conductivities[i] = 0.0;
               out.compressibilities[i] = 0.0;
-              for (unsigned int c=0;c<in.composition[i].size();++c)
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
             }
         }
@@ -804,10 +804,10 @@ namespace aspect
       maximum_pressure = Utilities::MPI::max (local_max_pressure, this->get_mpi_communicator());
 
       for (unsigned int i=0; i<initial_pressure.size(); ++i)
-	{
-	  initial_pressure[i] = initial_pressure[i] / (static_cast<double>(volume_all[i])+1e-20);
-	}
-      
+        {
+          initial_pressure[i] = initial_pressure[i] / (static_cast<double>(volume_all[i])+1e-20);
+        }
+
       // fill the first and last element of the initial_pressure vector if they are empty
       // this makes sure they can be used for the interpolation later on
       if (initial_pressure[0] == 0.0)
@@ -883,31 +883,31 @@ namespace aspect
       // compute the maximum composition by quadrature (because we also need the coordinate)
       double z_max_porosity = std::numeric_limits<double>::quiet_NaN();
       {
-	double local_max_porosity = -std::numeric_limits<double>::max();
-	double local_max_z_location = std::numeric_limits<double>::quiet_NaN();
-	
-	for (; cell!=endc; ++cell)
-	  if (cell->is_locally_owned())
-	    {
-	      fe_values.reinit (cell);
-	      fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-														    compositional_values);
-	      for (unsigned int q=0; q<n_q_points; ++q)
-		{
-		  const double composition = compositional_values[q];
-		  
-		  if (composition > local_max_porosity)
-		    {
-		      local_max_porosity = composition;
-		      local_max_z_location = fe_values.quadrature_point(q)[dim-1];
-		    }
-		}
-	    }
+        double local_max_porosity = -std::numeric_limits<double>::max();
+        double local_max_z_location = std::numeric_limits<double>::quiet_NaN();
 
-	double max_porosity = 0.0;
-	MPI_max_and_data(local_max_porosity, local_max_z_location, max_porosity, z_max_porosity);
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
+                  compositional_values);
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  const double composition = compositional_values[q];
+
+                  if (composition > local_max_porosity)
+                    {
+                      local_max_porosity = composition;
+                      local_max_z_location = fe_values.quadrature_point(q)[dim-1];
+                    }
+                }
+            }
+
+        double max_porosity = 0.0;
+        MPI_max_and_data(local_max_porosity, local_max_z_location, max_porosity, z_max_porosity);
       }
-      
+
 
       // iterate over all points and calculate the phase shift
       cell = this->get_dof_handler().begin_active();
@@ -952,8 +952,8 @@ namespace aspect
           }
 
       double integral = Utilities::MPI::sum (phase_shift_integral, this->get_mpi_communicator())
-			/ Utilities::MPI::sum (static_cast<double>(number_of_points), this->get_mpi_communicator());      
-      
+                        / Utilities::MPI::sum (static_cast<double>(number_of_points), this->get_mpi_communicator());
+
       // TODO: different case for moving wave (with zero boundary velocity)
       // const double phase_speed = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
       return integral; // + phase_speed * this->get_time();
@@ -1028,14 +1028,14 @@ namespace aspect
 
       double e_f = std::sqrt(Utilities::MPI::sum(cellwise_errors_f.norm_sqr(),MPI_COMM_WORLD));
       double e_p = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),MPI_COMM_WORLD));
- 
-      
+
+
       std::ostringstream os;
       os << std::scientific << e_f / amplitude
          << ", " << e_p / maximum_pressure
          << ", " << error_c
          << ", " << std::abs(delta);
-      
+
 
       return std::make_pair("Errors e_f, e_p, e_c, delta:", os.str());
     }
