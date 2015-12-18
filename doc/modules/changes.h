@@ -5,6 +5,11 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: A new mesh refinement plugin was added that refines cells
+ * according to the density of particles in that cell.
+ * <br>
+ * (Rene Gassmoeller, 2015/12/19)
+ *
  * <li> Changed: The boundary_velocity(const Point<dim> &position) const 
  * function has now been deprecated in favor of the new function 
  * boundary_velocity (const types::boundary_id boundary_indicator, 
