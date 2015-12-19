@@ -484,12 +484,6 @@ namespace aspect
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
                     MeltMaterialModelOutputs<dim>          &values_out);
-      template <int dim>
-      void average (const AveragingOperation operation,
-                    const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>         &quadrature_formula,
-                    const Mapping<dim>            &mapping,
-                    std::vector<double>           &values_out);
     }
 
 

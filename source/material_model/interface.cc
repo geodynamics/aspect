@@ -726,29 +726,7 @@ namespace aspect
         // really be averaged, so avoid this for now
       }
 
-      template <int dim>
-      void average (const AveragingOperation operation,
-                    const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>         &quadrature_formula,
-                    const Mapping<dim>            &mapping,
-                    std::vector<double>           &values_out)
-      {
-        FullMatrix<double> projection_matrix;
-        FullMatrix<double> expansion_matrix;
 
-        if (operation == project_to_Q1)
-          {
-            projection_matrix.reinit (quadrature_formula.size(),
-                                      quadrature_formula.size());
-            compute_projection_matrix (cell,
-                                       quadrature_formula,
-                                       mapping,
-                                       projection_matrix,
-                                       expansion_matrix);
-          }
-
-        average (operation, projection_matrix, expansion_matrix, values_out);
-      }
     }
   }
 }
@@ -818,12 +796,6 @@ namespace aspect
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
                   MeltMaterialModelOutputs<dim>      &values_out); \
-    template                \
-    void average (const AveragingOperation operation, \
-                  const DoFHandler<dim>::active_cell_iterator &cell, \
-                  const Quadrature<dim>     &quadrature_formula, \
-                  const Mapping<dim>        &mapping, \
-                  std::vector<double>       &values_out); \
   }
 
 
