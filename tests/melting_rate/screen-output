@@ -17,7 +17,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 212.183, 8.71335e-10, 8.71335e-10, 2.05174e+13
+      Nonlinear residuals: 228.632, 8.71335e-10, 8.71335e-10, 2.05174e+13
       Total relative nonlinear residual: 1
 
 
@@ -26,7 +26,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 212.183, 8.71335e-10, 8.71335e-10, 4.90973
+      Nonlinear residuals: 228.632, 8.71335e-10, 8.71335e-10, 4.90973
       Total relative nonlinear residual: 2.39295e-13
 
 
@@ -49,7 +49,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 6 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 1.51104e+11, 393.301, 25.241, 2.35886e+08
+      Nonlinear residuals: 1.511e+11, 393.301, 25.241, 2.35886e+08
       Total relative nonlinear residual: 0.000253755
 
 
@@ -58,7 +58,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 3 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 9.12837e+07, 0.505903, 0.0176215, 496594
+      Nonlinear residuals: 9.14714e+07, 0.505903, 0.0176215, 496594
       Total relative nonlinear residual: 5.34212e-07
 
 
@@ -72,7 +72,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 7 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 1.1283e+11, 1685.78, 1576.49, 6.00958e+10
+      Nonlinear residuals: 1.12829e+11, 1685.78, 1576.49, 6.00958e+10
       Total relative nonlinear residual: 0.0638445
 
 
@@ -81,7 +81,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 5 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 4.09095e+10, 107.292, 6.93095, 4.90787e+07
+      Nonlinear residuals: 4.09085e+10, 107.292, 6.93095, 4.90787e+07
       Total relative nonlinear residual: 5.21401e-05
 
 
@@ -90,7 +90,7 @@ Number of degrees of freedom: 65,130 (21,060+16,770+2,145+8,385+8,385+8,385)
    Solving peridotite system ... 2 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 8.985e+06, 0.0501117, 0.00175637, 38168.6
+      Nonlinear residuals: 9.00393e+06, 0.0501117, 0.00175637, 38168.6
       Total relative nonlinear residual: 4.05495e-08
 
 
@@ -102,20 +102,20 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      24.2s |            |
+| Total wallclock time elapsed since start    |      27.1s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         8 |      8.81s |        36% |
-| Assemble composition system     |        16 |      1.78s |       7.3% |
-| Assemble temperature system     |         8 |     0.867s |       3.6% |
-| Build composition preconditioner|        16 |     0.165s |      0.68% |
-| Build temperature preconditioner|         8 |     0.083s |      0.34% |
-| Solve Stokes system             |         8 |      12.1s |        50% |
-| Solve composition system        |        16 |    0.0652s |      0.27% |
-| Solve temperature system        |         8 |    0.0302s |      0.12% |
-| Initialization                  |         2 |    0.0762s |      0.31% |
-| Postprocessing                  |         3 |    0.0161s |     0.067% |
-| Setup dof systems               |         1 |     0.167s |      0.69% |
+| Assemble Stokes system          |         8 |      9.46s |        35% |
+| Assemble composition system     |        16 |      2.19s |       8.1% |
+| Assemble temperature system     |         8 |      1.05s |       3.9% |
+| Build composition preconditioner|        16 |     0.182s |      0.67% |
+| Build temperature preconditioner|         8 |    0.0863s |      0.32% |
+| Solve Stokes system             |         8 |      13.7s |        51% |
+| Solve composition system        |        16 |    0.0714s |      0.26% |
+| Solve temperature system        |         8 |    0.0325s |      0.12% |
+| Initialization                  |         2 |    0.0796s |      0.29% |
+| Postprocessing                  |         3 |    0.0182s |     0.067% |
+| Setup dof systems               |         1 |     0.175s |      0.64% |
 +---------------------------------+-----------+------------+------------+
 

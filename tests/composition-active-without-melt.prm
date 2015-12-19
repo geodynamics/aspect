@@ -10,7 +10,10 @@ set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
 
-
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+end
 
 subsection Geometry model
   set Model name = box
@@ -86,7 +89,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, composition statistics
+  set List of postprocessors = temperature statistics, composition statistics
 
   subsection Visualization
     set List of output variables = density
