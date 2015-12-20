@@ -23,7 +23,6 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/postprocess/pressure_statistics.h>
-#include <aspect/simulator_access.h>
 #include <aspect/simulator.h>
 
 #include <utility>
@@ -35,7 +34,7 @@ namespace aspect
   namespace BoundaryTemperature
   {
     template <int dim>
-    class Box2 : public Box<dim>, public aspect::SimulatorAccess<dim>
+    class Box2 : public Box<dim>
     {
       public:
         virtual void update();
