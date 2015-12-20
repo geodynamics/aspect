@@ -36,8 +36,8 @@ namespace aspect
 
       AssertThrow(tracer_postprocessor != 0,
                   ExcMessage("The mesh refinement plugin 'tracer distribution' requires the "
-                      "postprocessor plugin 'tracers' to be selected. Please activate the "
-                      "tracers or deactivate this mesh refinement plugin."));
+                             "postprocessor plugin 'tracers' to be selected. Please activate the "
+                             "tracers or deactivate this mesh refinement plugin."));
 
       const std::multimap<Particle::types::LevelInd, Particle::Particle<dim> > *particles = &tracer_postprocessor->get_particle_world().get_particles();
 
@@ -69,6 +69,7 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(ParticleDensity,
                                               "particle density",
                                               "A mesh refinement criterion that computes "
-                                              "refinement indicators from the density of particles.")
+                                              "refinement indicators that equal the areal (in 2d) "
+                                              "or volumetric (in 3d) density of particles in this cell.")
   }
 }

@@ -32,7 +32,8 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion based on the
-     * density of particles.
+     * density of particles. The mesh refinement indicator equals the areal
+     * (in 2d) or volumetric (in 3d) particle density in this cell.
      *
      * @ingroup MeshRefinement
      */
