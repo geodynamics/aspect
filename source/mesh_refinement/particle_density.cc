@@ -70,6 +70,13 @@ namespace aspect
                                               "particle density",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators that equal the areal (in 2d) "
-                                              "or volumetric (in 3d) density of particles in this cell.")
+                                              "or volumetric (in 3d) density of particles in this cell. "
+                                              "This plugin is useful for models with inhomogeneous "
+                                              "particle density, e.g. when tracking an initial interface "
+                                              "with a high particle density, or when the spatial particle "
+                                              "density denotes the region of interest. Additionally, this "
+                                              "plugin tends to balance the computational load between "
+                                              "processes in parallel computations, because the particle "
+                                              "number per cell is more similar.")
   }
 }
