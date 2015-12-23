@@ -34,6 +34,12 @@ namespace aspect
      * A class that implements a mesh refinement criterion based on the
      * density of particles. The mesh refinement indicator equals the areal
      * (in 2d) or volumetric (in 3d) particle density in this cell.
+     * This plugin is useful for models with inhomogeneous particle density,
+     * e.g. when tracking an initial interface with a high particle density, or
+     * when the spatial particle density denotes the region of interest.
+     * Additionally, this plugin tends to balance the computational load
+     * between processes in parallel computations, because the particle number
+     * per cell is more similar.
      *
      * @ingroup MeshRefinement
      */
