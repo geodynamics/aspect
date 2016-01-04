@@ -44,12 +44,12 @@ namespace aspect
         /**
          * This function returns constant compositions at the boundaries.
          *
-         * @copydoc aspect::BoundaryComposition::Interface::composition()
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         virtual
-        double boundary_composition (const types::boundary_id             boundary_indicator,
-                                     const Point<dim>                    &location,
-                                     const unsigned int                   compositional_field) const;
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &location,
+                                     const unsigned int compositional_field) const;
 
         /**
          * Declare the parameters this class takes through input files. This

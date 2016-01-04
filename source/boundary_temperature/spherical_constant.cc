@@ -37,7 +37,7 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    boundary_temperature (const types::boundary_id             boundary_indicator,
+    boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &) const
     {
       // verify that the geometry is a spherical shell, a chunk, or an

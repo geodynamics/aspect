@@ -41,19 +41,14 @@ namespace aspect
     {
       public:
         /**
-         * Return the temperature that is to hold at a particular location on
-         * the boundary of the domain. This function returns constant
-         * temperatures at the left and right boundaries.
+         * This function returns user-defined constant temperatures at the
+         * boundaries.
          *
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the temperature.
-         * @param location The location of the point at which we ask for the
-         * temperature.
+         * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
         virtual
-        double boundary_temperature (const types::boundary_id             boundary_indicator,
-                                     const Point<dim>                    &location) const;
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &location) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on

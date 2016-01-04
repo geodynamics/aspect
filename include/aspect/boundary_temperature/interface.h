@@ -97,11 +97,10 @@ namespace aspect
          * @param position The position of the point at which we ask for the
          * temperature.
          * @return Boundary temperature at position @p position.
-         *
          */
         virtual
-        double boundary_temperature (const types::boundary_id             boundary_indicator,
-                                     const Point<dim>                    &position) const;
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on

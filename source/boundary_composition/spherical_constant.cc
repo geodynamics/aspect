@@ -37,9 +37,9 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    boundary_composition (const types::boundary_id             boundary_indicator,
-                          const Point<dim> &,
-                          const unsigned int                   ) const
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int /*compositional_field*/) const
     {
       // verify that the geometry is a spherical shell, a chunk, or an
       // ellipsoidal chunk since only for geometries based on spherical shells

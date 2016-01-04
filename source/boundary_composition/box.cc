@@ -35,9 +35,9 @@ namespace aspect
     template <int dim>
     double
     Box<dim>::
-    boundary_composition (const types::boundary_id             boundary_indicator,
-                          const Point<dim> &,
-                          const unsigned int                   compositional_field) const
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int compositional_field) const
     {
       // verify that the geometry is in fact a box since only
       // for this geometry do we know for sure what boundary indicators it

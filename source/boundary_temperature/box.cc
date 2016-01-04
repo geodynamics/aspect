@@ -35,8 +35,8 @@ namespace aspect
     template <int dim>
     double
     Box<dim>::
-    boundary_temperature (const types::boundary_id             boundary_indicator,
-                          const Point<dim> &) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/) const
     {
       // verify that the geometry is in fact a box since only
       // for this geometry do we know for sure what boundary indicators it

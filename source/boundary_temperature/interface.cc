@@ -66,14 +66,15 @@ namespace aspect
 
     template <int dim>
     double
-    Interface<dim>::boundary_temperature (const types::boundary_id             /*boundary_indicator*/,
-                                          const Point<dim>                    &/*position*/) const
+    Interface<dim>::boundary_temperature (const types::boundary_id /*boundary_indicator*/,
+                                          const Point<dim>        &/*position*/) const
     {
       AssertThrow(false,
-          ExcMessage("The boundary composition plugin has to implement a function called boundary_composition "
-              "with either three or four arguments. The function with four arguments is deprecated and will "
-              "be removed in a later version of ASPECT."));
-      return Utilities::signaling_nan<double>();    }
+                  ExcMessage("The boundary composition plugin has to implement a function called boundary_composition "
+                             "with either three or four arguments. The function with four arguments is deprecated and will "
+                             "be removed in a later version of ASPECT."));
+      return Utilities::signaling_nan<double>();
+    }
 
 
     template <int dim>

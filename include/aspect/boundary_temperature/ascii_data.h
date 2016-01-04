@@ -70,9 +70,11 @@ namespace aspect
         /**
          * Return the boundary temperature as a function of position. For the
          * current class, this function returns value from the text files.
+         *
+         * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
         double
-        boundary_temperature (const types::boundary_id             boundary_indicator,
+        boundary_temperature (const types::boundary_id boundary_indicator,
                               const Point<dim> &position) const;
 
         /**
