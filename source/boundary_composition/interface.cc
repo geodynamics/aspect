@@ -57,9 +57,8 @@ namespace aspect
     {
       /**
        * Call the new-style function without the geometry model
-       * to maintain backwards compatibility. Normally the derived class should
-       * override the called function, but if it overrides this function, the
-       * new interface will not be used.
+       * to maintain backwards compatibility. After removal of this deprecated
+       * function the new function will be called directly by Simulator.
        */
 
       return boundary_composition(boundary_indicator,position,compositional_field);
@@ -71,7 +70,11 @@ namespace aspect
                                           const Point<dim>                    &/*position*/,
                                           const unsigned int                   /*compositional_field*/) const
     {
-      return std::numeric_limits<double>::quiet_NaN();
+      AssertThrow(false,
+          ExcMessage("The boundary composition plugin has to implement a function called boundary_composition "
+              "with either three or four arguments. The function with four arguments is deprecated and will "
+              "be removed in a later version of ASPECT."));
+      return Utilities::signaling_nan<double>();
     }
 
     template <int dim>

@@ -21,8 +21,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/utilities.h>
-
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -851,46 +849,17 @@ namespace aspect
         {
           Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                   ExcInternalError());
-
-          if (std::isnan(boundary_temperature->boundary_temperature(*p,geometry_model->representative_point(0.0))))
-            {
-              if (timestep_number == 0)
-                pcout << "WARNING: Your selected boundary temperature plugin uses the deprecated "
-                      << "interface function 'temperature(geometry_model,boundary_indicator,position)'. "
-                      << "This function will be removed in a future ASPECT "
-                      << "release. Please update your plugin NOW to the new interface "
-                      << "'boundary_temperature(boundary_indicator,position) "
-                      << "instead, and derive it from SimulatorAccess, if you need access to the "
-                      << "geometry model." << std::endl;
-
-              VectorTools::interpolate_boundary_values (dof_handler,
+          VectorTools::interpolate_boundary_values (dof_handler,
+                                                    *p,
+                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                        std_cxx11::cref(*boundary_temperature),
+                                                        std_cxx11::cref(*geometry_model),
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (static_cast<double (BoundaryTemperature::Interface<dim>::*)(const GeometryModel::Interface<dim> &,
-                                                            const types::boundary_id,
-                                                            const Point<dim> &) const> (&BoundaryTemperature::Interface<dim>::temperature),
-                                                            std_cxx11::cref(*boundary_temperature),
-                                                            std_cxx11::cref(*geometry_model),
-                                                            *p,
-                                                            std_cxx11::_1),
-                                                            introspection.component_masks.temperature.first_selected_component(),
-                                                            introspection.n_components),
-                                                        current_constraints,
-                                                        introspection.component_masks.temperature);
-            }
-          else
-            {
-              VectorTools::interpolate_boundary_values (dof_handler,
-                                                        *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (static_cast<double (BoundaryTemperature::Interface<dim>::*)(const types::boundary_id,
-                                                            const Point<dim> &) const> (&BoundaryTemperature::Interface<dim>::boundary_temperature),
-                                                            std_cxx11::cref(*boundary_temperature),
-                                                            *p,
-                                                            std_cxx11::_1),
-                                                            introspection.component_masks.temperature.first_selected_component(),
-                                                            introspection.n_components),
-                                                        current_constraints,
-                                                        introspection.component_masks.temperature);
-            }
+                                                        std_cxx11::_1),
+                                                        introspection.component_masks.temperature.first_selected_component(),
+                                                        introspection.n_components),
+                                                    current_constraints,
+                                                    introspection.component_masks.temperature);
         }
     }
 
@@ -911,50 +880,18 @@ namespace aspect
           {
             Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                     ExcInternalError());
-
-            if (boundary_composition->boundary_composition(*p,geometry_model->representative_point(0.0),0) == Utilities::signaling_nan<double>())
-              {
-                if (timestep_number == 0)
-                  pcout << "WARNING: Your selected boundary composition plugin uses the deprecated "
-                        << "interface function 'composition(geometry_model,boundary_indicator,position,"
-                        << "compositional_field)'. This function will be removed in a future ASPECT "
-                        << "release. Please update your plugin NOW to the new interface "
-                        << "'boundary_composition(boundary_indicator,position,compositional_field) "
-                        << "instead, and derive it from SimulatorAccess, if you need access to the "
-                        << "geometry model." << std::endl;
-
-                VectorTools::interpolate_boundary_values (dof_handler,
+            VectorTools::interpolate_boundary_values (dof_handler,
+                                                      *p,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                          std_cxx11::cref(*boundary_composition),
+                                                          std_cxx11::cref(*geometry_model),
                                                           *p,
-                                                          VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (static_cast<double (BoundaryComposition::Interface<dim>::*)(const GeometryModel::Interface<dim> &,
-                                                              const types::boundary_id,
-                                                              const Point<dim> &,
-                                                              const unsigned int) const> (&BoundaryComposition::Interface<dim>::composition),
-                                                              std_cxx11::cref(*boundary_composition),
-                                                              std_cxx11::cref(*geometry_model),
-                                                              *p,
-                                                              std_cxx11::_1,
-                                                              c),
-                                                              introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                              introspection.n_components),
-                                                          current_constraints,
-                                                          introspection.component_masks.compositional_fields[c]);
-              }
-            else
-              {
-                VectorTools::interpolate_boundary_values (dof_handler,
-                                                          *p,
-                                                          VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (static_cast<double (BoundaryComposition::Interface<dim>::*)(const types::boundary_id,
-                                                              const Point<dim> &,
-                                                              const unsigned int) const> (&BoundaryComposition::Interface<dim>::boundary_composition),
-                                                              std_cxx11::cref(*boundary_composition),
-                                                              *p,
-                                                              std_cxx11::_1,
-                                                              c),
-                                                              introspection.component_masks.compositional_fields[c].first_selected_component(),
-                                                              introspection.n_components),
-                                                          current_constraints,
-                                                          introspection.component_masks.compositional_fields[c]);
-              }
+                                                          std_cxx11::_1,
+                                                          c),
+                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                          introspection.n_components),
+                                                      current_constraints,
+                                                      introspection.component_masks.compositional_fields[c]);
           }
     }
 
