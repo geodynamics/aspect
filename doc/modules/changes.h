@@ -4,6 +4,15 @@
  * <p> This is the list of changes made after the release of Aspect version
  * 1.4.0. All entries are signed with the names of the author. </p>
  *
+ * <ol>
+ *
+ * <li> New: Particles can now carry the integrated strain they have
+ * experienced over the course of the model. They store all components
+ * of the symmetric strain tensor, which can be converted into the 
+ * invariants or investigated individually.
+ * <br>
+ * (Rene Gassmoeller, 2016/06/10)
+ *
  * <li> New: There is a new optional feature for the discontinuous temperature
  * and compositional solutions. After solving the advection equation, 
  * a "bound preserving limiter" working as a correction procedure is applied
@@ -52,8 +61,6 @@
  * composition gradients, or composition threshold.
  * <br>
  * (Juliane Dannberg, Timo Heister, 2016/05/03)
- *
- * <ol>
  *
  * </ol>
  */

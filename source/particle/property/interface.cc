@@ -138,9 +138,9 @@ namespace aspect
 
         Assert(particle_properties.size() == get_n_property_components(),
                ExcMessage("The reported numbers of particle property components do not sum up "
-                   "to the number of particle properties that were initialized by "
-                   "the property plugins. Check the selected property plugins for "
-                   "consistency between reported size and actually set properties."));
+                          "to the number of particle properties that were initialized by "
+                          "the property plugins. Check the selected property plugins for "
+                          "consistency between reported size and actually set properties."));
 
         particle.set_properties(particle_properties);
       }
