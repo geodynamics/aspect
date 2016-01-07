@@ -466,19 +466,14 @@ namespace aspect
   {
     public:
       /**
-       * Return the temperature that is to hold at a particular location on
-       * the boundary of the domain. This function returns constant
-       * temperatures at the left and right boundaries.
+       * This plugin prescribes the setup of the Tan Gurnis Benchmark at all
+       * boundaries.
        *
-       * @param boundary_indicator The boundary indicator of the part of the
-       * boundary of the domain on which the point is located at which we
-       * are requesting the temperature.
-       * @param location The location of the point at which we ask for the
-       * temperature.
+       * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
        */
       virtual
-      double temperature (const types::boundary_id             boundary_indicator,
-                          const Point<dim>                    &location) const;
+      double boundary_temperature (const types::boundary_id boundary_indicator,
+                                   const Point<dim> &position) const;
 
       /**
        * Return the minimal the temperature on that part of the boundary on
@@ -504,8 +499,8 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  temperature (const types::boundary_id             boundary_indicator,
-               const Point<dim>                    &location) const
+  boundary_temperature (const types::boundary_id boundary_indicator,
+                        const Point<dim> &position) const
   {
     // verify that the geometry is in fact a box since only
     // for this geometry do we know for sure what boundary indicators it
@@ -516,7 +511,7 @@ namespace aspect
                         "in fact a box."));
 
     double wavenumber=1;
-    return sin(numbers::PI*location(dim-1))*cos(numbers::PI*wavenumber*location(0));
+    return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
   }
 
 
