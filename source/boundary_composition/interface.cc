@@ -71,8 +71,9 @@ namespace aspect
                                           const unsigned int       /*compositional_field*/) const
     {
       AssertThrow(false,
-                  ExcMessage("The boundary composition plugin has to implement a function called boundary_composition "
-                             "with either three or four arguments. The function with four arguments is deprecated and will "
+                  ExcMessage("The boundary composition plugin has to implement a function called 'composition' "
+                             "with four arguments or a function 'boundary_composition' with three arguments. "
+                             "The function with four arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
       return Utilities::signaling_nan<double>();
     }

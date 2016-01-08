@@ -70,8 +70,9 @@ namespace aspect
                                           const Point<dim>        &/*position*/) const
     {
       AssertThrow(false,
-                  ExcMessage("The boundary composition plugin has to implement a function called boundary_composition "
-                             "with either three or four arguments. The function with four arguments is deprecated and will "
+                  ExcMessage("The boundary temperature plugin has to implement a function called 'temperature' "
+                             "with three arguments or a function 'boundary_temperature' with two arguments. "
+                             "The function with three arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
       return Utilities::signaling_nan<double>();
     }
