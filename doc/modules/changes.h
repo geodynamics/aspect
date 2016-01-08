@@ -5,7 +5,16 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
- * <li> New: A new mesh refinement plugin was added that refines cells
+ * <li> Changed: The interfaces of the boundary composition and boundary
+ * temperature plugins have been deprecated. Their replacements not longer 
+ * contain references to the geometry model, which was a leftover from an
+ * earlier development stage. Users should derive their plugins from
+ * SimulatorAccess if they need access to the geometry model. The
+ * deprecated functions will be removed in a future ASPECT release.
+ * <br>
+ * (Rene Gassmoeller, 2016/01/04)
+ *
+  * <li> New: A new mesh refinement plugin was added that refines cells
  * according to the density of particles in that cell.
  * <br>
  * (Rene Gassmoeller, 2015/12/19)

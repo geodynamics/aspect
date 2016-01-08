@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 #include <aspect/boundary_composition/interface.h>
 
+#include <aspect/utilities.h>
+
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
@@ -45,6 +47,36 @@ namespace aspect
     void
     Interface<dim>::initialize ()
     {}
+
+    template <int dim>
+    double
+    Interface<dim>::composition (const GeometryModel::Interface<dim> &/*geometry_model*/,
+                                 const types::boundary_id             boundary_indicator,
+                                 const Point<dim>                    &position,
+                                 const unsigned int                   compositional_field) const
+    {
+      /**
+       * Call the new-style function without the geometry model
+       * to maintain backwards compatibility. After removal of this deprecated
+       * function the new function will be called directly by Simulator.
+       */
+
+      return boundary_composition(boundary_indicator,position,compositional_field);
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                                          const Point<dim>        &/*position*/,
+                                          const unsigned int       /*compositional_field*/) const
+    {
+      AssertThrow(false,
+                  ExcMessage("The boundary composition plugin has to implement a function called 'composition' "
+                             "with four arguments or a function 'boundary_composition' with three arguments. "
+                             "The function with four arguments is deprecated and will "
+                             "be removed in a later version of ASPECT."));
+      return Utilities::signaling_nan<double>();
+    }
 
     template <int dim>
     void
