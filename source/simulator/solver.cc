@@ -492,7 +492,6 @@ namespace aspect
   {
     computing_timer.enter_section ("   Solve Stokes system");
     pcout << "   Solving Stokes system... " << std::flush;
-    solver_history.clear();
 
     std::vector<double> solver_history;
 
@@ -781,9 +780,6 @@ namespace aspect
                       f << i << " " << solver_history[i] << "\n";
                   }
                 f.close();
-
-                std::cout << "See " << parameters.output_directory+"solver_history.txt"
-                          << " for convergence history." << std::endl;
 
                 AssertThrow (false,
                              ExcMessage (std::string("The iterative Stokes solver "

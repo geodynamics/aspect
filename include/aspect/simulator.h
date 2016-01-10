@@ -1058,8 +1058,6 @@ namespace aspect
 
       MPI_Comm                            mpi_communicator;
 
-      std::vector<double> solver_history;
-
       /**
        * This stream will log into the file output/log.txt (used automatically
        * by pcout).
