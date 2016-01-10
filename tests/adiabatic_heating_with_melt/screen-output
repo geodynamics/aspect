@@ -32,7 +32,6 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00000
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  0 W/kg, 0 W
 
@@ -49,9 +48,8 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00001
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  0 W/kg, 0 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 *** Timestep 2:  t=1.14712e+13 seconds
    Solving temperature system... 12 iterations.
@@ -66,9 +64,8 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00002
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  0 W/kg, 0 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 *** Timestep 3:  t=1.72069e+13 seconds
    Solving temperature system... 11 iterations.
@@ -83,9 +80,8 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00003
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  0 W/kg, 0 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 *** Timestep 4:  t=2.29425e+13 seconds
    Solving temperature system... 11 iterations.
@@ -100,9 +96,8 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00004
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  -5.113e-27 W/kg, -2.842e-14 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 *** Timestep 5:  t=2.5e+13 seconds
    Solving temperature system... 7 iterations.
@@ -117,29 +112,28 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
 
 
    Postprocessing:
-     Writing graphical output:      output-adiabatic_heating_with_melt/solution-00005
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  -1.534e-26 W/kg, -8.527e-14 W
+     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      40.8s |            |
+| Total wallclock time elapsed since start    |      45.1s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         7 |      5.58s |        14% |
-| Assemble composition system     |        14 |      16.3s |        40% |
-| Assemble temperature system     |         7 |      9.34s |        23% |
-| Build Stokes preconditioner     |         7 |      2.53s |       6.2% |
-| Build composition preconditioner|        14 |    0.0168s |     0.041% |
-| Build temperature preconditioner|         7 |    0.0458s |      0.11% |
-| Solve Stokes system             |         7 |      6.02s |        15% |
-| Solve composition system        |        14 |    0.0129s |     0.032% |
-| Solve temperature system        |         7 |    0.0228s |     0.056% |
-| Initialization                  |         2 |    0.0561s |      0.14% |
-| Postprocessing                  |         6 |     0.739s |       1.8% |
-| Setup dof systems               |         1 |    0.0892s |      0.22% |
+| Assemble Stokes system          |         7 |       5.7s |        13% |
+| Assemble composition system     |        14 |      16.2s |        36% |
+| Assemble temperature system     |         7 |       9.4s |        21% |
+| Build Stokes preconditioner     |         7 |      2.55s |       5.7% |
+| Build composition preconditioner|        14 |    0.0163s |     0.036% |
+| Build temperature preconditioner|         7 |    0.0451s |       0.1% |
+| Solve Stokes system             |         7 |      6.45s |        14% |
+| Solve composition system        |        14 |    0.0128s |     0.028% |
+| Solve temperature system        |         7 |    0.0249s |     0.055% |
+| Initialization                  |         2 |    0.0588s |      0.13% |
+| Postprocessing                  |         6 |      4.53s |        10% |
+| Setup dof systems               |         1 |    0.0911s |       0.2% |
 +---------------------------------+-----------+------------+------------+
 

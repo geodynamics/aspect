@@ -627,8 +627,7 @@ namespace aspect
                                  typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
                                  typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                                  const AdvectionField &advection_field,
-                                 const unsigned int q_point,
-                                 const Tensor<1,dim> &gravity) const;
+                                 const unsigned int q_point) const;
 
       /**
        * Compute the right-hand side for the fluid pressure equation of the Staokes
@@ -642,25 +641,7 @@ namespace aspect
       double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                         typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
                                         typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
-                                        const unsigned int q_point,
-                                        const Tensor<1,dim> &gravity) const;
-
-      /**
-       * Compute the average of the gravity vector. This is equivalent to the averaging
-       * functions applied to the material model outputs.
-       *
-       * @param gravity_values The output vector where the gravity values are stored
-       * as dim vectors, each with the size of the number of quadrature points.
-       * They still have to be converted to Tensor<1,dim> to be used in the assembly.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void average_gravity_vector(const Quadrature<dim> &quadrature,
-                                  const Mapping<dim> &mapping,
-                                  const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                  const std::vector<Point<dim> > &quadrature_points,
-                                  std::vector<std::vector<double> > &gravity_values) const;
+                                        const unsigned int q_point) const;
 
       /**
        * Copy the contribution to the advection system from a single cell into

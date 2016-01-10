@@ -109,11 +109,11 @@ namespace aspect
         for (unsigned int i=0; i<in.position.size(); ++i)
           {
             double porosity = in.composition[i][0];
-            out.compaction_viscosities[i] = exp(porosity);
+            out.compaction_viscosities[i] = 1.0;
             out.fluid_viscosities[i] = 1.0;
-            out.permeabilities[i] = porosity * porosity;
+            out.permeabilities[i] = 0.0; //1e-30*porosity * porosity;
             out.fluid_compressibilities[i] = 0.0;
-            out.fluid_densities[i] = 0.5;
+            out.fluid_densities[i] = 1.0;
           }
 
       }
