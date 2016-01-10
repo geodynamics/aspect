@@ -1357,6 +1357,18 @@ namespace aspect
           typename SurfaceAdvection::Direction advection_direction;
 
 
+          /**
+           * A set of boundary indicators that denote those boundaries that are
+           * allowed to move their mesh tangential to the boundary. All
+           * boundaries that have tangential material velocity boundary
+           * conditions are in this set by default, but it can be extended by
+           * open boundaries, boundaries with traction boundary conditions, or
+           * boundaries with prescribed material velocities if requested in
+           * the parameter file.
+           */
+          std::set<types::boundary_id> tangential_mesh_boundary_indicators;
+
+
           friend class Simulator<dim>;
           friend class SimulatorAccess<dim>;
       };
