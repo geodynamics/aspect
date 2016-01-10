@@ -705,7 +705,7 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(200, true));
+               AdditionalData(30, true));
 
         solver.connect(
           std_cxx11::bind (&solver_callback,
@@ -742,11 +742,7 @@ namespace aspect
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,
                SolverFGMRES<LinearAlgebra::BlockVector>::
-               AdditionalData(100, true));
-        /*
-        SolverBicgstab<LinearAlgebra::BlockVector>
-        solver(solver_control_expensive, mem);
-        */
+               AdditionalData(50, true));
 
         solver.connect(
           std_cxx11::bind (&solver_callback,
