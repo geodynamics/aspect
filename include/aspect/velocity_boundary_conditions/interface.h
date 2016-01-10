@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -81,10 +81,22 @@ namespace aspect
 
         /**
          * Return the boundary velocity as a function of position.
+         *
+         * @deprecated Use boundary_velocity(const GeometryModel::Interface<dim> &geometry_model,
+         * const types::boundary_id boundary_indicator,const Point<dim> &position) const instead.
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const = 0;
+        boundary_velocity (const Point<dim> &position) const DEAL_II_DEPRECATED;
+
+
+        /**
+         * Return the boundary velocity as a function of position.
+         */
+        virtual
+        Tensor<1,dim>
+        boundary_velocity (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position) const;
 
         /**
          * Declare the parameters this class takes through input files. The

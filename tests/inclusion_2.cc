@@ -97,7 +97,8 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const;
+        boundary_velocity (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position) const;
 
       private:
         double eta_B;
@@ -114,7 +115,8 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     InclusionBoundary<dim>::
-    boundary_velocity (const Point<dim> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<dim> &p) const
     {
       Assert (dim == 2, ExcNotImplemented());
 

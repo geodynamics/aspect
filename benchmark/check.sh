@@ -32,6 +32,7 @@ run_all_prms ()
     $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
     rm -f $prm.tmp
     done
+    echo "... completed `pwd`"
     return 0;
 }
 
@@ -46,19 +47,25 @@ make_lib ()
 }
 
 
-echo "Checking benchmarks using $BUILD/aspect ..."
+echo "Checking benchmarks using $BUILD/aspect"
+echo "Please be patient..."
 
-(cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd burstedde; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-(cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd crameri_et_al/case_1 && make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-(cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd crameri_et_al/case_2 && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-(cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd davies_et_al; cd case-2.3-plugin; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-(cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd inclusion; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-(cd tangurnis; cd code; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } 
+( (cd solcx; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
 
-echo "all good! :-)"
+( (cd solkz; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+( (cd tangurnis; cd code; make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; } ) &
+
+wait
+
 exit 0

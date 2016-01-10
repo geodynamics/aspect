@@ -1,0 +1,89 @@
+#########################################################
+# This tests that the thermal conductivity and diffusivity
+# visualization postprocessors are working correctly.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2, 3
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)
+  end
+end
+
+
+# Compared to the passive material model, we here make
+# the density composition dependent by letting it depend
+# linearly on the value of the first compositional field.
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity                           = 1e-6
+    set Thermal expansion coefficient                  = 3e-5
+    set Reference specific heat                        = 1
+    set Viscosity                                      = 1
+    set Reference density                              = 1
+    set Reference temperature                          = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+# For a temperature between zero and one, 
+# density will vary between (1 - 3e-5) and 1.
+# The thermal conductivity is set to 1e-6 everywhere
+# and the thermal diffusivity (k/(rho c_p))
+# will thus vary from 1e-6 to 1.00003e-6
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = density, thermal conductivity, thermal diffusivity, specific heat
+  end
+end
+

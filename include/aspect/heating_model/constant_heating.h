@@ -40,15 +40,14 @@ namespace aspect
     {
       public:
         /**
-         * Return the specific heating rate. For the current class, this
+         * Return the heating terms. For the current class, this
          * function obviously simply returns a constant value.
          */
         virtual
-        double
-        specific_heating_rate (const double,
-                               const double,
-                               const std::vector<double> &,
-                               const Point<dim> &) const;
+        void
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**
          * @name Functions used in dealing with run-time parameters

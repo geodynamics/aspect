@@ -7,19 +7,21 @@
 # 7: Velocity iterations in Stokes preconditioner
 # 8: Schur complement iterations in Stokes preconditioner
 # 9: Time step size (seconds)
- 0 0.0000e+00 256 2467 1089 34 41   5 0.0000e+00 
- 1 8.8081e+00 256 2467 1089  0  0   0 8.8081e+00 
- 2 1.7616e+01 256 2467 1089  0  0   0 8.8081e+00 
- 3 2.6424e+01 256 2467 1089  0  0   0 8.8081e+00 
- 4 3.5233e+01 256 2467 1089  0  0   0 8.8081e+00 
- 5 4.4041e+01 256 2467 1089  0  0   0 8.8081e+00 
- 6 5.2849e+01 256 2467 1089  0  0   0 8.8081e+00 
- 7 6.1657e+01 256 2467 1089  0  0   0 8.8081e+00 
- 8 7.0465e+01 256 2467 1089  0  0   0 8.8081e+00 
- 9 7.9273e+01 256 2467 1089  0  0   0 8.8081e+00 
-10 8.8081e+01 256 2467 1089  0  0   0 8.8081e+00 
-11 9.6890e+01 238 2344 1035  0  0   0 8.8081e+00 
- 0 0.0000e+00   0    0    0 29 30 120 0.0000e+00 
-12 1.0000e+02 238 2344 1035  0  0   0 3.1104e+00 
- 0 0.0000e+00   0    0    0 27 28 112 0.0000e+00 
- 0 0.0000e+00   0    0    0  0  0   0 9.5402e+00 
+# 10: Number of advected particles
+# 11: Particle file name
+ 0 0.0000e+00 256 2467 1089 34 41   5 0.0000e+00  0                                                          "" 
+ 1 8.8081e+00 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00000 
+ 2 1.7616e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00001 
+ 3 2.6424e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00002 
+ 4 3.5233e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00003 
+ 5 4.4041e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00004 
+ 6 5.2849e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00005 
+ 7 6.1657e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00006 
+ 8 7.0465e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00007 
+ 9 7.9273e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00008 
+10 8.8081e+01 256 2467 1089  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00009 
+11 9.6890e+01 238 2344 1035  0  0   0 8.8081e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00010 
+ 0 0.0000e+00   0    0    0 29 30 120 0.0000e+00  0                                                          "" 
+12 1.0000e+02 238 2344 1035  0  0   0 3.1104e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00011 
+ 0 0.0000e+00   0    0    0 27 28 112 0.0000e+00  0                                                          "" 
+ 0 0.0000e+00   0    0    0  0  0   0 9.5402e+00 10 output-sol_cx_tracers/output-sol_cx_tracers/particles-00012 

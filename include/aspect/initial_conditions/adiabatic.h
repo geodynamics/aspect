@@ -103,7 +103,7 @@ namespace aspect
          * be used as a reference profile for calculating the thermal
          * diffusivity. The function depends only on depth.
          */
-        std::auto_ptr<Functions::ParsedFunction<1> > function;
+        std_cxx11::unique_ptr<Functions::ParsedFunction<1> > function;
     };
   }
 }

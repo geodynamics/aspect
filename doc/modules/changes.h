@@ -4,10 +4,62 @@
  * <p> This is the list of changes made after the release of Aspect version
  * 1.3. All entries are signed with the names of the author. </p>
  *
- *
  * <ol>
- * <li> New: Add depth postprocessor which visually outputs the 
- * depth for all points inside the domain, as determined by the 
+ * <li> Changed: The interfaces of the boundary composition and boundary
+ * temperature plugins have been deprecated. Their replacements not longer 
+ * contain references to the geometry model, which was a leftover from an
+ * earlier development stage. Users should derive their plugins from
+ * SimulatorAccess if they need access to the geometry model. The
+ * deprecated functions will be removed in a future ASPECT release.
+ * <br>
+ * (Rene Gassmoeller, 2016/01/04)
+ *
+  * <li> New: A new mesh refinement plugin was added that refines cells
+ * according to the density of particles in that cell.
+ * <br>
+ * (Rene Gassmoeller, 2015/12/19)
+ *
+ * <li> Changed: The boundary_velocity(const Point<dim> &position) const 
+ * function has now been deprecated in favor of the new function 
+ * boundary_velocity (const types::boundary_id boundary_indicator, 
+ * const Point<dim> &position) const. 
+ * <br>
+ * (Menno Fraters, 2015/12/16)
+ * 
+ * <li> New: Visualization postprocessors for thermal conductivity and 
+ * thermal diffusivity. 
+ * <br>
+ * (Anne Glerum, 2015/12/03)
+ *
+ * <li> New: The tracer architecture has been completely overhauled. It is now
+ * more flexible and allows for easier modification. Additionally tracers
+ * now carry properties with them, which allows for a variety of new use cases.
+ * A number of bugs related to curved cells in spherical models with tracers
+ * have been resolved.
+ * <br>
+ * (Rene Gassmöller, 2015/12/01)
+ *
+ * <li> Fixed: Whenever the base models used by either the "depth dependent"
+ * or "averaging" material models depended on anything that requires accessing
+ * the simulator, then this led to segmentation faults. This is now fixed.
+ * <br>
+ * (Wolfgang Bangerth, Shangxin Liu, 2015/11/24)
+ *
+ * <li> New: The tolerance of the preconditioners of the A and S block
+ * are now available as parameters in the prm file. There is now also
+ * a section added to the manual on how to use these parameters to
+ * make ASPECT in certain situation faster.
+ * <br>
+ * (Menno Fraters, 2015/11/08)
+ *
+ * <li> Changed: The DynamicTopography postprocessor and visualization
+ * plugins now use the more accurate Gaussian quadrature rule for evaluating
+ * cell averages of the surface stress.
+ * <br>
+ * (Ian Rose, 2015/11/04)
+ *
+ * <li> New: Add depth postprocessor which visually outputs the
+ * depth for all points inside the domain, as determined by the
  * geometry model.
  * <br>
  * (Menno Fraters, 2015/10/15)
@@ -74,26 +126,26 @@
  * <br>
  * (Ian Rose, 2015/08/24)
  *
- * <li> New: There is now a new initial condition in which the temperature field is perturbed 
- * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were 
+ * <li> New: There is now a new initial condition in which the temperature field is perturbed
+ * following the SAVANI shear wave velocity model by Auer et al., 2014. The data were
  * downloaded from http://n.ethz.ch/~auerl/research.html .
  * <br>
  * (Shangxin Liu, 2015/08/20)
- *   
+ *
  * <li> New: A box Geometry Model plugin with additional boundary indicators
- * for the upper part of the box and corresponding Boundary Temperature and 
- * Composition Model plugins. With this plugin, different boundary conditions 
+ * for the upper part of the box and corresponding Boundary Temperature and
+ * Composition Model plugins. With this plugin, different boundary conditions
  * can be prescribed on the upper and lower part of the vertical domain boundaries.
  * <br>
  * (Anne Glerum, 2015/08/14)
  *
- * <li> New: Plugin for visualizing the boundary indicators used by the 
+ * <li> New: Plugin for visualizing the boundary indicators used by the
  * Geometry Model.
  * <br>
  * (Anne Glerum, 2015/08/14)
  *
- * <li> New: There is a new visualization postprocessor which displays 
- * the heat flux in the vertical direction, where upwards heat flux 
+ * <li> New: There is a new visualization postprocessor which displays
+ * the heat flux in the vertical direction, where upwards heat flux
  * is positive.
  * <br>
  * (Ian Rose, 2015/08/12)
@@ -108,10 +160,10 @@
  * <br>
  * (Anne Glerum, 2015/08/03)
  *
- * <li> Fixed: Quasi-implicit stabilization of a free surface had used the 
- * reference density instead of the density as evaluated by the material 
- * model.  Now it uses the actual density of at the surface.  This should 
- * not change much unless the density at the surface is significantly 
+ * <li> Fixed: Quasi-implicit stabilization of a free surface had used the
+ * reference density instead of the density as evaluated by the material
+ * model.  Now it uses the actual density of at the surface.  This should
+ * not change much unless the density at the surface is significantly
  * different from the reference density.
  * <br>
  * (Ian Rose, 2015/07/22)
@@ -120,11 +172,11 @@
  * <br>
  * (Jonathan Perry-Houts, 2015/07/12)
  *
- * <li> New: For free surface computations there is an option to advect the 
- * mesh vertically (in the direction of gravity),  in addition to the old 
- * formulation which advects it in the direction normal to the surface.  
+ * <li> New: For free surface computations there is an option to advect the
+ * mesh vertically (in the direction of gravity),  in addition to the old
+ * formulation which advects it in the direction normal to the surface.
  * This can be enabled by setting "Surface velocity projection" to "vertical"
- * in the "Free surface" section of a parameter file. 
+ * in the "Free surface" section of a parameter file.
  * This scheme can maintain better mesh regularity properties for computations
  * where there is a large deformation, or large curvature.
  * <br>
@@ -135,13 +187,13 @@
  * <br>
  * (Ian Rose, 2015/06/16)
  *
- * <li> New: There are now parameter files and a section in the manual for 
- * reproducing the benchmarks for free surface computations from Crameri et 
+ * <li> New: There are now parameter files and a section in the manual for
+ * reproducing the benchmarks for free surface computations from Crameri et
  * al. (2012).
  * <br>
  * (Ian Rose, 2015/06/14)
  *
- * <li> New: One can now prescribe the traction on a boundary instead of 
+ * <li> New: One can now prescribe the traction on a boundary instead of
  * supplying velocity boundary conditions.
  * This is done in a similar way as for the prescribed velocity boundary conditions:
  * For a given boundary indicator, one can prescribe all or a selection of the
@@ -149,28 +201,28 @@
  * <br>
  * (Wolfgang Bangerth, Anne Glerum, 2015/05/29)
  *
- * <li> Changed: We now use the exact formulation with the 
- * compressible strain rate instead of an approximation 
+ * <li> Changed: We now use the exact formulation with the
+ * compressible strain rate instead of an approximation
  * using the right hand side of the mass conservation equation
  * to calculate the shear heating. This is more accurate in
  * compressible models.
  * <br>
  * (Juliane Dannberg, 2015/05/29)
- * 
+ *
  * <li> New: There is now a new geometry model called chunk, which
  * takes radius, longitude (and latitude) pairs and creates a regional
- * chunk of a spherical shell. Spherical boundary and initial conditions 
+ * chunk of a spherical shell. Spherical boundary and initial conditions
  * have been updated to accept this new model. The conversion conventions
  * between [longitude, latitude and radius], [phi, theta and radius] and
- * Cartesian [x, y, z] are consistent with mathematical convention and 
+ * Cartesian [x, y, z] are consistent with mathematical convention and
  * other models in dealii/ASPECT.
- * This model was based largely on work on deal.ii by D. Sarah Stamps, 
+ * This model was based largely on work on deal.ii by D. Sarah Stamps,
  * Wolfgang Bangerth, and in ASPECT by Menno Fraters.
  * <br>
  * (Bob Myhill, 2015/05/29)
  *
  * <li> New: Added the ability to prescribe internal velocities with an ascii
- * file. 
+ * file.
  * <br>
  * (Scott Tarlow, 2015/05/29)
  *
@@ -182,7 +234,7 @@
  * (Menno Fraters, 2015/05/28)
  *
  * <li> New: There are now postprocessors BoundaryDensities and
- * BoundaryPressures which calculate laterally averaged densities 
+ * BoundaryPressures which calculate laterally averaged densities
  * and pressures at the top and bottom of the domain.
  * <br>
  * (Ian Rose, 2015/05/28)
@@ -204,7 +256,7 @@
  *
  * <li> Changed: The heating models have a new straucture now:
  * Instead of the implementation in the assembly, there is a heating
- * plugin for each model now that can be used both in the assembly 
+ * plugin for each model now that can be used both in the assembly
  * and the postprocessors, and a new heating model manager that
  * combines the plugins by adding the individual heating terms.
  * <br>
@@ -220,12 +272,12 @@
  * <br>
  * (Jonathan Perry-Houts, 2015/05/26)
  *
- * <li> New: There is now a Material model called diffusion dislocation that 
+ * <li> New: There is now a Material model called diffusion dislocation that
  * implements diffusion and dislocation creep viscosity.
  * <br>
  * (Bob Myhill, 2015/05/26)
  *
- * <li> Changed: Modified S40RTS initial condition file to incorporate 
+ * <li> Changed: Modified S40RTS initial condition file to incorporate
  * the option to zero out heterogeneities within a given depth.
  * <br>
  * (Jacqueline Austermann, 2015/05/26)
@@ -234,7 +286,7 @@
  * will come handy to capture shear bands when combined with plasticity.
  * <br>
  * (Cedric Thieulot, 2015/05/26)
- * 
+ *
  * <li> New: There is now a Material model called Depth dependent that implements
  * depth-dependent viscosity through the modification of any other Material model.
  * <br>
@@ -246,7 +298,7 @@
  * (Timo Heister, 2015/05/23)
  *
  * <li> New: There are now a set of global constants defined for physical
- * properties and for radius and gravity parameters relevant to 
+ * properties and for radius and gravity parameters relevant to
  * Earth and Mars.
  * <br>
  * (Bob Myhill, 2015/05/22)
@@ -265,18 +317,18 @@
  * (Wolfgang Bangerth, 2015/05/21)
  *
  * <li> Changed: The free surface handler now detaches internal manifolds
- * for cases when the domain has them, since they are not necessarily a 
+ * for cases when the domain has them, since they are not necessarily a
  * good description of the geometry when there has been large mesh deformation.
  * <br>
  * (Ian Rose, 2015/05/21)
  *
- * <li> Changed: The documentation for nullspace removal is now more 
- * descriptive of what Aspect is actually doing. 
+ * <li> Changed: The documentation for nullspace removal is now more
+ * descriptive of what Aspect is actually doing.
  * <br>
  * (Ian Rose, 2015/05/21)
  *
  * <li> New: There is now a mesh refinement criterion called Slope, intended
- * for use with a free surface, which refines where the topography has a 
+ * for use with a free surface, which refines where the topography has a
  * large slope.
  * <br>
  * (Ian Rose, 2015/05/21)
@@ -287,10 +339,10 @@
  * <br>
  * (Juliane Dannberg, 2015/05/20)
  *
- * <li> New: There is now an (3D) ellipsoidal chunk geometry model where two 
- * of the axis have the same length. The ellipsoidal chunk can be non-coordinate 
- * parallel part of the ellipsoid. 
- * This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang 
+ * <li> New: There is now an (3D) ellipsoidal chunk geometry model where two
+ * of the axis have the same length. The ellipsoidal chunk can be non-coordinate
+ * parallel part of the ellipsoid.
+ * This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang
  * Bangerth
  * <br>
  * (Menno Fraters, 2015/08/28)

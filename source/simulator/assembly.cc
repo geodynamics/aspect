@@ -1505,6 +1505,8 @@ namespace aspect
                                              0)
                                           - (pressure_scaling *
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
+                                          // finally the term -div(u). note the negative sign to make this
+                                          // operator adjoint to the grad(p) term
                                           - (pressure_scaling *
                                              scratch.phi_p[i] * scratch.div_phi_u[j])
                                           + (parameters.include_melt_transport
@@ -1535,14 +1537,20 @@ namespace aspect
           data.local_rhs(i) += (
                                  ((bulk_density * gravity + force_u) * scratch.phi_u[i])
                                  + (pressure_scaling * force_p * scratch.phi_p[i])
-                                 + (is_compressible
-                                    ?
-                                    (pressure_scaling *
+                                 +
+                                 // add the term that results from the compressibility. compared
+                                 // to the manual, this term seems to have the wrong sign, but this
+                                 // is because we negate the entire equation to make sure we get
+                                 // -div(u) as the adjoint operator of grad(p) (see above where
+                                 // we assemble the matrix)
+                                 (is_compressible
+                                  ?
+                                  (pressure_scaling *
                                      compressibility * density_s *
-                                     (scratch.velocity_values[q] * gravity) *
-                                     scratch.phi_p[i])
-                                    :
-                                    0)
+                                   (scratch.velocity_values[q] * gravity) *
+                                   scratch.phi_p[i])
+                                  :
+                                  0)
                                  + (parameters.include_melt_transport
                                     ?
                                     + pressure_scaling *

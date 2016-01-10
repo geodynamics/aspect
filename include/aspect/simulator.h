@@ -318,6 +318,20 @@ namespace aspect
       void set_initial_temperature_and_compositional_fields ();
 
       /**
+       * A function that is responsible for initializing the
+       * tracers and their properties before the first time step. We want this
+       * to happen before the first timestep in case other properties depend
+       * on them, but it can only happen after the other initial conditions
+       * have been set up, because tracer properties likely depend on the
+       * initial conditions. If the tracer postprocessor has not been selected
+       * this function simply does nothing.
+       *
+       * This function is implemented in
+       * <code>source/simulator/initial_conditions.cc</code>.
+       */
+      void initialize_tracers ();
+
+      /**
        * A function that initializes the pressure variable before the first
        * time step. It does so by either interpolating (for continuous
        * pressure finite elements) or projecting (for discontinuous elements)
@@ -1094,16 +1108,16 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::auto_ptr<GeometryModel::Interface<dim> >            geometry_model;
-      const IntermediaryConstructorAction                            post_geometry_model_creation_action;
-      const std::auto_ptr<MaterialModel::Interface<dim> >            material_model;
-      const std::auto_ptr<GravityModel::Interface<dim> >             gravity_model;
-      const std::auto_ptr<BoundaryTemperature::Interface<dim> >      boundary_temperature;
-      const std::auto_ptr<BoundaryComposition::Interface<dim> >      boundary_composition;
-      const std::auto_ptr<InitialConditions::Interface<dim> >        initial_conditions;
-      const std::auto_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
-      const std::auto_ptr<CompositionalInitialConditions::Interface<dim> > compositional_initial_conditions;
-      const std::auto_ptr<AdiabaticConditions::Interface<dim> >      adiabatic_conditions;
+      const std_cxx11::unique_ptr<GeometryModel::Interface<dim> >             geometry_model;
+      const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
+      const std_cxx11::unique_ptr<MaterialModel::Interface<dim> >             material_model;
+      const std_cxx11::unique_ptr<GravityModel::Interface<dim> >              gravity_model;
+      const std_cxx11::unique_ptr<BoundaryTemperature::Interface<dim> >       boundary_temperature;
+      const std_cxx11::unique_ptr<BoundaryComposition::Interface<dim> >       boundary_composition;
+      const std_cxx11::unique_ptr<InitialConditions::Interface<dim> >         initial_conditions;
+      const std_cxx11::unique_ptr<PrescribedStokesSolution::Interface<dim> >  prescribed_stokes_solution;
+      const std_cxx11::unique_ptr<CompositionalInitialConditions::Interface<dim> >                     compositional_initial_conditions;
+      const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > traction_boundary_conditions;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;

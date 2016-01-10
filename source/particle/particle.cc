@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -25,160 +25,138 @@ namespace aspect
   namespace Particle
   {
     template <int dim>
-    inline
-    BaseParticle<dim>::BaseParticle (const Point<dim> &new_loc,
-                                     const double &new_id)
+    Particle<dim>::Particle (const Point<dim> &new_loc,
+                             const types::particle_index &new_id)
       :
       location (new_loc),
       id (new_id),
-      is_local (true),
-      check_vel (true)
+      properties ()
     {
     }
 
     template <int dim>
-    inline
-    BaseParticle<dim>::BaseParticle ()
+    Particle<dim>::Particle ()
       :
       location (),
-      velocity (),
       id (0),
-      is_local (true),
-      check_vel (true)
+      properties()
     {
     }
 
 
     template <int dim>
-    inline
-    BaseParticle<dim>::~BaseParticle ()
+    Particle<dim>::Particle (const void *&data,
+                             const unsigned int data_size)
+    {
+      // The data_size includes the space for position and id, so the number
+      // of properties is the total size minus the space for position and id
+      // divided by the size of one double (currently we only allow doubles as
+      // tracer properties).
+      const unsigned int property_size = data_size - dim * sizeof(double) - sizeof(types::particle_index);
+      properties.resize(property_size / sizeof(double));
+
+      const types::particle_index *id_data = static_cast<const types::particle_index *> (data);
+      id = *id_data++;
+      const double *pdata = reinterpret_cast<const double *> (id_data);
+
+      for (unsigned int i = 0; i < dim; ++i)
+        location(i) = *pdata++;
+
+      for (unsigned int i = 0; i < properties.size(); ++i)
+        properties [i] = *pdata++;
+
+      data = static_cast<const void *> (pdata);
+    }
+
+
+    template <int dim>
+    Particle<dim>::~Particle ()
     {
     }
 
 
     template <int dim>
     void
-    BaseParticle<dim>::set_location (const Point<dim> &new_loc)
+    Particle<dim>::set_location (const Point<dim> &new_loc)
     {
       location = new_loc;
     }
 
+    template <int dim>
+    void
+    Particle<dim>::set_n_property_components (const unsigned int n_components)
+    {
+      properties.resize(n_components);
+    }
 
     template <int dim>
     void
-    BaseParticle<dim>::write_data (std::vector<double> &data) const
+    Particle<dim>::write_data (void *&data) const
     {
+      types::particle_index *id_data  = static_cast<types::particle_index *> (data);
+      *id_data = id;
+      ++id_data;
+      double *pdata = reinterpret_cast<double *> (id_data);
+
       // Write location data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          data.push_back(location(i));
-        }
-      // Write velocity data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          data.push_back(velocity(i));
-        }
-      data.push_back(id);
-    }
+      for (unsigned int i = 0; i < dim; ++i,++pdata)
+        *pdata =location(i);
 
-    template <int dim>
-    unsigned int BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
-    {
-      unsigned int p = pos;
-      // Read location data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          location (i) = data[p++];
-        }
-      // Write velocity data
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          velocity (i) = data[p++];
-        }
-      id = data[p++];
-      return p;
-    }
+      // Write property data
+      for (unsigned int i = 0; i < properties.size(); ++i,++pdata)
+        *pdata = properties[i];
 
-    template <int dim>
-    unsigned int
-    BaseParticle<dim>::data_len ()
-    {
-      return (dim + dim + 1);
+      data = static_cast<void *> (pdata);
     }
 
 
     template <int dim>
-    Point<dim>
-    BaseParticle<dim>::get_location () const
+    const Point<dim> &
+    Particle<dim>::get_location () const
     {
       return location;
     }
 
     template <int dim>
-    void
-    BaseParticle<dim>::set_velocity (Point<dim> new_vel)
-    {
-      velocity = new_vel;
-    }
-
-    template <int dim>
-    Point<dim>
-    BaseParticle<dim>::get_velocity () const
-    {
-      return velocity;
-    }
-
-    template <int dim>
-    double
-    BaseParticle<dim>::get_id () const
+    types::particle_index
+    Particle<dim>::get_id () const
     {
       return id;
     }
 
     template <int dim>
-    bool
-    BaseParticle<dim>::local () const
-    {
-      return is_local;
-    }
-
-    template <int dim>
     void
-    BaseParticle<dim>::set_local (bool new_local)
+    Particle<dim>::set_properties (const std::vector<double> &new_properties)
     {
-      is_local = new_local;
+      properties = new_properties;
     }
 
     template <int dim>
-    bool
-    BaseParticle<dim>::vel_check () const
+    const std::vector<double> &
+    Particle<dim>::get_properties () const
     {
-      return check_vel;
+      return properties;
     }
 
     template <int dim>
-    void
-    BaseParticle<dim>::set_vel_check (bool new_vel_check)
+    std::vector<double> &
+    Particle<dim>::get_properties ()
     {
-      check_vel = new_vel_check;
+      return properties;
     }
-
-    template <int dim>
-    void
-    BaseParticle<dim>::add_mpi_types (std::vector<MPIDataInfo> &data_info)
-    {
-      // Add the position, velocity, ID
-      data_info.push_back (
-        MPIDataInfo ("pos", dim));
-      data_info.push_back (
-        MPIDataInfo ("velocity", dim));
-      data_info.push_back (MPIDataInfo ("id", 1));
-    }
-
-
-
-    // explicit instantiation
-    template class BaseParticle<2>;
-    template class BaseParticle<3>;
   }
 }
+
+
+// explicit instantiation of the functions we implement in this file
+namespace aspect
+{
+  namespace Particle
+  {
+#define INSTANTIATE(dim) \
+  template class Particle<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+  }
+}
+
