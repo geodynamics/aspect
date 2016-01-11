@@ -112,7 +112,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 5 
+  set Initial global refinement          = 4 
   set Time steps between mesh refinement = 0
 
 end

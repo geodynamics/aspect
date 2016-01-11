@@ -144,10 +144,10 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
 
-  set Initial adaptive refinement              = 2                    # default: 2
-  set Initial global refinement                = 4                    # default: 2
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 3                    # default: 2
   set Strategy                                 = composition threshold, minimum refinement function #, nonadiabatic temperature
-  set Time steps between mesh refinement       = 5
+  set Time steps between mesh refinement       = 0
 
   subsection Minimum refinement function
     set Coordinate system   = depth
