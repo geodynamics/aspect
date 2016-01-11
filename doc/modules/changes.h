@@ -5,6 +5,18 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: There is now a parameter called 'Additional tangential
+ * mesh velocity boundary indicators' that allows to specify boundaries
+ * which elements are allowed to deform tangential to the boundary.
+ * This can be useful in models with free surface and a prescribed
+ * material in-/outflow at the sides. Previously in this case the
+ * uppermost element became distorted over time, now the whole
+ * boundary mesh adjusts according to the deformation. This change
+ * also fixes the handling of traction boundary conditions in models
+ * with free surface.
+ * <br>
+ * (Anne Glerum, Rene Gassmoeller, Ian Rose, 2016/01/11)
+ *
  * <li> Changed: The interfaces of the boundary composition and boundary
  * temperature plugins have been deprecated. Their replacements not longer 
  * contain references to the geometry model, which was a leftover from an
@@ -14,7 +26,7 @@
  * <br>
  * (Rene Gassmoeller, 2016/01/04)
  *
-  * <li> New: A new mesh refinement plugin was added that refines cells
+ * <li> New: A new mesh refinement plugin was added that refines cells
  * according to the density of particles in that cell.
  * <br>
  * (Rene Gassmoeller, 2015/12/19)

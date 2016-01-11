@@ -88,15 +88,13 @@ namespace aspect
                          "allows to generate mesh movements along other boundaries that are "
                          "open, or have prescribed material velocities or tractions."
                          "\n\n"
-                         "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "The names of the boundaries listed here can either be "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
                          "to compare this with the documentation of the geometry model you "
-                         "use in your model. Names that occur in the <Model settings/Tangential "
-                         "velocity boundary indicators> list are not allowed to appear here "
-                         "again.");
+                         "use in your model.");
     }
     prm.leave_subsection ();
   }
@@ -116,11 +114,13 @@ namespace aspect
       else
         AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
 
+
+      // Create the list of tangential mesh movement boundary indicators
       try
         {
           const std::vector<types::boundary_id> x_additional_tangential_mesh_boundary_indicators
             = sim.geometry_model->translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                      (prm.get ("Additional tangential mesh velocity boundary indicators")));
+                                                                           (prm.get ("Additional tangential mesh velocity boundary indicators")));
 
           tangential_mesh_boundary_indicators = sim.parameters.tangential_velocity_boundary_indicators;
           tangential_mesh_boundary_indicators.insert(x_additional_tangential_mesh_boundary_indicators.begin(),
@@ -129,9 +129,7 @@ namespace aspect
       catch (const std::string &error)
         {
           AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Additional tangential "
-                                          "mesh velocity boundary indicators>, there was an error. Maybe you "
-                                          "specified one of the <Model settings/Tangential velocity boundary indicators> "
-                                          "again, which is unncecessary? Specifically, "
+                                          "mesh velocity boundary indicators>, there was an error. Specifically, "
                                           "the conversion function complained as follows: "
                                           + error));
         }
