@@ -5,6 +5,15 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: The 'depth' function of the 'box' geometry model and
+ * the 'two merged boxes' geometry model previously threw an exception
+ * when asked for the depth of a point outside of the initial model domain.
+ * This is not longer appropriate for models with free surfaces and therefore
+ * the behaviour was changed to the behaviour of the 'spherical shell' geometry
+ * model, which is a cutoff of the depth to the range (0,maximal_depth).
+ * <br>
+ * (Rene Gassmoeller, Sascha Brune, 2016/01/11)
+ *
  * <li> New: There is now a parameter called 'Additional tangential
  * mesh velocity boundary indicators' that allows to specify boundaries
  * which elements are allowed to deform tangential to the boundary.
