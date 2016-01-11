@@ -139,6 +139,13 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
+    prm.declare_entry ("Use SUPG", "false",
+                       Patterns::Bool (),
+                       "If set to false, the artificial viscosity of a cell is computed and used "
+                       "like normal using the Entropy Viscosity method. If set to true, this "
+                       "value of artificial viscosity is set to zero on each cell and SUPG is "
+                       "used instead for stabilization.");
+
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),
                        "Mantle convection simulations are often focused on convection "
@@ -715,6 +722,7 @@ namespace aspect
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
 
+    use_supg = prm.get_bool ("Use SUPG");
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;

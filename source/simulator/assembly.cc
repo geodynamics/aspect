@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
@@ -219,6 +220,7 @@ namespace aspect
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<Tensor<2,dim> > hessian_phi_field;
 
           std::vector<Tensor<1,dim> > old_velocity_values;
           std::vector<Tensor<1,dim> > old_old_velocity_values;
@@ -282,6 +284,7 @@ namespace aspect
 
           phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<double>()),
           grad_phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
+          hessian_phi_field (advection_element.dofs_per_cell, Utilities::signaling_nan<Tensor<2,dim> >()),
           old_velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           old_old_velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           old_pressure (quadrature.size(), Utilities::signaling_nan<double>()),
@@ -329,6 +332,7 @@ namespace aspect
 
           phi_field (scratch.phi_field),
           grad_phi_field (scratch.grad_phi_field),
+          hessian_phi_field (scratch.hessian_phi_field),
           old_velocity_values (scratch.old_velocity_values),
           old_old_velocity_values (scratch.old_old_velocity_values),
           old_pressure (scratch.old_pressure),
@@ -797,6 +801,7 @@ namespace aspect
         const unsigned int advection_dofs_per_cell = scratch.phi_field.size();
         (void)advection_dofs_per_cell;
         Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
+        Assert (scratch.hessian_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
@@ -1466,6 +1471,7 @@ namespace aspect
     const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
     Assert (advection_dofs_per_cell < scratch.finite_element_values.get_fe().dofs_per_cell, ExcInternalError());
+    Assert (scratch.hessian_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
     Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
     Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
@@ -1595,15 +1601,110 @@ namespace aspect
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
-    const double nu
-      = compute_viscosity (scratch,
-                           global_max_velocity,
-                           global_field_range.second - global_field_range.first,
-                           0.5 * (global_field_range.second + global_field_range.first),
-                           global_entropy_variation,
-                           cell->diameter(),
-                           advection_field);
-    Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+    double nu = 0.0;
+    double tau = 0.0;
+    double term= 0.0;
+    if (parameters.use_supg == false)
+      {
+        nu = compute_viscosity (scratch,
+                                global_max_velocity,
+                                global_field_range.second - global_field_range.first,
+                                0.5 * (global_field_range.second + global_field_range.first),
+                                global_entropy_variation,
+                                cell->diameter(),
+                                advection_field);
+
+        Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
+      }
+    else
+      {
+    	// RG: remove me
+    	//nu = 1e-3;
+
+        // Compute norm of advection field
+        double norm_of_advection_field = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          norm_of_advection_field =
+            ((advection_field.is_temperature())
+             ?
+             std::max(scratch.current_velocity_values[q].norm()*
+                      (scratch.material_model_outputs.densities[q] *
+                       scratch.material_model_outputs.specific_heat[q] +
+                       heating_model_outputs.lhs_latent_heat_terms[q]),
+                      norm_of_advection_field)
+             :
+             std::max(scratch.current_velocity_values[q].norm(),norm_of_advection_field));
+
+        // things needed for the calculating of tau for SUPG loop
+        double max_conductivity_on_cell = 0.0;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            max_conductivity_on_cell =
+              ((advection_field.is_temperature())
+               ?
+               std::max(scratch.material_model_outputs.thermal_conductivities[q],max_conductivity_on_cell)
+               :
+               0.0);
+          }
+
+        double fe_order
+          = (advection_field.is_temperature()
+             ?
+             parameters.temperature_degree
+             :
+             parameters.composition_degree
+            );
+
+        // Compute tau for SUPG
+        if (parameters.use_supg == true)
+          {
+            double h = cell->diameter();
+            //nu = .1*h*h*norm_of_advection_field; //RG: temp
+            if (norm_of_advection_field>1e-8)
+            {
+              if (max_conductivity_on_cell>1e-8)
+                tau = 1*(h/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                                                  1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell)));
+              else
+              {
+                tau = 1*(h/fe_order)/(2*norm_of_advection_field);
+                //nu = h*h*norm_of_advection_field; //SOV
+              }
+            }
+            else
+            {
+            	std::cout << "Cell " << cell->index() << " has advection field below 1e-8" << std::endl;
+            	norm_of_advection_field=1e-8; // can do as max (old,10-8)
+                if (max_conductivity_on_cell>1e-8)
+                {
+                	        term = std::max((1/tanh(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))-
+                                    1/(norm_of_advection_field*(h/fe_order)/(2*max_conductivity_on_cell))),term);
+                            tau = 1*(h/fe_order)/(2*norm_of_advection_field)*term;
+                }
+                          else
+                          {
+                            tau = 1*(h/fe_order)/(2*norm_of_advection_field);
+                            //nu = h*h*norm_of_advection_field; //SOV
+                          }
+            }
+          }
+        if (tau < 0) // RG: delete me eventually
+        {
+        	std::cout << "tau = " << tau <<std::endl;
+        	std::cout << "tau long = " << 1*(cell->diameter()/fe_order)/(2*norm_of_advection_field)*(1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)))<<std::endl;
+        	std::cout << "norm_of_advection_field = " << norm_of_advection_field <<std::endl;
+        	std::cout << "h = " << cell->diameter() <<std::endl;
+        	std::cout << "fe_order = " << fe_order <<std::endl;
+        	std::cout << "max_conductivity_on_cell = " << max_conductivity_on_cell <<std::endl;
+        	std::cout << "first term = " << 1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+        	std::cout << "second term = " << 1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell)) <<std::endl;
+        	std::cout << "first and second term = " << (1/tanh(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))-
+                    1/(norm_of_advection_field*(cell->diameter()/fe_order)/(2*max_conductivity_on_cell))) <<std::endl;
+        }
+
+        Assert (tau >= 0, ExcMessage ("tau (for SUPG) needs to be a nonnegative constant."));
+      }
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
@@ -1613,6 +1714,7 @@ namespace aspect
         // Note that we later only look at the values that we do set here.
         for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
           {
+            scratch.hessian_phi_field[k] = scratch.finite_element_values[solution_field].hessian (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
             scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
           }
@@ -1680,6 +1782,14 @@ namespace aspect
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 
+        double fe_order
+          = (advection_field.is_temperature()
+             ?
+             parameters.temperature_degree
+             :
+             parameters.composition_degree
+            );
+
         // do the actual assembly. note that we only need to loop over the advection
         // shape functions because these are the only contributions we compute here
         for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
@@ -1689,8 +1799,22 @@ namespace aspect
                 + time_step *
                 scratch.phi_field[i]
                 * gamma
-                + scratch.phi_field[i]
-                * reaction_term)
+                + reaction_term
+                * scratch.phi_field[i]
+                +
+                tau *
+                (
+                  (current_u * (density_c_P + latent_heat_LHS)) *
+                  scratch.grad_phi_field[i] *
+                  (
+                    field_term_for_rhs
+                    +
+                    time_step * gamma
+                    +
+                    reaction_term
+                  )
+                )
+               )
                *
                scratch.finite_element_values.JxW(q);
 
@@ -1703,6 +1827,22 @@ namespace aspect
                      + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                      (density_c_P + latent_heat_LHS)
+                     +
+                     tau *
+                     (
+                       (current_u * (density_c_P + latent_heat_LHS)) *
+                       scratch.grad_phi_field[i] *
+                       (
+                         -time_step * conductivity * trace(scratch.hessian_phi_field[j])
+                         +
+                         (
+                           (time_step * current_u * scratch.grad_phi_field[j])
+                           +
+                           (factor * scratch.phi_field[j])
+                         ) *
+                         (density_c_P + latent_heat_LHS)
+                       )
+                     )
                    )
                    * scratch.finite_element_values.JxW(q);
               }
@@ -1736,6 +1876,9 @@ namespace aspect
     const unsigned int block_idx = advection_field.block_index(introspection);
     system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
+
+    //Vector<float> tau_per_cell;
+    //tau_per_cell.reinit(dof_handler.n_dofs());
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
