@@ -199,10 +199,10 @@ namespace aspect
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep_number() > 1)
+                  if (c == peridotite_idx && this->get_timestep_number() > 1 && (in.strain_rate.size()))
                     out.reaction_terms[i][c] = melting_rate
                                                - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
-                  else if (c == porosity_idx && this->get_timestep_number() > 1)
+                  else if (c == porosity_idx && this->get_timestep_number() > 1 && (in.strain_rate.size()))
                     out.reaction_terms[i][c] = melting_rate
                                                * out.densities[i]  / this->get_timestep();
                   else
