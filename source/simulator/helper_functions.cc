@@ -716,8 +716,8 @@ namespace aspect
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                 introspection.block_indices.fluid_pressure
-                                                 : introspection.block_indices.pressure);
+                                                 introspection.component_indices.fluid_pressure
+                                                 : introspection.component_indices.pressure);
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
         cell = dof_handler.begin_active(),
