@@ -247,6 +247,20 @@ namespace aspect
 
 
     /**
+     * A base class for additional output fields to be added to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function. The format of the
+     * additional quantities defined in derived classes should be the
+     * same as for MaterialModel::MaterialModelOutputs.
+     */
+    template<int dim>
+    class AdditionalMaterialOutputs
+    {
+      public:
+        virtual ~AdditionalMaterialOutputs()
+        {}
+    };
+    /**
      * A data structure with the output field of the
      * MaterialModel::Interface::evaluate() function. The vectors are the
      * values at the different positions given by
@@ -365,6 +379,23 @@ namespace aspect
        * in order to compute the reaction increment.
        */
       std::vector<std::vector<double> > reaction_terms;
+
+      /**
+       * Vector of shared pointers to additional material model output
+       * objects that can then be added to MaterialModelOutputs. By default,
+       * no outputs are added.
+       */
+      std::vector<std_cxx11::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
+
+      /**
+       * Given an additional material model output class as explicitly specified
+       * template argument, returns a pointer to this additional material model
+       * output object if it used in the current simulation.
+       * The output can then be filled in the MaterialModels::Interface::evaluate()
+       * function. If the output does not exist, a null pointer is returned.
+       */
+      template <class AdditionalOutputType>
+      AdditionalOutputType *get_additional_output();
     };
 
 
@@ -975,6 +1006,19 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm);
 
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output()
+    {
+      for (unsigned int i=0; i<additional_outputs.size(); ++i)
+        {
+          AdditionalOutputType *result = dynamic_cast<AdditionalOutputType *> (additional_outputs[i].get());
+          if (result)
+            return result;
+        }
+      return NULL;
+    }
 
 
     /**
