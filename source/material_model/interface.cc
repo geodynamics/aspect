@@ -727,6 +727,8 @@ namespace aspect
   \
   template struct MaterialModelOutputs<dim>; \
   \
+  template class AdditionalMaterialOutputs<dim>; \
+  \
   namespace MaterialAveraging \
   { \
     template                \
