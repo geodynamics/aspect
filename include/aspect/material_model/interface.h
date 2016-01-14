@@ -258,7 +258,7 @@ namespace aspect
     {
       public:
         virtual ~AdditionalMaterialOutputs()
-          {}
+        {}
     };
     /**
      * A data structure with the output field of the
@@ -397,22 +397,14 @@ namespace aspect
       std::vector<std_cxx11::shared_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
 
       /**
-       * Given an additional material model output class, returns a pointer to this
-       * additional material model output object if it used in the current simulation.
-       * The output can then be filled in the evaluate() function. If the output does
-       * not exist, a null pointer is returned.
+       * Given an additional material model output class as explicitly specified
+       * template argument, returns a pointer to this additional material model
+       * output object if it used in the current simulation.
+       * The output can then be filled in the MaterialModels::Interface::evaluate()
+       * function. If the output does not exist, a null pointer is returned.
        */
-      template <class T>
-      T* get_additional_output()
-      {
-          for (unsigned int i=0;i<additional_outputs.size();++i)
-            {
-              T* result = dynamic_cast<T*> (additional_outputs[i].get());
-              if (result)
-                return result;
-            }
-          return NULL;
-      }
+      template <class AdditionalOutputType>
+      AdditionalOutputType *get_additional_output();
     };
 
 
@@ -1042,6 +1034,19 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm);
 
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output()
+    {
+      for (unsigned int i=0; i<additional_outputs.size(); ++i)
+        {
+          AdditionalOutputType *result = dynamic_cast<AdditionalOutputType *> (additional_outputs[i].get());
+          if (result)
+            return result;
+        }
+      return NULL;
+    }
 
 
     /**

@@ -620,6 +620,7 @@ namespace aspect
       void
       local_assemble_advection_system (const AdvectionField &advection_field,
                                        const std::pair<double,double> global_field_range,
+                                       const Vector<double>           &viscosity_per_cell,
                                        const double                   global_max_velocity,
                                        const double                   global_entropy_variation,
                                        const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -700,7 +701,8 @@ namespace aspect
        * @param advection_field Determines whether this variable should select
        * the temperature field or a compositional field.
        */
-      void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+      template <typename T>
+      void get_artificial_viscosity (Vector<T> &viscosity_per_cell,
                                      const AdvectionField &advection_field) const;
 
       /**
@@ -1437,6 +1439,18 @@ namespace aspect
            * or the direction of the local vertical.
            */
           typename SurfaceAdvection::Direction advection_direction;
+
+
+          /**
+           * A set of boundary indicators that denote those boundaries that are
+           * allowed to move their mesh tangential to the boundary. All
+           * boundaries that have tangential material velocity boundary
+           * conditions are in this set by default, but it can be extended by
+           * open boundaries, boundaries with traction boundary conditions, or
+           * boundaries with prescribed material velocities if requested in
+           * the parameter file.
+           */
+          std::set<types::boundary_id> tangential_mesh_boundary_indicators;
 
 
           friend class Simulator<dim>;
