@@ -611,6 +611,7 @@ namespace aspect
       void
       local_assemble_advection_system (const AdvectionField &advection_field,
                                        const std::pair<double,double> global_field_range,
+                                       const Vector<double>           &viscosity_per_cell,
                                        const double                   global_max_velocity,
                                        const double                   global_entropy_variation,
                                        const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -661,7 +662,8 @@ namespace aspect
        * @param advection_field Determines whether this variable should select
        * the temperature field or a compositional field.
        */
-      void get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+      template <typename T>
+      void get_artificial_viscosity (Vector<T> &viscosity_per_cell,
                                      const AdvectionField &advection_field) const;
 
       /**
