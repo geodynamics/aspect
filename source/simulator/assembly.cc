@@ -249,8 +249,6 @@ namespace aspect
           std::vector<Tensor<1,dim> > mesh_velocity_values;
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
-          std::vector<double>         current_pressure_values;
-          std::vector<Tensor<1,dim> > current_pressure_gradients;
           std::vector<std::vector<double> > current_composition_values;
 
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
@@ -304,8 +302,6 @@ namespace aspect
           current_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           mesh_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           current_strain_rates(quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
-          current_pressure_values(quadrature.size(), Utilities::signaling_nan<double>()),
-          current_pressure_gradients(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -349,8 +345,6 @@ namespace aspect
           current_velocity_values(scratch.current_velocity_values),
           mesh_velocity_values(scratch.mesh_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
-          current_pressure_values(scratch.current_pressure_values),
-          current_pressure_gradients(scratch.current_pressure_gradients),
           current_composition_values(scratch.current_composition_values),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
@@ -1520,8 +1514,6 @@ namespace aspect
         scratch.old_pressure_gradients);
     scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
         scratch.old_old_pressure_gradients);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
-        scratch.current_pressure_gradients);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
         scratch.old_velocity_values);
