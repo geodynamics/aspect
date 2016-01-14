@@ -995,7 +995,7 @@ namespace aspect
       // (1) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
       const double c_analytical = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      const double c_numerical = c_analytical + delta / this->get_time();
+      const double c_numerical = c_analytical + (this->get_time() > 0 ? delta / this->get_time() : 0.0);
       const double error_c = std::abs (c_numerical / c_analytical - 1);
 
       // (3) preservation of shape of melt fraction
