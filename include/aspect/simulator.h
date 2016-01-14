@@ -610,10 +610,7 @@ namespace aspect
        */
       void
       local_assemble_advection_system (const AdvectionField &advection_field,
-                                       const std::pair<double,double> global_field_range,
                                        const Vector<double>           &viscosity_per_cell,
-                                       const double                   global_max_velocity,
-                                       const double                   global_entropy_variation,
                                        const typename DoFHandler<dim>::active_cell_iterator &cell,
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
