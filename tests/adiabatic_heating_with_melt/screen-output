@@ -1,22 +1,15 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
-Number of active cells: 1,280 (on 4 levels)
-Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,449)
+Number of active cells: 320 (on 3 levels)
+Number of degrees of freedom: 9,270 (2,898+810+2,898+405+1,449+405+405)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+16 iterations.
+   Solving Stokes system... 30+14 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 24.9863, 4.43067e-09, 0, 1.46594e+13
+      Nonlinear residuals: 49.118, 8.38837e-09, 0, 2.05822e+13
       Total relative nonlinear residual: 1
 
 
@@ -24,10 +17,10 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
+   Solving Stokes system... 2 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 24.9863, 4.43067e-09, 0, 4.86505
-      Total relative nonlinear residual: 3.31872e-13
+      Nonlinear residuals: 49.118, 8.38837e-09, 0, 9.32666
+      Total relative nonlinear residual: 4.53142e-13
 
 
 
@@ -35,15 +28,15 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  0 W/kg, 0 W
 
-*** Timestep 1:  t=5.73562e+12 seconds
+*** Timestep 1:  t=1.14712e+13 seconds
    Solving temperature system... 8 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 18 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 9.91777e+10, 6.95795e-09, 0, 2448.38
-      Total relative nonlinear residual: 7.22768e-07
+      Nonlinear residuals: 5.57493e+11, 1.41644e-08, 0, 13748.3
+      Total relative nonlinear residual: 2.0391e-06
 
 
 
@@ -51,31 +44,15 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
-*** Timestep 2:  t=1.14712e+13 seconds
-   Solving temperature system... 12 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving peridotite system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
-   Solving for u_f in 1 iterations.
-      Nonlinear residuals: 1.64308e+11, 1.69501e-08, 0, 2452.2
-      Total relative nonlinear residual: 7.9977e-07
-
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
-
-*** Timestep 3:  t=1.72069e+13 seconds
-   Solving temperature system... 11 iterations.
+*** Timestep 2:  t=2.29425e+13 seconds
+   Solving temperature system... 13 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 5.07442e+10, 9.91395e-09, 0, 3087.88
-      Total relative nonlinear residual: 2.46998e-07
+      Nonlinear residuals: 9.06786e+11, 2.26122e-08, 0, 11860.1
+      Total relative nonlinear residual: 2.21934e-06
 
 
 
@@ -83,31 +60,15 @@ Number of degrees of freedom: 34,530 (10,914+2,898+10,914+1,449+5,457+1,449+1,44
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
-*** Timestep 4:  t=2.29425e+13 seconds
-   Solving temperature system... 11 iterations.
+*** Timestep 3:  t=2.5e+13 seconds
+   Solving temperature system... 6 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 17 iterations.
    Solving for u_f in 1 iterations.
-      Nonlinear residuals: 4.16468e+10, 8.93445e-09, 0, 1728.85
-      Total relative nonlinear residual: 2.02716e-07
-
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1723 K, 1755 K, 1788 K
-     Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
-
-*** Timestep 5:  t=2.5e+13 seconds
-   Solving temperature system... 7 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving peridotite system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19 iterations.
-   Solving for u_f in 1 iterations.
-      Nonlinear residuals: 3.55895e+09, 9.72887e-09, 0, 568.074
-      Total relative nonlinear residual: 2.05773e-08
+      Nonlinear residuals: 1.50175e+10, 1.57174e-08, 0, 2403.85
+      Total relative nonlinear residual: 4.7975e-08
 
 
 
@@ -119,21 +80,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      45.1s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         7 |       5.7s |        13% |
-| Assemble composition system     |        14 |      16.2s |        36% |
-| Assemble temperature system     |         7 |       9.4s |        21% |
-| Build Stokes preconditioner     |         7 |      2.55s |       5.7% |
-| Build composition preconditioner|        14 |    0.0163s |     0.036% |
-| Build temperature preconditioner|         7 |    0.0451s |       0.1% |
-| Solve Stokes system             |         7 |      6.45s |        14% |
-| Solve composition system        |        14 |    0.0128s |     0.028% |
-| Solve temperature system        |         7 |    0.0249s |     0.055% |
-| Initialization                  |         2 |    0.0588s |      0.13% |
-| Postprocessing                  |         6 |      4.53s |        10% |
-| Setup dof systems               |         1 |    0.0911s |       0.2% |
 +---------------------------------+-----------+------------+------------+
 
