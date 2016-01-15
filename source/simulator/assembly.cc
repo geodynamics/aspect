@@ -934,8 +934,8 @@ namespace aspect
           {
             if (cell->is_locally_owned())
               for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-                {
-                  if (cell->at_boundary(face_no) == false)
+                if (cell->at_boundary(face_no) == false)
+                  {
                     if (cell->neighbor(face_no)->active())
                       viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
                                                                         viscosity_per_cell_temp[cell->neighbor(face_no)->user_index()]);
@@ -944,8 +944,7 @@ namespace aspect
                         if (cell->neighbor(face_no)->child(l)->active())
                           viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
                                                                             viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->user_index()]);
-
-                }
+                  }
           }
       }
 
@@ -1496,10 +1495,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
-                                   const std::pair<double,double> global_field_range,
                                    const Vector<double>           &viscosity_per_cell,
-                                   const double                   global_max_velocity,
-                                   const double                   global_entropy_variation,
                                    const typename DoFHandler<dim>::active_cell_iterator &cell,
                                    internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                    internal::Assembly::CopyData::AdvectionSystem<dim> &data)
@@ -1775,9 +1771,6 @@ namespace aspect
     system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
-    const std::pair<double,double>
-    global_field_range = get_extrapolated_advection_field_range (advection_field);
-
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
@@ -1795,15 +1788,7 @@ namespace aspect
                           local_assemble_advection_system,
                           this,
                           advection_field,
-                          global_field_range,
                           std_cxx11::cref(viscosity_per_cell),
-                          get_maximal_velocity(old_solution),
-                          // use the mid-value of the advected field instead of the
-                          // integral mean. results are not very
-                          // sensitive to this and this is far simpler
-                          get_entropy_variation ((global_field_range.first +
-                                                  global_field_range.second) / 2,
-                                                 advection_field),
                           std_cxx11::_1,
                           std_cxx11::_2,
                           std_cxx11::_3),
@@ -1879,10 +1864,7 @@ namespace aspect
                                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
-                                                                  const std::pair<double,double> global_field_range, \
                                                                   const Vector<double>           &viscosity_per_cell, \
-                                                                  const double                   global_max_velocity, \
-                                                                  const double                   global_entropy_variation, \
                                                                   const DoFHandler<dim>::active_cell_iterator &cell, \
                                                                   internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
