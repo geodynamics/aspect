@@ -537,6 +537,10 @@ namespace aspect
                                                   &&
                                                   (open_velocity_boundary_indicators.size() == 0));
 
+    // now that all member variables have been set up, also
+    // connect the functions that will actually do the assembly
+    set_assemblers();
+
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
