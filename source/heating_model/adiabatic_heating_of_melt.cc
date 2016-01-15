@@ -65,14 +65,6 @@ namespace aspect
         }
 
       // compute melt density, which is needed for the simplified adiabatic heating
-      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs melt_outputs(material_model_inputs.position.size(),
-                                                                                    this->n_compositional_fields());
-      if (simplified_adiabatic_heating)
-        {
-          const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-          AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-          melt_mat->evaluate_with_melt(material_model_inputs, melt_outputs);
-        }
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -84,17 +76,22 @@ namespace aspect
                                                             * material_model_outputs.thermal_expansion_coefficients[q]
                                                             * material_model_inputs.temperature[q];
           else
-            heating_model_outputs.heating_source_terms[q] = (-porosity * material_model_inputs.velocity[q]
-                                                             * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
-                                                            * material_model_outputs.thermal_expansion_coefficients[q]
-                                                            * material_model_inputs.temperature[q]
-                                                            * material_model_outputs.densities[q]
-                                                            +
-                                                            ((porosity * melt_velocity[q])
-                                                             * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
-                                                            * melt_outputs.thermal_expansion_coefficients[q]
-                                                            * material_model_inputs.temperature[q]
-                                                            * melt_outputs.fluid_densities[q];
+            {
+              const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for adiabatic heating with melt."));
+
+              heating_model_outputs.heating_source_terms[q] = (-porosity * material_model_inputs.velocity[q]
+                                                               * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
+                                                              * material_model_outputs.thermal_expansion_coefficients[q]
+                                                              * material_model_inputs.temperature[q]
+                                                              * material_model_outputs.densities[q]
+                                                              +
+                                                              ((porosity * melt_velocity[q])
+                                                               * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
+                                                              * material_model_outputs.thermal_expansion_coefficients[q]
+                                                              * material_model_inputs.temperature[q]
+                                                              * melt_outputs->fluid_densities[q];
+            }
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }

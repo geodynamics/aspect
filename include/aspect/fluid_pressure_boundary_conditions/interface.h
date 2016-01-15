@@ -23,7 +23,7 @@
 #define __aspect__fluid_pressure_boundary_conditions_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 
 namespace aspect
 {
@@ -74,8 +74,8 @@ namespace aspect
          */
         virtual
         void fluid_pressure_gradient (
-          const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-          const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+          const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+          const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
           std::vector<Tensor<1,dim> > &output
         ) const = 0;
 

@@ -979,8 +979,8 @@ namespace aspect
         std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
         std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
+        MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), parameters.n_compositional_fields);
+        MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), parameters.n_compositional_fields);
 
         typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                        endc = dof_handler.end();
@@ -1004,8 +1004,11 @@ namespace aspect
                                                    true, // TODO: use rebuild_stokes_matrix here?
                                                    in);
 
-              typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
-              melt_mat->evaluate_with_melt(in, out);
+              out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
+              material_model->evaluate(in, out);
+
+              MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -1020,9 +1023,9 @@ namespace aspect
                     // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
                     if (phi > parameters.melt_transport_threshold)
                       {
-                        const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                        const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                         const Tensor<1,dim>  gravity = this->gravity_model->gravity_vector(in.position[q]);
-                        cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - out.fluid_densities[q]*gravity) / phi)
+                        cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
                                           * fe_values[introspection.extractors.fluid_velocities].value(i,q)
                                           * fe_values.JxW(q);
                       }
@@ -1067,8 +1070,8 @@ namespace aspect
 
         const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.fluid_velocities).get_unit_support_points());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(quadrature.size(), parameters.n_compositional_fields);
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(quadrature.size(), parameters.n_compositional_fields);
+        MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), parameters.n_compositional_fields);
+        MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), parameters.n_compositional_fields);
 
         std::vector<double> porosity_values(quadrature.size());
         std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
@@ -1099,8 +1102,11 @@ namespace aspect
                                                    true, // TODO: use rebuild_stokes_matrix here?
                                                    in);
 
-              typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<MaterialModel::MeltInterface<dim>*> (&*material_model);
-              melt_mat->evaluate_with_melt(in, out);
+              out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
+              material_model->evaluate(in, out);
+
+              MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
 
               for (unsigned int j=0; j < finite_element.dofs_per_cell; ++j)
                 {
@@ -1122,10 +1128,10 @@ namespace aspect
                   // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
                   if (phi > parameters.melt_transport_threshold)
                     {
-                      const double K_D = out.permeabilities[q] / out.fluid_viscosities[q];
+                      const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                       const double gravity_d = this->gravity_model->gravity_vector(in.position[q])[d];
                       // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
-                      value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - out.fluid_densities[q] * gravity_d) / phi;
+                      value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - melt_outputs->fluid_densities[q] * gravity_d) / phi;
                     }
 
                   distributed_vector(local_dof_indices[j]) = value;

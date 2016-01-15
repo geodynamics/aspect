@@ -21,7 +21,7 @@
 
 #include <aspect/postprocess/visualization/melt.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 
 #include <deal.II/numerics/data_out.h>
 
@@ -59,10 +59,8 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                           this->n_compositional_fields());
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                             this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
@@ -76,12 +74,15 @@ namespace aspect
           }
 
         in.cell = NULL; // we do not know the cell index
-        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-        melt_mat->evaluate_with_melt(in, out);
+
+        out.create_additional_material_outputs(n_quadrature_points, this->n_compositional_fields());
+
+        this->get_material_model().evaluate(in, out);
+        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt density."));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.fluid_densities[q];
+          computed_quantities[q](0) = melt_outputs->fluid_densities[q];
       }
 
       template <int dim>
@@ -110,10 +111,8 @@ namespace aspect
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
         Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                           this->n_compositional_fields());
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                             this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -131,12 +130,15 @@ namespace aspect
           }
 
         in.cell = NULL; // we do not know the cell index
-        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-        melt_mat->evaluate_with_melt(in, out);
+
+        out.create_additional_material_outputs(n_quadrature_points, this->n_compositional_fields());
+
+        this->get_material_model().evaluate(in, out);
+        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the compaction viscosity."));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.compaction_viscosities[q];
+          computed_quantities[q](0) = melt_outputs->compaction_viscosities[q];
       }
 
       template <int dim>
@@ -164,10 +166,8 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                           this->n_compositional_fields());
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                             this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity
@@ -181,12 +181,15 @@ namespace aspect
           }
 
         in.cell = NULL; // we do not know the cell index
-        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-        melt_mat->evaluate_with_melt(in, out);
+
+        out.create_additional_material_outputs(n_quadrature_points, this->n_compositional_fields());
+
+        this->get_material_model().evaluate(in, out);
+        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the permeabilities."));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.permeabilities[q];
+          computed_quantities[q](0) = melt_outputs->permeabilities[q];
       }
 
       template <int dim>
@@ -215,10 +218,8 @@ namespace aspect
         Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
         Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
 
-        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs in(n_quadrature_points,
-                                                                           this->n_compositional_fields());
-        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs out(n_quadrature_points,
-                                                                             this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         in.position = evaluation_points;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -236,12 +237,15 @@ namespace aspect
           }
 
         in.cell = NULL; // we do not know the cell index
-        const typename MaterialModel::MeltInterface<dim> *melt_mat = dynamic_cast<const MaterialModel::MeltInterface<dim>*> (&this->get_material_model());
-        AssertThrow(melt_mat != NULL, ExcMessage("Need MeltMaterial if include_melt_transport is on."));
-        melt_mat->evaluate_with_melt(in, out);
+
+        out.create_additional_material_outputs(n_quadrature_points, this->n_compositional_fields());
+
+        this->get_material_model().evaluate(in, out);
+        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt viscosity."));
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = out.fluid_viscosities[q];
+          computed_quantities[q](0) = melt_outputs->fluid_viscosities[q];
       }
 
     }

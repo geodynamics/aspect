@@ -1,4 +1,4 @@
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
@@ -16,7 +16,7 @@ namespace aspect
 {
   template <int dim>
   class MeltMaterial:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
@@ -80,21 +80,21 @@ namespace aspect
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               out.reaction_terms[i][c] = 0.0;
           }
-      }
 
-      virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-      {
-        evaluate(in, out);
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        // fill melt outputs if they exist
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+
+        if(melt_out != NULL)
           {
-            out.compaction_viscosities[i] = 1.0;
-            out.fluid_viscosities[i]= 2.0;
-            out.permeabilities[i]= 1.0 + std::pow(in.position[i][1],2);
-            out.fluid_densities[i]= 2.0;
-            out.fluid_compressibilities[i] = 0.0;
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                melt_out->compaction_viscosities[i] = 1.0;
+                melt_out->fluid_viscosities[i]= 2.0;
+                melt_out->permeabilities[i]= 1.0 + std::pow(in.position[i][1],2);
+                melt_out->fluid_densities[i]= 2.0;
+                melt_out->fluid_compressibilities[i] = 0.0;
+              }
           }
-
       }
 
   };
@@ -107,8 +107,8 @@ namespace aspect
     public:
       virtual
       void fluid_pressure_gradient (
-        const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-        const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+        const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
         std::vector<Tensor<1,dim> > &output
       ) const
       {

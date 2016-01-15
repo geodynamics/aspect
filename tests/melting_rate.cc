@@ -1,4 +1,4 @@
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
@@ -17,7 +17,7 @@ namespace aspect
 {
   template <int dim>
   class MeltingRate:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
       virtual bool
       viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
@@ -104,24 +104,24 @@ namespace aspect
             out.thermal_conductivities[i] = 4.7;
             out.compressibilities[i] = 0.0;
           }
-      }
 
-      virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-      {
-        evaluate(in, out);
-        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        // fill melt outputs if they exist
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+
+        if(melt_out != NULL)
           {
-            const double porosity = in.composition[i][porosity_idx];
+            const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                const double porosity = in.composition[i][porosity_idx];
 
-            out.compaction_viscosities[i] = 5e20;
-            out.fluid_viscosities[i]= 10.0;
-            out.permeabilities[i]= 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2);
-            out.fluid_densities[i]= 2500.0;
-            out.fluid_compressibilities[i] = 0.0;
+                melt_out->compaction_viscosities[i] = 5e20;
+                melt_out->fluid_viscosities[i]= 10.0;
+                melt_out->permeabilities[i]= 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+                melt_out->fluid_densities[i]= 2500.0;
+                melt_out->fluid_compressibilities[i] = 0.0;
+              }
           }
-
       }
 
   };

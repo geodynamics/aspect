@@ -1,4 +1,4 @@
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
@@ -87,7 +87,7 @@ namespace aspect
 
   template <int dim>
   class TestMeltMaterial:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
       virtual bool
@@ -162,35 +162,31 @@ namespace aspect
             reactionterm = (0.8544665250e4 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) - 0.4950000000e1 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) + 0.3245696667e4 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) - 0.4687000001e3 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) + 0.160e3 * exp(-0.120e3 * x * x - 0.400e3 * x * z - 0.420e3 * z * z + z + 0.1e1) * x * x + 0.3992000000e3 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) * z + 0.1600000000e1 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) * x - 0.1399880000e4 * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) * x + 0.8826800400e5 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) * x + 0.1765360080e6 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) * z - 0.7840998000e5 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) * x * x + 0.4943188800e6 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) * z * z - 0.1925014410e6 * exp(-0.400e2 * pow(x + 0.2e1 * z, 0.2e1)) * z + 0.3698838000e5 * exp(-0.600e2 * pow(x + 0.2e1 * z, 0.2e1)) * x + 0.7397676000e5 * exp(-0.600e2 * pow(x + 0.2e1 * z, 0.2e1)) * z - 0.16e2 * exp(-0.1200e3 * pow(x + 0.2e1 * z, 0.2e1)) * x - 0.32e2 * exp(-0.1200e3 * pow(x + 0.2e1 * z, 0.2e1)) * z - 0.6688400000e4 * exp(-0.800e2 * pow(x + 0.2e1 * z, 0.2e1)) * x - 0.1337680000e5 * exp(-0.800e2 * pow(x + 0.2e1 * z, 0.2e1)) * z + 0.556e3 * exp(-0.1000e3 * pow(x + 0.2e1 * z, 0.2e1)) * x + 0.1112e4 * exp(-0.1000e3 * pow(x + 0.2e1 * z, 0.2e1)) * z - 0.9625072050e5 * exp(-0.400e2 * pow(x + 0.2e1 * z, 0.2e1)) * x + 0.8e1 * exp(-0.120e3 * x * x - 0.400e3 * x * z - 0.420e3 * z * z + z + 0.1e1) * x - 0.5763380040e5 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) * z + 0.1971823986e7 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) * z * z - 0.1950349995e5 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) * x + 0.7723580040e6 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) * x * x - 0.552024e6 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) * z * z - 0.138006e6 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) * x * x + 0.39792e5 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) * z * z + 0.9860004000e4 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) * x + 0.3318598800e5 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) * z + 0.8e1 * exp(-0.100e3 * x * x - 0.400e3 * x * z - 0.400e3 * z * z + z) * x + 0.16e2 * exp(-0.100e3 * x * x - 0.400e3 * x * z - 0.400e3 * z * z + z) * z + 0.1599287976e7 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) * x * z - 0.3447976000e5 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) * z + 0.1068266666e4 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) * x - 0.320e3 * exp(-0.120e3 * x * x - 0.400e3 * x * z - 0.420e3 * z * z + z + 0.1e1) * z * z + 0.4008e4 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) * x * x + 0.1930895010e5 * z * z * exp(-0.20e2 * x * x - 0.20e2 * z * z + z + 0.1e1) + 0.1930895010e5 * x * x * exp(-0.20e2 * x * x - 0.20e2 * z * z + z + 0.1e1) - 0.9654475050e3 * z * exp(-0.20e2 * x * x - 0.20e2 * z * z + z + 0.1e1) + 0.9751995000e4 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) * x * x + 0.3900798000e5 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) * z * z + 0.3881097000e6 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) * x * x + 0.1552438800e7 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) * z * z + 0.1552438800e7 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) * x * z + 0.3900798000e5 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) * x * z - 0.9097753500e4 * exp(-0.40e2 * x * x - 0.160e3 * x * z - 0.160e3 * z * z + z) - 0.640e3 * exp(-0.120e3 * x * x - 0.400e3 * x * z - 0.420e3 * z * z + z + 0.1e1) * x * z + 0.4200000000e1 * exp(-0.120e3 * x * x - 0.400e3 * x * z - 0.420e3 * z * z + z + 0.1e1) - 0.9533794112e3 * exp(-0.20e2 * x * x - 0.20e2 * z * z + z + 0.1e1) - 0.1036095000e4 * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) + 0.2253333334e2 * exp(-0.100e3 * x * x - 0.400e3 * x * z - 0.400e3 * z * z + z) + 0.1123231354e5 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) - 0.1863776536e5 * exp(-0.40e2 * x * x - 0.80e2 * x * z - 0.100e3 * z * z + z + 0.1e1) - 0.3960040000e5 * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) * x * x - 0.3696256000e6 * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) * z * z + 0.7636384800e6 * exp(-0.60e2 * x * x - 0.160e3 * x * z - 0.180e3 * z * z + z + 0.1e1) * x * z - 0.4400336000e6 * x * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) * z + 0.47840e5 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) * x * z + 0.47840e5 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) * z * z + 0.11960e5 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) * x * x - 0.6320160000e4 * exp(-0.80e2 * x * x - 0.240e3 * x * z - 0.260e3 * z * z + z + 0.1e1) * z + 0.9509415350e5 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1)) * x + 0.1901883070e6 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1)) * z - 0.1191523129e5 * exp(z) - 0.552024e6 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) * x * z + 0.47712e5 * exp(-0.100e3 * x * x - 0.320e3 * x * z - 0.340e3 * z * z + z + 0.1e1) * x * z - 0.1723988000e5 * exp(-0.60e2 * x * x - 0.240e3 * x * z - 0.240e3 * z * z + z) * x - 0.1488766999e6 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) * x - 0.2977534000e6 * exp(-0.20e2 * x * x - 0.80e2 * x * z - 0.80e2 * z * z + z) * z + 0.2136533332e4 * exp(-0.80e2 * x * x - 0.320e3 * x * z - 0.320e3 * z * z + z) * z) * pow(-0.4950000000e1 + exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1)), -0.3e1) * pow(-0.9950000000e1 + exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1)), -0.2e1);
 
             out.reaction_terms[i][porosity_idx] = reactionterm;
-
-
-
           }
-      }
 
-      virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-      {
-        double c = 1.0;
-        evaluate(in, out);
-        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        // fill melt outputs if they exist
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        if(melt_out != NULL)
           {
-            double porosity = in.composition[i][porosity_idx];
+            double c = 1.0;
+            const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-            const double x = in.position[i](0);
-            const double z = in.position[i](1);
-            //porosity = 0.1000000000e-1 + 0.1000000000e0 * exp(-0.40e1 * pow(x + 0.20e1 * z, 0.2e1));
-            //porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));
-            out.compaction_viscosities[i] = 0.1e0 + 0.1e0 * exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1);
-// xi
-            out.fluid_viscosities[i] = 1.0;
-            out.permeabilities[i] = porosity;// K_D
-            out.fluid_compressibilities[i] = 0.0;
-            out.fluid_densities[i] = 0.5;
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                double porosity = in.composition[i][porosity_idx];
+
+                const double x = in.position[i](0);
+                const double z = in.position[i](1);
+                //porosity = 0.1000000000e-1 + 0.1000000000e0 * exp(-0.40e1 * pow(x + 0.20e1 * z, 0.2e1));
+                //porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));
+                melt_out->compaction_viscosities[i] = 0.1e0 + 0.1e0 * exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1);
+                melt_out->fluid_viscosities[i] = 1.0;
+                melt_out->permeabilities[i] = porosity;// K_D
+                melt_out->fluid_compressibilities[i] = 0.0;
+                melt_out->fluid_densities[i] = 0.5;
+              }
           }
-
       }
 
   };
@@ -353,8 +349,8 @@ namespace aspect
     public:
       virtual
       void fluid_pressure_gradient (
-        const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-        const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+        const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
         std::vector<Tensor<1,dim> > &output
       ) const
       {

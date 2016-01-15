@@ -34,16 +34,17 @@ namespace aspect
     void
     Density<dim>::
     fluid_pressure_gradient (
-      const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-      const typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+      const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+      const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
       std::vector<Tensor<1,dim> > &output
     ) const
     {
+      const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
       for (unsigned int q=0; q<output.size(); ++q)
         {
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);
           output[q] = (((include_rho_s) ? material_model_outputs.densities[q] : 0.0)
-                       + ((include_rho_f) ? material_model_outputs.fluid_densities[q] : 0.0))
+                       + ((include_rho_f) ? melt_outputs->fluid_densities[q] : 0.0))
                       * gravity;
         }
     }

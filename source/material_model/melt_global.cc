@@ -239,53 +239,52 @@ namespace aspect
             }
           out.viscosities[i] *= visc_temperature_dependence;
         }
-    }
 
-    template <int dim>
-    void
-    MeltGlobal<dim>::
-    evaluate_with_melt(const typename MeltInterface<dim>::MaterialModelInputs &in, typename MeltInterface<dim>::MaterialModelOutputs &out) const
-    {
-      evaluate(in, out);
-      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+      // fill melt outputs if they exist
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      if(melt_out != NULL)
         {
-          double porosity = std::max(in.composition[i][porosity_idx],0.0);
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          out.fluid_viscosities[i] = eta_f;
-          out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
-          out.fluid_compressibilities[i] = 0.0;
-
-          // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
-          double temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
-            temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                      * thermal_expansivity;
-          else
-            temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
-          out.fluid_densities[i] = reference_rho_f * temperature_dependence
-                                   * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
-
-          /*
-                    const double phi_0 = 0.05;
-                    porosity = std::max(std::min(porosity,0.995),1e-4);
-                    out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
-          */
-          out.compaction_viscosities[i] = xi_0 * exp(- alpha_phi * porosity);
-
-          double visc_temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+          for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+              double porosity = std::max(in.composition[i][porosity_idx],0.0);
+
+              melt_out->fluid_viscosities[i] = eta_f;
+              melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+              melt_out->fluid_compressibilities[i] = 0.0;
+
+              // temperature dependence of density is 1 - alpha * (T - T(adiabatic))
+              double temperature_dependence = 1.0;
+              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                          * thermal_expansivity;
+              else
+                temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
+              melt_out->fluid_densities[i] = reference_rho_f * temperature_dependence
+                                       * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
+
+              /*
+                        const double phi_0 = 0.05;
+                        porosity = std::max(std::min(porosity,0.995),1e-4);
+                        out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+              */
+              melt_out->compaction_viscosities[i] = xi_0 * exp(- alpha_phi * porosity);
+
+              double visc_temperature_dependence = 1.0;
+              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+                {
+                  const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
+                  visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+                }
+              else
+                {
+                  const double delta_temp = in.temperature[i]-reference_T;
+                  visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+                }
+              melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
             }
-          else
-            {
-              const double delta_temp = in.temperature[i]-reference_T;
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
-            }
-          out.compaction_viscosities[i] *= visc_temperature_dependence;
         }
     }
 

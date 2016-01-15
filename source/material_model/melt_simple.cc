@@ -317,10 +317,10 @@ namespace aspect
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
-                  if (c == peridotite_idx && this->get_timestep_number() > 0)
+                  if (c == peridotite_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
                     out.reaction_terms[i][c] = melting_rate
                                                - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
-                  else if (c == porosity_idx && this->get_timestep_number() > 0)
+                  else if (c == porosity_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
                     out.reaction_terms[i][c] = melting_rate
                                                * out.densities[i] / this->get_timestep();
                   else
@@ -358,60 +358,58 @@ namespace aspect
             }
           out.viscosities[i] *= visc_temperature_dependence;
         }
-    }
 
-    template <int dim>
-    void
-    MeltSimple<dim>::
-    evaluate_with_melt(const typename MeltInterface<dim>::MaterialModelInputs &in, typename MeltInterface<dim>::MaterialModelOutputs &out) const
-    {
-      evaluate(in, out);
-      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+      // fill melt outputs if they exist
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      if(melt_out != NULL)
         {
-          double porosity = std::max(in.composition[i][porosity_idx],0.0);
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          out.fluid_viscosities[i] = eta_f;
-          out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
-
-          // first, calculate temperature dependence of density
-          double temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating ())
+          for (unsigned int i=0; i<in.position.size(); ++i)
             {
-              // temperature dependence is 1 - alpha * (T - T(adiabatic))
-              if (this->get_adiabatic_conditions().is_initialized())
-                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                          * thermal_expansivity;
-            }
-          else
-            temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
+              double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
-          // the fluid compressibility includes two parts, a constant compressibility, and a pressure-dependent one
-          // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
-          out.fluid_compressibilities[i] = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
-          out.fluid_densities[i] = reference_rho_f * std::exp(out.fluid_compressibilities[i] * (in.pressure[i] - this->get_surface_pressure()))
-                                   * temperature_dependence;
+              melt_out->fluid_viscosities[i] = eta_f;
+              melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
 
-          const double phi_0 = 0.05;
-          porosity = std::max(std::min(porosity,0.995),1e-4);
-          out.compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+              // first, calculate temperature dependence of density
+              double temperature_dependence = 1.0;
+              if (this->include_adiabatic_heating ())
+                {
+                  // temperature dependence is 1 - alpha * (T - T(adiabatic))
+                  if (this->get_adiabatic_conditions().is_initialized())
+                    temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                              * thermal_expansivity;
+                }
+              else
+                temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
 
-          double visc_temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
-            {
-              const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+              // the fluid compressibility includes two parts, a constant compressibility, and a pressure-dependent one
+              // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
+              melt_out->fluid_compressibilities[i] = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
+              melt_out->fluid_densities[i] = reference_rho_f * std::exp(melt_out->fluid_compressibilities[i] * (in.pressure[i] - this->get_surface_pressure()))
+                                       * temperature_dependence;
+
+              const double phi_0 = 0.05;
+              porosity = std::max(std::min(porosity,0.995),1e-4);
+              melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
+
+              double visc_temperature_dependence = 1.0;
+              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+                {
+                  const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
+                  visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+                }
+              else
+                {
+                  const double delta_temp = in.temperature[i]-reference_T;
+                  visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+                }
+              melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
             }
-          else
-            {
-              const double delta_temp = in.temperature[i]-reference_T;
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
-            }
-          out.compaction_viscosities[i] *= visc_temperature_dependence;
         }
     }
-
 
 
     template <int dim>

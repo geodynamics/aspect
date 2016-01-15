@@ -260,6 +260,30 @@ namespace aspect
         virtual ~AdditionalMaterialOutputs()
         {}
     };
+
+    // TODO: move down again when we moved implementation of additional outputs into .cc file
+    template <int dim>
+    class MeltOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+      MeltOutputs (const unsigned int n_points,
+                   const unsigned int n_comp)
+      {
+        compaction_viscosities.resize(n_points);
+        fluid_viscosities.resize(n_points);
+        permeabilities.resize(n_points);
+        fluid_densities.resize(n_points);
+        fluid_compressibilities.resize(n_points);
+      }
+
+      std::vector<double> compaction_viscosities;
+      std::vector<double> fluid_viscosities;
+      std::vector<double> permeabilities;
+      std::vector<double> fluid_densities;
+      std::vector<double> fluid_compressibilities;
+    };
+
+
     /**
      * A data structure with the output field of the
      * MaterialModel::Interface::evaluate() function. The vectors are the
@@ -411,8 +435,21 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
-    };
 
+      /**
+       * Creates all additional material model output objects that are
+       * needed for a simulation, and attaches a pointer to them to the
+       * corresponding vector in the MaterialModel::MaterialModelOutputs
+       * structure.
+       */
+      void create_additional_material_outputs(const unsigned int n_points,
+                                              const unsigned int n_comp)
+      {
+        //if (parameters.include_melt)
+        additional_outputs.push_back(std::make_shared<MeltOutputs<dim> > (n_points, n_comp));
+        //TODO: signal: attach additional material output
+      }
+    };
 
     template <int dim>
     struct MeltMaterialModelOutputs: public MaterialModelOutputs<dim>
@@ -1053,7 +1090,6 @@ namespace aspect
         }
       return NULL;
     }
-
 
 
     template <int dim>

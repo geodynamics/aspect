@@ -651,8 +651,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                        typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &material_model_inputs,
-                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &material_model_outputs,
+                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                        MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                                         const unsigned int q_point) const;
 
       /**

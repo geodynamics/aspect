@@ -22,7 +22,7 @@
 #ifndef __aspect__model_melt_global_h
 #define __aspect__model_melt_global_h
 
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 
@@ -44,7 +44,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltGlobal : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    class MeltGlobal : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
         friend class ::aspect::Postprocess::MeltStatistics<dim>;
       public:
@@ -110,9 +110,6 @@ namespace aspect
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
-
-        virtual void evaluate_with_melt(const typename MeltInterface<dim>::MaterialModelInputs &in,
-                                        typename MeltInterface<dim>::MaterialModelOutputs &out) const;
 
         /**
          * @name Functions used in dealing with run-time parameters

@@ -1,4 +1,4 @@
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/material_model/interface.h>
 #include <deal.II/base/parameter_handler.h>
 
 /**
@@ -12,7 +12,7 @@ namespace aspect
 
   template <int dim>
   class SimpleWithMelt:
-    public MaterialModel::MeltInterface<dim>
+    public MaterialModel::Interface<dim>
   {
     public:
       virtual bool
@@ -99,23 +99,23 @@ namespace aspect
             for (unsigned int c=0; c<in.composition[i].size(); ++c)
               out.reaction_terms[i][c] = 0.0;
           }
-      }
 
-      virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                      typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-      {
-        evaluate(in, out);
+        // fill melt outputs if they exist
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-        for (unsigned int i=0; i<in.position.size(); ++i)
+        if(melt_out != NULL)
           {
-            double porosity = in.composition[i][0];
-            out.compaction_viscosities[i] = 1.0;
-            out.fluid_viscosities[i] = 1.0;
-            out.permeabilities[i] = 0.0; //1e-30*porosity * porosity;
-            out.fluid_compressibilities[i] = 0.0;
-            out.fluid_densities[i] = 1.0;
-          }
 
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                double porosity = in.composition[i][0];
+                melt_out->compaction_viscosities[i] = 1.0;
+                melt_out->fluid_viscosities[i] = 1.0;
+                melt_out->permeabilities[i] = 0.0; //1e-30*porosity * porosity;
+                melt_out->fluid_compressibilities[i] = 0.0;
+                melt_out->fluid_densities[i] = 1.0;
+              }
+          }
       }
 
     private:

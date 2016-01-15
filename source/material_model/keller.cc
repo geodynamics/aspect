@@ -125,27 +125,26 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
-    }
 
-    template <int dim>
-    void
-    Keller<dim>::
-    evaluate_with_melt(const typename MeltInterface<dim>::MaterialModelInputs &in, typename MeltInterface<dim>::MaterialModelOutputs &out) const
-    {
-      evaluate(in, out);
-      const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+      // fill melt outputs if they exist
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      if(melt_out != NULL)
         {
-          double porosity = in.composition[i][porosity_idx];
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          out.fluid_viscosities[i] = eta_f;
-          out.permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
-          out.fluid_densities[i] = reference_rho_f;
-          out.fluid_compressibilities[i] = 0.0;
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+              double porosity = in.composition[i][porosity_idx];
 
-          porosity = std::max(std::min(porosity,0.9999),1e-4);
-          out.compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
+              melt_out->fluid_viscosities[i] = eta_f;
+              melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+              melt_out->fluid_densities[i] = reference_rho_f;
+              melt_out->fluid_compressibilities[i] = 0.0;
+
+              porosity = std::max(std::min(porosity,0.9999),1e-4);
+              melt_out->compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
+            }
         }
     }
 
