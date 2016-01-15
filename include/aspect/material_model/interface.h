@@ -396,6 +396,12 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       AdditionalOutputType *get_additional_output();
+
+      /**
+       * Constant version of get_additional_output() returning a const pointer.
+       */
+      template <class AdditionalOutputType>
+      const AdditionalOutputType *get_additional_output() const;
     };
 
 
@@ -1014,6 +1020,21 @@ namespace aspect
       for (unsigned int i=0; i<additional_outputs.size(); ++i)
         {
           AdditionalOutputType *result = dynamic_cast<AdditionalOutputType *> (additional_outputs[i].get());
+          if (result)
+            return result;
+        }
+      return NULL;
+    }
+
+
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    const AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output() const
+    {
+      for (unsigned int i=0; i<additional_outputs.size(); ++i)
+        {
+          const AdditionalOutputType *result = dynamic_cast<const AdditionalOutputType *> (additional_outputs[i].get());
           if (result)
             return result;
         }
