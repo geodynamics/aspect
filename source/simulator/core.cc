@@ -146,6 +146,7 @@ namespace aspect
     timestep_number (0),
 
     triangulation (mpi_communicator,
+//                   Triangulation<dim>::none,
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
                     Triangulation<dim>::smoothing_on_coarsening),
@@ -447,6 +448,17 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
+    if (parameters.include_melt_transport)
+      {
+        fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
+
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+          sim->initialize_simulator (*this);
+
+        fluid_pressure_boundary_conditions->parse_parameters (prm);
+        fluid_pressure_boundary_conditions->initialize ();
+      }
+
 
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
@@ -531,11 +543,14 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
-    // we need to do the rhs compatibility modification, if the model is
-    // compressible, and there is no open boundary to balance the pressure
-    do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
-                                                  &&
-                                                  (open_velocity_boundary_indicators.size() == 0));
+    // We need to do the rhs compatibility modification, if the model is
+    // compressible or compactible (in the case of melt transport), and
+    // there is no open boundary to balance the pressure.
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
+                                                  ||
+                                                  (parameters.include_melt_transport && !material_model->is_compressible()))
+                                                 &&
+                                                 (open_velocity_boundary_indicators.size() == 0);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -788,8 +803,6 @@ namespace aspect
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          Assert(introspection.component_masks.velocities[0]==true,
-                 ExcInternalError()); // in case we ever move the velocity around
           const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
@@ -799,15 +812,16 @@ namespace aspect
                   switch (*direction)
                     {
                       case 'x':
-                        mask[0] = true;
+                        mask[introspection.component_indices.velocities[0]] = true;
                         break;
                       case 'y':
-                        mask[1] = true;
+                        mask[introspection.component_indices.velocities[1]] = true;
                         break;
                       case 'z':
                         // we must be in 3d, or 'z' should never have gotten through
                         Assert (dim==3, ExcInternalError());
-                        mask[2] = true;
+                        if (dim==3)
+                          mask[introspection.component_indices.velocities[2]] = true;
                         break;
                       default:
                         Assert (false, ExcInternalError());
@@ -819,9 +833,6 @@ namespace aspect
               // no mask given -- take all velocities
               for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i]=introspection.component_masks.velocities[i];
-
-              Assert(introspection.component_masks.velocities[0]==true,
-                     ExcInternalError()); // in case we ever move the velocity down
             }
 
           VectorTools::interpolate_boundary_values (dof_handler,
@@ -930,10 +941,27 @@ namespace aspect
       for (unsigned int c=0; c<dim; ++c)
         for (unsigned int d=0; d<dim; ++d)
           coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
-      for (unsigned int d=0; d<dim; ++d)
+
+      if (parameters.include_melt_transport)
         {
-          coupling[x.velocities[d]][x.pressure] = DoFTools::always;
-          coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
+              coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
+              coupling[x.velocities[d]][x.fluid_pressure] = DoFTools::always;
+              coupling[x.fluid_pressure][x.velocities[d]] = DoFTools::always;
+            }
+
+          coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
+          coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+        }
+      else
+        {
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.pressure] = DoFTools::always;
+              coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+            }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -987,14 +1015,26 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
-    for (unsigned int c=0; c<introspection.n_components; ++c)
-      for (unsigned int d=0; d<introspection.n_components; ++d)
-        if (c == d)
-          coupling[c][d] = DoFTools::always;
-        else
-          coupling[c][d] = DoFTools::none;
 
+    const typename Introspection<dim>::ComponentIndices &x
+      = introspection.component_indices;
+
+    for (unsigned int c=0; c<dim; ++c)
+      coupling[x.velocities[c]][x.velocities[c]] = DoFTools::always;
+
+    if (parameters.include_melt_transport)
+      {
+        coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
+        coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+      }
+    else
+      coupling[x.pressure][x.pressure] = DoFTools::always;
+    coupling[x.temperature][x.temperature] = DoFTools::always;
+
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
     LinearAlgebra::BlockCompressedSparsityPattern sp;
+
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
@@ -1122,6 +1162,21 @@ namespace aspect
 
     // This needs to happen after the periodic constraints are added:
     setup_nullspace_constraints(constraints);
+
+    // TODO: make this optional
+    if (false && parameters.include_melt_transport)
+      {
+        // add a single pressure DoF
+        const types::global_dof_index global_idx = introspection.system_dofs_per_block[0];
+
+        // Finally set this DoF to zero (if we care about it):
+        if (constraints.can_store_line(global_idx))
+          {
+            Assert(!constraints.is_constrained((global_idx)), ExcInternalError());
+            constraints.add_line(global_idx);
+          }
+
+      }
 
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
@@ -1263,6 +1318,26 @@ namespace aspect
     return ret;
   }
 
+  /**
+   * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+   * given by the @p dofs_per_block structure.
+   */
+  void  split_by_block (std::vector<IndexSet> &partitioned,
+                        const std::vector<types::global_dof_index> &dofs_per_block,
+                        const IndexSet &whole_set)
+  {
+    const unsigned int n_blocks = dofs_per_block.size();
+    partitioned.clear();
+
+    partitioned.resize(n_blocks);
+    types::global_dof_index start = 0;
+    for (unsigned int i=0; i<n_blocks; ++i)
+      {
+        partitioned[i] = whole_set.get_view(start, start + dofs_per_block[i]);
+        start += dofs_per_block[i];
+      }
+  }
+
 
 
   template <int dim>
@@ -1275,6 +1350,17 @@ namespace aspect
           = finite_element.component_mask (introspection.extractors.velocities);
         introspection.component_masks.pressure
           = finite_element.component_mask (introspection.extractors.pressure);
+
+        if (parameters.include_melt_transport)
+          {
+            introspection.component_masks.compaction_pressure
+              = finite_element.component_mask (introspection.extractors.compaction_pressure);
+            introspection.component_masks.fluid_pressure
+              = finite_element.component_mask (introspection.extractors.fluid_pressure);
+            introspection.component_masks.fluid_velocities
+              = finite_element.component_mask (introspection.extractors.fluid_velocities);
+          }
+
         introspection.component_masks.temperature
           = finite_element.component_mask (introspection.extractors.temperature);
         for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -1289,72 +1375,44 @@ namespace aspect
                                     introspection.system_dofs_per_block,
                                     introspection.components_to_blocks);
     {
-      types::global_dof_index n_u = introspection.system_dofs_per_block[0],
-                              n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
-                              n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
-
-      Assert(!parameters.use_direct_stokes_solver ||
-             (introspection.block_indices.velocities == introspection.block_indices.pressure),
-             ExcInternalError());
-
-      // only count pressure once if velocity and pressure are in the same block,
-      // i.e., direct solver is used.
-      if (introspection.block_indices.velocities == introspection.block_indices.pressure)
-        n_p = 0;
-
-      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        n_C[c] = introspection.system_dofs_per_block
-                 [introspection.block_indices.compositional_fields[c]];
-
-
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
-      introspection.index_sets.system_partitioning.clear ();
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
-          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
-        }
-      else
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
-        }
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
-
-      introspection.index_sets.stokes_partitioning.clear ();
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
-        }
+      split_by_block (introspection.index_sets.system_partitioning,
+                      introspection.system_dofs_per_block,
+                      system_index_set);
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
-      introspection.index_sets.system_relevant_partitioning.clear ();
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
-      if (n_p != 0)
+      split_by_block (introspection.index_sets.system_relevant_partitioning,
+                      introspection.system_dofs_per_block,
+                      introspection.index_sets.system_relevant_set);
+
+      if (parameters.use_direct_stokes_solver)
         {
-          introspection.index_sets.system_relevant_partitioning
-          .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
         }
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
+      else
+        {
+          introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+        }
 
-      {
-        unsigned int n_C_so_far = 0;
+      if (parameters.include_melt_transport)
+        {
+          introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure|introspection.component_masks.compaction_pressure);
+          introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure);
+        }
 
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          {
-            introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                   n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            introspection.index_sets.system_relevant_partitioning
-            .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                             n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            n_C_so_far += n_C[c];
-          }
-      }
+      introspection.index_sets.stokes_partitioning.clear ();
+      introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.velocities]);
+      if (!parameters.use_direct_stokes_solver)
+        {
+          if (parameters.include_melt_transport)
+            {
+              // p_f and p_c:
+              introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.fluid_pressure]);
+            }
+          else
+            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
+        }
     }
 
   }
@@ -1771,6 +1829,7 @@ namespace aspect
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
 
+
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);
               rebuild_stokes_matrix = true;
@@ -1824,11 +1883,22 @@ namespace aspect
 
               pcout << std::endl;
 
-
               double max = 0.0;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                if (initial_composition_residual[c]>0)
-                  max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                {
+                  // in models with melt migration the melt advection equation includes the divergence of the velocity
+                  // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+                  // thus, we set a threshold for the initial composition residual.
+                  // this only plays a role if the right-hand side of the advection equation is very small.
+                  const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                            ?
+                                            parameters.linear_stokes_solver_tolerance * time_step
+                                            :
+                                            0.0);
+                  if (initial_composition_residual[c]>threshold)
+                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                }
+
               if (initial_stokes_residual>0)
                 max = std::max(stokes_residual/initial_stokes_residual, max);
               if (initial_temperature_residual>0)

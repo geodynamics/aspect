@@ -126,6 +126,7 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
+        in.cell = NULL; // we do not know the cell index
 
         this->get_material_model().evaluate(in, out);
 

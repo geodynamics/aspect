@@ -229,11 +229,16 @@ namespace aspect
       include_latent_heat () const;
 
       /**
+       * Return whether we solve the equations for melt transport.
+       */
+      bool
+      include_melt_transport () const;
+
+      /**
        * Return the stokes velocity degree.
        */
       int
       get_stokes_velocity_degree () const;
-
 
       /**
        * Return the adiabatic surface temperature.

@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Time step size (seconds)
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal pressure (Pa)
+# 13: Average pressure (Pa)
+# 14: Maximal pressure (Pa)
+# 15: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 16: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 17: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 19: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.0000e+00 1024 11717 4225 4225 3 3 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0    0    0 3 3 1.2645e-02 2.35701210e-01 4.96835291e-01 -9.99999325e+02 -2.77517303e+02 -1.00097649e-01 4.96835291e-01 5.32202246e-03 4.96835291e-01 5.32202246e-03 5.00000000e-03 5.00000000e-03 5.00000000e-01 5.00000000e-01 

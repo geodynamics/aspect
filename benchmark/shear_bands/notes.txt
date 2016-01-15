@@ -1,0 +1,2 @@
+This directory contains the magmatic "shear bands" benchmark defined in Katz et al., 2006
+

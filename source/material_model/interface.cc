@@ -290,7 +290,8 @@ namespace aspect
       compressibilities(n_points, aspect::Utilities::signaling_nan<double>()),
       entropy_derivative_pressure(n_points, aspect::Utilities::signaling_nan<double>()),
       entropy_derivative_temperature(n_points, aspect::Utilities::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>()))
+      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>())),
+      force_vector(n_points, Vector<double>(dim+1))
     {}
 
 
@@ -667,6 +668,60 @@ namespace aspect
         // really be averaged, so avoid this for now
       }
 
+
+      template <int dim>
+      void average (const AveragingOperation operation,
+                    const typename DoFHandler<dim>::active_cell_iterator &cell,
+                    const Quadrature<dim>         &quadrature_formula,
+                    const Mapping<dim>            &mapping,
+                    MeltMaterialModelOutputs<dim>          &values_out)
+      {
+
+        FullMatrix<double> projection_matrix;
+        FullMatrix<double> expansion_matrix;
+
+        if (operation == project_to_Q1)
+          {
+            projection_matrix.reinit (quadrature_formula.size(),
+                                      quadrature_formula.size());
+            compute_projection_matrix (cell,
+                                       quadrature_formula,
+                                       mapping,
+                                       projection_matrix,
+                                       expansion_matrix);
+          }
+
+        average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.densities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.thermal_expansion_coefficients);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.specific_heat);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.compressibilities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.entropy_derivative_pressure);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.entropy_derivative_temperature);
+
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.compaction_viscosities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.fluid_viscosities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.permeabilities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.fluid_densities);
+        average (operation, projection_matrix, expansion_matrix,
+                 values_out.fluid_compressibilities);
+
+        // the reaction terms are unfortunately stored in reverse
+        // indexing. it's also not quite clear whether these should
+        // really be averaged, so avoid this for now
+      }
+
+
     }
   }
 }
@@ -724,6 +779,8 @@ namespace aspect
   \
   template class AdditionalMaterialOutputs<dim>; \
   \
+  template class MeltOutputs<dim>; /*TODO: move this somewhere else, not in the interface*/ \
+  \
   namespace MaterialAveraging \
   { \
     template                \
@@ -732,6 +789,12 @@ namespace aspect
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
                   MaterialModelOutputs<dim>      &values_out); \
+    template                \
+    void average (const AveragingOperation operation, \
+                  const DoFHandler<dim>::active_cell_iterator &cell, \
+                  const Quadrature<dim>     &quadrature_formula, \
+                  const Mapping<dim>        &mapping, \
+                  MeltMaterialModelOutputs<dim>      &values_out); \
   }
 
 

@@ -1,0 +1,2 @@
+This directory contains the "solitary wave" benchmark defined in Keller et al 2013
+

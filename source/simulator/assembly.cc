@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/melt_interface.h>
 
 
 #include <deal.II/base/quadrature_lib.h>
@@ -50,17 +51,22 @@ namespace aspect
         {
           StokesPreconditioner (const FiniteElement<dim> &finite_element,
                                 const Quadrature<dim>    &quadrature,
+                                const Quadrature<dim-1>  &face_quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
-                                const unsigned int        n_compositional_fields);
+                                const unsigned int        n_compositional_fields,
+                                const bool                add_compaction_pressure);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           virtual ~StokesPreconditioner ();
 
           FEValues<dim>               finite_element_values;
+          FEFaceValues<dim>           finite_element_face_values;
 
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  phi_p;
+          std::vector<double>                  phi_p_c;
+          std::vector<Tensor<1,dim> >          grad_phi_p;
 
           std::vector<double>                  temperature_values;
           std::vector<double>                  pressure_values;
@@ -77,14 +83,22 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
+                              const Quadrature<dim-1>  &face_quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags,
-                              const unsigned int        n_compositional_fields)
+                              const unsigned int        n_compositional_fields,
+                              const bool                add_compaction_pressure)
           :
           finite_element_values (mapping, finite_element, quadrature,
                                  update_flags),
+          finite_element_face_values (mapping, finite_element, face_quadrature,
+                                      (update_values  | update_quadrature_points |
+                                       update_normal_vectors | update_gradients |
+                                       update_JxW_values)),
           grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           phi_p (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
+          phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
+          grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
           temperature_values (quadrature.size(), Utilities::signaling_nan<double>()),
           pressure_values (quadrature.size(), Utilities::signaling_nan<double>()),
           strain_rates (quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
@@ -104,8 +118,14 @@ namespace aspect
                                  scratch.finite_element_values.get_fe(),
                                  scratch.finite_element_values.get_quadrature(),
                                  scratch.finite_element_values.get_update_flags()),
+          finite_element_face_values (scratch.finite_element_face_values.get_mapping(),
+                                      scratch.finite_element_face_values.get_fe(),
+                                      scratch.finite_element_face_values.get_quadrature(),
+                                      scratch.finite_element_face_values.get_update_flags()),
           grads_phi_u (scratch.grads_phi_u),
           phi_p (scratch.phi_p),
+          phi_p_c (scratch.phi_p_c),
+          grad_phi_p(scratch.grad_phi_p),
           temperature_values (scratch.temperature_values),
           pressure_values (scratch.pressure_values),
           strain_rates (scratch.strain_rates),
@@ -137,7 +157,8 @@ namespace aspect
                         const Quadrature<dim-1>  &face_quadrature,
                         const UpdateFlags         update_flags,
                         const UpdateFlags         face_update_flags,
-                        const unsigned int        n_compositional_fields);
+                        const unsigned int        n_compositional_fields,
+                        const bool                add_compaction_pressure);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -159,16 +180,20 @@ namespace aspect
                       const Quadrature<dim-1>  &face_quadrature,
                       const UpdateFlags         update_flags,
                       const UpdateFlags         face_update_flags,
-                      const unsigned int        n_compositional_fields)
+                      const unsigned int        n_compositional_fields,
+                      const bool                add_compaction_pressure)
           :
-          StokesPreconditioner<dim> (finite_element, quadrature,
+          StokesPreconditioner<dim> (finite_element, quadrature, face_quadrature,
                                      mapping,
-                                     update_flags, n_compositional_fields),
+                                     update_flags,
+                                     n_compositional_fields,
+                                     add_compaction_pressure),
 
           face_finite_element_values (mapping,
                                       finite_element,
                                       face_quadrature,
                                       face_update_flags),
+
 
           phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
           grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
@@ -252,6 +277,7 @@ namespace aspect
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<std::vector<double> > current_composition_values;
+          std::vector<double>         current_velocity_divergences;
 
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
@@ -306,6 +332,7 @@ namespace aspect
           current_strain_rates(quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
+          current_velocity_divergences(quadrature.size()),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           explicit_material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -348,6 +375,7 @@ namespace aspect
           mesh_velocity_values(scratch.mesh_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
           current_composition_values(scratch.current_composition_values),
+          current_velocity_divergences(scratch.current_velocity_divergences),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
           explicit_material_model_inputs(scratch.explicit_material_model_inputs),
@@ -651,16 +679,40 @@ namespace aspect
            0.0);
 
         const double dreaction_term_dt =
-          (advection_field.is_temperature() || old_time_step == 0)
+          (advection_field.is_temperature() || old_time_step == 0 || (advection_field.is_porosity(introspection)
+                                                                      && parameters.include_melt_transport))
           ?
           0.0
           :
           (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
            / old_time_step);
 
+        // TODO: we use the current velocity divergences here instead of the old ones
+        const double melt_transport_RHS = compute_melting_RHS (scratch,
+                                                               scratch.explicit_material_model_inputs,
+                                                               scratch.explicit_material_model_outputs,
+                                                               advection_field,
+                                                               q);
+
+        const double melt_transport_LHS =
+          ((parameters.include_melt_transport && advection_field.is_porosity(introspection))
+           ?
+           scratch.current_velocity_divergences[q]
+           + (material_model->is_compressible()
+              ?
+              scratch.explicit_material_model_outputs.compressibilities[q]
+              * scratch.explicit_material_model_outputs.densities[q]
+              * u
+              * gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q))
+              :
+              0.0)
+           :
+           0.0);
+
+
         double residual
-          = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
-                     - dreaction_term_dt);
+          = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field + melt_transport_LHS * field
+                     - gamma - melt_transport_RHS - dreaction_term_dt);
 
         if (parameters.stabilization_alpha == 2)
           residual *= std::abs(field - average_field);
@@ -799,6 +851,12 @@ namespace aspect
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
+        const unsigned int solution_component
+          = (advection_field.field_type == AdvectionField::temperature_field
+             ?
+             introspection.component_indices.temperature
+             :
+             introspection.component_indices.compositional_fields[advection_field.compositional_variable]);
         const FEValuesExtractors::Scalar solution_field
           = (advection_field.is_temperature()
              ?
@@ -875,6 +933,7 @@ namespace aspect
                                              cell,
                                              true,
                                              scratch.material_model_inputs);
+
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
         if (advection_field.is_temperature()==true)
           {
@@ -954,10 +1013,11 @@ namespace aspect
 
 
   template <int dim>
+  template <class fevalues>
   void
   Simulator<dim>::
   compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                       const FEValues<dim>                                         &input_finite_element_values,
+                                       const fevalues                                         &input_finite_element_values,
                                        const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                        const bool                                                   compute_strainrate,
                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
@@ -1021,8 +1081,9 @@ namespace aspect
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
-                                         true,
+                                         true, // TODO: use rebuild_stokes_matrix here?
                                          scratch.material_model_inputs);
+    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1032,35 +1093,90 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
             scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-            scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+
+            if (parameters.include_melt_transport)
+              {
+                scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (k, q);
+                scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
+                scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.fluid_pressure].gradient (k, q);
+              }
+            else
+              scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+
           }
 
         const double eta = scratch.material_model_outputs.viscosities[q];
 
-        const SymmetricTensor<4,dim> &stress_strain_director =
-          scratch.material_model_outputs.stress_strain_directors[q];
-        const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+        if (parameters.include_melt_transport)
+          {
+            /*
+              - R = 1/eta M_p + K_D L_p for p
+              S = - (1/eta + 1/viscosity_c)  M_p  for p_c
+            */
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 0.0);
 
-        for (unsigned int i=0; i<dofs_per_cell; ++i)
-          for (unsigned int j=0; j<dofs_per_cell; ++j)
-            if (finite_element.system_to_component_index(i).first
-                ==
-                finite_element.system_to_component_index(j).first)
-              data.local_matrix(i,j) += ((use_tensor ?
-                                          eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                          :
-                                          eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                         +
-                                         (1./eta) *
-                                         pressure_scaling *
-                                         pressure_scaling *
-                                         (scratch.phi_p[i] * scratch.phi_p[j]))
-                                        * scratch.finite_element_values.JxW(q);
+            double K_D = (porosity > parameters.melt_transport_threshold
+                          ?
+                          melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
+                          :
+                          0.0);
+            double viscosity_c = melt_outputs->compaction_viscosities[q];
+
+            const SymmetricTensor<4,dim> &stress_strain_director =
+              scratch.material_model_outputs.stress_strain_directors[q];
+            const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
+
+            for (unsigned int i=0; i<dofs_per_cell; ++i)
+              for (unsigned int j=0; j<dofs_per_cell; ++j)
+                if (finite_element.system_to_component_index(i).first
+                    ==
+                    finite_element.system_to_component_index(j).first)
+                  data.local_matrix(i,j) += ((use_tensor ?
+                                              eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                              :
+                                              eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                             +
+                                             (1./eta *
+                                              pressure_scaling *
+                                              pressure_scaling)
+                                             * scratch.phi_p[i] * scratch.phi_p[j]
+                                             +
+                                             (K_D *
+                                              pressure_scaling *
+                                              pressure_scaling) *
+                                             scratch.grad_phi_p[i] *
+                                             scratch.grad_phi_p[j]
+                                             +
+                                             (1./eta + 1./viscosity_c) *
+                                             pressure_scaling *
+                                             pressure_scaling *
+                                             (scratch.phi_p_c[i] * scratch.phi_p_c[j])
+                                            )
+                                            * scratch.finite_element_values.JxW(q);
+          }
+        else
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
+              if (finite_element.system_to_component_index(i).first
+                  ==
+                  finite_element.system_to_component_index(j).first)
+                data.local_matrix(i,j) += (eta *
+                                           (scratch.grads_phi_u[i] *
+                                            scratch.grads_phi_u[j])
+                                           +
+                                           (1./eta) *
+                                           pressure_scaling *
+                                           pressure_scaling *
+                                           (scratch.phi_p[i] * scratch.phi_p[j]))
+                                          * scratch.finite_element_values.JxW(q);
       }
 
     cell->get_dof_indices (data.local_dof_indices);
@@ -1087,6 +1203,7 @@ namespace aspect
     system_preconditioner_matrix = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -1108,13 +1225,14 @@ namespace aspect
                           this,
                           std_cxx11::_1),
          internal::Assembly::Scratch::
-         StokesPreconditioner<dim> (finite_element, quadrature_formula,
+         StokesPreconditioner<dim> (finite_element, quadrature_formula, face_quadrature_formula,
                                     mapping,
                                     update_JxW_values |
                                     update_values |
                                     update_gradients |
                                     update_quadrature_points,
-                                    parameters.n_compositional_fields),
+                                    parameters.n_compositional_fields,
+                                    parameters.include_melt_transport),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (finite_element));
 
@@ -1195,6 +1313,61 @@ namespace aspect
     computing_timer.exit_section();
   }
 
+  template <int dim>
+  double
+  Simulator<dim>::
+  compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                             MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                             MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                             const unsigned int q_point) const
+  {
+    if (!parameters.include_melt_transport)
+      return 0.0;
+    MaterialModel::MeltOutputs<dim> *melt_out = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+
+    Assert(melt_out != NULL, ExcInternalError());
+
+    const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+    const unsigned int is_compressible = material_model->is_compressible();
+
+    const double melting_rate     = material_model_outputs.reaction_terms[q_point][porosity_index];
+    const double solid_density    = material_model_outputs.densities[q_point];
+    const double fluid_density    = melt_out->fluid_densities[q_point];
+    const double solid_compressibility = material_model_outputs.compressibilities[q_point];
+    const double fluid_compressibility = melt_out->fluid_compressibilities[q_point];
+    const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
+    const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
+    const double K_D = (porosity > parameters.melt_transport_threshold
+                        ?
+                        melt_out->permeabilities[q_point] / melt_out->fluid_viscosities[q_point]
+                        :
+                        0.0);
+
+    const Tensor<1,dim>
+    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
+
+    double fluid_pressure_RHS = 0.0;
+
+    // melting term
+    fluid_pressure_RHS -= melting_rate * (1.0/fluid_density - 1.0/solid_density);
+
+    // compression term
+    // The whole expression for the first term on the RHS would be
+    // (u_s \cdot g) (\phi \rho_f \kappa_f + (1 - \phi) \rho_s \kappa_s).
+    // However, we already have the term (u_s \cdot g) \rho_s \kappa_s in the
+    // assembly of the stokes system without melt. Because of that, we only
+    // need to have -\phi \rho_s \kappa_s here.
+    fluid_pressure_RHS += is_compressible
+                          ?
+                          (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
+                                                   - porosity * solid_density * solid_compressibility)
+                          + K_D * fluid_compressibility * fluid_density * fluid_density * (gravity * gravity)
+                          :
+                          0.0;
+
+    return fluid_pressure_RHS;
+  }
+
 
   template <int dim>
   void
@@ -1203,8 +1376,9 @@ namespace aspect
                                 internal::Assembly::Scratch::StokesSystem<dim> &scratch,
                                 internal::Assembly::CopyData::StokesSystem<dim> &data)
   {
-    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+    const unsigned int dofs_per_cell   = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points      = scratch.finite_element_values.n_quadrature_points;
+    const unsigned int n_face_q_points = scratch.finite_element_face_values.n_quadrature_points;
     const bool is_compressible = material_model->is_compressible();
 
     scratch.finite_element_values.reinit (cell);
@@ -1217,11 +1391,13 @@ namespace aspect
 
     // we only need the strain rates for the viscosity,
     // which we only need when rebuilding the matrix
+
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
                                          rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
+    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1231,15 +1407,27 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
+
+    const FEValuesExtractors::Scalar &extractor_pressure =
+      (parameters.include_melt_transport ?
+       introspection.extractors.fluid_pressure
+       : introspection.extractors.pressure);
 
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         for (unsigned int k=0; k<dofs_per_cell; ++k)
           {
-            scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-            scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+            scratch.phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
+            scratch.phi_p[k]   = scratch.finite_element_values[extractor_pressure].value (k, q);
+            if (parameters.include_melt_transport)
+              {
+                scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
+                scratch.grad_phi_p[k] = scratch.finite_element_values[extractor_pressure].gradient (k, q);
+              }
             if (rebuild_stokes_matrix)
               {
                 scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
@@ -1254,12 +1442,12 @@ namespace aspect
                             :
                             std::numeric_limits<double>::quiet_NaN());
 
+        const Tensor<1,dim>
+        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
         const SymmetricTensor<4,dim> &stress_strain_director =
           scratch.material_model_outputs.stress_strain_directors[q];
         const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
 
-        const Tensor<1,dim>
-        gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
         const double compressibility
           = (is_compressible
@@ -1267,7 +1455,36 @@ namespace aspect
              scratch.material_model_outputs.compressibilities[q]
              :
              std::numeric_limits<double>::quiet_NaN() );
-        const double density = scratch.material_model_outputs.densities[q];
+        const double density_s = scratch.material_model_outputs.densities[q]; // density of the solid
+
+        double porosity = 0.0;
+        double K_D = 0.0;
+        double viscosity_c = 0.0;
+        double compressibility_f = 0.0;
+        double density_f = 0.0;
+        double p_f_RHS = 0.0;
+        double bulk_density = density_s;
+        if (parameters.include_melt_transport)
+          {
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+
+            K_D = (porosity > parameters.melt_transport_threshold
+                   ?
+                   melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
+                   :
+                   0.0);
+
+            compressibility_f = melt_outputs->fluid_compressibilities[q];
+            density_f = melt_outputs->fluid_densities[q];
+            bulk_density = (1.0 - porosity) * density_s + porosity * density_f;
+            viscosity_c = melt_outputs->compaction_viscosities[q];
+
+            p_f_RHS = compute_fluid_pressure_RHS(scratch,
+                                                 scratch.material_model_inputs,
+                                                 scratch.material_model_outputs,
+                                                 q);
+          }
 
         if (rebuild_stokes_matrix)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -1276,7 +1493,7 @@ namespace aspect
                                            eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                            :
                                            eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                          - (is_compressible
+                                          - ((is_compressible || parameters.include_melt_transport)
                                              ?
                                              (use_tensor ?
                                               eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
@@ -1290,12 +1507,35 @@ namespace aspect
                                           // finally the term -div(u). note the negative sign to make this
                                           // operator adjoint to the grad(p) term
                                           - (pressure_scaling *
-                                             scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                             scratch.phi_p[i] * scratch.div_phi_u[j])
+                                          + (parameters.include_melt_transport
+                                             ?
+                                             - pressure_scaling * pressure_scaling / viscosity_c
+                                             * scratch.phi_p_c[i] * scratch.phi_p_c[j]
+                                             - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
+                                             - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
+                                             - K_D * pressure_scaling * pressure_scaling *
+                                             (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
+                                             + (is_compressible
+                                                ?
+                                                K_D * pressure_scaling * pressure_scaling *
+                                                compressibility_f * density_f
+                                                * scratch.phi_p[i] * (scratch.grad_phi_p[j] * gravity)
+                                                :
+                                                0.0)
+                                             :
+                                             0))
                                         * scratch.finite_element_values.JxW(q);
+
+        Tensor<1,dim> force_u;
+        for (unsigned int d=0; d<dim; ++d)
+          force_u[d] = scratch.material_model_outputs.force_vector[q][d];
+        const double force_p = scratch.material_model_outputs.force_vector[q][dim];
 
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
-                                 (density * gravity * scratch.phi_u[i])
+                                 ((bulk_density * gravity + force_u) * scratch.phi_u[i])
+                                 + (pressure_scaling * force_p * scratch.phi_p[i])
                                  +
                                  // add the term that results from the compressibility. compared
                                  // to the manual, this term seems to have the wrong sign, but this
@@ -1305,18 +1545,90 @@ namespace aspect
                                  (is_compressible
                                   ?
                                   (pressure_scaling *
-                                   compressibility * density *
+                                     compressibility * density_s *
                                    (scratch.velocity_values[q] * gravity) *
                                    scratch.phi_p[i])
                                   :
                                   0)
+                                 + (parameters.include_melt_transport
+                                    ?
+                                    + pressure_scaling *
+                                    p_f_RHS * scratch.phi_p[i]
+                                    - pressure_scaling *
+                                    K_D * density_f *
+                                    (scratch.grad_phi_p[i] * gravity)
+                                    :
+                                    0.0)
                                )
                                * scratch.finite_element_values.JxW(q);
+
 
         if (do_pressure_rhs_compatibility_modification)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
       }
+
+    if (parameters.include_melt_transport)
+      for (unsigned int face=0; face<GeometryInfo<dim>::faces_per_cell; ++face)
+        if (cell->face(face)->at_boundary())
+          {
+            scratch.finite_element_face_values.reinit(cell, face);
+
+            MaterialModel::MaterialModelInputs<dim> inputs(n_face_q_points, parameters.n_compositional_fields);
+            MaterialModel::MaterialModelOutputs<dim> outputs(n_face_q_points, parameters.n_compositional_fields);
+
+            compute_material_model_input_values (current_linearization_point,
+                                                 scratch.finite_element_face_values,
+                                                 cell,
+                                                 rebuild_stokes_matrix,
+                                                 inputs);
+            outputs.create_additional_material_outputs(n_face_q_points, parameters.n_compositional_fields);
+            MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+
+            material_model->evaluate(inputs, outputs);
+
+            // TODO: do we want to do averaging here?
+            /*MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                       cell,
+                                                       scratch.finite_element_values.get_quadrature(),
+                                                       scratch.finite_element_values.get_mapping(),
+                                                       outputs);*/
+
+
+            std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
+            fluid_pressure_boundary_conditions->fluid_pressure_gradient(inputs,
+                                                                        outputs,
+                                                                        grad_p_f);
+
+            for (unsigned int q=0; q<n_face_q_points; ++q)
+              {
+                const Tensor<1,dim>
+                gravity = gravity_model->gravity_vector (scratch.finite_element_face_values.quadrature_point(q));
+                const double density_f = melt_outputs->fluid_densities[q];
+                const double density_s = outputs.densities[q];
+
+                const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+                const double porosity = std::max(inputs.composition[q][porosity_index],0.000);
+
+                const double K_D = (porosity > parameters.melt_transport_threshold
+                                    ?
+                                    melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
+                                    :
+                                    0.0);
+
+                for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                  {
+                    // apply the fluid pressure boundary condition
+                    data.local_rhs(i) += (scratch.finite_element_face_values[introspection.extractors.fluid_pressure].value(i, q)
+                                          * pressure_scaling * K_D *
+                                          (density_f
+                                           * (scratch.finite_element_face_values.get_normal_vectors()[q] * gravity)
+                                           - (scratch.finite_element_face_values.get_normal_vectors()[q] * grad_p_f[q]))
+                                          * scratch.finite_element_face_values.JxW(q));
+                  }
+              }
+          }
+
 
     // add stabilization terms for free boundaries if necessary.
     if (parameters.free_surface_enabled)
@@ -1422,8 +1734,7 @@ namespace aspect
                           this,
                           std_cxx11::_1),
          internal::Assembly::Scratch::
-         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
-                            face_quadrature_formula,
+         StokesSystem<dim> (finite_element, mapping, quadrature_formula, face_quadrature_formula,
                             (update_values    |
                              update_gradients |
                              update_quadrature_points  |
@@ -1438,7 +1749,8 @@ namespace aspect
                              update_JxW_values
                              :
                              UpdateFlags(0)),
-                            parameters.n_compositional_fields),
+                            parameters.n_compositional_fields,
+                            parameters.include_melt_transport),
          internal::Assembly::CopyData::
          StokesSystem<dim> (finite_element,
                             do_pressure_rhs_compatibility_modification));
@@ -1489,6 +1801,44 @@ namespace aspect
     preconditioner.reset (new LinearAlgebra::PreconditionILU());
     preconditioner->initialize (system_matrix.block(block_idx, block_idx));
     computing_timer.exit_section();
+  }
+
+
+  template <int dim>
+  double
+  Simulator<dim>::compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                      typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                                      const AdvectionField     &advection_field,
+                                      const unsigned int q_point) const
+  {
+    if ((!advection_field.is_porosity(introspection)) || (!parameters.include_melt_transport))
+      return 0.0;
+
+    Assert (material_model_outputs.densities[q_point] > 0,
+            ExcMessage ("The density needs to be a positive quantity "
+                        "when melt transport is included in the simulation."));
+
+    const double melting_rate         = material_model_outputs.reaction_terms[q_point][advection_field.compositional_variable];
+    const double density              = material_model_outputs.densities[q_point];
+    const double current_phi          = material_model_inputs.composition[q_point][advection_field.compositional_variable];
+    const double divergence_u         = scratch.current_velocity_divergences[q_point];
+    const double compressibility      = (material_model->is_compressible()
+                                         ?
+                                         material_model_outputs.compressibilities[q_point]
+                                         :
+                                         0.0);
+    const Tensor<1,dim> current_u     = scratch.current_velocity_values[q_point];
+    const Tensor<1,dim>
+    gravity = gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
+
+    double melt_transport_RHS = melting_rate / density
+    		                + divergence_u + compressibility * density * (current_u * gravity);
+
+    if(current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold)
+      melt_transport_RHS = melting_rate / density + compressibility * density * (current_u * gravity);
+
+    return melt_transport_RHS;
   }
 
 
@@ -1570,6 +1920,8 @@ namespace aspect
         scratch.old_old_velocity_values);
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
+        scratch.current_velocity_divergences);
 
     //get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.free_surface_enabled)
@@ -1595,6 +1947,8 @@ namespace aspect
                                          cell,
                                          true,
                                          scratch.material_model_inputs);
+    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
+
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
@@ -1602,6 +1956,8 @@ namespace aspect
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
+
+    MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
     heating_model_manager.evaluate(scratch.material_model_inputs,
@@ -1651,10 +2007,19 @@ namespace aspect
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
           }
 
+        double bulk_density = scratch.material_model_outputs.densities[q];
+
+        if (parameters.include_melt_transport)
+          {
+            const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+            const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+            bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
+          }
+
         const double density_c_P              =
           ((advection_field.is_temperature())
            ?
-           scratch.material_model_outputs.densities[q] *
+           bulk_density *
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
@@ -1664,7 +2029,7 @@ namespace aspect
                             "non-negative quantity."));
 
         const double conductivity =
-          ((advection_field.is_temperature())
+          (advection_field.is_temperature()
            ?
            scratch.material_model_outputs.thermal_conductivities[q]
            :
@@ -1687,11 +2052,18 @@ namespace aspect
            0.0);
 
         const double reaction_term =
-          ((advection_field.is_temperature())
+          ((advection_field.is_temperature() || (advection_field.is_porosity(introspection)
+                                                 && parameters.include_melt_transport))
            ?
            0.0
            :
            scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+        const double melt_transport_RHS = compute_melting_RHS (scratch,
+                                                               scratch.material_model_inputs,
+                                                               scratch.material_model_outputs,
+                                                               advection_field,
+                                                               q);
 
         const double field_term_for_rhs
           = (use_bdf2_scheme ?
@@ -1711,6 +2083,21 @@ namespace aspect
         if (parameters.free_surface_enabled)
           current_u -= scratch.mesh_velocity_values[q];
 
+        const double melt_transport_LHS =
+          ((parameters.include_melt_transport && advection_field.is_porosity(introspection))
+           ?
+           scratch.current_velocity_divergences[q]
+           + (material_model->is_compressible()
+              ?
+              scratch.material_model_outputs.compressibilities[q]
+              * scratch.material_model_outputs.densities[q]
+              * current_u
+              * gravity_model->gravity_vector (scratch.finite_element_values.quadrature_point(q))
+              :
+              0.0)
+           :
+           0.0);
+
         const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                   (time_step + old_time_step)) : 1.0;
 
@@ -1722,7 +2109,7 @@ namespace aspect
             += (field_term_for_rhs * scratch.phi_field[i]
                 + time_step *
                 scratch.phi_field[i]
-                * gamma
+                * (gamma + melt_transport_RHS)
                 + scratch.phi_field[i]
                 * reaction_term)
                *
@@ -1737,6 +2124,7 @@ namespace aspect
                      + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                         + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                      (density_c_P + latent_heat_LHS)
+                     + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
                    )
                    * scratch.finite_element_values.JxW(q);
               }
@@ -1871,6 +2259,12 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
+  template void Simulator<dim>::compute_material_model_input_values <FEValues<dim> > ( \
+      const LinearAlgebra::BlockVector                      &input_solution, \
+      const FEValues<dim>                                   &input_finite_element_values, \
+      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
+      const bool                                             compute_strainrate, \
+      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
    
 
 

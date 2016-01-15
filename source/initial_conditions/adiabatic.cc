@@ -85,6 +85,8 @@ namespace aspect
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
       in.strain_rate.resize(0); // adiabat has strain=0.
+      in.cell = NULL; // and do not know the cell index
+
       this->get_material_model().evaluate(in, out);
 
       const double kappa = out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0]);
