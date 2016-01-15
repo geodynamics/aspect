@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -779,15 +779,14 @@ namespace aspect
                                   parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
-    for (unsigned int cellidx=0; cellidx<triangulation.n_active_cells(); ++cellidx, ++cell)
+    for (; cell<dof_handler.end(); ++cell)
       {
         if (!cell->is_locally_owned()
             || (parameters.use_artificial_viscosity_smoothing  == true  &&  cell->is_artificial()))
           {
-            viscosity_per_cell[cellidx]=-1;
+            viscosity_per_cell[cell->active_cell_index()]=-1;
             continue;
           }
-        cell->set_user_index(cellidx);
 
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
@@ -910,13 +909,13 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.explicit_material_model_outputs);
 
-        viscosity_per_cell[cellidx] = compute_viscosity(scratch,
-                                                        global_max_velocity,
-                                                        global_field_range.second - global_field_range.first,
-                                                        0.5 * (global_field_range.second + global_field_range.first),
-                                                        global_entropy_variation,
-                                                        cell->diameter(),
-                                                        advection_field);
+        viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
+                                                                          global_max_velocity,
+                                                                          global_field_range.second - global_field_range.first,
+                                                                          0.5 * (global_field_range.second + global_field_range.first),
+                                                                          global_entropy_variation,
+                                                                          cell->diameter(),
+                                                                          advection_field);
       }
 
     // if set to true, the maximum of the artificial viscosity in the cell as well
@@ -937,13 +936,13 @@ namespace aspect
                 if (cell->at_boundary(face_no) == false)
                   {
                     if (cell->neighbor(face_no)->active())
-                      viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
-                                                                        viscosity_per_cell_temp[cell->neighbor(face_no)->user_index()]);
+                      viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                               viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
                     else
                       for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); l++)
                         if (cell->neighbor(face_no)->child(l)->active())
-                          viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
-                                                                            viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->user_index()]);
+                          viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
+                                                                                   viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
                   }
           }
       }
@@ -1636,7 +1635,7 @@ namespace aspect
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
-    double nu = viscosity_per_cell[cell->user_index()];
+    double nu = viscosity_per_cell[cell->active_cell_index()];
     Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     for (unsigned int q=0; q<n_q_points; ++q)
