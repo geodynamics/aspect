@@ -268,8 +268,8 @@ namespace aspect
       position(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >())),
       temperature(n_points, aspect::Utilities::signaling_nan<double>()),
       pressure(n_points, aspect::Utilities::signaling_nan<double>()),
-      velocity(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
       pressure_gradient(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
+      velocity(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
       composition(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>())),
       strain_rate(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
       cell (NULL)
