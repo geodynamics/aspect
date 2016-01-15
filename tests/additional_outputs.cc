@@ -71,6 +71,19 @@ int f()
   mat.evaluate(in, out);
 
   std::cout << out.get_additional_output<AdditionalOutputs1<dim> >()->additional_material_output1[0] << std::endl;
+
+  // test const version of get_additional_output:
+  {
+    const MaterialModelOutputs<dim> &const_out = out;
+    if (const_out.get_additional_output<empty>() != NULL)
+      throw "error";
+    const AdditionalOutputs1<dim> *a = const_out.get_additional_output<AdditionalOutputs1<dim> >();
+    if (a == NULL)
+      throw "error";
+  }
+
+  std::cout << "OK" << std::endl;
+  exit(0);
   return 42;
 }
 
