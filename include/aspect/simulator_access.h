@@ -38,6 +38,7 @@
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -128,20 +129,27 @@ namespace aspect
       introspection () const;
 
       /**
-       * Returns a reference to the Simulator itself. Note that you can not
+       * Return a reference to the Simulator itself. Note that you can not
        * access any members or functions of the Simulator. This function
        * exists so that any class with SimulatorAccess can create other
        * objects with SimulatorAccess (because initializing them requires a
        * reference to the Simulator).
        */
       const Simulator<dim> &
-      get_simulator() const;
+      get_simulator () const;
 
+      /**
+       * Return a reference to the parameters object that describes all run-time
+       * parameters used in the current simulation.
+       */
+      const Parameters<dim> &
+      get_parameters () const;
 
       /**
        * Get Access to the structure containing the signals of the simulator.
        */
-      SimulatorSignals<dim> &get_signals() const;
+      SimulatorSignals<dim> &
+      get_signals() const;
 
       /**
        * Return the MPI communicator for this simulation.
@@ -163,10 +171,16 @@ namespace aspect
       double get_time () const;
 
       /**
-       * Return the size of the last time step.
+       * Return the size of the current time step.
        */
       double
       get_timestep () const;
+
+      /**
+       * Return the size of the last time step.
+       */
+      double
+      get_old_timestep () const;
 
       /**
        * Return the current number of a time step.
@@ -302,6 +316,17 @@ namespace aspect
       get_old_solution () const;
 
       /**
+       * Return a reference to the vector that has the solution of the entire
+       * system at the second-to-last time step. This vector is associated with the
+       * DoFHandler object returned by get_stokes_dof_handler().
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
+      const LinearAlgebra::BlockVector &
+      get_old_old_solution () const;
+
+      /**
        * Return a reference to the vector that has the mesh velocity for
        * simulations with a free surface.
        *
@@ -373,11 +398,18 @@ namespace aspect
       bool has_boundary_temperature () const;
 
       /**
-       * Return a pointer to the object that describes the temperature
+       * Return a reference to the object that describes the temperature
        * boundary values.
        */
       const BoundaryTemperature::Interface<dim> &
       get_boundary_temperature () const;
+
+      /**
+       * Return a reference to the object that describes traction
+       * boundary conditions.
+       */
+      const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
+      get_traction_boundary_conditions () const;
 
       /**
        * Return a pointer to the object that describes the temperature initial

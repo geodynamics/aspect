@@ -21,6 +21,8 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
+
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
@@ -249,8 +251,6 @@ namespace aspect
           std::vector<Tensor<1,dim> > mesh_velocity_values;
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
-          std::vector<double>         current_pressure_values;
-          std::vector<Tensor<1,dim> > current_pressure_gradients;
           std::vector<std::vector<double> > current_composition_values;
 
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
@@ -304,8 +304,6 @@ namespace aspect
           current_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           mesh_velocity_values(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           current_strain_rates(quadrature.size(), Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
-          current_pressure_values(quadrature.size(), Utilities::signaling_nan<double>()),
-          current_pressure_gradients(quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size(), Utilities::signaling_nan<double>())),
           material_model_inputs(quadrature.size(), n_compositional_fields),
@@ -349,8 +347,6 @@ namespace aspect
           current_velocity_values(scratch.current_velocity_values),
           mesh_velocity_values(scratch.mesh_velocity_values),
           current_strain_rates(scratch.current_strain_rates),
-          current_pressure_values(scratch.current_pressure_values),
-          current_pressure_gradients(scratch.current_pressure_gradients),
           current_composition_values(scratch.current_composition_values),
           material_model_inputs(scratch.material_model_inputs),
           material_model_outputs(scratch.material_model_outputs),
@@ -748,9 +744,10 @@ namespace aspect
   }
 
   template <int dim>
+  template <typename T>
   void
   Simulator<dim>::
-  get_artificial_viscosity (Vector<float> &viscosity_per_cell,
+  get_artificial_viscosity (Vector<T> &viscosity_per_cell,
                             const AdvectionField &advection_field) const
   {
     Assert(viscosity_per_cell.size()==triangulation.n_active_cells(), ExcInternalError());
@@ -784,11 +781,13 @@ namespace aspect
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
     for (unsigned int cellidx=0; cellidx<triangulation.n_active_cells(); ++cellidx, ++cell)
       {
-        if (!cell->is_locally_owned())
+        if (!cell->is_locally_owned()
+            || (parameters.use_artificial_viscosity_smoothing  == true  &&  cell->is_artificial()))
           {
             viscosity_per_cell[cellidx]=-1;
             continue;
           }
+        cell->set_user_index(cellidx);
 
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
@@ -877,6 +876,18 @@ namespace aspect
                                              true,
                                              scratch.material_model_inputs);
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
+        if (advection_field.is_temperature()==true)
+          {
+            MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                       cell,
+                                                       scratch.finite_element_values.get_quadrature(),
+                                                       scratch.finite_element_values.get_mapping(),
+                                                       scratch.material_model_outputs);
+            HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
+            heating_model_manager.evaluate(scratch.material_model_inputs,
+                                           scratch.material_model_outputs,
+                                           heating_model_outputs);
+          }
 
         for (unsigned int q=0; q<n_q_points; ++q)
           {
@@ -893,6 +904,11 @@ namespace aspect
         scratch.explicit_material_model_inputs.cell = &cell;
 
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
+        MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+                                                   cell,
+                                                   scratch.finite_element_values.get_quadrature(),
+                                                   scratch.finite_element_values.get_mapping(),
+                                                   scratch.explicit_material_model_outputs);
 
         viscosity_per_cell[cellidx] = compute_viscosity(scratch,
                                                         global_max_velocity,
@@ -901,6 +917,35 @@ namespace aspect
                                                         global_entropy_variation,
                                                         cell->diameter(),
                                                         advection_field);
+      }
+
+    // if set to true, the maximum of the artificial viscosity in the cell as well
+    // as the neighbors of the cell is computed and used instead
+    if (parameters.use_artificial_viscosity_smoothing  == true)
+      {
+        Vector<T> viscosity_per_cell_temp;
+        viscosity_per_cell_temp.reinit(triangulation.n_active_cells());
+
+        viscosity_per_cell_temp = viscosity_per_cell;
+        typename DoFHandler<dim>::active_cell_iterator
+        cell,
+        end_cell = dof_handler.end();
+        for (cell = dof_handler.begin_active(); cell!=end_cell; ++cell)
+          {
+            if (cell->is_locally_owned())
+              for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+                if (cell->at_boundary(face_no) == false)
+                  {
+                    if (cell->neighbor(face_no)->active())
+                      viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
+                                                                        viscosity_per_cell_temp[cell->neighbor(face_no)->user_index()]);
+                    else
+                      for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); l++)
+                        if (cell->neighbor(face_no)->child(l)->active())
+                          viscosity_per_cell[cell->user_index()] = std::max(viscosity_per_cell[cell->user_index()],
+                                                                            viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->user_index()]);
+                  }
+          }
       }
 
 
@@ -1242,6 +1287,8 @@ namespace aspect
                                              0)
                                           - (pressure_scaling *
                                              scratch.div_phi_u[i] * scratch.phi_p[j])
+                                          // finally the term -div(u). note the negative sign to make this
+                                          // operator adjoint to the grad(p) term
                                           - (pressure_scaling *
                                              scratch.phi_p[i] * scratch.div_phi_u[j]))
                                         * scratch.finite_element_values.JxW(q);
@@ -1249,14 +1296,20 @@ namespace aspect
         for (unsigned int i=0; i<dofs_per_cell; ++i)
           data.local_rhs(i) += (
                                  (density * gravity * scratch.phi_u[i])
-                                 + (is_compressible
-                                    ?
-                                    (pressure_scaling *
-                                     compressibility * density *
-                                     (scratch.velocity_values[q] * gravity) *
-                                     scratch.phi_p[i])
-                                    :
-                                    0)
+                                 +
+                                 // add the term that results from the compressibility. compared
+                                 // to the manual, this term seems to have the wrong sign, but this
+                                 // is because we negate the entire equation to make sure we get
+                                 // -div(u) as the adjoint operator of grad(p) (see above where
+                                 // we assemble the matrix)
+                                 (is_compressible
+                                  ?
+                                  (pressure_scaling *
+                                   compressibility * density *
+                                   (scratch.velocity_values[q] * gravity) *
+                                   scratch.phi_p[i])
+                                  :
+                                  0)
                                )
                                * scratch.finite_element_values.JxW(q);
 
@@ -1442,9 +1495,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
-                                   const std::pair<double,double> global_field_range,
-                                   const double                   global_max_velocity,
-                                   const double                   global_entropy_variation,
+                                   const Vector<double>           &viscosity_per_cell,
                                    const typename DoFHandler<dim>::active_cell_iterator &cell,
                                    internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                    internal::Assembly::CopyData::AdvectionSystem<dim> &data)
@@ -1512,8 +1563,6 @@ namespace aspect
         scratch.old_pressure_gradients);
     scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (old_old_solution,
         scratch.old_old_pressure_gradients);
-    scratch.finite_element_values[introspection.extractors.pressure].get_function_gradients (current_linearization_point,
-        scratch.current_pressure_gradients);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values (old_solution,
         scratch.old_velocity_values);
@@ -1587,14 +1636,7 @@ namespace aspect
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
     // timestep for iterative solvers)
-    const double nu
-      = compute_viscosity (scratch,
-                           global_max_velocity,
-                           global_field_range.second - global_field_range.first,
-                           0.5 * (global_field_range.second + global_field_range.first),
-                           global_entropy_variation,
-                           cell->diameter(),
-                           advection_field);
+    double nu = viscosity_per_cell[cell->user_index()];
     Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
     for (unsigned int q=0; q<n_q_points; ++q)
@@ -1729,12 +1771,13 @@ namespace aspect
     system_matrix.block(block_idx, block_idx) = 0;
     system_rhs = 0;
 
-    const std::pair<double,double>
-    global_field_range = get_extrapolated_advection_field_range (advection_field);
-
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
+
+    Vector<double> viscosity_per_cell;
+    viscosity_per_cell.reinit(triangulation.n_active_cells());
+    get_artificial_viscosity(viscosity_per_cell, advection_field);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -1745,14 +1788,7 @@ namespace aspect
                           local_assemble_advection_system,
                           this,
                           advection_field,
-                          global_field_range,
-                          get_maximal_velocity(old_solution),
-                          // use the mid-value of the advected field instead of the
-                          // integral mean. results are not very
-                          // sensitive to this and this is far simpler
-                          get_entropy_variation ((global_field_range.first +
-                                                  global_field_range.second) / 2,
-                                                 advection_field),
+                          std_cxx11::cref(viscosity_per_cell),
                           std_cxx11::_1,
                           std_cxx11::_2,
                           std_cxx11::_3),
@@ -1820,15 +1856,15 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_stokes_system ( \
                                                                      const internal::Assembly::CopyData::StokesSystem<dim> &data); \
   template void Simulator<dim>::assemble_stokes_system (); \
+  template void Simulator<dim>::get_artificial_viscosity (Vector<double> &viscosity_per_cell,  \
+                                                          const AdvectionField &advection_field) const; \
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
                                                           const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
-                                                                  const std::pair<double,double> global_field_range, \
-                                                                  const double                   global_max_velocity, \
-                                                                  const double                   global_entropy_variation, \
+                                                                  const Vector<double>           &viscosity_per_cell, \
                                                                   const DoFHandler<dim>::active_cell_iterator &cell, \
                                                                   internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data); \

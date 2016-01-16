@@ -376,7 +376,7 @@ namespace aspect
     {
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
-                   ExcMessage (std::string("Couldn't open data file <"
+                   ExcMessage (std::string("Could not open data file <"
                                            +
                                            filename
                                            +

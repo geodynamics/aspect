@@ -264,39 +264,34 @@ namespace aspect
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
-    {
-      position.resize(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >()));
-      temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      velocity.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
-      pressure_gradient.resize(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >());
-      composition.resize(n_points);
-      for (unsigned int q=0; q<n_points; ++q)
-        composition[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
-
-      strain_rate.resize(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >());
-      cell = 0;
-    }
+      :
+      position(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >())),
+      temperature(n_points, aspect::Utilities::signaling_nan<double>()),
+      pressure(n_points, aspect::Utilities::signaling_nan<double>()),
+      pressure_gradient(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
+      velocity(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
+      composition(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>())),
+      strain_rate(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+      cell (NULL)
+    {}
 
 
 
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
-    {
-      viscosities.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      stress_strain_directors.resize(n_points, dealii::identity_tensor<dim> ());
-      densities.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      thermal_expansion_coefficients.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      specific_heat.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      thermal_conductivities.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      compressibilities.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      entropy_derivative_pressure.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      entropy_derivative_temperature.resize(n_points, aspect::Utilities::signaling_nan<double>());
-      reaction_terms.resize(n_points);
-      for (unsigned int q=0; q<n_points; ++q)
-        reaction_terms[q].resize(n_comp, aspect::Utilities::signaling_nan<double>());
-    }
+      :
+      viscosities(n_points, aspect::Utilities::signaling_nan<double>()),
+      stress_strain_directors(n_points, dealii::identity_tensor<dim> ()),
+      densities(n_points, aspect::Utilities::signaling_nan<double>()),
+      thermal_expansion_coefficients(n_points, aspect::Utilities::signaling_nan<double>()),
+      specific_heat(n_points, aspect::Utilities::signaling_nan<double>()),
+      thermal_conductivities(n_points, aspect::Utilities::signaling_nan<double>()),
+      compressibilities(n_points, aspect::Utilities::signaling_nan<double>()),
+      entropy_derivative_pressure(n_points, aspect::Utilities::signaling_nan<double>()),
+      entropy_derivative_temperature(n_points, aspect::Utilities::signaling_nan<double>()),
+      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>()))
+    {}
 
 
     template <int dim>
@@ -726,6 +721,8 @@ namespace aspect
   template struct MaterialModelInputs<dim>; \
   \
   template struct MaterialModelOutputs<dim>; \
+  \
+  template class AdditionalMaterialOutputs<dim>; \
   \
   namespace MaterialAveraging \
   { \

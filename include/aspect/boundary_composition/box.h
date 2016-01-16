@@ -37,21 +37,19 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class Box : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * This function returns constant compositions at the left and right
+         * This function returns user-defined constant compositions at the
          * boundaries.
          *
-         * @copydoc aspect::BoundaryComposition::Interface::composition()
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         virtual
-        double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location,
-                            const unsigned int                   compositional_field) const;
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &location,
+                                     const unsigned int compositional_field) const;
 
         /**
          * Declare the parameters this class takes through input files. This

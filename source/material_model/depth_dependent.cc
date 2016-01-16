@@ -36,7 +36,7 @@ namespace aspect
       /* This method is used for the Table method of depth dependent viscosity */
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
-                   ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
+                   ExcMessage (std::string("Could not open file <") + filename + ">."));
 
       double min_depth=std::numeric_limits<double>::max();
       double max_depth=-std::numeric_limits<double>::max();
@@ -207,7 +207,13 @@ namespace aspect
                        ExcMessage("You may not use ``depth dependent'' as the base model for "
                                   "a depth-dependent model.") );
 
+          // create the base model and initialize its SimulatorAccess base
+          // class; it will get a chance to read its parameters below after we
+          // leave the current section
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
+            sim->initialize_simulator (this->get_simulator());
+
           if ( prm.get("Depth dependence method") == "Function" )
             viscosity_source = Function;
           else if ( prm.get("Depth dependence method") == "File" )
@@ -279,7 +285,7 @@ namespace aspect
       /* After parsing the parameters for depth dependent, it is essential to parse
       parameters related to the base model. */
       base_model->parse_parameters(prm);
-      this-> model_dependence = base_model->get_model_dependence();
+      this->model_dependence = base_model->get_model_dependence();
     }
 
     template <int dim>

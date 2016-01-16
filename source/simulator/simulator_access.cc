@@ -48,12 +48,23 @@ namespace aspect
     simulator = &simulator_object;
   }
 
+
+
   template <int dim>
   const Simulator<dim> &
   SimulatorAccess<dim>::get_simulator() const
   {
     return *simulator;
   }
+
+
+  template <int dim>
+  const Parameters<dim> &
+  SimulatorAccess<dim>::get_parameters() const
+  {
+    return simulator->parameters;
+  }
+
 
   template <int dim>
   SimulatorSignals<dim> &
@@ -96,6 +107,12 @@ namespace aspect
   double SimulatorAccess<dim>::get_timestep () const
   {
     return simulator->time_step;
+  }
+
+  template <int dim>
+  double SimulatorAccess<dim>::get_old_timestep () const
+  {
+    return simulator->old_time_step;
   }
 
 
@@ -231,21 +248,27 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_old_solution () const
+  {
+    return simulator->old_solution;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_old_old_solution () const
+  {
+    return simulator->old_old_solution;
+  }
+
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_mesh_velocity () const
   {
     Assert( simulator->parameters.free_surface_enabled,
             ExcMessage("You cannot get the mesh velocity with no free surface."));
     return simulator->free_surface->mesh_velocity;
   }
-
-
-  template <int dim>
-  const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_old_solution () const
-  {
-    return simulator->old_solution;
-  }
-
 
 
   template <int dim>
@@ -277,6 +300,15 @@ namespace aspect
     Assert (simulator->material_model.get() != 0,
             ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
+  }
+
+
+
+  template <int dim>
+  const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
+  SimulatorAccess<dim>::get_traction_boundary_conditions () const
+  {
+    return simulator->traction_boundary_conditions;
   }
 
 

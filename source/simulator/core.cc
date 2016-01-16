@@ -21,7 +21,6 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
-
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -549,7 +548,7 @@ namespace aspect
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
         AssertThrow (prm_out,
-                     ExcMessage (std::string("Couldn't open file <") +
+                     ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
       }
@@ -557,7 +556,7 @@ namespace aspect
       {
         std::ofstream prm_out ((parameters.output_directory + "parameters.tex").c_str());
         AssertThrow (prm_out,
-                     ExcMessage (std::string("Couldn't open file <") +
+                     ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
@@ -780,8 +779,11 @@ namespace aspect
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+           std_cxx11::bind (static_cast<Tensor<1,dim> (VelocityBoundaryConditions::Interface<dim>::*)(
+                              const types::boundary_id,
+                              const Point<dim> &) const> (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity),
                             p->second,
+                            p->first,
                             std_cxx11::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
@@ -1446,7 +1448,7 @@ namespace aspect
     system_trans(dof_handler);
 
     std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
-    std::auto_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
+    std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
     freesurface_trans;
 
     if (parameters.free_surface_enabled)
@@ -1455,6 +1457,9 @@ namespace aspect
         freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
                                  (free_surface->free_surface_dof_handler));
       }
+
+    // Possibly store data of plugins associated with cells
+    signals.pre_refinement_store_user_data(triangulation);
 
     triangulation.prepare_coarsening_and_refinement();
     system_trans.prepare_for_coarsening_and_refinement(x_system);
@@ -1530,6 +1535,9 @@ namespace aspect
           //make sure the mesh is consistent with mesh_vertices
           free_surface->displace_mesh ();
         }
+
+      // Possibly load data of plugins associated with cells
+      signals.post_refinement_load_user_data(triangulation);
     }
     computing_timer.exit_section();
 
@@ -2039,6 +2047,7 @@ namespace aspect
 
         set_initial_temperature_and_compositional_fields ();
         compute_initial_pressure_field ();
+        initialize_tracers ();
 
         computing_timer.exit_section();
       }

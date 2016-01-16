@@ -22,6 +22,7 @@
 #define __aspect__compat_h
 
 #include <aspect/global.h>
+
 /*
  * Fixed colorization of parallelepiped
  */
@@ -255,6 +256,101 @@ namespace dealii
 }
 #endif
 
+/*
+ * Unique_ptr functionality that was introduced in deal.II 8.3 and replaces
+ * auto_ptr in CXX17. We need this to silence deprecation warnings in new
+ * compilers.
+ */
+#if DEAL_II_VERSION_GTE(8,3,0)
+#include <deal.II/base/std_cxx11/unique_ptr.h>
+#else
+#ifdef DEAL_II_WITH_CXX11
 
+#  include <memory>
+namespace dealii
+{
+  namespace std_cxx11
+  {
+    using std::unique_ptr;
+  }
+}
+
+#else
+
+#include <boost/scoped_ptr.hpp>
+
+namespace dealii
+{
+  namespace std_cxx11
+  {
+    /**
+     * Implementation of a basic replacement for C++11's std::unique_ptr class.
+     *
+     * BOOST does not have a replacement for std::unique_ptr (because unique_ptr
+     * requires move semantics that aren't available unless you have a C++11
+     * compiler -- in which case you also have std::unique_ptr; see for example
+     * http://stackoverflow.com/questions/2953530/unique-ptr-boost-equivalent)
+     *
+     * Consequently, we emulate the class by just wrapping a boost::scoped_ptr
+     * in the cheapest possible way -- by just deriving from it and repeating
+     * the basic constructors. Everything else is inherited from the scoped_ptr
+     * class.
+     *
+     * There is no overhead to this approach: scoped_ptr cannot be copied or
+     * moved. Instances of unique_ptr cannot be copied, and if you do not have a
+     * C++11 compiler, then you cannot move anything anyway.
+     */
+    template <typename T>
+    class unique_ptr : public boost::scoped_ptr<T>
+    {
+      public:
+        unique_ptr () {}
+
+        template<class Y>
+        explicit unique_ptr (Y *p)
+          :
+          boost::scoped_ptr<T>(p)
+        {}
+    };
+
+  }
+}
+
+#endif
+#endif
+
+/*
+ * parallel::distributed::Triangulation::ghost_owners() function
+ */
+#if !DEAL_II_VERSION_GTE(8,4,0)
+
+#include <deal.II/distributed/tria.h>
+
+namespace aspect
+{
+  namespace Particle
+  {
+    using namespace dealii;
+
+    template <int dim>
+    std::set<types::subdomain_id>
+    ghost_owners(const parallel::distributed::Triangulation<dim> &triangulation)
+    {
+      std::set<types::subdomain_id> neighbors;
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = triangulation.begin_active();
+           cell != triangulation.end(); ++cell)
+        {
+          if (cell->is_ghost())
+            {
+              neighbors.insert(cell->subdomain_id());
+            }
+        }
+      return neighbors;
+    }
+  }
+}
+#endif
 
 #endif

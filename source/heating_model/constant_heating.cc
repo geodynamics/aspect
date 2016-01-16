@@ -27,16 +27,21 @@ namespace aspect
   namespace HeatingModel
   {
     template <int dim>
-    double
+    void
     ConstantHeating<dim>::
-    specific_heating_rate (const double,
-                           const double,
-                           const std::vector<double> &,
-                           const Point<dim> &) const
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &/*material_model_inputs*/,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      // return a constant value
-      return radiogenic_heating_rate;
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          // return a constant value
+          heating_model_outputs.heating_source_terms[q] = radiogenic_heating_rate
+                                                          * material_model_outputs.densities[q];
+        }
     }
+
+
 
     template <int dim>
     void
