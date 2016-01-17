@@ -83,7 +83,28 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct AdvectionSystem;
+      }
 
+      namespace Assemblers
+      {
+        /**
+         * A base class for objects that implement assembly
+         * operations. This base class does not provide a whole lot
+         * of functionality other than the fact that its destructor
+         * is virtual.
+         *
+         * The point of this class is primarily so that we can store
+         * pointers to such objects in a list. The objects are created
+         * in Simulator::set_assemblers() (which is the only place where
+         * we know their actual type) and destroyed in the destructor of
+         * class Simulation.
+         */
+        template <int dim>
+        class AssemblerBase
+        {
+          public:
+            virtual ~AssemblerBase () {}
+        };
       }
     }
   }
@@ -593,6 +614,18 @@ namespace aspect
        * matrices, and right hand side vectors.
        */
       Assemblers assemblers;
+
+      /**
+       * A collection of objects that implement member functions that may
+       * appear in the assembler signal lists. What the objects do is not
+       * actually important, but individual assembler objects may encapsulate
+       * data that is used by concrete assemblers.
+       *
+       * The objects pointed to by this vector are created in
+       * set_assemblers(), and are later destroyed by the destructor
+       * of the current class.
+       */
+      std::vector<std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
