@@ -602,10 +602,11 @@ namespace aspect
         boost::signals2::signal<void (const double,
                                       internal::Assembly::Scratch::StokesPreconditioner<dim>  &,
                                       internal::Assembly::CopyData::StokesPreconditioner<dim> &)> local_assemble_stokes_preconditioner;
-        boost::signals2::signal<void (const double,
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const double,
                                       const bool,
-                                      internal::Assembly::Scratch::StokesSystem<dim> &,
-                                      internal::Assembly::CopyData::StokesSystem<dim> &)> local_assemble_stokes_system;
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system;
       };
 
       /**

@@ -1234,6 +1234,56 @@ namespace aspect
               data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
             }
       }
+
+
+      template <int dim>
+      void
+      traction_boundary_conditions (const SimulatorAccess<dim>                           &simulator_access,
+                                    const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                    internal::Assembly::CopyData::StokesSystem<dim> &data)
+      {
+        const Introspection<dim> &introspection = simulator_access.introspection();
+
+
+        // see if any of the faces are traction boundaries for which
+        // we need to assemble force terms for the right hand side
+        const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            if (simulator_access.get_traction_boundary_conditions()
+                .find (
+#if DEAL_II_VERSION_GTE(8,3,0)
+                  cell->face(f)->boundary_id()
+#else
+                  cell->face(f)->boundary_indicator()
+#endif
+                )
+                !=
+                simulator_access.get_traction_boundary_conditions().end())
+              {
+                scratch.face_finite_element_values.reinit (cell, f);
+
+                for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+                  {
+                    const Tensor<1,dim> traction
+                      = simulator_access.get_traction_boundary_conditions().find(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                          cell->face(f)->boundary_id()
+#else
+                          cell->face(f)->boundary_indicator()
+#endif
+                        )->second
+                        ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                    scratch.face_finite_element_values.normal_vector(q));
+                    for (unsigned int i=0; i<dofs_per_cell; ++i)
+                      data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                           traction *
+                                           scratch.face_finite_element_values.JxW(q);
+                  }
+              }
+      }
+
     }
   }
 
@@ -1258,23 +1308,44 @@ namespace aspect
       assemblers.local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
                                 std_cxx11::cref (*complete_equation_assembler),
-                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3, std_cxx11::_4));
+                                // discard cell,
+                                std_cxx11::_2,
+                                std_cxx11::_3,
+                                std_cxx11::_4,
+                                std_cxx11::_5));
     else
       assemblers.local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
                                 std_cxx11::cref (*complete_equation_assembler),
-                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3, std_cxx11::_4));
+                                // discard cell,
+                                std_cxx11::_2,
+                                std_cxx11::_3,
+                                std_cxx11::_4,
+                                std_cxx11::_5));
     assembler_objects.push_back (std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (complete_equation_assembler));
 
+
+    // add the terms for traction boundary conditions
+    assemblers.local_assemble_stokes_system
+    .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::traction_boundary_conditions<dim>,
+                              SimulatorAccess<dim>(*this),
+                              std_cxx11::_1,
+                              // discard pressure_scaling,
+                              // discard rebuild_stokes_matrix,
+                              std_cxx11::_4,
+                              std_cxx11::_5));
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
       assemblers.local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification<dim>,
                                 SimulatorAccess<dim>(*this),
-                                // discard pressure_scaling and rebuild_stokes_matrix,
-                                std_cxx11::_3, std_cxx11::_4));
+                                // discard cell,
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                std_cxx11::_4,
+                                std_cxx11::_5));
 
     // ensure that all assembler objects have access to the SimulatorAccess
     // base class
@@ -1483,50 +1554,13 @@ namespace aspect
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers.local_assemble_stokes_system(pressure_scaling, rebuild_stokes_matrix,
+    assemblers.local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
                                             scratch, data);
 
 
     // add stabilization terms for free boundaries if necessary.
     if (parameters.free_surface_enabled)
       free_surface->apply_stabilization(cell, data.local_matrix);
-
-    // see if any of the faces are traction boundaries for which
-    // we need to assemble force terms for the right hand side
-    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-      if (cell->at_boundary(f))
-        if (traction_boundary_conditions
-            .find (
-#if DEAL_II_VERSION_GTE(8,3,0)
-              cell->face(f)->boundary_id()
-#else
-              cell->face(f)->boundary_indicator()
-#endif
-            )
-            !=
-            traction_boundary_conditions.end())
-          {
-            scratch.face_finite_element_values.reinit (cell, f);
-
-            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
-              {
-                const Tensor<1,dim> traction
-                  = traction_boundary_conditions[
-#if DEAL_II_VERSION_GTE(8,3,0)
-                      cell->face(f)->boundary_id()
-#else
-                      cell->face(f)->boundary_indicator()
-#endif
-                    ]
-                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
-                                scratch.face_finite_element_values.normal_vector(q));
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                                       traction *
-                                       scratch.face_finite_element_values.JxW(q);
-              }
-          }
 
     cell->get_dof_indices (data.local_dof_indices);
   }
