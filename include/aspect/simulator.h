@@ -85,7 +85,28 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct AdvectionSystem;
+      }
 
+      namespace Assemblers
+      {
+        /**
+         * A base class for objects that implement assembly
+         * operations. This base class does not provide a whole lot
+         * of functionality other than the fact that its destructor
+         * is virtual.
+         *
+         * The point of this class is primarily so that we can store
+         * pointers to such objects in a list. The objects are created
+         * in Simulator::set_assemblers() (which is the only place where
+         * we know their actual type) and destroyed in the destructor of
+         * class Simulation.
+         */
+        template <int dim>
+        class AssemblerBase
+        {
+          public:
+            virtual ~AssemblerBase () {}
+        };
       }
     }
   }
@@ -555,9 +576,74 @@ namespace aspect
        */
 
       /**
-       * @name Functions used in the assembly of linear systems
+       * @name Functions, classes, and variables used in the assembly of linear systems
        * @{
        */
+
+      /**
+       * A structure that consists of member variables representing
+       * each one or more functions that need to be called when
+       * assembling right hand side vectors, matrices, or complete linear
+       * systems. We use this approach in order to support the following
+       * cases:
+       * - Assembling different formulations: When assembling either the
+       *   full equations or only the Boussinesq approximation (to give just
+       *   two examples), one needs different terms. This could be achieved
+       *   using a large number of <code>switch</code> or <code>if</code>
+       *   statements in the code, or one could encapsulate each equation
+       *   or approximation into a collection of functions for this particular
+       *   purpose. The approach chosen here in essence allows the
+       *   implementation of each set of equations in its own scope, and we
+       *   then just need to store a pointer to the function that
+       *   assembles the Stokes system (for example) for the selected
+       *   approximation. The pointer to this function is stored in the
+       *   appropriate member variable of this class.
+       * - Sometimes, we want to assemble a number of terms that build on
+       *   each other. An example is the addition of free boundary terms
+       *   to the Stokes matrix. Rather than having to "know" in one
+       *   place about all of the terms that need to be assembled,
+       *   we simply add the function that computes these terms as
+       *   another "slot" to the appropriate "signal" declared in this
+       *   class.
+       */
+      struct Assemblers
+      {
+        boost::signals2::signal<void (const double,
+                                      internal::Assembly::Scratch::StokesPreconditioner<dim>  &,
+                                      internal::Assembly::CopyData::StokesPreconditioner<dim> &)> local_assemble_stokes_preconditioner;
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const double,
+                                      const bool,
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system;
+      };
+
+      /**
+       * A member variable that stores, for the current simulation, what
+       * functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       */
+      Assemblers assemblers;
+
+      /**
+       * A collection of objects that implement member functions that may
+       * appear in the assembler signal lists. What the objects do is not
+       * actually important, but individual assembler objects may encapsulate
+       * data that is used by concrete assemblers.
+       *
+       * The objects pointed to by this vector are created in
+       * set_assemblers(), and are later destroyed by the destructor
+       * of the current class.
+       */
+      std::vector<std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
+
+      /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       */
+      void set_assemblers ();
+
       /**
        * Initiate the assembly of the preconditioner for the Stokes system.
        *
@@ -623,7 +709,6 @@ namespace aspect
                                        const typename DoFHandler<dim>::active_cell_iterator &cell,
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
-
 
 
       /**
@@ -1042,6 +1127,7 @@ namespace aspect
        */
       double
       compute_initial_stokes_residual();
+
       /**
        * @}
        */

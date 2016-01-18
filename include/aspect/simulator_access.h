@@ -39,6 +39,7 @@
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/traction_boundary_conditions/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -457,6 +458,13 @@ namespace aspect
        */
       const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
       get_prescribed_velocity_boundary_conditions () const;
+
+      /**
+       * Return a pointer to the object that describes the fluid
+       * pressure boundary conditions.
+       */
+      const FluidPressureBoundaryConditions::Interface<dim> &
+      get_fluid_pressure_boundary_conditions () const;
 
       /**
        * Return a pointer to the manager of the heating model.

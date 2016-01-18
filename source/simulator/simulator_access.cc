@@ -371,6 +371,16 @@ namespace aspect
 
 
   template <int dim>
+  const FluidPressureBoundaryConditions::Interface<dim> &
+  SimulatorAccess<dim>::get_fluid_pressure_boundary_conditions () const
+  {
+    Assert (simulator->fluid_pressure_boundary_conditions.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->fluid_pressure_boundary_conditions.get();
+  }
+
+
+  template <int dim>
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
