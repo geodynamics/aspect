@@ -1236,6 +1236,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       traction_boundary_conditions (const SimulatorAccess<dim>                           &simulator_access,
@@ -1284,6 +1285,16 @@ namespace aspect
               }
       }
 
+
+
+      template <int dim>
+      void
+      free_boundary_stokes_contribution (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         typename Simulator<dim>::FreeSurfaceHandler          &free_surface,
+                                         internal::Assembly::CopyData::StokesSystem<dim>      &data)
+      {
+        free_surface.apply_stabilization(cell, data.local_matrix);
+      }
     }
   }
 
@@ -1335,6 +1346,17 @@ namespace aspect
                               // discard rebuild_stokes_matrix,
                               std_cxx11::_4,
                               std_cxx11::_5));
+
+    // and, if necessary, the function that computes stabilization terms for free boundaries
+    if (parameters.free_surface_enabled)
+      assemblers.local_assemble_stokes_system
+      .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::free_boundary_stokes_contribution<dim>,
+                                std_cxx11::_1,
+                                std_cxx11::ref(*free_surface.get()),
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                // discard scratch object,
+                                std_cxx11::_5));
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
@@ -1556,11 +1578,6 @@ namespace aspect
     // all of the assembling
     assemblers.local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
                                             scratch, data);
-
-
-    // add stabilization terms for free boundaries if necessary.
-    if (parameters.free_surface_enabled)
-      free_surface->apply_stabilization(cell, data.local_matrix);
 
     cell->get_dof_indices (data.local_dof_indices);
   }

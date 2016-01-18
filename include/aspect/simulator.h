@@ -1246,6 +1246,7 @@ namespace aspect
        * @}
        */
 
+    public:
       /**
        * A member class that isolates the functions and variables that deal
        * with the free surface implementation.  If there are no free surface
@@ -1457,6 +1458,8 @@ namespace aspect
           friend class Simulator<dim>;
           friend class SimulatorAccess<dim>;
       };
+
+    private:
 
       /**
        * Shared pointer for an instance of the FreeSurfaceHandler. this way,
