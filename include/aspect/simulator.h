@@ -599,9 +599,37 @@ namespace aspect
        */
       struct Assemblers
       {
+        /**
+         * A signal that is called from Simulator::local_assemble_stokes_preconditioner()
+         * and whose slots are supposed to assemble terms that together form the
+         * Stokes preconditioner matrix.
+         *
+         * The arguments to the slots are as follows:
+         * - The Simulator::pressure_scaling value used to scale velocity
+         *   and pressure components against each other.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
         boost::signals2::signal<void (const double,
                                       internal::Assembly::Scratch::StokesPreconditioner<dim>  &,
                                       internal::Assembly::CopyData::StokesPreconditioner<dim> &)> local_assemble_stokes_preconditioner;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_stokes_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Stokes system matrix and right hand side.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The Simulator::pressure_scaling value used to scale velocity
+         *   and pressure components against each other.
+         * - Whether or not to actually assemble the matrix. If @p false,
+         *   then only assemble the right hand side of the Stokes system.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
         boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
                                       const double,
                                       const bool,
