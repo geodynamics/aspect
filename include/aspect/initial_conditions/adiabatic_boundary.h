@@ -23,13 +23,20 @@
 
 /** This initial condition is designed for the 3D ellipsoid chunk geometry
  * model. It discretizes the model domain into two regions separated by an
- * isotherm below with the temperature increases adiabatically. The user
+ * isotherm below which the temperature increases adiabatically. The user
  * defines the location of the thermal isotherm with a data file with the
  * format defined in the ASPECT manual. Note that the latitudinal and
  * longitudinal bounds of the ascii input data file needs to be at least 1
  * degree wider than the bounds you use to define the ellipsoid chunk geometry
  * model.
- * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.”
+ * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
+ *
+ * Here is class that compute initial temperature field based on a 
+ * user-defined adiabatic boundary. Below the adiabatic boundary the
+ * temperature increases adiabatically while above the adiabatic 
+ * boundary the temperature linearly increases from a surface temperature
+ * (273.15 K or 0 degree C) to an isotherm (1673.15 K or 1600 degree C)
+ * that is the adiabatic boundary.
  */
 
 
@@ -39,13 +46,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    /** Here is class that compute initial temperature field based on a 
-     *  user-defined adiabatic boundary. Below the adiabatic boundary the
-     *  temperature increases adiabatically while above the adiabatic 
-     *  boundary the temperature linearly increases from a surface temperature
-     *  (273.15 K or 0 degree C) to an isotherm (1673.15 K or 1600 degree C)
-     *  that is the adiabatic boundary.
-     */
      template <int dim>
      class AdiabaticBoundary : public Interface<dim>
      {
