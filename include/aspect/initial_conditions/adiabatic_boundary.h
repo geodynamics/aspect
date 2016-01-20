@@ -37,7 +37,7 @@ namespace aspect
      * degree C). The user defines the location of the thermal isotherm with a data file with
      * the format defined in the ASPECT manual. Note that the latitudinal and longitudinal bounds
      * of the ascii input data file needs to be at least 1 degree wider than the bounds you use
-     * to definethe ellipsoid chunk geometry.
+     * to define the ellipsoid chunk geometry.
      * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
      */
      template <int dim>
