@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -981,6 +981,14 @@ namespace aspect
 
     material_model_inputs.cell = &cell;
   }
+
+
+
+  template <int dim>
+  Simulator<dim>::Assemblers::Properties::Properties ()
+    :
+    need_face_material_model_data (false)
+  {}
 
 
 
@@ -2051,6 +2059,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
+  template class Simulator<dim>::Assemblers::Properties; \
   template void Simulator<dim>::set_assemblers (); \
   template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
                                                                        const DoFHandler<dim>::active_cell_iterator &cell, \
