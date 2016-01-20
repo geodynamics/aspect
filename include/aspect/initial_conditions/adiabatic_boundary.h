@@ -21,24 +21,6 @@
 
 #include <aspect/initial_conditions/interface.h>
 
-/** This initial condition is designed for the 3D ellipsoid chunk geometry
- * model. It discretizes the model domain into two regions separated by an
- * isotherm below which the temperature increases adiabatically. The user
- * defines the location of the thermal isotherm with a data file with the
- * format defined in the ASPECT manual. Note that the latitudinal and
- * longitudinal bounds of the ascii input data file needs to be at least 1
- * degree wider than the bounds you use to define the ellipsoid chunk geometry
- * model.
- * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
- *
- * Here is class that compute initial temperature field based on a 
- * user-defined adiabatic boundary. Below the adiabatic boundary the
- * temperature increases adiabatically while above the adiabatic 
- * boundary the temperature linearly increases from a surface temperature
- * (273.15 K or 0 degree C) to an isotherm (1673.15 K or 1600 degree C)
- * that is the adiabatic boundary.
- */
-
 
 namespace aspect
 {
@@ -46,12 +28,24 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * A class that compute initial temperature field based on a user-defined
+     * adiabatic boundary for the 3D ellipsoid chunk geometry model. It discretizes
+     * the model domain into two regions separated by an isotherm boundary below which the
+     * temperature increases adiabatically while above it the temperature linearly increases
+     * from a surface temperature (273.15 K or 0 degree C) to the isotherm (1673.15 K or 1600
+     * degree C). The user defines the location of the thermal isotherm with a data file with
+     * the format defined in the ASPECT manual. Note that the latitudinal and longitudinal bounds
+     * of the ascii input data file needs to be at least 1 degree wider than the bounds you use
+     * to definethe ellipsoid chunk geometry.
+     * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
+     */
      template <int dim>
      class AdiabaticBoundary : public Interface<dim>
      {
        public:
     	  /** 
-	   * Return the initial temperature as a function of position
+	       * Return the initial temperature as a function of position
     	   */
     	  virtual
           double initial_temperature (const Point<dim> &position) const;
@@ -65,13 +59,13 @@ namespace aspect
            * Read the parameters above from the parameter file
            */
           virtual
-	  void parse_parameters (ParameterHandler &prm);
+	      void parse_parameters (ParameterHandler &prm);
 
        private:
           std::vector<double>  latitudes_iso;
           std::vector<double>  longitudes_iso;
           std::vector<double>  depths_iso;
-	  std::string adiabatic_boundary_file_name;
+	       std::string adiabatic_boundary_file_name;
            std::string line;
           double delta;
           int data_flag;
@@ -90,11 +84,10 @@ namespace aspect
           std::pair<double, double>
           lat_long_from_xyz_wgs84(const Point<3> &pos) const;
 
-         /**
-	  * Return distance from center of the WGS84 to a point on the surface
-	  */
-
-	  double
+          /**
+	       * Return distance from center of the WGS84 to a point on the surface
+	       */
+          double
           radius_wgs84(const double &theta) const;
      };
   }
