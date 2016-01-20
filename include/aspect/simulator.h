@@ -1089,7 +1089,7 @@ namespace aspect
        */
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
                                            const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
