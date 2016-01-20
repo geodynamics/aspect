@@ -67,6 +67,10 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > strain_rates;
           std::vector<std::vector<double> >     composition_values;
 
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
         };
@@ -147,6 +151,17 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
+
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           *
+           * In contrast to the variables above, the following two
+           * variables are used in the assembly at quadrature points
+           * on faces, not on cells.
+           */
+          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
         };
 
 
@@ -173,7 +188,9 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
           grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           div_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
-          velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >())
+          velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
+          face_material_model_outputs(face_quadrature.size(), n_compositional_fields)
         {}
 
 
@@ -192,7 +209,9 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          velocity_values (scratch.velocity_values)
+          velocity_values (scratch.velocity_values),
+          face_material_model_inputs(scratch.face_material_model_inputs),
+          face_material_model_outputs(scratch.face_material_model_outputs)
         {}
 
 
@@ -253,9 +272,18 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<std::vector<double> > current_composition_values;
 
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
+          /**
+           * Material model inputs and outputs computed at a previous
+           * time step's solution, or an extrapolation from previous
+           * time steps.
+           */
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
         };
@@ -936,7 +964,7 @@ namespace aspect
   void
   Simulator<dim>::
   compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                       const FEValues<dim>                                         &input_finite_element_values,
+                                       const FEValuesBase<dim>                                     &input_finite_element_values,
                                        const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                        const bool                                                   compute_strainrate,
                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
@@ -1544,8 +1572,7 @@ namespace aspect
     if (do_pressure_rhs_compatibility_modification)
       data.local_pressure_shape_function_integrals = 0;
 
-    // we only need the strain rates for the viscosity,
-    // which we only need when rebuilding the matrix
+    // initialize the material model data on the cell
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
@@ -1568,12 +1595,34 @@ namespace aspect
     assemblers.local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
                                             scratch, data);
 
-    // then also work on possible face terms
+    // then also work on possible face terms. if necessary, initialize
+    // the material model data on faces
     for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
       if (cell->at_boundary(face_no))
-        assemblers.local_assemble_stokes_system_on_boundary_face(cell, face_no,
-                                                                 pressure_scaling, rebuild_stokes_matrix,
-                                                                 scratch, data);
+        {
+          if (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+            {
+              compute_material_model_input_values (current_linearization_point,
+                                                   scratch.face_finite_element_values,
+                                                   cell,
+                                                   rebuild_stokes_matrix,
+                                                   scratch.face_material_model_inputs);
+
+              material_model->evaluate(scratch.face_material_model_inputs,
+                                       scratch.face_material_model_outputs);
+//TODO: the following doesn't currently compile because the get_quadrature() call returns
+//  a dim-1 dimensional quadrature
+              // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+              //                                            cell,
+              //                                            scratch.face_finite_element_values.get_quadrature(),
+              //                                            scratch.face_finite_element_values.get_mapping(),
+              //                                            scratch.face_material_model_outputs);
+            }
+
+          assemblers.local_assemble_stokes_system_on_boundary_face(cell, face_no,
+                                                                   pressure_scaling, rebuild_stokes_matrix,
+                                                                   scratch, data);
+        }
 
 
     cell->get_dof_indices (data.local_dof_indices);
