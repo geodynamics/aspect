@@ -23,15 +23,7 @@
 #include <fstream>
 #include <iostream>
 
-/** This initial condition is designed for the 3D ellipsoid chunk geometry
- * model. It discretizes the model domain into two regions separated by an
- * isotherm below which the temperature increases adiabatically. The user
- * defines the location of the thermal isotherm with a data file with the
- * format defined in the ASPECT manual. Note that the latitudinal and
- * longitudinal bounds of the ascii input data file needs to be at least 1
- * degree wider than the bounds you use to define the ellipsoid chunk geometry
- * model.
- * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
+/** This initial condition is designed only for the 3D ellipsoid chunk geometry.
  */
 
 
@@ -45,7 +37,6 @@ namespace aspect
      * Function that return latitude and longitude from cartesian
      * coordinates that account for ellipsoidal shape of the Earth
      */
-
     template <int dim>
     std::pair<double, double>
     AdiabaticBoundary<dim>::lat_long_from_xyz_wgs84(const Point<3> &pos) const
