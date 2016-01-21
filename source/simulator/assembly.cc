@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,6 +73,10 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > strain_rates;
           std::vector<std::vector<double> >     composition_values;
 
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
         };
@@ -168,6 +172,17 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<Tensor<1,dim> >          velocity_values;
+
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           *
+           * In contrast to the variables above, the following two
+           * variables are used in the assembly at quadrature points
+           * on faces, not on cells.
+           */
+          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
         };
 
 
@@ -198,7 +213,9 @@ namespace aspect
           phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<Tensor<1,dim> >()),
           grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           div_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
-          velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >())
+          velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
+          face_material_model_outputs(face_quadrature.size(), n_compositional_fields)
         {}
 
 
@@ -217,7 +234,9 @@ namespace aspect
           phi_u (scratch.phi_u),
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
-          velocity_values (scratch.velocity_values)
+          velocity_values (scratch.velocity_values),
+          face_material_model_inputs(scratch.face_material_model_inputs),
+          face_material_model_outputs(scratch.face_material_model_outputs)
         {}
 
 
@@ -279,9 +298,18 @@ namespace aspect
           std::vector<std::vector<double> > current_composition_values;
           std::vector<double>         current_velocity_divergences;
 
+          /**
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
+          /**
+           * Material model inputs and outputs computed at a previous
+           * time step's solution, or an extrapolation from previous
+           * time steps.
+           */
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
         };
@@ -928,25 +956,6 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                                scratch.old_old_field_laplacians);
 
-        compute_material_model_input_values (current_linearization_point,
-                                             scratch.finite_element_values,
-                                             cell,
-                                             true,
-                                             scratch.material_model_inputs);
-
-        material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
-        if (advection_field.is_temperature()==true)
-          {
-            MaterialModel::MaterialAveraging::average (parameters.material_averaging,
-                                                       cell,
-                                                       scratch.finite_element_values.get_quadrature(),
-                                                       scratch.finite_element_values.get_mapping(),
-                                                       scratch.material_model_outputs);
-            HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-            heating_model_manager.evaluate(scratch.material_model_inputs,
-                                           scratch.material_model_outputs,
-                                           heating_model_outputs);
-          }
 
         for (unsigned int q=0; q<n_q_points; ++q)
           {
@@ -1015,7 +1024,7 @@ namespace aspect
   void
   Simulator<dim>::
   compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                       const fevalues                                         &input_finite_element_values,
+                                       const FEValuesBase<dim>                                     &input_finite_element_values,
                                        const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                        const bool                                                   compute_strainrate,
                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
@@ -1060,6 +1069,14 @@ namespace aspect
 
     material_model_inputs.cell = &cell;
   }
+
+
+
+  template <int dim>
+  Simulator<dim>::Assemblers::Properties::Properties ()
+    :
+    need_face_material_model_data (false)
+  {}
 
 
 
@@ -1626,12 +1643,14 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       traction_boundary_conditions (const SimulatorAccess<dim>                           &simulator_access,
                                     const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                    internal::Assembly::CopyData::StokesSystem<dim> &data)
+                                    const unsigned int                                    face_no,
+                                    internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                                    internal::Assembly::CopyData::StokesSystem<dim>      &data)
       {
         const Introspection<dim> &introspection = simulator_access.introspection();
 
@@ -1639,41 +1658,49 @@ namespace aspect
         // see if any of the faces are traction boundaries for which
         // we need to assemble force terms for the right hand side
         const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->at_boundary(f))
-            if (simulator_access.get_traction_boundary_conditions()
-                .find (
+        if (simulator_access.get_traction_boundary_conditions()
+            .find (
 #if DEAL_II_VERSION_GTE(8,3,0)
-                  cell->face(f)->boundary_id()
+              cell->face(face_no)->boundary_id()
 #else
-                  cell->face(f)->boundary_indicator()
+              cell->face(face_no)->boundary_indicator()
 #endif
-                )
-                !=
-                simulator_access.get_traction_boundary_conditions().end())
-              {
-                scratch.face_finite_element_values.reinit (cell, f);
+            )
+            !=
+            simulator_access.get_traction_boundary_conditions().end())
+          {
+            scratch.face_finite_element_values.reinit (cell, face_no);
 
-                for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
-                  {
-                    const Tensor<1,dim> traction
-                      = simulator_access.get_traction_boundary_conditions().find(
+            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+              {
+                const Tensor<1,dim> traction
+                  = simulator_access.get_traction_boundary_conditions().find(
 #if DEAL_II_VERSION_GTE(8,3,0)
-                          cell->face(f)->boundary_id()
+                      cell->face(face_no)->boundary_id()
 #else
-                          cell->face(f)->boundary_indicator()
+                      cell->face(face_no)->boundary_indicator()
 #endif
-                        )->second
-                        ->traction (scratch.face_finite_element_values.quadrature_point(q),
-                                    scratch.face_finite_element_values.normal_vector(q));
-                    for (unsigned int i=0; i<dofs_per_cell; ++i)
-                      data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                                           traction *
-                                           scratch.face_finite_element_values.JxW(q);
-                  }
+                    )->second
+                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
+                                scratch.face_finite_element_values.normal_vector(q));
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                       traction *
+                                       scratch.face_finite_element_values.JxW(q);
               }
+          }
       }
 
+
+
+      template <int dim>
+      void
+      free_boundary_stokes_contribution (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         typename Simulator<dim>::FreeSurfaceHandler          &free_surface,
+                                         internal::Assembly::CopyData::StokesSystem<dim>      &data)
+      {
+        free_surface.apply_stabilization(cell, data.local_matrix);
+      }
     }
   }
 
@@ -1732,14 +1759,26 @@ namespace aspect
 
 
     // add the terms for traction boundary conditions
-    assemblers.local_assemble_stokes_system
+    assemblers.local_assemble_stokes_system_on_boundary_face
     .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::traction_boundary_conditions<dim>,
                               SimulatorAccess<dim>(*this),
                               std_cxx11::_1,
+                              std_cxx11::_2,
                               // discard pressure_scaling,
                               // discard rebuild_stokes_matrix,
-                              std_cxx11::_4,
-                              std_cxx11::_5));
+                              std_cxx11::_5,
+                              std_cxx11::_6));
+
+    // and, if necessary, the function that computes stabilization terms for free boundaries
+    if (parameters.free_surface_enabled)
+      assemblers.local_assemble_stokes_system
+      .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::free_boundary_stokes_contribution<dim>,
+                                std_cxx11::_1,
+                                std_cxx11::ref(*free_surface.get()),
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                // discard scratch object,
+                                std_cxx11::_5));
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
@@ -1942,8 +1981,7 @@ namespace aspect
     if (do_pressure_rhs_compatibility_modification)
       data.local_pressure_shape_function_integrals = 0;
 
-    // we only need the strain rates for the viscosity,
-    // which we only need when rebuilding the matrix
+    // initialize the material model data on the cell
 
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
@@ -1968,9 +2006,34 @@ namespace aspect
     assemblers.local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
                                             scratch, data);
 
-    // add stabilization terms for free boundaries if necessary.
-    if (parameters.free_surface_enabled)
-      free_surface->apply_stabilization(cell, data.local_matrix);
+    // then also work on possible face terms. if necessary, initialize
+    // the material model data on faces
+    for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      if (cell->at_boundary(face_no))
+        {
+          if (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+            {
+              compute_material_model_input_values (current_linearization_point,
+                                                   scratch.face_finite_element_values,
+                                                   cell,
+                                                   rebuild_stokes_matrix,
+                                                   scratch.face_material_model_inputs);
+
+              material_model->evaluate(scratch.face_material_model_inputs,
+                                       scratch.face_material_model_outputs);
+//TODO: the following doesn't currently compile because the get_quadrature() call returns
+//  a dim-1 dimensional quadrature
+              // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
+              //                                            cell,
+              //                                            scratch.face_finite_element_values.get_quadrature(),
+              //                                            scratch.face_finite_element_values.get_mapping(),
+              //                                            scratch.face_material_model_outputs);
+            }
+
+          assemblers.local_assemble_stokes_system_on_boundary_face(cell, face_no,
+                                                                   pressure_scaling, rebuild_stokes_matrix,
+                                                                   scratch, data);
+        }
 
     cell->get_dof_indices (data.local_dof_indices);
   }
@@ -2531,6 +2594,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
+  template class Simulator<dim>::Assemblers::Properties; \
   template void Simulator<dim>::set_assemblers (); \
   template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
                                                                        const DoFHandler<dim>::active_cell_iterator &cell, \

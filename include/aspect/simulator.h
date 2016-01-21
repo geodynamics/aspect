@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -608,14 +608,114 @@ namespace aspect
        */
       struct Assemblers
       {
+        /**
+         * A signal that is called from Simulator::local_assemble_stokes_preconditioner()
+         * and whose slots are supposed to assemble terms that together form the
+         * Stokes preconditioner matrix.
+         *
+         * The arguments to the slots are as follows:
+         * - The Simulator::pressure_scaling value used to scale velocity
+         *   and pressure components against each other.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
         boost::signals2::signal<void (const double,
                                       internal::Assembly::Scratch::StokesPreconditioner<dim>  &,
                                       internal::Assembly::CopyData::StokesPreconditioner<dim> &)> local_assemble_stokes_preconditioner;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_stokes_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Stokes system matrix and right hand side.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The Simulator::pressure_scaling value used to scale velocity
+         *   and pressure components against each other.
+         * - Whether or not to actually assemble the matrix. If @p false,
+         *   then only assemble the right hand side of the Stokes system.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
         boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
                                       const double,
                                       const bool,
                                       internal::Assembly::Scratch::StokesSystem<dim>       &,
                                       internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_stokes_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Stokes system matrix and right hand side. This signal is called
+         * once for each boundary face.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The number of the face on which we intend to assemble. This
+         *   face (of the current cell) will be at the boundary of the
+         *   domain.
+         * - The Simulator::pressure_scaling value used to scale velocity
+         *   and pressure components against each other.
+         * - Whether or not to actually assemble the matrix. If @p false,
+         *   then only assemble the right hand side of the Stokes system.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const unsigned int,
+                                      const double,
+                                      const bool,
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
+
+        /**
+         * A structure that describes what information an assembler function
+         * (listed as one of the signals/slots above) may need to operate.
+         *
+         * There are a number of pieces of information that are always
+         * assumed to be needed. For example, the Stokes and advection
+         * assemblers will always need to have access to the material
+         * model outputs. But the Stokes assembler may or may not need
+         * access to material model output for quadrature points on faces.
+         *
+         * These properties are all preset in a conservative way
+         * (i.e., disabled) in the constructor of this class, but can
+         * be enabled in Simulator::set_assemblers() when adding
+         * individual assemblers. Functions such as
+         * Simulator::local_assemble_stokes_preconditioner(),
+         * Simulator::local_assemble_stokes_system() will then query
+         * these flags to determine whether something has to be
+         * initialized for at least one of the assemblers they call.
+         */
+        struct Properties
+        {
+          /**
+           * Constructor. Disable all properties as described in the
+           * class documentation.
+           */
+          Properties ();
+
+          /**
+           * Whether or not at least one of the the assembler slots in
+           * a signal require the initialization and re-computation of
+           * a MaterialModelOutputs object for each face. This
+           * property is only relevant to assemblers that operate on
+           * boundary faces.
+           */
+          bool need_face_material_model_data;
+        };
+
+        /**
+         * A list of properties of the various types of assemblers.
+         * These property lists are set in Simulator::set_assemblers()
+         * where we add individual functions to the signals above.
+         */
+        Properties stokes_preconditioner_assembler_properties;
+        Properties stokes_system_assembler_properties;
+        Properties stokes_system_assembler_on_boundary_face_properties;
       };
 
       /**
@@ -1034,7 +1134,7 @@ namespace aspect
       template <class fevalues>
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const fevalues                                      &input_finite_element_values,
+                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
                                            const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
@@ -1328,6 +1428,7 @@ namespace aspect
        * @}
        */
 
+    public:
       /**
        * A member class that isolates the functions and variables that deal
        * with the free surface implementation.  If there are no free surface
@@ -1539,6 +1640,8 @@ namespace aspect
           friend class Simulator<dim>;
           friend class SimulatorAccess<dim>;
       };
+
+    private:
 
       /**
        * Shared pointer for an instance of the FreeSurfaceHandler. this way,
