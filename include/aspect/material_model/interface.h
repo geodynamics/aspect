@@ -266,21 +266,21 @@ namespace aspect
     class MeltOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
-      MeltOutputs (const unsigned int n_points,
-                   const unsigned int n_comp)
-      {
-        compaction_viscosities.resize(n_points);
-        fluid_viscosities.resize(n_points);
-        permeabilities.resize(n_points);
-        fluid_densities.resize(n_points);
-        fluid_compressibilities.resize(n_points);
-      }
+        MeltOutputs (const unsigned int n_points,
+                     const unsigned int n_comp)
+        {
+          compaction_viscosities.resize(n_points);
+          fluid_viscosities.resize(n_points);
+          permeabilities.resize(n_points);
+          fluid_densities.resize(n_points);
+          fluid_compressibilities.resize(n_points);
+        }
 
-      std::vector<double> compaction_viscosities;
-      std::vector<double> fluid_viscosities;
-      std::vector<double> permeabilities;
-      std::vector<double> fluid_densities;
-      std::vector<double> fluid_compressibilities;
+        std::vector<double> compaction_viscosities;
+        std::vector<double> fluid_viscosities;
+        std::vector<double> permeabilities;
+        std::vector<double> fluid_densities;
+        std::vector<double> fluid_compressibilities;
     };
 
 

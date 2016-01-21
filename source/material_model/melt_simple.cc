@@ -362,7 +362,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      if(melt_out != NULL)
+      if (melt_out != NULL)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -389,7 +389,7 @@ namespace aspect
               // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
               melt_out->fluid_compressibilities[i] = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
               melt_out->fluid_densities[i] = reference_rho_f * std::exp(melt_out->fluid_compressibilities[i] * (in.pressure[i] - this->get_surface_pressure()))
-                                       * temperature_dependence;
+                                             * temperature_dependence;
 
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1e-4);

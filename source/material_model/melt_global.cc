@@ -243,7 +243,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
 
-      if(melt_out != NULL)
+      if (melt_out != NULL)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -263,7 +263,7 @@ namespace aspect
               else
                 temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
               melt_out->fluid_densities[i] = reference_rho_f * temperature_dependence
-                                       * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
+                                             * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
               /*
                         const double phi_0 = 0.05;
