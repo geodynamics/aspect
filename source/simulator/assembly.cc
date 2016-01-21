@@ -1015,7 +1015,8 @@ namespace aspect
   template <int dim>
   Simulator<dim>::Assemblers::Properties::Properties ()
     :
-    need_face_material_model_data (false)
+    need_face_material_model_data (false),
+    needed_update_flags ()
   {}
 
 
@@ -1453,6 +1454,15 @@ namespace aspect
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
 
+    // determine which update flags to use for the cell integrals
+    const UpdateFlags cell_update_flags
+      = ((update_JxW_values |
+          update_values |
+          update_gradients |
+          update_quadrature_points)
+         |
+         assemblers.stokes_preconditioner_assembler_properties.needed_update_flags);
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
@@ -1471,10 +1481,7 @@ namespace aspect
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     mapping,
-                                    update_JxW_values |
-                                    update_values |
-                                    update_gradients |
-                                    update_quadrature_points,
+                                    cell_update_flags,
                                     parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (finite_element));
@@ -1675,47 +1682,61 @@ namespace aspect
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
 
+    // determine which updates flags we need on cells and faces
     const UpdateFlags cell_update_flags
       = (update_values    |
          update_gradients |
          update_quadrature_points  |
-         update_JxW_values);
-    // see if we need to assemble traction boundary conditions.
-    // only if so do we actually need to have an FEFaceValues object
+         update_JxW_values)
+        |
+        assemblers.stokes_system_assembler_properties.needed_update_flags;
     const UpdateFlags face_update_flags
-      = (parameters.prescribed_traction_boundary_indicators.size() > 0
+      = (
+          // see if we need to assemble traction boundary conditions.
+          // only if so do we actually need to have an FEFaceValues object
+          parameters.prescribed_traction_boundary_indicators.size() > 0
+          ?
+          update_values |
+          update_quadrature_points |
+          update_normal_vectors |
+          update_JxW_values
+          :
+          UpdateFlags(0))
+        |
+        (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
          ?
-         update_values |
-         update_quadrature_points |
-         update_normal_vectors |
-         update_JxW_values
+         // if we need a material model input on the faces, we need to
+         // also be able to compute the strain rate
+         update_gradients
          :
-         UpdateFlags(0));
+         UpdateFlags(0))
+        |
+        assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
 
-        WorkStream::
-        run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                         dof_handler.begin_active()),
-             CellFilter (IteratorFilters::LocallyOwnedCell(),
-                         dof_handler.end()),
-             std_cxx11::bind (&Simulator<dim>::
-                              local_assemble_stokes_system,
-                              this,
-                              std_cxx11::_1,
-                              std_cxx11::_2,
-                              std_cxx11::_3),
-             std_cxx11::bind (&Simulator<dim>::
-                              copy_local_to_global_stokes_system,
-                              this,
-                              std_cxx11::_1),
-             internal::Assembly::Scratch::
-             StokesSystem<dim> (finite_element, mapping, quadrature_formula,
-                                face_quadrature_formula,
-                                cell_update_flags,
-                                face_update_flags,
-                                parameters.n_compositional_fields),
-             internal::Assembly::CopyData::
-             StokesSystem<dim> (finite_element,
-                                do_pressure_rhs_compatibility_modification));
+    WorkStream::
+    run (CellFilter (IteratorFilters::LocallyOwnedCell(),
+                     dof_handler.begin_active()),
+         CellFilter (IteratorFilters::LocallyOwnedCell(),
+                     dof_handler.end()),
+         std_cxx11::bind (&Simulator<dim>::
+                          local_assemble_stokes_system,
+                          this,
+                          std_cxx11::_1,
+                          std_cxx11::_2,
+                          std_cxx11::_3),
+         std_cxx11::bind (&Simulator<dim>::
+                          copy_local_to_global_stokes_system,
+                          this,
+                          std_cxx11::_1),
+         internal::Assembly::Scratch::
+         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
+                            face_quadrature_formula,
+                            cell_update_flags,
+                            face_update_flags,
+                            parameters.n_compositional_fields),
+         internal::Assembly::CopyData::
+         StokesSystem<dim> (finite_element,
+                            do_pressure_rhs_compatibility_modification));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);
@@ -2147,7 +2168,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
-
+   
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)
