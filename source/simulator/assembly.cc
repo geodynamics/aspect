@@ -1609,14 +1609,30 @@ namespace aspect
         for (unsigned int q=0; q<n_q_points; ++q)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             {
-              if (simulator_access.include_melt_transport())
-                scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (i, q);
-              else
-                scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+              scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
               data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
             }
       }
 
+
+      template <int dim>
+      void
+      pressure_rhs_compatibility_modification_melt (const SimulatorAccess<dim>                      &simulator_access,
+                                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                    internal::Assembly::CopyData::StokesSystem<dim> &data)
+      {
+        const Introspection<dim> &introspection = simulator_access.introspection();
+
+        const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+        const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+        for (unsigned int q=0; q<n_q_points; ++q)
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+            {
+              scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (i, q);
+              data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
+            }
+      }
 
 
       template <int dim>
@@ -1771,14 +1787,26 @@ namespace aspect
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
-      assemblers.local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification<dim>,
-                                SimulatorAccess<dim>(*this),
-                                // discard cell,
-                                // discard pressure_scaling,
-                                // discard rebuild_stokes_matrix,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
+      {
+        if (parameters.include_melt_transport)
+          assemblers.local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification_melt<dim>,
+                                    SimulatorAccess<dim>(*this),
+                                    // discard cell,
+                                    // discard pressure_scaling,
+                                    // discard rebuild_stokes_matrix,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+        else
+          assemblers.local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification<dim>,
+                                    SimulatorAccess<dim>(*this),
+                                    // discard cell,
+                                    // discard pressure_scaling,
+                                    // discard rebuild_stokes_matrix,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+      }
 
     // ensure that all assembler objects have access to the SimulatorAccess
     // base class
