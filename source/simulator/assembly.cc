@@ -947,7 +947,6 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                                scratch.old_old_field_laplacians);
 
-
         for (unsigned int q=0; q<n_q_points; ++q)
           {
             scratch.explicit_material_model_inputs.temperature[q] = (scratch.old_temperature_values[q] + scratch.old_old_temperature_values[q]) / 2;
@@ -1065,7 +1064,8 @@ namespace aspect
   template <int dim>
   Simulator<dim>::Assemblers::Properties::Properties ()
     :
-    need_face_material_model_data (false)
+    need_face_material_model_data (false),
+    needed_update_flags ()
   {}
 
 
@@ -1615,6 +1615,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       pressure_rhs_compatibility_modification_melt (const SimulatorAccess<dim>                      &simulator_access,
@@ -1752,6 +1753,9 @@ namespace aspect
     if (parameters.include_melt_transport)
       {
         assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+        assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
+                                                                                              update_normal_vectors | update_gradients |
+                                                                                              update_JxW_values);
         assemblers.local_assemble_stokes_system_on_boundary_face
         .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_melt_boundary,
                                   std_cxx11::cref (*complete_equation_assembler),
@@ -1877,6 +1881,15 @@ namespace aspect
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
 
+    // determine which update flags to use for the cell integrals
+    const UpdateFlags cell_update_flags
+      = ((update_JxW_values |
+          update_values |
+          update_gradients |
+          update_quadrature_points)
+         |
+         assemblers.stokes_preconditioner_assembler_properties.needed_update_flags);
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
@@ -1895,10 +1908,7 @@ namespace aspect
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula, face_quadrature_formula,
                                     mapping,
-                                    update_JxW_values |
-                                    update_values |
-                                    update_gradients |
-                                    update_quadrature_points,
+                                    cell_update_flags,
                                     parameters.n_compositional_fields,
                                     parameters.include_melt_transport),
          internal::Assembly::CopyData::
@@ -1999,7 +2009,6 @@ namespace aspect
       data.local_pressure_shape_function_integrals = 0;
 
     // initialize the material model data on the cell
-
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
@@ -2028,9 +2037,10 @@ namespace aspect
     for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
       if (cell->at_boundary(face_no))
         {
+          scratch.face_finite_element_values.reinit (cell, face_no);
+
           if (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
-              scratch.face_finite_element_values.reinit (cell, face_no);
               compute_material_model_input_values (current_linearization_point,
                                                    scratch.face_finite_element_values,
                                                    cell,
@@ -2039,6 +2049,7 @@ namespace aspect
               scratch.face_material_model_outputs.create_additional_material_outputs(scratch.face_finite_element_values.n_quadrature_points,
                                                                                      parameters.n_compositional_fields);
 
+                                                   
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
 //TODO: the following doesn't currently compile because the get_quadrature() call returns
@@ -2103,6 +2114,37 @@ namespace aspect
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
     CellFilter;
 
+    // determine which updates flags we need on cells and faces
+    const UpdateFlags cell_update_flags
+      = (update_values    |
+         update_gradients |
+         update_quadrature_points  |
+         update_JxW_values)
+        |
+        assemblers.stokes_system_assembler_properties.needed_update_flags;
+    const UpdateFlags face_update_flags
+      = (
+          // see if we need to assemble traction boundary conditions.
+          // only if so do we actually need to have an FEFaceValues object
+          parameters.prescribed_traction_boundary_indicators.size() > 0
+          ?
+          update_values |
+          update_quadrature_points |
+          update_normal_vectors |
+          update_JxW_values
+          :
+          UpdateFlags(0))
+        |
+        (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
+         ?
+         // if we need a material model input on the faces, we need to
+         // also be able to compute the strain rate
+         update_gradients
+         :
+         UpdateFlags(0))
+        |
+        assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
@@ -2120,21 +2162,9 @@ namespace aspect
                           std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesSystem<dim> (finite_element, mapping, quadrature_formula, face_quadrature_formula,
-                            (update_values    |
+                            cell_update_flags,
+                            face_update_flags,
                              update_gradients |
-                             update_quadrature_points  |
-                             update_JxW_values),
-                            // see if we need to assemble traction boundary conditions.
-                            // only if so do we actually need to have an FEFaceValues object
-                            (parameters.prescribed_traction_boundary_indicators.size() > 0 || parameters.include_melt_transport
-                             ?
-                             update_values |
-                             update_gradients |
-                             update_quadrature_points |
-                             update_normal_vectors |
-                             update_JxW_values
-                             :
-                             UpdateFlags(0)),
                             parameters.n_compositional_fields,
                             parameters.include_melt_transport),
          internal::Assembly::CopyData::

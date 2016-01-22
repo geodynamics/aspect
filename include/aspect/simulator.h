@@ -706,6 +706,14 @@ namespace aspect
            * boundary faces.
            */
           bool need_face_material_model_data;
+
+          /**
+           * A list of FEValues UpdateFlags that are necessary for
+           * a given operation. Assembler objects may add to this list
+           * as necessary; it will be initialized with a set of
+           * "default" flags that will always be set.
+           */
+          UpdateFlags needed_update_flags;
         };
 
         /**
