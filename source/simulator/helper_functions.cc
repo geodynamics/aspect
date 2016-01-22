@@ -998,11 +998,11 @@ namespace aspect
                 solution, u_s_values);
               fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
                 solution, grad_p_f_values);
-              compute_material_model_input_values<FEValues<dim> > (solution,
-                                                                   fe_values,
-                                                                   cell,
-                                                                   true, // TODO: use rebuild_stokes_matrix here?
-                                                                   in);
+              compute_material_model_input_values (solution,
+                                                   fe_values,
+                                                   cell,
+                                                   true, // TODO: use rebuild_stokes_matrix here?
+                                                   in);
 
               out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
               material_model->evaluate(in, out);
@@ -1096,11 +1096,11 @@ namespace aspect
                 solution, u_s_values);
               fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
                 solution, grad_p_f_values);
-              compute_material_model_input_values<FEValues<dim> > (solution,
-                                                                   fe_values,
-                                                                   cell,
-                                                                   true, // TODO: use rebuild_stokes_matrix here?
-                                                                   in);
+              compute_material_model_input_values (solution,
+                                                   fe_values,
+                                                   cell,
+                                                   true, // TODO: use rebuild_stokes_matrix here?
+                                                   in);
 
               out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
               material_model->evaluate(in, out);

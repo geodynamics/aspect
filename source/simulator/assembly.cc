@@ -1011,7 +1011,6 @@ namespace aspect
 
 
   template <int dim>
-  template <class fevalues>
   void
   Simulator<dim>::
   compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
@@ -1363,15 +1362,11 @@ namespace aspect
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                                  :
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - ((this->get_material_model().is_compressible())
-                                                   ?
-                                                   (use_tensor ?
+                                                - (use_tensor ?
                                                     eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
                                                     :
                                                     eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                    )
-                                                   :
-                                                   0)
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
                                                 // finally the term -div(u). note the negative sign to make this
@@ -1379,8 +1374,8 @@ namespace aspect
                                                 - (pressure_scaling *
                                                    scratch.phi_p[i] * scratch.div_phi_u[j])
                                                 +
-                                                - pressure_scaling * pressure_scaling / viscosity_c
-                                                * scratch.phi_p_c[i] * scratch.phi_p_c[j]
+                                                (- pressure_scaling * pressure_scaling / viscosity_c
+                                                * scratch.phi_p_c[i] * scratch.phi_p_c[j])
                                                 - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
                                                 - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
                                                 - K_D * pressure_scaling * pressure_scaling *
@@ -1614,7 +1609,10 @@ namespace aspect
         for (unsigned int q=0; q<n_q_points; ++q)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             {
-              scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+              if (simulator_access.include_melt_transport())
+                scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (i, q);
+              else
+                scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
               data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
             }
       }
@@ -1802,11 +1800,11 @@ namespace aspect
 
     data.local_matrix = 0;
 
-    compute_material_model_input_values<FEValues<dim> >  (current_linearization_point,
-                                                          scratch.finite_element_values,
-                                                          cell,
-                                                          true,
-                                                          scratch.material_model_inputs);
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         cell,
+                                         true,
+                                         scratch.material_model_inputs);
     scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
 
     material_model->evaluate(scratch.material_model_inputs,
@@ -1974,11 +1972,11 @@ namespace aspect
 
     // initialize the material model data on the cell
 
-    compute_material_model_input_values<FEValues<dim> > (current_linearization_point,
-                                                         scratch.finite_element_values,
-                                                         cell,
-                                                         rebuild_stokes_matrix,
-                                                         scratch.material_model_inputs);
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         cell,
+                                         rebuild_stokes_matrix,
+                                         scratch.material_model_inputs);
     scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
 
     material_model->evaluate(scratch.material_model_inputs,
@@ -2005,11 +2003,11 @@ namespace aspect
           if (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
               scratch.face_finite_element_values.reinit (cell, face_no);
-              compute_material_model_input_values<FEValues<dim> > (current_linearization_point,
-                                                                   scratch.face_finite_element_values,
-                                                                   cell,
-                                                                   rebuild_stokes_matrix,
-                                                                   scratch.face_material_model_inputs);
+              compute_material_model_input_values (current_linearization_point,
+                                                   scratch.face_finite_element_values,
+                                                   cell,
+                                                   rebuild_stokes_matrix,
+                                                   scratch.face_material_model_inputs);
               scratch.face_material_model_outputs.create_additional_material_outputs(scratch.face_finite_element_values.n_quadrature_points,
                                                                                      parameters.n_compositional_fields);
 
@@ -2302,11 +2300,11 @@ namespace aspect
     scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                            scratch.old_old_field_laplacians);
 
-    compute_material_model_input_values<FEValues<dim> > (current_linearization_point,
-                                                         scratch.finite_element_values,
-                                                         cell,
-                                                         true,
-                                                         scratch.material_model_inputs);
+    compute_material_model_input_values (current_linearization_point,
+                                         scratch.finite_element_values,
+                                         cell,
+                                         true,
+                                         scratch.material_model_inputs);
     scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
 
     material_model->evaluate(scratch.material_model_inputs,
@@ -2621,12 +2619,12 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
-  template void Simulator<dim>::compute_material_model_input_values <FEValues<dim> > ( \
-      const LinearAlgebra::BlockVector                      &input_solution, \
-      const FEValuesBase<dim,dim>                           &input_finite_element_values, \
-      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
-      const bool                                             compute_strainrate, \
-      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
+  template void Simulator<dim>::compute_material_model_input_values ( \
+                                                                      const LinearAlgebra::BlockVector                      &input_solution, \
+                                                                      const FEValuesBase<dim,dim>                           &input_finite_element_values, \
+                                                                      const typename DoFHandler<dim>::active_cell_iterator  &cell, \
+                                                                      const bool                                             compute_strainrate, \
+                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
    
 
 

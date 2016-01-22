@@ -1131,7 +1131,6 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      template <class fevalues>
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
                                            const FEValuesBase<dim,dim>                                 &input_finite_element_values,
