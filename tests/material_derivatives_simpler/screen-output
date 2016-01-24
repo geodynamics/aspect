@@ -1,0 +1,25 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmaterial_derivatives_simpler.so>
+out_base.viscosities[0] = 5e+24, out_dviscositydpressure.viscosity[0] = 5e+24. Difference = 0
+out_base.viscosities[1] = 5e+24, out_dviscositydpressure.viscosity[1] = 5e+24. Difference = 0
+out_base.viscosities[2] = 5e+24, out_dviscositydpressure.viscosity[2] = 5e+24. Difference = 0
+out_base.viscosities[0] = 5e+24, out_dviscositydstrainrate_0.viscosity[0] = 5e+24. Difference = 0
+out_base.viscosities[1] = 5e+24, out_dviscositydstrainrate_0.viscosity[1] = 5e+24. Difference = 0
+out_base.viscosities[2] = 5e+24, out_dviscositydstrainrate_0.viscosity[2] = 5e+24. Difference = 0
+out_base.viscosities[0] = 5e+24, out_dviscositydstrainrate_1.viscosity[0] = 5e+24. Difference = 0
+out_base.viscosities[1] = 5e+24, out_dviscositydstrainrate_1.viscosity[1] = 5e+24. Difference = 0
+out_base.viscosities[2] = 5e+24, out_dviscositydstrainrate_1.viscosity[2] = 5e+24. Difference = 0
+out_base.viscosities[0] = 5e+24, out_dviscositydstrainrate_2.viscosity[0] = 5e+24. Difference = 0
+out_base.viscosities[1] = 5e+24, out_dviscositydstrainrate_2.viscosity[1] = 5e+24. Difference = 0
+out_base.viscosities[2] = 5e+24, out_dviscositydstrainrate_2.viscosity[2] = 5e+24. Difference = 0
+out_base.viscosities[0] = 5e+24, out_dviscositydtemperature.viscosity[0] = 5e+24. Difference = 0
+out_base.viscosities[1] = 5e+24, out_dviscositydtemperature.viscosity[1] = 5e+24. Difference = 0
+out_base.viscosities[2] = 5e+24, out_dviscositydtemperature.viscosity[2] = 5e+24. Difference = 0
+OK
