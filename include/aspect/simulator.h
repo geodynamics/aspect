@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -661,6 +661,60 @@ namespace aspect
                                       const bool,
                                       internal::Assembly::Scratch::StokesSystem<dim>       &,
                                       internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
+
+        /**
+         * A structure that describes what information an assembler function
+         * (listed as one of the signals/slots above) may need to operate.
+         *
+         * There are a number of pieces of information that are always
+         * assumed to be needed. For example, the Stokes and advection
+         * assemblers will always need to have access to the material
+         * model outputs. But the Stokes assembler may or may not need
+         * access to material model output for quadrature points on faces.
+         *
+         * These properties are all preset in a conservative way
+         * (i.e., disabled) in the constructor of this class, but can
+         * be enabled in Simulator::set_assemblers() when adding
+         * individual assemblers. Functions such as
+         * Simulator::local_assemble_stokes_preconditioner(),
+         * Simulator::local_assemble_stokes_system() will then query
+         * these flags to determine whether something has to be
+         * initialized for at least one of the assemblers they call.
+         */
+        struct Properties
+        {
+          /**
+           * Constructor. Disable all properties as described in the
+           * class documentation.
+           */
+          Properties ();
+
+          /**
+           * Whether or not at least one of the the assembler slots in
+           * a signal require the initialization and re-computation of
+           * a MaterialModelOutputs object for each face. This
+           * property is only relevant to assemblers that operate on
+           * boundary faces.
+           */
+          bool need_face_material_model_data;
+
+          /**
+           * A list of FEValues UpdateFlags that are necessary for
+           * a given operation. Assembler objects may add to this list
+           * as necessary; it will be initialized with a set of
+           * "default" flags that will always be set.
+           */
+          UpdateFlags needed_update_flags;
+        };
+
+        /**
+         * A list of properties of the various types of assemblers.
+         * These property lists are set in Simulator::set_assemblers()
+         * where we add individual functions to the signals above.
+         */
+        Properties stokes_preconditioner_assembler_properties;
+        Properties stokes_system_assembler_properties;
+        Properties stokes_system_assembler_on_boundary_face_properties;
       };
 
       /**
@@ -1043,7 +1097,7 @@ namespace aspect
        */
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
                                            const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
