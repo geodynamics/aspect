@@ -150,29 +150,22 @@ namespace aspect
          * Select between harmonic, arithmetic, geometric, and
          * maximum_composition. The max composition scheme simply uses the
          * viscosity of whichever field has the highes volume fraction.
-        * For each quadrature point, averaging is conducted over the
-        * N compositional fields plus the background field.
+         * For each quadrature point, averaging is conducted over the
+         * N compositional fields plus the background field.
          */
-        enum averaging_scheme
-        {
-          harmonic,
-          arithmetic,
-          geometric,
-          maximum_composition
-        } viscosity_averaging;
+        double composition_averaging_exponent;
+        double composition_averaging_exponent_inverse;
 
+        void
+        calculate_isostrain_stress_and_stress_strain_derivative ( const std::vector<double> &volume_fractions,
+                                                                  const double &pressure,
+                                                                  const double &temperature,
+                                                                  const double &strain_rate_ii,
+                                                                  std::vector<double> &stress,
+                                                                  std::vector<double> &stress_strain_deriv,
+                                                                  std::vector<double> &stress_pressure_deriv) const;
 
-        double average_value (const std::vector<double> &composition,
-                              const std::vector<double> &parameter_values,
-                              const enum averaging_scheme &average_type) const;
-
-        std::vector<double>
-        calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                          const double &pressure,
-                                          const double &temperature,
-                                          const SymmetricTensor<2,dim> &strain_rate) const;
-        
-
+        // Store the value of the coefficients per compositional field.
         std::vector<double> yield_stress;
 
         std::vector<double> prefactors_diffusion;

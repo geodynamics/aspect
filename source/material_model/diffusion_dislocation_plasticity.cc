@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -76,82 +76,30 @@ namespace aspect
       return volume_fractions;
     }
 
-    template <int dim>
-    double
-    DiffusionDislocationPlasticity<dim>::
-    average_value ( const std::vector<double> &composition,
-                    const std::vector<double> &parameter_values,
-                    const enum averaging_scheme &average_type) const
-    {
-      double averaged_parameter = 0.0;
-      const std::vector<double> volume_fractions = compute_volume_fractions(composition);
-
-      switch (average_type)
-        {
-          case arithmetic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*parameter_values[i];
-            break;
-          }
-          case harmonic:
-          {
-            for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
-            averaged_parameter = 1.0/averaged_parameter;
-            break;
-          }
-          case geometric:
-          {
-            for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
-            averaged_parameter = std::exp(averaged_parameter);
-            break;
-          }
-          case maximum_composition:
-          {
-            const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
-                                                                    volume_fractions.end() )
-                                                  - volume_fractions.begin());
-            averaged_parameter = parameter_values[i];
-            break;
-          }
-          default:
-          {
-            AssertThrow( false, ExcNotImplemented() );
-            break;
-          }
-        }
-      return averaged_parameter;
-    }
-
 
     template <int dim>
-    std::vector<double>
+    void
     DiffusionDislocationPlasticity<dim>::
-    calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                      const double &pressure,
-                                      const double &temperature,
-                                      const SymmetricTensor<2,dim> &strain_rate) const
+    calculate_isostrain_stress_and_stress_strain_derivative ( const std::vector<double> &volume_fractions,
+                                                              const double &pressure,
+                                                              const double &temperature,
+                                                              const double &strain_rate_ii,
+                                                              std::vector<double> &stress_ii,
+                                                              std::vector<double> &stress_ii_strain_rate_ii_deriv,
+                                                              std::vector<double> &stress_ii_pressure_deriv) const
     {
       // This function calculates viscosities assuming that all the compositional fields
       // experience the same strain rate (isostrain).
 
-      // If strain rate is zero (like during the first time step) set it to some very small number
-      // to prevent a division-by-zero, and a floating point exception.
-      // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
-      // strain rate (often simplified as epsilondot_ii)
-      const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
-                                      min_strain_rate * min_strain_rate);
 
-      
+
       // Find effective viscosities for each of the individual phases
       // Viscosities should have same number of entries as compositional fields
       std::vector<double> composition_viscosities(volume_fractions.size());
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
           // Power law creep equation
-          // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^* + PV_i^*}{n_iRT}\right)
+          // strain_rate_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^* + PV_i^*}{n_iRT}\right)
           // where ii indicates the square root of the second invariant and
           // i corresponds to diffusion or dislocation creep
 
@@ -167,11 +115,20 @@ namespace aspect
                                                 std::exp(-(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
                                                          (constants::gas_constant*temperature));
 
+          double prefactor_stress_plasticity = 0.5 * std::pow(strain_rate_limit,-1/n_limit) * yield_stress[j];
+
+
+          std::vector<double> L(3);
+          L[0] = activation_volumes_diffusion[j]/(constants::gas_constant*temperature);
+          L[1] = activation_volumes_dislocation[j]/(constants::gas_constant*temperature);
+          L[2] = n_limit/(constants::gas_constant*temperature);
+
 
           // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
           // We use Newton's method to find the second invariant of the stress tensor.
           // Start with the assumption that all strain is accommodated by diffusion creep:
-          double stress_ii = edot_ii/prefactor_stress_diffusion;
+          stress_ii[j] = strain_rate_ii/prefactor_stress_diffusion;
+          double stress_ii_deriv = 1/prefactor_stress_diffusion;
           double strain_rate_residual = 2*strain_rate_residual_threshold;
           double strain_rate_deriv = 0;
           unsigned int stress_iteration = 0;
@@ -179,27 +136,79 @@ namespace aspect
                  && stress_iteration < stress_max_iteration_number)
             {
               strain_rate_residual = prefactor_stress_diffusion *
-                                     std::pow(stress_ii, stress_exponents_diffusion[j]) +
+                                     std::pow(stress_ii[j], stress_exponents_diffusion[j]) +
                                      prefactor_stress_dislocation *
-                                     std::pow(stress_ii, stress_exponents_dislocation[j]) +
-                                     strain_rate_limit * std::pow((stress_ii/yield_stress[j]),n_limit) - edot_ii;
+                                     std::pow(stress_ii[j], stress_exponents_dislocation[j]) +
+                                     prefactor_stress_plasticity * std::pow(stress_ii[j],n_limit) - strain_rate_ii;
 
               strain_rate_deriv = stress_exponents_diffusion[j] *
                                   prefactor_stress_diffusion *
-                                  std::pow(stress_ii, stress_exponents_diffusion[j]-1) +
+                                  std::pow(stress_ii[j], stress_exponents_diffusion[j]-1) +
                                   stress_exponents_dislocation[j] *
                                   prefactor_stress_dislocation *
-                                  std::pow(stress_ii, stress_exponents_dislocation[j]-1) +
-                                  n_limit * (strain_rate_limit / yield_stress[j]) * std::pow((stress_ii / yield_stress[j]),n_limit-1) ;
+                                  std::pow(stress_ii[j], stress_exponents_dislocation[j]-1) +
+                                  n_limit * prefactor_stress_plasticity * std::pow(stress_ii[j],n_limit-1) ;
 
-              stress_ii -= strain_rate_residual/strain_rate_deriv;
+              stress_ii[j] -= strain_rate_residual/strain_rate_deriv;
+
+              // initalize commom pars of the derivative to save computation time
+              // to save for example on computing the expensive power function.
+              std::vector<double> T_2(3);
+              std::vector<double> T_1(3);
+              std::vector<double> T(3);
+              T_2[0] = std::pow(stress_ii[j],stress_exponents_diffusion[j]-2);
+              T_1[0] = T_2[0] * stress_ii[j];
+              T[0]   = T_1[0] * stress_ii[j];
+              T_2[1] = std::pow(stress_ii[j],stress_exponents_dislocation[j]-2);
+              T_1[1] = T_2[1] * stress_ii[j];
+              T[1]   = T_1[1] * stress_ii[j];
+              T_2[2] = std::pow(stress_ii[j],n_limit-2);
+              T_1[2] = T_2[2] * stress_ii[j];
+              T[2]   = T_1[2] * stress_ii[j];
+
+
+              // compute the derivative of the stress to the strain-rate
+              double sumDTn = prefactor_stress_diffusion * T[0] + prefactor_stress_dislocation * T[1] + prefactor_stress_plasticity * T[2];
+
+              double sumDnT_1 = prefactor_stress_diffusion * stress_exponents_diffusion[j] * T_1[0] +
+                                prefactor_stress_dislocation * stress_exponents_dislocation[j] * T_1[1] +
+                                prefactor_stress_plasticity * n_limit * T_1[2];
+
+              double sumDnn_1T_2 = prefactor_stress_diffusion * (stress_exponents_diffusion[j]-1) * T_2[0] +
+                                   prefactor_stress_dislocation * (stress_exponents_dislocation[j]-1) * T_2[1] +
+                                   prefactor_stress_plasticity * (n_limit-1) * T_2[2];
+
+              stress_ii_strain_rate_ii_deriv[j] = stress_ii_deriv - ((1-sumDnT_1*stress_ii_strain_rate_ii_deriv[j])*sumDnT_1 - ((strain_rate_ii-sumDTn)*sumDnn_1T_2*stress_ii_strain_rate_ii_deriv[j]))/(sumDnT_1*sumDnT_1);
+
+              // Compute the derivative of the stress to the pressure
+              // We assume for now that the yieldstress is a independent of pressure.
+              double sumFT       = prefactor_stress_diffusion * T[0] + prefactor_stress_dislocation * T[1] + prefactor_stress_plasticity * T[2];
+
+              double sumFT_2n_1n = prefactor_stress_diffusion * T_2[0] * (stress_exponents_diffusion[j] - 1) * stress_exponents_diffusion[j] +
+                                   prefactor_stress_dislocation * T_2[1] * (stress_exponents_dislocation[j] - 1) * stress_exponents_dislocation[j] +
+                                   prefactor_stress_plasticity * T_2[2] * (n_limit -1) * n_limit;
+
+              double sumFT_1Ln   = prefactor_stress_diffusion * T_1[0] * L[0] * stress_exponents_diffusion[j] +
+                                   prefactor_stress_dislocation * T_1[1] * L[1] * stress_exponents_dislocation[j] +
+                                   prefactor_stress_plasticity * T_1[2] * L[2] * n_limit;
+
+              double sumFT_1n    = prefactor_stress_diffusion * T_1[0] * stress_exponents_diffusion[j] +
+                                   prefactor_stress_dislocation * T_1[1] * stress_exponents_dislocation[j] +
+                                   prefactor_stress_plasticity * T_1[2] * n_limit;
+
+              double sumFT_2L    = prefactor_stress_diffusion * T_2[0] * L[0] +
+                                   prefactor_stress_dislocation * T_2[1] * L[1] +
+                                   prefactor_stress_plasticity * T_2[2] * L[2];
+
+              stress_ii_pressure_deriv[j] = (((-sumFT + strain_rate_ii) * (sumFT_2n_1n * stress_ii_pressure_deriv[j] - sumFT_1Ln)) /
+                                             (sumFT_1n*sumFT_1n))-(sumFT_1n*stress_ii_pressure_deriv[j] + sumFT_2L)/sumFT_1n;
+
               stress_iteration += 1;
             }
 
-          // The effective viscosity, with minimum and maximum bounds
-          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, min_visc), max_visc);
+
         }
-      return composition_viscosities;
+      //return composition_viscosities;
     }
 
     template <int dim>
@@ -208,6 +217,10 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      //set up additional output for the derivatives
+      MaterialModelDerivatives<dim> *derivatives;
+      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
+
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
           // const Point<dim> position = in.position[i];
@@ -236,18 +249,100 @@ namespace aspect
           // calculate effective viscosity
           if (in.strain_rate.size())
             {
+              std::vector<double> stress_ii(volume_fractions.size());
+              std::vector<double> stress_ii_strain_rate_ii_deriv(volume_fractions.size());
+              std::vector<double> stress_ii_pressure_deriv(volume_fractions.size());
+
+              // If strain rate is zero (like during the first time step) set it to some very small number
+              // to prevent a division-by-zero, and a floating point exception.
+              // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
+              // strain rate (often simplified as epsilondot_ii)
+              const double strain_rate_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                                     min_strain_rate * min_strain_rate);
+
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
-              const std::vector<double> composition_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i]);
+              calculate_isostrain_stress_and_stress_strain_derivative(volume_fractions, pressure, temperature, strain_rate_ii, stress_ii, stress_ii_strain_rate_ii_deriv,stress_ii_pressure_deriv);
 
-              // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
-              // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
-              // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
-              // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = average_value(composition, composition_viscosities, viscosity_averaging);
+              std::vector<double> viscosity_strain_rate_ii_deriv(volume_fractions.size());
+              std::vector<double> viscosity_pressure_deriv(volume_fractions.size());
+              // Compute the viscosity
+              std::vector<double> viscosities(volume_fractions.size());
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+                {
+                  // The effective viscosity, with minimum and maximum bounds
+                  viscosities[j] = volume_fractions[j] * std::pow(std::min(std::max(stress_ii[j]/strain_rate_ii/2, min_visc), max_visc),composition_averaging_exponent);
+                  out.viscosities[i] += viscosities[j];
+
+                  // For diffusion creep, viscosity is grain size dependent
+                  double prefactor_stress_diffusion = prefactors_diffusion[j] *
+                                                      std::pow(grain_size, -grain_size_exponents_diffusion[j]) *
+                                                      std::exp(-(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
+                                                               (constants::gas_constant*temperature));
+
+                  // For dislocation creep, viscosity is grain size independent (m=0)
+                  double prefactor_stress_dislocation = prefactors_dislocation[j] *
+                                                        std::exp(-(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j])/
+                                                                 (constants::gas_constant*temperature));
+
+                  double prefactor_stress_plasticity = 0.5 * std::pow(strain_rate_limit,-1/n_limit) * yield_stress[j];
+
+                  double sumFT1_n = prefactor_stress_diffusion * std::pow(stress_ii[j],stress_exponents_diffusion[j]) * (1-stress_exponents_diffusion[j]) +
+                                    prefactor_stress_dislocation * std::pow(stress_ii[j],stress_exponents_dislocation[j]) * (1-stress_exponents_dislocation[j]) +
+                                    prefactor_stress_plasticity * std::pow(stress_ii[j],n_limit) * (1-n_limit);
+
+                  double sumFT = prefactor_stress_diffusion * std::pow(stress_ii[j],stress_exponents_diffusion[j]) +
+                                 prefactor_stress_dislocation * std::pow(stress_ii[j],stress_exponents_dislocation[j]) +
+                                 prefactor_stress_plasticity * std::pow(stress_ii[j],n_limit);
+
+                  double sumFn_1 = prefactor_stress_diffusion * (stress_exponents_diffusion[j]-1) +
+                                   prefactor_stress_dislocation * (stress_exponents_dislocation[j]-1) +
+                                   prefactor_stress_plasticity *  (n_limit-1);
+
+                  double sumFT1 = prefactor_stress_diffusion * std::pow(stress_ii[j],stress_exponents_diffusion[j]+1) +
+                                  prefactor_stress_dislocation * std::pow(stress_ii[j],stress_exponents_dislocation[j]+1) +
+                                  prefactor_stress_plasticity * std::pow(stress_ii[j],n_limit+1);
+
+                  viscosity_strain_rate_ii_deriv[j] = (sumFT1_n/(sumFT*sumFT))*stress_ii_strain_rate_ii_deriv[j];
+
+                  viscosity_pressure_deriv[j] = (sumFn_1 * constants::gas_constant * temperature * stress_ii_pressure_deriv[j] + sumFT1) /
+                                                (2 * constants::gas_constant * temperature * sumFT * sumFT);
+
+
+                  // TODO: review if this this old description is still valid when plasticity is added.
+                  // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
+                  // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
+                  // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
+                  // of compositional field viscosities is consistent with any averaging scheme.
+                  //out.viscosities[i] = average_value(composition, composition_viscosities, viscosity_averaging);
+                }
+
+
+              out.viscosities[i] = 1/volume_fractions.size() * pow(out.viscosities[i],composition_averaging_exponent_inverse);
+
+              // Compute the viscosity derivative
+              derivatives->dviscosities_dvelocity[i] = 0.0;
+              double sum_c_eta_p = 0;
+              double sum_c_p_detadepsilon_p_1 = 0;
+              double sum_c_p_detadP_p_1 = 0;
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+                {
+                  //TODO: look at this part again!
+                  sum_c_eta_p     += volume_fractions[j] * std::pow(viscosities[j], composition_averaging_exponent);
+
+                  sum_c_p_detadepsilon_p_1 += volume_fractions[j] * composition_averaging_exponent * std::pow(viscosity_strain_rate_ii_deriv[j], composition_averaging_exponent-1);
+                  sum_c_p_detadP_p_1 += volume_fractions[j] * composition_averaging_exponent * std::pow(viscosity_pressure_deriv[j], composition_averaging_exponent-1);
+                }
+              derivatives->dviscosities_dstrain_rate[i] = 1/volume_fractions.size() * composition_averaging_exponent_inverse *
+                                                          pow(sum_c_eta_p,1/composition_averaging_exponent) * sum_c_p_detadepsilon_p_1;
+
+              derivatives->dviscosities_dpressure[i] = 1/volume_fractions.size() * composition_averaging_exponent_inverse *
+                                                       pow(sum_c_eta_p,1/composition_averaging_exponent) * sum_c_p_detadP_p_1;
+
+              derivatives->dviscosities_dtemperature[i] = 0.0;
+              //derivatives->dviscosities_dcompositions[i] = std::vector<double>(in.composition[i].size(),0);
             }
 
           out.densities[i] = density;
@@ -341,12 +436,13 @@ namespace aspect
 
           // Rheological parameters
           prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0), "Units: $m$");
-          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
-                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+          prm.declare_entry ("Composition averaging exponent", "-1",
+                             Patterns::Double(),
                              "When more than one compositional field is present at a point "
                              "with different viscosities, we need to come up with an average "
-                             "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                             "geometric, or maximum composition.");
+                             "viscosity at that point.  Select a weighted harmonic (-1), arithmetic (1), "
+                             "geometric, or maximum (very large) composition by setting the "
+                             "appropeate value of the implemented general mean.");
 
           // plasticity parameters
           prm.declare_entry ("n limit", "50", Patterns::Integer(0),
@@ -450,16 +546,7 @@ namespace aspect
           thermal_expansivities = get_vector_double("Thermal expansivities", n_fields, prm);
 
           // Rheological parameters
-          if (prm.get ("Viscosity averaging scheme") == "harmonic")
-            viscosity_averaging = harmonic;
-          else if (prm.get ("Viscosity averaging scheme") == "arithmetic")
-            viscosity_averaging = arithmetic;
-          else if (prm.get ("Viscosity averaging scheme") == "geometric")
-            viscosity_averaging = geometric;
-          else if (prm.get ("Viscosity averaging scheme") == "maximum composition")
-            viscosity_averaging = maximum_composition;
-          else
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
+          composition_averaging_exponent = prm.get_double ("composition_averaging_exponent");
 
           // Rheological parameters
           // Plasticity parameters
