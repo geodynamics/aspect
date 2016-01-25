@@ -24,7 +24,7 @@
 
 
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <deal.II/base/point.h>
 
 
