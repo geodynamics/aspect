@@ -3570,10 +3570,8 @@ If the function you are describing represents a vector-valued function with mult
 
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
-`adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isotherm using a table look-up approach. The user includes an input ascii data file that is formatted as 3 columns of 'latitude', 'longitude', and 'depth', where 'depth' is in kilometers and represents that depth of an initial temperature of 1673.15 K. The latitudinal and longitudinal bounds of the ascii input data file needs to be at least 1 degree wider than the bounds you use to define the ellipsoid chunk geometry model. See Initial conditions/Adiabatic boundary for more details about the file formatting. The temperature is defined from the surface (273.15 K) to the isotherm as a linear gradient. Below the isotherm the temperature increases adiabatically (0.0005 K per meter). This initial temperature condition is designed specifically for the ellipsoidal chunk geometry model. 
 
-
-{\it Possible values:} [Selection S40RTS perturbation|SAVANI perturbation|adiabatic|ascii data|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation|adiabatic boundary]
+{\it Possible values:} [Selection S40RTS perturbation|SAVANI perturbation|adiabatic|ascii data|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation]
 \end{itemize}
 
 
@@ -3680,30 +3678,6 @@ The function object in the Function subsection represents the compositional fiel
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\end{itemize}
-
-
-\subsection{Parameters in section \tt Initial conditions/Adiabatic boundary}
-\label{parameters:Initial_conditions/adiabatic_boundary}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Adiabatic Boundary Filename}
-\phantomsection\label{parameters:Initial conditions/adiabatic boundary/Adiabatic Boundary Filename}
-
-
-\index[prmindex]{Adiabatic Boundary Filename}
-\index[prmindexfull]{Initial conditions!adiabatic boundary!Adiabatic Boundary Filename}
-{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/adiabatic\_boundary/adiabatic\_boundary.txt
-
-
-
-{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-conditions/adiabatic\_boundary/adiabatic\_boundary.txt
-
-
-{\it Description:} File from which the base of the lithosphere depth data is read. Note that full path (\$DIRECTORY\_PATH/filename) of the location of the file must be provided. 
-
-
-{\it Possible values:}[\$DIRECTORY\_PATH/filename]
 \end{itemize}
 
 

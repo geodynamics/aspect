@@ -6,14 +6,6 @@
 --     . using Trilinos
 -----------------------------------------------------------------------------
 
-
-Adiabatic boundary data interaval  delta = 0.025
-
-Resolution of input data in meters is approximately = 5.55
-
-
-number of unique latitudes or longitudes in Adiabatic boundary file= 501
-
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3041 (2187+125+729)
 
@@ -24,27 +16,27 @@ Number of degrees of freedom: 3041 (2187+125+729)
    Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 2.73223e-05
+   Residual after nonlinear iteration 2: 3.20899e-05
 
    Postprocessing:
-     RMS, max velocity: 0.00179 m/year, 0.00537 m/year
+     RMS, max velocity: 0.0018 m/year, 0.00508 m/year
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      4.17s |            |
+| Total wallclock time elapsed since start    |      2.29s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      1.55s |        37% |
-| Assemble temperature system     |         1 |     0.546s |        13% |
-| Build Stokes preconditioner     |         1 |     0.694s |        17% |
-| Build temperature preconditioner|         1 |   0.00672s |      0.16% |
-| Solve Stokes system             |         2 |     0.329s |       7.9% |
-| Solve temperature system        |         1 |   0.00166s |      0.04% |
-| Initialization                  |         2 |     0.504s |        12% |
-| Postprocessing                  |         1 |    0.0412s |      0.99% |
-| Setup dof systems               |         1 |     0.264s |       6.3% |
+| Assemble Stokes system          |         2 |     0.727s |        32% |
+| Assemble temperature system     |         1 |     0.247s |        11% |
+| Build Stokes preconditioner     |         1 |     0.339s |        15% |
+| Build temperature preconditioner|         1 |   0.00512s |      0.22% |
+| Solve Stokes system             |         2 |     0.155s |       6.8% |
+| Solve temperature system        |         1 |  0.000898s |     0.039% |
+| Initialization                  |         2 |     0.588s |        26% |
+| Postprocessing                  |         1 |    0.0161s |       0.7% |
+| Setup dof systems               |         1 |     0.125s |       5.4% |
 +---------------------------------+-----------+------------+------------+
 

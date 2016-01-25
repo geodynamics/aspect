@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/simulator.h>
 
 
 namespace aspect
@@ -29,34 +30,40 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that compute initial temperature field based on a user-defined
-     * adiabatic boundary for the 3D ellipsoid chunk geometry model. It discretizes
-     * the model domain into two regions separated by an isotherm boundary below which the
-     * temperature increases adiabatically while above it the temperature linearly increases
-     * from a surface temperature (273.15 K or 0 degree C) to the isotherm (1673.15 K or 1600
-     * degree C). The user defines the location of the thermal isotherm with a data file with
-     * the format defined in the ASPECT manual. Note that the latitudinal and longitudinal bounds
-     * of the ascii input data file needs to be at least 1 degree wider than the bounds you use
-     * to define the ellipsoid chunk geometry.
-     * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps, and Wolfgang Bangerth.
+     * A class that computes an initial temperature field based
+     * on a user-defined adiabatic boundary for the 3D ellipsoid
+     * chunk geometry model. It discretizes the model domain into
+     * two regions separated by an isotherm boundary below which
+     * the temperature increases adiabatically. Above the
+     * user-defined isotherm boundary the temperature linearly
+     * increases from a surface temperature (273.15 K or 0 degree C)
+     * to the isotherm (1673.15 K or 1600 degree C). The user
+     * defines the location of the isotherm boundary with an ascii
+     * data file with the format defined in the ASPECT manual. Note
+     * that the latitudinal and longitudinal bounds of the ascii input
+     * data file need to be at least 1 degree wider than the bounds
+     * you use to define the region of your ellipsoid chunk geometry.
+     *
+     * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps,
+     * and Wolfgang Bangerth.
      */
      template <int dim>
      class AdiabaticBoundary : public Interface<dim>
      {
        public:
     	  /** 
-	       * Return the initial temperature as a function of position
+	       * Return the initial temperature as a function of position.
     	   */
     	  virtual
           double initial_temperature (const Point<dim> &position) const;
 
     	  /**
-    	   * declare the parameters that this class needs
+    	   * Declare the parameters that this class needs.
     	   */
           static
           void declare_parameters (ParameterHandler &prm);
           /**
-           * Read the parameters above from the parameter file
+           * Read the parameters above from the parameter file.
            */
           virtual
 	      void parse_parameters (ParameterHandler &prm);
@@ -65,30 +72,33 @@ namespace aspect
           std::vector<double>  latitudes_iso;
           std::vector<double>  longitudes_iso;
           std::vector<double>  depths_iso;
-	       std::string adiabatic_boundary_file_name;
-           std::string line;
+	      std::string isotherm_file_name;
+          double isotherm_temperature;
+          double surface_temperature;
           double delta;
-          int data_flag;
-          int number_coords_depth;
 
           /**
-           * A function that reads adiabatic boundary depth form ascii data file and return the value of the depth for each position
+           * A function that reads the depth of the user-defined
+           * adiabatic boundary from an ascii data file and returns
+           * the value of the depth for each position.
            */
           double
           get_isotherm_depth (const double latitude,
-                                    const double longitude) const;
+                              const double longitude) const;
 
           /**
-           * Return latitude and longitude from cartesian x,y and z (wgs84)
+           * Return latitude and longitude from x,y and z in the WGS84
+           * Earth-Center Earth-Fixed (ECEF) reference frame.
            */
           std::pair<double, double>
-          lat_long_from_xyz_wgs84(const Point<3> &pos) const;
+          lat_long_from_xyz_WGS84(const Point<3> &pos) const;
 
           /**
-	       * Return distance from center of the WGS84 to a point on the surface
+	       * Return distance from the Earth's center to a point on the
+	       * surface in the WGS84 ECEF reference frane.
 	       */
-          double
-          radius_wgs84(const double &theta) const;
+	      double
+          radius_WGS84(const double &theta) const;
      };
   }
 }
