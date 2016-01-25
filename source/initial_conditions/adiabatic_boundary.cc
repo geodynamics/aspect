@@ -108,7 +108,7 @@ namespace aspect
           /**
            * Loop over the entire array and see if we find a point
            * that's within delta of what we're looking for. If this
-           * point is within the delta then test if it is within twice
+           * point is not within the delta then test if it is within twice
            * as much as delta.
            */
         for (unsigned int i = 0; i <= depths_iso.size();)
