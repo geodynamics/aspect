@@ -56,14 +56,16 @@ namespace aspect
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
-    sim.assemblers->local_assemble_stokes_system
-    .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
-                              std_cxx11::ref(*this),
-                              std_cxx11::_1,
-                              // discard pressure_scaling,
-                              // discard rebuild_stokes_matrix,
-                              // discard scratch object,
-                              std_cxx11::_5));
+
+    assembler_connection =
+      sim.assemblers->local_assemble_stokes_system
+      .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
+                                std_cxx11::ref(*this),
+                                std_cxx11::_1,
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                // discard scratch object,
+                                std_cxx11::_5));
 
   }
 
