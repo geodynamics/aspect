@@ -48,21 +48,6 @@ using namespace dealii;
 
 namespace aspect
 {
-
-  namespace
-  {
-
-    template <int dim>
-    void
-    free_boundary_stokes_contribution (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       typename Simulator<dim>::FreeSurfaceHandler          &free_surface,
-                                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
-    {
-      free_surface.apply_stabilization(cell, data.local_matrix);
-    }
-  }
-
-
   template <int dim>
   Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                           ParameterHandler &prm)
@@ -72,9 +57,9 @@ namespace aspect
   {
     parse_parameters(prm);
     sim.assemblers->local_assemble_stokes_system
-    .connect (std_cxx11::bind(&free_boundary_stokes_contribution<dim>,
-                              std_cxx11::_1,
+    .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
                               std_cxx11::ref(*this),
+                              std_cxx11::_1,
                               // discard pressure_scaling,
                               // discard rebuild_stokes_matrix,
                               // discard scratch object,
@@ -720,9 +705,10 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::apply_stabilization(
-    const typename DoFHandler<dim>::active_cell_iterator &cell,
-    FullMatrix<double> &local_matrix)
+  void
+  Simulator<dim>::FreeSurfaceHandler::
+  apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -801,7 +787,7 @@ namespace aspect
                                                 (w*g_hat) * (v*n_hat)
                                                 *fe_face_values.JxW(q_point);
 
-                    local_matrix(i,j) += stress_value;
+                    data.local_matrix(i,j) += stress_value;
                   }
           }
 

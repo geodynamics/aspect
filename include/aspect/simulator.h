@@ -1251,7 +1251,7 @@ namespace aspect
            * assemly of the system matrix.
            */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    FullMatrix<double> &local_matrix);
+                                    internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
           /**
            * If a geometry model uses manifolds for the refinement behavior
