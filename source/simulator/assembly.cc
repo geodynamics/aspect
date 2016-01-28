@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
 
 
@@ -529,6 +530,14 @@ namespace aspect
         {}
 
       }
+
+      template <int dim>
+      AssemblerLists<dim>::Properties::Properties ()
+        :
+        need_face_material_model_data (false),
+        needed_update_flags ()
+      {}
+
     }
   }
 
@@ -1011,23 +1020,9 @@ namespace aspect
   }
 
 
-
-  template <int dim>
-  Simulator<dim>::Assemblers::Properties::Properties ()
-    :
-    need_face_material_model_data (false),
-    needed_update_flags ()
-  {}
-
-
-
-  /**
-   * A namespace for the definition of sub-namespaces in which we
-   * implement assemblers for the various terms in the linear systems
-   * ASPECT solves.
-   */
   namespace Assemblers
   {
+
     /**
      * A class for the definition of functions that implement the
      * linear system terms for the *complete* compressible or
@@ -1321,19 +1316,22 @@ namespace aspect
   Simulator<dim>::
   set_assemblers ()
   {
+    // allocate the object that holds information about all of the assemblers
+    assemblers.reset (new internal::Assembly::AssemblerLists<dim>());
+
     // create an object for the complete equations assembly; add its
     // member functions to the signals and add the object the list
     // of assembler objects
     aspect::Assemblers::CompleteEquations<dim> *complete_equation_assembler
       = new aspect::Assemblers::CompleteEquations<dim>();
 
-    assemblers.local_assemble_stokes_preconditioner
+    assemblers->local_assemble_stokes_preconditioner
     .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_preconditioner,
                               std_cxx11::cref (*complete_equation_assembler),
                               std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
     if (material_model->is_compressible())
-      assemblers.local_assemble_stokes_system
+      assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
                                 std_cxx11::cref (*complete_equation_assembler),
                                 // discard cell,
@@ -1342,7 +1340,7 @@ namespace aspect
                                 std_cxx11::_4,
                                 std_cxx11::_5));
     else
-      assemblers.local_assemble_stokes_system
+      assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
                                 std_cxx11::cref (*complete_equation_assembler),
                                 // discard cell,
@@ -1355,7 +1353,7 @@ namespace aspect
 
 
     // add the terms for traction boundary conditions
-    assemblers.local_assemble_stokes_system_on_boundary_face
+    assemblers->local_assemble_stokes_system_on_boundary_face
     .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::traction_boundary_conditions<dim>,
                               SimulatorAccess<dim>(*this),
                               std_cxx11::_1,
@@ -1367,7 +1365,7 @@ namespace aspect
 
     // and, if necessary, the function that computes stabilization terms for free boundaries
     if (parameters.free_surface_enabled)
-      assemblers.local_assemble_stokes_system
+      assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::free_boundary_stokes_contribution<dim>,
                                 std_cxx11::_1,
                                 std_cxx11::ref(*free_surface.get()),
@@ -1378,7 +1376,7 @@ namespace aspect
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
-      assemblers.local_assemble_stokes_system
+      assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::OtherTerms::pressure_rhs_compatibility_modification<dim>,
                                 SimulatorAccess<dim>(*this),
                                 // discard cell,
@@ -1423,7 +1421,7 @@ namespace aspect
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers.local_assemble_stokes_preconditioner(pressure_scaling, scratch, data);
+    assemblers->local_assemble_stokes_preconditioner(pressure_scaling, scratch, data);
 
     cell->get_dof_indices (data.local_dof_indices);
   }
@@ -1461,7 +1459,7 @@ namespace aspect
           update_gradients |
           update_quadrature_points)
          |
-         assemblers.stokes_preconditioner_assembler_properties.needed_update_flags);
+         assemblers->stokes_preconditioner_assembler_properties.needed_update_flags);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -1599,8 +1597,8 @@ namespace aspect
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers.local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
-                                            scratch, data);
+    assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
+                                             scratch, data);
 
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
@@ -1609,7 +1607,7 @@ namespace aspect
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
 
-          if (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
+          if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
               compute_material_model_input_values (current_linearization_point,
                                                    scratch.face_finite_element_values,
@@ -1628,9 +1626,9 @@ namespace aspect
               //                                            scratch.face_material_model_outputs);
             }
 
-          assemblers.local_assemble_stokes_system_on_boundary_face(cell, face_no,
-                                                                   pressure_scaling, rebuild_stokes_matrix,
-                                                                   scratch, data);
+          assemblers->local_assemble_stokes_system_on_boundary_face(cell, face_no,
+                                                                    pressure_scaling, rebuild_stokes_matrix,
+                                                                    scratch, data);
         }
 
 
@@ -1689,7 +1687,7 @@ namespace aspect
          update_quadrature_points  |
          update_JxW_values)
         |
-        assemblers.stokes_system_assembler_properties.needed_update_flags;
+        assemblers->stokes_system_assembler_properties.needed_update_flags;
     const UpdateFlags face_update_flags
       = (
           // see if we need to assemble traction boundary conditions.
@@ -1703,7 +1701,7 @@ namespace aspect
           :
           UpdateFlags(0))
         |
-        (assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
+        (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
          ?
          // if we need a material model input on the faces, we need to
          // also be able to compute the strain rate
@@ -1711,7 +1709,7 @@ namespace aspect
          :
          UpdateFlags(0))
         |
-        assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
+        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -2136,7 +2134,11 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct Simulator<dim>::Assemblers::Properties; \
+  namespace internal { \
+    namespace Assembly { \
+      template struct AssemblerLists<dim>::Properties; \
+    } \
+  } \
   template void Simulator<dim>::set_assemblers (); \
   template void Simulator<dim>::local_assemble_stokes_preconditioner ( \
                                                                        const DoFHandler<dim>::active_cell_iterator &cell, \
