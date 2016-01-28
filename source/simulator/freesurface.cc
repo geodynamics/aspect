@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/assembly.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -48,14 +49,37 @@ using namespace dealii;
 namespace aspect
 {
 
+  namespace
+  {
+
+    template <int dim>
+    void
+    free_boundary_stokes_contribution (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       typename Simulator<dim>::FreeSurfaceHandler          &free_surface,
+                                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
+    {
+      free_surface.apply_stabilization(cell, data.local_matrix);
+    }
+  }
+
+
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator,
+  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                           ParameterHandler &prm)
     : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
       free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+    sim.assemblers->local_assemble_stokes_system
+    .connect (std_cxx11::bind(&free_boundary_stokes_contribution<dim>,
+                              std_cxx11::_1,
+                              std_cxx11::ref(*this),
+                              // discard pressure_scaling,
+                              // discard rebuild_stokes_matrix,
+                              // discard scratch object,
+                              std_cxx11::_5));
+
   }
 
   template <int dim>
