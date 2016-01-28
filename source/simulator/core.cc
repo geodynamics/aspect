@@ -99,6 +99,7 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
+    assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
     introspection (parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
