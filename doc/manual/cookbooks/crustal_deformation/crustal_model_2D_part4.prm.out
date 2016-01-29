@@ -1,0 +1,10 @@
+subsection %%\hyperref[parameters:Mesh_20refinement]{Mesh refinement}%
+  set %%\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%        = 1%% \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%          = 3%% \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Refinement fraction]{Refinement fraction}%                = 0.95%% \index[prmindex]{Refinement fraction} \index[prmindexfull]{Mesh refinement!Refinement fraction} %
+  set %%\hyperref[parameters:Mesh refinement/Strategy]{Strategy}%                           = strain rate %% \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
+  set %%\hyperref[parameters:Mesh refinement/Coarsening fraction]{Coarsening fraction}%                = 0.05%% \index[prmindex]{Coarsening fraction} \index[prmindexfull]{Mesh refinement!Coarsening fraction} %
+  set %%\hyperref[parameters:Mesh refinement/Time steps between mesh refinement]{Time steps between mesh refinement}% = 1%% \index[prmindex]{Time steps between mesh refinement} \index[prmindexfull]{Mesh refinement!Time steps between mesh refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Run postprocessors on initial refinement]{Run postprocessors on initial refinement}% = true%% \index[prmindex]{Run postprocessors on initial refinement} \index[prmindexfull]{Mesh refinement!Run postprocessors on initial refinement} %
+end
+

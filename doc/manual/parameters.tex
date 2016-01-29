@@ -103,6 +103,38 @@ For more information, see the section in the manual that discusses the general m
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Linear solver A block tolerance}
+\phantomsection\label{parameters:Linear solver A block tolerance}
+
+
+\index[prmindex]{Linear solver A block tolerance}
+\index[prmindexfull]{Linear solver A block tolerance}
+{\it Value:} 1e-2
+
+
+{\it Default:} 1e-2
+
+
+{\it Description:} A relative tolerance up to which the approximate inverse of the A block of the Stokes system is computed. This approximate A is used in the preconditioning used in the GMRES solver.
+
+
+{\it Possible values:} [Double 0...1 (inclusive)]
+\item {\it Parameter name:} {\tt Linear solver S block tolerance}
+\phantomsection\label{parameters:Linear solver S block tolerance}
+
+
+\index[prmindex]{Linear solver S block tolerance}
+\index[prmindexfull]{Linear solver S block tolerance}
+{\it Value:} 1e-6
+
+
+{\it Default:} 1e-6
+
+
+{\it Description:} A relative tolerance up to which the approximate inverse of the S block (Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the S block is used in the preconditioning used in the GMRES solver.
+
+
+{\it Possible values:} [Double 0...1 (inclusive)]
 \item {\it Parameter name:} {\tt Linear solver tolerance}
 \phantomsection\label{parameters:Linear solver tolerance}
 
@@ -417,10 +449,10 @@ For more information, see the section in the manual that discusses the general m
 
 \index[prmindex]{Model name}
 \index[prmindexfull]{Boundary composition model!Model name}
-{\it Value:} 
+{\it Value:} unspecified
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -438,7 +470,7 @@ Because this class simply takes what the initial composition had described, this
 `spherical constant': A model in which the composition is chosen constant on the inner and outer boundaries of a spherical shell or chunk. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection ascii data|box|box with lithosphere boundary indicators|initial composition|spherical constant ]
+{\it Possible values:} [Selection ascii data|box|box with lithosphere boundary indicators|initial composition|spherical constant|unspecified ]
 \end{itemize}
 
 
@@ -822,7 +854,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Value:} box
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -850,7 +882,7 @@ Because this class simply takes what the initial temperature had described, this
 `spherical constant': A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection 'Spherical constant'.
 
 
-{\it Possible values:} [Selection ascii data|box|box with lithosphere boundary indicators|constant|function|initial temperature|spherical constant ]
+{\it Possible values:} [Selection ascii data|box|box with lithosphere boundary indicators|constant|function|initial temperature|spherical constant|unspecified ]
 \end{itemize}
 
 
@@ -2023,6 +2055,22 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \label{parameters:Discretization/Stabilization_20parameters}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Use artificial viscosity smoothing}
+\phantomsection\label{parameters:Discretization/Stabilization parameters/Use artificial viscosity smoothing}
+
+
+\index[prmindex]{Use artificial viscosity smoothing}
+\index[prmindexfull]{Discretization!Stabilization parameters!Use artificial viscosity smoothing}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} If set to false, the artificial viscosity of a cell is computed andis computed on every cell separately as discussed in \cite{KHB12}. If set to true, the maximum of the artificial viscosity in the cell as well as the neighbors of the cell is computed and used instead.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt alpha}
 \phantomsection\label{parameters:Discretization/Stabilization parameters/alpha}
 
@@ -2077,6 +2125,24 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \label{parameters:Free_20surface}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Additional tangential mesh velocity boundary indicators}
+\phantomsection\label{parameters:Free surface/Additional tangential mesh velocity boundary indicators}
+
+
+\index[prmindex]{Additional tangential mesh velocity boundary indicators}
+\index[prmindexfull]{Free surface!Additional tangential mesh velocity boundary indicators}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of names denoting those boundaries where there the mesh is allowed to move tangential to the boundary. All tangential mesh movements along those boundaries that have tangential material velocity boundary conditions are allowed by default, this parameters allows to generate mesh movements along other boundaries that are open, or have prescribed material velocities or tractions.
+
+The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+
+
+{\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
 \item {\it Parameter name:} {\tt Free surface stabilization theta}
 \phantomsection\label{parameters:Free surface/Free surface stabilization theta}
 
@@ -2124,7 +2190,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Value:} box
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -2139,7 +2205,7 @@ The additional boundary indicators for the lithosphere allow for selecting bound
 
 `chunk': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The minimum and maximum longitude, (latitude) and depth of the chunk is set in the parameter file. The chunk geometry labels its 2*dim sides as follows: ``west'' and ``east'': minimum and maximum longitude, ``south'' and ``north'': minimum and maximum latitude, ``inner'' and ``outer'': minimum and maximum radii. Names in the parameter files are as follows: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees)Chunk (inner || outer) radius: Radii at bottom and top of chunk(Longitude || Latitude || Radius) repetitions: number of cells in each coordinate direction.
 
-`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, bottom; 5, top. 
+`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer. 
 
 `sphere': Geometry model for sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in the input file is ``0''. It can also be referenced by the symbolic name ``surface'' in input files.
 
@@ -2150,7 +2216,7 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as 'east', 'west' and 'south' symbolically in input files.
 
 
-{\it Possible values:} [Selection box|box with lithosphere boundary indicators|chunk|ellipsoidal chunk|sphere|spherical shell ]
+{\it Possible values:} [Selection box|box with lithosphere boundary indicators|chunk|ellipsoidal chunk|sphere|spherical shell|unspecified ]
 \end{itemize}
 
 
@@ -3056,7 +3122,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Value:} vertical
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -3072,7 +3138,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 `vertical': A gravity model in which the gravity direction is vertically downward and at a constant magnitude by default equal to one.
 
 
-{\it Possible values:} [Selection function|radial constant|radial earth-like|radial linear|vertical ]
+{\it Possible values:} [Selection function|radial constant|radial earth-like|radial linear|vertical|unspecified ]
 \end{itemize}
 
 
@@ -3248,10 +3314,10 @@ The formula is interpreted as having units W/kg.
 
 \index[prmindex]{Model name}
 \index[prmindexfull]{Heating model!Model name}
-{\it Value:} 
+{\it Value:} unspecified
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -3276,7 +3342,7 @@ The formula is interpreted as having units W/kg.
 `shear heating': Implementation of a standard model for shear heating.
 
 
-{\it Possible values:} [Selection adiabatic heating|constant heating|function|latent heat|radioactive decay|shear heating ]
+{\it Possible values:} [Selection adiabatic heating|constant heating|function|latent heat|radioactive decay|shear heating|unspecified ]
 \end{itemize}
 
 
@@ -3538,7 +3604,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Value:} perturbed box
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -3570,7 +3636,7 @@ If the function you are describing represents a vector-valued function with mult
 `spherical hexagonal perturbation': An initial temperature field in which the temperature is perturbed following an $N$-fold pattern in a specified direction from an otherwise spherically symmetric state. The class's name comes from previous versions when the only option was $N=6$.
 
 
-{\it Possible values:} [Selection S40RTS perturbation|SAVANI perturbation|adiabatic|ascii data|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation ]
+{\it Possible values:} [Selection S40RTS perturbation|SAVANI perturbation|adiabatic|ascii data|function|harmonic perturbation|inclusion shape perturbation|mandelbox|perturbed box|polar box|solidus|spherical gaussian perturbation|spherical hexagonal perturbation|unspecified ]
 \end{itemize}
 
 
@@ -4652,7 +4718,7 @@ More averaging schemes are available in the averaging material model. This mater
 {\it Value:} simple
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} The name of the material model to be used in this simulation. There are many material models you can choose from, as listed below. They generally fall into two category: (i) models that implement a particular case of material behavior, (ii) models that modify other models in some way. We sometimes call the latter ``compositing models''. An example of a compositing model is the ``depth dependent'' model below in that it takes another, freely choosable model as its base and then modifies that model's output in some way.
@@ -4742,7 +4808,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 \note{This material model fills the role the ``simple'' material model was originally intended to fill, before the latter acquired all sorts of complicated temperature and compositional dependencies.}
 
 
-{\it Possible values:} [Selection Morency and Doin|Steinberger|averaging|composition reaction|depth dependent|diffusion dislocation|drucker prager|latent heat|latent heat melt|multicomponent|simple|simple compressible|simpler ]
+{\it Possible values:} [Selection Morency and Doin|Steinberger|averaging|composition reaction|depth dependent|diffusion dislocation|drucker prager|latent heat|latent heat melt|multicomponent|simple|simple compressible|simpler|unspecified ]
 \end{itemize}
 
 
@@ -7705,6 +7771,8 @@ The format of these functions follows the syntax understood by the muparser libr
 
 `nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
+`particle density': A mesh refinement criterion that computes refinement indicators that equal the areal (in 2d) or volumetric (in 3d) density of particles in this cell. This plugin is useful for models with inhomogeneous particle density, e.g. when tracking an initial interface with a high particle density, or when the spatial particle density denotes the region of interest. Additionally, this plugin tends to balance the computational load between processes in parallel computations, because the particle number per cell is more similar.
+
 `slope': A class that implements a mesh refinement criterion intended for use with a free surface. It calculates a local slope based on the angle between the surface normal and the local gravity vector. Cells with larger angles are marked for refinement.
 
 To use this refinement criterion, you may want to combine it with other refinement criteria, setting the 'Normalize individual refinement criteria' flag and using the 'max' setting for 'Refinement criteria merge operation'.
@@ -7724,7 +7792,7 @@ To use this refinement criterion, you may want to combine it with other refineme
 `viscosity': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the logarithm of the viscosity, $\log\eta$. (We choose the logarithm of the viscosity because it can vary by orders of magnitude.)Because this quantity may not be a continuous function ($\eta$ may be a discontinuous function along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
 
-{\it Possible values:} [MultipleSelection boundary|composition|density|maximum refinement function|minimum refinement function|nonadiabatic temperature|slope|strain rate|temperature|thermal energy density|topography|velocity|viscosity ]
+{\it Possible values:} [MultipleSelection boundary|composition|density|maximum refinement function|minimum refinement function|nonadiabatic temperature|particle density|slope|strain rate|temperature|thermal energy density|topography|velocity|viscosity ]
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 
@@ -7959,7 +8027,7 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} A comma separated list of names denoting those boundaries on which the composition is fixed and described by the boundary composition object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
 
-The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 This parameter only describes which boundaries have a fixed composition, but not what composition should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryComposition group, unless an existing implementation in this group already provides what you want.
 
@@ -7979,7 +8047,7 @@ This parameter only describes which boundaries have a fixed composition, but not
 
 {\it Description:} A comma separated list of names denoting those boundaries on which the temperature is fixed and described by the boundary temperature object selected in its own section of this input file. All boundary indicators used by the geometry but not explicitly listed here will end up with no-flux (insulating) boundary conditions.
 
-The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 This parameter only describes which boundaries have a fixed temperature, but not what temperature should hold on these boundaries. The latter piece of information needs to be implemented in a plugin in the BoundaryTemperature group, unless an existing implementation in this group already provides what you want.
 
@@ -7999,7 +8067,7 @@ This parameter only describes which boundaries have a fixed temperature, but not
 
 {\it Description:} A comma separated list of names denoting those boundaries where there is a free surface. Set to nothing to disable all free surface computations.
 
-The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
 {\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
@@ -8130,7 +8198,7 @@ Note that while more than one operation can be selected it only makes sense to p
 
 {\it Description:} A comma separated list of names denoting those boundaries on which the velocity is tangential and unrestrained, i.e., free-slip where no external forces act to prescribe a particular tangential velocity (although there is a force that requires the flow to be tangential).
 
-The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
 {\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
@@ -8148,7 +8216,7 @@ The names of the boundaries listed here can either by numeric numbers (in which 
 
 {\it Description:} A comma separated list of names denoting those boundaries on which the velocity is zero.
 
-The names of the boundaries listed here can either by numeric numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 
 {\it Possible values:} [List list of [Anything] of length 0...4294967295 (inclusive)]
@@ -8173,6 +8241,8 @@ The names of the boundaries listed here can either by numeric numbers (in which 
 {\it Description:} A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text 'all' indicates that all available postprocessors should be run after each time step.
 
 The following postprocessors are available:
+
+`Stokes residual': A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes\_residuals.txt in the output directory.
 
 `basic statistics': A postprocessor that computes some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups.
 
@@ -8211,7 +8281,7 @@ As stated, this postprocessor computes the \textit{outbound} mass flux. If you a
 
 `topography': A postprocessor intended for use with a free surface.  After every step, it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model).  Outputs topography in meters
 
-`tracers': Postprocessor that propagates passive tracer particles based on the velocity field.
+`tracers': A Postprocessor that creates tracer particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all tracers at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the tracers for information.
 
 `velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
@@ -8224,7 +8294,7 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection basic statistics|boundary densities|boundary pressures|composition statistics|depth average|dynamic topography|heat flux statistics|heating statistics|mass flux statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization ]
+{\it Possible values:} [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|composition statistics|depth average|dynamic topography|heat flux statistics|heating statistics|mass flux statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization ]
 \end{itemize}
 
 
@@ -8280,7 +8350,7 @@ The information produced by this postprocessor is a subset of what is generated 
 {\it Description:} The format in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written.
 
 
-{\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|hdf5|svg|deal.II intermediate ]
+{\it Possible values:} [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot\_binary|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
 \item {\it Parameter name:} {\tt Time between graphical output}
 \phantomsection\label{parameters:Postprocess/Depth average/Time between graphical output}
 
@@ -8337,10 +8407,16 @@ The information produced by this postprocessor is a subset of what is generated 
 {\it Default:} vtu
 
 
-{\it Description:} File format to output raw particle data in.
+{\it Description:} File format to output raw particle data in. If you select 'none' no output will be written.Select one of the following models:
+
+`ascii': This particle output plugin writes particle positions and properties into space separated ascii files.
+
+`hdf5': This particle output plugin writes particle positions and properties into hdf5 files.
+
+`vtu': This particle output plugin writes particle positions and properties into vtu files.
 
 
-{\it Possible values:} [Selection none|ascii|vtu|hdf5 ]
+{\it Possible values:} [Selection ascii|hdf5|vtu|none ]
 \item {\it Parameter name:} {\tt Integration scheme}
 \phantomsection\label{parameters:Postprocess/Tracers/Integration scheme}
 
@@ -8353,10 +8429,124 @@ The information produced by this postprocessor is a subset of what is generated 
 {\it Default:} rk2
 
 
-{\it Description:} Integration scheme to move particles.
+{\it Description:} Select one of the following models:
+
+`euler': Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$. This requires only one integration substep per timestep.
+
+`rk2': Runge Kutta second order integrator, where $y_{n+1} = y_n + dt*v(0.5*k_1)$, $k_1 = dt*v(y_n)$.
+
+`rk4': Runge Kutta fourth order integrator, where $y_{n+1} = y_n + (1/6)*k_1 + (1/3)*k_2 + (1/3)*k_3 + (1/6)*k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 
 
-{\it Possible values:} [Selection euler|rk2|rk4|hybrid ]
+{\it Possible values:} [Selection euler|rk2|rk4 ]
+\item {\it Parameter name:} {\tt Interpolation scheme}
+\phantomsection\label{parameters:Postprocess/Tracers/Interpolation scheme}
+
+
+\index[prmindex]{Interpolation scheme}
+\index[prmindexfull]{Postprocess!Tracers!Interpolation scheme}
+{\it Value:} first particle
+
+
+{\it Default:} first particle
+
+
+{\it Description:} Select one of the following models:
+
+`first particle': Return the properties of the first tracer in the given cell.
+
+
+{\it Possible values:} [Selection first particle ]
+\item {\it Parameter name:} {\tt List of tracer properties}
+\phantomsection\label{parameters:Postprocess/Tracers/List of tracer properties}
+
+
+\index[prmindex]{List of tracer properties}
+\index[prmindexfull]{Postprocess!Tracers!List of tracer properties}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of tracer properties that should be tracked. By default none is selected, which means only position, velocity and id of the tracers are output. 
+
+The following properties are available:
+
+`function': Implementation of a model in which the tracer property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Tracers|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+
+
+`initial composition': Implementation of a plugin in which the tracer property is given as the initial composition at the particle's initial position. The tracer gets as many properties as there are compositional fields.
+
+
+
+`initial position': Implementation of a plugin in which the tracer property is given as the initial position of the tracer.
+
+
+
+`pT path': Implementation of a plugin in which the tracer property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
+
+
+
+`position': Implementation of a plugin in which the tracer property is defined as the current position. 
+
+
+
+`velocity': Implementation of a plugin in which the tracer property is defined as the recent velocity at this position.
+
+
+
+
+{\it Possible values:} [MultipleSelection function|initial composition|initial position|pT path|position|velocity ]
+\item {\it Parameter name:} {\tt Load balancing strategy}
+\phantomsection\label{parameters:Postprocess/Tracers/Load balancing strategy}
+
+
+\index[prmindex]{Load balancing strategy}
+\index[prmindexfull]{Postprocess!Tracers!Load balancing strategy}
+{\it Value:} none
+
+
+{\it Default:} none
+
+
+{\it Description:} Strategy that is used to balance the computationalload across processors for adaptive meshes.
+
+
+{\it Possible values:} [Selection none|remove particles|remove and add particles|repartition ]
+\item {\it Parameter name:} {\tt Maximum tracers per cell}
+\phantomsection\label{parameters:Postprocess/Tracers/Maximum tracers per cell}
+
+
+\index[prmindex]{Maximum tracers per cell}
+\index[prmindexfull]{Postprocess!Tracers!Maximum tracers per cell}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} Limit for how many particles are allowed per cell. This limit is useful to prevent coarse cells in adaptive meshes from slowing down the whole model. It will only be checked and enforced during mesh refinement and MPI transfer of tracers.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Minimum tracers per cell}
+\phantomsection\label{parameters:Postprocess/Tracers/Minimum tracers per cell}
+
+
+\index[prmindex]{Minimum tracers per cell}
+\index[prmindexfull]{Postprocess!Tracers!Minimum tracers per cell}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} Limit for how many particles are allowed per cell. This limit is useful to prevent coarse cells in adaptive meshes from slowing down the whole model. It will only be checked and enforced during mesh refinement and MPI transfer of tracers.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Number of tracers}
 \phantomsection\label{parameters:Postprocess/Tracers/Number of tracers}
 
@@ -8373,6 +8563,32 @@ The information produced by this postprocessor is a subset of what is generated 
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Particle generator name}
+\phantomsection\label{parameters:Postprocess/Tracers/Particle generator name}
+
+
+\index[prmindex]{Particle generator name}
+\index[prmindexfull]{Postprocess!Tracers!Particle generator name}
+{\it Value:} random uniform
+
+
+{\it Default:} random uniform
+
+
+{\it Description:} Select one of the following models:
+
+`ascii file': Generates a distribution of tracers from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as tracers to be generated. Initial comment lines starting with `\#' will be discarded.All of the values that define this generator are read from a section ``Particle generator/Ascii file'' in the input file, see Section~\ref{parameters:Particle_20generator/Ascii_20file}.
+
+`probability density function': Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero inparts of the domain.
+
+`random uniform': Generates a random uniform distribution of particles over the entire simulation domain.
+
+`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
+
+`uniform radial': Generate a uniform distribution of particlesover a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
+
+
+{\it Possible values:} [Selection ascii file|probability density function|random uniform|uniform box|uniform radial ]
 \item {\it Parameter name:} {\tt Time between data output}
 \phantomsection\label{parameters:Postprocess/Tracers/Time between data output}
 
@@ -8391,6 +8607,450 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Tracer weight}
+\phantomsection\label{parameters:Postprocess/Tracers/Tracer weight}
+
+
+\index[prmindex]{Tracer weight}
+\index[prmindexfull]{Postprocess!Tracers!Tracer weight}
+{\it Value:} 10
+
+
+{\it Default:} 10
+
+
+{\it Description:} Weight that is associated with the computational load of a single particle. The sum of tracer weights will be added to the sum of cell weights to determine the partitioning of the mesh. Every cell without tracers is associated with a weight of 1000.
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Function}
+\label{parameters:Postprocess/Tracers/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Postprocess/Tracers/Function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Postprocess!Tracers!Function/Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Postprocess/Tracers/Function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Postprocess!Tracers!Function/Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Postprocess/Tracers/Function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Postprocess!Tracers!Function/Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator}
+\label{parameters:Postprocess/Tracers/Generator}
+
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Ascii file}
+\label{parameters:Postprocess/Tracers/Generator/Ascii_20file}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Ascii file/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Ascii file/Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/particle/generator/ascii/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/particle/generator/ascii/
+
+
+{\it Description:} The name of a directory that contains the tracer data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} [DirectoryName]
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Ascii file/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Ascii file/Data file name}
+{\it Value:} tracer.dat
+
+
+{\it Default:} tracer.dat
+
+
+{\it Description:} The name of the tracer file.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Probability density function}
+\label{parameters:Postprocess/Tracers/Generator/Probability_20density_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Function constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Function expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Probability density function/Variable names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Probability density function/Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The name of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated is `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} [Anything]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Uniform box}
+\label{parameters:Postprocess/Tracers/Generator/Uniform_20box}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Maximal x}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal x}
+
+
+\index[prmindex]{Maximal x}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal x}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Maximal x coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Maximal y}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal y}
+
+
+\index[prmindex]{Maximal y}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal y}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Maximal y coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Maximal z}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal z}
+
+
+\index[prmindex]{Maximal z}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal z}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Maximal z coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimal x}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal x}
+
+
+\index[prmindex]{Minimal x}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal x}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimal x coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimal y}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal y}
+
+
+\index[prmindex]{Minimal y}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal y}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimal y coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimal z}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal z}
+
+
+\index[prmindex]{Minimal z}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal z}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimal z coordinate for the region of tracers.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Uniform radial}
+\label{parameters:Postprocess/Tracers/Generator/Uniform_20radial}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Center x}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center x}
+
+
+\index[prmindex]{Center x}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center x}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} x coordinate for the center of the spherical region, where tracers are generated.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Center y}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center y}
+
+
+\index[prmindex]{Center y}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center y}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} y coordinate for the center of the spherical region, where tracers are generated.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Center z}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Center z}
+
+
+\index[prmindex]{Center z}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Center z}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} z coordinate for the center of the spherical region, where tracers are generated.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum latitude}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum latitude}
+
+
+\index[prmindex]{Maximum latitude}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum latitude}
+{\it Value:} 3.1415
+
+
+{\it Default:} 3.1415
+
+
+{\it Description:} Maximum latitude coordinate for the region of tracers in degrees. Measured from the center position.
+
+
+{\it Possible values:} [Double 0...180 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum longitude}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum longitude}
+
+
+\index[prmindex]{Maximum longitude}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum longitude}
+{\it Value:} 3.1415
+
+
+{\it Default:} 3.1415
+
+
+{\it Description:} Maximum longitude coordinate for the region of tracers in degrees. Measured from the center position.
+
+
+{\it Possible values:} [Double 0...360 (inclusive)]
+\item {\it Parameter name:} {\tt Maximum radius}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Maximum radius}
+
+
+\index[prmindex]{Maximum radius}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Maximum radius}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Maximum radial coordinate for the region of tracers. Measured from the center position.
+
+
+{\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Minimum latitude}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum latitude}
+
+
+\index[prmindex]{Minimum latitude}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum latitude}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimum latitude coordinate for the region of tracers in degrees. Measured from the center position.
+
+
+{\it Possible values:} [Double 0...180 (inclusive)]
+\item {\it Parameter name:} {\tt Minimum longitude}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum longitude}
+
+
+\index[prmindex]{Minimum longitude}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum longitude}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimum longitude coordinate for the region of tracers in degrees. Measured from the center position.
+
+
+{\it Possible values:} [Double 0...360 (inclusive)]
+\item {\it Parameter name:} {\tt Minimum radius}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Minimum radius}
+
+
+\index[prmindex]{Minimum radius}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Minimum radius}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Minimum radial coordinate for the region of tracers. Measured from the center position.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Radial layers}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform radial/Radial layers}
+
+
+\index[prmindex]{Radial layers}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform radial/Radial layers}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The number of radial shells of particles that will be generatedaround the central point.
+
+
+{\it Possible values:} [Integer range 1...2147483647 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization}
@@ -8447,6 +9107,8 @@ The following postprocessors are available:
 
 `density': A visualization output object that generates output for the density.
 
+`depth': A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
+
 `dynamic topography': A visualization output object that generates output for the dynamic topography. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{\|\mathbf g\| \rho}$ where $\rho$ is the density at the cell center.
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
@@ -8459,7 +9121,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `heating': A visualization output object that generates output for all the heating terms used in the energy equation.
 
-`material properties': A visualization output object that generates output for the material properties given by the material model.There are a number of other visualization postprocessors that offer to write individual material properties. However, they all individually have to evaluate the material model. This is inefficient if one wants to output more than just one or two of the fields provided by the material model. The current postprocessor allows to output a (potentially large) subsets of all of the information provided by material models at once, with just a single material model evaluation per output point.
+`material properties': A visualization output object that generates output for the material properties given by the material model.There are a number of other visualization postprocessors that offer to write individual material properties. However, they all individually have to evaluate the material model. This is inefficient if one wants to output more than just one or two of the fields provided by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point.
 
 `melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point (batch melting). Does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
@@ -8481,6 +9143,10 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
 
+`thermal conductivity': A visualization output object that generates output for the thermal conductivity $k$.
+
+`thermal diffusivity': A visualization output object that generates output for the thermal diffusivity $\kappa$=$\frac{k}{\rho c_p}$, with $k$ the thermal conductivity.
+
 `thermal expansivity': A visualization output object that generates output for the thermal expansivity.
 
 `thermodynamic phase': A visualization output object that generates output for the integer number of the phase that is thermodynamically stable at the temperature and pressure of the current point.
@@ -8492,7 +9158,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|boundary indicators|compositional vector|density|dynamic topography|error indicator|friction heating|gravity|heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|shear stress|specific heat|strain rate|stress|thermal expansivity|thermodynamic phase|vertical heat flux|viscosity|viscosity ratio ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|boundary indicators|compositional vector|density|depth|dynamic topography|error indicator|friction heating|gravity|heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|shear stress|specific heat|strain rate|stress|thermal conductivity|thermal diffusivity|thermal expansivity|thermodynamic phase|vertical heat flux|viscosity|viscosity ratio ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -8639,10 +9305,10 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 {\it Description:} A comma separated list of material properties that should be written whenever writing graphical output. By default, the material properties will always contain the density, thermal expansivity, specific heat and viscosity. The following material properties are available:
 
-viscosity|density|thermal expansivity|specific heat|thermal conductivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms
+viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms
 
 
-{\it Possible values:} [MultipleSelection viscosity|density|thermal expansivity|specific heat|thermal conductivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms ]
+{\it Possible values:} [MultipleSelection viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms ]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Melt fraction}
@@ -8949,10 +9615,10 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|compres
 
 \index[prmindex]{Model name}
 \index[prmindexfull]{Prescribed Stokes solution!Model name}
-{\it Value:} 
+{\it Value:} unspecified
 
 
-{\it Default:} 
+{\it Default:} unspecified
 
 
 {\it Description:} Select one of the following models:
@@ -8964,7 +9630,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|compres
 `function': This plugin allows to prescribe the Stokes solution for the velocity and pressure field in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 
-{\it Possible values:} [Selection ascii data|circle|function ]
+{\it Possible values:} [Selection ascii data|circle|function|unspecified ]
 \end{itemize}
 
 
