@@ -1137,7 +1137,7 @@ namespace aspect
                                 std_cxx11::_3,
                                 std_cxx11::_4,
                                 std_cxx11::_5));
-    assembler_objects.push_back (std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (complete_equation_assembler));
 
 
