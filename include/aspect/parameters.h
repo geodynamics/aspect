@@ -68,6 +68,7 @@ namespace aspect
         iterated_IMPES,
         iterated_Stokes,
         Stokes_only,
+        NewtonStokes,
         Advection_only
       };
     };
@@ -162,6 +163,7 @@ namespace aspect
     typename NonlinearSolver::Kind nonlinear_solver;
 
     double                         nonlinear_tolerance;
+    double                         nonlinear_switch_tolerance;
     bool                           resume_computation;
     double                         start_time;
     double                         CFL_number;
@@ -179,6 +181,8 @@ namespace aspect
     double                         linear_solver_S_block_tolerance;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
+    unsigned int                   min_pre_newton_nonlinear_iterations;
+    unsigned int                   max_newton_line_search_iterations;
     unsigned int                   n_cheap_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;

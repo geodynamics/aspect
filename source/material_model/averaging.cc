@@ -326,11 +326,80 @@ namespace aspect
 
     template <int dim>
     void
+    Averaging<dim>::average_derivatives (const AveragingOperation averaging_operation,
+                                         const std::vector<Point<dim> >       &position,
+                                         std::vector<double>                  &values_out,
+                                         std::vector<SymmetricTensor<2,dim> > &derivatives_out) const
+    {
+      // if an output field has not been filled (because it was
+      // not requested), then simply do nothing -- no harm no foul
+      if (values_out.size() == 0 || derivatives_out.size() == 0 )
+        return;
+
+      const unsigned int N = values_out.size();
+
+      // alfad is a constant which is dependent on the dimension and is used to define the shape of the bell shape.
+      const double alfad = (dim == 2 ? 5/(numbers::PI * bell_shape_limit * bell_shape_limit) : 106/(numbers::PI * bell_shape_limit * bell_shape_limit * bell_shape_limit));
+
+      // perform the requested averaging
+      switch (averaging_operation)
+        {
+          case none:
+          {
+            break;
+          }
+
+          case harmonic_average:
+          {
+            // if one of the values is zero, the average is 0.0
+            for (unsigned int i=0; i<N; ++i)
+              if (values_out[i] == 0.0)
+                {
+                  for (unsigned int j=0; j<N; ++j)
+                    values_out[j] = 0.0;
+                  return;
+                }
+
+            double sum = 0;
+            SymmetricTensor<2,dim> derivatives_sum;
+            const double N_inv = 1./N;
+            for (unsigned int i=0; i<N; ++i)
+              {
+                sum += 1./values_out[i];
+                derivatives_sum += N_inv * (1/(values_out[i]*values_out[i]))*derivatives_out[i];
+              }
+
+            const double average = 1./(sum*N_inv);
+            const SymmetricTensor<2,dim> average_derivative = std::pow(sum*N_inv,-2) * derivatives_sum;
+            //std::cout << "average = " << average << ", average_derivative = " << average_derivative;
+            for (unsigned int i=0; i<N; ++i)
+              {
+                values_out[i] = average;
+                derivatives_out[i] = average_derivative;
+              }
+
+            break;
+          }
+          default:
+          {
+            AssertThrow (false,
+                         ExcMessage ("This averaging operation is not implemented."));
+          }
+        }
+    }
+
+    template <int dim>
+    void
     Averaging<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                              typename Interface<dim>::MaterialModelOutputs &out) const
     {
       // fill variable out with the results form the base material model
       base_model -> evaluate(in,out);
+
+
+      //set up additional output for the derivatives
+      MaterialModelDerivatives<dim> *derivatives;
+      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
 
       /**
        * Check if the size of the viscosities (and thereby all the other vectors) is larger
@@ -341,7 +410,11 @@ namespace aspect
       if (out.viscosities.size() > 1)
         {
           /* Average the base model values based on the chosen average */
-          average (averaging_operation,in.position,out.viscosities);
+          if (derivatives == NULL)
+            average (averaging_operation,in.position,out.viscosities);
+          else
+            average_derivatives (averaging_operation,in.position,out.viscosities,derivatives->dviscosities_dstrain_rate);
+
           average (averaging_operation,in.position,out.densities);
           average (averaging_operation,in.position,out.thermal_expansion_coefficients);
           average (averaging_operation,in.position,out.specific_heat);
@@ -372,6 +445,71 @@ namespace aspect
           prm.declare_entry ("Bell shape limit", "1",
                              Patterns::Double(0),
                              "The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+//We currently need this to make the average_simple_nonlinear test to work... TODO: Look for a solution where this isn't needed.
+      prm.enter_subsection ("Compositional fields");
+      {
+        prm.declare_entry ("Number of fields", "0",
+                           Patterns::Integer (0),
+                           "The number of fields that will be advected along with the flow field, excluding "
+                           "velocity, pressure and temperature.");
+      }
+      prm.leave_subsection();
+      prm.enter_subsection("Material model");
+      {
+        prm.enter_subsection ("Simple nonlinear");
+        {
+          // Reference and minimum/maximum values
+          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
+                             "For calculating density by thermal expansivity. Units: $K$");
+          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::List(Patterns::Double(0)),
+                             "Stabilizes strain dependent viscosity. Units: $1 / s$");
+          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
+                             "Lower cutoff for effective viscosity. Units: $Pa s$");
+          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0)),
+                             "Upper cutoff for effective viscosity. Units: $Pa s$");
+          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0)),
+                             "Scaling coefficient for effective viscosity.");
+          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0)),
+                             "Reference viscosity for nondimensionalization. Units $Pa s$");
+
+          // Equation of state parameters
+          prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::List(Patterns::Double(0)), "Units: $m^2/s$");
+          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::List(Patterns::Double(0)), "Units: $J / (K * kg)$");
+          prm.declare_entry ("Densities", "3300.",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of densities, $\\rho$, for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one values is given, then all use the same value.  Units: $kg / m^3$");
+          prm.declare_entry ("Thermal expansivities", "3.5e-5",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of thermal expansivities for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one values is given, then all use the same value.  Units: $1 / K$");
+
+
+          // SimpleNonlinear creep parameters
+          prm.declare_entry ("Prefactor", "1e-37",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one values is given, then all use the same value. "
+                             "Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$");
+          prm.declare_entry ("Stress exponent", "3",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of stress exponents, $n_dislocation$, for background mantle and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one values is given, then all use the same value.  Units: None");
+
+          // averaging parameters
+          prm.declare_entry ("Viscosity averaging p", "-1",
+                             Patterns::Double(),
+                             "This is the p value in the generalized weighed average eqation: "
+                             " mean = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}. "
+                             " Units: $Pa s$");
         }
         prm.leave_subsection();
       }

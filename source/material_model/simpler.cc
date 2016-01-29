@@ -19,6 +19,7 @@
 */
 
 
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/simpler.h>
 
 using namespace dealii;
@@ -27,6 +28,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
+
     template <int dim>
     bool
     Simpler<dim>::
@@ -51,12 +53,19 @@ namespace aspect
       return reference_rho;
     }
 
+
+
+
     template <int dim>
     void
     Simpler<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      //set up additional output for the derivatives
+      MaterialModelDerivatives<dim> *derivatives;
+      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
+
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
           out.viscosities[i] = eta;
@@ -68,6 +77,7 @@ namespace aspect
 
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
+
         }
 
     }

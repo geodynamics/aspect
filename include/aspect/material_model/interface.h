@@ -249,6 +249,43 @@ namespace aspect
     template <int dim>     class AdditionalMaterialOutputs;
 
 
+    template <int dim>
+    class MaterialModelDerivatives : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        /**
+         * Constructor. Initialize the various arrays of this structure with the
+         * given number of quadrature points and (finite element) components.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which input will be
+         * provided.
+         */
+        MaterialModelDerivatives (const unsigned int n_points,
+                                  const unsigned int n_comp);
+
+        /**
+         * The derivatives of the viscosities
+         */
+        std::vector<double> dviscosities_dvelocity;
+        std::vector<double> dviscosities_dpressure;
+        std::vector<double> dviscosities_dtemperature;
+        std::vector<SymmetricTensor<2,dim> > dviscosities_dstrain_rate;
+        std::vector<std::vector<double> > dviscosities_dcompositions;
+
+        /**
+         * TODO: The derivatives of the temperature
+         *
+         */
+        /*std::vector<double> dtemperatures_du;
+        std::vector<double> dtemperatures_dpressure;
+        std::vector<double> dtemperatures_dviscosity;
+        std::vector<SymmetricTensor<2,dim> > dtemperatures_dstrain_rate;
+        std::vector<std::vector<double> > dtemperatures_dcompositions;*/
+    };
+
     /**
      * A data structure with the output field of the
      * MaterialModel::Interface::evaluate() function. The vectors are the
@@ -391,6 +428,21 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
+
+      /*
+       * Creates all additional material model output objects that are
+       * needed for a simulation, and attaches a pointer to them to the
+       * corresponding vector in the MaterialModel::MaterialModelOutputs
+       * structure.
+       */
+      void create_additional_material_outputs(const unsigned int n_points,
+                                              const unsigned int n_comp)
+      {
+        //if (parameters.include_derivatives)
+        additional_outputs.push_back(std::make_shared<MaterialModelDerivatives<dim> >
+                                     (n_points, n_comp));
+        //TODO: signal: attach additional material output
+      }
     };
 
 

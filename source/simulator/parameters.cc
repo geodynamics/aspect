@@ -86,6 +86,18 @@ namespace aspect
                        "steps. This does not include the last refinement step before moving to timestep 1. "
                        "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
+    prm.declare_entry ("Min pre-Newton nonlinear iterations", "10",
+                       Patterns::Integer (0),
+                       "The minimum number of Piccard nonlinear iterations to be performed, "
+					   "before switching to Newton iterations. This is only used in the case "
+					   "That the Nonlinear solver scheme is set to a Newton type of solver.");
+
+    prm.declare_entry ("Max Newton line search iterations", "5",
+                       Patterns::Integer (0),
+                       "The minimum number of Piccard nonlinear iterations to be performed, "
+					   "before switching to Newton iterations. This is only used in the case "
+					   "That the Nonlinear solver scheme is set to a Newton type of solver.");
+
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
                        "The start time of the simulation. Units: Years if the "
@@ -150,7 +162,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Newton Stokes|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -172,6 +184,13 @@ namespace aspect
                        "will iterate. This parameter is only relevant if "
                        "Nonlinear solver scheme is set to 'iterated Stokes' or "
                        "'iterated IMPES'.");
+
+    prm.declare_entry ("Nonlinear Newton solver switch tolerance", "1e-5",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the nonlinear Piccard solver "
+                       "will iterate, before changing to the newton solver. This parameter "
+                       "is only relevant if Nonlinear solver scheme is set to a Newton type "
+                       "of solver.");
 
     prm.declare_entry ("Pressure normalization", "surface",
                        Patterns::Selection ("surface|volume|no"),
@@ -751,15 +770,22 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::iterated_Stokes;
     else if (prm.get ("Nonlinear solver scheme") == "Stokes only")
       nonlinear_solver = NonlinearSolver::Stokes_only;
+    else if (prm.get ("Nonlinear solver scheme") == "Newton Stokes")
+      nonlinear_solver = NonlinearSolver::NewtonStokes;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
     else
       AssertThrow (false, ExcNotImplemented());
 
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
+    nonlinear_switch_tolerance = prm.get_double("Nonlinear Newton solver switch tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
     max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+    min_pre_newton_nonlinear_iterations = prm.get_integer ("Min pre-Newton nonlinear iterations");
+    max_newton_line_search_iterations = prm.get_integer ("Max Newton line search iterations");
+
+
 
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
