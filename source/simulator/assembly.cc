@@ -1316,9 +1316,6 @@ namespace aspect
   Simulator<dim>::
   set_assemblers ()
   {
-    // allocate the object that holds information about all of the assemblers
-    assemblers.reset (new internal::Assembly::AssemblerLists<dim>());
-
     // create an object for the complete equations assembly; add its
     // member functions to the signals and add the object the list
     // of assembler objects
