@@ -61,7 +61,7 @@
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
-
+#include <deal.II/base/std_cxx11/shared_ptr.h>
 
 namespace aspect
 {
@@ -579,7 +579,7 @@ namespace aspect
        * set_assemblers(), and are later destroyed by the destructor
        * of the current class.
        */
-      std::vector<std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
+      std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
