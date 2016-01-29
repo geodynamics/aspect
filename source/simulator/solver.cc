@@ -632,15 +632,16 @@ namespace aspect
     // are only interested in the part of the rhs not balanced by the static
     // pressure (the current pressure is a good approximation for the static
     // pressure).
-    const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
+    const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0), //Eisenstat-Walker method: system_rhs.block(0).l2_norm();//
                                                                  remap.block(1),
                                                                  system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
     const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
                                     sqrt(residual_u*residual_u+residual_p*residual_p);
-
+//std::cout << "solver residual = " << sqrt(residual_u*residual_u+residual_p*residual_p) << std::endl;
     // Now overwrite the solution vector again with the current best guess
-    // to solve the linear system
+    // to solve the linear system.
+
     distributed_stokes_solution = remap;
 
     // extract Stokes parts of rhs vector
