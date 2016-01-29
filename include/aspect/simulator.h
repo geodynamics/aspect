@@ -89,7 +89,7 @@ namespace aspect
       {
         template <int dim>      class AssemblerBase;
       }
-      template <int dim>      class AssemblerLists;
+      template <int dim>      struct AssemblerLists;
     }
   }
 
