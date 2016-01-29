@@ -47,38 +47,6 @@ namespace aspect
       namespace Scratch
       {
         template <int dim>
-        struct StokesPreconditioner
-        {
-          StokesPreconditioner (const FiniteElement<dim> &finite_element,
-                                const Quadrature<dim>    &quadrature,
-                                const Mapping<dim>       &mapping,
-                                const UpdateFlags         update_flags,
-                                const unsigned int        n_compositional_fields);
-          StokesPreconditioner (const StokesPreconditioner &data);
-
-          virtual ~StokesPreconditioner ();
-
-          FEValues<dim>               finite_element_values;
-
-          std::vector<SymmetricTensor<2,dim> > grads_phi_u;
-          std::vector<double>                  phi_p;
-
-          std::vector<double>                  temperature_values;
-          std::vector<double>                  pressure_values;
-          std::vector<SymmetricTensor<2,dim> > strain_rates;
-          std::vector<std::vector<double> >     composition_values;
-
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           */
-          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
-        };
-
-
-
-        template <int dim>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
@@ -124,47 +92,6 @@ namespace aspect
         StokesPreconditioner<dim>::
         ~StokesPreconditioner ()
         {}
-
-
-
-        // We derive the StokesSystem scratch array from the
-        // StokesPreconditioner array. We do this because all the objects that
-        // are necessary for the assembly of the preconditioner are also
-        // needed for the actual system matrix and right hand side, plus some
-        // extra data that we need for the time stepping and traction boundaries
-        // on the right hand side.
-        template <int dim>
-        struct StokesSystem : public StokesPreconditioner<dim>
-        {
-          StokesSystem (const FiniteElement<dim> &finite_element,
-                        const Mapping<dim>       &mapping,
-                        const Quadrature<dim>    &quadrature,
-                        const Quadrature<dim-1>  &face_quadrature,
-                        const UpdateFlags         update_flags,
-                        const UpdateFlags         face_update_flags,
-                        const unsigned int        n_compositional_fields);
-
-          StokesSystem (const StokesSystem<dim> &data);
-
-          FEFaceValues<dim>               face_finite_element_values;
-
-          std::vector<Tensor<1,dim> >          phi_u;
-          std::vector<SymmetricTensor<2,dim> > grads_phi_u;
-          std::vector<double>                  div_phi_u;
-          std::vector<Tensor<1,dim> >          velocity_values;
-
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           *
-           * In contrast to the variables above, the following two
-           * variables are used in the assembly at quadrature points
-           * on faces, not on cells.
-           */
-          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
-        };
-
 
 
         template <int dim>
@@ -214,80 +141,6 @@ namespace aspect
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs)
         {}
-
-
-
-        template <int dim>
-        struct AdvectionSystem
-        {
-          AdvectionSystem (const FiniteElement<dim> &finite_element,
-                           const FiniteElement<dim> &advection_element,
-                           const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &quadrature,
-                           const unsigned int        n_compositional_fields);
-          AdvectionSystem (const AdvectionSystem &data);
-
-          FEValues<dim>               finite_element_values;
-
-          std::vector<types::global_dof_index>   local_dof_indices;
-
-          /**
-           * Variables describing the values and gradients of the
-           * shape functions at the quadrature points, as they are
-           * used in the advection assembly function. note that the sizes
-           * of these arrays are equal to the number of shape functions
-           * corresponding to the advected field (and not of the overall
-           * field!), and that they are also correspondingly indexed.
-           */
-          std::vector<double>         phi_field;
-          std::vector<Tensor<1,dim> > grad_phi_field;
-
-          std::vector<Tensor<1,dim> > old_velocity_values;
-          std::vector<Tensor<1,dim> > old_old_velocity_values;
-
-          std::vector<double>         old_pressure;
-          std::vector<double>         old_old_pressure;
-          std::vector<Tensor<1,dim> > old_pressure_gradients;
-          std::vector<Tensor<1,dim> > old_old_pressure_gradients;
-
-          std::vector<SymmetricTensor<2,dim> > old_strain_rates;
-          std::vector<SymmetricTensor<2,dim> > old_old_strain_rates;
-
-          std::vector<double>         old_temperature_values;
-          std::vector<double>         old_old_temperature_values;
-
-          std::vector<double>        *old_field_values;
-          std::vector<double>        *old_old_field_values;
-          std::vector<Tensor<1,dim> > old_field_grads;
-          std::vector<Tensor<1,dim> > old_old_field_grads;
-          std::vector<double>         old_field_laplacians;
-          std::vector<double>         old_old_field_laplacians;
-
-          std::vector<std::vector<double> > old_composition_values;
-          std::vector<std::vector<double> > old_old_composition_values;
-
-          std::vector<double>         current_temperature_values;
-          std::vector<Tensor<1,dim> > current_velocity_values;
-          std::vector<Tensor<1,dim> > mesh_velocity_values;
-
-          std::vector<SymmetricTensor<2,dim> > current_strain_rates;
-          std::vector<std::vector<double> > current_composition_values;
-
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           */
-          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
-
-          /**
-           * Material model inputs and outputs computed at a previous
-           * time step's solution, or an extrapolation from previous
-           * time steps.
-           */
-          MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
-        };
 
 
 
@@ -386,26 +239,8 @@ namespace aspect
       }
 
 
-      // The CopyData arrays are similar to the
-      // Scratch arrays. They provide a
-      // constructor, a copy operation, and
-      // some arrays for local matrix, local
-      // vectors and the relation between local
-      // and global degrees of freedom (a.k.a.
-      // <code>local_dof_indices</code>).
       namespace CopyData
       {
-        template <int dim>
-        struct StokesPreconditioner
-        {
-          StokesPreconditioner (const FiniteElement<dim> &finite_element);
-          StokesPreconditioner (const StokesPreconditioner &data);
-
-          virtual ~StokesPreconditioner ();
-
-          FullMatrix<double>          local_matrix;
-          std::vector<types::global_dof_index>   local_dof_indices;
-        };
 
 
 
@@ -437,19 +272,6 @@ namespace aspect
 
 
         template <int dim>
-        struct StokesSystem : public StokesPreconditioner<dim>
-        {
-          StokesSystem (const FiniteElement<dim> &finite_element,
-                        const bool                do_pressure_rhs_compatibility_modification);
-          StokesSystem (const StokesSystem<dim> &data);
-
-          Vector<double> local_rhs;
-          Vector<double> local_pressure_shape_function_integrals;
-        };
-
-
-
-        template <int dim>
         StokesSystem<dim>::
         StokesSystem (const FiniteElement<dim> &finite_element,
                       const bool                do_pressure_rhs_compatibility_modification)
@@ -475,37 +297,6 @@ namespace aspect
 
 
 
-        template <int dim>
-        struct AdvectionSystem
-        {
-          /**
-           * Constructor.
-           * @param finite_element The element that describes the field for which we
-           *    are trying to assemble a linear system. <b>Not</b> the global finite
-           *    element.
-           */
-          AdvectionSystem (const FiniteElement<dim> &finite_element);
-          AdvectionSystem (const AdvectionSystem &data);
-
-          /**
-           * Local contributions to the global matrix and right hand side
-           * that correspond only to the variables listed in local_dof_indices
-           */
-          FullMatrix<double>          local_matrix;
-          Vector<double>              local_rhs;
-
-          /**
-           * Indices of those degrees of freedom that actually correspond
-           * to the temperature or compositional field. since this structure
-           * is used to represent just contributions to the advection
-           * systems, there will be no contributions to other parts of the
-           * system and consequently, we do not need to list here indices
-           * that correspond to velocity or pressure degrees (or, in fact
-           * any other variable outside the block we are currently considering)
-           */
-          std::vector<types::global_dof_index>   local_dof_indices;
-        };
-
 
 
         template <int dim>
@@ -530,6 +321,7 @@ namespace aspect
         {}
 
       }
+
 
       template <int dim>
       AssemblerLists<dim>::Properties::Properties ()
