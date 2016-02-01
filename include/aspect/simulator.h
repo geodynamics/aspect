@@ -1251,7 +1251,7 @@ namespace aspect
            * assemly of the system matrix.
            */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    FullMatrix<double> &local_matrix);
+                                    internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
           /**
            * If a geometry model uses manifolds for the refinement behavior
@@ -1410,6 +1410,18 @@ namespace aspect
            */
           std::set<types::boundary_id> tangential_mesh_boundary_indicators;
 
+          /**
+           * A handle on the connection that connects the Stokes assembler
+           * signal of the main simulator object to the apply_stabilization()
+           * function. We keep track of this connection because we need to
+           * break it once the current free surface handler object goes out
+           * of scope.
+           *
+           * With the current variable, the connection is broken once the
+           * scoped_connection goes out of scope, i.e., when the surrounding
+           * class is destroyed.
+           */
+          boost::signals2::scoped_connection assembler_connection;
 
           friend class Simulator<dim>;
           friend class SimulatorAccess<dim>;
