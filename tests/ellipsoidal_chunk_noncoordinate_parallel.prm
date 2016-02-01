@@ -79,7 +79,7 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 15
 end
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, velocity statistics, basic statistics
 
