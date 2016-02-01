@@ -76,7 +76,7 @@ subsection Mesh refinement
 end
 
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = SolCxPostprocessor, visualization

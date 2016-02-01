@@ -94,7 +94,7 @@ subsection Mesh refinement
 end
 
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. 
 
