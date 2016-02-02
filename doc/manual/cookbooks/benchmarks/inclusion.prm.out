@@ -76,7 +76,7 @@ subsection %%\hyperref[parameters:Mesh_20refinement]{Mesh refinement}%
 end
 
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 
 subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
   set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = InclusionPostprocessor, visualization%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %

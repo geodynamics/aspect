@@ -22,7 +22,7 @@
 #ifndef __aspect__gravity_model_radial_h
 #define __aspect__gravity_model_radial_h
 
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/gravity_model/interface.h>
 
 namespace aspect
