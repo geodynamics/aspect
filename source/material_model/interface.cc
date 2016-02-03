@@ -378,252 +378,250 @@ namespace aspect
         return none;
       }
 
-      namespace
+
+      // Do the requested averaging operation for one array. The
+      // projection matrix argument is only used if the operation
+      // chosen is project_to_Q1
+      void average_property (const AveragingOperation  operation,
+                             const FullMatrix<double>      &projection_matrix,
+                             const FullMatrix<double>      &expansion_matrix,
+                             std::vector<double>           &values_out)
       {
-        // Do the requested averaging operation for one array. The
-        // projection matrix argument is only used if the operation
-        // chosen is project_to_Q1
-        void average (const AveragingOperation  operation,
-                      const FullMatrix<double>      &projection_matrix,
-                      const FullMatrix<double>      &expansion_matrix,
-                      std::vector<double>           &values_out)
-        {
-          // if an output field has not been filled (because it was
-          // not requested), then simply do nothing -- no harm no foul
-          if (values_out.size() == 0)
-            return;
+        // if an output field has not been filled (because it was
+        // not requested), then simply do nothing -- no harm no foul
+        if (values_out.size() == 0)
+          return;
 
-          const unsigned int N = values_out.size();
-          const unsigned int P = expansion_matrix.n();
-          Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
-                  ExcInternalError());
-          Assert (((operation == project_to_Q1) &&
-                   (projection_matrix.m() == P) &&
-                   (projection_matrix.n() == N) &&
-                   (expansion_matrix.m() == N) &&
-                   (expansion_matrix.n() == P))
-                  ||
-                  ((projection_matrix.m() == 0) &&
-                   (projection_matrix.n() == 0)),
-                  ExcInternalError());
+        const unsigned int N = values_out.size();
+        const unsigned int P = expansion_matrix.n();
+        Assert ((P==0) || (/*dim=2*/ P==4) || (/*dim=3*/ P==8),
+                ExcInternalError());
+        Assert (((operation == project_to_Q1) &&
+                 (projection_matrix.m() == P) &&
+                 (projection_matrix.n() == N) &&
+                 (expansion_matrix.m() == N) &&
+                 (expansion_matrix.n() == P))
+                ||
+                ((projection_matrix.m() == 0) &&
+                 (projection_matrix.n() == 0)),
+                ExcInternalError());
 
-          // otherwise do as instructed
-          switch (operation)
+        // otherwise do as instructed
+        switch (operation)
+          {
+            case none:
             {
-              case none:
-              {
-                break;
-              }
+              break;
+            }
 
-              case arithmetic_average:
-              {
-                double sum = 0;
-                for (unsigned int i=0; i<N; ++i)
-                  sum += values_out[i];
+            case arithmetic_average:
+            {
+              double sum = 0;
+              for (unsigned int i=0; i<N; ++i)
+                sum += values_out[i];
 
-                const double average = sum/N;
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = average;
-                break;
-              }
+              const double average = sum/N;
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = average;
+              break;
+            }
 
-              case harmonic_average:
-              {
-                // if one of the values is zero, the average is 0.0
-                for (unsigned int i=0; i<N; ++i)
+            case harmonic_average:
+            {
+              // if one of the values is zero, the average is 0.0
+              for (unsigned int i=0; i<N; ++i)
+                if (values_out[i] == 0.0)
+                  {
+                    for (unsigned int j=0; j<N; ++j)
+                      values_out[j] = 0.0;
+                    return;
+                  }
+
+              double sum = 0;
+              for (unsigned int i=0; i<N; ++i)
+                sum += 1./values_out[i];
+
+              const double average = 1./(sum/N);
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = average;
+              break;
+            }
+
+            case geometric_average:
+            {
+              double prod = 1;
+              for (unsigned int i=0; i<N; ++i)
+                {
+                  Assert (values_out[i] >= 0,
+                          ExcMessage ("Computing the geometric average "
+                                      "only makes sense for non-negative "
+                                      "quantities."));
+                  prod *= values_out[i];
+                }
+
+              const double average = std::pow (prod, 1./N);
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = average;
+              break;
+            }
+
+            case pick_largest:
+            {
+              double max = -std::numeric_limits<double>::max();
+              for (unsigned int i=0; i<N; ++i)
+                max = std::max(max, values_out[i]);
+
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = max;
+              break;
+            }
+
+            case project_to_Q1:
+            {
+              // we will need the min/max values below, for use
+              // after the projection operation
+              double min = std::numeric_limits<double>::max();
+              for (unsigned int i=0; i<N; ++i)
+                min = std::min(min, values_out[i]);
+
+              double max = -std::numeric_limits<double>::max();
+              for (unsigned int i=0; i<N; ++i)
+                max = std::max(max, values_out[i]);
+
+              // take the projection matrix and apply it to the
+              // values. as explained in the documentation of the
+              // compute_projection_matrix, this performs the operation
+              // we want in the current context
+              Vector<double> x (N), z(P), y(N);
+              for (unsigned int i=0; i<N; ++i)
+                y(i) = values_out[i];
+              projection_matrix.vmult (z, y);
+
+              // now that we have the Q1 values, restrict them to
+              // the min/max range of the original data
+              for (unsigned int i=0; i<P; ++i)
+                z[i] = std::max (min,
+                                 std::min (max,
+                                           z[i]));
+
+              // then expand back to the quadrature points
+              expansion_matrix.vmult (x, z);
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = x(i);
+
+              break;
+            }
+
+            case log_average:
+            {
+              double sum = 0;
+              for (unsigned int i=0; i<N; ++i)
+                {
                   if (values_out[i] == 0.0)
                     {
-                      for (unsigned int j=0; j<N; ++j)
-                        values_out[j] = 0.0;
-                      return;
+                      sum = -std::numeric_limits<double>::infinity();
+                      break;
                     }
-
-                double sum = 0;
-                for (unsigned int i=0; i<N; ++i)
-                  sum += 1./values_out[i];
-
-                const double average = 1./(sum/N);
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = average;
-                break;
-              }
-
-              case geometric_average:
-              {
-                double prod = 1;
-                for (unsigned int i=0; i<N; ++i)
-                  {
-                    Assert (values_out[i] >= 0,
-                            ExcMessage ("Computing the geometric average "
-                                        "only makes sense for non-negative "
-                                        "quantities."));
-                    prod *= values_out[i];
-                  }
-
-                const double average = std::pow (prod, 1./N);
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = average;
-                break;
-              }
-
-              case pick_largest:
-              {
-                double max = -std::numeric_limits<double>::max();
-                for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values_out[i]);
-
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = max;
-                break;
-              }
-
-              case project_to_Q1:
-              {
-                // we will need the min/max values below, for use
-                // after the projection operation
-                double min = std::numeric_limits<double>::max();
-                for (unsigned int i=0; i<N; ++i)
-                  min = std::min(min, values_out[i]);
-
-                double max = -std::numeric_limits<double>::max();
-                for (unsigned int i=0; i<N; ++i)
-                  max = std::max(max, values_out[i]);
-
-                // take the projection matrix and apply it to the
-                // values. as explained in the documentation of the
-                // compute_projection_matrix, this performs the operation
-                // we want in the current context
-                Vector<double> x (N), z(P), y(N);
-                for (unsigned int i=0; i<N; ++i)
-                  y(i) = values_out[i];
-                projection_matrix.vmult (z, y);
-
-                // now that we have the Q1 values, restrict them to
-                // the min/max range of the original data
-                for (unsigned int i=0; i<P; ++i)
-                  z[i] = std::max (min,
-                                   std::min (max,
-                                             z[i]));
-
-                // then expand back to the quadrature points
-                expansion_matrix.vmult (x, z);
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = x(i);
-
-                break;
-              }
-
-              case log_average:
-              {
-                double sum = 0;
-                for (unsigned int i=0; i<N; ++i)
-                  {
-                    if (values_out[i] == 0.0)
-                      {
-                        sum = -std::numeric_limits<double>::infinity();
-                        break;
-                      }
-                    Assert (values_out[i] > 0.0,
-                            ExcMessage ("Computing the log average "
-                                        "only makes sense for positive "
-                                        "quantities."));
-                    sum += std::log10(values_out[i]);
-                  }
-                const double log_value_average = std::pow (10., sum/N);
-                for (unsigned int i=0; i<N; ++i)
-                  values_out[i] = log_value_average;
-                break;
-              }
-
-              default:
-              {
-                AssertThrow (false,
-                             ExcMessage ("This averaging operation is not implemented."));
-              }
+                  Assert (values_out[i] > 0.0,
+                          ExcMessage ("Computing the log average "
+                                      "only makes sense for positive "
+                                      "quantities."));
+                  sum += std::log10(values_out[i]);
+                }
+              const double log_value_average = std::pow (10., sum/N);
+              for (unsigned int i=0; i<N; ++i)
+                values_out[i] = log_value_average;
+              break;
             }
-        }
+
+            default:
+            {
+              AssertThrow (false,
+                           ExcMessage ("This averaging operation is not implemented."));
+            }
+          }
+      }
 
 
-        /**
-         * Given a quadrature formula, compute a matrices $E, M^{-1}F$
-         * representing a linear operator in the following way: Let
-         * there be a vector $F$ with $N$ elements where the elements
-         * are data stored at each of the $N$ quadrature points. Then
-         * project this data into a Q1 space and evaluate this
-         * projection at the quadrature points. This operator can be
-         * expressed in the following way where $P=2^{dim}$ is the
-         * number of degrees of freedom of the $Q_1$ element:
-         *
-         * Let $y$ be the input vector with $N$ elements. Then let
-         * $F$ be the $P \times N$ matrix so that
-         * @f{align}
-         *   F_{iq} = \varphi_i(x_q) |J(x_q)| w_q
-         * @f}
-         * where $\varphi_i$ are the $Q_1$ shape functions, $x_q$ are
-         * the quadrature points, $J$ is the Jacobian matrix of the
-         * mapping from reference to real cell, and $w_q$ are the
-         * quadrature weights.
-         *
-         * Next, let $M_{ij}$ be the $P\times P$ mass matrix on the
-         * $Q_1$ space. Then $M^{-1}Fy$ corresponds to the projection
-         * of $y$ into the $Q_1$ space (or, more correctly, it
-         * corresponds to the nodal values of this projection).
-         *
-         * Finally, let $E_{qi} = \varphi_i(x_q)$ be the evaluation
-         * operation of shape functions at quadrature points.
-         *
-         * Then, the operation $X=EM^{-1}F$ is the operation we seek.
-         * This function computes the matrices E and M^{-1}F.
-         */
-        template <int dim>
-        void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                        const Quadrature<dim>   &quadrature_formula,
-                                        const Mapping<dim>      &mapping,
-                                        FullMatrix<double>      &projection_matrix,
-                                        FullMatrix<double>      &expansion_matrix)
-        {
-          static FE_Q<dim> fe(1);
-          FEValues<dim> fe_values (mapping, fe, quadrature_formula,
-                                   update_values | update_JxW_values);
+      /**
+       * Given a quadrature formula, compute a matrices $E, M^{-1}F$
+       * representing a linear operator in the following way: Let
+       * there be a vector $F$ with $N$ elements where the elements
+       * are data stored at each of the $N$ quadrature points. Then
+       * project this data into a Q1 space and evaluate this
+       * projection at the quadrature points. This operator can be
+       * expressed in the following way where $P=2^{dim}$ is the
+       * number of degrees of freedom of the $Q_1$ element:
+       *
+       * Let $y$ be the input vector with $N$ elements. Then let
+       * $F$ be the $P \times N$ matrix so that
+       * @f{align}
+       *   F_{iq} = \varphi_i(x_q) |J(x_q)| w_q
+       * @f}
+       * where $\varphi_i$ are the $Q_1$ shape functions, $x_q$ are
+       * the quadrature points, $J$ is the Jacobian matrix of the
+       * mapping from reference to real cell, and $w_q$ are the
+       * quadrature weights.
+       *
+       * Next, let $M_{ij}$ be the $P\times P$ mass matrix on the
+       * $Q_1$ space. Then $M^{-1}Fy$ corresponds to the projection
+       * of $y$ into the $Q_1$ space (or, more correctly, it
+       * corresponds to the nodal values of this projection).
+       *
+       * Finally, let $E_{qi} = \varphi_i(x_q)$ be the evaluation
+       * operation of shape functions at quadrature points.
+       *
+       * Then, the operation $X=EM^{-1}F$ is the operation we seek.
+       * This function computes the matrices E and M^{-1}F.
+       */
+      template <int dim>
+      void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                      const Quadrature<dim>   &quadrature_formula,
+                                      const Mapping<dim>      &mapping,
+                                      FullMatrix<double>      &projection_matrix,
+                                      FullMatrix<double>      &expansion_matrix)
+      {
+        static FE_Q<dim> fe(1);
+        FEValues<dim> fe_values (mapping, fe, quadrature_formula,
+                                 update_values | update_JxW_values);
 
-          const unsigned int P = fe.dofs_per_cell;
-          const unsigned int N = quadrature_formula.size();
+        const unsigned int P = fe.dofs_per_cell;
+        const unsigned int N = quadrature_formula.size();
 
-          FullMatrix<double> F (P, N);
-          FullMatrix<double> M (P, P);
+        FullMatrix<double> F (P, N);
+        FullMatrix<double> M (P, P);
 
-          projection_matrix.reinit (P, N);
-          expansion_matrix.reinit (N, P);
+        projection_matrix.reinit (P, N);
+        expansion_matrix.reinit (N, P);
 
-          // reinitialize the fe_values object with the current cell. we get a
-          // DoFHandler cell, but we are not going to use it with the
-          // finite element associated with that DoFHandler, so cast it back
-          // to just a tria iterator (all we need anyway is the geometry)
-          fe_values.reinit (typename Triangulation<dim>::active_cell_iterator(cell));
+        // reinitialize the fe_values object with the current cell. we get a
+        // DoFHandler cell, but we are not going to use it with the
+        // finite element associated with that DoFHandler, so cast it back
+        // to just a tria iterator (all we need anyway is the geometry)
+        fe_values.reinit (typename Triangulation<dim>::active_cell_iterator(cell));
 
-          // compute the matrices F, M, E
-          for (unsigned int i=0; i<P; ++i)
-            for (unsigned int q=0; q<N; ++q)
-              F(i,q) = fe_values.shape_value(i,q) *
-                       fe_values.JxW(q);
-
-          for (unsigned int i=0; i<P; ++i)
-            for (unsigned int j=0; j<P; ++j)
-              for (unsigned int q=0; q<N; ++q)
-                M(i,j) += fe_values.shape_value(i,q) *
-                          fe_values.shape_value(j,q) *
-                          fe_values.JxW(q);
-
+        // compute the matrices F, M, E
+        for (unsigned int i=0; i<P; ++i)
           for (unsigned int q=0; q<N; ++q)
-            for (unsigned int i=0; i<P; ++i)
-              expansion_matrix(q,i) = fe_values.shape_value(i,q);
+            F(i,q) = fe_values.shape_value(i,q) *
+                     fe_values.JxW(q);
 
-          // replace M by M^{-1}
-          M.gauss_jordan();
+        for (unsigned int i=0; i<P; ++i)
+          for (unsigned int j=0; j<P; ++j)
+            for (unsigned int q=0; q<N; ++q)
+              M(i,j) += fe_values.shape_value(i,q) *
+                        fe_values.shape_value(j,q) *
+                        fe_values.JxW(q);
 
-          // form M^{-1} F
-          M.mmult (projection_matrix, F);
-        }
+        for (unsigned int q=0; q<N; ++q)
+          for (unsigned int i=0; i<P; ++i)
+            expansion_matrix(q,i) = fe_values.shape_value(i,q);
+
+        // replace M by M^{-1}
+        M.gauss_jordan();
+
+        // form M^{-1} F
+        M.mmult (projection_matrix, F);
       }
 
 
@@ -648,23 +646,27 @@ namespace aspect
                                        expansion_matrix);
           }
 
-        average (operation, projection_matrix, expansion_matrix, values_out.viscosities);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.densities);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.thermal_expansion_coefficients);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.specific_heat);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.compressibilities);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.entropy_derivative_pressure);
-        average (operation, projection_matrix, expansion_matrix,
-                 values_out.entropy_derivative_temperature);
+        average_property (operation, projection_matrix, expansion_matrix, values_out.viscosities);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.densities);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.thermal_expansion_coefficients);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.specific_heat);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.compressibilities);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.entropy_derivative_pressure);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.entropy_derivative_temperature);
 
         // the reaction terms are unfortunately stored in reverse
         // indexing. it's also not quite clear whether these should
         // really be averaged, so avoid this for now
+
+        // average all additional outputs
+        for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
+          values_out.additional_outputs[i]->average (operation, projection_matrix, expansion_matrix);
       }
 
     }
