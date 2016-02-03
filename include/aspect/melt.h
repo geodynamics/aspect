@@ -43,11 +43,20 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
+
+        /**
+         * Compute the integrals for the preconditioner for the Stokes system in
+         * the case of melt migration on a single cell.
+         */
         void
         local_assemble_stokes_preconditioner_melt (const double                                             pressure_scaling,
                                                    internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
                                                    internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
 
+        /**
+         * Compute the integrals for the Stokes matrix and right hand side in
+         * the case of melt migration on a single cell.
+         */
         void
         local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                            const double                                     pressure_scaling,
@@ -55,6 +64,11 @@ namespace aspect
                                            internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                            internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
+        /**
+         * Compute the boundary integrals for the Stokes right hand side in
+         * the case of melt migration on a single cell. These boundary terms
+         * are used to describe Neumann boundary conditions for the fluid pressure.
+         */
         void
         local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                     const unsigned int                                    face_no,
@@ -63,6 +77,10 @@ namespace aspect
                                                     internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       private:
+        /**
+         * Returns the right hand side of the fluid pressure equation in
+         * the case of melt migration for a single quadrature point.
+         */
         double
         compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                    MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -76,6 +94,11 @@ namespace aspect
      */
     namespace OtherTerms
     {
+      /**
+       * Integrate the local fluid pressure shape functions on a single cell
+       * for models with melt migration, so that they can later be used to do
+       * the pressure right-hand side compatibility modification.
+       */
       template <int dim>
       void
       pressure_rhs_compatibility_modification_melt (const SimulatorAccess<dim>                      &simulator_access,
