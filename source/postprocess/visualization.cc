@@ -531,7 +531,11 @@ namespace aspect
 
       int tmp_file_desc = -1;
 
-      if (system(0) != 0)
+      // Check if a command-processor is available by calling system() with a
+      // null pointer. System is guaranteed to return non-zero if it finds
+      // a terminal and zero if there is none (like on the compute nodes of
+      // some cluster architectures, e.g. IBM BlueGene/Q)
+      if (system((char*)0) != 0)
         {
           // Try getting the environment variable for the temporary directory
           const char *tmp_filedir = getenv("TMPDIR");
