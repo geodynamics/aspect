@@ -378,7 +378,7 @@ namespace aspect
       min_convection_timestep = parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize);
 
     if (parameters.use_conduction_timestep)
-      MPI_Allreduce (&min_local_conduction_timestep, &min_conduction_timestep, 1, MPI_DOUBLE, MPI_MIN, mpi_communicator);
+      min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
 
     double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
     bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
