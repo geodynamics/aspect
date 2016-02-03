@@ -246,42 +246,8 @@ namespace aspect
     };
 
 
-    /**
-     * A base class for additional output fields to be added to the
-     * MaterialModel::MaterialModelOutputs structure and filled in the
-     * MaterialModel::Interface::evaluate() function. The format of the
-     * additional quantities defined in derived classes should be the
-     * same as for MaterialModel::MaterialModelOutputs.
-     */
-    template<int dim>
-    class AdditionalMaterialOutputs
-    {
-      public:
-        virtual ~AdditionalMaterialOutputs()
-        {}
-    };
-
-    // TODO: move down again when we moved implementation of additional outputs into .cc file
-    template <int dim>
-    class MeltOutputs : public AdditionalMaterialOutputs<dim>
-    {
-      public:
-        MeltOutputs (const unsigned int n_points,
-                     const unsigned int n_comp)
-        {
-          compaction_viscosities.resize(n_points);
-          fluid_viscosities.resize(n_points);
-          permeabilities.resize(n_points);
-          fluid_densities.resize(n_points);
-          fluid_compressibilities.resize(n_points);
-        }
-
-        std::vector<double> compaction_viscosities;
-        std::vector<double> fluid_viscosities;
-        std::vector<double> permeabilities;
-        std::vector<double> fluid_densities;
-        std::vector<double> fluid_compressibilities;
-    };
+    template <int dim>     class AdditionalMaterialOutputs;
+    template <int dim>     class MeltOutputs;
 
 
     /**
@@ -451,6 +417,7 @@ namespace aspect
       }
     };
 
+
     /**
      * A namespace in which we define how material model outputs should be
      * averaged on each cell.
@@ -538,8 +505,77 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    MaterialModelOutputs<dim>          &values_out);
+                    MaterialModelOutputs<dim>     &values_out);
+
+      /**
+       * Do the requested averaging operation for one array. The
+       * projection matrix argument is only used if the operation
+       * chosen is project_to_Q1
+       */
+      void average_property (const AveragingOperation  operation,
+                             const FullMatrix<double>      &projection_matrix,
+                             const FullMatrix<double>      &expansion_matrix,
+                             std::vector<double>           &values_out);
     }
+
+
+    /**
+     * A base class for additional output fields to be added to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function. The format of the
+     * additional quantities defined in derived classes should be the
+     * same as for MaterialModel::MaterialModelOutputs.
+     */
+    template<int dim>
+    class AdditionalMaterialOutputs
+    {
+      public:
+        virtual ~AdditionalMaterialOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
+                              const FullMatrix<double>  &projection_matrix,
+                              const FullMatrix<double>  &expansion_matrix)
+        {};
+    };
+
+    // TODO: move down again when we moved implementation of additional outputs into .cc file
+    template <int dim>
+    class MeltOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        MeltOutputs (const unsigned int n_points,
+                     const unsigned int n_comp)
+        {
+          compaction_viscosities.resize(n_points);
+          fluid_viscosities.resize(n_points);
+          permeabilities.resize(n_points);
+          fluid_densities.resize(n_points);
+          fluid_compressibilities.resize(n_points);
+        }
+
+        std::vector<double> compaction_viscosities;
+        std::vector<double> fluid_viscosities;
+        std::vector<double> permeabilities;
+        std::vector<double> fluid_densities;
+        std::vector<double> fluid_compressibilities;
+
+        void average (const MaterialAveraging::AveragingOperation operation,
+                      const FullMatrix<double>  &projection_matrix,
+                      const FullMatrix<double>  &expansion_matrix)
+        {
+          average_property (operation, projection_matrix, expansion_matrix,
+                            compaction_viscosities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            fluid_viscosities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            permeabilities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            fluid_densities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            fluid_compressibilities);
+        }
+    };
 
 
 
