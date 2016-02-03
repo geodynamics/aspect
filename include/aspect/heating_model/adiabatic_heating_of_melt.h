@@ -23,7 +23,6 @@
 #define __aspect__heating_model_adiabatic_heating_of_melt_h
 
 #include <aspect/heating_model/interface.h>
-#include <aspect/material_model/melt_interface.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect

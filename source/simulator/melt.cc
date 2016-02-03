@@ -20,7 +20,6 @@
 
 
 #include <aspect/melt.h>
-#include <aspect/material_model/melt_interface.h>
 
 using namespace dealii;
 

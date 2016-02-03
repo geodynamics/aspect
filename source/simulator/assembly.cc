@@ -23,7 +23,6 @@
 #include <aspect/utilities.h>
 #include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/melt_interface.h>
 #include <aspect/melt.h>
 
 

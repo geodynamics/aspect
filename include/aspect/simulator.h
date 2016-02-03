@@ -44,7 +44,6 @@
 #include <aspect/lateral_averaging.h>
 #include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/melt_interface.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
