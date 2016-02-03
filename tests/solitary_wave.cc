@@ -401,6 +401,8 @@ namespace aspect
               out.compressibilities[i] = 0.0;
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
+              out.entropy_derivative_pressure[i] = 0.0;
+              out.entropy_derivative_temperature[i] = 0.0;
             }
 
           // fill melt outputs if they exist
