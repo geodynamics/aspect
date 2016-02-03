@@ -289,11 +289,8 @@ namespace aspect
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
     std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
 
-    double new_time_step;
-    bool convection_dominant;
-
     double max_local_speed_over_meshsize = 0;
-    double min_local_conduction_timestep = std::numeric_limits<double>::max(), min_conduction_timestep;
+    double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -355,6 +352,10 @@ namespace aspect
                   const double rho = out.densities[q];
                   const double c_p = out.specific_heat[q];
 
+                  Assert(rho*c_p > 0,
+                         ExcMessage ("The product of density and c_P needs to be a "
+                                                     "non-negative quantity."));
+
                   const double thermal_diffusivity = k/(rho*c_p);
 
                   if (thermal_diffusivity > 0)
@@ -369,19 +370,20 @@ namespace aspect
 
     const double max_global_speed_over_meshsize
       = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
+
+    double min_convection_timestep = std::numeric_limits<double>::max();
+    if (max_global_speed_over_meshsize != 0.0)
+      min_convection_timestep = parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize);
+
+    double min_conduction_timestep = std::numeric_limits<double>::max();
+
     if (parameters.use_conduction_timestep)
       MPI_Allreduce (&min_local_conduction_timestep, &min_conduction_timestep, 1, MPI_DOUBLE, MPI_MIN, mpi_communicator);
-    else
-      min_conduction_timestep = std::numeric_limits<double>::max();
 
-    if ((max_global_speed_over_meshsize != 0.0) ||
-        (min_conduction_timestep < std::numeric_limits<double>::max()))
-      {
-        new_time_step = std::min(min_conduction_timestep,
-                                 (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
-        convection_dominant = (new_time_step < min_conduction_timestep);
-      }
-    else
+    double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
+    bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
+
+    if (new_time_step == std::numeric_limits<double>::max())
       {
         // If the velocity is zero and we either do not compute the conduction
         // timestep or do not have any conduction, then it is somewhat
@@ -391,7 +393,6 @@ namespace aspect
                          (parameters.temperature_degree * 1));
         convection_dominant = false;
       }
-
 
     return std::make_pair(new_time_step, convection_dominant);
   }
