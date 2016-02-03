@@ -43,24 +43,24 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-      void
-      local_assemble_stokes_preconditioner_melt (const double                                             pressure_scaling,
-                                                 internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                                                 internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
+        void
+        local_assemble_stokes_preconditioner_melt (const double                                             pressure_scaling,
+                                                   internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
+                                                   internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const;
 
-      void
-      local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                         const double                                     pressure_scaling,
-                                         const bool                                       rebuild_stokes_matrix,
-                                         internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                         internal::Assembly::CopyData::StokesSystem<dim> &data) const;
+        void
+        local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                           const double                                     pressure_scaling,
+                                           const bool                                       rebuild_stokes_matrix,
+                                           internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                           internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
-      void
-      local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                                  const unsigned int                                    face_no,
-                                                  const double                                          pressure_scaling,
-                                                  internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                                  internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
+        void
+        local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                    const unsigned int                                    face_no,
+                                                    const double                                          pressure_scaling,
+                                                    internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                                                    internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       private:
         double

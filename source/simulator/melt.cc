@@ -184,10 +184,10 @@ namespace aspect
                                              :
                                              eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                             - (use_tensor ?
-                                                eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                :
-                                                eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                               )
+                                               eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                               :
+                                               eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                              )
                                             - (pressure_scaling *
                                                scratch.div_phi_u[i] * scratch.phi_p[j])
                                             // finally the term -div(u). note the negative sign to make this
@@ -196,7 +196,7 @@ namespace aspect
                                                scratch.phi_p[i] * scratch.div_phi_u[j])
                                             +
                                             (- pressure_scaling * pressure_scaling / viscosity_c
-                                            * scratch.phi_p_c[i] * scratch.phi_p_c[j])
+                                             * scratch.phi_p_c[i] * scratch.phi_p_c[j])
                                             - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
                                             - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
                                             - K_D * pressure_scaling * pressure_scaling *
@@ -386,12 +386,12 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class MeltEquations<dim>; \
   namespace OtherTerms \
-    { \
-      template void pressure_rhs_compatibility_modification_melt<dim> (const SimulatorAccess<dim>                      &simulator_access, \
-                                                                       internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
-                                                                       internal::Assembly::CopyData::StokesSystem<dim> &data); \
-    } \
-
-  ASPECT_INSTANTIATE(INSTANTIATE)
+  { \
+    template void pressure_rhs_compatibility_modification_melt<dim> (const SimulatorAccess<dim>                      &simulator_access, \
+                                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
+                                                                     internal::Assembly::CopyData::StokesSystem<dim> &data); \
+  } \
+   
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

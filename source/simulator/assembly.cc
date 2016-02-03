@@ -1201,8 +1201,8 @@ namespace aspect
       {
         assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
         assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
-                                                                                              update_normal_vectors | update_gradients |
-                                                                                              update_JxW_values);
+            update_normal_vectors | update_gradients |
+            update_JxW_values);
         assemblers->local_assemble_stokes_system_on_boundary_face
         .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt_boundary,
                                   std_cxx11::cref (*melt_equation_assembler),
@@ -1485,7 +1485,7 @@ namespace aspect
               scratch.face_material_model_outputs.create_additional_material_outputs(scratch.face_finite_element_values.n_quadrature_points,
                                                                                      parameters.n_compositional_fields);
 
-                                                   
+
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
 //TODO: the following doesn't currently compile because the get_quadrature() call returns
@@ -1597,7 +1597,7 @@ namespace aspect
                           this,
                           std_cxx11::_1),
          internal::Assembly::Scratch::
-         StokesSystem<dim> (finite_element, mapping, quadrature_formula, 
+         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
                             face_quadrature_formula,
                             cell_update_flags,
                             face_update_flags,
