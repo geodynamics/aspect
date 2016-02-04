@@ -420,7 +420,7 @@ namespace aspect
                   melt_out->fluid_viscosities[i]= eta_f;
                   melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,3);
                   melt_out->fluid_densities[i]= reference_rho_f;
-                  melt_out->fluid_compressibilities[i] = 0.0;
+                  melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
                 }
             }
         }

@@ -91,7 +91,7 @@ namespace aspect
                 melt_out->fluid_viscosities[i]= 2.0;
                 melt_out->permeabilities[i]= 1.0 + std::pow(in.position[i][1],2);
                 melt_out->fluid_densities[i]= 1.0;
-                melt_out->fluid_compressibilities[i] = 0.0;
+                melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
               }
           }
       }

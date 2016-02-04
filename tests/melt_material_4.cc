@@ -100,7 +100,7 @@ namespace aspect
                 melt_out->fluid_viscosities[i]= 2.0;
                 melt_out->permeabilities[i]= 1.0 + 0.001 / (1.0 - porosity);
                 melt_out->fluid_densities[i]= 2.0;
-                melt_out->fluid_compressibilities[i] = 0.0;
+                melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
               }
           }
       }

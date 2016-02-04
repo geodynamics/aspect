@@ -387,8 +387,13 @@ namespace aspect
 
               // the fluid compressibility includes two parts, a constant compressibility, and a pressure-dependent one
               // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
-              melt_out->fluid_compressibilities[i] = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
-              melt_out->fluid_densities[i] = reference_rho_f * std::exp(melt_out->fluid_compressibilities[i] * (in.pressure[i] - this->get_surface_pressure()))
+              const double fluid_compressibility = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
+
+              melt_out->fluid_density_gradients[i] = melt_out->fluid_densities[i] * melt_out->fluid_densities[i]
+                                                     * fluid_compressibility
+                                                     * this->get_gravity_model().gravity_vector(in.position[i]);
+
+              melt_out->fluid_densities[i] = reference_rho_f * std::exp(fluid_compressibility * (in.pressure[i] - this->get_surface_pressure()))
                                              * temperature_dependence;
 
               const double phi_0 = 0.05;

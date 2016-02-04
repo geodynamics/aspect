@@ -166,7 +166,7 @@ namespace aspect
                               :
                               0.0);
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
-          const double compressibility_f = melt_outputs->fluid_compressibilities[q];
+          const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
           const double p_f_RHS = compute_fluid_pressure_RHS(scratch,
                                                             scratch.material_model_inputs,
@@ -202,9 +202,8 @@ namespace aspect
                                             (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
                                             + (this->get_material_model().is_compressible()
                                                ?
-                                               K_D * pressure_scaling * pressure_scaling *
-                                               compressibility_f * density_f
-                                               * scratch.phi_p[i] * (scratch.grad_phi_p[j] * gravity)
+                                               K_D * pressure_scaling * pressure_scaling / density_f
+                                               * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f)
                                                :
                                                0.0))
                                           * scratch.finite_element_values.JxW(q);
@@ -318,7 +317,7 @@ namespace aspect
       const double solid_density    = material_model_outputs.densities[q_point];
       const double fluid_density    = melt_out->fluid_densities[q_point];
       const double solid_compressibility = material_model_outputs.compressibilities[q_point];
-      const double fluid_compressibility = melt_out->fluid_compressibilities[q_point];
+      const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
       const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
       const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
       const double K_D = (porosity > this->get_parameters().melt_transport_threshold
@@ -343,9 +342,9 @@ namespace aspect
       // need to have -\phi \rho_s \kappa_s here.
       fluid_pressure_RHS += is_compressible
                             ?
-                            (current_u * gravity) * (porosity * fluid_density * fluid_compressibility
-                                                     - porosity * solid_density * solid_compressibility)
-                            + K_D * fluid_compressibility * fluid_density * fluid_density * (gravity * gravity)
+                            (current_u * fluid_density_gradient) * porosity / fluid_density
+                            - (current_u * gravity) * porosity * solid_density * solid_compressibility
+                            + K_D * (fluid_density_gradient * gravity)
                             :
                             0.0;
 

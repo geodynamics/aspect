@@ -93,7 +93,7 @@ namespace aspect
                 melt_out->compaction_viscosities[i] = 0.5 * (in.position[i][1]+0.1)*(in.position[i][1]+0.1);
                 melt_out->fluid_viscosities[i] = 1.0;
                 melt_out->permeabilities[i] = 1.0;
-                melt_out->fluid_compressibilities[i] = 1.0;
+                melt_out->fluid_density_gradients[i] = this->get_gravity_model().gravity_vector(in.position[i]);
                 melt_out->fluid_densities[i] = 1.0;
               }
           }

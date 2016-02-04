@@ -551,14 +551,38 @@ namespace aspect
           fluid_viscosities.resize(n_points);
           permeabilities.resize(n_points);
           fluid_densities.resize(n_points);
-          fluid_compressibilities.resize(n_points);
+          fluid_density_gradients.resize(n_points, Tensor<1,dim>());
         }
 
+        /**
+         * Compaction viscosity values $\xi$ at the given positions.
+         * This parameter describes the resistance of the solid matrix
+         * in a two-phase simulation to dilation and compaction.
+         */
         std::vector<double> compaction_viscosities;
+
+        /**
+         * Fluid (melt) viscosity values $\eta_f$ at the given positions.
+         */
         std::vector<double> fluid_viscosities;
+
+        /**
+         * Permeability values $k$ at the given positions.
+         */
         std::vector<double> permeabilities;
+
+        /**
+         * Fluid (melt) density values $\rho_f$ at the given positions.
+         */
         std::vector<double> fluid_densities;
-        std::vector<double> fluid_compressibilities;
+
+        /**
+         * An approximation for the fluid (melt) density gradients
+         * $\nabla \rho_f$ at the given positions. These values are
+         * required for compressible models to describe volume changes
+         * of melt in dependence of pressure, temperature etc.
+         */
+        std::vector<Tensor<1,dim> > fluid_density_gradients;
 
         void average (const MaterialAveraging::AveragingOperation operation,
                       const FullMatrix<double>  &projection_matrix,
@@ -572,8 +596,10 @@ namespace aspect
                             permeabilities);
           average_property (operation, projection_matrix, expansion_matrix,
                             fluid_densities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            fluid_compressibilities);
+
+          // the fluid density gradients are unfortunately stored in reverse
+          // indexing. it's also not quite clear whether these should
+          // really be averaged, so avoid this for now
         }
     };
 

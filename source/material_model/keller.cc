@@ -140,7 +140,7 @@ namespace aspect
               melt_out->fluid_viscosities[i] = eta_f;
               melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
               melt_out->fluid_densities[i] = reference_rho_f;
-              melt_out->fluid_compressibilities[i] = 0.0;
+              melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
 
               porosity = std::max(std::min(porosity,0.9999),1e-4);
               melt_out->compaction_viscosities[i] = eta_0 * (1.0 - porosity) / porosity;
