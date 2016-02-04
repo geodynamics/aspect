@@ -535,7 +535,7 @@ namespace aspect
       // null pointer. System is guaranteed to return non-zero if it finds
       // a terminal and zero if there is none (like on the compute nodes of
       // some cluster architectures, e.g. IBM BlueGene/Q)
-      if (system((char*)0) != 0)
+      if (system((char *)0) != 0)
         {
           // Try getting the environment variable for the temporary directory
           const char *tmp_filedir = getenv("TMPDIR");

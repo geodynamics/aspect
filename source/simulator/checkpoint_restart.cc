@@ -47,14 +47,18 @@ namespace aspect
       if (error != 0)
         {
           if (Utilities::fexists(new_name))
-            error = remove(new_name.c_str());
+            {
+              error = remove(new_name.c_str());
+              AssertThrow (error == 0, ExcMessage(std::string ("Unable to remove file: "
+                                                               + new_name
+                                                               + ", although it seems to exist.")));
+            }
 
           error = rename(old_name.c_str(),new_name.c_str());
+          AssertThrow (error == 0, ExcMessage(std::string ("Unable to rename files: ")
+                                              +
+                                              old_name + " -> " + new_name));
         }
-
-      AssertThrow (error == 0, ExcMessage(std::string ("Can't move files: ")
-                                          +
-                                          old_name + " -> " + new_name));
     }
   }
 
