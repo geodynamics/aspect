@@ -21,13 +21,14 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -764,14 +765,9 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
-        // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-        AssertThrow (error==0,
+        AssertThrow (error == 0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 

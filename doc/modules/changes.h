@@ -5,6 +5,13 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: ASPECT no longer relies on the availability of a command-
+ * processor (terminal) at run-time, by providing fallbacks to C
+ * commands. This adds support for architectures that do not offer a
+ * terminal on compute nodes (like IBM BlueGene/Q).
+ * <br>
+ * (Rene Gassmoeller, 2016/02/03)
+ *
  * <li> Changed: The 'depth' function of the 'box' geometry model and
  * the 'two merged boxes' geometry model previously threw an exception
  * when asked for the depth of a point outside of the initial model domain.

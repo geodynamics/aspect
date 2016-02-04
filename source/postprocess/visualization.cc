@@ -531,46 +531,53 @@ namespace aspect
 
       int tmp_file_desc = -1;
 
-      {
-        // Try getting the environment variable for the temporary directory
-        const char *tmp_filedir = getenv("TMPDIR");
-        // If we can't, default to /tmp
-        if (tmp_filedir)
-          tmp_filename = tmp_filedir;
-        else
-          tmp_filename = "/tmp";
-        tmp_filename += "/aspect.tmp.XXXXXX";
+      // Check if a command-processor is available by calling system() with a
+      // null pointer. System is guaranteed to return non-zero if it finds
+      // a terminal and zero if there is none (like on the compute nodes of
+      // some cluster architectures, e.g. IBM BlueGene/Q)
+      if (system((char *)0) != 0)
+        {
+          // Try getting the environment variable for the temporary directory
+          const char *tmp_filedir = getenv("TMPDIR");
+          // If we can't, default to /tmp
+          if (tmp_filedir)
+            tmp_filename = tmp_filedir;
+          else
+            tmp_filename = "/tmp";
+          tmp_filename += "/aspect.tmp.XXXXXX";
 
-        // Create the temporary file; get at the actual filename
-        // by using a C-style string that mkstemp will then overwrite
-        char *tmp_filename_x = new char[tmp_filename.size()+1];
-        std::strcpy(tmp_filename_x, tmp_filename.c_str());
-        tmp_file_desc = mkstemp(tmp_filename_x);
-        tmp_filename = tmp_filename_x;
-        delete []tmp_filename_x;
+          // Create the temporary file; get at the actual filename
+          // by using a C-style string that mkstemp will then overwrite
+          char *tmp_filename_x = new char[tmp_filename.size()+1];
+          std::strcpy(tmp_filename_x, tmp_filename.c_str());
+          tmp_file_desc = mkstemp(tmp_filename_x);
+          tmp_filename = tmp_filename_x;
+          delete []tmp_filename_x;
 
-        // If we failed to create the temp file, just write directly to the target file.
-        // We also provide a warning about this fact. There are places where
-        // this fails *on every node*, so we will get a lot of warning messages
-        // into the output; in these cases, just writing multiple pieces to
-        // std::cerr will produce an unreadable mass of text; rather, first
-        // assemble the error message completely, and then output it atomically
-        if (tmp_file_desc == -1)
-          {
-            const std::string x = ("***** WARNING: could not create temporary file <"
-                                   +
-                                   tmp_filename
-                                   +
-                                   ">, will output directly to final location. This may negatively "
-                                   "affect performance. (On processor "
-                                   + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
-                                   + ".)\n");
+          // If we failed to create the temp file, just write directly to the target file.
+          // We also provide a warning about this fact. There are places where
+          // this fails *on every node*, so we will get a lot of warning messages
+          // into the output; in these cases, just writing multiple pieces to
+          // std::cerr will produce an unreadable mass of text; rather, first
+          // assemble the error message completely, and then output it atomically
+          if (tmp_file_desc == -1)
+            {
+              const std::string x = ("***** WARNING: could not create temporary file <"
+                                     +
+                                     tmp_filename
+                                     +
+                                     ">, will output directly to final location. This may negatively "
+                                     "affect performance. (On processor "
+                                     + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD))
+                                     + ".)\n");
 
-            std::cerr << x << std::flush;
+              std::cerr << x << std::flush;
 
-            tmp_filename = *filename;
-          }
-      }
+              tmp_filename = *filename;
+            }
+        }
+      else
+        tmp_filename = *filename;
 
       // open the file. if we can't open it, abort if this is the "real"
       // file. re-try with the "real" file if we had tried to write to
