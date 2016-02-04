@@ -5,6 +5,17 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: The GPlates plugin is restructured in the style of the
+ * AsciiData Plugin. The major difference is that the interpolation is now
+ * performed in spherical coordinates instead of Cartesian coordinates. Note
+ * that some input parameters have changed: "Time step" is now called "Data
+ * file time step", "Velocity file start time" is now called "First data file
+ * model time", "Interpolation width" does not exist any more, but there are
+ * three new parameters called "First data file number", "Decreasing file
+ * order" and "Lithosphere thickness".
+ * <br>
+ * (Eva Bredow, Rene Gassmoeller, 2016/02/04)
+ *
  * <li> New: ASPECT no longer relies on the availability of a command-
  * processor (terminal) at run-time, by providing fallbacks to C
  * commands. This adds support for architectures that do not offer a
