@@ -312,6 +312,13 @@ namespace aspect
       IndexSets index_sets;
 
       /**
+       * A vector that contains a field method for every compositional
+       * field and is used to determine how to solve a particular field when
+       * solving a timestep.
+       */
+      std::vector<typename Parameters<dim>::AdvectionFieldMethod::Kind> compositional_field_methods;
+
+      /**
        * @}
        */
 

@@ -299,6 +299,118 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
+  {
+    // below, we would want to call VectorTools::interpolate on the
+    // entire FESystem. there currently is no way to restrict the
+    // interpolation operations to only a subset of vector
+    // components (oversight in deal.II?), specifically to the
+    // temperature component. this causes more work than necessary
+    // but worse yet, it doesn't work for the DGP(q) pressure element
+    // if we use a locally conservative formulation since there the
+    // pressure element is non-interpolating (we get an exception
+    // even though we are, strictly speaking, not interested in
+    // interpolating the pressure; but, as mentioned, there is no way
+    // to tell VectorTools::interpolate that)
+    //
+    // to work around this problem, the following code is essentially
+    // a (simplified) copy of the code in VectorTools::interpolate
+    // that only works on the given component
+
+    // create a fully distributed vector since we
+    // need to write into it and we can not
+    // write into vectors with ghost elements
+
+    const Postprocess::Tracers<dim> *tracer_postprocessor = postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >();
+
+    AssertThrow(tracer_postprocessor != 0,
+                ExcMessage("Did not find the <tracers> postprocessor when trying to interpolate particle properties."));
+
+    const std::multimap<aspect::Particle::types::LevelInd, Particle::Particle<dim> > *particles = &tracer_postprocessor->get_particle_world().get_particles();
+    const Particle::Interpolator::Interface<dim> *particle_interpolator = &tracer_postprocessor->get_particle_world().get_interpolator();
+    const Particle::Property::Manager<dim> *particle_property_manager = &tracer_postprocessor->get_particle_world().get_property_manager();
+
+    unsigned int particle_property;
+
+    if (parameters.mapped_particle_properties.size() != 0)
+      {
+        const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_field.compositional_variable)->second;
+
+        particle_property = particle_property_manager->get_property_component_by_name(particle_property_and_component.first)
+                            + particle_property_and_component.second;
+      }
+    else
+      {
+        particle_property = std::count(introspection.compositional_field_methods.begin(),
+                                       introspection.compositional_field_methods.begin() + advection_field.compositional_variable,
+                                       Parameters<dim>::AdvectionFieldMethod::particles);
+        AssertThrow(particle_property <= particle_property_manager->get_n_property_components(),
+                    ExcMessage("Can not automatically match particle properties to fields, because there are"
+                               "more fields that are marked as particle advected than particle properties"));
+      }
+
+    LinearAlgebra::BlockVector tracer_solution;
+
+    tracer_solution.reinit(system_rhs, false);
+
+    const unsigned int base_element = advection_field.base_element(introspection);
+
+    // get the temperature/composition support points
+    const std::vector<Point<dim> > support_points
+      = finite_element.base_element(base_element).get_unit_support_points();
+    Assert (support_points.size() != 0,
+            ExcInternalError());
+
+    // create an FEValues object with just the temperature/composition element
+    FEValues<dim> fe_values (*mapping, finite_element,
+                             support_points,
+                             update_quadrature_points);
+
+    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+    for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+         cell != dof_handler.end(); ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          const std::vector<Point<dim> > quadrature_points = fe_values.get_quadrature_points();
+
+          const std::vector<std::vector<double> > tracer_properties =
+            particle_interpolator->properties_at_points(*particles,quadrature_points,cell);
+
+          // go through the temperature/composition dofs and set their global values
+          // to the particle field interpolated at these points
+          cell->get_dof_indices (local_dof_indices);
+          for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
+            {
+              const unsigned int system_local_dof
+                = finite_element.component_to_system_index(advection_field.component_index(introspection),
+                                                           /*dof index within component=*/i);
+
+
+              const double value = tracer_properties[i][particle_property];
+              tracer_solution(local_dof_indices[system_local_dof]) = value;
+            }
+        }
+
+    tracer_solution.compress(VectorOperation::insert);
+
+    // we should not have written at all into any of the blocks with
+    // the exception of the current temperature or composition block
+    for (unsigned int b=0; b<tracer_solution.n_blocks(); ++b)
+      if (b != advection_field.block_index(introspection))
+        Assert (tracer_solution.block(b).l2_norm() == 0,
+                ExcInternalError());
+
+    // copy temperature/composition block only
+    const unsigned int blockidx = advection_field.block_index(introspection);
+    solution.block(blockidx) = tracer_solution.block(blockidx);
+    old_solution.block(blockidx) = tracer_solution.block(blockidx);
+    old_old_solution.block(blockidx) = tracer_solution.block(blockidx);
+  }
+
+
+  template <int dim>
   void Simulator<dim>::compute_initial_pressure_field ()
   {
     // Note that this code will overwrite the velocity solution with 0 if
@@ -453,7 +565,9 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
-  template void Simulator<dim>::compute_initial_pressure_field();
+  template void Simulator<dim>::compute_initial_pressure_field(); \
+  template void Simulator<dim>::interpolate_particle_properties(const AdvectionField &);
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
