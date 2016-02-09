@@ -381,12 +381,21 @@ namespace aspect
 
         }
 
-      // now build the patches and see how we can output these
-      data_out.build_patches ((interpolate_output) ?
-                              this->get_stokes_velocity_degree()
-                              :
-                              0);
+      // Now build the patches. If selected, increase the output resolution.
+      if (interpolate_output)
+        {
+          data_out.build_patches (this->get_mapping(),
+                                  this->get_stokes_velocity_degree(),
+                                  this->get_geometry_model().has_curved_elements()
+                                  ?
+                                  DataOut<dim>::curved_inner_cells
+                                  :
+                                  DataOut<dim>::no_curved_cells);
+        }
+      else
+        data_out.build_patches();
 
+      // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);
       std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
