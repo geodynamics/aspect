@@ -658,7 +658,7 @@ namespace aspect
               // The last file, which was tried to be loaded was
               // number current_file_number +/- 1, because current_file_number
               // is the file older than the current model time
-              const int old_file_number =
+              const unsigned int old_file_number =
                 (decreasing_file_order) ?
                 current_file_number - 1
                 :
