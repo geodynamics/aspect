@@ -651,7 +651,7 @@ namespace aspect
           // possible first_data_file_model_times and first_data_file_numbers.
           const bool need_update =
             static_cast<int> (time_steps_since_start)
-            > std::abs(current_file_number - first_data_file_number);
+            > std::abs(static_cast<int>(current_file_number - first_data_file_number));
 
           if (need_update)
             {
@@ -673,13 +673,13 @@ namespace aspect
                 first_data_file_number
                 + static_cast<unsigned int> (time_steps_since_start);
 
-              const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
+              const bool load_both_files = std::abs(static_cast<int>(current_file_number - old_file_number)) >= 1;
 
               update_data(load_both_files);
             }
 
           time_weight = time_steps_since_start
-                        - std::abs(current_file_number - first_data_file_number);
+                        - std::abs(static_cast<int>(current_file_number - first_data_file_number));
 
           Assert ((0 <= time_weight) && (time_weight <= 1),
                   ExcMessage (
