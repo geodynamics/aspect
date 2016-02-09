@@ -5,6 +5,14 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Improved: The option to increase the output resolution by linear
+ * interpolation of the quadratic elements now correctly uses the mapping of
+ * curved geometries to interpolate cells. This increases output accuracy for
+ * models that use curved geometries and use 'Set Interpolate output = true'.
+ * The simulation itself is not affected.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/08)
+ *
  * <li> Changed: The GPlates plugin is restructured in the style of the
  * AsciiData Plugin. The major difference is that the interpolation is now
  * performed in spherical coordinates instead of Cartesian coordinates. Note
