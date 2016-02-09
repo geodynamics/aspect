@@ -539,10 +539,6 @@ namespace aspect
                                                   &&
                                                   (open_velocity_boundary_indicators.size() == 0));
 
-    // now that all member variables have been set up, also
-    // connect the functions that will actually do the assembly
-    set_assemblers();
-
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
     statistics.set_auto_fill_mode(true);
@@ -567,9 +563,13 @@ namespace aspect
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
 
-    // the very last action is to let user-provided plugins let their slots
+    // let user-provided plugins let their slots
     // connect to the signals we provide
     internals::SimulatorSignals::call_connector_functions (signals);
+
+    // now that all member variables have been set up, also
+    // connect the functions that will actually do the assembly
+    set_assemblers();
 
     computing_timer.exit_section();
   }

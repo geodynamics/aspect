@@ -264,9 +264,7 @@ namespace aspect
       {
         /**
          * A base class for objects that implement assembly
-         * operations. This base class does not provide a whole lot
-         * of functionality other than the fact that its destructor
-         * is virtual.
+         * operations.
          *
          * The point of this class is primarily so that we can store
          * pointers to such objects in a list. The objects are created
@@ -279,6 +277,16 @@ namespace aspect
         {
           public:
             virtual ~AssemblerBase () {}
+
+            /**
+             * This function gets called if a MaterialModelOutputs is created
+             * and allows the assembler to attach AdditionalOutputs. The
+             * function might be called more than once for a
+             * MaterialModelOutput, so it is recommended to check if
+             * get_additional_output() returns an instance before adding a new
+             * one to the additional_outputs vector.
+             */
+            virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) {}
         };
       }
 

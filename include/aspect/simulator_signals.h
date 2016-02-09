@@ -33,6 +33,23 @@
 
 namespace aspect
 {
+  namespace internal
+  {
+    namespace Assembly
+    {
+      namespace Assemblers
+      {
+        template <int dim>
+        class AssemblerBase;
+
+      }
+      template <int dim>
+      struct AssemblerLists;
+
+    }
+
+  }
+
   /**
    * A class that collects the definition of signals that can be triggered
    * at different points in a computation. A signal is in essence an event
@@ -150,6 +167,16 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   const bool,
                                   const std::vector<double> &)> post_stokes_solver;
+
+
+    /**
+      * A signal that is fired at the end of the set_assemblers() function that allows
+      * modification of the assembly objects active in this simulation.
+      */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  aspect::internal::Assembly::AssemblerLists<dim> &,
+                                  std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &)>
+    set_assemblers;
   };
 
 
