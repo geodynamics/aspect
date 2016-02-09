@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/melt.h>
 #include <aspect/global.h>
 
 
@@ -981,6 +982,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), parameters.n_compositional_fields);
         MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), parameters.n_compositional_fields);
+        create_melt_material_outputs(out);
 
         typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                        endc = dof_handler.end();
@@ -1004,7 +1006,6 @@ namespace aspect
                                                    true, // TODO: use rebuild_stokes_matrix here?
                                                    in);
 
-              out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
               material_model->evaluate(in, out);
 
               MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -1072,6 +1073,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), parameters.n_compositional_fields);
         MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), parameters.n_compositional_fields);
+        create_melt_material_outputs(out);
 
         std::vector<double> porosity_values(quadrature.size());
         std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
@@ -1102,7 +1104,6 @@ namespace aspect
                                                    true, // TODO: use rebuild_stokes_matrix here?
                                                    in);
 
-              out.create_additional_material_outputs(in.position.size(), parameters.n_compositional_fields);
               material_model->evaluate(in, out);
 
               MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();

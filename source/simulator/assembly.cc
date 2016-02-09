@@ -1137,6 +1137,24 @@ namespace aspect
     }
   }
 
+  template <int dim>
+  void
+  Simulator<dim>::
+  create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs)
+  {
+    typedef typename std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > >
+    assembler_vector_t;
+
+    for (typename assembler_vector_t::iterator it = assembler_objects.begin();
+         it != assembler_objects.end();
+         ++it)
+      {
+        (*it)->create_additional_material_model_outputs(outputs);
+      }
+
+  }
+
+
 
   template <int dim>
   void
@@ -1272,7 +1290,7 @@ namespace aspect
                                          cell,
                                          true,
                                          scratch.material_model_inputs);
-    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
+    create_additional_material_model_outputs(scratch.material_model_outputs);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1449,7 +1467,7 @@ namespace aspect
                                          cell,
                                          rebuild_stokes_matrix,
                                          scratch.material_model_inputs);
-    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
+    create_additional_material_model_outputs(scratch.material_model_outputs);
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
@@ -1481,9 +1499,7 @@ namespace aspect
                                                    cell,
                                                    rebuild_stokes_matrix,
                                                    scratch.face_material_model_inputs);
-              scratch.face_material_model_outputs.create_additional_material_outputs(scratch.face_finite_element_values.n_quadrature_points,
-                                                                                     parameters.n_compositional_fields);
-
+              create_additional_material_model_outputs(scratch.face_material_model_outputs);
 
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
@@ -1798,7 +1814,10 @@ namespace aspect
                                          cell,
                                          true,
                                          scratch.material_model_inputs);
-    scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.position.size(), parameters.n_compositional_fields);
+
+    if (parameters.include_melt_transport)
+      create_melt_material_outputs(scratch.material_model_outputs);
+
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);

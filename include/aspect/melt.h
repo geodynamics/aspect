@@ -25,10 +25,87 @@
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/assembly.h>
+#include <aspect/material_model/interface.h>
 
 namespace aspect
 {
   using namespace dealii;
+
+  namespace MaterialModel
+  {
+    template <int dim>
+    class MeltOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        MeltOutputs (const unsigned int n_points,
+                     const unsigned int n_comp)
+        {
+          compaction_viscosities.resize(n_points);
+          fluid_viscosities.resize(n_points);
+          permeabilities.resize(n_points);
+          fluid_densities.resize(n_points);
+          fluid_density_gradients.resize(n_points, Tensor<1,dim>());
+        }
+
+        /**
+         * Compaction viscosity values $\xi$ at the given positions.
+         * This parameter describes the resistance of the solid matrix
+         * in a two-phase simulation to dilation and compaction.
+         */
+        std::vector<double> compaction_viscosities;
+
+        /**
+         * Fluid (melt) viscosity values $\eta_f$ at the given positions.
+         */
+        std::vector<double> fluid_viscosities;
+
+        /**
+         * Permeability values $k$ at the given positions.
+         */
+        std::vector<double> permeabilities;
+
+        /**
+         * Fluid (melt) density values $\rho_f$ at the given positions.
+         */
+        std::vector<double> fluid_densities;
+
+        /**
+         * An approximation for the fluid (melt) density gradients
+         * $\nabla \rho_f$ at the given positions. These values are
+         * required for compressible models to describe volume changes
+         * of melt in dependence of pressure, temperature etc.
+         */
+        std::vector<Tensor<1,dim> > fluid_density_gradients;
+
+        void average (const MaterialAveraging::AveragingOperation operation,
+                      const FullMatrix<double>  &projection_matrix,
+                      const FullMatrix<double>  &expansion_matrix)
+        {
+          average_property (operation, projection_matrix, expansion_matrix,
+                            compaction_viscosities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            fluid_viscosities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            permeabilities);
+          average_property (operation, projection_matrix, expansion_matrix,
+                            fluid_densities);
+
+          // the fluid density gradients are unfortunately stored in reverse
+          // indexing. it's also not quite clear whether these should
+          // really be averaged, so avoid this for now
+        }
+    };
+
+  }
+
+  /**
+   * Creates additional material model output object that are
+   * needed for a simulation, and attaches a pointer to them to the
+   * corresponding vector in the MaterialModel::MaterialModelOutputs
+   * structure.
+   */
+  template <int dim>
+  void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
 
   namespace Assemblers
@@ -43,6 +120,13 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Attaches melt outputs.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs);
+
 
         /**
          * Compute the integrals for the preconditioner for the Stokes system in

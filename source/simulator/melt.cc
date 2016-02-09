@@ -26,8 +26,28 @@ using namespace dealii;
 
 namespace aspect
 {
+  template <int dim>
+  void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
+  {
+    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != NULL)
+      return;
+
+    const unsigned int n_points = output.viscosities.size();
+    const unsigned int n_comp = output.reaction_terms[0].size();
+    output.additional_outputs.push_back(std::make_shared<MaterialModel::MeltOutputs<dim> > (n_points, n_comp));
+  }
+
+
   namespace Assemblers
   {
+    template <int dim>
+    void
+    MeltEquations<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs)
+    {
+      create_melt_material_outputs(outputs);
+    }
+
+
     template <int dim>
     void
     MeltEquations<dim>::
@@ -379,17 +399,27 @@ namespace aspect
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-  namespace Assemblers
-  {
+//   template class MeltOutputs<dim>;
+
 #define INSTANTIATE(dim) \
-  template class MeltEquations<dim>; \
-  namespace OtherTerms \
+  \
+  template \
+  void create_melt_material_outputs<dim>(MaterialModel::MaterialModelOutputs<dim> &output); \
+  \
+  namespace Assemblers \
   { \
-    template void pressure_rhs_compatibility_modification_melt<dim> (const SimulatorAccess<dim>                      &simulator_access, \
-                                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
-                                                                     internal::Assembly::CopyData::StokesSystem<dim> &data); \
-  } \
-   
-    ASPECT_INSTANTIATE(INSTANTIATE)
+    template class MeltEquations<dim>; \
+    \
+    \
+    namespace OtherTerms \
+    { \
+      template void pressure_rhs_compatibility_modification_melt<dim> (const SimulatorAccess<dim>                      &simulator_access, \
+                                                                       internal::Assembly::Scratch::StokesSystem<dim>  &scratch, \
+                                                                       internal::Assembly::CopyData::StokesSystem<dim> &data); \
+    } \
   }
+
+
+  ASPECT_INSTANTIATE(INSTANTIATE)
+
 }

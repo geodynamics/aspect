@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/melt_global.h>
+#include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
 

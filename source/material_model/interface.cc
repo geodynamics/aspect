@@ -727,8 +727,6 @@ namespace aspect
   \
   template class AdditionalMaterialOutputs<dim>; \
   \
-  template class MeltOutputs<dim>; /*TODO: move this somewhere else, not in the interface*/ \
-  \
   namespace MaterialAveraging \
   { \
     template                \
