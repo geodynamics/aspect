@@ -1687,7 +1687,7 @@ namespace aspect
                                 + divergence_u + compressibility * density * (current_u * gravity);
 
     if (current_phi < parameters.melt_transport_threshold && melting_rate < parameters.melt_transport_threshold)
-      melt_transport_RHS = melting_rate / density + compressibility * density * (current_u * gravity);
+      melt_transport_RHS = melting_rate / density;
 
     return melt_transport_RHS;
   }

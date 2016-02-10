@@ -305,21 +305,36 @@ namespace aspect
                 }
               else
                 // batch melting
-                melting_rate = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - maximum_melt_fractions[i];
+                melting_rate = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
+                                             - std::max(maximum_melt_fractions[i], 0.0);
 
               // remove melt that gets close to the surface
               if (this->get_geometry_model().depth(in.position[i]) < extraction_depth)
                 melting_rate = -old_porosity[i] * (in.position[i](1) - (this->get_geometry_model().maximal_depth() - extraction_depth))/extraction_depth;
 
+              // freezing of melt below the solidus
+              {
+                  const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
+                  const double T_solidus = A1 + 273.15
+                                          + A2 * pressure
+                                          + A3 * pressure * pressure;
+                  const double freezing = freezing_rate * this->get_timestep() / year_in_seconds
+                                          * 0.5 * (melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]
+                                          - std::abs(melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]));
+                  melting_rate += freezing;
+              }
+
               // do not allow negative porosity
               if (old_porosity[i] + melting_rate < 0)
                 melting_rate = -old_porosity[i];
 
+              // because depletion is a volume-based, and not a mass-based property that is advected,
+              // additional scaling factors on the right hand side apply
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
                   if (c == peridotite_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
-                    out.reaction_terms[i][c] = melting_rate
-                                               - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                    out.reaction_terms[i][c] = melting_rate * (1 - in.composition[i][peridotite_idx])
+                                               / (1 - in.composition[i][porosity_idx]);
                   else if (c == porosity_idx && this->get_timestep_number() > 0 && (in.strain_rate.size()))
                     out.reaction_terms[i][c] = melting_rate
                                                * out.densities[i] / this->get_timestep();
@@ -389,12 +404,12 @@ namespace aspect
               // this is a simplified formulation, experimental data are often fit to the Birch-Murnaghan equation of state
               const double fluid_compressibility = melt_compressibility / (1.0 + in.pressure[i] * melt_bulk_modulus_derivative * melt_compressibility);
 
+              melt_out->fluid_densities[i] = reference_rho_f * std::exp(fluid_compressibility * (in.pressure[i] - this->get_surface_pressure()))
+                                             * temperature_dependence;
+
               melt_out->fluid_density_gradients[i] = melt_out->fluid_densities[i] * melt_out->fluid_densities[i]
                                                      * fluid_compressibility
                                                      * this->get_gravity_model().gravity_vector(in.position[i]);
-
-              melt_out->fluid_densities[i] = reference_rho_f * std::exp(fluid_compressibility * (in.pressure[i] - this->get_surface_pressure()))
-                                             * temperature_dependence;
 
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1e-4);
@@ -514,6 +529,10 @@ namespace aspect
                              "depends on temperature and pressure, and how much melt has already been "
                              "generated at a given point, but not considering movement of melt in "
                              "the melting parameterization.");
+          prm.declare_entry ("Freezing rate", "0.0",
+                             Patterns::Double (0),
+                             "Freezing rate of melt when in subsolidus regions."
+                             "Units: $1/yr$.");
           prm.declare_entry ("Depletion density change", "0.0",
                              Patterns::Double (0),
                              "The density contrast between material with a depletion of 1 and a "
@@ -650,6 +669,7 @@ namespace aspect
           melt_compressibility       = prm.get_double ("Melt compressibility");
           model_is_compressible      = prm.get_bool ("Use full compressibility");
           fractional_melting         = prm.get_bool ("Use fractional melting");
+          freezing_rate              = prm.get_double ("Freezing rate");
           melt_bulk_modulus_derivative = prm.get_double ("Melt bulk modulus derivative");
           depletion_density_change   = prm.get_double ("Depletion density change");
           depletion_solidus_change   = prm.get_double ("Depletion solidus change");
