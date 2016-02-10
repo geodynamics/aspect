@@ -225,7 +225,7 @@ namespace aspect
          * A variable that stores the currently used data file of a series. It
          * gets updated if necessary by update().
          */
-        unsigned int current_file_number;
+        int current_file_number;
 
         /**
          * Time from which on the data file with number 'First data file
@@ -240,7 +240,7 @@ namespace aspect
          * Number of the first data file to be loaded when the model time is
          * larger than 'First data file model time'.
          */
-        unsigned int first_data_file_number;
+        int first_data_file_number;
 
         /**
          * In some cases the boundary files are not numbered in increasing but

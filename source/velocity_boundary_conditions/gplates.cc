@@ -642,44 +642,45 @@ namespace aspect
     void
     GPlates<dim>::update ()
     {
-      if (time_dependent && (this->get_time() - first_data_file_model_time >= 0.0))
+      const double time_since_start = this->get_time() - first_data_file_model_time;
+
+      if (time_dependent && (time_since_start >= 0.0))
         {
-          const double time_steps_since_start = (this->get_time() - first_data_file_model_time)
-                                                / data_file_time_step;
+          const int time_steps_since_start = static_cast<int> (time_since_start / data_file_time_step);
+
           // whether we need to update our data files. This looks so complicated
           // because we need to catch increasing and decreasing file orders and all
           // possible first_data_file_model_times and first_data_file_numbers.
-          const bool need_update =
-            static_cast<int> (time_steps_since_start)
-            > std::abs(static_cast<int>(current_file_number - first_data_file_number));
+          const bool need_update = time_steps_since_start
+                                   > std::abs(current_file_number - first_data_file_number);
 
           if (need_update)
             {
               // The last file, which was tried to be loaded was
               // number current_file_number +/- 1, because current_file_number
               // is the file older than the current model time
-              const unsigned int old_file_number =
-                (decreasing_file_order) ?
+              const int old_file_number =
+                (decreasing_file_order)
+                ?
                 current_file_number - 1
                 :
                 current_file_number + 1;
 
               //Calculate new file_number
               current_file_number =
-                (decreasing_file_order) ?
-                first_data_file_number
-                - static_cast<unsigned int> (time_steps_since_start)
+                (decreasing_file_order)
+                ?
+                first_data_file_number - time_steps_since_start
                 :
-                first_data_file_number
-                + static_cast<unsigned int> (time_steps_since_start);
+                first_data_file_number + time_steps_since_start;
 
-              const bool load_both_files = std::abs(static_cast<int>(current_file_number - old_file_number)) >= 1;
+              const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
               update_data(load_both_files);
             }
 
-          time_weight = time_steps_since_start
-                        - std::abs(static_cast<int>(current_file_number - first_data_file_number));
+          time_weight = (time_since_start / data_file_time_step)
+                        - std::abs(current_file_number - first_data_file_number);
 
           Assert ((0 <= time_weight) && (time_weight <= 1),
                   ExcMessage (
