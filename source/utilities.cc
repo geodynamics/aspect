@@ -24,6 +24,7 @@
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 
+#include <deal.II/base/mpi.h>
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
@@ -102,6 +103,43 @@ namespace aspect
     {
       std::ifstream ifile(filename.c_str());
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
+    }
+
+    void
+    load_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm,
+                                     std::stringstream &datastream)
+    {
+      // Reset datastream
+      datastream.str(std::string());
+
+      if (Utilities::MPI::this_mpi_process(comm) == 0)
+        {
+          std::ifstream filestream(filename);
+          AssertThrow (filestream,
+                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          // Read data from disk
+          filestream >> datastream.rdbuf();
+          std::string data_string = datastream.str();
+          unsigned int filesize = data_string.size();
+
+          // Distribute data_size and data across processes
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+        }
+      else
+        {
+          // Prepare for receiving data
+          unsigned int filesize;
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          std::string data_string;
+          data_string.resize(filesize);
+
+          // Receive and store data
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+          datastream.write(&data_string[0],filesize);
+        }
     }
 
     int
@@ -405,15 +443,12 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLookup<dim>::load_file(const std::string &filename)
+    AsciiDataLookup<dim>::load_file(const std::string &filename,
+                                    const MPI_Comm &comm)
     {
-      std::ifstream in(filename.c_str(), std::ios::in);
-      AssertThrow (in,
-                   ExcMessage (std::string("Could not open data file <"
-                                           +
-                                           filename
-                                           +
-                                           ">.")));
+      // Read data from disk and distribute among processes
+      std::stringstream in;
+      load_and_distribute_file_content(filename, comm, in);
 
       // Read header lines and table size
       while (in.peek() == '#')
@@ -643,7 +678,7 @@ namespace aspect
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
           if (fexists(filename))
-            lookups.find(*boundary_id)->second->load_file(filename);
+            lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
                         ExcMessage (std::string("Ascii data file <")
@@ -668,7 +703,7 @@ namespace aspect
               if (fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename);
+                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -820,7 +855,7 @@ namespace aspect
           if (fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-              lookups.find(boundary_id)->second->load_file(filename);
+              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -841,7 +876,7 @@ namespace aspect
       if (fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(filename);
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
@@ -992,7 +1027,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
       if (fexists(filename))
-        lookup->load_file(filename);
+        lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
                     ExcMessage (std::string("Ascii data file <")

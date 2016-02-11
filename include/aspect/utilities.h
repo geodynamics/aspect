@@ -74,6 +74,23 @@ namespace aspect
     bool fexists(const std::string &filename);
 
     /**
+     * Loads the content of the ascii file @param filename on process 0 and
+     * distribute the content by MPI_Bcast to all processes. After the call
+     * @param datastream contains the content of the file on all processes.
+     *
+     * @param [in] filename The name of the ascii file to load.
+     * @param [in] comm The MPI communicator in which the content is
+     * distributed.
+     * @param [in,out] datastream A string which is resized and overwritten
+     * by the filecontent in @param filename. After the call the string has
+     * the same content on all processes in @param comm.
+     */
+    void
+    load_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm,
+                                     std::stringstream &datastream);
+
+    /**
      * Creates a path as if created by the shell command "mkdir -p", therefore
      * generating directories from the highest to the lowest level if they are
      * not already existing.
@@ -281,7 +298,8 @@ namespace aspect
          * changes over model runtime.
          */
         void
-        load_file(const std::string &filename);
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
