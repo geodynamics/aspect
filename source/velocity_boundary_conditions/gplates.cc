@@ -581,10 +581,11 @@ namespace aspect
       current_file_number = first_data_file_number;
 
       const int next_file_number =
-        (decreasing_file_order) ?
-        current_file_number - 1
+        (decreasing_file_order)
+        ?
+        (current_file_number - 1)
         :
-        current_file_number + 1;
+        (current_file_number + 1);
 
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                         << create_filename (current_file_number) << "." << std::endl << std::endl;
@@ -662,17 +663,17 @@ namespace aspect
               const int old_file_number =
                 (decreasing_file_order)
                 ?
-                current_file_number - 1
+                (current_file_number - 1)
                 :
-                current_file_number + 1;
+                (current_file_number + 1);
 
               //Calculate new file_number
               current_file_number =
                 (decreasing_file_order)
                 ?
-                first_data_file_number - time_steps_since_start
+                (first_data_file_number - time_steps_since_start)
                 :
-                first_data_file_number + time_steps_since_start;
+                (first_data_file_number + time_steps_since_start);
 
               const bool load_both_files = std::abs(current_file_number - old_file_number) >= 1;
 
