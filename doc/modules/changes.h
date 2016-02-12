@@ -5,6 +5,10 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: Added 'command' postprocessor for executing arbitrary commands.
+ * <br>
+ * (Jonathan Perry-Houts, 2016/02/11)
+ *
  * <li> Improved: The option to increase the output resolution by linear
  * interpolation of the quadratic elements now correctly uses the mapping of
  * curved geometries to interpolate cells. This increases output accuracy for

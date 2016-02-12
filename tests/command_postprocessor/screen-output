@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10 iterations.
+
+   Postprocessing:
+Hello, world
+     Running command: /bin/bash -c "echo 'Hello, world'"
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |    0.0975s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |  0.000846s |      0.87% |
+| Assemble temperature system     |         1 |  0.000994s |         1% |
+| Build Stokes preconditioner     |         1 |    0.0034s |       3.5% |
+| Build temperature preconditioner|         1 |  0.000259s |      0.27% |
+| Solve Stokes system             |         1 |   0.00139s |       1.4% |
+| Solve temperature system        |         1 |  0.000225s |      0.23% |
+| Initialization                  |         2 |    0.0838s |        86% |
+| Postprocessing                  |         1 |   0.00319s |       3.3% |
+| Setup dof systems               |         1 |   0.00232s |       2.4% |
++---------------------------------+-----------+------------+------------+
+
