@@ -442,6 +442,12 @@ namespace aspect
                                    scratch.explicit_material_model_outputs,
                                    heating_model_outputs);
 
+    // EGP & HL on 2015-12-3 Added the following call to obtain
+    // the reference density reference_rho here. This is the first of two calls.
+    // The other is in function 'local_assemble_advection_system'.
+
+    const double reference_rho = material_model->reference_density();
+
     for (unsigned int q=0; q < n_q_points; ++q)
       {
         const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
@@ -454,8 +460,14 @@ namespace aspect
         const double u_grad_field = u * (scratch.old_field_grads[q] +
                                          scratch.old_old_field_grads[q]) / 2;
 
+        // EGP & HL on 2015-12-3 Set density to referencr rho if is_compressible() is false,
+        // else use the density defined in the material model; i.e.,
+        // set density = explicit_material_model_outputs.densities[q]
+
         const double density              = ((advection_field.is_temperature())
-                                             ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
+                                             ? ((material_model->is_compressible())
+                                                ? scratch.explicit_material_model_outputs.densities[q] : reference_rho)
+                                             : 1.0);
         const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
         const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
         const double k_Delta_field = conductivity
@@ -487,8 +499,11 @@ namespace aspect
           (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
            / old_time_step);
 
+        // EGP & HL on 2015-12-3 Now is_compressible() is false, then density is the reference density
+        // as it should be in the incompressible Boussinesq approximation; a.k.a "BA".
+
         double residual
-          = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
+          = std::abs((reference_rho * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
                      - dreaction_term_dt);
 
         if (parameters.stabilization_alpha == 2)
@@ -496,7 +511,7 @@ namespace aspect
 
         max_residual = std::max      (residual,        max_residual);
         max_velocity = std::max      (std::sqrt (u*u), max_velocity);
-        max_density  = std::max      (density,         max_density);
+        max_density  = std::max      (reference_rho,         max_density);
         max_specific_heat = std::max (c_P,             max_specific_heat);
         max_conductivity = std::max  (conductivity,    max_conductivity);
       }
@@ -1699,6 +1714,11 @@ namespace aspect
     double nu = viscosity_per_cell[cell->user_index()];
     Assert (nu >= 0, ExcMessage ("The artificial viscosity needs to be a non-negative quantity."));
 
+    // EGP & HL on 2015-12-3 Added the following call to obtain
+    // the reference density reference_rho here. This is the second of two calls.
+
+    const double reference_rho = material_model->reference_density();
+
     for (unsigned int q=0; q<n_q_points; ++q)
       {
         // precompute the values of shape functions and their gradients.
@@ -1711,10 +1731,15 @@ namespace aspect
             scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
           }
 
+        // EGP & HL on 2015-12-3 added the condition that if is_compressible() is false,
+        // then return density_c_P = reference_rho * material_model_outputs.specific_heat[q].
+
         const double density_c_P              =
           ((advection_field.is_temperature())
            ?
-           scratch.material_model_outputs.densities[q] *
+           ((material_model->is_compressible())
+            ?
+            scratch.material_model_outputs.densities[q] : reference_rho) *
            scratch.material_model_outputs.specific_heat[q]
            :
            1.0);
