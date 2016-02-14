@@ -113,10 +113,10 @@ subsection Postprocess
 
     subsection Generator
       subsection Uniform box
-        set Minimal x = 0.3
-        set Maximal x = 0.5
-        set Minimal y = 0.1
-        set Maximal y = 0.3
+        set Minimum x = 0.3
+        set Maximum x = 0.5
+        set Minimum y = 0.1
+        set Maximum y = 0.3
       end
     end
   end
