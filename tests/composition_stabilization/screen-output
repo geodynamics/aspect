@@ -1,0 +1,1514 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00000
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 0/1/0.1237 // 10/1000/132.5
+
+*** Timestep 1:  t=0.03125 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5001 K, 1 K
+     Compositions min/max/mass: -0.06588/1.066/0.1237 // -55.22/1065/132.5
+
+*** Timestep 2:  t=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5002 K, 1 K
+     Compositions min/max/mass: -0.08713/1.058/0.1237 // -76.25/1057/132.5
+
+*** Timestep 3:  t=0.09375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5004 K, 1 K
+     Compositions min/max/mass: -0.05956/1.034/0.1237 // -48.96/1033/132.5
+
+*** Timestep 4:  t=0.125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00001
+     Temperature min/avg/max:   0 K, 0.5005 K, 1 K
+     Compositions min/max/mass: -0.05777/1.019/0.1237 // -47.2/1019/132.5
+
+*** Timestep 5:  t=0.15625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5006 K, 1 K
+     Compositions min/max/mass: -0.05998/1.015/0.1237 // -49.38/1015/132.5
+
+*** Timestep 6:  t=0.1875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5007 K, 1 K
+     Compositions min/max/mass: -0.06041/1.013/0.1237 // -49.81/1013/132.5
+
+*** Timestep 7:  t=0.21875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00002
+     Temperature min/avg/max:   0 K, 0.5008 K, 1 K
+     Compositions min/max/mass: -0.05783/1.01/0.1237 // -47.25/1010/132.5
+
+*** Timestep 8:  t=0.25 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.501 K, 1 K
+     Compositions min/max/mass: -0.05304/1.008/0.1237 // -42.5/1008/132.5
+
+*** Timestep 9:  t=0.28125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5011 K, 1 K
+     Compositions min/max/mass: -0.0467/1.006/0.1237 // -36.23/1006/132.5
+
+*** Timestep 10:  t=0.3125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00003
+     Temperature min/avg/max:   0 K, 0.5012 K, 1 K
+     Compositions min/max/mass: -0.04109/1.004/0.1237 // -30.68/1004/132.5
+
+*** Timestep 11:  t=0.34375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5013 K, 1 K
+     Compositions min/max/mass: -0.03796/1.002/0.1237 // -27.58/1002/132.5
+
+*** Timestep 12:  t=0.375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5014 K, 1 K
+     Compositions min/max/mass: -0.03429/1.002/0.1237 // -23.95/1002/132.5
+
+*** Timestep 13:  t=0.40625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00004
+     Temperature min/avg/max:   0 K, 0.5015 K, 1 K
+     Compositions min/max/mass: -0.03021/1.002/0.1237 // -19.9/1002/132.5
+
+*** Timestep 14:  t=0.4375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5016 K, 1 K
+     Compositions min/max/mass: -0.02586/1.002/0.1237 // -15.6/1002/132.5
+
+*** Timestep 15:  t=0.46875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5018 K, 1.001 K
+     Compositions min/max/mass: -0.02393/1.002/0.1237 // -13.69/1002/132.5
+
+*** Timestep 16:  t=0.5 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00005
+     Temperature min/avg/max:   0 K, 0.5019 K, 1.002 K
+     Compositions min/max/mass: -0.02232/1.002/0.1237 // -12.1/1002/132.5
+
+*** Timestep 17:  t=0.53125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.502 K, 1.003 K
+     Compositions min/max/mass: -0.02064/1.003/0.1237 // -10.43/1003/132.5
+
+*** Timestep 18:  t=0.5625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5021 K, 1.004 K
+     Compositions min/max/mass: -0.01869/1.003/0.1237 // -8.507/1003/132.5
+
+*** Timestep 19:  t=0.59375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5022 K, 1.005 K
+     Compositions min/max/mass: -0.01642/1.003/0.1237 // -6.254/1003/132.5
+
+*** Timestep 20:  t=0.625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00006
+     Temperature min/avg/max:   0 K, 0.5023 K, 1.006 K
+     Compositions min/max/mass: -0.01409/1.003/0.1237 // -3.947/1003/132.5
+
+*** Timestep 21:  t=0.65625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5024 K, 1.006 K
+     Compositions min/max/mass: -0.01259/1.003/0.1237 // -2.46/1003/132.5
+
+*** Timestep 22:  t=0.6875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5025 K, 1.007 K
+     Compositions min/max/mass: -0.01207/1.002/0.1237 // -1.947/1002/132.5
+
+*** Timestep 23:  t=0.71875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00007
+     Temperature min/avg/max:   0 K, 0.5025 K, 1.008 K
+     Compositions min/max/mass: -0.0114/1.003/0.1237 // -1.282/1003/132.5
+
+*** Timestep 24:  t=0.75 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5026 K, 1.009 K
+     Compositions min/max/mass: -0.0106/1.003/0.1237 // -0.4948/1003/132.5
+
+*** Timestep 25:  t=0.78125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5027 K, 1.009 K
+     Compositions min/max/mass: -0.009673/1.003/0.1237 // 0.4238/1003/132.5
+
+*** Timestep 26:  t=0.8125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00008
+     Temperature min/avg/max:   0 K, 0.5028 K, 1.01 K
+     Compositions min/max/mass: -0.008595/1.003/0.1237 // 1.491/1003/132.5
+
+*** Timestep 27:  t=0.84375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5028 K, 1.01 K
+     Compositions min/max/mass: -0.007363/1.003/0.1237 // 2.711/1003/132.5
+
+*** Timestep 28:  t=0.875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5029 K, 1.011 K
+     Compositions min/max/mass: -0.006925/1.002/0.1237 // 3.144/1002/132.5
+
+*** Timestep 29:  t=0.90625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00009
+     Temperature min/avg/max:   0 K, 0.503 K, 1.011 K
+     Compositions min/max/mass: -0.006882/1.001/0.1237 // 3.187/1001/132.5
+
+*** Timestep 30:  t=0.9375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.503 K, 1.012 K
+     Compositions min/max/mass: -0.006775/1/0.1237 // 3.293/1000/132.5
+
+*** Timestep 31:  t=0.96875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.503 K, 1.012 K
+     Compositions min/max/mass: -0.006627/1.001/0.1237 // 3.439/1001/132.5
+
+*** Timestep 32:  t=1 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00010
+     Temperature min/avg/max:   0 K, 0.5031 K, 1.013 K
+     Compositions min/max/mass: -0.00646/1/0.1237 // 3.605/1000/132.5
+
+*** Timestep 33:  t=1.03125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5031 K, 1.013 K
+     Compositions min/max/mass: -0.006296/1/0.1237 // 3.767/1000/132.5
+
+*** Timestep 34:  t=1.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5031 K, 1.013 K
+     Compositions min/max/mass: -0.006145/0.9998/0.1237 // 3.917/999.8/132.5
+
+*** Timestep 35:  t=1.09375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.014 K
+     Compositions min/max/mass: -0.005984/0.9994/0.1237 // 4.076/999.4/132.5
+
+*** Timestep 36:  t=1.125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00011
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.015 K
+     Compositions min/max/mass: -0.005811/1/0.1237 // 4.247/1000/132.5
+
+*** Timestep 37:  t=1.15625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.015 K
+     Compositions min/max/mass: -0.005609/1/0.1237 // 4.447/1000/132.5
+
+*** Timestep 38:  t=1.1875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5033 K, 1.016 K
+     Compositions min/max/mass: -0.00537/0.9994/0.1237 // 4.684/999.4/132.5
+
+*** Timestep 39:  t=1.21875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00012
+     Temperature min/avg/max:   0 K, 0.5033 K, 1.016 K
+     Compositions min/max/mass: -0.005088/1.001/0.1237 // 4.963/1001/132.5
+
+*** Timestep 40:  t=1.25 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1.017 K
+     Compositions min/max/mass: -0.004752/1.002/0.1237 // 5.295/1002/132.5
+
+*** Timestep 41:  t=1.28125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1.017 K
+     Compositions min/max/mass: -0.004355/1.001/0.1237 // 5.689/1001/132.5
+
+*** Timestep 42:  t=1.3125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00013
+     Temperature min/avg/max:   0 K, 0.5035 K, 1.018 K
+     Compositions min/max/mass: -0.003895/0.9994/0.1237 // 6.144/999.4/132.5
+
+*** Timestep 43:  t=1.34375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5035 K, 1.018 K
+     Compositions min/max/mass: -0.004036/0.9965/0.1237 // 6.005/996.6/132.5
+
+*** Timestep 44:  t=1.375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.019 K
+     Compositions min/max/mass: -0.00433/0.9961/0.1237 // 5.713/996.1/132.5
+
+*** Timestep 45:  t=1.40625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00014
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.019 K
+     Compositions min/max/mass: -0.004634/0.9958/0.1237 // 5.413/995.8/132.5
+
+*** Timestep 46:  t=1.4375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.019 K
+     Compositions min/max/mass: -0.004942/0.9946/0.1237 // 5.108/994.7/132.5
+
+*** Timestep 47:  t=1.46875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.02 K
+     Compositions min/max/mass: -0.005246/0.9966/0.1237 // 4.807/996.7/132.5
+
+*** Timestep 48:  t=1.5 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00015
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.02 K
+     Compositions min/max/mass: -0.005534/0.9971/0.1237 // 4.521/997.1/132.5
+
+*** Timestep 49:  t=1.53125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.02 K
+     Compositions min/max/mass: -0.005796/0.9959/0.1237 // 4.262/996/132.5
+
+*** Timestep 50:  t=1.5625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.02 K
+     Compositions min/max/mass: -0.006012/0.993/0.1237 // 4.048/993.1/132.5
+
+*** Timestep 51:  t=1.59375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.02 K
+     Compositions min/max/mass: -0.006182/0.9918/0.1237 // 3.88/991.8/132.5
+
+*** Timestep 52:  t=1.625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00016
+     Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
+     Compositions min/max/mass: -0.006296/0.9917/0.1237 // 3.767/991.8/132.5
+
+*** Timestep 53:  t=1.65625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
+     Compositions min/max/mass: -0.006342/0.9902/0.1237 // 3.721/990.3/132.5
+
+*** Timestep 54:  t=1.6875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
+     Compositions min/max/mass: -0.00631/0.9922/0.1237 // 3.754/992.3/132.5
+
+*** Timestep 55:  t=1.71875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00017
+     Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
+     Compositions min/max/mass: -0.006188/0.9925/0.1237 // 3.874/992.6/132.5
+
+*** Timestep 56:  t=1.75 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005974/0.991/0.1237 // 4.086/991.1/132.5
+
+*** Timestep 57:  t=1.78125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005645/0.988/0.1237 // 4.411/988.1/132.5
+
+*** Timestep 58:  t=1.8125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00018
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005475/0.9885/0.1237 // 4.58/988.7/132.5
+
+*** Timestep 59:  t=1.84375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005588/0.9872/0.1237 // 4.468/987.4/132.5
+
+*** Timestep 60:  t=1.875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005679/0.9864/0.1237 // 4.378/986.6/132.5
+
+*** Timestep 61:  t=1.90625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00019
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005747/0.9858/0.1237 // 4.311/985.9/132.5
+
+*** Timestep 62:  t=1.9375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005789/0.9871/0.1237 // 4.269/987.2/132.5
+
+*** Timestep 63:  t=1.96875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
+     Compositions min/max/mass: -0.005793/0.9879/0.1237 // 4.265/988.1/132.5
+
+*** Timestep 64:  t=2 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00020
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
+     Compositions min/max/mass: -0.005768/0.9871/0.1237 // 4.289/987.2/132.5
+
+*** Timestep 65:  t=2.03125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
+     Compositions min/max/mass: -0.005716/0.9851/0.1237 // 4.341/985.3/132.5
+
+*** Timestep 66:  t=2.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
+     Compositions min/max/mass: -0.005629/0.9846/0.1237 // 4.428/984.7/132.5
+
+*** Timestep 67:  t=2.09375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
+     Compositions min/max/mass: -0.005501/0.9821/0.1237 // 4.554/982.3/132.5
+
+*** Timestep 68:  t=2.125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00021
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
+     Compositions min/max/mass: -0.00533/0.9801/0.1237 // 4.723/980.3/132.5
+
+*** Timestep 69:  t=2.15625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.02 K
+     Compositions min/max/mass: -0.005164/0.9803/0.1237 // 4.887/980.5/132.5
+
+*** Timestep 70:  t=2.1875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.02 K
+     Compositions min/max/mass: -0.00526/0.9785/0.1237 // 4.793/978.7/132.5
+
+*** Timestep 71:  t=2.21875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00022
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.02 K
+     Compositions min/max/mass: -0.00506/0.9792/0.1237 // 4.991/979.4/132.5
+
+*** Timestep 72:  t=2.25 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5035 K, 1.019 K
+     Compositions min/max/mass: -0.005426/0.9802/0.1237 // 4.628/980.4/132.5
+
+*** Timestep 73:  t=2.28125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1.018 K
+     Compositions min/max/mass: -0.005407/0.9794/0.1237 // 4.647/979.6/132.5
+
+*** Timestep 74:  t=2.3125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00023
+     Temperature min/avg/max:   0 K, 0.5033 K, 1.018 K
+     Compositions min/max/mass: -0.005212/0.9782/0.1237 // 4.84/978.4/132.5
+
+*** Timestep 75:  t=2.34375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5031 K, 1.017 K
+     Compositions min/max/mass: -0.005125/0.9769/0.1237 // 4.926/977.2/132.5
+
+*** Timestep 76:  t=2.375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5029 K, 1.016 K
+     Compositions min/max/mass: -0.004764/0.9736/0.1237 // 5.284/973.9/132.5
+
+*** Timestep 77:  t=2.40625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00024
+     Temperature min/avg/max:   0 K, 0.5028 K, 1.015 K
+     Compositions min/max/mass: -0.004624/0.9699/0.1237 // 5.422/970.2/132.5
+
+*** Timestep 78:  t=2.4375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5026 K, 1.014 K
+     Compositions min/max/mass: -0.003973/0.9695/0.1237 // 6.067/969.8/132.5
+
+*** Timestep 79:  t=2.46875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5026 K, 1.012 K
+     Compositions min/max/mass: -0.004727/0.9677/0.1237 // 5.32/968.1/132.5
+
+*** Timestep 80:  t=2.5 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00025
+     Temperature min/avg/max:   0 K, 0.5025 K, 1.012 K
+     Compositions min/max/mass: -0.004981/0.9696/0.1237 // 5.069/969.9/132.5
+
+*** Timestep 81:  t=2.53125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5026 K, 1.011 K
+     Compositions min/max/mass: -0.004523/0.9697/0.1237 // 5.522/970/132.5
+
+*** Timestep 82:  t=2.5625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5027 K, 1.009 K
+     Compositions min/max/mass: -0.003814/0.9688/0.1237 // 6.225/969.1/132.5
+
+*** Timestep 83:  t=2.59375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5028 K, 1.008 K
+     Compositions min/max/mass: -0.004749/0.9663/0.1237 // 5.299/966.6/132.5
+
+*** Timestep 84:  t=2.625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00026
+     Temperature min/avg/max:   0 K, 0.503 K, 1.006 K
+     Compositions min/max/mass: -0.004742/0.9646/0.1237 // 5.305/964.9/132.5
+
+*** Timestep 85:  t=2.65625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.004 K
+     Compositions min/max/mass: -0.00411/0.9644/0.1237 // 5.931/964.8/132.5
+
+*** Timestep 86:  t=2.6875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1.003 K
+     Compositions min/max/mass: -0.004133/0.9627/0.1237 // 5.908/963.1/132.5
+
+*** Timestep 87:  t=2.71875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00027
+     Temperature min/avg/max:   0 K, 0.5035 K, 1.003 K
+     Compositions min/max/mass: -0.004485/0.9647/0.1237 // 5.56/965/132.5
+
+*** Timestep 88:  t=2.75 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.003 K
+     Compositions min/max/mass: -0.003972/0.9647/0.1237 // 6.067/965.1/132.5
+
+*** Timestep 89:  t=2.78125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.004 K
+     Compositions min/max/mass: -0.003836/0.9628/0.1237 // 6.202/963.2/132.5
+
+*** Timestep 90:  t=2.8125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00028
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.003 K
+     Compositions min/max/mass: -0.003687/0.9602/0.1237 // 6.35/960.6/132.5
+
+*** Timestep 91:  t=2.84375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.003 K
+     Compositions min/max/mass: -0.003635/0.9605/0.1237 // 6.401/960.9/132.5
+
+*** Timestep 92:  t=2.875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
+     Compositions min/max/mass: -0.00346/0.9589/0.1237 // 6.575/959.3/132.5
+
+*** Timestep 93:  t=2.90625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00029
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
+     Compositions min/max/mass: -0.004633/0.9599/0.1237 // 5.413/960.3/132.5
+
+*** Timestep 94:  t=2.9375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.003 K
+     Compositions min/max/mass: -0.004846/0.9606/0.1237 // 5.203/961/132.5
+
+*** Timestep 95:  t=2.96875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.004 K
+     Compositions min/max/mass: -0.004202/0.9594/0.1237 // 5.84/959.8/132.5
+
+*** Timestep 96:  t=3 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00030
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.004 K
+     Compositions min/max/mass: -0.004264/0.9562/0.1237 // 5.779/956.7/132.5
+
+*** Timestep 97:  t=3.03125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.004 K
+     Compositions min/max/mass: -0.004557/0.9567/0.1237 // 5.489/957.1/132.5
+
+*** Timestep 98:  t=3.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1.003 K
+     Compositions min/max/mass: -0.004176/0.9557/0.1237 // 5.865/956.2/132.5
+
+*** Timestep 99:  t=3.09375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
+     Compositions min/max/mass: -0.004453/0.9561/0.1237 // 5.591/956.5/132.5
+
+*** Timestep 100:  t=3.125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00031
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
+     Compositions min/max/mass: -0.005711/0.957/0.1237 // 4.346/957.5/132.5
+
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      13.5s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |       101 |      3.92s |        29% |
+| Assemble composition system     |       202 |       3.2s |        24% |
+| Assemble temperature system     |       101 |      1.57s |        12% |
+| Build Stokes preconditioner     |       101 |      2.39s |        18% |
+| Build composition preconditioner|       202 |     0.371s |       2.7% |
+| Build temperature preconditioner|       101 |     0.189s |       1.4% |
+| Solve Stokes system             |       101 |     0.354s |       2.6% |
+| Solve composition system        |       202 |     0.317s |       2.3% |
+| Solve temperature system        |       101 |     0.145s |       1.1% |
+| Initialization                  |         2 |    0.0364s |      0.27% |
+| Postprocessing                  |       101 |     0.807s |         6% |
+| Setup dof systems               |         1 |    0.0204s |      0.15% |
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 101:  t=3.15625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1.002 K
+     Compositions min/max/mass: -0.005836/0.9562/0.1237 // 4.223/956.6/132.5
+
+*** Timestep 102:  t=3.1875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1.001 K
+     Compositions min/max/mass: -0.006543/0.9535/0.1237 // 3.522/953.9/132.5
+
+*** Timestep 103:  t=3.21875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00032
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.00611/0.9532/0.1237 // 3.951/953.7/132.5
+
+*** Timestep 104:  t=3.25 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.005582/0.9524/0.1237 // 4.474/952.9/132.5
+
+*** Timestep 105:  t=3.28125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.005233/0.9516/0.1237 // 4.819/952.1/132.5
+
+*** Timestep 106:  t=3.3125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00033
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.004229/0.9525/0.1237 // 5.813/953/132.5
+
+*** Timestep 107:  t=3.34375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5038 K, 1 K
+     Compositions min/max/mass: -0.005322/0.9514/0.1237 // 4.731/951.9/132.5
+
+*** Timestep 108:  t=3.375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5037 K, 1 K
+     Compositions min/max/mass: -0.006124/0.9483/0.1237 // 3.938/948.8/132.5
+
+*** Timestep 109:  t=3.40625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 13 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00034
+     Temperature min/avg/max:   0 K, 0.5037 K, 1 K
+     Compositions min/max/mass: -0.006671/0.9481/0.1237 // 3.396/948.6/132.5
+
+*** Timestep 110:  t=3.4375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1 K
+     Compositions min/max/mass: -0.006188/0.9473/0.1237 // 3.874/947.8/132.5
+
+*** Timestep 111:  t=3.46875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5036 K, 1 K
+     Compositions min/max/mass: -0.005026/0.9444/0.1237 // 5.024/944.9/132.5
+
+*** Timestep 112:  t=3.5 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00035
+     Temperature min/avg/max:   0 K, 0.5035 K, 1 K
+     Compositions min/max/mass: -0.003791/0.9442/0.1237 // 6.247/944.8/132.5
+
+*** Timestep 113:  t=3.53125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5035 K, 1 K
+     Compositions min/max/mass: -0.00491/0.9459/0.1237 // 5.139/946.4/132.5
+
+*** Timestep 114:  t=3.5625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5035 K, 1 K
+     Compositions min/max/mass: -0.005853/0.9467/0.1237 // 4.206/947.2/132.5
+
+*** Timestep 115:  t=3.59375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1 K
+     Compositions min/max/mass: -0.005784/0.9453/0.1237 // 4.274/945.9/132.5
+
+*** Timestep 116:  t=3.625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00036
+     Temperature min/avg/max:   0 K, 0.5034 K, 1 K
+     Compositions min/max/mass: -0.005037/0.9442/0.1237 // 5.013/944.7/132.5
+
+*** Timestep 117:  t=3.65625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1 K
+     Compositions min/max/mass: -0.004542/0.9452/0.1237 // 5.503/945.8/132.5
+
+*** Timestep 118:  t=3.6875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5034 K, 1 K
+     Compositions min/max/mass: -0.00372/0.9441/0.1237 // 6.317/944.7/132.5
+
+*** Timestep 119:  t=3.71875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00037
+     Temperature min/avg/max:   0 K, 0.5034 K, 1 K
+     Compositions min/max/mass: -0.004949/0.9407/0.1237 // 5.1/941.3/132.5
+
+*** Timestep 120:  t=3.75 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5033 K, 1 K
+     Compositions min/max/mass: -0.005515/0.9397/0.1237 // 4.54/940.3/132.5
+
+*** Timestep 121:  t=3.78125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5033 K, 1 K
+     Compositions min/max/mass: -0.005646/0.9391/0.1237 // 4.41/939.7/132.5
+
+*** Timestep 122:  t=3.8125 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00038
+     Temperature min/avg/max:   0 K, 0.5033 K, 1 K
+     Compositions min/max/mass: -0.00508/0.939/0.1237 // 4.971/939.6/132.5
+
+*** Timestep 123:  t=3.84375 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5033 K, 1 K
+     Compositions min/max/mass: -0.004122/0.9392/0.1237 // 5.919/939.8/132.5
+
+*** Timestep 124:  t=3.875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.001 K
+     Compositions min/max/mass: -0.004517/0.937/0.1237 // 5.529/937.7/132.5
+
+*** Timestep 125:  t=3.90625 seconds
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00039
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.002 K
+     Compositions min/max/mass: -0.005519/0.9346/0.1237 // 4.536/935.2/132.5
+
+*** Timestep 126:  t=3.9375 seconds
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.004 K
+     Compositions min/max/mass: -0.005594/0.936/0.1237 // 4.462/936.7/132.5
+
+*** Timestep 127:  t=3.96875 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.005 K
+     Compositions min/max/mass: -0.005026/0.9377/0.1237 // 5.024/938.4/132.5
+
+*** Timestep 128:  t=4 seconds
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 14 iterations.
+   Solving C_2 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-composition_stabilization/solution-00040
+     Temperature min/avg/max:   0 K, 0.5032 K, 1.005 K
+     Compositions min/max/mass: -0.004098/0.9386/0.1237 // 5.943/939.2/132.5
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      17.3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |       129 |         5s |        29% |
+| Assemble composition system     |       258 |       4.1s |        24% |
+| Assemble temperature system     |       129 |      2.01s |        12% |
+| Build Stokes preconditioner     |       129 |      3.05s |        18% |
+| Build composition preconditioner|       258 |     0.475s |       2.7% |
+| Build temperature preconditioner|       129 |     0.242s |       1.4% |
+| Solve Stokes system             |       129 |     0.435s |       2.5% |
+| Solve composition system        |       258 |     0.404s |       2.3% |
+| Solve temperature system        |       129 |     0.185s |       1.1% |
+| Initialization                  |         2 |    0.0364s |      0.21% |
+| Postprocessing                  |       129 |      1.04s |         6% |
+| Setup dof systems               |         1 |    0.0204s |      0.12% |
++---------------------------------+-----------+------------+------------+
+

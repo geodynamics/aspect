@@ -21,13 +21,14 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -126,6 +127,7 @@ namespace aspect
                        "here, one can choose the time step as large as one wants (in particular, "
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
+
     prm.declare_entry ("Maximum time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
                                                            year_in_seconds) = */ "5.69e+300",
@@ -257,6 +259,20 @@ namespace aspect
                        "if you make it larger, they do. For most cases, the default "
                        "value should be sufficient. In fact, a tolerance of 1e-4 "
                        "might be accurate enough.");
+
+    prm.declare_entry ("Linear solver A block tolerance", "1e-2",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the A block "
+                       "of the Stokes system is computed. This approximate A is used in the "
+                       "preconditioning used in the GMRES solver.");
+
+    prm.declare_entry ("Linear solver S block tolerance", "1e-6",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the S block "
+                       "(Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. "
+                       "This approximate inverse of the S block is used in the preconditioning "
+                       "used in the GMRES solver.");
+
     prm.declare_entry ("Number of cheap Stokes solver steps", "30",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
@@ -303,7 +319,7 @@ namespace aspect
                          "(insulating) boundary conditions."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -326,7 +342,7 @@ namespace aspect
                          "(insulating) boundary conditions."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -345,7 +361,7 @@ namespace aspect
                          "on which the velocity is zero."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -360,7 +376,7 @@ namespace aspect
                          "be tangential)."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -373,7 +389,7 @@ namespace aspect
                          "free surface computations."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -586,6 +602,13 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        prm.declare_entry ("Use artificial viscosity smoothing", "false",
+                           Patterns::Bool (),
+                           "If set to false, the artificial viscosity of a cell is computed and"
+                           "is computed on every cell separately as discussed in \\cite{KHB12}. "
+                           "If set to true, the maximum of the artificial viscosity in "
+                           "the cell as well as the neighbors of the cell is computed and used "
+                           "instead.");
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
@@ -701,7 +724,6 @@ namespace aspect
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
 
-
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;
     else if (prm.get ("Nonlinear solver scheme") == "iterated IMPES")
@@ -743,14 +765,9 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
-        // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-        AssertThrow (error==0,
+        AssertThrow (error == 0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
@@ -773,25 +790,27 @@ namespace aspect
                              "did not detect its presence when you called 'cmake'."));
 #endif
 
-    surface_pressure              = prm.get_double ("Surface pressure");
-    adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
-    pressure_normalization        = prm.get("Pressure normalization");
+    surface_pressure                = prm.get_double ("Surface pressure");
+    adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
+    pressure_normalization          = prm.get("Pressure normalization");
 
-    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
-    linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
-    n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
-    temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
-    composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
+    use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
+    linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
+    linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
+    linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+    n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
+    temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
+    composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {
-      initial_global_refinement   = prm.get_integer ("Initial global refinement");
-      initial_adaptive_refinement = prm.get_integer ("Initial adaptive refinement");
+      initial_global_refinement    = prm.get_integer ("Initial global refinement");
+      initial_adaptive_refinement  = prm.get_integer ("Initial adaptive refinement");
 
-      adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
-      refinement_fraction         = prm.get_double ("Refinement fraction");
-      coarsening_fraction         = prm.get_double ("Coarsening fraction");
-      min_grid_level              = prm.get_integer ("Minimum refinement level");
+      adaptive_refinement_interval = prm.get_integer ("Time steps between mesh refinement");
+      refinement_fraction          = prm.get_double ("Refinement fraction");
+      coarsening_fraction          = prm.get_double ("Coarsening fraction");
+      min_grid_level               = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
                   ExcMessage("Refinement/coarsening fractions must be positive."));
@@ -891,9 +910,10 @@ namespace aspect
 
       prm.enter_subsection ("Stabilization parameters");
       {
-        stabilization_alpha = prm.get_integer ("alpha");
-        stabilization_c_R   = prm.get_double ("cR");
-        stabilization_beta  = prm.get_double ("beta");
+        use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
+        stabilization_alpha                 = prm.get_integer ("alpha");
+        stabilization_c_R                   = prm.get_double ("cR");
+        stabilization_beta                  = prm.get_double ("beta");
       }
       prm.leave_subsection ();
 

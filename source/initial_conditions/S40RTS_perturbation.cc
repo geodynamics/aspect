@@ -48,7 +48,7 @@ namespace aspect
               std::string temp;
               std::ifstream in(filename.c_str(), std::ios::in);
               AssertThrow (in,
-                           ExcMessage (std::string("Couldn't open file <") + filename));
+                           ExcMessage (std::string("Could not open file <") + filename + ">."));
 
               in >> order;
               getline(in,temp);  // throw away the rest of the line
@@ -126,7 +126,7 @@ namespace aspect
               std::string temp;
               std::ifstream in(filename.c_str(), std::ios::in);
               AssertThrow (in,
-                           ExcMessage (std::string("Couldn't open file <") + filename));
+                           ExcMessage (std::string("Could not open file <") + filename + ">."));
 
               getline(in,temp);  // throw away the rest of the line
               getline(in,temp);  // throw away the rest of the line
@@ -168,11 +168,25 @@ namespace aspect
     // For more information, see:
     // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
 
-    template <int dim>
+    template <>
     double
-    S40RTSPerturbation<dim>::
-    initial_temperature (const Point<dim> &position) const
+    S40RTSPerturbation<2>::
+    initial_temperature (const Point<2> &) const
     {
+      // we shouldn't get here but instead should already have been
+      // kicked out by the assertion in the parse_parameters()
+      // function
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
+
+
+    template <>
+    double
+    S40RTSPerturbation<3>::
+    initial_temperature (const Point<3> &position) const
+    {
+      const unsigned int dim = 3;
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
@@ -324,6 +338,9 @@ namespace aspect
     void
     S40RTSPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
+      AssertThrow (dim == 3,
+                   ExcMessage ("The 'S40RTS perturbation' model for the initial "
+                               "temperature is only available for 3d computations."));
 
       prm.enter_subsection("Initial conditions");
       {

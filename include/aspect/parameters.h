@@ -166,6 +166,7 @@ namespace aspect
     double                         start_time;
     double                         CFL_number;
     double                         maximum_time_step;
+    bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
     std::string                    output_directory;
@@ -174,6 +175,8 @@ namespace aspect
     unsigned int                   timing_output_frequency;
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
+    double                         linear_solver_A_block_tolerance;
+    double                         linear_solver_S_block_tolerance;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     unsigned int                   n_cheap_stokes_solver_steps;

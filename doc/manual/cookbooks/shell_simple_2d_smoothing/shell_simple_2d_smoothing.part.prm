@@ -1,0 +1,20 @@
+subsection Discretization
+  set Temperature polynomial degree = 2
+
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(sqrt(x*x+y*y)<4000000,1,0)
+  end
+end

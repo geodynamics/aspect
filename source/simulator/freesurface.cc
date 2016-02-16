@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/assembly.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -32,21 +33,40 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
+/*
+ * In some instances, using the Mac .dmg package to install deal.II, compilation
+ * fails at the linker stage with an 'ld: symbol(s) not found for architecture x86_64'
+ * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
+ * really understood, but the extra include makes it work for now.
+ */
+#if DEAL_II_VERSION_GTE(8,3,0)
+#include <deal.II/numerics/vector_tools.templates.h>
+#endif
 
 using namespace dealii;
 
 
 namespace aspect
 {
-
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator,
+  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                           ParameterHandler &prm)
     : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
       free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+
+    assembler_connection =
+      sim.assemblers->local_assemble_stokes_system
+      .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
+                                std_cxx11::ref(*this),
+                                std_cxx11::_1,
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                // discard scratch object,
+                                std_cxx11::_5));
+
   }
 
   template <int dim>
@@ -78,6 +98,23 @@ namespace aspect
                         "can preserve the mesh quality better, but at the "
                         "cost of slightly poorer mass conservation of the "
                         "domain.");
+      prm.declare_entry ("Additional tangential mesh velocity boundary indicators", "",
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "where there the mesh is allowed to move tangential to the "
+                         "boundary. All tangential mesh movements along "
+                         "those boundaries that have tangential material velocity "
+                         "boundary conditions are allowed by default, this parameters "
+                         "allows to generate mesh movements along other boundaries that are "
+                         "open, or have prescribed material velocities or tractions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either be "
+                         "numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model.");
     }
     prm.leave_subsection ();
   }
@@ -97,6 +134,25 @@ namespace aspect
       else
         AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
 
+
+      // Create the list of tangential mesh movement boundary indicators
+      try
+        {
+          const std::vector<types::boundary_id> x_additional_tangential_mesh_boundary_indicators
+            = sim.geometry_model->translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                           (prm.get ("Additional tangential mesh velocity boundary indicators")));
+
+          tangential_mesh_boundary_indicators = sim.parameters.tangential_velocity_boundary_indicators;
+          tangential_mesh_boundary_indicators.insert(x_additional_tangential_mesh_boundary_indicators.begin(),
+                                                     x_additional_tangential_mesh_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Additional tangential "
+                                          "mesh velocity boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
     }
     prm.leave_subsection ();
   }
@@ -172,17 +228,35 @@ namespace aspect
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
-    //Zero out the displacement for the prescribed velocity
+    // Zero out the displacement for the prescribed velocity boundaries
+    // if the boundary is not in the set of tangential mesh boundaries
     for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
          p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
-      VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
-                                                ZeroFunction<dim>(dim), mesh_displacement_constraints);
+      {
+        if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
+          {
+            VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+                                                      ZeroFunction<dim>(dim), mesh_displacement_constraints);
+          }
+      }
 
-    //make the tangential boundary indicators no displacement normal to the boundary
+    // Zero out the displacement for the traction boundaries
+    // if the boundary is not in the set of tangential mesh boundaries
+    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_traction_boundary_indicators.begin();
+         p != sim.parameters.prescribed_traction_boundary_indicators.end(); ++p)
+      {
+        if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
+          {
+            VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+                                                      ZeroFunction<dim>(dim), mesh_displacement_constraints);
+          }
+      }
+
+    // Make the no flux boundary constraints for boundaries with tangential mesh boundaries
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
                                                      /* first_vector_component= */
                                                      0,
-                                                     sim.parameters.tangential_velocity_boundary_indicators,
+                                                     tangential_mesh_boundary_indicators,
                                                      mesh_displacement_constraints, sim.mapping);
 
     //make the periodic boundary indicators no displacement normal to the boundary
@@ -198,12 +272,12 @@ namespace aspect
                                                      periodic_boundaries,
                                                      mesh_displacement_constraints, sim.mapping);
 
-    //For the free surface indicators we constrain the displacement to be v.n
+    // For the free surface indicators we constrain the displacement to be v.n
     LinearAlgebra::Vector boundary_velocity;
     boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
     project_velocity_onto_boundary( boundary_velocity );
 
-    //now insert the relevant part of the solution into the mesh constraints
+    // now insert the relevant part of the solution into the mesh constraints
     IndexSet constrained_dofs;
     DoFTools::extract_boundary_dofs(free_surface_dof_handler, ComponentMask(dim, true),
                                     constrained_dofs, sim.parameters.free_surface_boundary_indicators);
@@ -633,9 +707,10 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::apply_stabilization(
-    const typename DoFHandler<dim>::active_cell_iterator &cell,
-    FullMatrix<double> &local_matrix)
+  void
+  Simulator<dim>::FreeSurfaceHandler::
+  apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -714,7 +789,7 @@ namespace aspect
                                                 (w*g_hat) * (v*n_hat)
                                                 *fe_face_values.JxW(q_point);
 
-                    local_matrix(i,j) += stress_value;
+                    data.local_matrix(i,j) += stress_value;
                   }
           }
 

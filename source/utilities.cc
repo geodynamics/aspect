@@ -34,6 +34,9 @@
 #include <aspect/geometry_model/chunk.h>
 
 #include <fstream>
+#include <string>
+#include <sys/stat.h>
+#include <errno.h>
 
 namespace aspect
 {
@@ -99,6 +102,36 @@ namespace aspect
     {
       std::ifstream ifile(filename.c_str());
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
+    }
+
+    int
+    mkdirp(std::string pathname,const mode_t mode)
+    {
+      // force trailing / so we can handle everything in loop
+      if (pathname[pathname.size()-1] != '/')
+        {
+          pathname += '/';
+        }
+
+      size_t pre = 0;
+      size_t pos;
+
+      while ((pos = pathname.find_first_of('/',pre)) != std::string::npos)
+        {
+          const std::string subdir = pathname.substr(0,pos++);
+          pre = pos;
+
+          // if leading '/', first string is 0 length
+          if (subdir.size() == 0)
+            continue;
+
+          int mkdir_return_value;
+          if ((mkdir_return_value = mkdir(subdir.c_str(),mode)) && (errno != EEXIST))
+            return mkdir_return_value;
+
+        }
+
+      return 0;
     }
 
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
@@ -376,7 +409,7 @@ namespace aspect
     {
       std::ifstream in(filename.c_str(), std::ios::in);
       AssertThrow (in,
-                   ExcMessage (std::string("Couldn't open data file <"
+                   ExcMessage (std::string("Could not open data file <"
                                            +
                                            filename
                                            +

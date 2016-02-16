@@ -8,9 +8,12 @@
       working (also in manual.pdf)
     . run benchmarks/check.sh and cookbooks/check.sh (and be patient)
     . indent tests/*cc
+  . determine new version roughly following semantic versioning: http://semver.org/
+    - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
+    - backwards incompatible changes require incrementing X, adding features incrementing Y
   . setup:
-      export OLDVER=1.2;export VER=1.3;export NEXTVER=1.4.pre
-      export DEALSRCDIR=...
+      export OLDVER=1.3;export VER=1.4.0;export NEXTVER=1.5.0-pre
+      export DEALSRCDIR=/path/to/dealii-installed
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/tests/scripts/checkdoxygen.py
     and commit.

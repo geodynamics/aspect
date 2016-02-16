@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Time step size (seconds)
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Number of advected particles
+# 11: Particle file name
+0 0.0000e+00 1 22 9 0 1.0000e+00 1.00000000e-01 1.00000000e-01 1 output-particle_linear_accelerated_flow_rk2/output-particle_linear_accelerated_flow_rk2/particle-00000 
+1 1.0000e+00 1 22 9 0 4.5455e-01 1.10000000e+00 1.10000000e+00 1 output-particle_linear_accelerated_flow_rk2/output-particle_linear_accelerated_flow_rk2/particle-00001 

@@ -188,12 +188,18 @@ namespace aspect
          * @param Apreconditioner Preconditioner object for the matrix A.
          * @param do_solve_A A flag indicating whether we should actually solve with
          *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the A block.
+         * @param S_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the S block (Schur complement matrix).
          **/
         BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix  &S,
                                   const LinearAlgebra::BlockSparseMatrix  &Spre,
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
-                                  const bool                                  do_solve_A);
+                                  const bool                                  do_solve_A,
+                                  const double                                A_block_tolerance,
+                                  const double                                S_block_tolerance);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -220,6 +226,8 @@ namespace aspect
         const bool do_solve_A;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
+        const double A_block_tolerance;
+        const double S_block_tolerance;
     };
 
 
@@ -229,7 +237,9 @@ namespace aspect
                               const LinearAlgebra::BlockSparseMatrix  &Spre,
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
-                              const bool                                  do_solve_A)
+                              const bool                                  do_solve_A,
+                              const double                                A_block_tolerance,
+                              const double                                S_block_tolerance)
       :
       stokes_matrix     (S),
       stokes_preconditioner_matrix     (Spre),
@@ -237,7 +247,9 @@ namespace aspect
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
       n_iterations_A_(0),
-      n_iterations_S_(0)
+      n_iterations_S_(0),
+      A_block_tolerance(A_block_tolerance),
+      S_block_tolerance(S_block_tolerance)
     {}
 
     template <class PreconditionerA, class PreconditionerMp>
@@ -247,6 +259,7 @@ namespace aspect
     {
       return n_iterations_A_;
     }
+
     template <class PreconditionerA, class PreconditionerMp>
     unsigned int
     BlockSchurPreconditioner<PreconditionerA, PreconditionerMp>::
@@ -254,7 +267,6 @@ namespace aspect
     {
       return n_iterations_S_;
     }
-
 
     template <class PreconditionerA, class PreconditionerMp>
     void
@@ -267,7 +279,7 @@ namespace aspect
       // first solve with the bottom left block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
-        SolverControl solver_control(1000, 1e-6 * src.block(1).l2_norm());
+        SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
 #ifdef ASPECT_USE_PETSC
         SolverCG<LinearAlgebra::Vector> solver(solver_control);
@@ -321,7 +333,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, utmp.l2_norm()*1e-2);
+          SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
 #ifdef ASPECT_USE_PETSC
           SolverCG<LinearAlgebra::Vector> solver(solver_control);
 #else
@@ -661,7 +673,9 @@ namespace aspect
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
-                              false);
+                              false,
+                              parameters.linear_solver_A_block_tolerance,
+                              parameters.linear_solver_S_block_tolerance);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_cheap, mem,
@@ -695,7 +709,9 @@ namespace aspect
               LinearAlgebra::PreconditionILU>
               preconditioner (system_matrix, system_preconditioner_matrix,
                               *Mp_preconditioner, *Amg_preconditioner,
-                              true);
+                              true,
+                              parameters.linear_solver_A_block_tolerance,
+                              parameters.linear_solver_S_block_tolerance);
 
         SolverFGMRES<LinearAlgebra::BlockVector>
         solver(solver_control_expensive, mem,

@@ -119,7 +119,8 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const;
+        boundary_velocity (const types::boundary_id ,
+                           const Point<dim> &position) const;
 
       private:
         const double beta;
@@ -136,7 +137,8 @@ namespace aspect
     template <>
     Tensor<1,2>
     BursteddeBoundary<2>::
-    boundary_velocity (const Point<2> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<2> &p) const
     {
       Assert (false, ExcNotImplemented());
       return Tensor<1,2>();
@@ -147,7 +149,8 @@ namespace aspect
     template <>
     Tensor<1,3>
     BursteddeBoundary<3>::
-    boundary_velocity (const Point<3> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<3> &p) const
     {
       return AnalyticSolutions::burstedde_velocity (p, beta);
     }
@@ -415,11 +418,11 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::none;
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
 

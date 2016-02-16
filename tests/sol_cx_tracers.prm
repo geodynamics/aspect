@@ -107,6 +107,7 @@ subsection Postprocess
   end
 
   subsection Tracers
+    set Number of tracers = 10
     set Time between data output = 1
     set Data output format = vtu
   end

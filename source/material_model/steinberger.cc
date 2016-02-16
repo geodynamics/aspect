@@ -56,7 +56,7 @@ namespace aspect
             std::string temp;
             std::ifstream in(filename.c_str(), std::ios::in);
             AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+                         ExcMessage (std::string("Could not open file <") + filename + ">."));
 
             getline(in, temp); // eat first line
             getline(in, temp); // eat next line
@@ -308,7 +308,7 @@ namespace aspect
             std::string temp;
             std::ifstream in(filename.c_str(), std::ios::in);
             AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+                         ExcMessage (std::string("Could not open file <") + filename + ">."));
 
             getline(in, temp); // eat first line
 
@@ -366,7 +366,7 @@ namespace aspect
             std::string temp;
             std::ifstream in(filename.c_str(), std::ios::in);
             AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+                         ExcMessage (std::string("Could not open file <") + filename + ">."));
 
             min_depth=1e20;
             max_depth=-1;

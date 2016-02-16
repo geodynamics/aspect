@@ -1,13 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
-
-Number of active cells: 768 (on 4 levels)
-Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 
    Setting up GPlates boundary velocity plugin.
@@ -23,14 +13,14 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    The ParaView rotation angles are: 0.00 0.00 0.00
    The inverse ParaView rotation angles are: 0.00 0.00 0.00
 
-   Loading GPlates boundary velocity file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
-
-
-   Loading GPlates boundary velocity file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
+   Loading GPlates data boundary file ASPECT_DIR/data/velocity-boundary-conditions/gplates/current_day_1.4.gpml.
 
 
    Loading new velocity file did not succeed.
    Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -38,7 +28,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Solving Stokes system... 30+16 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0256 m/year, 0.102 m/year
+     RMS, max velocity:                  0.0257 m/year, 0.0769 m/year
      Temperature min/avg/max:            273 K, 1578 K, 2600 K
      Heat fluxes through boundary parts: -8.734e+05 W, 2.042e+06 W
 

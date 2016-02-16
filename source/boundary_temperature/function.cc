@@ -37,9 +37,8 @@ namespace aspect
     template <int dim>
     double
     Function<dim>::
-    temperature (const GeometryModel::Interface<dim> &,
-                 const types::boundary_id             ,
-                 const Point<dim>                    &position) const
+    boundary_temperature (const types::boundary_id /*boundary_indicator*/,
+                          const Point<dim> &position) const
     {
       return boundary_temperature_function.value(position);
     }

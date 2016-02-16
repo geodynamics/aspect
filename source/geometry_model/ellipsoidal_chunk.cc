@@ -26,15 +26,13 @@
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
 #include <boost/lexical_cast.hpp>
+#include <aspect/compat.h>
 
 
 /**
  * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel.
  * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
  */
-
-
-
 
 namespace aspect
 {
@@ -46,39 +44,29 @@ namespace aspect
      * the EllipsoidalChunkGeometry class
      */
 
-    // constructor
+// constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::EllipsoidalChunkGeometry()
       :
       semi_major_axis_a (-1),
       eccentricity (-1),
       semi_minor_axis_b (-1),
-      rot_para_to_para_angle (0),
-      para_to_rect_angle (0),
-      rotation_longitude (-1),
-      rotation_latitude (-1),
       bottom_depth (-1)
     {}
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::set_initial_values(double para_semi_major_axis_a,
-                                                                        double para_eccentricity,
-                                                                        double para_semi_minor_axis_b,
-                                                                        double para_rot_para_to_para_angle,
-                                                                        double para_para_to_rect_angle,
-                                                                        double para_rotation_longitude,
-                                                                        double para_rotation_latitude,
-                                                                        double para_bottom_depth)
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::set_manifold_parameters(const double para_semi_major_axis_a,
+                                                                             const double para_eccentricity,
+                                                                             const double para_semi_minor_axis_b,
+                                                                             const double para_bottom_depth,
+                                                                             const std::vector<Point<2> > &para_corners)
     {
       semi_major_axis_a = para_semi_major_axis_a;
       eccentricity = para_eccentricity;
       semi_minor_axis_b = para_semi_minor_axis_b;
-      rot_para_to_para_angle = para_rot_para_to_para_angle;
-      para_to_rect_angle = para_para_to_rect_angle;
-      rotation_longitude = para_rotation_longitude;
-      rotation_latitude = para_rotation_latitude;
       bottom_depth = para_bottom_depth;
+      corners=para_corners;
     }
 
     template <int dim>
@@ -154,99 +142,43 @@ namespace aspect
       return push_forward_ellipsoid (chart_point, semi_major_axis_a, eccentricity);
     }
 
-
-    template<int dim>
-    Point<dim>
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::rotate_rectangle_to_parallelogram(const Point<dim> &x) const
-    {
-      // rotate all points back relative to the corresponding point on the line of corner 0 to 1.
-      Point <dim> transformed,reference;
-      reference[0] = x[0];
-      reference[1] = rotation_latitude*numbers::PI/180;
-      if (dim == 3)
-        {
-          reference[2] = x[2];
-          transformed[2] = x[2];
-        }
-      transformed[0] = std::cos(-para_to_rect_angle) * (x[0] - reference[0]) - std::sin(-para_to_rect_angle) * (x[1] - reference[1]) + reference[0];
-      transformed[1] = std::sin(-para_to_rect_angle) * (x[0] - reference[0]) + std::cos(-para_to_rect_angle) * (x[1] - reference[1]) + reference[1];
-      return transformed;
-    }
-
-    template<int dim>
-    Point<dim>
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::rotate_parallelogram(const Point<dim> &x) const
-    {
-      // rotate all points back relative to the corresponding point on the line of corner 0 to 1.
-      Point <dim> transformed,reference;
-      reference[0] = rotation_longitude*numbers::PI/180;
-      reference[1] = rotation_latitude*numbers::PI/180;
-      if (dim == 3)
-        {
-          reference[2] = x[2];
-          transformed[2] = x[2];
-        }
-      transformed[0] = std::cos(rot_para_to_para_angle) * (x[0] - reference[0]) - std::sin(-rot_para_to_para_angle) * (x[1] - reference[1]) + reference[0];
-      transformed[1] = std::sin(rot_para_to_para_angle) * (x[0] - reference[0]) + std::cos(-rot_para_to_para_angle) * (x[1] - reference[1]) + reference[1];
-      return transformed;
-    }
-
     template <>
     void
     EllipsoidalChunk<3>::create_coarse_mesh(parallel::distributed::Triangulation<3> &coarse_grid) const
     {
       const int dim = 3;
-      //std::cout << "semi_major_axis_a: " <<  manifold.semi_major_axis_a << ":" << manifold.get_semi_major_axis_a() << std::endl;
-      const Point<3> corner_points[2] = { Point<3>(corners_rectangle[0][0]*numbers::PI/180,
-                                                   corners_rectangle[0][1]*numbers::PI/180,
-                                                   -bottom_depth),
-                                          Point<3>(corners_rectangle[2][0]*numbers::PI/180,
-                                                   corners_rectangle[2][1]*numbers::PI/180,
-                                                   0)
-                                        };
-      std::vector<unsigned int> subdivisions(3);
-      subdivisions[0] = EW_subdiv; // divide east-west
-      subdivisions[1] = NS_subdiv; // divide north-south length
-      subdivisions[2] = depth_subdiv; // divide depth
-      GridGenerator::subdivided_hyper_rectangle (coarse_grid, subdivisions,
-                                                 corner_points[0], corner_points[1],
-                                                 true);
-      if (para_to_rect_angle != 0)
-        {
-          // transform rectangle back to parallelogram
-          GridTools::transform (std_cxx11::bind(&EllipsoidalChunkGeometry::rotate_rectangle_to_parallelogram,
-                                                std_cxx11::cref(manifold),
-                                                std_cxx11::_1),
-                                coarse_grid);
-        }
-      if (rot_para_to_para_angle != 0)
-        {
-          // transform parallelogram back to rotated parallelogram
-          GridTools::transform (std_cxx11::bind(&EllipsoidalChunkGeometry::rotate_parallelogram,
-                                                std_cxx11::cref(manifold),
-                                                std_cxx11::_1),
-                                coarse_grid);
-        }
-      //transform to the ellipsoid surface
+
+      /**
+       * Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
+       * other corners (respectively corner 1,2 and 4) placed relative to that point.
+       */
+      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
+                                                      (corners[1][1]-corners[0][1])*numbers::PI/180,
+                                                      0),
+                                           Point<dim>((corners[3][0]-corners[0][0])*numbers::PI/180,
+                                                      (corners[3][1]-corners[0][1])*numbers::PI/180,
+                                                      0),
+                                           Point<dim>(0,
+                                                      0,
+                                                      bottom_depth)
+                                          };
+      const unsigned int  subdivisions[dim] = {EW_subdiv,NS_subdiv,depth_subdiv};
+
+      GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
+
+      /**
+       * Shift the grid point at (0,0,0) (and the rest of the
+       * points with it) to the correct location at corner[0] at a
+       * negative depth.
+       */
+      const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
+      GridTools::shift(base_point,coarse_grid);
+
+      // Transform to the ellipsoid surface
       GridTools::transform (std_cxx11::bind(&EllipsoidalChunk<3>::EllipsoidalChunkGeometry::push_forward,
                                             std_cxx11::cref(manifold),
                                             std_cxx11::_1),
                             coarse_grid);
-
-      // set all boundary indicators. we want the edges to be curved
-      // as well. for this, it matters in which order we call
-      // set_all_boundary_indicators() -- we have to do it last for
-      // the inner and outer boundary, which conveniently is what
-      // happens in the following loop
-      for (Triangulation<3>::active_cell_iterator cell =
-             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
-        for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-#if DEAL_II_VERSION_GTE(8,3,0)
-            cell->face(f)->set_all_boundary_ids(f);
-#else
-            cell->face(f)->set_all_boundary_indicators(f);
-#endif
 
       // also attach the real manifold to slot 15. we won't use it
       // during regular operation, but we set manifold_ids for all
@@ -258,6 +190,9 @@ namespace aspect
                                                                    std_cxx11::ref(coarse_grid)));
       coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
                                                                     std_cxx11::ref(coarse_grid)));
+      coarse_grid.signals.post_refinement.connect(std_cxx11::bind (&EllipsoidalChunk<dim>::set_boundary_ids,
+                                                                   std_cxx11::cref(*this),
+                                                                   std_cxx11::ref(coarse_grid)));
     }
 
     template <int dim>
@@ -265,6 +200,28 @@ namespace aspect
     EllipsoidalChunk<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &/*coarse_grid*/) const
     {
       Assert(false, ExcNotImplemented());
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::set_boundary_ids(parallel::distributed::Triangulation<dim> &coarse_grid) const
+    {
+      // set all boundary indicators. we want the edges to be curved
+      // as well. for this, it matters in which order we call
+      // set_all_boundary_indicators() -- we have to do it last for
+      // the inner and outer boundary, which conveniently is what
+      // happens in the following loop
+      for (typename Triangulation<dim>::active_cell_iterator cell =
+             coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
+        for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->face(f)->at_boundary())
+            {
+#if DEAL_II_VERSION_GTE(8,3,0)
+              cell->face(f)->set_boundary_id(f);
+#else
+              cell->face(f)->set_boundary_indicator(f);
+#endif
+            }
     }
 
     template <int dim>
@@ -288,10 +245,10 @@ namespace aspect
           case 2:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",   0),
+              = { std::pair<std::string,types::boundary_id>("east",  0),
                   std::pair<std::string,types::boundary_id>("west",  1),
                   std::pair<std::string,types::boundary_id>("inner", 2),
-                  std::pair<std::string,types::boundary_id>("outer",    3)
+                  std::pair<std::string,types::boundary_id>("outer", 3)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -301,12 +258,12 @@ namespace aspect
           case 3:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",   0),
+              = { std::pair<std::string,types::boundary_id>("east",  0),
                   std::pair<std::string,types::boundary_id>("west",  1),
-                  std::pair<std::string,types::boundary_id>("south",  2),
-                  std::pair<std::string,types::boundary_id>("north",   3),
+                  std::pair<std::string,types::boundary_id>("north", 2),
+                  std::pair<std::string,types::boundary_id>("south", 3),
                   std::pair<std::string,types::boundary_id>("inner", 4),
-                  std::pair<std::string,types::boundary_id>("outer",    5)
+                  std::pair<std::string,types::boundary_id>("outer", 5)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -317,27 +274,6 @@ namespace aspect
       Assert (false, ExcNotImplemented());
       return std::map<std::string,types::boundary_id>();
     }
-
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::depth(const Point<dim> &position) const
-    {
-      /**
-       * the center of the earth lies in the origin, so the norm of the current position gives
-       * the distance from the center of the earth to this position. If we substract this from
-       * the radius at this position, we get the depth.
-       */
-      return std::max(std::min(get_radius(position) - position.norm(), maximal_depth()), 0.0);
-    }
-
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::maximal_depth() const
-    {
-      return bottom_depth;
-    }
-
-
 
     template <int dim>
     void
@@ -453,12 +389,45 @@ namespace aspect
           AssertThrow (missing == 1 || missing == 2,
                        ExcMessage ("Please provide two or three corners points."));
 
-          corners[0] = Utilities::string_to_double(Utilities::split_string_list(NEcorner,':'));
-          corners[1] = Utilities::string_to_double(Utilities::split_string_list(NWcorner,':'));
-          corners[2] = Utilities::string_to_double(Utilities::split_string_list(SWcorner,':'));
-          corners[3] = Utilities::string_to_double(Utilities::split_string_list(SEcorner,':'));
-          rotation_longitude = corners[0][0];
-          rotation_latitude = corners[0][1];
+          std::vector<double> temp;
+
+          if (present[0])
+            {
+              temp = Utilities::string_to_double(Utilities::split_string_list(NEcorner,':'));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (logitude:latitude)."));
+              corners[0] = Point<2>(temp[0],temp[1]);
+            }
+          else
+            corners[0]= Point<2>();
+
+          if (present[1])
+            {
+              temp = Utilities::string_to_double(Utilities::split_string_list(NWcorner,':'));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (logitude:latitude)."));
+              corners[1] = Point<2>(temp[0],temp[1]);
+            }
+          else
+            corners[1]= Point<2>();
+
+          if (present[2])
+            {
+              temp = Utilities::string_to_double(Utilities::split_string_list(SWcorner,':'));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (logitude:latitude)."));
+              corners[2] = Point<2>(temp[0],temp[1]);
+            }
+          else
+            corners[2]= Point<2>();
+
+          if (present[3])
+            {
+              temp = Utilities::string_to_double(Utilities::split_string_list(SEcorner,':'));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (logitude:latitude)."));
+              corners[3] = Point<2>(temp[0],temp[1]);
+            }
+          else
+            corners[3]= Point<2>();
+
+
           bottom_depth = prm.get_double("Depth");
           semi_major_axis_a = prm.get_double("Semi-major axis");
           eccentricity = prm.get_double("Eccentricity");
@@ -470,31 +439,37 @@ namespace aspect
           // Check whether the corners of the rectangle are really place correctly
           if (present[0] == true && present[1] == true)
             {
-              AssertThrow (corners[0][0] <= corners[1][0],
+              AssertThrow (corners[0][0] >= corners[1][0],
                            ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
             }
-          if (present[1] == true && present[3] == true)
+          if (present[0] == true && present[3] == true)
             {
               AssertThrow (corners[0][1] >= corners[3][1],
                            ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
             }
           if (present[2] == true && present[3] == true)
             {
-              AssertThrow (corners[2][0] >= corners[3][0],
+              AssertThrow (corners[2][0] <= corners[3][0],
                            ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
             }
-          if (present[3] == true && present[1] == true)
+          if (present[2] == true && present[1] == true)
             {
               AssertThrow (corners[2][1] <= corners[1][1],
                            ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
             }
           if (missing == 2)
             {
-              AssertThrow (present[0] == true && present[2] == true || present[1] == true && present[3] == true,
+              AssertThrow ((present[0] == true && present[2] == true) || (present[1] == true && present[3] == true),
                            ExcMessage ("Please provide to opposing corners."));
+
+              if (present[0] == true && present[2] == true)
+                AssertThrow (corners[0][0] > corners[2][0] && corners[0][1] > corners[2][1],
+                             ExcMessage ("The North-East corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ":"  + boost::lexical_cast<std::string>(corners[0][1]) + ") must be stricly North and East of the South-West corner (" + boost::lexical_cast<std::string>(corners[2][0]) + ":"  + boost::lexical_cast<std::string>(corners[2][1]) + ") when only two points are given."));
+
+              if (present[1] == true && present[3] == true)
+                AssertThrow (corners[1][0] < corners[3][0] && corners[1][1] > corners[3][1],
+                             ExcMessage ("The North-West corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ":"  + boost::lexical_cast<std::string>(corners[1][1]) + ") must be stricly North and West of the South-East corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ":"  + boost::lexical_cast<std::string>(corners[3][1]) + ") when only two points are given."));
             }
-
-
 
 
           // If one or two of the corners is not provided, calculate it.
@@ -524,56 +499,6 @@ namespace aspect
                       corners[i][1] = corners[ip][1] + (corners[ippp][1] - corners[ipp][1]);
                     }
                 }
-
-
-              /**
-               * We assume that this is a rotated parallelogram. But we can only make a mesh of
-               * coordinate rectangles. So we have to transform the points to a rectangle and record
-               * all the steps, make the mesh and transform the mesh back to the original form.
-               *
-               * Check what rotation is required to rotate the rectangle coordinate parallel.
-               * To be more precise, we check how much corners[0] need to be rotated to be on
-               * the same longitude as corners[1].
-               * Then apply this rotation of corners[0] the other points and store the result in a different variable.
-               */
-              corners_parallelogram.resize(4);
-
-              double a = corners[0][0] - corners[1][0];
-              double o = corners[0][1] - corners[1][1];
-              rot_para_to_para_angle = std::atan(o/a);
-
-              // now rotate arround corner 0
-              corners_parallelogram[0] = corners[0];
-              for (unsigned int i = 1; i <= 3; i++)
-                {
-                  corners_parallelogram[i] = corners[i];
-                  corners_parallelogram[i][0] = std::cos(-rot_para_to_para_angle) * (corners[i][0] - corners[0][0]) - std::sin(-rot_para_to_para_angle) * (corners[i][1] - corners[0][1]) + corners[0][0];
-                  corners_parallelogram[i][1] = std::sin(-rot_para_to_para_angle) * (corners[i][0] - corners[0][0]) + std::cos(-rot_para_to_para_angle) * (corners[i][1] - corners[0][1]) + corners[0][1];
-
-                }
-
-              /**
-               * Check what rotation is required to make from the parallelogram a rectangle.
-               * To me more precise, we check what rotation is required to get corners[0]
-               * and corner[3] on the same latitude. We then apply this rotation on corners[3]
-               * relative to corners[0] and with a negative angle to corners[2] relative to
-               * corners[1]
-               */
-              o = corners_parallelogram[0][0] - corners_parallelogram[3][0];
-              a = corners_parallelogram[0][1] - corners_parallelogram[3][1];
-              para_to_rect_angle = std::atan(o/a);
-              corners_rectangle.resize(4);
-
-              // now rotate arround corner 0 and 1
-              corners_rectangle[0] = corners_parallelogram[0];
-              corners_rectangle[0] = corners_parallelogram[0];
-              corners_rectangle[1] = corners_parallelogram[1];
-              corners_rectangle[2] = corners_parallelogram[2];
-              corners_rectangle[3] = corners_parallelogram[3];
-              corners_rectangle[2][0] = std::cos(para_to_rect_angle) * (corners_parallelogram[2][0] - corners_parallelogram[1][0]) - std::sin(para_to_rect_angle) * (corners_parallelogram[2][1] - corners_parallelogram[1][1]) + corners_parallelogram[1][0];
-              corners_rectangle[2][1] = std::sin(para_to_rect_angle) * (corners_parallelogram[2][0] - corners_parallelogram[1][0]) + std::cos(para_to_rect_angle) * (corners_parallelogram[2][1] - corners_parallelogram[1][1]) + corners_parallelogram[1][1];
-              corners_rectangle[3][0] = std::cos(para_to_rect_angle) * (corners_parallelogram[3][0] - corners_parallelogram[0][0]) - std::sin(para_to_rect_angle) * (corners_parallelogram[3][1] - corners_parallelogram[0][1]) + corners_parallelogram[0][0];
-              corners_rectangle[3][1] = std::sin(para_to_rect_angle) * (corners_parallelogram[3][0] - corners_parallelogram[0][0]) + std::cos(para_to_rect_angle) * (corners_parallelogram[3][1] - corners_parallelogram[0][1]) + corners_parallelogram[0][1];
             }
           else if (missing == 2)
             {
@@ -592,8 +517,20 @@ namespace aspect
                   corners[1][0] = corners[2][0];
                   corners[3][0] = corners[0][0];
                 }
-              corners_rectangle = corners;
             }
+          // Check that the calculated corners also obey the rules for the location of the corners.
+          Assert (corners[0][0] >= corners[1][0],
+                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
+
+          Assert (corners[0][1] >= corners[3][1],
+                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
+
+          Assert (corners[2][0] <= corners[3][0],
+                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
+
+          Assert (corners[2][1] <= corners[1][1],
+                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
+
           westLongitude = corners[2][0];
           eastLongitude = corners[0][0];
           northLatitude = corners[0][1];
@@ -607,21 +544,33 @@ namespace aspect
       /**
        * Construct manifold object Pointer to an object that describes the geometry.
        */
-      manifold.set_initial_values(semi_major_axis_a,
-                                  eccentricity,
-                                  semi_minor_axis_b,
-                                  rot_para_to_para_angle,
-                                  para_to_rect_angle,
-                                  rotation_longitude,
-                                  rotation_latitude,
-                                  bottom_depth);
+      manifold.set_manifold_parameters(semi_major_axis_a,
+                                       eccentricity,
+                                       semi_minor_axis_b,
+                                       bottom_depth,
+                                       corners);
+    }
+
+    template <int dim>
+    double
+    EllipsoidalChunk<dim>::depth(const Point<dim> &position) const
+    {
+      return std::max(std::min(-manifold.pull_back(position)[2], maximal_depth()), 0.0);
+    }
+
+    template <int dim>
+    double
+    EllipsoidalChunk<dim>::maximal_depth() const
+    {
+      return bottom_depth;
     }
 
     template <int dim>
     double
     EllipsoidalChunk<dim>::get_radius(const Point<dim> &position) const
     {
-      return semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position[1]) * std::sin(position[1])));
+      const Point<dim> long_lat_depth = manifold.pull_back(position);
+      return semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(long_lat_depth[1]) * std::sin(long_lat_depth[1])));
     }
 
     template <int dim>
@@ -629,6 +578,13 @@ namespace aspect
     EllipsoidalChunk<dim>::get_eccentricity() const
     {
       return eccentricity;
+    }
+
+    template <int dim>
+    const std::vector<Point<2> > &
+    EllipsoidalChunk<dim>::get_corners() const
+    {
+      return corners;
     }
 
     template <int dim>
@@ -645,44 +601,17 @@ namespace aspect
       return semi_major_axis_a;
     }
 
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::get_rot_para_to_para_angle() const
-    {
-      return rot_para_to_para_angle;
-    }
-
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::get_para_to_rect_angle() const
-    {
-      return para_to_rect_angle;
-    }
-
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::get_rotation_longitude() const
-    {
-      return rotation_longitude;
-    }
-
-    template <int dim>
-    double
-    EllipsoidalChunk<dim>::get_rotation_latitude() const
-    {
-      return rotation_latitude;
-    }
 
     template <int dim>
     double
     EllipsoidalChunk<dim>::length_scale() const
     {
-      // diameter divided by 20
-      return ((manifold.push_forward(Point<3>(southLatitude,
-                                              eastLongitude,
-                                              -bottom_depth))//,Radius,eccentricity)
-               - manifold.push_forward(Point<3>(northLatitude, westLongitude, 0/*,Radius,eccentricity*/))).norm()
-              / 20);
+      // As described in the first ASPECT paper, a length scale of
+      // 10km = 1e4m works well for the pressure scaling for earth
+      // sized spherical shells. use a length scale that
+      // yields this value for the R0,R1 corresponding to earth
+      // but otherwise scales like (R1-R0)
+      return 1e4 * maximal_depth() / (6336000.-3481000.);
     }
 
     template <int dim>
@@ -701,7 +630,7 @@ namespace aspect
       Assert(depth <= maximal_depth(),
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
-      // choose a point on the center axis of the domain
+      // Choose a point on the center axis of the domain
       Point<dim> p =
         (manifold.push_forward(Point<3>(southLatitude,
                                         eastLongitude,
@@ -739,6 +668,6 @@ namespace aspect
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
                                    "file by longitude:latitude. It is also possible to define additional subdivisions of the "
                                    "mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, "
-                                   "north; 4, bottom; 5, top. ")
+                                   "north; 4, inner; 5, outer. ")
   }
 }

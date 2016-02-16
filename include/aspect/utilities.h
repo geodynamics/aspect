@@ -45,6 +45,7 @@ namespace aspect
   namespace Utilities
   {
     using namespace dealii;
+    using namespace dealii::Utilities;
 
     /**
      * Returns spherical coordinates of a cartesian point. The returned array
@@ -71,6 +72,22 @@ namespace aspect
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
+
+    /**
+     * Creates a path as if created by the shell command "mkdir -p", therefore
+     * generating directories from the highest to the lowest level if they are
+     * not already existing.
+     *
+     * @param pathname String that contains the path to create. '/' is used as
+     * directory separator.
+     * @param mode Permissions (mode bits) of the created directories. See the
+     * documentation of the chmod() command for more information.
+     * @return The function returns the error value of the last mkdir call
+     * inside. It returns zero on success. See the man page of mkdir() for
+     * more information.
+     */
+    int
+    mkdirp(std::string pathname, const mode_t mode = 0755);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used
@@ -156,7 +173,6 @@ namespace aspect
      * that is not initialized.
      **/
     template <class T>
-    inline
     T
     signaling_nan();
 

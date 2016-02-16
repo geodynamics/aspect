@@ -41,15 +41,30 @@ namespace aspect
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          const SymmetricTensor<2,dim> compressible_strain_rate
-            = (this->get_material_model().is_compressible()
-               ?
-               material_model_inputs.strain_rate[q] - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
-               :
-               material_model_inputs.strain_rate[q]);
+          const SymmetricTensor<4,dim> &C = material_model_outputs.stress_strain_directors[q];
+          const SymmetricTensor<2,dim> &directed_strain_rate = ((C != dealii::identity_tensor<dim> ())
+                                                                ?
+                                                                C * material_model_inputs.strain_rate[q]
+                                                                :
+                                                                material_model_inputs.strain_rate[q]);
 
-          heating_model_outputs.heating_source_terms[q] = 2.0 * material_model_outputs.viscosities[q] *
-                                                          compressible_strain_rate * compressible_strain_rate;
+          const SymmetricTensor<2,dim> stress =
+            2 * material_model_outputs.viscosities[q] *
+            (this->get_material_model().is_compressible()
+             ?
+             directed_strain_rate - 1./3. * trace(directed_strain_rate) * unit_symmetric_tensor<dim>()
+             :
+             directed_strain_rate);
+
+          const SymmetricTensor<2,dim> compressible_strain_rate =
+            (this->get_material_model().is_compressible()
+             ?
+             material_model_inputs.strain_rate[q]
+             - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
+             :
+             material_model_inputs.strain_rate[q]);
+
+          heating_model_outputs.heating_source_terms[q] = stress * compressible_strain_rate;
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }

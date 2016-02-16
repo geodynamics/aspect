@@ -42,10 +42,10 @@ end
 subsection Boundary velocity model
   subsection GPlates model
     set Velocity file name = current_day.gpml
-    set Time step = 1e6
+    set Data file time step = 1e6
     set Point one = 1.0,1.87
     set Point two = 2.0,5.24
-    set Interpolation width = 2000000
+    set Lithosphere thickness = 660000
   end
 end
 
