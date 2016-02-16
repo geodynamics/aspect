@@ -28,9 +28,9 @@
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <fenv.h>
-#endif
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
+#    include <fenv.h>
+#  endif
 #endif
 
 namespace aspect
@@ -91,17 +91,17 @@ namespace aspect
                                    "degree >= 0."));
               // use a spherical harmonic function as lateral perturbation
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-  // disable floating point exceptions for the boost call below
-  feclearexcept(FE_DIVBYZERO|FE_INVALID);
-#endif
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
+              // disable floating point exceptions for the boost call below
+              feclearexcept(FE_DIVBYZERO|FE_INVALID);
+#  endif
 #endif
               lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-  // enable floating point exceptions again
-  feenableexcept(FE_DIVBYZERO|FE_INVALID);
-#endif
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
+              // enable floating point exceptions again
+              feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#  endif
 #endif
             }
         }
