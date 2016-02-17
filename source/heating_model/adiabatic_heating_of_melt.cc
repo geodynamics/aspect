@@ -20,6 +20,7 @@
 
 
 #include <aspect/heating_model/adiabatic_heating_of_melt.h>
+#include <aspect/melt.h>
 #include <deal.II/numerics/fe_field_function.h>
 
 namespace aspect

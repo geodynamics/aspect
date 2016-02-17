@@ -285,6 +285,8 @@ namespace aspect
         {
           public:
             virtual ~AssemblerBase () {}
+
+            virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) {}
         };
       }
 

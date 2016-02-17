@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/keller.h>
+#include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;

@@ -247,7 +247,6 @@ namespace aspect
 
 
     template <int dim>     class AdditionalMaterialOutputs;
-    template <int dim>     class MeltOutputs;
 
 
     /**
@@ -401,20 +400,6 @@ namespace aspect
        */
       template <class AdditionalOutputType>
       const AdditionalOutputType *get_additional_output() const;
-
-      /**
-       * Creates all additional material model output objects that are
-       * needed for a simulation, and attaches a pointer to them to the
-       * corresponding vector in the MaterialModel::MaterialModelOutputs
-       * structure.
-       */
-      void create_additional_material_outputs(const unsigned int n_points,
-                                              const unsigned int n_comp)
-      {
-        //if (parameters.include_melt)
-        additional_outputs.push_back(std::make_shared<MeltOutputs<dim> > (n_points, n_comp));
-        //TODO: signal: attach additional material output
-      }
     };
 
 
@@ -539,69 +524,7 @@ namespace aspect
         {};
     };
 
-    // TODO: move down again when we moved implementation of additional outputs into .cc file
-    template <int dim>
-    class MeltOutputs : public AdditionalMaterialOutputs<dim>
-    {
-      public:
-        MeltOutputs (const unsigned int n_points,
-                     const unsigned int n_comp)
-        {
-          compaction_viscosities.resize(n_points);
-          fluid_viscosities.resize(n_points);
-          permeabilities.resize(n_points);
-          fluid_densities.resize(n_points);
-          fluid_density_gradients.resize(n_points, Tensor<1,dim>());
-        }
 
-        /**
-         * Compaction viscosity values $\xi$ at the given positions.
-         * This parameter describes the resistance of the solid matrix
-         * in a two-phase simulation to dilation and compaction.
-         */
-        std::vector<double> compaction_viscosities;
-
-        /**
-         * Fluid (melt) viscosity values $\eta_f$ at the given positions.
-         */
-        std::vector<double> fluid_viscosities;
-
-        /**
-         * Permeability values $k$ at the given positions.
-         */
-        std::vector<double> permeabilities;
-
-        /**
-         * Fluid (melt) density values $\rho_f$ at the given positions.
-         */
-        std::vector<double> fluid_densities;
-
-        /**
-         * An approximation for the fluid (melt) density gradients
-         * $\nabla \rho_f$ at the given positions. These values are
-         * required for compressible models to describe volume changes
-         * of melt in dependence of pressure, temperature etc.
-         */
-        std::vector<Tensor<1,dim> > fluid_density_gradients;
-
-        void average (const MaterialAveraging::AveragingOperation operation,
-                      const FullMatrix<double>  &projection_matrix,
-                      const FullMatrix<double>  &expansion_matrix)
-        {
-          average_property (operation, projection_matrix, expansion_matrix,
-                            compaction_viscosities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            fluid_viscosities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            permeabilities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            fluid_densities);
-
-          // the fluid density gradients are unfortunately stored in reverse
-          // indexing. it's also not quite clear whether these should
-          // really be averaged, so avoid this for now
-        }
-    };
 
 
 
