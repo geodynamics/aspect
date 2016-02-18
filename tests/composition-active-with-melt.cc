@@ -1,4 +1,5 @@
 #include <aspect/material_model/interface.h>
+#include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
 
 /**

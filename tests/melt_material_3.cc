@@ -2,6 +2,7 @@
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
+#include <aspect/melt.h>
 #include <aspect/fluid_pressure_boundary_conditions/interface.h>
 
 #include <deal.II/dofs/dof_tools.h>
