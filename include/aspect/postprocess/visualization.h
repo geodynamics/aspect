@@ -385,6 +385,15 @@ namespace aspect
         unsigned int group_files;
 
         /**
+         * On large clusters it can be advantageous to first write the
+         * output to a temporary file on a local file system and later
+         * move this file to a network file system. If this variable is
+         * set to a non-empty string it will be interpreted as a temporary
+         * storage location.
+         */
+        std::string temporary_output_location;
+
+        /**
          * deal.II offers the possibility to linearly interpolate output
          * fields of higher order elements to a finer resolution. This
          * somewhat compensates the fact that most visualization software only
@@ -432,8 +441,16 @@ namespace aspect
         std::string last_mesh_file_name;
 
         /**
+         * File operations can potentially take a long time, blocking the
+         * progress of the rest of the model run. Setting this variable to
+         * 'true' moves this process into a background thread, while the
+         * rest of the model continues.
+         */
+        bool write_in_background_thread;
+
+        /**
          * Handle to a thread that is used to write data in the background.
-         * The background_writer() function runs on this background thread.
+         * The writer() function runs on this background thread.
          */
         Threads::Thread<void> background_thread;
 
@@ -445,8 +462,9 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void background_writer (const std::string *filename,
-                                const std::string *file_contents);
+        void writer (const std::string filename,
+                     const std::string temporary_filename,
+                     const std::string *file_contents);
 
         /**
          * Write the various master record files. The master files are used by

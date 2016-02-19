@@ -5,6 +5,22 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: ASPECT by default wrote one output file per MPI process that
+ * was written in a background thread to a temporary location first and then
+ * moved to its final location. If any of the steps failed it tried again by
+ * writing directly to the output location. This approach needed complicated
+ * logic and did not succeed on all systems. In order to increase stability
+ * the new default behaviour is to write straight to the output folder. This
+ * might decrease performance on clusters with slow network file systems.
+ * The old behaviour can be recovered by setting 'Write in background thread'
+ * to true and set a temporary storage location by 'set Temporary output
+ * location'. Note that this functionality was and is only available if
+ * 'Number of grouped files' is set to its default value of 0, and therefore
+ * MPI-IO is not used for parallel output. For larger models with hundreds of
+ * parallel processes using MPI-IO is recommended.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/14)
+ *
  * <li> New: Added 'command' postprocessor for executing arbitrary commands.
  * <br>
  * (Jonathan Perry-Houts, 2016/02/11)
