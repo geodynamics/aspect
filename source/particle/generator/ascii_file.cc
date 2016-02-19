@@ -35,8 +35,7 @@ namespace aspect
         const std::string filename = data_directory+data_filename;
 
         // Read data from disk and distribute among processes
-        std::stringstream in;
-        Utilities::load_and_distribute_file_content(filename, this->get_mpi_communicator(), in);
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
 
         // Skip header lines
         while (in.peek() == '#')

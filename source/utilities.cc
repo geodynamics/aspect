@@ -105,13 +105,11 @@ namespace aspect
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
 
-    void
-    load_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm,
-                                     std::stringstream &datastream)
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm)
     {
-      // Reset datastream
-      datastream.str(std::string());
+      std::string data_string;
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
@@ -120,8 +118,15 @@ namespace aspect
                        ExcMessage (std::string("Could not open file <") + filename + ">."));
 
           // Read data from disk
+          std::stringstream datastream;
           filestream >> datastream.rdbuf();
-          std::string data_string = datastream.str();
+
+          AssertThrow (filestream.eof(),
+                       ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                   "before the end of file was reached. Is the file corrupted or"
+                                   "too large for the input buffer?"));
+
+          data_string = datastream.str();
           unsigned int filesize = data_string.size();
 
           // Distribute data_size and data across processes
@@ -133,13 +138,13 @@ namespace aspect
           // Prepare for receiving data
           unsigned int filesize;
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          std::string data_string;
           data_string.resize(filesize);
 
           // Receive and store data
           MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          datastream.write(&data_string[0],filesize);
         }
+
+      return data_string;
     }
 
     int
@@ -447,8 +452,7 @@ namespace aspect
                                     const MPI_Comm &comm)
     {
       // Read data from disk and distribute among processes
-      std::stringstream in;
-      load_and_distribute_file_content(filename, comm, in);
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
 
       // Read header lines and table size
       while (in.peek() == '#')

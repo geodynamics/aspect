@@ -36,8 +36,7 @@ namespace aspect
     {
       data_filename=filename;
       // Read data from disk and distribute among processes
-      std::stringstream in;
-      Utilities::load_and_distribute_file_content(filename, comm, in);
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
       std::string dummy;
 

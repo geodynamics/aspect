@@ -48,8 +48,7 @@ namespace aspect
             {
               std::string temp;
               // Read data from disk and distribute among processes
-              std::stringstream in;
-              Utilities::load_and_distribute_file_content(filename, comm, in);
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
               getline(in,temp);  // throw away the rest of the line
@@ -129,8 +128,7 @@ namespace aspect
             {
               std::string temp;
               // Read data from disk and distribute among processes
-              std::stringstream in;
-              Utilities::load_and_distribute_file_content(filename, comm, in);
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               getline(in,temp);  // throw away the rest of the line
               getline(in,temp);  // throw away the rest of the line

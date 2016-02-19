@@ -148,8 +148,8 @@ namespace aspect
                                     const MPI_Comm &comm)
       {
         // Read data from disk and distribute among processes
-        std::stringstream filecontent;
-        Utilities::load_and_distribute_file_content(filename, comm, filecontent);
+        std::istringstream filecontent(
+          Utilities::read_and_distribute_file_content(filename, comm));
 
         boost::property_tree::ptree pt;
 

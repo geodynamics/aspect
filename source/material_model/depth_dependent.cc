@@ -39,8 +39,7 @@ namespace aspect
     {
       /* This method is used for the Table method of depth dependent viscosity */
       // Read data from disk and distribute among processes
-      std::stringstream in;
-      Utilities::load_and_distribute_file_content(filename, comm, in);
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
       double min_depth=std::numeric_limits<double>::max();
       double max_depth=-std::numeric_limits<double>::max();
