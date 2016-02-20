@@ -117,10 +117,15 @@ namespace aspect
                            const FiniteElement<dim> &advection_element,
                            const Mapping<dim>       &mapping,
                            const Quadrature<dim>    &quadrature,
+                           const Quadrature<dim-1>  &face_quadrature,
                            const unsigned int        n_compositional_fields);
           AdvectionSystem (const AdvectionSystem &data);
 
           FEValues<dim>               finite_element_values;
+
+          std::shared_ptr<FEFaceValues<dim> >           face_finite_element_values;
+          std::shared_ptr<FEFaceValues<dim> >           neighbor_face_finite_element_values;
+          std::shared_ptr<FESubfaceValues<dim> >        subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
 
@@ -134,6 +139,10 @@ namespace aspect
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<double>         face_phi_field;
+          std::vector<Tensor<1,dim> > face_grad_phi_field;
+          std::vector<double>         neighbor_face_phi_field;
+          std::vector<Tensor<1,dim> > neighbor_face_grad_phi_field;
 
           std::vector<Tensor<1,dim> > old_velocity_values;
           std::vector<Tensor<1,dim> > old_old_velocity_values;
@@ -161,7 +170,9 @@ namespace aspect
 
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
+          std::vector<Tensor<1,dim> > face_current_velocity_values;
           std::vector<Tensor<1,dim> > mesh_velocity_values;
+          std::vector<Tensor<1,dim> > face_mesh_velocity_values;
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<std::vector<double> > current_composition_values;
@@ -172,6 +183,12 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
+
+          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+
+          MaterialModel::MaterialModelInputs<dim> neighbor_face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> neighbor_face_material_model_outputs;
 
           /**
            * Material model inputs and outputs computed at a previous
@@ -232,7 +249,8 @@ namespace aspect
            *    are trying to assemble a linear system. <b>Not</b> the global finite
            *    element.
            */
-          AdvectionSystem (const FiniteElement<dim> &finite_element);
+          AdvectionSystem (const FiniteElement<dim> &finite_element,
+                           const bool                field_is_discontinuous);
           AdvectionSystem (const AdvectionSystem &data);
 
           /**
@@ -240,7 +258,27 @@ namespace aspect
            * that correspond only to the variables listed in local_dof_indices
            */
           FullMatrix<double>          local_matrix;
+          /** Local contributions to the global matrix from the face terms in the
+           * discontinuous Galerkin method. The vectors are of length
+           * GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+           * so as to hold one matrix for each possible face or subface of the cell.
+           * The discontinuous Galerkin bilinear form contains terms arising from internal
+           * (to the cell) values and external (to the cell) values.
+           * _int_ext and ext_int hold the terms arising from the pairing between a cell
+           * and its neighbor, while _ext_ext is the pairing of the neighbor's dofs with
+           * themselves. In the continuous Galerkin case, these are unused, and set to size zero.
+           **/
+          std::vector<FullMatrix<double> >         local_matrices_int_ext;
+          std::vector<FullMatrix<double> >         local_matrices_ext_int;
+          std::vector<FullMatrix<double> >         local_matrices_ext_ext;
           Vector<double>              local_rhs;
+
+          /** Denotes which face matrices have actually been assembled in the DG field
+           * assembly. Entries for matrices not used (for example, those corresponding
+           * to non-existent subfaces; or faces being assembled by the neighboring cell)
+           * are set to false.
+           **/
+          std::vector<bool>               assembled_matrices;
 
           /**
            * Indices of those degrees of freedom that actually correspond
@@ -252,6 +290,13 @@ namespace aspect
            * any other variable outside the block we are currently considering)
            */
           std::vector<types::global_dof_index>   local_dof_indices;
+          /** Indices of the degrees of freedom corresponding to the temperature
+           * or composition field on all possible neighboring cells. This is used
+           * in the discontinuous Galerkin method. The outer std::vector has
+           *  length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
+           * and has size zero if in the continuous Galerkin case.
+           **/
+          std::vector<std::vector<types::global_dof_index> >   neighbor_dof_indices;
         };
       }
 
