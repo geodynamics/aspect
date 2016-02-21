@@ -588,6 +588,12 @@ namespace aspect
       std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
 
       /**
+       * Will call create_additional_material_model_outputs() functions from
+       * each object in assembler_objects.
+       */
+      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &);
+
+      /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
        * matrices, and right hand side vectors.
