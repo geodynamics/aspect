@@ -163,8 +163,6 @@ namespace aspect
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
-    private:
-
       /**
        * A structure that is used as an argument to functions that can work on
        * both the temperature and the compositional variables and that need to
@@ -257,6 +255,9 @@ namespace aspect
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
       };
+
+
+    private:
 
 
       /**

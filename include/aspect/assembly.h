@@ -32,6 +32,11 @@ namespace aspect
 {
   using namespace dealii;
 
+  template <int dim>
+  class Simulator;
+
+  struct AdvectionField;
+
   namespace internal
   {
     namespace Assembly
@@ -58,7 +63,7 @@ namespace aspect
           std::vector<double>                  temperature_values;
           std::vector<double>                  pressure_values;
           std::vector<SymmetricTensor<2,dim> > strain_rates;
-          std::vector<std::vector<double> >     composition_values;
+          std::vector<std::vector<double> >    composition_values;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -197,6 +202,11 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
+
+          /**
+           * Heating model outputs computed at the current linearization point.
+           */
+          HeatingModel::HeatingModelOutputs heating_model_outputs;
         };
 
 
@@ -426,6 +436,47 @@ namespace aspect
                                       const bool,
                                       internal::Assembly::Scratch::StokesSystem<dim>       &,
                                       internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Advection system matrix and right hand side.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The advection field that is currently assembled.
+         * - The artificial viscosity computed for the current cell
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const typename Simulator<dim>::AdvectionField &,
+                                      const double,
+                                      internal::Assembly::Scratch::AdvectionSystem<dim>       &,
+                                      internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Advection system matrix and right hand side. This signal is called
+         * once for each boundary face.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The number of the face on which we intend to assemble. This
+         *   face (of the current cell) will be at the boundary of the
+         *   domain.
+         * - The advection field that is currently assembled.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const unsigned int,
+                                      const AdvectionField &,
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_advection_system_on_boundary_face;
 
         /**
          * A structure that describes what information an assembler function
