@@ -9,6 +9,7 @@
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
+/Makefile
 /aspect
 /benchmark/**/CMakeCache.txt
 /benchmark/**/CMakeFiles/
@@ -44,3 +45,7 @@
 /tests/CTestTestfile.cmake
 /tests/Makefile
 /tests/cmake_install.cmake
+/tests/output-*/
+/tests/*.x.prm
+/tests/lib*.so
+/Testing
