@@ -5,6 +5,15 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> New: The advection systems (for temperature and compositions) can now 
+ * be discretized using the symmetric interior penalty discontinuous Galerkin 
+ * method. This can be useful to explore solution without adding artificial 
+ * smoothing. This is controlled by two new input parameters in 
+ * 'Discretization': use_discontinuous_temperature_discretization and 
+ * use_discontinuous_composition_discretization.
+ * <br>
+ * (Sam Cox, 2016/02/22)
+ *
  * <li> Changed: ASPECT by default wrote one output file per MPI process that
  * was written in a background thread to a temporary location first and then
  * moved to its final location. If any of the steps failed it tried again by
