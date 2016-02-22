@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/generator/ascii_file.h>
+#include <aspect/utilities.h>
 
 
 namespace aspect
@@ -32,13 +33,9 @@ namespace aspect
       AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
         const std::string filename = data_directory+data_filename;
-        std::ifstream in(filename.c_str(), std::ios::in);
-        AssertThrow (in,
-                     ExcMessage (std::string("Could not open data file <"
-                                             +
-                                             filename
-                                             +
-                                             ">.")));
+
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
 
         // Skip header lines
         while (in.peek() == '#')

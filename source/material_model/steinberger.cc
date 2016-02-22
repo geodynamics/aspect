@@ -20,8 +20,9 @@
 
 
 #include <aspect/material_model/steinberger.h>
-#include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
+
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
@@ -41,7 +42,8 @@ namespace aspect
       {
         public:
           MaterialLookup(const std::string &filename,
-                         const bool interpol)
+                         const bool interpol,
+                         const MPI_Comm &comm)
           {
 
             /* Initializing variables */
@@ -54,9 +56,8 @@ namespace aspect
             numpress=0;
 
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Could not open file <") + filename + ">."));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             getline(in, temp); // eat first line
             getline(in, temp); // eat next line
@@ -303,12 +304,12 @@ namespace aspect
       class LateralViscosityLookup
       {
         public:
-          LateralViscosityLookup(const std::string &filename)
+          LateralViscosityLookup(const std::string &filename,
+                                 const MPI_Comm &comm)
           {
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Could not open file <") + filename + ">."));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             getline(in, temp); // eat first line
 
@@ -361,12 +362,12 @@ namespace aspect
       class RadialViscosityLookup
       {
         public:
-          RadialViscosityLookup(const std::string &filename)
+          RadialViscosityLookup(const std::string &filename,
+                                const MPI_Comm &comm)
           {
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Could not open file <") + filename + ">."));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             min_depth=1e20;
             max_depth=-1;
@@ -420,9 +421,9 @@ namespace aspect
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
         material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
-                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation,this->get_mpi_communicator())));
+      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name,this->get_mpi_communicator()));
+      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name,this->get_mpi_communicator()));
       avg_temp.resize(lateral_viscosity_lookup->get_nslices());
     }
 

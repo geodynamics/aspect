@@ -19,22 +19,24 @@
 */
 
 
-//#define _USE_MATH_DEFINES
-#include <cmath>
 #include <aspect/initial_conditions/solidus.h>
+#include <aspect/utilities.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/boundary_temperature/interface.h>
+
 #include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <cmath>
 
 namespace aspect
 {
   namespace InitialConditions
   {
-    void MeltingCurve::read(const std::string &filename)
+    void MeltingCurve::read(const std::string &filename,
+                            const MPI_Comm &comm)
     {
       data_filename=filename;
-      std::ifstream in(data_filename.c_str(), std::ios::in);
-      AssertThrow (in, ExcMessage (std::string("Can't read file <") + filename + ">"));
+      // Read data from disk and distribute among processes
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
       std::string dummy;
 
@@ -293,7 +295,7 @@ namespace aspect
             }
 
             // then actually read the file
-            solidus_curve.read(solidus_filename);
+            solidus_curve.read(solidus_filename,this->get_mpi_communicator());
           }
           prm.leave_subsection();
         }

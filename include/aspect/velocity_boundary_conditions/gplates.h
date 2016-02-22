@@ -65,7 +65,8 @@ namespace aspect
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
-          void load_file(const std::string &filename);
+          void load_file(const std::string &filename,
+                         const MPI_Comm &comm);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
