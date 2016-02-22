@@ -96,7 +96,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Heating model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         {
