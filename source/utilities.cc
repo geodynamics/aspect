@@ -113,7 +113,7 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          std::ifstream filestream(filename);
+          std::ifstream filestream(filename.c_str());
           AssertThrow (filestream,
                        ExcMessage (std::string("Could not open file <") + filename + ">."));
 
