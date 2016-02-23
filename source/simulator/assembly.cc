@@ -400,7 +400,7 @@ namespace aspect
                                  GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
                                  :
                                  0),
-                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell,Utilities::signaling_nan<double>()))
+                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
         {}
 
 
