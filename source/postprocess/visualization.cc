@@ -65,7 +65,8 @@ namespace aspect
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
                 {
                   if (this->introspection().component_masks.velocities[i] ||
-                      (this->include_melt_transport() && this->introspection().component_masks.fluid_velocities[i]))
+                      (this->include_melt_transport()
+                       && this->introspection().variable("fluid velocity").component_mask[i]))
                     computed_quantities[q][i]=uh[q][i] * velocity_scaling_factor;
                   else
                     computed_quantities[q][i]=uh[q][i];

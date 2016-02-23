@@ -503,8 +503,8 @@ namespace aspect
         Assert(introspection.block_indices.pressure == 0
                ||
                (parameters.include_melt_transport
-                && introspection.block_indices.fluid_pressure == 0
-                && introspection.block_indices.compaction_pressure == 0)
+                && introspection.variable("fluid pressure").block_index == 0
+                && introspection.variable("compaction pressure").block_index == 0)
                , ExcNotImplemented());
 
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
@@ -612,8 +612,12 @@ namespace aspect
     // pressure = 1). For example the remap vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
-    const unsigned int block_p = (parameters.include_melt_transport) ? introspection.block_indices.fluid_pressure : introspection.block_indices.pressure;
-    const unsigned int block_p_c = introspection.block_indices.compaction_pressure;
+    const unsigned int block_p = (parameters.include_melt_transport) ?
+                                 introspection.variable("fluid pressure").block_index
+                                 : introspection.block_indices.pressure;
+    const unsigned int block_p_c = (parameters.include_melt_transport) ?
+                                   introspection.variable("compaction pressure").block_index
+                                   : -1;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
     Assert(!parameters.include_melt_transport || block_p_c == 1, ExcNotImplemented());

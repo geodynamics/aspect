@@ -58,7 +58,7 @@ namespace aspect
           for (unsigned int d=0; d<dim; ++d)
             fe_value.value_list(material_model_inputs.position,
                                 melt_velocitiy_vector[d],
-                                this->introspection().component_indices.fluid_velocities[d]);
+                                this->introspection().variable("fluid velocity").first_component_index+d);
 
           for (unsigned int i=0; i<material_model_inputs.position.size(); ++i)
             for (unsigned int d=0; d<dim; ++d)

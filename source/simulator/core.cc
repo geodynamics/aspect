@@ -1023,14 +1023,25 @@ namespace aspect
         {
           for (unsigned int d=0; d<dim; ++d)
             {
-              coupling[x.velocities[d]][x.compaction_pressure] = DoFTools::always;
-              coupling[x.compaction_pressure][x.velocities[d]] = DoFTools::always;
-              coupling[x.velocities[d]][x.fluid_pressure] = DoFTools::always;
-              coupling[x.fluid_pressure][x.velocities[d]] = DoFTools::always;
+              coupling[x.velocities[d]][
+                introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+              coupling[introspection.variable("compaction pressure").first_component_index]
+              [x.velocities[d]]
+                = DoFTools::always;
+              coupling[x.velocities[d]]
+              [introspection.variable("fluid pressure").first_component_index]
+                = DoFTools::always;
+              coupling[introspection.variable("fluid pressure").first_component_index]
+              [x.velocities[d]]
+                = DoFTools::always;
             }
 
-          coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
-          coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+          coupling[introspection.variable("fluid pressure").first_component_index]
+          [introspection.variable("fluid pressure").first_component_index]
+            = DoFTools::always;
+          coupling[introspection.variable("compaction pressure").first_component_index]
+          [introspection.variable("compaction pressure").first_component_index]
+            = DoFTools::always;
         }
       else
         {
@@ -1107,8 +1118,10 @@ namespace aspect
 
     if (parameters.include_melt_transport)
       {
-        coupling[x.fluid_pressure][x.fluid_pressure] = DoFTools::always;
-        coupling[x.compaction_pressure][x.compaction_pressure] = DoFTools::always;
+        coupling[introspection.variable("fluid pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
       }
     else
       coupling[x.pressure][x.pressure] = DoFTools::always;
@@ -1458,8 +1471,11 @@ namespace aspect
 
       if (parameters.include_melt_transport)
         {
-          introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure|introspection.component_masks.compaction_pressure);
-          introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure);
+          introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & extract_component_subset(dof_handler,
+                                                                      introspection.variable("fluid pressure").component_mask|
+                                                                      introspection.variable("compaction pressure").component_mask);
+          introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler,
+                                                                       introspection.variable("fluid pressure").component_mask);
         }
 
 
@@ -1470,7 +1486,7 @@ namespace aspect
         {
           if (parameters.include_melt_transport)
             // p_f and p_c are in the same block
-            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.fluid_pressure]);
+            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.variable("fluid pressure").block_index]);
           else
             introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
         }

@@ -1,4 +1,5 @@
 #include <aspect/material_model/interface.h>
+#include <aspect/melt.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>

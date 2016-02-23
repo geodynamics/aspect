@@ -218,7 +218,7 @@ namespace aspect
 
         const unsigned int pressure_comp =
           parameters.include_melt_transport ?
-          introspection.component_indices.fluid_pressure
+          introspection.variable("fluid pressure").first_component_index
           :
           introspection.component_indices.pressure;
 
@@ -234,7 +234,7 @@ namespace aspect
         constraints.distribute (system_tmp);
 
         const unsigned int pressure_block = (parameters.include_melt_transport ?
-                                             introspection.block_indices.fluid_pressure
+                                             introspection.variable("fluid pressure").block_index
                                              : introspection.block_indices.pressure);
         old_solution.block(pressure_block) = system_tmp.block(pressure_block);
       }

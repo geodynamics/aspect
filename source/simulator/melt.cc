@@ -63,14 +63,17 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
+      FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+      FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           for (unsigned int k=0; k<dofs_per_cell; ++k)
             {
               scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-              scratch.phi_p[k]       = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (k, q);
-              scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
-              scratch.grad_phi_p[k] = scratch.finite_element_values[introspection.extractors.fluid_pressure].gradient (k, q);
+              scratch.phi_p[k]       = scratch.finite_element_values[ex_p_f].value (k, q);
+              scratch.phi_p_c[k] = scratch.finite_element_values[ex_p_c].value (k, q);
+              scratch.grad_phi_p[k] = scratch.finite_element_values[ex_p_f].gradient (k, q);
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
@@ -138,7 +141,8 @@ namespace aspect
       const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
-      const FEValuesExtractors::Scalar &extractor_pressure = introspection.extractors.fluid_pressure;
+      const FEValuesExtractors::Scalar extractor_pressure = introspection.variable("fluid pressure").extractor_scalar();
+      FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -147,7 +151,7 @@ namespace aspect
             {
               scratch.phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
               scratch.phi_p[k]   = scratch.finite_element_values[extractor_pressure].value (k, q);
-              scratch.phi_p_c[k] = scratch.finite_element_values[introspection.extractors.compaction_pressure].value (k, q);
+              scratch.phi_p_c[k] = scratch.finite_element_values[ex_p_c].value (k, q);
               scratch.grad_phi_p[k] = scratch.finite_element_values[extractor_pressure].gradient (k, q);
 
               if (rebuild_stokes_matrix)
@@ -276,6 +280,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
       const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+      FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
@@ -303,7 +308,7 @@ namespace aspect
           for (unsigned int i = 0; i < dofs_per_cell; ++i)
             {
               // apply the fluid pressure boundary condition
-              data.local_rhs(i) += (scratch.face_finite_element_values[introspection.extractors.fluid_pressure].value(i, q)
+              data.local_rhs(i) += (scratch.face_finite_element_values[ex_p_f].value(i, q)
                                     * pressure_scaling * K_D *
                                     (density_f
                                      * (scratch.face_finite_element_values.get_normal_vectors()[q] * gravity)
@@ -680,10 +685,12 @@ namespace aspect
         const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
+        FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+
         for (unsigned int q=0; q<n_q_points; ++q)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             {
-              scratch.phi_p[i] = scratch.finite_element_values[introspection.extractors.fluid_pressure].value (i, q);
+              scratch.phi_p[i] = scratch.finite_element_values[ex_p_f].value (i, q);
               data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
             }
       }

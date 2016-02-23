@@ -343,8 +343,8 @@ namespace aspect
 
           if (parameters.include_melt_transport)
             {
-              fe_values[introspection.extractors.fluid_velocities].get_function_values (solution,
-                                                                                        fluid_velocity_values);
+              FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+              fe_values[ex_u_f].get_function_values (solution,fluid_velocity_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 max_local_velocity = std::max (max_local_velocity,
@@ -581,7 +581,7 @@ namespace aspect
 
     const FEValuesExtractors::Scalar &extractor_pressure =
       (parameters.include_melt_transport ?
-       introspection.extractors.fluid_pressure
+       introspection.variable("fluid pressure").extractor_scalar()
        : introspection.extractors.pressure);
 
     double my_pressure = 0.0;
@@ -686,10 +686,10 @@ namespace aspect
           {
             // pressure is not in a separate block, so we have to modify the values manually
             const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                     introspection.component_indices.fluid_pressure
+                                                     introspection.variable("fluid pressure").first_component_index
                                                      : introspection.component_indices.pressure);
             const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
-                                                        finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
+                                                        finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             typename DoFHandler<dim>::active_cell_iterator
@@ -730,7 +730,7 @@ namespace aspect
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                 introspection.component_indices.fluid_pressure
+                                                 introspection.variable("fluid pressure").first_component_index
                                                  : introspection.component_indices.pressure);
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
         typename DoFHandler<dim>::active_cell_iterator
@@ -778,10 +778,10 @@ namespace aspect
           {
             // pressure is not in a separate block so we have to modify the values manually
             const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                     introspection.component_indices.fluid_pressure
+                                                     introspection.variable("fluid pressure").first_component_index
                                                      : introspection.component_indices.pressure);
             const unsigned int n_local_pressure_dofs = (parameters.include_melt_transport ?
-                                                        finite_element.base_element(introspection.base_elements.fluid_pressure).dofs_per_cell
+                                                        finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
 
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
@@ -824,7 +824,7 @@ namespace aspect
         Assert (dynamic_cast<const FE_DGP<dim>*>(&finite_element.base_element(introspection.base_elements.pressure)) != 0,
                 ExcInternalError());
         const unsigned int pressure_component = (parameters.include_melt_transport ?
-                                                 introspection.component_indices.fluid_pressure
+                                                 introspection.variable("fluid pressure").first_component_index
                                                  : introspection.component_indices.pressure);
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
@@ -949,9 +949,10 @@ namespace aspect
 
         Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                               introspection.n_components);
+        const unsigned int first_fluid_c_i = introspection.variable("fluid velocity").first_component_index;
         for (unsigned int c=0; c<dim; ++c)
           for (unsigned int d=0; d<dim; ++d)
-            coupling[x.fluid_velocities[c]][x.fluid_velocities[d]] = DoFTools::always;
+            coupling[first_fluid_c_i+c][first_fluid_c_i+d] = DoFTools::always;
 
         DoFTools::make_sparsity_pattern (dof_handler,
                                          coupling, sp,
@@ -1011,7 +1012,8 @@ namespace aspect
                 solution, porosity_values);
               fe_values[introspection.extractors.velocities].get_function_values (
                 solution, u_s_values);
-              fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
+
+              fe_values[introspection.variable("fluid pressure").extractor_scalar()].get_function_gradients (
                 solution, grad_p_f_values);
               compute_material_model_input_values (solution,
                                                    fe_values,
@@ -1028,8 +1030,8 @@ namespace aspect
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   {
                     for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      cell_matrix(i,j) += fe_values[introspection.extractors.fluid_velocities].value(j,q) *
-                                          fe_values[introspection.extractors.fluid_velocities].value(i,q) *
+                      cell_matrix(i,j) += fe_values[introspection.variable("fluid velocity").extractor_vector()].value(j,q) *
+                                          fe_values[introspection.variable("fluid velocity").extractor_vector()].value(i,q) *
                                           fe_values.JxW(q);
 
                     const double phi = std::max(0.0, porosity_values[q]);
@@ -1040,7 +1042,7 @@ namespace aspect
                         const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                         const Tensor<1,dim>  gravity = this->gravity_model->gravity_vector(in.position[q]);
                         cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
-                                          * fe_values[introspection.extractors.fluid_velocities].value(i,q)
+                                          * fe_values[introspection.variable("fluid velocity").extractor_vector()].value(i,q)
                                           * fe_values.JxW(q);
                       }
 
@@ -1066,7 +1068,7 @@ namespace aspect
         Amg_data.smoother_sweeps = 2;
         Amg_data.aggregation_threshold = 0.02;
 #endif
-        const unsigned int block_idx = introspection.block_indices.fluid_velocities;
+        const unsigned int block_idx = introspection.variable("fluid velocity").block_index;
         preconditioner.initialize(matrix.block(block_idx, block_idx));
 
         SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
@@ -1076,13 +1078,14 @@ namespace aspect
         pcout << "   Solving for u_f in " << solver_control.last_step() <<" iterations."<< std::endl;
 
         current_constraints.distribute (distributed_solution);
-        solution.block(introspection.block_indices.fluid_velocities) = distributed_solution.block(introspection.block_indices.fluid_velocities);
+        solution.block(block_idx) = distributed_solution.block(block_idx);
       }
     else
       {
         // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
 
-        const Quadrature<dim> quadrature(finite_element.base_element(introspection.base_elements.fluid_velocities).get_unit_support_points());
+        const Quadrature<dim> quadrature(finite_element.base_element(
+                                           introspection.variable("fluid velocity").base_index).get_unit_support_points());
 
         MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), parameters.n_compositional_fields);
         MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), parameters.n_compositional_fields);
@@ -1109,7 +1112,7 @@ namespace aspect
                 solution, porosity_values);
               fe_values[introspection.extractors.velocities].get_function_values (
                 solution, u_s_values);
-              fe_values[introspection.extractors.fluid_pressure].get_function_gradients (
+              fe_values[introspection.variable("fluid pressure").extractor_scalar()].get_function_gradients (
                 solution, grad_p_f_values);
               compute_material_model_input_values (solution,
                                                    fe_values,
@@ -1126,7 +1129,7 @@ namespace aspect
                 {
                   std::pair<unsigned int, unsigned int> base_index
                     = finite_element.system_to_base_index(j).first;
-                  if (base_index.first != introspection.base_elements.fluid_velocities)
+                  if (base_index.first != introspection.variable("fluid velocity").base_index)
                     continue;
                   const unsigned int q = finite_element.system_to_base_index(j).second;
                   const unsigned int d = base_index.second;
@@ -1151,8 +1154,9 @@ namespace aspect
                   distributed_vector(local_dof_indices[j]) = value;
                 }
             }
-        distributed_vector.block(introspection.block_indices.fluid_velocities).compress(VectorOperation::insert);
-        solution.block(introspection.block_indices.fluid_velocities) = distributed_vector.block(introspection.block_indices.fluid_velocities);
+        distributed_vector.block(introspection.variable("fluid velocity").block_index).compress(VectorOperation::insert);
+        solution.block(introspection.variable("fluid velocity").block_index)
+          = distributed_vector.block(introspection.variable("fluid velocity").block_index);
       }
 
     //compute solid pressure
@@ -1182,9 +1186,9 @@ namespace aspect
             cell->get_dof_indices (local_dof_indices);
             fe_values[introspection.extractors.compositional_fields[por_idx]].get_function_values (
               solution, porosity_values);
-            fe_values[introspection.extractors.compaction_pressure].get_function_values (
+            fe_values[introspection.variable("compaction pressure").extractor_scalar()].get_function_values (
               solution, p_c_values);
-            fe_values[introspection.extractors.fluid_pressure].get_function_values (
+            fe_values[introspection.variable("fluid pressure").extractor_scalar()].get_function_values (
               solution, p_f_values);
 
             for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell; ++j)
@@ -1258,8 +1262,9 @@ namespace aspect
                 continue;
 
               const unsigned int p_c_idx
-                = finite_element.component_to_system_index(introspection.component_indices.compaction_pressure,
-                                                           /*dof index within component=*/ j);
+                = finite_element.component_to_system_index(
+                    introspection.variable("compaction pressure").first_component_index,
+                    /*dof index within component=*/ j);
 
               double phi = porosity_values[j];
 
@@ -1303,7 +1308,7 @@ namespace aspect
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
     const unsigned int block_p =
       parameters.include_melt_transport ?
-      introspection.block_indices.fluid_pressure
+      introspection.variable("fluid pressure").block_index
       :
       introspection.block_indices.pressure;
 
