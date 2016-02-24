@@ -1,8 +1,8 @@
-#include <aspect/material_model/melt_interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
+#include <aspect/melt.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/dofs/dof_handler.h>
@@ -49,7 +49,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class ShearBandsMaterial : public MaterialModel::MeltInterface<dim>,
+    class ShearBandsMaterial : public MaterialModel::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -110,6 +110,12 @@ namespace aspect
         double
         get_background_porosity () const;
 
+        double
+        get_reference_compaction_viscosity () const;
+
+        double
+        get_porosity_exponent () const;
+
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -154,25 +160,21 @@ namespace aspect
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
             }
-        }
 
-        virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-        {
-          evaluate(in, out);
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          // fill melt outputs if they exist
+          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
-            {
-              double porosity = std::max(in.composition[i][porosity_idx],1e-4);
+          if (melt_out != NULL)
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                double porosity = std::max(in.composition[i][porosity_idx],1e-4);
 
-              out.compaction_viscosities[i] = xi_0;
-              out.fluid_viscosities[i]= eta_f;
-              out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
-              out.fluid_densities[i]= reference_rho_f;
-              out.fluid_compressibilities[i] = 0.0;
-            }
-
+                melt_out->compaction_viscosities[i] = xi_0 * pow(porosity/background_porosity,-compaction_viscosity_exponent);
+                melt_out->fluid_viscosities[i]= eta_f;
+                melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,permeability_exponent);
+                melt_out->fluid_densities[i]= reference_rho_f;
+                melt_out->fluid_density_gradients[i] = 0.0;
+              }
         }
 
       private:
@@ -185,6 +187,8 @@ namespace aspect
         double dislocation_creep_exponent;
         double alpha;
         double background_porosity;
+        double compaction_viscosity_exponent;
+        double permeability_exponent;
     };
 
     template <int dim>
@@ -192,6 +196,20 @@ namespace aspect
     ShearBandsMaterial<dim>::get_background_porosity () const
     {
       return background_porosity;
+    }
+
+    template <int dim>
+    double
+    ShearBandsMaterial<dim>::get_reference_compaction_viscosity () const
+    {
+      return xi_0;
+    }
+
+    template <int dim>
+    double
+    ShearBandsMaterial<dim>::get_porosity_exponent () const
+    {
+      return alpha;
     }
 
 
@@ -236,6 +254,14 @@ namespace aspect
           prm.declare_entry ("Background porosity", "0.05",
                              Patterns::Double (0),
                              "Background porosity used in the viscosity law. Units: none.");
+          prm.declare_entry ("Compaction viscosity exponent", "0.0",
+                             Patterns::Double(0),
+                             "Power-law exponent $m$ for the compaction viscosity. "
+                             "Units: none.");
+          prm.declare_entry ("Permeability exponent", "3.0",
+                             Patterns::Double(0),
+                             "Power-law exponent $n$ for the porosity-dependence of permeability. "
+                             "Units: none.");
         }
         prm.leave_subsection();
       }
@@ -261,6 +287,8 @@ namespace aspect
           dislocation_creep_exponent = prm.get_double ("Dislocation creep exponent");
           alpha                      = prm.get_double ("Porosity exponent");
           background_porosity        = prm.get_double ("Background porosity");
+          compaction_viscosity_exponent = prm.get_double ("Compaction viscosity exponent");
+          permeability_exponent      = prm.get_double ("Permeability exponent");
         }
         prm.leave_subsection();
       }
@@ -268,7 +296,7 @@ namespace aspect
     }
 
     /**
-     * An initial conditions model for the solitary waves benchmark
+     * An initial conditions model for the shear bands benchmark
      * that implements a background porosity plus white noise with
      * a certain amplitude.
      */
@@ -441,6 +469,161 @@ namespace aspect
     }
 
 
+    /**
+     * An initial conditions model for the plane wave melt bands benchmark
+     * that implements a background porosity plus a plave wave in the porosity
+     * field with a certain amplitude.
+     */
+    template <int dim>
+    class PlaneWaveMeltBandsInitialCondition : public CompositionalInitialConditions::Interface<dim>,
+      public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+
+        /**
+         * Return the initial porosity as a function of position.
+         */
+        virtual
+        double
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Initialization function.
+         */
+        void
+        initialize ();
+
+        double
+        get_wave_amplitude () const;
+
+        double
+        get_wave_number () const;
+
+        double
+        get_initial_band_angle () const;
+
+      private:
+        double amplitude;
+        double background_porosity;
+        double wave_number;
+        double initial_band_angle;
+    };
+
+
+
+    template <int dim>
+    void
+    PlaneWaveMeltBandsInitialCondition<dim>::initialize ()
+    {
+      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
+        {
+          const ShearBandsMaterial<dim> *
+          material_model
+            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+
+          background_porosity = material_model->get_background_porosity();
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Initial condition plane wave melt bands only works with the material model shear bands."));
+        }
+
+
+      AssertThrow(amplitude < 1.0,
+                  ExcMessage("Amplitude of the melt bands must be smaller "
+                             "than the background porosity."));
+    }
+
+
+    template <int dim>
+    double
+    PlaneWaveMeltBandsInitialCondition<dim>::get_wave_amplitude () const
+    {
+      return amplitude;
+    }
+
+    template <int dim>
+    double
+    PlaneWaveMeltBandsInitialCondition<dim>::get_wave_number () const
+    {
+      return wave_number;
+    }
+
+    template <int dim>
+    double
+    PlaneWaveMeltBandsInitialCondition<dim>::get_initial_band_angle () const
+    {
+      return initial_band_angle;
+    }
+
+
+    template <int dim>
+    double
+    PlaneWaveMeltBandsInitialCondition<dim>::
+    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
+    {
+      return background_porosity * (1.0 + amplitude * cos(wave_number*position[0]*sin(initial_band_angle)
+                                                        + wave_number*position[1]*cos(initial_band_angle)));
+    }
+
+
+    template <int dim>
+    void
+    PlaneWaveMeltBandsInitialCondition<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Compositional initial conditions");
+      {
+        prm.enter_subsection("Plane wave melt bands initial condition");
+        {
+          prm.declare_entry ("Wave amplitude", "1e-4",
+                             Patterns::Double (0),
+                             "Amplitude of the plane wave added to the initial "
+                             "porosity. Units: none.");
+          prm.declare_entry ("Wave number", "2000",
+                             Patterns::Double (0),
+                             "Wave number of the plane wave added to the initial "
+                             "porosity. Is multiplied by 2 pi internally. "
+                             "Units: 1/m.");
+          prm.declare_entry ("Initial band angle", "30",
+                             Patterns::Double (0),
+                             "Initial angle of the plane wave added to the initial "
+                             "porosity. Units: degrees.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    PlaneWaveMeltBandsInitialCondition<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Compositional initial conditions");
+      {
+        prm.enter_subsection("Plane wave melt bands initial condition");
+        {
+          amplitude          = prm.get_double ("Wave amplitude");
+          wave_number        = 2.0 * numbers::PI * prm.get_double ("Wave number");
+          initial_band_angle = 2.0 * numbers::PI / 360.0 * prm.get_double ("Initial band angle");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
 
     /**
       * A postprocessor that evaluates the angle of the shear bands.
@@ -455,11 +638,6 @@ namespace aspect
         virtual
         std::pair<std::string,std::string>
         execute (TableHandler &statistics);
-
-      private:
-        double amplitude;
-        double background_porosity;
-
     };
 
 
@@ -553,6 +731,175 @@ namespace aspect
 
     }
 
+
+
+    /**
+      * A postprocessor that evaluates the groeth rate of the shear bands.
+      *
+      * The implementation of error evaluators correspond to the
+      * benchmarks defined in the paper:
+      * Laura Alisic, John F. Rudge, Richard F. Katz, Garth N. Wells, Sander Rhebergen:
+      * "Compaction around a rigid, circular inclusion in partially molten rock."
+      * Journal of Geophysical Research: Solid Earth 119.7 (2014): 5903-5920.
+      */
+    template <int dim>
+    class ShearBandsGrowthRate : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * Generate graphical output from the current solution.
+         */
+        virtual
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics);
+
+        /**
+         * Initialization function. Take references to the material model and
+         * initial conditions model to get the parameters necessary for computing
+         * the analytical solution for the growth rate and store them.
+         */
+        void
+        initialize ();
+
+      private:
+        double amplitude;
+        double background_porosity;
+        double initial_band_angle;
+        double eta_0;
+        double xi_0;
+        double alpha;
+    };
+
+
+    template <int dim>
+    void
+    ShearBandsGrowthRate<dim>::initialize ()
+    {
+      if (dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model()) != NULL)
+        {
+          const ShearBandsMaterial<dim> *
+          material_model
+            = dynamic_cast<const ShearBandsMaterial<dim> *>(&this->get_material_model());
+
+          background_porosity = material_model->get_background_porosity();
+          eta_0               = material_model->reference_viscosity();
+          xi_0                = material_model->get_reference_compaction_viscosity();
+          alpha               = material_model->get_porosity_exponent();
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Postprocessor shear bands growth rate only works with the material model shear bands."));
+        }
+
+      if (dynamic_cast<const PlaneWaveMeltBandsInitialCondition<dim> *>(&this->get_compositional_initial_conditions()) != NULL)
+        {
+          const PlaneWaveMeltBandsInitialCondition<dim> *
+          initial_conditions
+            = dynamic_cast<const PlaneWaveMeltBandsInitialCondition<dim> *>(&this->get_compositional_initial_conditions());
+
+          amplitude           = initial_conditions->get_wave_amplitude();
+          initial_band_angle  = initial_conditions->get_initial_band_angle();
+        }
+      else
+        {
+          AssertThrow(false,
+                      ExcMessage("Postprocessor shear bands growth rate only works with the initial conditions model "
+                                 "plane wave melt bands."));
+        }
+    }
+
+
+    template <int dim>
+    std::pair<std::string,std::string>
+    ShearBandsGrowthRate<dim>::execute (TableHandler &statistics)
+    {
+      // compute analytical melt band growth rate
+      const double time = this->get_time();
+      const Point<dim> upper_boundary_point = this->get_geometry_model().representative_point(0.0);
+      const Point<dim> lower_boundary_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+
+      // get the map of boundary indicators and velocity bounfary conditions
+      const std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >
+      bvs = this->get_prescribed_velocity_boundary_conditions();
+      types::boundary_id upper_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      types::boundary_id lower_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
+      // get the velocities at the upper and lower boundary
+      typename std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > >::const_iterator
+      it = bvs.find(upper_boundary);
+      const double max_velocity = it->second->boundary_velocity(it->first,upper_boundary_point).norm();
+      it = bvs.find(lower_boundary);
+      const double min_velocity = it->second->boundary_velocity(it->first,lower_boundary_point).norm();
+
+      const double strain_rate = 0.5 * (max_velocity + min_velocity) / this->get_geometry_model().maximal_depth();
+      const double theta = std::atan(std::sin(initial_band_angle) / (std::cos(initial_band_angle) - time * strain_rate/sqrt(2.0) * std::sin(initial_band_angle)));
+      const double analytical_growth_rate = - eta_0 / (xi_0 + 4.0/3.0 * eta_0) * alpha * (1.0 - background_porosity)
+                                            * 2.0 * strain_rate * std::sin(2.0 * theta);
+
+      // integrate velocity divergence
+      const QGauss<dim> quadrature_formula (this->get_fe()
+                                            .base_element(this->introspection().base_elements.velocities).degree+1);
+      const unsigned int n_q_points = quadrature_formula.size();
+
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_gradients   |
+                               update_quadrature_points |
+                               update_JxW_values);
+      std::vector<double> velocity_divergences(n_q_points);
+      std::vector<Point<dim> > position(n_q_points);
+
+      double local_velocity_divergence_max = 0.0;
+      double local_velocity_divergence_min = 0.0;
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
+                                                                                               velocity_divergences);
+              position = fe_values.get_quadrature_points();
+
+              for (unsigned int q = 0; q < n_q_points; ++q)
+                {
+                  const double relative_depth = this->get_geometry_model().depth(position[q]) / this->get_geometry_model().maximal_depth();
+                  const double relative_x = 0.25 * position[q](0) / this->get_geometry_model().maximal_depth();
+                  if (relative_depth < 0.55 && relative_depth > 0.45 && relative_x < 0.75 && relative_x > 0.25)
+                    {
+                      local_velocity_divergence_max = std::max (velocity_divergences[q], local_velocity_divergence_max);
+                      local_velocity_divergence_min = std::min (velocity_divergences[q], local_velocity_divergence_min);
+                    }
+                }
+            }
+
+      const double global_velocity_divergence_max
+        = Utilities::MPI::max (local_velocity_divergence_max, this->get_mpi_communicator());
+      const double global_velocity_divergence_min
+        = Utilities::MPI::min (local_velocity_divergence_min, this->get_mpi_communicator());
+
+      // compute modelled melt band growth rate
+      const double numerical_growth_rate = (0 <= initial_band_angle && initial_band_angle < numbers::PI /2.
+                                           ?
+                                           (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_max
+                                           :
+                                           (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_min);
+
+      // compute and output error
+      std::ostringstream os;
+      os << std::scientific << initial_band_angle
+         << ", " << analytical_growth_rate
+         << ", " << numerical_growth_rate
+         << ", " << std::abs(numerical_growth_rate - analytical_growth_rate)/analytical_growth_rate;
+
+      return std::make_pair("Initial angle, Analytical growth rate, Modelled growth rate, Error:", os.str());
+    }
+
+
   }
 }
 
@@ -575,9 +922,20 @@ namespace aspect
                                   "which can be used to calculate the angle of the shear "
                                   "bands in the model. ")
 
+    ASPECT_REGISTER_POSTPROCESSOR(ShearBandsGrowthRate,
+                                  "shear bands growth rate",
+                                  "A postprocessor computes the growth rate of melt bands as "
+                                  "presicted from linear stability analysis (Spiegelman, 2003), "
+                                  "and compares modelled and analytical solution. ")
+
     ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(ShearBandsInitialCondition,
                                                      "shear bands initial condition",
                                                      "Composition is set to background porosity plus "
                                                      "white noise.")
+
+    ASPECT_REGISTER_COMPOSITIONAL_INITIAL_CONDITIONS(PlaneWaveMeltBandsInitialCondition,
+                                                     "plane wave melt bands initial condition",
+                                                     "Composition is set to background porosity plus "
+                                                     "plane wave.")
   }
 }
