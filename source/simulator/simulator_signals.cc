@@ -57,6 +57,7 @@ namespace aspect
 
 
       // call connectors to ensure that plugins get a change to register their slots
+      template <>
       void call_connector_functions (aspect::SimulatorSignals<2> &signals)
       {
         for (std::list<std_cxx11::function<void (aspect::SimulatorSignals<2> &)> >::const_iterator
@@ -66,6 +67,7 @@ namespace aspect
           (*p)(signals);
       }
 
+      template <>
       void call_connector_functions (aspect::SimulatorSignals<3> &signals)
       {
         for (std::list<std_cxx11::function<void (aspect::SimulatorSignals<3> &)> >::const_iterator
@@ -83,7 +85,13 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct SimulatorSignals<dim>;
+  template struct SimulatorSignals<dim>; \
+  namespace internals {\
+    namespace SimulatorSignals {\
+      template void call_connector_functions<dim> (aspect::SimulatorSignals<dim> &signals);\
+    }\
+  }\
+   
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

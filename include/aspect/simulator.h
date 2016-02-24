@@ -1058,8 +1058,10 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
-      Introspection<dim>                  introspection;
       SimulatorSignals<dim>               signals;
+      const IntermediaryConstructorAction post_signal_creation;
+      Introspection<dim>                  introspection;
+
 
       MPI_Comm                            mpi_communicator;
 
