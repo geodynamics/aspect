@@ -108,6 +108,11 @@ namespace aspect
   {
     std::cout << "* set_assemblers()" << std::endl;
 
+    std::cout << "called without: " << counter_without << " with: " << counter_with << std::endl;
+    counter_without = 0;
+    counter_with = 0;
+    quiet = false;
+
     TestAssembler<dim> *test_assembler = new TestAssembler<dim>();
     assembler_objects.push_back(std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >(test_assembler));
 
@@ -131,11 +136,6 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (&aspect::set_assemblers1<dim>);
-
-  std::cout << "called without: " << counter_without << " with: " << counter_with << std::endl;
-  counter_without = 0;
-  counter_with = 0;
-  quiet = false;
 
 }
 
