@@ -48,7 +48,7 @@ subsection Initial conditions
   set Model name = S40RTS perturbation
   subsection S40RTS perturbation
     set Initial condition file name           = S40RTS.sph
-    set vs to density scaling                 = 0.3
+    set Vs to density scaling                 = 0.3
     set Thermal expansion coefficient in initial temperature scaling = 4e-5
     set Reference temperature                 = 1600
     set Remove degree 0 from perturbation     = true

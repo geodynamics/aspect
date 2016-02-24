@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in OPTIMIZED mode
+--     . version 1.4.0-pre
+--     . running in DEBUG mode
 --     . running with 1 MPI process
 --     . using Trilinos
 -----------------------------------------------------------------------------
@@ -16,24 +16,24 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Writing graphical output: output-initial_condition_SAVANI/solution-00000
-     Temperature min/avg/max:  1484 K, 1599 K, 1783 K
+     Temperature min/avg/max:  1452 K, 1600 K, 1737 K
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       236s |            |
+| Total wallclock time elapsed since start    |       223s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.269s |      0.11% |
-| Assemble temperature system     |         1 |     0.107s |     0.046% |
-| Build Stokes preconditioner     |         1 |     0.129s |     0.055% |
-| Build temperature preconditioner|         1 |    0.0132s |    0.0056% |
-| Solve Stokes system             |         1 |     0.251s |      0.11% |
-| Solve temperature system        |         1 |    0.0017s |   0.00072% |
-| Initialization                  |         2 |       235s |     1e+02% |
-| Postprocessing                  |         1 |    0.0262s |     0.011% |
-| Setup dof systems               |         1 |    0.0928s |     0.039% |
+| Assemble Stokes system          |         1 |      7.56s |       3.4% |
+| Assemble temperature system     |         1 |      4.85s |       2.2% |
+| Build Stokes preconditioner     |         1 |      3.55s |       1.6% |
+| Build temperature preconditioner|         1 |    0.0147s |    0.0066% |
+| Solve Stokes system             |         1 |      0.46s |      0.21% |
+| Solve temperature system        |         1 |   0.00329s |    0.0015% |
+| Initialization                  |         2 |       204s |        91% |
+| Postprocessing                  |         1 |     0.339s |      0.15% |
+| Setup dof systems               |         1 |      1.17s |      0.52% |
 +---------------------------------+-----------+------------+------------+
 

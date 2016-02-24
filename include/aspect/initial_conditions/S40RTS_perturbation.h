@@ -121,6 +121,18 @@ namespace aspect
         bool zero_out_degree_0;
 
         /**
+         * This parameter allows to use a lower maximum order when reading
+         * the spherical harmonic data file.
+         */
+        bool lower_max_order;
+
+        /**
+         * The maximum order the users specify, which is only valid when
+         * "lower_max_order" is set to true.
+         */
+        int max_order;
+
+        /**
          * This parameter gives the reference temperature, which will be
          * perturbed. In the compressional case the background temperature
          * will be the adiabat.
