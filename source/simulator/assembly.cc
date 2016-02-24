@@ -3011,6 +3011,11 @@ namespace aspect
                                                           const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+  template void Simulator<dim>::local_assemble_advection_face_terms ( \
+                                                                      const AdvectionField                        &advection_field, \
+                                                                      const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                      internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
+                                                                      internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const Vector<double>           &viscosity_per_cell, \
