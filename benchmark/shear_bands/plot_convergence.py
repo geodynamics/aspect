@@ -29,9 +29,9 @@ for i in range(0,len(file_name)):
 		error.append(abs(data[i][j][1]))
 		resolution.append(3000./abs(data[i][j][0]))
 
-plt.loglog(dofs[0:6],error[0:6],color=colors.color(1), marker=colors.marker(1),label='$k=8\pi$')
-plt.loglog(dofs[7:12],error[7:12],color=colors.color(3), marker=colors.marker(1),label='$k=16\pi$')
-plt.loglog(dofs[0:6],resolution[0:6],"--",color="black", label='$O(h^2)$')
+plt.loglog(dofs[0:6],error[0:6],color=colors.color(1), marker=colors.marker(1),label='$k=8\pi \cdot 10^3$ m$^{-1}$')
+plt.loglog(dofs[7:12],error[7:12],color=colors.color(3), marker=colors.marker(1),label='$k=16\pi \cdot 10^3$ m$^{-1}$')
+plt.loglog(dofs[0:6],resolution[0:6],"--",color="black", label='$\mathcal{O}(h^2)$')
 
 plt.xlim([2e7, 3000])
 #plt.ylim([4e-3,0.4])

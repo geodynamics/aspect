@@ -37,6 +37,7 @@ plt.xlim([-5, 185])
 #plt.ylim([4e-3,0.4])
 plt.xlabel("Initial band angle in $^{\circ}$")
 plt.ylabel("Melt band growth rate $\dot s$ in s$^{-1}$")
+plt.xticks([0,45,90,135,180])
 plt.grid(True)
  
 
