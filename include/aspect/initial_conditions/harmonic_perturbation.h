@@ -77,6 +77,18 @@ namespace aspect
         int vertical_wave_number;
 
         /**
+         * If you choose to use a depth range rather than a vertical wave
+         * number then this is the thickness of the range.
+         */
+        double thickness;
+
+        /**
+         * If you choose to use a depth range rather than a vertical wave
+         * number then this is the center of the depth range.
+         */
+        double depth;
+
+        /**
          * The lateral wave number  of the harmonic perturbation in the first
          * dimension. This is the only lateral wave number in 2D and equals
          * the degree of the spherical harmonics in a 3D spherical shell.
@@ -102,6 +114,13 @@ namespace aspect
          * profile and this variable is not used at all.
          */
         double reference_temperature;
+
+        /**
+         * Whether to use a sinusoidal perturbation in depth, or to perturb
+         * within a specific depth range.
+         */
+        bool use_depth_range;
+
     };
   }
 }

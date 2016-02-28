@@ -52,9 +52,40 @@ namespace aspect
       // s = fraction of the way from
       // the inner to the outer
       // boundary; 0<=s<=1
-      const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
+      const double d = this->get_geometry_model().depth(position);
+      const double s = d / this->get_geometry_model().maximal_depth();
 
-      const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+      double depth_perturbation = 0.0;
+      if ( use_depth_range )
+        {
+          const double x = depth-d;
+          const double r = position.norm();
+          const double r0 = (r - x);
+          const double h = thickness;
+          //const double normalization = (dim == 3
+          //                              ?
+          //                              1./( 7./6.*h*h*h/r0/r0 + 3.*h)
+          //                              :
+          //                              1./( 3.*h) );
+          const double normalization = ( dim == 3
+                                         ?
+                                         std::sqrt(2. * M_PI) * (1. + h*h/r0/r0)
+                                         :
+                                         std::sqrt(2. * M_PI) * h );
+
+          depth_perturbation = std::exp( -x*x/2./thickness/thickness)/normalization;
+          /*    if( std::abs(r-r0) < h )
+                {
+                 if( r > r0)
+                   depth_perturbation = (1.-(r-r0)/h)*normalization;
+                 else
+                   depth_perturbation = (1.+(r-r0)/h)*normalization;
+                }*/
+        }
+      else
+        {
+          depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+        }
 
 
       double lateral_perturbation = 0.0;
@@ -70,7 +101,7 @@ namespace aspect
               // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
               // This way the perturbation is alway 0 at the model boundaries.
               const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
-              lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
+              lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*2.0*numbers::PI/opening_angle);
             }
 
           else if (dim==3)
@@ -165,6 +196,21 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the"
                              "harmonic function. Only used in incompressible models.");
+          prm.declare_entry ("Depth", "0.0",
+                             Patterns::Double (0),
+                             "If you choose to use a depth range rather than a vertical wave "
+                             "number then this is the center of the depth range.");
+          prm.declare_entry ("Thickness", "0.0",
+                             Patterns::Double (0),
+                             "If you choose to use a depth range rather than a vertical wave "
+                             "number then this is the thickness of the depth range.");
+          prm.declare_entry ("Use depth range", "false",
+                             Patterns::Bool (),
+                             "The default behavior for these initial conditions is to produce "
+                             "a sinusoidal perturbation in depth. However, it can also be "
+                             "useful to perturb in a certain depth range. For instance, a narrow"
+                             "depth perturbation can be used to test geoid and topography "
+                             "response kernels.");
         }
         prm.leave_subsection ();
       }
@@ -185,6 +231,9 @@ namespace aspect
           lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
           magnitude = prm.get_double ("Magnitude");
           reference_temperature = prm.get_double ("Reference temperature");
+          depth = prm.get_double("Depth");
+          thickness = prm.get_double("Thickness");
+          use_depth_range = prm.get_bool("Use depth range");
         }
         prm.leave_subsection ();
       }

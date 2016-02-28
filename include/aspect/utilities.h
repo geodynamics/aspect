@@ -67,6 +67,27 @@ namespace aspect
     cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
+     * A function for evaluating real spherical harmonics. It takes the degree (l)
+     * and the order (m) of the spherical harmonic, where l >= 0 and 0 <= m <=l.
+     * It also takes the colatitude (theta) and longitude (phi), which are in
+     * radians.
+     *
+     * This returns a pair of numbers, which correspond to the sine and cosine
+     * parts of the real spherical harmonic (related to the real and imaginary
+     * parts of complex spherical harmonics). Note that returning the sine and
+     * cosine parts as a pair means that there is no need for negative orders (m>= 0).
+     *
+     * There are an unfortunate number of normalization conventions in existence
+     * for spherical harmonics. Here we use fully normalized spherical harmonics
+     * including the Condon-Shortley phase. This corresponds to the definitions
+     * given in equations B.72 and B.99-B.102 in Dahlen and Tromp.
+     */
+    std::pair<double,double> real_spherical_harmonic( unsigned int l, //degree
+                                                      unsigned int m, //order
+                                                      double theta,   //colatitude (radians)
+                                                      double phi );   //longitude (radians)
+
+    /**
      * Checks whether a file named filename exists.
      *
      * @param filename File to check existence
