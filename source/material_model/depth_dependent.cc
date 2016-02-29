@@ -132,7 +132,7 @@ namespace aspect
     DepthDependent<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                   typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      base_model -> evaluate(in,out);
+      base_model->evaluate(in,out);
       if (in.strain_rate.size())
         {
           // Scale the base model viscosity value by the depth dependent prefactor
