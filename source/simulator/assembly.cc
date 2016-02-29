@@ -526,85 +526,6 @@ namespace aspect
                     average_entropy - (-global_for_max[0]));
   }
 
-  template <int dim>
-  void
-  Simulator<dim>::
-  compute_advection_system_residual(internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
-                                    const double                        average_field,
-                                    const AdvectionField               &advection_field,
-                                    double                             &max_residual,
-                                    double                             &max_velocity,
-                                    double                             &max_density,
-                                    double                             &max_specific_heat,
-                                    double                             &max_conductivity) const
-  {
-    const unsigned int n_q_points = scratch.old_field_values->size();
-
-    HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, parameters.n_compositional_fields);
-    heating_model_manager.evaluate(scratch.explicit_material_model_inputs,
-                                   scratch.explicit_material_model_outputs,
-                                   heating_model_outputs);
-
-    for (unsigned int q=0; q < n_q_points; ++q)
-      {
-        const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
-                                 scratch.old_old_velocity_values[q]) / 2;
-
-        const double dField_dt = (old_time_step == 0.0) ? 0 :
-                                 (
-                                   ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
-                                   / old_time_step);
-        const double u_grad_field = u * (scratch.old_field_grads[q] +
-                                         scratch.old_old_field_grads[q]) / 2;
-
-        const double density              = ((advection_field.is_temperature())
-                                             ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
-        const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
-        const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
-        const double k_Delta_field = conductivity
-                                     * (scratch.old_field_laplacians[q] +
-                                        scratch.old_old_field_laplacians[q]) / 2;
-
-        const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
-
-
-        const double gamma =
-          ((advection_field.is_temperature())
-           ?
-           heating_model_outputs.heating_source_terms[q]
-           :
-           0.0);
-
-        const double latent_heat_LHS =
-          ((advection_field.is_temperature())
-           ?
-           heating_model_outputs.lhs_latent_heat_terms[q]
-           :
-           0.0);
-
-        const double dreaction_term_dt =
-          (advection_field.is_temperature() || old_time_step == 0)
-          ?
-          0.0
-          :
-          (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
-           / old_time_step);
-
-        double residual
-          = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
-                     - dreaction_term_dt);
-
-        if (parameters.stabilization_alpha == 2)
-          residual *= std::abs(field - average_field);
-
-        max_residual = std::max      (residual,        max_residual);
-        max_velocity = std::max      (std::sqrt (u*u), max_velocity);
-        max_density  = std::max      (density,         max_density);
-        max_specific_heat = std::max (c_P,             max_specific_heat);
-        max_conductivity = std::max  (conductivity,    max_conductivity);
-      }
-  }
-
 
   template <int dim>
   double
@@ -615,26 +536,43 @@ namespace aspect
                      const double                        average_field,
                      const double                        global_entropy_variation,
                      const double                        cell_diameter,
-                     const AdvectionField     &advection_field) const
+                     const AdvectionField               &advection_field) const
   {
-    //discontinuous Galerkin doesn't require an artificial viscosity
+    // discontinuous Galerkin doesn't require an artificial viscosity
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
+    std::vector<double> residual = assemblers->compute_advection_system_residual(*scratch.explicit_material_model_inputs.cell,
+                                                                                 advection_field,
+                                                                                 scratch);
+
     double max_residual = 0;
     double max_velocity = 0;
-    double max_density = 0;
-    double max_specific_heat = 0;
+    double max_density = (advection_field.is_temperature()) ? 0.0 : 1.0;
+    double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
     double max_conductivity = 0;
 
-    compute_advection_system_residual(scratch,
-                                      average_field,
-                                      advection_field,
-                                      max_residual,
-                                      max_velocity,
-                                      max_density,
-                                      max_specific_heat,
-                                      max_conductivity);
+    for (unsigned int q=0; q < scratch.old_velocity_values.size(); ++q)
+      {
+        const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                 scratch.old_old_velocity_values[q]) / 2;
+
+        if (parameters.stabilization_alpha == 2)
+          {
+            const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
+            residual[q] *= std::abs(field - average_field);
+          }
+
+        max_residual = std::max (residual[q],     max_residual);
+        max_velocity = std::max (std::sqrt (u*u), max_velocity);
+
+        if (advection_field.is_temperature())
+          {
+            max_density = std::max       (scratch.explicit_material_model_outputs.densities[q],              max_density);
+            max_specific_heat = std::max (scratch.explicit_material_model_outputs.specific_heat[q],          max_specific_heat);
+            max_conductivity = std::max  (scratch.explicit_material_model_outputs.thermal_conductivities[q], max_conductivity);
+          }
+      }
 
     // If the velocity is 0 we have to assume a sensible velocity to calculate
     // an artificial diffusion. We choose similar to nondimensional
@@ -696,6 +634,7 @@ namespace aspect
     //discontinuous Galerkin doesn't require an artificial viscosity
     if (advection_field.is_discontinuous(introspection))
       return;
+
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
     double global_entropy_variation = get_entropy_variation ((global_field_range.first +
@@ -1262,6 +1201,68 @@ namespace aspect
                 }
             }
         }
+
+
+        std::vector<double>
+        compute_advection_system_residual(const typename Simulator<dim>::AdvectionField     &advection_field,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const
+        {
+          const unsigned int n_q_points = scratch.old_field_values->size();
+          std::vector<double> residuals(n_q_points);
+
+          HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->get_parameters().n_compositional_fields);
+          this->get_heating_model_manager().evaluate(scratch.explicit_material_model_inputs,
+                                                     scratch.explicit_material_model_outputs,
+                                                     heating_model_outputs);
+
+          for (unsigned int q=0; q < n_q_points; ++q)
+            {
+              const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                       scratch.old_old_velocity_values[q]) / 2;
+
+              const double dField_dt = (this->get_old_timestep() == 0.0) ? 0 :
+                                       (
+                                         ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
+                                         / this->get_old_timestep());
+              const double u_grad_field = u * (scratch.old_field_grads[q] +
+                                               scratch.old_old_field_grads[q]) / 2;
+
+              const double density              = ((advection_field.is_temperature())
+                                                   ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
+              const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
+              const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
+              const double k_Delta_field = conductivity
+                                           * (scratch.old_field_laplacians[q] +
+                                              scratch.old_old_field_laplacians[q]) / 2;
+
+              const double gamma =
+                ((advection_field.is_temperature())
+                 ?
+                 heating_model_outputs.heating_source_terms[q]
+                 :
+                 0.0);
+
+              const double latent_heat_LHS =
+                ((advection_field.is_temperature())
+                 ?
+                 heating_model_outputs.lhs_latent_heat_terms[q]
+                 :
+                 0.0);
+
+              const double dreaction_term_dt =
+                (advection_field.is_temperature() || this->get_old_timestep() == 0)
+                ?
+                0.0
+                :
+                (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                 / this->get_old_timestep());
+
+              residuals[q]
+                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
+                           - dreaction_term_dt);
+            }
+          return residuals;
+        }
     };
 
 
@@ -1428,6 +1429,13 @@ namespace aspect
                               std_cxx11::_3,
                               std_cxx11::_4,
                               std_cxx11::_5));
+
+    assemblers->compute_advection_system_residual
+    .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::compute_advection_system_residual,
+                              std_cxx11::cref (*complete_equation_assembler),
+                              // discard cell,
+                              std_cxx11::_2,
+                              std_cxx11::_3));
 
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers, assembler_objects);

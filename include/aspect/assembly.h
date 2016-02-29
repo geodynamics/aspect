@@ -375,6 +375,42 @@ namespace aspect
       struct AssemblerLists
       {
         /**
+         * A structure used to accumulate the results of the
+         * compute_advection_system_residual slot functions below.
+         * It takes an iterator range of vectors and returns the element-wise
+         * sum of the values.
+         */
+        template<typename T>
+        struct ResidualWeightSum
+        {
+          typedef T result_type;
+
+          template<typename InputIterator>
+          T operator()(InputIterator first, InputIterator last) const
+          {
+            // If there are no slots to call, just return the
+            // default-constructed value
+            if (first == last)
+              return T();
+
+            T sum = *first++;
+            while (first != last)
+              {
+                Assert(sum.size() == first->size(),
+                       ExcMessage("Invalid vector length for residual summation."));
+
+                for (unsigned int i = 0; i < first->size(); ++i)
+                  sum[i] += (*first)[i];
+
+                ++first;
+              }
+
+            return sum;
+          }
+        };
+
+
+        /**
          * A signal that is called from Simulator::local_assemble_stokes_preconditioner()
          * and whose slots are supposed to assemble terms that together form the
          * Stokes preconditioner matrix.
@@ -455,6 +491,24 @@ namespace aspect
                                       const double,
                                       internal::Assembly::Scratch::AdvectionSystem<dim>       &,
                                       internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to compute an advection system residual
+         * according to the terms their assemblers implement. If more than one
+         * assembler is connected the residuals are simply added up by the
+         * ResidualWeightSum structure.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The advection field that is currently assembled.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         */
+        boost::signals2::signal<std::vector<double> (const typename DoFHandler<dim>::active_cell_iterator &,
+                                                     const typename Simulator<dim>::AdvectionField &,
+                                                     internal::Assembly::Scratch::AdvectionSystem<dim> &),
+                                                              ResidualWeightSum<std::vector<double> > > compute_advection_system_residual;
 
         /**
          * A signal that is called from Simulator::local_assemble_advection_system()
