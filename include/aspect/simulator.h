@@ -164,8 +164,6 @@ namespace aspect
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
-    private:
-
       /**
        * A structure that is used as an argument to functions that can work on
        * both the temperature and the compositional variables and that need to
@@ -241,6 +239,12 @@ namespace aspect
         is_porosity (const Introspection<dim> &introspection) const;
 
         /**
+         * Return whether this object refers to a field discretized by discontinuous finite elements.
+         */
+        bool
+        is_discontinuous (const Introspection<dim> &introspection) const;
+        
+        /**
          * Look up the component index for this temperature or compositional
          * field. See Introspection::component_indices for more information.
          */
@@ -259,6 +263,9 @@ namespace aspect
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
       };
+
+
+    private:
 
 
       /**
@@ -659,6 +666,18 @@ namespace aspect
 
       /**
        * Compute the integrals for one advection matrix and right hand side on
+       * the faces of a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_advection_face_terms(const AdvectionField &advection_field,
+                                          const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      /**
+       * Compute the integrals for one advection matrix and right hand side on
        * a single cell.
        *
        * This function is implemented in
@@ -671,21 +690,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-
-      /**
-       * Compute the right-hand side for the advection system index. This is
-       * 0 for the temperature and all of the compositional fields, except for
-       * the porosity. It includes the melting rate and a term dependent
-       * on the density and velocity.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      double compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                                 typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-                                 const AdvectionField &advection_field,
-                                 const unsigned int q_point) const;
 
       /**
        * Compute the right-hand side for the fluid pressure equation of the Staokes
@@ -709,7 +713,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      copy_local_to_global_advection_system (const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      copy_local_to_global_advection_system (const AdvectionField &advection_field,
+                                             const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
       /**
        * @}

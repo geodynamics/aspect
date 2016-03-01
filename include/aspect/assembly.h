@@ -32,6 +32,11 @@ namespace aspect
 {
   using namespace dealii;
 
+  template <int dim>
+  class Simulator;
+
+  struct AdvectionField;
+
   namespace internal
   {
     namespace Assembly
@@ -122,10 +127,15 @@ namespace aspect
                            const FiniteElement<dim> &advection_element,
                            const Mapping<dim>       &mapping,
                            const Quadrature<dim>    &quadrature,
+                           const Quadrature<dim-1>  &face_quadrature,
                            const unsigned int        n_compositional_fields);
           AdvectionSystem (const AdvectionSystem &data);
 
           FEValues<dim>               finite_element_values;
+
+          std::shared_ptr<FEFaceValues<dim> >           face_finite_element_values;
+          std::shared_ptr<FEFaceValues<dim> >           neighbor_face_finite_element_values;
+          std::shared_ptr<FESubfaceValues<dim> >        subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
 
@@ -139,6 +149,10 @@ namespace aspect
            */
           std::vector<double>         phi_field;
           std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<double>         face_phi_field;
+          std::vector<Tensor<1,dim> > face_grad_phi_field;
+          std::vector<double>         neighbor_face_phi_field;
+          std::vector<Tensor<1,dim> > neighbor_face_grad_phi_field;
 
           std::vector<Tensor<1,dim> > old_velocity_values;
           std::vector<Tensor<1,dim> > old_old_velocity_values;
@@ -166,7 +180,9 @@ namespace aspect
 
           std::vector<double>         current_temperature_values;
           std::vector<Tensor<1,dim> > current_velocity_values;
+          std::vector<Tensor<1,dim> > face_current_velocity_values;
           std::vector<Tensor<1,dim> > mesh_velocity_values;
+          std::vector<Tensor<1,dim> > face_mesh_velocity_values;
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<std::vector<double> > current_composition_values;
@@ -179,6 +195,12 @@ namespace aspect
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
+          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+
+          MaterialModel::MaterialModelInputs<dim> neighbor_face_material_model_inputs;
+          MaterialModel::MaterialModelOutputs<dim> neighbor_face_material_model_outputs;
+
           /**
            * Material model inputs and outputs computed at a previous
            * time step's solution, or an extrapolation from previous
@@ -186,6 +208,11 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
+
+          /**
+           * Heating model outputs computed at the current linearization point.
+           */
+          HeatingModel::HeatingModelOutputs heating_model_outputs;
         };
 
 
@@ -238,7 +265,8 @@ namespace aspect
            *    are trying to assemble a linear system. <b>Not</b> the global finite
            *    element.
            */
-          AdvectionSystem (const FiniteElement<dim> &finite_element);
+          AdvectionSystem (const FiniteElement<dim> &finite_element,
+                           const bool                field_is_discontinuous);
           AdvectionSystem (const AdvectionSystem &data);
 
           /**
@@ -246,7 +274,27 @@ namespace aspect
            * that correspond only to the variables listed in local_dof_indices
            */
           FullMatrix<double>          local_matrix;
+          /** Local contributions to the global matrix from the face terms in the
+           * discontinuous Galerkin method. The vectors are of length
+           * GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+           * so as to hold one matrix for each possible face or subface of the cell.
+           * The discontinuous Galerkin bilinear form contains terms arising from internal
+           * (to the cell) values and external (to the cell) values.
+           * _int_ext and ext_int hold the terms arising from the pairing between a cell
+           * and its neighbor, while _ext_ext is the pairing of the neighbor's dofs with
+           * themselves. In the continuous Galerkin case, these are unused, and set to size zero.
+           **/
+          std::vector<FullMatrix<double> >         local_matrices_int_ext;
+          std::vector<FullMatrix<double> >         local_matrices_ext_int;
+          std::vector<FullMatrix<double> >         local_matrices_ext_ext;
           Vector<double>              local_rhs;
+
+          /** Denotes which face matrices have actually been assembled in the DG field
+           * assembly. Entries for matrices not used (for example, those corresponding
+           * to non-existent subfaces; or faces being assembled by the neighboring cell)
+           * are set to false.
+           **/
+          std::vector<bool>               assembled_matrices;
 
           /**
            * Indices of those degrees of freedom that actually correspond
@@ -258,6 +306,13 @@ namespace aspect
            * any other variable outside the block we are currently considering)
            */
           std::vector<types::global_dof_index>   local_dof_indices;
+          /** Indices of the degrees of freedom corresponding to the temperature
+           * or composition field on all possible neighboring cells. This is used
+           * in the discontinuous Galerkin method. The outer std::vector has
+           *  length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
+           * and has size zero if in the continuous Galerkin case.
+           **/
+          std::vector<std::vector<types::global_dof_index> >   neighbor_dof_indices;
         };
       }
 
@@ -270,9 +325,7 @@ namespace aspect
       {
         /**
          * A base class for objects that implement assembly
-         * operations. This base class does not provide a whole lot
-         * of functionality other than the fact that its destructor
-         * is virtual.
+         * operations.
          *
          * The point of this class is primarily so that we can store
          * pointers to such objects in a list. The objects are created
@@ -286,6 +339,14 @@ namespace aspect
           public:
             virtual ~AssemblerBase () {}
 
+            /**
+             * This function gets called if a MaterialModelOutputs is created
+             * and allows the assembler to attach AdditionalOutputs. The
+             * function might be called more than once for a
+             * MaterialModelOutput, so it is recommended to check if
+             * get_additional_output() returns an instance before adding a new
+             * one to the additional_outputs vector.
+             */
             virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) {}
         };
       }
@@ -381,6 +442,47 @@ namespace aspect
                                       const bool,
                                       internal::Assembly::Scratch::StokesSystem<dim>       &,
                                       internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Advection system matrix and right hand side.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The advection field that is currently assembled.
+         * - The artificial viscosity computed for the current cell
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const typename Simulator<dim>::AdvectionField &,
+                                      const double,
+                                      internal::Assembly::Scratch::AdvectionSystem<dim>       &,
+                                      internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Advection system matrix and right hand side. This signal is called
+         * once for each boundary face.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The number of the face on which we intend to assemble. This
+         *   face (of the current cell) will be at the boundary of the
+         *   domain.
+         * - The advection field that is currently assembled.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const unsigned int,
+                                      const AdvectionField &,
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_advection_system_on_boundary_face;
 
         /**
          * A structure that describes what information an assembler function

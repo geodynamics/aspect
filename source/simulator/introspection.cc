@@ -159,12 +159,18 @@ namespace aspect
       bes.pressure = base_element++;
 
       // T
-      fes.push_back(new FE_Q<dim>(parameters.temperature_degree));
+      if (parameters.use_discontinuous_temperature_discretization)
+        fes.push_back(new FE_DGQ<dim>(parameters.temperature_degree));
+      else
+        fes.push_back(new FE_Q<dim>(parameters.temperature_degree));
       multiplicities.push_back(1);
       bes.temperature = base_element++;
 
       // compositions:
-      fes.push_back(new FE_Q<dim>(parameters.composition_degree));
+      if (parameters.use_discontinuous_composition_discretization)
+        fes.push_back(new FE_DGQ<dim>(parameters.composition_degree));
+      else
+        fes.push_back(new FE_Q<dim>(parameters.composition_degree));
       multiplicities.push_back(parameters.n_compositional_fields);
       bes.compositional_fields = base_element++;
 
@@ -229,6 +235,8 @@ namespace aspect
   Introspection<dim>::Introspection(const Parameters<dim> &parameters)
     :
     n_components (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).first),
+    use_discontinuous_temperature_discretization (parameters.use_discontinuous_temperature_discretization),
+    use_discontinuous_composition_discretization (parameters.use_discontinuous_composition_discretization),
     component_indices (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport).second),
     n_blocks (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).first),
     block_indices (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.include_melt_transport, parameters.use_direct_stokes_solver).second),

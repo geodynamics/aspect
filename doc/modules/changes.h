@@ -5,6 +5,52 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Changed: ASPECT by default wrote one output file per MPI process that
+ * was written in a background thread to a temporary location first and then
+ * moved to its final location. If any of the steps failed it tried again by
+ * writing directly to the output location. This approach needed complicated
+ * logic and did not succeed on all systems. In order to increase stability
+ * the new default behaviour is to write straight to the output folder. This
+ * might decrease performance on clusters with slow network file systems.
+ * The old behaviour can be recovered by setting 'Write in background thread'
+ * to true and set a temporary storage location by 'set Temporary output
+ * location'. Note that this functionality was and is only available if
+ * 'Number of grouped files' is set to its default value of 0, and therefore
+ * MPI-IO is not used for parallel output. For larger models with hundreds of
+ * parallel processes using MPI-IO is recommended.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/14)
+ *
+ * <li> New: Added 'command' postprocessor for executing arbitrary commands.
+ * <br>
+ * (Jonathan Perry-Houts, 2016/02/11)
+ *
+ * <li> Improved: The option to increase the output resolution by linear
+ * interpolation of the quadratic elements now correctly uses the mapping of
+ * curved geometries to interpolate cells. This increases output accuracy for
+ * models that use curved geometries and use 'Set Interpolate output = true'.
+ * The simulation itself is not affected.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/08)
+ *
+ * <li> Changed: The GPlates plugin is restructured in the style of the
+ * AsciiData Plugin. The major difference is that the interpolation is now
+ * performed in spherical coordinates instead of Cartesian coordinates. Note
+ * that some input parameters have changed: "Time step" is now called "Data
+ * file time step", "Velocity file start time" is now called "First data file
+ * model time", "Interpolation width" does not exist any more, but there are
+ * three new parameters called "First data file number", "Decreasing file
+ * order" and "Lithosphere thickness".
+ * <br>
+ * (Eva Bredow, Rene Gassmoeller, 2016/02/04)
+ *
+ * <li> New: ASPECT no longer relies on the availability of a command-
+ * processor (terminal) at run-time, by providing fallbacks to C
+ * commands. This adds support for architectures that do not offer a
+ * terminal on compute nodes (like IBM BlueGene/Q).
+ * <br>
+ * (Rene Gassmoeller, 2016/02/03)
+ *
  * <li> Changed: The 'depth' function of the 'box' geometry model and
  * the 'two merged boxes' geometry model previously threw an exception
  * when asked for the depth of a point outside of the initial model domain.

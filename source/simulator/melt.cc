@@ -20,6 +20,7 @@
 
 
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
 
 using namespace dealii;
 
@@ -313,6 +314,173 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    MeltEquations<dim>::
+    local_assemble_advection_system_melt (const typename Simulator<dim>::AdvectionField &advection_field,
+                                          const double artificial_viscosity,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
+    {
+      const Introspection<dim> &introspection = this->introspection();
+      const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
+      const unsigned int solution_component
+        = (advection_field.is_temperature()
+           ?
+           introspection.component_indices.temperature
+           :
+           introspection.component_indices.compositional_fields[advection_field.compositional_variable]
+          );
+
+      const FEValuesExtractors::Scalar solution_field
+        = (advection_field.is_temperature()
+           ?
+           introspection.extractors.temperature
+           :
+           introspection.extractors.compositional_fields[advection_field.compositional_variable]
+          );
+
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          // precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+            {
+              scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
+              scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
+            }
+
+          double bulk_density = scratch.material_model_outputs.densities[q];
+
+          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
+          bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
+
+          const double density_c_P              =
+            ((advection_field.is_temperature())
+             ?
+             bulk_density *
+             scratch.material_model_outputs.specific_heat[q]
+             :
+             1.0);
+
+          Assert (density_c_P >= 0,
+                  ExcMessage ("The product of density and c_P needs to be a "
+                              "non-negative quantity."));
+
+          const double conductivity =
+            (advection_field.is_temperature()
+             ?
+             scratch.material_model_outputs.thermal_conductivities[q]
+             :
+             0.0);
+          const double latent_heat_LHS =
+            ((advection_field.is_temperature())
+             ?
+             scratch.heating_model_outputs.lhs_latent_heat_terms[q]
+             :
+             0.0);
+          Assert (density_c_P + latent_heat_LHS >= 0,
+                  ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                              "to the left hand side needs to be a non-negative quantity."));
+
+          const double gamma =
+            ((advection_field.is_temperature())
+             ?
+             scratch.heating_model_outputs.heating_source_terms[q]
+             :
+             0.0);
+
+          const double reaction_term =
+            ((advection_field.is_temperature() || advection_field.is_porosity(introspection))
+             ?
+             0.0
+             :
+             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+          const double melt_transport_RHS = compute_melting_RHS (scratch,
+                                                                 scratch.material_model_inputs,
+                                                                 scratch.material_model_outputs,
+                                                                 advection_field,
+                                                                 q);
+
+          const double field_term_for_rhs
+            = (use_bdf2_scheme ?
+               ((*scratch.old_field_values)[q] *
+                (1 + time_step/old_time_step)
+                -
+                (*scratch.old_old_field_values)[q] *
+                (time_step * time_step) /
+                (old_time_step * (time_step + old_time_step)))
+               :
+               (*scratch.old_field_values)[q])
+              *
+              (density_c_P + latent_heat_LHS);
+
+          Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+          //Subtract off the mesh velocity for ALE corrections if necessary
+          if (this->get_parameters().free_surface_enabled)
+            current_u -= scratch.mesh_velocity_values[q];
+
+          const double melt_transport_LHS =
+            (advection_field.is_porosity(introspection)
+             ?
+             scratch.current_velocity_divergences[q]
+             + (this->get_material_model().is_compressible()
+                ?
+                scratch.material_model_outputs.compressibilities[q]
+                * scratch.material_model_outputs.densities[q]
+                * current_u
+                * this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q))
+                :
+                0.0)
+             :
+             0.0);
+
+          const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                    (time_step + old_time_step)) : 1.0;
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (field_term_for_rhs * scratch.phi_field[i]
+                  + time_step *
+                  scratch.phi_field[i]
+                  * (gamma + melt_transport_RHS)
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 *
+                 scratch.finite_element_values.JxW(q);
+
+              for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                {
+                  data.local_matrix(i,j)
+                  += (
+                       (time_step * (conductivity + artificial_viscosity)
+                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                       + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                          + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                       (density_c_P + latent_heat_LHS)
+                       + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
+                     )
+                     * scratch.finite_element_values.JxW(q);
+                }
+            }
+        }
+    }
+
 
     template <int dim>
     double
@@ -370,6 +538,46 @@ namespace aspect
 
       return fluid_pressure_RHS;
     }
+
+
+    template <int dim>
+    double
+    MeltEquations<dim>::
+    compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                        const typename Simulator<dim>::AdvectionField     &advection_field,
+                        const unsigned int q_point) const
+    {
+      if ((!advection_field.is_porosity(this->introspection())) || (!this->include_melt_transport()))
+        return 0.0;
+
+      Assert (material_model_outputs.densities[q_point] > 0,
+              ExcMessage ("The density needs to be a positive quantity "
+                          "when melt transport is included in the simulation."));
+
+      const double melting_rate         = material_model_outputs.reaction_terms[q_point][advection_field.compositional_variable];
+      const double density              = material_model_outputs.densities[q_point];
+      const double current_phi          = material_model_inputs.composition[q_point][advection_field.compositional_variable];
+      const double divergence_u         = scratch.current_velocity_divergences[q_point];
+      const double compressibility      = (this->get_material_model().is_compressible()
+                                           ?
+                                           material_model_outputs.compressibilities[q_point]
+                                           :
+                                           0.0);
+      const Tensor<1,dim> current_u     = scratch.current_velocity_values[q_point];
+      const Tensor<1,dim>
+      gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q_point));
+
+      double melt_transport_RHS = melting_rate / density
+                                  + divergence_u + compressibility * density * (current_u * gravity);
+
+      if (current_phi < this->get_parameters().melt_transport_threshold && melting_rate < this->get_parameters().melt_transport_threshold)
+        melt_transport_RHS = melting_rate / density;
+
+      return melt_transport_RHS;
+    }
+
 
     namespace OtherTerms
     {

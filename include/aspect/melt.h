@@ -160,6 +160,33 @@ namespace aspect
                                                     internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                                     internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
+        /**
+         * Compute the integrals for the Advection system matrix and right hand side in
+         * the case of melt migration on a single cell.
+         */
+        void
+        local_assemble_advection_system_melt (const typename Simulator<dim>::AdvectionField      &advection_field,
+                                              const double                                        artificial_viscosity,
+                                              internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                              internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
+
+        //TODO: MAKE THIS PRIVATE AGAIN ONCE WE HAVE THE FUNCTION FOR THE RESIDUAL
+        /**
+         * Compute the right-hand side for the advection system index. This is
+         * 0 for the temperature and all of the compositional fields, except for
+         * the porosity. It includes the melting rate and a term dependent
+         * on the density and velocity.
+         *
+         * This function is implemented in
+         * <code>source/simulator/assembly.cc</code>.
+         */
+        double
+        compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                            const typename Simulator<dim>::AdvectionField &advection_field,
+                            const unsigned int q_point) const;
+
       private:
         /**
          * Returns the right hand side of the fluid pressure equation in

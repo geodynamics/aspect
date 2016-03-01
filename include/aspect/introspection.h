@@ -96,6 +96,18 @@ namespace aspect
       const unsigned int n_components;
 
       /**
+       * A variable that holds whether the temperature field should use a
+       * discontinuous discretization.
+       */
+      const bool use_discontinuous_temperature_discretization;
+
+      /**
+       * A variable that holds whether the composition field(s) should use a
+       * discontinuous discretization.
+       */
+      const bool use_discontinuous_composition_discretization;
+
+      /**
        * A structure that enumerates the vector components of the finite
        * element that correspond to each of the variables in this problem.
        */

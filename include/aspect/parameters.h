@@ -248,6 +248,7 @@ namespace aspect
     unsigned int                   stabilization_alpha;
     double                         stabilization_c_R;
     double                         stabilization_beta;
+    double                         discontinuous_penalty;
     /**
      * @}
      */
@@ -268,6 +269,8 @@ namespace aspect
      */
     unsigned int                   stokes_velocity_degree;
     bool                           use_locally_conservative_discretization;
+    bool                           use_discontinuous_temperature_discretization;
+    bool                           use_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;
