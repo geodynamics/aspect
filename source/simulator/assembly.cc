@@ -2965,11 +2965,11 @@ namespace aspect
                                                parameters.composition_degree)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2) :
-                                Quadrature<dim-1> ()),
-                               parameters.n_compositional_fields),
-         internal::Assembly::CopyData::
-         AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
-                               advection_field.is_discontinuous(introspection)));
+                                  Quadrature<dim-1> ()),
+                                 parameters.n_compositional_fields),
+           internal::Assembly::CopyData::
+           AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
+                                 advection_field.is_discontinuous(introspection)));
 
     system_matrix.compress(VectorOperation::add);
     system_rhs.compress(VectorOperation::add);

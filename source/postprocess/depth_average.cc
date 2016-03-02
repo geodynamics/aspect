@@ -192,18 +192,18 @@ namespace aspect
                                                       // if available
                                                       (i == 0 ?
                                                        (entries.size() > 1 ? (entries[1].time - entries[0].time)/10 : 0) :
-                                                       entries[i].time - entries[i-1].time) /
-                                                      (this->convert_output_to_years()
-                                                       ?
-                                                       year_in_seconds
-                                                       :
-                                                       1));
+                                                         entries[i].time - entries[i-1].time) /
+                                                        (this->convert_output_to_years()
+                                                         ?
+                                                         year_in_seconds
+                                                         :
+                                                         1));
 
                   data_out_stack.attach_dof_handler (dof_handler);
 
                   Vector<double> tmp(n_depth_zones);
                   for (unsigned int j=0; j<variables.size(); ++j)
-                    {
+                  {
                       std::copy (entries[i].values[j].begin(),
                                  entries[i].values[j].end(),
                                  tmp.begin());

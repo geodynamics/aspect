@@ -55,7 +55,7 @@ namespace aspect
        * otherwise unused namespace.
        */
       template <typename InterfaceClass,
-                typename ModelClass>
+               typename ModelClass>
       struct RegisterHelper
       {
         /**
