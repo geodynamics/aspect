@@ -495,7 +495,9 @@ namespace aspect
         /**
          * A signal that is called from Simulator::local_assemble_advection_system()
          * and whose slots are supposed to compute an advection system residual
-         * according to the terms their assemblers implement. If more than one
+         * according to the terms their assemblers implement. The residuals are
+         * computed and returned in a std::vector<double> with one entry per
+         * quadrature point of this cell. If more than one
          * assembler is connected the residuals are simply added up by the
          * ResidualWeightSum structure.
          *
@@ -504,33 +506,14 @@ namespace aspect
          * - The advection field that is currently assembled.
          * - The scratch object in which temporary data is stored that
          *   assemblers may need.
+         * The return value of each slot is:
+         * - A std::vector<double> containing one residual entry per quadrature
+         *   point.
          */
         boost::signals2::signal<std::vector<double> (const typename DoFHandler<dim>::active_cell_iterator &,
                                                      const typename Simulator<dim>::AdvectionField &,
                                                      internal::Assembly::Scratch::AdvectionSystem<dim> &),
                                                               ResidualWeightSum<std::vector<double> > > compute_advection_system_residual;
-
-        /**
-         * A signal that is called from Simulator::local_assemble_advection_system()
-         * and whose slots are supposed to assemble terms that together form the
-         * Advection system matrix and right hand side. This signal is called
-         * once for each boundary face.
-         *
-         * The arguments to the slots are as follows:
-         * - The cell on which we currently assemble.
-         * - The number of the face on which we intend to assemble. This
-         *   face (of the current cell) will be at the boundary of the
-         *   domain.
-         * - The advection field that is currently assembled.
-         * - The scratch object in which temporary data is stored that
-         *   assemblers may need.
-         * - The copy object into which assemblers add up their contributions.
-         */
-        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
-                                      const unsigned int,
-                                      const AdvectionField &,
-                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
-                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_advection_system_on_boundary_face;
 
         /**
          * A structure that describes what information an assembler function
