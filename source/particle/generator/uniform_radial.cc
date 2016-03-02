@@ -81,12 +81,17 @@ namespace aspect
                     spherical_coordinates[1] = P_min[1] + j * phi_spacing;
                     const Point<dim> particle_position = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
 
+                    particle_index++;
+
                     // Try to add the particle. If it is not in this domain, do not
                     // worry about it and move on to next point.
                     try
                       {
-                        particles.insert(this->generate_particle(particle_position,particle_index));
+                        // Moved particle_index++ ABOVE the call to particles.insert in
+                        // order to ensure that all particles generated on all processers
+                        // have a unique particle id (i.e., particle_index)
                         particle_index++;
+                        particles.insert(this->generate_particle(particle_position,particle_index));
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}

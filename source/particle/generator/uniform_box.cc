@@ -64,8 +64,9 @@ namespace aspect
                     // worry about it and move on to next point.
                     try
                       {
-                        particles.insert(this->generate_particle(particle_position,particle_index));
+
                         particle_index++;
+                        particles.insert(this->generate_particle(particle_position,particle_index));
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
@@ -79,8 +80,11 @@ namespace aspect
                       // worry about it and move on to next point.
                       try
                         {
-                          particles.insert(this->generate_particle(particle_position,particle_index));
+                          // Moved particle_index++ ABOVE the call to particles.insert in
+                          // order to ensure that all particles generated on all processers
+                          // have a unique particle id (i.e., particle_index)
                           particle_index++;
+                          particles.insert(this->generate_particle(particle_position,particle_index));
                         }
                       catch (ExcParticlePointNotInDomain &)
                         {}
