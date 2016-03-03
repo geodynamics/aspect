@@ -572,7 +572,7 @@ namespace aspect
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
       return background_porosity * (1.0 + amplitude * cos(wave_number*position[0]*sin(initial_band_angle)
-                                                        + wave_number*position[1]*cos(initial_band_angle)));
+                                                          + wave_number*position[1]*cos(initial_band_angle)));
     }
 
 
@@ -858,24 +858,24 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
       for (; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit (cell);
-              fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
-                                                                                               velocity_divergences);
-              position = fe_values.get_quadrature_points();
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
+                velocity_divergences);
+            position = fe_values.get_quadrature_points();
 
-              for (unsigned int q = 0; q < n_q_points; ++q)
-                {
-                  const double relative_depth = this->get_geometry_model().depth(position[q]) / this->get_geometry_model().maximal_depth();
-                  const double relative_x = 0.25 * position[q](0) / this->get_geometry_model().maximal_depth();
-                  if (relative_depth < 0.55 && relative_depth > 0.45 && relative_x < 0.75 && relative_x > 0.25)
-                    {
-                      local_velocity_divergence_max = std::max (velocity_divergences[q], local_velocity_divergence_max);
-                      local_velocity_divergence_min = std::min (velocity_divergences[q], local_velocity_divergence_min);
-                    }
-                }
-            }
+            for (unsigned int q = 0; q < n_q_points; ++q)
+              {
+                const double relative_depth = this->get_geometry_model().depth(position[q]) / this->get_geometry_model().maximal_depth();
+                const double relative_x = 0.25 * position[q](0) / this->get_geometry_model().maximal_depth();
+                if (relative_depth < 0.55 && relative_depth > 0.45 && relative_x < 0.75 && relative_x > 0.25)
+                  {
+                    local_velocity_divergence_max = std::max (velocity_divergences[q], local_velocity_divergence_max);
+                    local_velocity_divergence_min = std::min (velocity_divergences[q], local_velocity_divergence_min);
+                  }
+              }
+          }
 
       const double global_velocity_divergence_max
         = Utilities::MPI::max (local_velocity_divergence_max, this->get_mpi_communicator());
@@ -884,10 +884,10 @@ namespace aspect
 
       // compute modelled melt band growth rate
       const double numerical_growth_rate = (0 <= initial_band_angle && initial_band_angle < numbers::PI /2.
-                                           ?
-                                           (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_max
-                                           :
-                                           (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_min);
+                                            ?
+                                            (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_max
+                                            :
+                                            (1.0 - background_porosity) / (amplitude * background_porosity) * global_velocity_divergence_min);
 
       // compute and output error
       std::ostringstream os;

@@ -243,7 +243,7 @@ namespace aspect
          */
         bool
         is_discontinuous (const Introspection<dim> &introspection) const;
-        
+
         /**
          * Look up the component index for this temperature or compositional
          * field. See Introspection::component_indices for more information.
