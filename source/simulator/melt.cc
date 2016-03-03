@@ -481,6 +481,94 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    std::vector<double>
+    MeltEquations<dim>::
+    compute_advection_system_residual_melt(const typename Simulator<dim>::AdvectionField     &advection_field,
+                                           internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const
+    {
+      const unsigned int n_q_points = scratch.old_field_values->size();
+      std::vector<double> residuals(n_q_points);
+
+      HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->get_parameters().n_compositional_fields);
+      this->get_heating_model_manager().evaluate(scratch.explicit_material_model_inputs,
+                                                 scratch.explicit_material_model_outputs,
+                                                 heating_model_outputs);
+
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+          const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                   scratch.old_old_velocity_values[q]) / 2;
+
+          const double dField_dt = (this->get_old_timestep() == 0.0) ? 0 :
+                                   (
+                                     ((*scratch.old_field_values)[q] - (*scratch.old_old_field_values)[q])
+                                     / this->get_old_timestep());
+          const double u_grad_field = u * (scratch.old_field_grads[q] +
+                                           scratch.old_old_field_grads[q]) / 2;
+
+          const double density              = ((advection_field.is_temperature())
+                                               ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
+          const double conductivity = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.thermal_conductivities[q] : 0.0);
+          const double c_P                  = ((advection_field.is_temperature()) ? scratch.explicit_material_model_outputs.specific_heat[q] : 1.0);
+          const double k_Delta_field = conductivity
+                                       * (scratch.old_field_laplacians[q] +
+                                          scratch.old_old_field_laplacians[q]) / 2;
+
+          const double field = ((*scratch.old_field_values)[q] + (*scratch.old_old_field_values)[q]) / 2;
+
+          const double gamma =
+            ((advection_field.is_temperature())
+             ?
+             heating_model_outputs.heating_source_terms[q]
+             :
+             0.0);
+
+          const double latent_heat_LHS =
+            ((advection_field.is_temperature())
+             ?
+             heating_model_outputs.lhs_latent_heat_terms[q]
+             :
+             0.0);
+
+          const double dreaction_term_dt =
+            (advection_field.is_temperature() || this->get_old_timestep() == 0 || (advection_field.is_porosity(this->introspection())
+                                                                                   && this->include_melt_transport()))
+            ?
+            0.0
+            :
+            (scratch.explicit_material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+             / this->get_old_timestep());
+
+          const double melt_transport_RHS = compute_melting_RHS (scratch,
+                                                                 scratch.explicit_material_model_inputs,
+                                                                 scratch.explicit_material_model_outputs,
+                                                                 advection_field,
+                                                                 q);
+
+          const double melt_transport_LHS =
+            (advection_field.is_porosity(this->introspection())
+             ?
+             scratch.current_velocity_divergences[q]
+             + (this->get_material_model().is_compressible()
+                ?
+                scratch.explicit_material_model_outputs.compressibilities[q]
+                * scratch.explicit_material_model_outputs.densities[q]
+                * u
+                * this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q))
+                :
+                0.0)
+             :
+             0.0);
+
+          residuals[q]
+            = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field  + melt_transport_LHS * field
+                       - gamma  - melt_transport_RHS - dreaction_term_dt);
+        }
+      return residuals;
+    }
+
+
 
     template <int dim>
     double

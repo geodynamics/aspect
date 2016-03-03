@@ -170,7 +170,26 @@ namespace aspect
                                               internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                               internal::Assembly::CopyData::AdvectionSystem<dim> &data) const;
 
-        //TODO: MAKE THIS PRIVATE AGAIN ONCE WE HAVE THE FUNCTION FOR THE RESIDUAL
+        /**
+         * Compute the residual of the advection system on a single cell in
+         * the case of melt migration.
+         */
+        std::vector<double>
+        compute_advection_system_residual_melt(const typename Simulator<dim>::AdvectionField     &advection_field,
+                                               internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const;
+
+
+      private:
+        /**
+         * Returns the right hand side of the fluid pressure equation in
+         * the case of melt migration for a single quadrature point.
+         */
+        double
+        compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                   MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                   MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                   const unsigned int q_point) const;
+
         /**
          * Compute the right-hand side for the advection system index. This is
          * 0 for the temperature and all of the compositional fields, except for
@@ -186,17 +205,6 @@ namespace aspect
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                             const typename Simulator<dim>::AdvectionField &advection_field,
                             const unsigned int q_point) const;
-
-      private:
-        /**
-         * Returns the right hand side of the fluid pressure equation in
-         * the case of melt migration for a single quadrature point.
-         */
-        double
-        compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                   MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                   MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                   const unsigned int q_point) const;
     };
 
     /**
