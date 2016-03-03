@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -366,6 +366,26 @@ namespace aspect
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
+    //
+    // up front, we can not know whether a plugin derives from
+    // SimulatorAccess. all we have is a pointer to the base class of
+    // each plugin type (the 'Interface' class in the namespace
+    // corresponding to each plugin type), but this base class is not
+    // derived from SimulatorAccess. in order to find out whether a
+    // concrete plugin derives from this base (interface) class AND
+    // the SimulatorAccess class via multiple inheritance, we need to
+    // do a sideways dynamic_cast to this putative sibling of the
+    // interface class, and investigate if the dynamic_cast
+    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+    // result, and we can test this in an if-statement. there is a nice
+    // idiom whereby we can write
+    //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
+    //      ptr->do_something()
+    // where we declare a variable *inside* the 'if' condition, and only
+    // enter the code block guarded by the 'if' in case the so-declared
+    // variable evaluates to something non-zero, which here means that
+    // the dynamic_cast succeeded and returned the address of the subling
+    // object.
     //
     // we also need to let all models parse their parameters. this is done *after* setting
     // up their SimulatorAccess base class so that they can query, for example, the

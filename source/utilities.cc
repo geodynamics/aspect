@@ -479,6 +479,17 @@ namespace aspect
                 }
         }
 
+      for (unsigned int i = 0; i < dim; i++)
+        {
+          AssertThrow(table_points[i] != 0,
+                      ExcMessage("Could not successfully read in the file header of the "
+                                 "ascii data file <" + filename + ">. One header line has to "
+                                 "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
+                                 "potentially N2 and N3 have to be the number of data points "
+                                 "in their respective dimension. Check for typos in this line "
+                                 "(e.g. a missing space character)."));
+        }
+
       /**
        * Table for the new data. This peculiar reinit is necessary, because
        * there is no constructor for Table, which takes TableIndices as
