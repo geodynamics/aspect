@@ -1,4 +1,4 @@
-#include <aspect/material_model/melt_interface.h>
+#include <aspect/melt.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
@@ -303,7 +303,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    class SolitaryWaveMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         virtual bool
@@ -402,24 +402,21 @@ namespace aspect
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
             }
-        }
 
-        virtual void evaluate_with_melt(const typename MaterialModel::MeltInterface<dim>::MaterialModelInputs &in,
-                                        typename MaterialModel::MeltInterface<dim>::MaterialModelOutputs &out) const
-        {
-          evaluate(in, out);
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+          // fill melt outputs if they exist
+          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
 
-          for (unsigned int i=0; i<in.position.size(); ++i)
-            {
-              double porosity = in.composition[i][porosity_idx];
+          if (melt_out != NULL)
+            for (unsigned int i=0; i<in.position.size(); ++i)
+              {
+                double porosity = in.composition[i][porosity_idx];
 
-              out.compaction_viscosities[i] = xi_0 * (1.0 - porosity);
-              out.fluid_viscosities[i]= eta_f;
-              out.permeabilities[i]= reference_permeability * std::pow(porosity,3);
-              out.fluid_densities[i]= reference_rho_f;
-              out.fluid_compressibilities[i] = 0.0;
-            }
+                melt_out->compaction_viscosities[i] = xi_0 * (1.0 - porosity);
+                melt_out->fluid_viscosities[i]= eta_f;
+                melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,3);
+                melt_out->fluid_densities[i]= reference_rho_f;
+                melt_out->fluid_density_gradients[i] = 0.0;
+              }
 
         }
 
@@ -995,7 +992,7 @@ namespace aspect
       // (1) error of the numerical phase speed c:
       // c_numerical = c_analytical - Delta / time;
       const double c_analytical = velocity_scaling * (2.0 * amplitude / background_porosity + 1);
-      const double c_numerical = c_analytical + delta / this->get_time();
+      const double c_numerical = c_analytical + (this->get_time() > 0 ? delta / this->get_time() : 0.0);
       const double error_c = std::abs (c_numerical / c_analytical - 1);
 
       // (3) preservation of shape of melt fraction
