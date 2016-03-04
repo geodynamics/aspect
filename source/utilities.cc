@@ -183,13 +183,101 @@ namespace aspect
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
     namespace tk
     {
-      // --------------------------
-      // band_matrix implementation
-      // --------------------------
+      /**
+       * Band matrix solver for a banded, square matrix of size @p dim. Used
+       * by spline interpolation in tk::spline.
+       */
+      class band_matrix
+      {
+        public:
+          /**
+           * Constructor, see resize()
+           */
+          band_matrix(int dim, int n_u, int n_l);
+          /**
+           * Resize to a @p dim by @dim matrix with given number
+           * of off-diagonals.
+           */
+          void resize(int dim, int n_u, int n_l);
+
+          /**
+           * Return the dimension of the matrix
+           */
+          int dim() const;
+
+          /**
+           * Number of off-diagonals above.
+           */
+          int num_upper() const
+          {
+            return m_upper.size()-1;
+          }
+
+          /**
+           * Number of off-diagonals below.
+           */
+          int num_lower() const
+          {
+            return m_lower.size()-1;
+          }
+
+          /**
+           * Writeable access to element A(i,j), indices going from
+           * i=0,...,dim()-1
+           */
+          double &operator () (int i, int j);
+          /**
+           * Read-only access
+           */
+          double   operator () (int i, int j) const;
+
+          /**
+           * second diagonal (used in LU decomposition), saved in m_lower[0]
+           */
+          double &saved_diag(int i);
+
+          /**
+           * second diagonal (used in LU decomposition), saved in m_lower[0]
+           */
+          double  saved_diag(int i) const;
+
+          /**
+           * LU-Decomposition of a band matrix
+           */
+          void lu_decompose();
+
+          /**
+           * solves Ux=y
+           */
+          std::vector<double> r_solve(const std::vector<double> &b) const;
+
+          /**
+           * solves Ly=b
+           */
+          std::vector<double> l_solve(const std::vector<double> &b) const;
+
+          /**
+           * Solve Ax=b and builds LU decomposition using lu_decompose()
+           * if @p is_lu_decomposed is false.
+           */
+          std::vector<double> lu_solve(const std::vector<double> &b,
+                                       bool is_lu_decomposed=false);
+        private:
+          /**
+           * diagonal and off-diagonals above
+           */
+          std::vector< std::vector<double> > m_upper;
+          /**
+           * diagonals below the diagonal
+           */
+          std::vector< std::vector<double> > m_lower;
+      };
+
       band_matrix::band_matrix(int dim, int n_u, int n_l)
       {
         resize(dim, n_u, n_l);
       }
+
       void band_matrix::resize(int dim, int n_u, int n_l)
       {
         assert(dim>0);
@@ -206,6 +294,7 @@ namespace aspect
             m_lower[i].resize(dim);
           }
       }
+
       int band_matrix::dim() const
       {
         if (m_upper.size()>0)
@@ -218,39 +307,42 @@ namespace aspect
           }
       }
 
-      // defines the new operator (), so that we can access the elements
-      // by A(i,j), index going from i=0,...,dim()-1
       double &band_matrix::operator () (int i, int j)
       {
         int k=j-i;       // what band is the entry
         assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
         assert( (-num_lower()<=k) && (k<=num_upper()) );
-        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)   return m_upper[k][i];
-        else      return m_lower[-k][i];
+        // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)
+          return m_upper[k][i];
+        else
+          return m_lower[-k][i];
       }
+
       double band_matrix::operator () (int i, int j) const
       {
         int k=j-i;       // what band is the entry
         assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
         assert( (-num_lower()<=k) && (k<=num_upper()) );
-        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)   return m_upper[k][i];
-        else      return m_lower[-k][i];
+        // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)
+          return m_upper[k][i];
+        else
+          return m_lower[-k][i];
       }
-      // second diag (used in LU decomposition), saved in m_lower
+
       double band_matrix::saved_diag(int i) const
       {
         assert( (i>=0) && (i<dim()) );
         return m_lower[0][i];
       }
+
       double &band_matrix::saved_diag(int i)
       {
         assert( (i>=0) && (i<dim()) );
         return m_lower[0][i];
       }
 
-      // LR-Decomposition of a band matrix
       void band_matrix::lu_decompose()
       {
         int  i_max,j_max;
@@ -290,7 +382,7 @@ namespace aspect
               }
           }
       }
-      // solves Ly=b
+
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
         assert( this->dim()==(int)b.size() );
@@ -306,7 +398,8 @@ namespace aspect
           }
         return x;
       }
-      // solves Rx=y
+
+
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
         assert( this->dim()==(int)b.size() );
@@ -328,6 +421,8 @@ namespace aspect
       {
         assert( this->dim()==(int)b.size() );
         std::vector<double>  x,y;
+        // TODO: this is completely unsafe because you rely on the user
+        // if the function is called more than once.
         if (is_lu_decomposed==false)
           {
             this->lu_decompose();
@@ -337,11 +432,10 @@ namespace aspect
         return x;
       }
 
-      // ---------------------
-      // spline implementation
-      // ---------------------
+
       void spline::set_points(const std::vector<double> &x,
-                              const std::vector<double> &y, bool cubic_spline)
+                              const std::vector<double> &y,
+                              bool cubic_spline)
       {
         assert(x.size()==y.size());
         m_x=x;
@@ -436,6 +530,8 @@ namespace aspect
       }
 
     } // namespace tk
+
+
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
