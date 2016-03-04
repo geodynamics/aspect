@@ -65,11 +65,11 @@ namespace aspect
                     try
                       {
 
-                        particle_index++;
                         particles.insert(this->generate_particle(particle_position,particle_index));
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
+                    particle_index++;
                   }
                 else if (dim == 3)
                   for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
@@ -80,11 +80,11 @@ namespace aspect
                       // worry about it and move on to next point.
                       try
                         {
-                          particle_index++;
                           particles.insert(this->generate_particle(particle_position,particle_index));
                         }
                       catch (ExcParticlePointNotInDomain &)
                         {}
+                      particle_index++;
                     }
                 else
                   ExcNotImplemented();
