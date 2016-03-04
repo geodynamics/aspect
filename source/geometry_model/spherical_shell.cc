@@ -48,13 +48,13 @@ namespace aspect
                                        // meshes with the typical aspect ratio of
                                        // the Earth
                                        (dim==3 ? 96 : 12)
-                                         :
-                                         // user choice
-                                         n_cells_along_circumference),
-                                        true);
+                                       :
+                                       // user choice
+                                       n_cells_along_circumference),
+                                      true);
         }
       else if (phi == 90)
-      {
+        {
           GridGenerator::quarter_hyper_shell (coarse_grid,
                                               Point<dim>(),
                                               R0,
