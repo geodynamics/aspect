@@ -398,8 +398,8 @@ namespace aspect
         boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
                                       const double,
                                       const bool,
-                                      internal::Assembly::Scratch::StokesSystem<dim>      &,
-                                      internal::Assembly::CopyData::StokesSystem<dim>     &)> local_assemble_stokes_system;
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system;
 
         /**
          * A signal that is called from Simulator::local_assemble_stokes_system()
@@ -424,8 +424,8 @@ namespace aspect
                                       const unsigned int,
                                       const double,
                                       const bool,
-                                      internal::Assembly::Scratch::StokesSystem<dim>      &,
-                                      internal::Assembly::CopyData::StokesSystem<dim>     &)> local_assemble_stokes_system_on_boundary_face;
+                                      internal::Assembly::Scratch::StokesSystem<dim>       &,
+                                      internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
 
         /**
          * A structure that describes what information an assembler function

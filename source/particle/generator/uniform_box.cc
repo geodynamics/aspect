@@ -64,7 +64,6 @@ namespace aspect
                     // worry about it and move on to next point.
                     try
                       {
-
                         particles.insert(this->generate_particle(particle_position,particle_index));
                       }
                     catch (ExcParticlePointNotInDomain &)
