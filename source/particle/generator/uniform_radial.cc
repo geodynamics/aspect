@@ -86,10 +86,10 @@ namespace aspect
                     try
                       {
                         particles.insert(this->generate_particle(particle_position,particle_index));
-                        particle_index++;
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
+                    particle_index++;
                   }
               }
             else if (dim == 3)
@@ -115,10 +115,10 @@ namespace aspect
                         try
                           {
                             particles.insert(this->generate_particle(particle_position,particle_index));
-                            particle_index++;
                           }
                         catch (ExcParticlePointNotInDomain &)
                           {}
+                        particle_index++;
                       }
                   }
               }
