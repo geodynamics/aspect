@@ -56,7 +56,7 @@ namespace aspect
                            const unsigned int max_part_per_cell,
                            const unsigned int weight)
     {
-      World<dim>::connect_to_signals(this->get_signals());
+      connect_to_signals(this->get_signals());
 
       generator.reset(particle_generator);
       integrator.reset(particle_integrator);

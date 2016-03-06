@@ -201,7 +201,7 @@ namespace aspect
        * with the corresponding signals.
        */
       template <int dim>
-      void call_connector_functions (aspect::SimulatorSignals<dim> &signals_);
+      void call_connector_functions (aspect::SimulatorSignals<dim> &signals);
     }
   }
 
