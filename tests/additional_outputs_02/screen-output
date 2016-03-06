@@ -2,8 +2,8 @@
 Loading shared library <./libadditional_outputs_02.so>
 
 * Connecting signals
-called without: 999 with: 0
 * set_assemblers()
+called without: 999 with: 0
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)
 

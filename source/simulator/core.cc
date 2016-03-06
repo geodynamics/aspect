@@ -101,6 +101,9 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
+    post_signal_creation(
+      std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
+                       std_cxx11::ref(signals))),
     introspection (parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
@@ -582,10 +585,6 @@ namespace aspect
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
-
-    // let user-provided plugins let their slots
-    // connect to the signals we provide
-    internals::SimulatorSignals::call_connector_functions (signals);
 
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly

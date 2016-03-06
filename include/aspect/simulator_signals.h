@@ -200,8 +200,8 @@ namespace aspect
        * user-provided connector functions to let them register their slots
        * with the corresponding signals.
        */
-      void call_connector_functions (aspect::SimulatorSignals<2> &signals);
-      void call_connector_functions (aspect::SimulatorSignals<3> &signals);
+      template <int dim>
+      void call_connector_functions (aspect::SimulatorSignals<dim> &signals);
     }
   }
 
