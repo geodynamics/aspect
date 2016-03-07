@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 #include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/exceptions.h>
@@ -228,8 +229,14 @@ namespace aspect
                             const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                             HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      // the heating outputs are initialized with zeros, so there is no heating if they are not set
-      // in the individual plugins
+      // Initialize all outputs to zero, because heating_model_outputs is
+      // often reused in loops over all cells
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          heating_model_outputs.heating_source_terms[q] = 0.0;
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
+
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
                                                                    this->n_compositional_fields());
 
@@ -333,8 +340,8 @@ namespace aspect
     HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
                                              const unsigned int)
       :
-      heating_source_terms(n_points),
-      lhs_latent_heat_terms(n_points)
+      heating_source_terms(n_points,aspect::Utilities::signaling_nan<double>()),
+      lhs_latent_heat_terms(n_points,aspect::Utilities::signaling_nan<double>())
     {
     }
 

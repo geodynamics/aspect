@@ -32,6 +32,11 @@ namespace aspect
 {
   using namespace dealii;
 
+  template <int dim>
+  class Simulator;
+
+  struct AdvectionField;
+
   namespace internal
   {
     namespace Assembly
@@ -58,7 +63,7 @@ namespace aspect
           std::vector<double>                  temperature_values;
           std::vector<double>                  pressure_values;
           std::vector<SymmetricTensor<2,dim> > strain_rates;
-          std::vector<std::vector<double> >     composition_values;
+          std::vector<std::vector<double> >    composition_values;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -197,6 +202,15 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
+
+          /**
+           * Heating model outputs computed at the quadrature points of the
+           * current cell at the time of the current linearization point.
+           * As explained in the class documentation of
+           * HeatingModel::HeatingModelOutputs each term contains the sum of all
+           * enabled heating mechanism contributions.
+           */
+          HeatingModel::HeatingModelOutputs heating_model_outputs;
         };
 
 
@@ -365,6 +379,42 @@ namespace aspect
       struct AssemblerLists
       {
         /**
+         * A structure used to accumulate the results of the
+         * compute_advection_system_residual slot functions below.
+         * It takes an iterator range of vectors and returns the element-wise
+         * sum of the values.
+         */
+        template<typename VectorType>
+        struct ResidualWeightSum
+        {
+          typedef VectorType result_type;
+
+          template<typename InputIterator>
+          VectorType operator()(InputIterator first, InputIterator last) const
+          {
+            // If there are no slots to call, just return the
+            // default-constructed value
+            if (first == last)
+              return VectorType();
+
+            VectorType sum = *first++;
+            while (first != last)
+              {
+                Assert(sum.size() == first->size(),
+                       ExcMessage("Invalid vector length for residual summation."));
+
+                for (unsigned int i = 0; i < first->size(); ++i)
+                  sum[i] += (*first)[i];
+
+                ++first;
+              }
+
+            return sum;
+          }
+        };
+
+
+        /**
          * A signal that is called from Simulator::local_assemble_stokes_preconditioner()
          * and whose slots are supposed to assemble terms that together form the
          * Stokes preconditioner matrix.
@@ -426,6 +476,48 @@ namespace aspect
                                       const bool,
                                       internal::Assembly::Scratch::StokesSystem<dim>       &,
                                       internal::Assembly::CopyData::StokesSystem<dim>      &)> local_assemble_stokes_system_on_boundary_face;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * Advection system matrix and right hand side.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The advection field that is currently assembled.
+         * - The artificial viscosity computed for the current cell
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const typename Simulator<dim>::AdvectionField &,
+                                      const double,
+                                      internal::Assembly::Scratch::AdvectionSystem<dim>       &,
+                                      internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system;
+
+        /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to compute an advection system residual
+         * according to the terms their assemblers implement. The residuals are
+         * computed and returned in a std::vector<double> with one entry per
+         * quadrature point of this cell. If more than one
+         * assembler is connected the residuals are simply added up by the
+         * ResidualWeightSum structure.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The advection field that is currently assembled.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * The return value of each slot is:
+         * - A std::vector<double> containing one residual entry per quadrature
+         *   point.
+         */
+        boost::signals2::signal<std::vector<double> (const typename DoFHandler<dim>::active_cell_iterator &,
+                                                     const typename Simulator<dim>::AdvectionField &,
+                                                     internal::Assembly::Scratch::AdvectionSystem<dim> &),
+                                                              ResidualWeightSum<std::vector<double> > > compute_advection_system_residual;
 
         /**
          * A structure that describes what information an assembler function

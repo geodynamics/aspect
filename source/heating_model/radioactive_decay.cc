@@ -74,6 +74,8 @@ namespace aspect
 
           heating_model_outputs.heating_source_terms[q] = timedependent_radioactive_heating_rates
                                                           * material_model_outputs.densities[q];
+
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
 
