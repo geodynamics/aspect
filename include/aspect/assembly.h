@@ -204,7 +204,11 @@ namespace aspect
           MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
 
           /**
-           * Heating model outputs computed at the current linearization point.
+           * Heating model outputs computed at the quadrature points of the
+           * current cell at the time of the current linearization point.
+           * As explained in the class documentation of
+           * HeatingModel::HeatingModelOutputs each term contains the sum of all
+           * enabled heating mechanism contributions.
            */
           HeatingModel::HeatingModelOutputs heating_model_outputs;
         };
@@ -380,20 +384,20 @@ namespace aspect
          * It takes an iterator range of vectors and returns the element-wise
          * sum of the values.
          */
-        template<typename T>
+        template<typename VectorType>
         struct ResidualWeightSum
         {
-          typedef T result_type;
+          typedef VectorType result_type;
 
           template<typename InputIterator>
-          T operator()(InputIterator first, InputIterator last) const
+          VectorType operator()(InputIterator first, InputIterator last) const
           {
             // If there are no slots to call, just return the
             // default-constructed value
             if (first == last)
-              return T();
+              return VectorType();
 
-            T sum = *first++;
+            VectorType sum = *first++;
             while (first != last)
               {
                 Assert(sum.size() == first->size(),
