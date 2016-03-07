@@ -5,7 +5,14 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
- * <li> Fixed: The uniform radial and uniform box particle generators now 
+ *
+ * <li> Improved: The Introspection class has now a new base class
+ * FEVariableCollection that allows flexible modification of the finite
+ * element variables involved in a computation, even inside a plugin.
+ * <br>
+ * (Timo Heister, 2016/03/08)
+ *
+ * <li> Fixed: The uniform radial and uniform box particle generators now
  * produce globally unique particle IDs.
  * <br>
  * (Harsha Lokavarapu, Gerry Puckett, 2016/03/04)

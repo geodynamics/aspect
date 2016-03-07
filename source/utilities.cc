@@ -49,6 +49,23 @@ namespace aspect
   {
     using namespace dealii;
 
+
+    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
+                         const IndexSet &whole_set,
+                         std::vector<IndexSet> &partitioned)
+    {
+      const unsigned int n_blocks = dofs_per_block.size();
+      partitioned.clear();
+
+      partitioned.resize(n_blocks);
+      types::global_dof_index start = 0;
+      for (unsigned int i=0; i<n_blocks; ++i)
+        {
+          partitioned[i] = whole_set.get_view(start, start + dofs_per_block[i]);
+          start += dofs_per_block[i];
+        }
+    }
+
     template <int dim>
     std_cxx11::array<double,dim>
     spherical_coordinates(const Point<dim> &position)

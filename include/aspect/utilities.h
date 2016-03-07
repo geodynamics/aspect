@@ -47,6 +47,18 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
+
+    /**
+     * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+     * given by the @p dofs_per_block structure.
+     *
+     * The numbers of dofs per block need to add up to the size of the index space described
+     * by @p whole_set.
+     */
+    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
+                         const IndexSet &whole_set,
+                         std::vector<IndexSet> &partitioned);
+
     /**
      * Returns spherical coordinates of a cartesian point. The returned array
      * is filled with radius, phi and theta (polar angle). If the dimension is
