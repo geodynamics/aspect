@@ -509,9 +509,9 @@ namespace aspect
         virtual ~AdditionalMaterialOutputs()
         {}
 
-        virtual void average (const MaterialAveraging::AveragingOperation operation,
-                              const FullMatrix<double>  &projection_matrix,
-                              const FullMatrix<double>  &expansion_matrix)
+        virtual void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
         {}
     };
 

@@ -48,6 +48,10 @@ namespace aspect
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
                            const Point<dim> &position) const;
+
+        // avoid -Woverloaded-virtual warning until the deprecated function
+        // is removed from the interface:
+        using Interface<dim>::boundary_velocity;
     };
   }
 }
