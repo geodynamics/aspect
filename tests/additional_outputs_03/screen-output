@@ -1,5 +1,5 @@
 
-Loading shared library <./libadditional_outputs_02.so>
+Loading shared library <./libadditional_outputs_03.so>
 
 * Connecting signals
 * set_assemblers()
@@ -17,55 +17,71 @@ Number of degrees of freedom: 84 (50+9+25)
 * create_additional_material_model_outputs() called
    creating additional output!
 * evaluate called with additional outputs!
+averaging!
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * evaluate called with additional outputs!
+averaging!
    Solving temperature system... 0 iterations.
 * create_additional_material_model_outputs() called
    creating additional output!
 * evaluate called with additional outputs!
+averaging!
 * local_assemble_stokes call, have additional? 1
-   value = 42
+   value = 21 21
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * local_assemble_stokes call, have additional? 1
-   value = 42
+   value = 21 21
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * local_assemble_stokes call, have additional? 1
-   value = 42
+   value = 21 21
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * local_assemble_stokes call, have additional? 1
-   value = 42
+   value = 21 21
    Rebuilding Stokes preconditioner...* create_additional_material_model_outputs() called
    creating additional output!
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 * create_additional_material_model_outputs() called
 * evaluate called with additional outputs!
+averaging!
 
-   Solving Stokes system... 14 iterations.
+   Solving Stokes system... 9 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-     Writing graphical output: output-additional_outputs_02/solution-00000
+     Writing graphical output: output-additional_outputs_03/solution-00000
 
 Termination requested by criterion: end time
 

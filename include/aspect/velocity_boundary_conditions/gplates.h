@@ -65,7 +65,8 @@ namespace aspect
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
-          void load_file(const std::string &filename);
+          void load_file(const std::string &filename,
+                         const MPI_Comm &comm);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
@@ -188,6 +189,10 @@ namespace aspect
          */
         Tensor<1,dim>
         boundary_velocity (const Point<dim> &position) const;
+
+        // avoid -Woverloaded-virtual warning until the deprecated function
+        // is removed from the interface:
+        using Interface<dim>::boundary_velocity;
 
         /**
          * Initialization function. This function is called once at the

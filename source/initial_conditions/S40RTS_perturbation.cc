@@ -43,12 +43,12 @@ namespace aspect
         class SphericalHarmonicsLookup
         {
           public:
-            SphericalHarmonicsLookup(const std::string &filename)
+            SphericalHarmonicsLookup(const std::string &filename,
+                                     const MPI_Comm &comm)
             {
               std::string temp;
-              std::ifstream in(filename.c_str(), std::ios::in);
-              AssertThrow (in,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              // Read data from disk and distribute among processes
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
               getline(in,temp);  // throw away the rest of the line
@@ -121,12 +121,12 @@ namespace aspect
         class SplineDepthsLookup
         {
           public:
-            SplineDepthsLookup(const std::string &filename)
+            SplineDepthsLookup(const std::string &filename,
+                               const MPI_Comm &comm)
             {
               std::string temp;
-              std::ifstream in(filename.c_str(), std::ios::in);
-              AssertThrow (in,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              // Read data from disk and distribute among processes
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               getline(in,temp);  // throw away the rest of the line
               getline(in,temp);  // throw away the rest of the line
@@ -158,8 +158,8 @@ namespace aspect
     void
     S40RTSPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name));
-      spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(datadirectory+spline_depth_file_name));
+      spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
+      spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
     }
 
     // NOTE: this module uses the Boost spherical harmonics package which is not designed

@@ -543,7 +543,7 @@ namespace aspect
                                        DataOutBase::default_suffix
                                        (DataOutBase::parse_output_format(output_format));
 
-          std::ofstream out (filename);
+          std::ofstream out (filename.c_str());
 
           AssertThrow(out,
                       ExcMessage("Unable to open file for writing: " + filename +"."));

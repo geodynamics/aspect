@@ -597,8 +597,28 @@ namespace aspect
       std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
 
       /**
-       * Will call create_additional_material_model_outputs() functions from
-       * each object in assembler_objects.
+       * Material models, through functions derived from
+       * MaterialModel::Interface::evaluate(), put their computed material
+       * parameters into a structure of type MaterialModel::MaterialModelOutputs.
+       * By default, material models will compute those parameters that
+       * correspond to the member variables of that structure. However,
+       * there are situations where parts of the simulator need additional
+       * pieces of information; a typical example would be the use of a
+       * Newton scheme that also requires the computation of <i>derivatives</i>
+       * of material parameters with respect to pressure, temperature, and
+       * possibly other variables.
+       *
+       * The computation of such additional information is controlled by
+       * the presence of a collection of pointers in
+       * MaterialModel::MaterialModelOutputs that point to additional
+       * objects. Whether or not one needs these additional objects depends
+       * on what linear system is being assembled, or what postprocessing
+       * wants to compute. For the purpose of assembly, the current
+       * function creates the additional objects (such as the one that stores
+       * derivatives) and adds pointers to them to the collection, based on
+       * what assemblers are selected. It does so by calling the
+       * internal::Assemblers::AssemblerBase::create_additional_material_model_outputs()
+       * functions from each object in Simulator::assembler_objects.
        */
       void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &);
 
@@ -1103,8 +1123,10 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
-      Introspection<dim>                  introspection;
       SimulatorSignals<dim>               signals;
+      const IntermediaryConstructorAction post_signal_creation;
+      Introspection<dim>                  introspection;
+
 
       MPI_Comm                            mpi_communicator;
 

@@ -42,7 +42,8 @@ namespace aspect
         /**
          * Read the data file into the class.
          */
-        void read(const std::string &filename);
+        void read(const std::string &filename,
+                  const MPI_Comm &comm);
 
         /**
          * Get the melting temperature.

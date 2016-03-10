@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/assembly.h>
+#include <aspect/utilities.h>
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -75,6 +76,58 @@ namespace aspect
 
       return false;
     }
+
+    /**
+     * Helper function to construct the final std::vector of FEVariable before
+     * it is used to construct the Introspection object. Create the default
+     * setup based on parameters followed by a signal to allow modifications.
+     */
+    template <int dim>
+    std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
+                                                               SimulatorSignals<dim> &signals)
+    {
+      std::vector<VariableDeclaration<dim> > variables
+        = construct_default_variables (parameters);
+
+
+      if (parameters.include_melt_transport)
+        {
+          //TODO: move this block into a signal
+
+          variables.insert(variables.begin()+1,
+                           VariableDeclaration<dim>(
+                             "fluid pressure",
+                             (parameters.use_locally_conservative_discretization)
+                             ?
+                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                             :
+                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                             1,
+                             0)); // same block as p_c even without a direct solver!
+
+          variables.insert(variables.begin()+2,
+                           VariableDeclaration<dim>(
+                             "compaction pressure",
+                             (parameters.use_locally_conservative_discretization)
+                             ?
+                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                             :
+                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                             1,
+                             1));
+
+          variables.insert(variables.begin()+3,
+                           VariableDeclaration<dim>("fluid velocity",
+                                                    std_cxx11::shared_ptr<FiniteElement<dim> >(
+                                                      new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                                                    dim,
+                                                    1));
+
+        }
+
+      signals.edit_finite_element_variables(variables);
+      return variables;
+    }
   }
 
 
@@ -101,7 +154,10 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
-    introspection (parameters),
+    post_signal_creation(
+      std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
+                       std_cxx11::ref(signals))),
+    introspection (construct_variables<dim>(parameters, signals), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),
@@ -175,9 +231,6 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
-    // FE data is no longer needed because we constructed finite_element above
-    introspection.free_finite_element_data();
-
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         // only open the logfile on processor 0, the other processors won't be
@@ -367,6 +420,26 @@ namespace aspect
 
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
+    //
+    // up front, we can not know whether a plugin derives from
+    // SimulatorAccess. all we have is a pointer to the base class of
+    // each plugin type (the 'Interface' class in the namespace
+    // corresponding to each plugin type), but this base class is not
+    // derived from SimulatorAccess. in order to find out whether a
+    // concrete plugin derives from this base (interface) class AND
+    // the SimulatorAccess class via multiple inheritance, we need to
+    // do a sideways dynamic_cast to this putative sibling of the
+    // interface class, and investigate if the dynamic_cast
+    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+    // result, and we can test this in an if-statement. there is a nice
+    // idiom whereby we can write
+    //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
+    //      ptr->do_something()
+    // where we declare a variable *inside* the 'if' condition, and only
+    // enter the code block guarded by the 'if' in case the so-declared
+    // variable evaluates to something non-zero, which here means that
+    // the dynamic_cast succeeded and returned the address of the subling
+    // object.
     //
     // we also need to let all models parse their parameters. this is done *after* setting
     // up their SimulatorAccess base class so that they can query, for example, the
@@ -577,10 +650,6 @@ namespace aspect
                                  parameters.output_directory + "parameters.tex>."));
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
-
-    // let user-provided plugins let their slots
-    // connect to the signals we provide
-    internals::SimulatorSignals::call_connector_functions (signals);
 
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
@@ -1102,7 +1171,7 @@ namespace aspect
     // cells are created.
     DoFRenumbering::hierarchical (dof_handler);
     DoFRenumbering::component_wise (dof_handler,
-                                    introspection.components_to_blocks);
+                                    introspection.get_components_to_blocks());
 
     // set up the introspection object that stores all sorts of
     // information about components of the finite element, component
@@ -1364,57 +1433,39 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
-    // initialize the component masks, if not already set
-    if (introspection.component_masks.velocities == ComponentMask())
+    if (parameters.include_melt_transport)
       {
-        introspection.component_masks.velocities
-          = finite_element.component_mask (introspection.extractors.velocities);
-        introspection.component_masks.pressure
-          = finite_element.component_mask (introspection.extractors.pressure);
-
-        if (parameters.include_melt_transport)
-          {
-            introspection.component_masks.compaction_pressure
-              = finite_element.component_mask (introspection.extractors.compaction_pressure);
-            introspection.component_masks.fluid_pressure
-              = finite_element.component_mask (introspection.extractors.fluid_pressure);
-            introspection.component_masks.fluid_velocities
-              = finite_element.component_mask (introspection.extractors.fluid_velocities);
-          }
-
-        introspection.component_masks.temperature
-          = finite_element.component_mask (introspection.extractors.temperature);
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          introspection.component_masks.compositional_fields
-          .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
+        // TODO: fix
+//        introspection.component_masks.compaction_pressure
+//          = finite_element.component_mask (introspection.extractors.compaction_pressure);
+//        introspection.component_masks.fluid_pressure
+//          = finite_element.component_mask (introspection.extractors.fluid_pressure);
+//        introspection.component_masks.fluid_velocities
+//          = finite_element.component_mask (introspection.extractors.fluid_velocities);
       }
 
-
-    // now also compute the various partitionings between processors and blocks
+    // compute the various partitionings between processors and blocks
     // of vectors and matrices
     DoFTools::count_dofs_per_block (dof_handler,
                                     introspection.system_dofs_per_block,
-                                    introspection.components_to_blocks);
+                                    introspection.get_components_to_blocks());
     {
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
-      split_by_block (introspection.index_sets.system_partitioning,
-                      introspection.system_dofs_per_block,
-                      system_index_set);
+      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
+                                         system_index_set,
+                                         introspection.index_sets.system_partitioning);
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
-      split_by_block (introspection.index_sets.system_relevant_partitioning,
-                      introspection.system_dofs_per_block,
-                      introspection.index_sets.system_relevant_set);
+      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
+                                         introspection.index_sets.system_relevant_set,
+                                         introspection.index_sets.system_relevant_partitioning);
 
       if (parameters.use_direct_stokes_solver)
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
-        }
-      else
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
-        }
+        introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+      {
+        introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+      }
 
       if (parameters.include_melt_transport)
         {
@@ -1422,18 +1473,22 @@ namespace aspect
           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.fluid_pressure);
         }
 
+
+
       introspection.index_sets.stokes_partitioning.clear ();
       introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.velocities]);
       if (!parameters.use_direct_stokes_solver)
         {
           if (parameters.include_melt_transport)
-            {
-              // p_f and p_c:
-              introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.fluid_pressure]);
-            }
+            // p_f and p_c are in the same block
+            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.fluid_pressure]);
           else
             introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
         }
+
+      Assert(!parameters.use_direct_stokes_solver ||
+             (introspection.block_indices.velocities == introspection.block_indices.pressure),
+             ExcInternalError());
     }
 
   }

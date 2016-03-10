@@ -419,7 +419,7 @@ namespace aspect
                                  GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
                                  :
                                  0),
-                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell,Utilities::signaling_nan<double>()))
+                                std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
         {}
 
 
@@ -569,10 +569,10 @@ namespace aspect
     double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
     double max_conductivity = 0;
 
-    for (unsigned int q=0; q < scratch.old_velocity_values.size(); ++q)
+    for (unsigned int q=0; q < scratch.finite_element_values.n_quadrature_points; ++q)
       {
-        const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
-                                 scratch.old_old_velocity_values[q]) / 2;
+        const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
+                                        scratch.old_old_velocity_values[q]) / 2;
 
         if (parameters.stabilization_alpha == 2)
           {
@@ -581,7 +581,7 @@ namespace aspect
           }
 
         max_residual = std::max (residual[q],     max_residual);
-        max_velocity = std::max (std::sqrt (u*u), max_velocity);
+        max_velocity = std::max (std::sqrt (velocity*velocity), max_velocity);
 
         if (advection_field.is_temperature())
           {
@@ -3166,6 +3166,11 @@ namespace aspect
                                                           const AdvectionField &advection_field) const; \
   template void Simulator<dim>::build_advection_preconditioner (const AdvectionField &, \
                                                                 std_cxx11::shared_ptr<aspect::LinearAlgebra::PreconditionILU> &preconditioner); \
+  template void Simulator<dim>::local_assemble_advection_face_terms ( \
+                                                                      const AdvectionField                        &advection_field, \
+                                                                      const DoFHandler<dim>::active_cell_iterator &cell, \
+                                                                      internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch, \
+                                                                      internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
   template void Simulator<dim>::local_assemble_advection_system ( \
                                                                   const AdvectionField          &advection_field, \
                                                                   const Vector<double>           &viscosity_per_cell, \

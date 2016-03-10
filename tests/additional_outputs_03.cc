@@ -24,6 +24,16 @@ namespace aspect
         {
           additional_material_output1.resize(n_points);
         }
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
+                              const FullMatrix<double>  &projection_matrix,
+                              const FullMatrix<double>  &expansion_matrix)
+        {
+          std::cout << "averaging!" << std::endl;
+          average_property (operation, projection_matrix, expansion_matrix,
+                            additional_material_output1);
+        }
+
+
 
         std::vector<double> additional_material_output1;
     };
@@ -48,7 +58,11 @@ namespace aspect
             ++counter_without;
 
           if (additional)
-            additional->additional_material_output1[0] = 42.0;
+            {
+              additional->additional_material_output1[0] = 42.0;
+              additional->additional_material_output1[1] = 0.0;
+            }
+
 
           if (quiet)
             return;
@@ -80,7 +94,7 @@ namespace aspect
           return;
 
         std::cout << "   creating additional output!" << std::endl;
-        out.additional_outputs.push_back(std::make_shared<MaterialModel::AdditionalOutputs1<dim> > (1));
+        out.additional_outputs.push_back(std::make_shared<MaterialModel::AdditionalOutputs1<dim> > (2));
 
       }
 
@@ -92,7 +106,8 @@ namespace aspect
 
         std::cout << "* local_assemble_stokes call, have additional? " << (additional!=NULL) << std::endl;
         if (additional!=NULL)
-          std::cout << "   value = " << additional->additional_material_output1[0] << std::endl;
+          std::cout << "   value = " << additional->additional_material_output1[0]
+                    << " " << additional->additional_material_output1[1] << std::endl;
 
 
       }
@@ -107,7 +122,6 @@ namespace aspect
                        std::vector<dealii::std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
   {
     std::cout << "* set_assemblers()" << std::endl;
-
     std::cout << "called without: " << counter_without << " with: " << counter_with << std::endl;
     counter_without = 0;
     counter_with = 0;

@@ -144,22 +144,17 @@ namespace aspect
 
       template <int dim>
       void
-      GPlatesLookup<dim>::load_file(const std::string &filename)
+      GPlatesLookup<dim>::load_file(const std::string &filename,
+                                    const MPI_Comm &comm)
       {
+        // Read data from disk and distribute among processes
+        std::istringstream filecontent(
+          Utilities::read_and_distribute_file_content(filename, comm));
+
         boost::property_tree::ptree pt;
 
-        // Check whether file exists, we do not want to throw
-        // an exception in case it does not, because it could be by purpose
-        // (i.e. the end of the boundary condition is reached)
-        AssertThrow (Utilities::fexists(filename),
-                     ExcMessage (std::string("GPlates file <")
-                                 +
-                                 filename
-                                 +
-                                 "> not found!"));
-
         // populate tree structure pt
-        read_xml(filename, pt);
+        read_xml(filecontent, pt);
 
         const unsigned int n_points = pt.get_child("gpml:FeatureCollection.gml:featureMember.gpml:VelocityField.gml:domainSet.gml:MultiPoint").size();
 
@@ -592,7 +587,7 @@ namespace aspect
 
       const std::string filename (create_filename (current_file_number));
       if (Utilities::fexists(filename))
-        lookup->load_file(filename);
+        lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
                     ExcMessage (std::string("GPlates data file <")
@@ -617,7 +612,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
-              lookup->load_file(filename);
+              lookup->load_file(filename,this->get_mpi_communicator());
             }
           else
             end_time_dependence ();
@@ -704,7 +699,7 @@ namespace aspect
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
-              lookup->load_file(filename);
+              lookup->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -725,7 +720,7 @@ namespace aspect
       if (Utilities::fexists(filename))
         {
           lookup.swap(old_lookup);
-          lookup->load_file(filename);
+          lookup->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
