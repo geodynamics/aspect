@@ -1433,17 +1433,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
-    if (parameters.include_melt_transport)
-      {
-        // TODO: fix
-//        introspection.component_masks.compaction_pressure
-//          = finite_element.component_mask (introspection.extractors.compaction_pressure);
-//        introspection.component_masks.fluid_pressure
-//          = finite_element.component_mask (introspection.extractors.fluid_pressure);
-//        introspection.component_masks.fluid_velocities
-//          = finite_element.component_mask (introspection.extractors.fluid_velocities);
-      }
-
     // compute the various partitionings between processors and blocks
     // of vectors and matrices
     DoFTools::count_dofs_per_block (dof_handler,

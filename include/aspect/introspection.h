@@ -60,22 +60,6 @@ namespace aspect
    * The Introspection class is used both by the Simulator class itself, but
    * is also exported to plugins via the SimulatorAccess class.
    *
-   * The layout of the unknowns is the following:
-   *
-   * velocity pressure (in one block if using a direct solver)
-   * temperature
-   * composition1
-   * ...
-   *
-   * With melt transport the layout becomes:
-   * velocity fluid_pressure&compaction_pressure
-   * fluid_velocity
-   * pressure
-   * temperature
-   * composition1
-   * ...
-   *
-   *
    * @ingroup Simulator
    */
   template <int dim>
@@ -131,9 +115,6 @@ namespace aspect
       {
         unsigned int       velocities[dim];
         unsigned int       pressure;
-        unsigned int       fluid_velocities[dim];
-        unsigned int       fluid_pressure;
-        unsigned int       compaction_pressure;
         unsigned int       temperature;
         std::vector<unsigned int> compositional_fields;
       };
@@ -158,9 +139,6 @@ namespace aspect
       {
         unsigned int       velocities;
         unsigned int       pressure;
-        unsigned int       fluid_velocities;
-        unsigned int       fluid_pressure;
-        unsigned int       compaction_pressure;
         unsigned int       temperature;
         std::vector<unsigned int> compositional_fields;
       };
@@ -180,9 +158,6 @@ namespace aspect
 
         const FEValuesExtractors::Vector              velocities;
         const FEValuesExtractors::Scalar              pressure;
-        const FEValuesExtractors::Vector              fluid_velocities;
-        const FEValuesExtractors::Scalar              fluid_pressure;
-        const FEValuesExtractors::Scalar              compaction_pressure;
         const FEValuesExtractors::Scalar              temperature;
         const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
@@ -206,9 +181,6 @@ namespace aspect
       {
         unsigned int       velocities;
         unsigned int       pressure;
-        unsigned int       fluid_velocities;
-        unsigned int       fluid_pressure;
-        unsigned int       compaction_pressure;
         unsigned int       temperature;
         unsigned int       compositional_fields;
       };
@@ -230,9 +202,6 @@ namespace aspect
 
         ComponentMask              velocities;
         ComponentMask              pressure;
-        ComponentMask              fluid_velocities;
-        ComponentMask              fluid_pressure;
-        ComponentMask              compaction_pressure;
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
@@ -241,7 +210,7 @@ namespace aspect
        * this problem. Component masks are a deal.II concept, see the deal.II
        * glossary.
        */
-      /*const */ComponentMasks component_masks;
+      const ComponentMasks component_masks;
 
       /**
        * @}
