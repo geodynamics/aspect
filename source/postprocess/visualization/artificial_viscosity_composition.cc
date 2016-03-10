@@ -40,8 +40,56 @@ namespace aspect
         std::pair<std::string, Vector<float> *>
         return_value ("artificial_viscosity_composition",
                       new Vector<float>(this->get_triangulation().n_active_cells()));
-        this->get_artificial_viscosity_composition(*return_value.second, 0);
+        this->get_artificial_viscosity_composition(*return_value.second, compositional_field);
         return return_value;
+      }
+
+      template <int dim>
+      void
+      ArtificialViscosityComposition<dim>::
+      declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Artificial viscosity composition");
+            {
+              prm.declare_entry ("Name of compositional field", "",
+                                 Patterns::Anything(),
+                                 "The name of the compositional field whose output "
+                                 "should be visualized. ");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+      }
+
+      template <int dim>
+      void
+      ArtificialViscosityComposition<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
+          {
+            prm.enter_subsection("Artificial viscosity composition");
+            {
+              const std::string field_name = prm.get("Name of compositional field");
+
+              AssertThrow(this->introspection().compositional_name_exists(field_name),
+                          ExcMessage("The compositional field whose artificial viscosity you want to "
+                                     "visualize does not exist."));
+
+              compositional_field = this->introspection().compositional_index_for_name(field_name);
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
     }
   }

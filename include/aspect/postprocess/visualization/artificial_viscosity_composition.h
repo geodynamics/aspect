@@ -60,6 +60,27 @@ namespace aspect
           virtual
           std::pair<std::string, Vector<float> *>
           execute () const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * A parameter that tells us for which compositional field the
+           * artificial viscosity should be visualized.
+           */
+          int compositional_field;
       };
     }
   }
