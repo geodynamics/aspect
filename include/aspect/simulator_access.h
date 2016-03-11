@@ -433,7 +433,7 @@ namespace aspect
        * Return whether the current model has a boundary composition object
        * set. This is useful because a simulation does not actually have to
        * declare any boundary composition model, for example if all
-       * boundaries are insulating. In such cases, there is no
+       * boundaries are reflecting. In such cases, there is no
        * boundary composition model that can provide, for example,
        * a minimal and maximal temperature on the boundary.
        */

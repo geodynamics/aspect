@@ -543,6 +543,27 @@ namespace aspect
                                       internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system_on_boundary_face;
 
         /**
+         * A signal that is called from Simulator::local_assemble_advection_system()
+         * and whose slots are supposed to assemble terms that together form the
+         * interior face contribution of the Advection system matrix and right
+         * hand side. This signal is called once for each interior face.
+         *
+         * The arguments to the slots are as follows:
+         * - The cell on which we currently assemble.
+         * - The number of the face (of the current cell) on which we intend to
+         *  assemble.
+         * - The advection field that is currently assembled.
+         * - The scratch object in which temporary data is stored that
+         *   assemblers may need.
+         * - The copy object into which assemblers add up their contributions.
+         */
+        boost::signals2::signal<void (const typename DoFHandler<dim>::active_cell_iterator &,
+                                      const unsigned int,
+                                      const typename Simulator<dim>::AdvectionField &,
+                                      internal::Assembly::Scratch::AdvectionSystem<dim>       &,
+                                      internal::Assembly::CopyData::AdvectionSystem<dim>      &)> local_assemble_advection_system_on_interior_face;
+
+        /**
          * A structure that describes what information an assembler function
          * (listed as one of the signals/slots above) may need to operate.
          *
@@ -596,7 +617,7 @@ namespace aspect
         Properties stokes_system_assembler_properties;
         Properties stokes_system_assembler_on_boundary_face_properties;
         Properties advection_system_assembler_properties;
-        Properties advection_system_assembler_on_boundary_face_properties;
+        Properties advection_system_assembler_on_face_properties;
 
       };
 
