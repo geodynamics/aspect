@@ -1492,6 +1492,7 @@ namespace aspect
         }
 
       Assert(!parameters.use_direct_stokes_solver ||
+             parameters.include_melt_transport ||
              (introspection.block_indices.velocities == introspection.block_indices.pressure),
              ExcInternalError());
     }

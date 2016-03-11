@@ -786,8 +786,9 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.compaction_pressure].get_function_values (this->get_solution(),
-                p_c);
+            fe_values[this->introspection().variable("compaction pressure").extractor_scalar()]
+            .get_function_values (this->get_solution(),
+                                  p_c);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
