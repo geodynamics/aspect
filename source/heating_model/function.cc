@@ -46,6 +46,7 @@ namespace aspect
           const Point<dim> position = material_model_inputs.position[q];
           heating_model_outputs.heating_source_terms[q] = heating_model_function.value(position)
                                                           * material_model_outputs.densities[q];
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
 
@@ -96,7 +97,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Heating model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         {

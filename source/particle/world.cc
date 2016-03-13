@@ -35,28 +35,12 @@ namespace aspect
 {
   namespace Particle
   {
-    template <>
-    World<2>::World()
+    template <int dim>
+    World<dim>::World()
       :
       global_number_of_particles(0),
       data_offset(numbers::invalid_unsigned_int)
-    {
-
-      aspect::internals::SimulatorSignals::register_connector_function_2d (std_cxx11::bind(&World<2>::connect_to_signals,
-                                                                           std_cxx11::ref(*this),
-                                                                           std_cxx11::_1));
-    }
-
-    template <>
-    World<3>::World()
-      :
-      global_number_of_particles(0),
-      data_offset(numbers::invalid_unsigned_int)
-    {
-      aspect::internals::SimulatorSignals::register_connector_function_3d (std_cxx11::bind(&World<3>::connect_to_signals,
-                                                                           std_cxx11::ref(*this),
-                                                                           std_cxx11::_1));
-    }
+    {}
 
     template <int dim>
     World<dim>::~World()
@@ -72,6 +56,8 @@ namespace aspect
                            const unsigned int max_part_per_cell,
                            const unsigned int weight)
     {
+      connect_to_signals(this->get_signals());
+
       generator.reset(particle_generator);
       integrator.reset(particle_integrator);
       interpolator.reset(property_interpolator);

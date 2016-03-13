@@ -1,0 +1,93 @@
+
+Loading shared library <./libadditional_outputs_03.so>
+
+* Connecting signals
+* set_assemblers()
+called without: 999 with: 0
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 seconds
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* create_additional_material_model_outputs() called
+   creating additional output!
+* create_additional_material_model_outputs() called
+   creating additional output!
+* evaluate called with additional outputs!
+averaging!
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* evaluate called with additional outputs!
+averaging!
+   Solving temperature system... 0 iterations.
+* create_additional_material_model_outputs() called
+   creating additional output!
+* evaluate called with additional outputs!
+averaging!
+* local_assemble_stokes call, have additional? 1
+   value = 21 21
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* local_assemble_stokes call, have additional? 1
+   value = 21 21
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* local_assemble_stokes call, have additional? 1
+   value = 21 21
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* local_assemble_stokes call, have additional? 1
+   value = 21 21
+   Rebuilding Stokes preconditioner...* create_additional_material_model_outputs() called
+   creating additional output!
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+* create_additional_material_model_outputs() called
+* evaluate called with additional outputs!
+averaging!
+
+   Solving Stokes system... 9 iterations.
+
+   Postprocessing:
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+     Writing graphical output: output-additional_outputs_03/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+called without: 8 with: 16

@@ -70,7 +70,8 @@ namespace aspect
     }
 
 
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     template <int dim>
     Tensor<1,dim>
     Interface<dim>::boundary_velocity (const types::boundary_id ,
@@ -83,6 +84,7 @@ namespace aspect
 
       return this->boundary_velocity(position);
     }
+#pragma GCC diagnostic pop
 
 
 

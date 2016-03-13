@@ -24,6 +24,7 @@
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 
+#include <deal.II/base/mpi.h>
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
@@ -34,6 +35,9 @@
 #include <aspect/geometry_model/chunk.h>
 
 #include <fstream>
+#include <string>
+#include <sys/stat.h>
+#include <errno.h>
 
 namespace aspect
 {
@@ -44,6 +48,23 @@ namespace aspect
   namespace Utilities
   {
     using namespace dealii;
+
+
+    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
+                         const IndexSet &whole_set,
+                         std::vector<IndexSet> &partitioned)
+    {
+      const unsigned int n_blocks = dofs_per_block.size();
+      partitioned.clear();
+
+      partitioned.resize(n_blocks);
+      types::global_dof_index start = 0;
+      for (unsigned int i=0; i<n_blocks; ++i)
+        {
+          partitioned[i] = whole_set.get_view(start, start + dofs_per_block[i]);
+          start += dofs_per_block[i];
+        }
+    }
 
     template <int dim>
     std_cxx11::array<double,dim>
@@ -101,19 +122,179 @@ namespace aspect
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
 
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm)
+    {
+      std::string data_string;
+
+      if (Utilities::MPI::this_mpi_process(comm) == 0)
+        {
+          std::ifstream filestream(filename.c_str());
+          AssertThrow (filestream,
+                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          // Read data from disk
+          std::stringstream datastream;
+          filestream >> datastream.rdbuf();
+
+          AssertThrow (filestream.eof(),
+                       ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                   "before the end of file was reached. Is the file corrupted or"
+                                   "too large for the input buffer?"));
+
+          data_string = datastream.str();
+          unsigned int filesize = data_string.size();
+
+          // Distribute data_size and data across processes
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+        }
+      else
+        {
+          // Prepare for receiving data
+          unsigned int filesize;
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          data_string.resize(filesize);
+
+          // Receive and store data
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+        }
+
+      return data_string;
+    }
+
+    int
+    mkdirp(std::string pathname,const mode_t mode)
+    {
+      // force trailing / so we can handle everything in loop
+      if (pathname[pathname.size()-1] != '/')
+        {
+          pathname += '/';
+        }
+
+      size_t pre = 0;
+      size_t pos;
+
+      while ((pos = pathname.find_first_of('/',pre)) != std::string::npos)
+        {
+          const std::string subdir = pathname.substr(0,pos++);
+          pre = pos;
+
+          // if leading '/', first string is 0 length
+          if (subdir.size() == 0)
+            continue;
+
+          int mkdir_return_value;
+          if ((mkdir_return_value = mkdir(subdir.c_str(),mode)) && (errno != EEXIST))
+            return mkdir_return_value;
+
+        }
+
+      return 0;
+    }
+
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
     // This interpolation is based on the script spline.h, which was downloaded from
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
     // Copyright (C) 2011, 2014 Tino Kluge (ttk448 at gmail.com)
     namespace tk
     {
-      // --------------------------
-      // band_matrix implementation
-      // --------------------------
+      /**
+       * Band matrix solver for a banded, square matrix of size @p dim. Used
+       * by spline interpolation in tk::spline.
+       */
+      class band_matrix
+      {
+        public:
+          /**
+           * Constructor, see resize()
+           */
+          band_matrix(int dim, int n_u, int n_l);
+          /**
+           * Resize to a @p dim by @dim matrix with given number
+           * of off-diagonals.
+           */
+          void resize(int dim, int n_u, int n_l);
+
+          /**
+           * Return the dimension of the matrix
+           */
+          int dim() const;
+
+          /**
+           * Number of off-diagonals above.
+           */
+          int num_upper() const
+          {
+            return m_upper.size()-1;
+          }
+
+          /**
+           * Number of off-diagonals below.
+           */
+          int num_lower() const
+          {
+            return m_lower.size()-1;
+          }
+
+          /**
+           * Writeable access to element A(i,j), indices going from
+           * i=0,...,dim()-1
+           */
+          double &operator () (int i, int j);
+          /**
+           * Read-only access
+           */
+          double   operator () (int i, int j) const;
+
+          /**
+           * second diagonal (used in LU decomposition), saved in m_lower[0]
+           */
+          double &saved_diag(int i);
+
+          /**
+           * second diagonal (used in LU decomposition), saved in m_lower[0]
+           */
+          double  saved_diag(int i) const;
+
+          /**
+           * LU-Decomposition of a band matrix
+           */
+          void lu_decompose();
+
+          /**
+           * solves Ux=y
+           */
+          std::vector<double> r_solve(const std::vector<double> &b) const;
+
+          /**
+           * solves Ly=b
+           */
+          std::vector<double> l_solve(const std::vector<double> &b) const;
+
+          /**
+           * Solve Ax=b and builds LU decomposition using lu_decompose()
+           * if @p is_lu_decomposed is false.
+           */
+          std::vector<double> lu_solve(const std::vector<double> &b,
+                                       bool is_lu_decomposed=false);
+        private:
+          /**
+           * diagonal and off-diagonals above
+           */
+          std::vector< std::vector<double> > m_upper;
+          /**
+           * diagonals below the diagonal
+           */
+          std::vector< std::vector<double> > m_lower;
+      };
+
       band_matrix::band_matrix(int dim, int n_u, int n_l)
       {
         resize(dim, n_u, n_l);
       }
+
       void band_matrix::resize(int dim, int n_u, int n_l)
       {
         assert(dim>0);
@@ -130,6 +311,7 @@ namespace aspect
             m_lower[i].resize(dim);
           }
       }
+
       int band_matrix::dim() const
       {
         if (m_upper.size()>0)
@@ -142,39 +324,42 @@ namespace aspect
           }
       }
 
-      // defines the new operator (), so that we can access the elements
-      // by A(i,j), index going from i=0,...,dim()-1
       double &band_matrix::operator () (int i, int j)
       {
         int k=j-i;       // what band is the entry
         assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
         assert( (-num_lower()<=k) && (k<=num_upper()) );
-        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)   return m_upper[k][i];
-        else      return m_lower[-k][i];
+        // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)
+          return m_upper[k][i];
+        else
+          return m_lower[-k][i];
       }
+
       double band_matrix::operator () (int i, int j) const
       {
         int k=j-i;       // what band is the entry
         assert( (i>=0) && (i<dim()) && (j>=0) && (j<dim()) );
         assert( (-num_lower()<=k) && (k<=num_upper()) );
-        // k=0 -> diogonal, k<0 lower left part, k>0 upper right part
-        if (k>=0)   return m_upper[k][i];
-        else      return m_lower[-k][i];
+        // k=0 -> diagonal, k<0 lower left part, k>0 upper right part
+        if (k>=0)
+          return m_upper[k][i];
+        else
+          return m_lower[-k][i];
       }
-      // second diag (used in LU decomposition), saved in m_lower
+
       double band_matrix::saved_diag(int i) const
       {
         assert( (i>=0) && (i<dim()) );
         return m_lower[0][i];
       }
+
       double &band_matrix::saved_diag(int i)
       {
         assert( (i>=0) && (i<dim()) );
         return m_lower[0][i];
       }
 
-      // LR-Decomposition of a band matrix
       void band_matrix::lu_decompose()
       {
         int  i_max,j_max;
@@ -214,7 +399,7 @@ namespace aspect
               }
           }
       }
-      // solves Ly=b
+
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
         assert( this->dim()==(int)b.size() );
@@ -230,7 +415,8 @@ namespace aspect
           }
         return x;
       }
-      // solves Rx=y
+
+
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
       {
         assert( this->dim()==(int)b.size() );
@@ -252,6 +438,8 @@ namespace aspect
       {
         assert( this->dim()==(int)b.size() );
         std::vector<double>  x,y;
+        // TODO: this is completely unsafe because you rely on the user
+        // if the function is called more than once.
         if (is_lu_decomposed==false)
           {
             this->lu_decompose();
@@ -261,11 +449,10 @@ namespace aspect
         return x;
       }
 
-      // ---------------------
-      // spline implementation
-      // ---------------------
+
       void spline::set_points(const std::vector<double> &x,
-                              const std::vector<double> &y, bool cubic_spline)
+                              const std::vector<double> &y,
+                              bool cubic_spline)
       {
         assert(x.size()==y.size());
         m_x=x;
@@ -361,6 +548,8 @@ namespace aspect
 
     } // namespace tk
 
+
+
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
                                           const double scale_factor)
@@ -372,15 +561,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLookup<dim>::load_file(const std::string &filename)
+    AsciiDataLookup<dim>::load_file(const std::string &filename,
+                                    const MPI_Comm &comm)
     {
-      std::ifstream in(filename.c_str(), std::ios::in);
-      AssertThrow (in,
-                   ExcMessage (std::string("Could not open data file <"
-                                           +
-                                           filename
-                                           +
-                                           ">.")));
+      // Read data from disk and distribute among processes
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
 
       // Read header lines and table size
       while (in.peek() == '#')
@@ -405,6 +590,17 @@ namespace aspect
                                             "the input file, or the POINTS comment in your data files "
                                             "is changing between following files."));
                 }
+        }
+
+      for (unsigned int i = 0; i < dim; i++)
+        {
+          AssertThrow(table_points[i] != 0,
+                      ExcMessage("Could not successfully read in the file header of the "
+                                 "ascii data file <" + filename + ">. One header line has to "
+                                 "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
+                                 "potentially N2 and N3 have to be the number of data points "
+                                 "in their respective dimension. Check for typos in this line "
+                                 "(e.g. a missing space character)."));
         }
 
       /**
@@ -610,7 +806,7 @@ namespace aspect
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
           if (fexists(filename))
-            lookups.find(*boundary_id)->second->load_file(filename);
+            lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
                         ExcMessage (std::string("Ascii data file <")
@@ -635,7 +831,7 @@ namespace aspect
               if (fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename);
+                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -787,7 +983,7 @@ namespace aspect
           if (fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-              lookups.find(boundary_id)->second->load_file(filename);
+              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -808,7 +1004,7 @@ namespace aspect
       if (fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(filename);
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
@@ -959,7 +1155,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
       if (fexists(filename))
-        lookup->load_file(filename);
+        lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
                     ExcMessage (std::string("Ascii data file <")

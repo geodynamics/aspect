@@ -21,13 +21,14 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -598,7 +599,18 @@ namespace aspect
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
                          "of the different choices, see \\cite {KHB12} .");
-
+      prm.declare_entry ("Use discontinuous temperature discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a temperature discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the temperature "
+                         "field via the interior-penalty discontinuous Galerkin method.");
+      prm.declare_entry ("Use discontinuous composition discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a composition discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the composition "
+                         "field via the discontinuous Galerkin method.");
       prm.enter_subsection ("Stabilization parameters");
       {
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
@@ -637,6 +649,14 @@ namespace aspect
                            "different value than described there: It can be chosen as stated there for "
                            "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
                            "cells that are not squares or cubes.) Units: None.");
+        prm.declare_entry ("Discontinuous penalty", "10",
+                           Patterns::Double (0),
+                           "The value used to penalize discontinuities in the discontinuous Galerkin "
+                           "method. This is used only for the temperature field, and not for the composition "
+                           "field, as pure advection does not use the interior penalty method. This "
+                           "is largely empirically decided -- it must be large enough to ensure "
+                           "the bilinear form is coercive, but not so large as to penalize "
+                           "discontinuity at all costs.");
       }
       prm.leave_subsection ();
     }
@@ -764,14 +784,9 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
-        // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-        AssertThrow (error==0,
+        AssertThrow (error == 0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
@@ -911,13 +926,17 @@ namespace aspect
       composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
-
+      use_discontinuous_temperature_discretization
+        = prm.get_bool("Use discontinuous temperature discretization");
+      use_discontinuous_composition_discretization
+        = prm.get_bool("Use discontinuous composition discretization");
       prm.enter_subsection ("Stabilization parameters");
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
         stabilization_alpha                 = prm.get_integer ("alpha");
         stabilization_c_R                   = prm.get_double ("cR");
         stabilization_beta                  = prm.get_double ("beta");
+        discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
       }
       prm.leave_subsection ();
 

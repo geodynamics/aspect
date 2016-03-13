@@ -27,11 +27,23 @@
 #include <deal.II/fe/fe_values_extractors.h>
 #include <deal.II/fe/fe.h>
 
+#include <aspect/fe_variable_collection.h>
 #include <aspect/parameters.h>
+
 
 namespace aspect
 {
   using namespace dealii;
+
+  /**
+   * Helper function to construct the default list of variables to use
+   * based on the given set of @p parameters.
+   */
+  template <int dim>
+  std::vector<VariableDeclaration<dim> >
+  construct_default_variables (const Parameters<dim> &parameters);
+
+
 
   /**
    * The introspection class provides information about the simulation as a
@@ -51,23 +63,27 @@ namespace aspect
    * @ingroup Simulator
    */
   template <int dim>
-  struct Introspection
+  struct Introspection: public FEVariableCollection<dim>
   {
     public:
       /**
        * Constructor.
        */
-      Introspection (const Parameters<dim> &parameters);
+      Introspection (const std::vector<VariableDeclaration<dim> > &variables,
+                     const Parameters<dim> &parameters);
 
       /**
        * Destructor.
        */
       ~Introspection ();
 
+
+
       /**
        * @name Things that are independent of the current mesh
        * @{
        */
+
       /**
        * The number of vector components used by the finite element
        * description of this problem. It equals $d+2+n_c$ where $d$ is the
@@ -76,6 +92,18 @@ namespace aspect
        * components are the scalar pressure and temperature fields.
        */
       const unsigned int n_components;
+
+      /**
+       * A variable that holds whether the temperature field should use a
+       * discontinuous discretization.
+       */
+      const bool use_discontinuous_temperature_discretization;
+
+      /**
+       * A variable that holds whether the composition field(s) should use a
+       * discontinuous discretization.
+       */
+      const bool use_discontinuous_composition_discretization;
 
       /**
        * A structure that enumerates the vector components of the finite
@@ -168,6 +196,8 @@ namespace aspect
        */
       struct ComponentMasks
       {
+        ComponentMasks (FEVariableCollection<dim> &fevs);
+
         ComponentMask              velocities;
         ComponentMask              pressure;
         ComponentMask              temperature;
@@ -178,13 +208,7 @@ namespace aspect
        * this problem. Component masks are a deal.II concept, see the deal.II
        * glossary.
        */
-      ComponentMasks component_masks;
-
-      /**
-       * A variable that describes for each vector component which vector
-       * block it corresponds to.
-       */
-      const std::vector<unsigned int> components_to_blocks;
+      const ComponentMasks component_masks;
 
       /**
        * @}
@@ -290,38 +314,12 @@ namespace aspect
       bool
       compositional_name_exists (const std::string &name) const;
 
-      /**
-       * Return the vector of finite element spaces used for the construction
-       * of the FESystem.
-       */
-      const std::vector<const dealii::FiniteElement<dim> *> &get_fes() const;
-
-      /**
-       * Return the vector of multiplicities used for the construction of the
-       * FESystem.
-       */
-      const std::vector<unsigned int> &get_multiplicities() const;
-
-      /**
-       * Free memory allocated inside @p fes after it is used to construct the
-       * FESystem.
-       */
-      void free_finite_element_data();
-
     private:
       /**
        * A vector that stores the names of the compositional fields that will
        * be used in the simulation.
        */
       std::vector<std::string> composition_names;
-      /**
-       * Dynamically allocated FiniteElements.
-       */
-      std::vector<const FiniteElement<dim> *> fes;
-      /**
-       * Multiplicities of the @p fes.
-       */
-      std::vector<unsigned int> multiplicities;
 
   };
 }

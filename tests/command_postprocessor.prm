@@ -1,0 +1,44 @@
+# Test that ASPECT executes a shell command using the
+# command postprocessor.
+
+set Dimension = 2
+set End time                               = 0
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial conditions
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 2
+  set Initial adaptive refinement        = 0
+end
+
+subsection Model settings
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Postprocess
+  set List of postprocessors = command
+
+  subsection Command
+    set Command = /bin/bash -c "echo 'Hello, world'"
+    set Run on all processes = false
+    set Terminate on failure = false
+  end
+end

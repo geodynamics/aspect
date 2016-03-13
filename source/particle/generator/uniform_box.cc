@@ -65,10 +65,10 @@ namespace aspect
                     try
                       {
                         particles.insert(this->generate_particle(particle_position,particle_index));
-                        particle_index++;
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
+                    particle_index++;
                   }
                 else if (dim == 3)
                   for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
@@ -80,10 +80,10 @@ namespace aspect
                       try
                         {
                           particles.insert(this->generate_particle(particle_position,particle_index));
-                          particle_index++;
                         }
                       catch (ExcParticlePointNotInDomain &)
                         {}
+                      particle_index++;
                     }
                 else
                   ExcNotImplemented();
@@ -111,24 +111,24 @@ namespace aspect
             {
               prm.enter_subsection("Uniform box");
               {
-                prm.declare_entry ("Minimal x", "0",
+                prm.declare_entry ("Minimum x", "0",
                                    Patterns::Double (),
-                                   "Minimal x coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal x", "1",
+                                   "Minimum x coordinate for the region of tracers.");
+                prm.declare_entry ("Maximum x", "1",
                                    Patterns::Double (),
-                                   "Maximal x coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal y", "0",
+                                   "Maximum x coordinate for the region of tracers.");
+                prm.declare_entry ("Minimum y", "0",
                                    Patterns::Double (),
-                                   "Minimal y coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal y", "1",
+                                   "Minimum y coordinate for the region of tracers.");
+                prm.declare_entry ("Maximum y", "1",
                                    Patterns::Double (),
-                                   "Maximal y coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal z", "0",
+                                   "Maximum y coordinate for the region of tracers.");
+                prm.declare_entry ("Minimum z", "0",
                                    Patterns::Double (),
-                                   "Minimal z coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal z", "1",
+                                   "Minimum z coordinate for the region of tracers.");
+                prm.declare_entry ("Maximum z", "1",
                                    Patterns::Double (),
-                                   "Maximal z coordinate for the region of tracers.");
+                                   "Maximum z coordinate for the region of tracers.");
               }
               prm.leave_subsection();
             }
@@ -154,15 +154,15 @@ namespace aspect
             {
               prm.enter_subsection("Uniform box");
               {
-                P_min(0) = prm.get_double ("Minimal x");
-                P_max(0) = prm.get_double ("Maximal x");
-                P_min(1) = prm.get_double ("Minimal y");
-                P_max(1) = prm.get_double ("Maximal y");
+                P_min(0) = prm.get_double ("Minimum x");
+                P_max(0) = prm.get_double ("Maximum x");
+                P_min(1) = prm.get_double ("Minimum y");
+                P_max(1) = prm.get_double ("Maximum y");
 
                 if (dim == 3)
                   {
-                    P_min(2) = prm.get_double ("Minimal z");
-                    P_max(2) = prm.get_double ("Maximal z");
+                    P_min(2) = prm.get_double ("Minimum z");
+                    P_max(2) = prm.get_double ("Maximum z");
                   }
               }
               prm.leave_subsection();

@@ -47,6 +47,18 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
+
+    /**
+     * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+     * given by the @p dofs_per_block structure.
+     *
+     * The numbers of dofs per block need to add up to the size of the index space described
+     * by @p whole_set.
+     */
+    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
+                         const IndexSet &whole_set,
+                         std::vector<IndexSet> &partitioned);
+
     /**
      * Returns spherical coordinates of a cartesian point. The returned array
      * is filled with radius, phi and theta (polar angle). If the dimension is
@@ -74,55 +86,75 @@ namespace aspect
     bool fexists(const std::string &filename);
 
     /**
+     * Reads the content of the ascii file @param filename on process 0 and
+     * distributes the content by MPI_Bcast to all processes. The function
+     * returns the content of the file on all processes.
+     *
+     * @param [in] filename The name of the ascii file to load.
+     * @param [in] comm The MPI communicator in which the content is
+     * distributed.
+     * @return A string which contains the data in @param filename.
+     */
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm);
+
+    /**
+     * Creates a path as if created by the shell command "mkdir -p", therefore
+     * generating directories from the highest to the lowest level if they are
+     * not already existing.
+     *
+     * @param pathname String that contains the path to create. '/' is used as
+     * directory separator.
+     * @param mode Permissions (mode bits) of the created directories. See the
+     * documentation of the chmod() command for more information.
+     * @return The function returns the error value of the last mkdir call
+     * inside. It returns zero on success. See the man page of mkdir() for
+     * more information.
+     */
+    int
+    mkdirp(std::string pathname, const mode_t mode = 0755);
+
+    /**
      * A namespace defining the cubic spline interpolation that can be used
      * between different spherical layers in the mantle.
      */
     namespace tk
     {
-      // band matrix solver
-      class band_matrix
-      {
-        private:
-          std::vector< std::vector<double> > m_upper;  // upper band
-          std::vector< std::vector<double> > m_lower;  // lower band
-        public:
-          band_matrix() {};                             // constructor
-          band_matrix(int dim, int n_u, int n_l);       // constructor
-          ~band_matrix() {};                            // destructor
-          void resize(int dim, int n_u, int n_l);       // init with dim,n_u,n_l
-          int dim() const;                              // matrix dimension
-          int num_upper() const
-          {
-            return m_upper.size()-1;
-          }
-          int num_lower() const
-          {
-            return m_lower.size()-1;
-          }
-          // access operator
-          double &operator () (int i, int j);             // write
-          double   operator () (int i, int j) const;      // read
-          // we can store an additional diogonal (in m_lower)
-          double &saved_diag(int i);
-          double  saved_diag(int i) const;
-          void lu_decompose();
-          std::vector<double> r_solve(const std::vector<double> &b) const;
-          std::vector<double> l_solve(const std::vector<double> &b) const;
-          std::vector<double> lu_solve(const std::vector<double> &b,
-                                       bool is_lu_decomposed=false);
-      };
-      // spline interpolation
+      /**
+       * Class for cubic spline interpolation
+       */
       class spline
       {
-        private:
-          std::vector<double> m_x,m_y;           // x,y coordinates of points
-          // interpolation parameters
-          // f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
-          std::vector<double> m_a,m_b,m_c,m_d;
         public:
+          /**
+           * Initialize the spline.
+           *
+           * @param x X coordinates of interpolation points.
+           * @param y Values in the interpolation points.
+           * @param cubic_spline Whether to construct a cubic spline or just do linear interpolation
+           */
           void set_points(const std::vector<double> &x,
-                          const std::vector<double> &y, bool cubic_spline=true);
+                          const std::vector<double> &y,
+                          bool cubic_spline = true);
+          /**
+           * Evaluate spline at point @p x.
+           */
           double operator() (double x) const;
+
+        private:
+          /**
+           * x coordinates of points
+           */
+          std::vector<double> m_x;
+
+          /**
+           * interpolation parameters
+           * \[
+           * f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
+           * \]
+           */
+          std::vector<double> m_a, m_b, m_c, m_y;
       };
     }
 
@@ -265,7 +297,8 @@ namespace aspect
          * changes over model runtime.
          */
         void
-        load_file(const std::string &filename);
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according

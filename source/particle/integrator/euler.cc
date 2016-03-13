@@ -27,7 +27,7 @@ namespace aspect
     namespace Integrator
     {
       /**
-       * Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n).
+       * Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$.
        * This requires only one step per integration, and doesn't involve any extra data.
        */
       template <int dim>
@@ -66,7 +66,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(Euler,
                                           "euler",
-                                          "Explicit Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
+                                          "Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$. "
                                           "This requires only one integration substep per timestep.")
     }
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -61,7 +61,7 @@
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
-
+#include <deal.II/base/std_cxx11/shared_ptr.h>
 
 namespace aspect
 {
@@ -83,8 +83,13 @@ namespace aspect
         template <int dim>      struct StokesPreconditioner;
         template <int dim>      struct StokesSystem;
         template <int dim>      struct AdvectionSystem;
-
       }
+
+      namespace Assemblers
+      {
+        template <int dim>      class AssemblerBase;
+      }
+      template <int dim>      struct AssemblerLists;
     }
   }
 
@@ -158,8 +163,6 @@ namespace aspect
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
-    private:
-
       /**
        * A structure that is used as an argument to functions that can work on
        * both the temperature and the compositional variables and that need to
@@ -228,6 +231,12 @@ namespace aspect
         is_temperature () const;
 
         /**
+         * Return whether this object refers to a field discretized by discontinuous finite elements.
+         */
+        bool
+        is_discontinuous (const Introspection<dim> &introspection) const;
+
+        /**
          * Look up the component index for this temperature or compositional
          * field. See Introspection::component_indices for more information.
          */
@@ -246,6 +255,9 @@ namespace aspect
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
       };
+
+
+    private:
 
 
       /**
@@ -546,9 +558,72 @@ namespace aspect
        */
 
       /**
-       * @name Functions used in the assembly of linear systems
+       * @name Functions, classes, and variables used in the assembly of linear systems
        * @{
        */
+
+      /**
+       * A member variable that stores, for the current simulation, what
+       * functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       *
+       * One would probably want this variable to just be a member of type
+       * internal::Assembly::AssemblerLists<dim>, but this requires that
+       * this type is declared in the current scope, and that would require
+       * including <assembly.h> which we don't want because it's big.
+       * Consequently, we just store a pointer to such an object, and create
+       * the object pointed to at the top of set_assemblers().
+       */
+      std_cxx11::unique_ptr<internal::Assembly::AssemblerLists<dim> > assemblers;
+
+      /**
+       * A collection of objects that implement member functions that may
+       * appear in the assembler signal lists. What the objects do is not
+       * actually important, but individual assembler objects may encapsulate
+       * data that is used by concrete assemblers.
+       *
+       * The objects pointed to by this vector are created in
+       * set_assemblers(), and are later destroyed by the destructor
+       * of the current class.
+       */
+      std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > assembler_objects;
+
+      /**
+       * Material models, through functions derived from
+       * MaterialModel::Interface::evaluate(), put their computed material
+       * parameters into a structure of type MaterialModel::MaterialModelOutputs.
+       * By default, material models will compute those parameters that
+       * correspond to the member variables of that structure. However,
+       * there are situations where parts of the simulator need additional
+       * pieces of information; a typical example would be the use of a
+       * Newton scheme that also requires the computation of <i>derivatives</i>
+       * of material parameters with respect to pressure, temperature, and
+       * possibly other variables.
+       *
+       * The computation of such additional information is controlled by
+       * the presence of a collection of pointers in
+       * MaterialModel::MaterialModelOutputs that point to additional
+       * objects. Whether or not one needs these additional objects depends
+       * on what linear system is being assembled, or what postprocessing
+       * wants to compute. For the purpose of assembly, the current
+       * function creates the additional objects (such as the one that stores
+       * derivatives) and adds pointers to them to the collection, based on
+       * what assemblers are selected. It does so by calling the
+       * internal::Assemblers::AssemblerBase::create_additional_material_model_outputs()
+       * functions from each object in Simulator::assembler_objects.
+       */
+      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &);
+
+      /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void set_assemblers ();
+
       /**
        * Initiate the assembly of the preconditioner for the Stokes system.
        *
@@ -603,6 +678,18 @@ namespace aspect
 
       /**
        * Compute the integrals for one advection matrix and right hand side on
+       * the faces of a single cell.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void
+      local_assemble_advection_face_terms(const AdvectionField &advection_field,
+                                          const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      /**
+       * Compute the integrals for one advection matrix and right hand side on
        * a single cell.
        *
        * This function is implemented in
@@ -615,7 +702,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-
       /**
        * Copy the contribution to the advection system from a single cell into
        * the global matrix that stores these elements.
@@ -624,7 +710,8 @@ namespace aspect
        * <code>source/simulator/assembly.cc</code>.
        */
       void
-      copy_local_to_global_advection_system (const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
+      copy_local_to_global_advection_system (const AdvectionField &advection_field,
+                                             const internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
       /**
        * @}
@@ -904,7 +991,7 @@ namespace aspect
        */
       void
       compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValues<dim,dim>                                     &input_finite_element_values,
+                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
                                            const typename DoFHandler<dim>::active_cell_iterator        &cell,
                                            const bool                                                   compute_strainrate,
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
@@ -961,6 +1048,7 @@ namespace aspect
        */
       double
       compute_initial_stokes_residual();
+
       /**
        * @}
        */
@@ -971,8 +1059,10 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
-      Introspection<dim>                  introspection;
       SimulatorSignals<dim>               signals;
+      const IntermediaryConstructorAction post_signal_creation;
+      Introspection<dim>                  introspection;
+
 
       MPI_Comm                            mpi_communicator;
 
@@ -1160,6 +1250,7 @@ namespace aspect
        * @}
        */
 
+    public:
       /**
        * A member class that isolates the functions and variables that deal
        * with the free surface implementation.  If there are no free surface
@@ -1208,7 +1299,7 @@ namespace aspect
            * assemly of the system matrix.
            */
           void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    FullMatrix<double> &local_matrix);
+                                    internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
           /**
            * If a geometry model uses manifolds for the refinement behavior
@@ -1367,10 +1458,24 @@ namespace aspect
            */
           std::set<types::boundary_id> tangential_mesh_boundary_indicators;
 
+          /**
+           * A handle on the connection that connects the Stokes assembler
+           * signal of the main simulator object to the apply_stabilization()
+           * function. We keep track of this connection because we need to
+           * break it once the current free surface handler object goes out
+           * of scope.
+           *
+           * With the current variable, the connection is broken once the
+           * scoped_connection goes out of scope, i.e., when the surrounding
+           * class is destroyed.
+           */
+          boost::signals2::scoped_connection assembler_connection;
 
           friend class Simulator<dim>;
           friend class SimulatorAccess<dim>;
       };
+
+    private:
 
       /**
        * Shared pointer for an instance of the FreeSurfaceHandler. this way,

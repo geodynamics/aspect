@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,9 +23,11 @@
 #define __aspect__velocity_boundary_conditions_gplates_h
 
 #include <aspect/velocity_boundary_conditions/interface.h>
-#include <deal.II/base/std_cxx11/array.h>
-#include <deal.II/base/table.h>
 #include <aspect/simulator_access.h>
+#include <aspect/compat.h>
+
+#include <deal.II/base/std_cxx11/array.h>
+#include <deal.II/base/function_lib.h>
 
 
 namespace aspect
@@ -38,80 +40,48 @@ namespace aspect
     {
       /**
        * GPlatesLookup handles all kinds of tasks around looking up a certain
-       * velocity boundary condition from a gplates .gpml file. This class
-       * keeps around the contents of two sets of files, corresponding to two
-       * instances in time where GPlates provides us with data; the boundary
-       * values at one particular time are interpolated between the two
-       * currently loaded data sets.
+       * velocity boundary condition from a gplates .gpml file.
        */
+      template <int dim>
       class GPlatesLookup
       {
         public:
 
           /**
-           * Initialize all members and the two pointers referring to the
-           * actual velocities. Also calculates any necessary rotation
+           * Initialize all members and calculates any necessary rotation
            * parameters for a 2D model.
            */
           GPlatesLookup(const Tensor<1,2> &pointone,
-                        const Tensor<1,2> &pointtwo,
-                        const double interpolation_width_);
+                        const Tensor<1,2> &pointtwo);
 
           /**
-           * Outputs the GPlates module information at model start. Need to be
-           * separated from Constructor because at construction time the
-           * SimulatorAccess is not initialized and only Rank 0 should give
-           * the screen output.
+           * Outputs the GPlates module information at model start.
            */
-          template <int dim>
-          void screen_output(const Tensor<1,2> &surface_point_one,
-                             const Tensor<1,2> &surface_point_two,
-                             const ConditionalOStream &pcout) const;
-
-          /**
-           * Check whether a file named @p filename exists.
-           */
-          bool fexists(const std::string &filename) const;
+          std::string
+          screen_output(const Tensor<1,2> &surface_point_one,
+                        const Tensor<1,2> &surface_point_two) const;
 
           /**
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
           void load_file(const std::string &filename,
-                         const ConditionalOStream &pcout);
+                         const MPI_Comm &comm);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
-           * Takes as input the position and current time weight.
+           * Takes as input the position. Actual velocity interpolation is
+           * performed in spherical coordinates.
            *
            * @param position The current position to compute velocity
-           * @param time_weight A weighting between the two current timesteps
-           * n and n+1
            */
-          template <int dim>
-          Tensor<1,dim> surface_velocity(const Point<dim> &position,
-                                         const double time_weight) const;
+          Tensor<1,dim> surface_velocity(const Point<dim> &position) const;
 
         private:
-
           /**
-           * Tables which contain the velocities
+           * Interpolation functions to access the velocities.
            */
-          Table<2,Tensor<1,3> > velocity_vals;
-          Table<2,Tensor<1,3> > old_velocity_vals;
-
-          /**
-           * Table for the data point positions.
-           */
-          Table<2,Tensor<1,3> > velocity_positions;
-
-          /**
-           * Pointers to the actual tables. Used to avoid unnecessary copying
-           * of values. These pointers point to either velocity_vals or
-           * old_velocity_vals.
-           */
-          Table<2,Tensor<1,3> > *velocity_values;
-          Table<2,Tensor<1,3> > *old_velocity_values;
+          std_cxx11::array<std_cxx11::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
 
           /**
            * Distances between adjacent point in the Lat/Long grid
@@ -121,29 +91,10 @@ namespace aspect
           /**
            * The matrix, which describes the rotation by which a 2D model
            * needs to be transformed to a plane that contains the origin and
-           * the two user prescribed points. Is not used for 3D.
+           * the two user prescribed points. Is not necessary and therefore
+           * not used for 3D models.
            */
           Tensor<2,3> rotation_matrix;
-
-          /**
-           * Determines the width of the velocity interpolation zone around
-           * the current point. Currently equals the arc distance between
-           * evaluation point and velocity data point that is still included
-           * in the interpolation. The weighting of the points currently only
-           * accounts for the surface area a single data point is covering
-           * ('moving window' interpolation without distance weighting).
-           */
-          const double interpolation_width;
-
-          /**
-           * A function that returns the rotated vector r' that results out of
-           * a rotation from vector r around a specified rotation_axis by an
-           * defined angle
-           */
-          Tensor<1,3>
-          rotate_around_axis (const Tensor<1,3> &position,
-                              const Tensor<1,3> &rotation_axis,
-                              const double angle) const;
 
           /**
            * A function that returns the corresponding paraview angles for a
@@ -181,11 +132,18 @@ namespace aspect
 
           /**
            * Return the cartesian coordinates of a spherical surface position
-           * defined by theta (polar angle. not geographical latitude) and
+           * defined by theta (polar angle, not geographical latitude) and
            * phi.
            */
           Tensor<1,3>
           cartesian_surface_coordinates(const Tensor<1,3> &sposition) const;
+
+          /**
+           * This function looks up the north- and east-velocities at a given
+           * position and converts them to cartesian velocities.
+           */
+          Tensor<1,dim>
+          cartesian_velocity_at_surface_point(const std_cxx11::array<double,3> &spherical_point) const;
 
           /**
            * Returns cartesian velocities calculated from surface velocities
@@ -194,79 +152,10 @@ namespace aspect
            * @param s_velocities Surface velocities in spherical coordinates
            * (theta, phi)
            * @param s_position Position in spherical coordinates
-           * (theta,phi,radius)
+           * (radius,phi,theta)
            */
           Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
-                                              const Tensor<1,3> &s_position) const;
-
-          /**
-           * calculates the index given a certain position
-           *
-           * @param index Reference to the index field, which is modified.
-           * @param position Input position, which is converted to spatial
-           * index
-           */
-          void
-          calculate_spatial_index(int *index,
-                                  const Tensor<1,3> &position) const;
-
-          /**
-           * This function adds a certain data point to the interpolated
-           * surface velocity at this evaluation point. This includes
-           * calculating the interpolation weight and the rotation of the
-           * velocity to the evaluation point position (the velocity need to
-           * be tangential to the surface).
-           */
-          double
-          add_interpolation_point(Tensor<1,3>       &surf_vel,
-                                  const Tensor<1,3> &position,
-                                  const int          spatial_index[2],
-                                  const double       time_weight,
-                                  const bool         check_termination) const;
-
-          /**
-           * Returns a velocity vector that is rotated to be tangential to the
-           * sphere surface at point position
-           *
-           * @param data_position Position of the velocity data point
-           * @param point_position Position of the current evaluation point to
-           * which the velocity will be rotated
-           * @param data_velocity Unrotated velocity vector
-           */
-          Tensor<1,3>
-          rotate_grid_velocity(const Tensor<1,3> &data_position,
-                               const Tensor<1,3> &point_position,
-                               const Tensor<1,3> &data_velocity) const;
-
-          /**
-           * Returns the position (cartesian or spherical depending on last
-           * argument) of a data point with a given theta,phi index.
-           */
-          Tensor<1,3>
-          get_grid_point_position(const unsigned int theta_index,
-                                  const unsigned int phi_index,
-                                  const bool cartesian) const;
-
-          /**
-           * Returns the arc distance of two points on a sphere surface.
-           */
-          double
-          arc_distance(const Tensor<1,3> position_1, const Tensor<1,3> position_2) const;
-
-          /**
-           * Handles the actual multidimensional interpolation from velocity
-           * input to evaluation point position.
-           */
-          Tensor<1,3>
-          interpolate ( const Tensor<1,3> position,
-                        const double time_weight) const;
-
-          /**
-           * Bounds the theta and phi indices to the right sizes. Handles
-           * periodicity in phi and theta.
-           */
-          void
-          reformat_indices (int idx[2]) const;
+                                              const std_cxx11::array<double,3> &s_position) const;
 
           /**
            * Check whether the gpml file was created by GPlates1.4 or later.
@@ -280,7 +169,8 @@ namespace aspect
 
     /**
      * A class that implements prescribed velocity boundary conditions
-     * determined from a GPlates input files.
+     * determined from GPlates input files. The interpolation in time is
+     * performed between two objects of the GPlatesLookup class.
      *
      * @ingroup VelocityBoundaryConditionsModels
      */
@@ -298,8 +188,11 @@ namespace aspect
          * current class, this function returns value from gplates.
          */
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+        boundary_velocity (const Point<dim> &position) const;
+
+        // avoid -Woverloaded-virtual warning until the deprecated function
+        // is removed from the interface:
+        using Interface<dim>::boundary_velocity;
 
         /**
          * Initialization function. This function is called once at the
@@ -334,40 +227,39 @@ namespace aspect
 
       private:
         /**
-         * A variable that stores the current time of the simulation, but
-         * relative to the velocity_file_start_time.
+         * A variable that stores the currently used data file of a series. It
+         * gets updated if necessary by update().
          */
-        double time_relative_to_vel_file_start_time;
+        int current_file_number;
 
         /**
-         * A variable that stores the currently used velocity file of a
-         * series. It gets updated if necessary by set_current_time.
+         * Time from which on the data file with number 'First data file
+         * number' is used as boundary condition. Previous to this time, 0 is
+         * returned for every field. Depending on the setting of the global
+         * 'Use years in output instead of seconds' flag in the input file,
+         * this number is either interpreted as seconds or as years."
          */
-        int  current_time_step;
+        double first_data_file_model_time;
 
         /**
-         * Time at which the velocity file with number 0 shall be loaded.
-         * Previous to this time, a no-slip boundary condition is assumed.
+         * Number of the first data file to be loaded when the model time is
+         * larger than 'First data file model time'.
          */
-        double velocity_file_start_time;
+        int first_data_file_number;
 
         /**
-         * Directory in which the gplates velocity are present.
+         * In some cases the boundary files are not numbered in increasing but
+         * in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True'
+         * the plugin will first load the file with the number 'First data
+         * file number' and decrease the file number during the model run.
          */
-        std::string data_directory;
-
-        /**
-         * First part of filename of velocity files. The files have to have
-         * the pattern velocity_file_name.n.gpml where n is the number of the
-         * current timestep (starts from 0).
-         */
-        std::string velocity_file_name;
+        bool decreasing_file_order;
 
         /**
          * Time in model units (depends on other model inputs) between two
          * velocity files.
          */
-        double time_step;
+        double data_file_time_step;
 
         /**
          * Weight between velocity file n and n+1 while the current time is
@@ -377,10 +269,22 @@ namespace aspect
 
         /**
          * State whether we have time_dependent boundary conditions. Switched
-         * off after finding no more velocity files to suppress attempts to
-         * read in new files.
+         * off after finding no more velocity files to suppress attempts to read
+         * in new files.
          */
         bool time_dependent;
+
+        /**
+         * Directory in which the gplates velocity files are present.
+         */
+        std::string data_directory;
+
+        /**
+         * First part of filename of velocity files. The files have to have
+         * the pattern velocity_file_name.n.gpml where n is the number of the
+         * current timestep (starts from 0).
+         */
+        std::string velocity_file_name;
 
         /**
          * Scale the velocity boundary condition by a scalar factor.
@@ -404,33 +308,41 @@ namespace aspect
         Tensor<1,2> pointtwo;
 
         /**
-         * Determines the width of the velocity interpolation zone around the
-         * current point. Currently equals the arc distance between evaluation
-         * point and velocity data point that is still included in the
-         * interpolation. The weighting of the points currently only accounts
-         * for the surface area a single data point is covering ('moving
-         * window' interpolation without distance weighting).
+         * Determines the depth of the lithosphere. The user might want to apply
+         * the GPlates velocities not only at the surface of the model, but also
+         * in the whole lithosphere. At every side boundary point with a depth
+         * smaller than this value (and thus being located in the lithosphere),
+         * the surface velocity will be described.
          */
-        double interpolation_width;
+        double lithosphere_thickness;
 
         /**
          * Pointer to an object that reads and processes data we get from
          * gplates files.
          */
-        std_cxx11::shared_ptr<internal::GPlatesLookup> lookup;
+        std_cxx11::shared_ptr<internal::GPlatesLookup<dim> > lookup;
 
         /**
-         * Handles the update of the velocity data in lookup.
+         * Pointer to an object that reads and processes data we get from
+         * gplates files. This saves the previous data time step.
+         */
+        std_cxx11::shared_ptr<internal::GPlatesLookup<dim> > old_lookup;
+
+        /**
+         * Handles the update of the velocity data in lookup. The input
+         * parameter makes sure that both velocity files (n and n+1) can be
+         * reloaded if the model time step is larger than the velocity file
+         * time step.
          */
         void
-        update_velocity_data ();
+        update_data (const bool reload_both_files);
 
         /**
          * Handles settings and user notification in case the time-dependent
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence (const int timestep);
+        end_time_dependence ();
 
         /**
          * Create a filename out of the name template.

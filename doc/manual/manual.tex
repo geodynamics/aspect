@@ -4770,7 +4770,7 @@ equations~\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.%
   elliptic operator $-\nabla \cdot 2 \eta \varepsilon(\cdot)$. For highly
   heterogeneous models, such as the one discussed in the current section, this
   may require a lot of Conjugate Gradient iterations. For example, for 8
-  global refinement steps, the 30+188 outer iterations without averaging whosn
+  global refinement steps, the 30+188 outer iterations without averaging shown
   in Table~\ref{tab:sinker-with-averaging-iteration-counts} require a total of
   22,096 inner CG iterations for the elliptic block (and a total of 837 for the
   aproximate Schur complement). Using harmonic averaging, the 30+26 outer
@@ -5022,6 +5022,40 @@ it is possible to produce many interesting flow fields such as the ones visualiz
     \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
     \label{fig:prescribed-velocity}
 \end{figure}
+
+\subsubsection{Artificial viscosity smoothing}
+\label{sec:artificial-viscosity-smoothing}
+\textit{This section was contributed by Ryan Grove}
+
+Standard finite element discretizations of advection-diffusion equations introduce unphysical oscillations around steep gradients. Therefore, stabilization must be added to the discrete formulation to obtain correct solutions. In ASPECT, we use the Entropy Viscosity scheme developed by Guermond et al.~in the paper \cite{guer11}. In this scheme, an artificial viscosity is calculated on every cell and used to try to combat these oscillations that cause unwanted overshoot and undershoot.  More information about how \aspect{} does this is located at \url{https://dealii.org/developer/doxygen/deal.II/step_31.html}.  
+
+Instead of just looking at an individual cell's artificial viscosity, improvements in the minimizing of the oscillations can be made by smoothing.  Smoothing is the act of finding the maximum artificial viscosity taken over a cell $T$ and the neighboring cells across the faces of $T$, i.e.,
+\begin{equation*}
+\bar{v_h}(T) = \max_{K \in N(T)} v_h(K)
+\end{equation*}
+where $N(T)$ is the set containing $T$ and the neighbors across the faces of $T$.
+
+This feature can be turned on by setting the \hyperref[parameters:Discretization/Stabilization parameters/Use artificial viscosity smoothing]{Use artificial viscosity smoothing} flag inside the \hyperref[parameters:Discretization/Stabilization_20parameters]{Stabilization} subsection inside the \hyperref[parameters:Discretization]{Discretization} subsection in your parameter file.
+
+To show how this can be used in practice, let us consider the simple convection in a quarter of a 2d annulus cookbook in Section \ref{sec:shell-simple-2d}, a radial compositional field was added to help show the advantages of using the artificial viscosity smoothing feature.
+  
+By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d.prm, \end{verbatim} 
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.part.prm.out}
+it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
+Figure \ref{fig:smoothing}.
+
+\begin{figure}
+    \centering
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/with_smoothing.png}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/without_smoothing.png}}
+    \caption{Artificial viscosity smoothing: Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section \ref{sec:artificial-viscosity-smoothing}.}
+    \label{fig:smoothing}
+\end{figure}
+
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}

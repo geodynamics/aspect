@@ -110,7 +110,8 @@ namespace aspect
          * for File depth dependence method
          */
         void
-        read_viscosity_file(const std::string &filename);
+        read_viscosity_file(const std::string &filename,
+                            const MPI_Comm &comm);
 
         /**
          * Data structures to store depth and viscosity lookup tables as well as interpolating

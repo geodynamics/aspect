@@ -32,157 +32,151 @@ namespace aspect
 {
   namespace internal
   {
-
     /**
-     * Return pair with @p n_components and a filled ComponentIndices structure.
+     * Return a filled ComponentIndices structure.
      */
     template <int dim>
-    std::pair<unsigned int, typename Introspection<dim>::ComponentIndices>
-    setup_component_indices (const unsigned int n_compositional_fields)
+    typename Introspection<dim>::ComponentIndices
+    setup_component_indices (FEVariableCollection<dim> &fevs)
     {
       typename Introspection<dim>::ComponentIndices ci;
-      unsigned int comp = 0;
-
       for (unsigned int i=0; i<dim; ++i)
-        ci.velocities[i] = comp++;
-      ci.pressure = comp++;
-      ci.temperature = comp++;
+        ci.velocities[i] = fevs.variable("velocity").first_component_index+i;
+
+      ci.pressure = fevs.variable("pressure").first_component_index;
+      ci.temperature = fevs.variable("temperature").first_component_index;
+      unsigned int n_compositional_fields = fevs.variable("compositions").n_components();
       for (unsigned int i=0; i<n_compositional_fields; ++i)
-        ci.compositional_fields.push_back(comp++);
-      return std::make_pair(comp, ci);
+        ci.compositional_fields.push_back(fevs.variable("compositions").first_component_index+i);
+
+      return ci;
     }
 
     /**
-     * Return pair with @p n_blocks and a filled BlockIndices structure.
+     * return filled BlockIndices structure.
      */
     template <int dim>
-    std::pair<unsigned int, typename Introspection<dim>::BlockIndices>
-    setup_blocks (const unsigned int n_compositional_fields,
-                  const bool use_direct_solver)
+    typename Introspection<dim>::BlockIndices
+    setup_blocks (FEVariableCollection<dim> &fevs)
     {
       typename Introspection<dim>::BlockIndices b;
+      b.velocities = fevs.variable("velocity").block_index;
+      b.pressure = fevs.variable("pressure").block_index;
+      b.temperature = fevs.variable("temperature").block_index;
 
-      unsigned int split = (use_direct_solver)?0:1;
-      unsigned int block = 0;
-
-      b.velocities = block;
-      block += split;
-      b.pressure = block++;
-
-      b.temperature = block++;
+      unsigned int n_compositional_fields = fevs.variable("compositions").n_components();
       for (unsigned int i=0; i<n_compositional_fields; ++i)
-        b.compositional_fields.push_back(block++);
+        b.compositional_fields.push_back(fevs.variable("compositions").block_index+i);
 
-      return std::make_pair(block, b);
+      return b;
     }
 
-    /**
-     * Return base element structure, FiniteElement spaces, and multiplicities.
-     */
     template <int dim>
-    std_cxx1x::tuple<typename Introspection<dim>::BaseElements, std::vector<const FiniteElement<dim> *>, std::vector<unsigned int> >
-    setup_fes (const Parameters<dim> &parameters)
+    typename Introspection<dim>::BaseElements
+    setup_base_elements (FEVariableCollection<dim> &fevs)
     {
-      typename Introspection<dim>::BaseElements bes;
-      std::vector<const FiniteElement<dim> *> fes;
-      std::vector<unsigned int> multiplicities;
+      typename Introspection<dim>::BaseElements base_elements;
 
-      unsigned int base_element = 0;
+      base_elements.velocities = fevs.variable("velocity").base_index;
+      base_elements.pressure = fevs.variable("pressure").base_index;
+      base_elements.temperature = fevs.variable("temperature").base_index;
+      base_elements.compositional_fields = fevs.variable("compositions").base_index;
 
-      // u
-      fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree));
-      multiplicities.push_back(dim);
-      bes.velocities = base_element++;
+      return base_elements;
+    }
 
-      // p
-      if (parameters.use_locally_conservative_discretization)
-        fes.push_back(new FE_DGP<dim>(parameters.stokes_velocity_degree-1));
+    template <int dim>
+    std_cxx11::shared_ptr<FiniteElement<dim> >
+    new_FE_Q_or_DGP(const bool discontinuous,
+                    const unsigned int degree)
+    {
+      if (discontinuous)
+        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(degree));
       else
-        fes.push_back(new FE_Q<dim>(parameters.stokes_velocity_degree-1));
-      multiplicities.push_back(1);
-      bes.pressure = base_element++;
-
-      // T
-      fes.push_back(new FE_Q<dim>(parameters.temperature_degree));
-      multiplicities.push_back(1);
-      bes.temperature = base_element++;
-
-      // compositions:
-      fes.push_back(new FE_Q<dim>(parameters.composition_degree));
-      multiplicities.push_back(parameters.n_compositional_fields);
-      bes.compositional_fields = base_element++;
-
-      Assert(base_element == fes.size(), ExcInternalError());
-      Assert(base_element == multiplicities.size(), ExcInternalError());
-
-      return std_cxx11::make_tuple(bes, fes, multiplicities);
+        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
     }
 
-    /**
-     * Construct mapping from component to block indices.
-     */
     template <int dim>
-    std::vector<unsigned int>
-    setup_component_to_blocks (const typename Introspection<dim>::ComponentIndices &component_indices,
-                               const typename Introspection<dim>::BlockIndices &block_indices,
-                               const unsigned int n_components)
+    std_cxx11::shared_ptr<FiniteElement<dim> >
+    new_FE_Q_or_DGQ(const bool discontinuous,
+                    const unsigned int degree)
     {
-      std::vector<unsigned int> components_to_blocks;
-      const unsigned int n_compositional_fields = component_indices.compositional_fields.size();
-
-      components_to_blocks.resize(n_components, dealii::numbers::invalid_unsigned_int);
-      for (unsigned int d=0; d<dim; ++d)
-        components_to_blocks[component_indices.velocities[d]] = block_indices.velocities;
-      components_to_blocks[component_indices.pressure] = block_indices.pressure;
-      components_to_blocks[component_indices.temperature] = block_indices.temperature;
-      for (unsigned int c=0; c<n_compositional_fields; ++c)
-        components_to_blocks[component_indices.compositional_fields[c]] = block_indices.compositional_fields[c];
-
-#ifdef DEBUG
-      // check we assigned all components
-      for (unsigned int c=0; c<n_components; ++c)
-        Assert(components_to_blocks[c]!=dealii::numbers::invalid_unsigned_int, ExcInternalError());
-#endif
-
-      return components_to_blocks;
+      if (discontinuous)
+        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGQ<dim>(degree));
+      else
+        return std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(degree));
     }
   }
+
 
 
 
   template <int dim>
-  Introspection<dim>::Introspection(const Parameters<dim> &parameters)
-    :
-    n_components (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size()).first),
-    component_indices (internal::setup_component_indices<dim>(parameters.names_of_compositional_fields.size()).second),
-    n_blocks (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.use_direct_stokes_solver).first),
-    block_indices (internal::setup_blocks<dim>(parameters.names_of_compositional_fields.size(), parameters.use_direct_stokes_solver).second),
-    extractors (component_indices),
-    base_elements (std_cxx1x::get<0>(internal::setup_fes<dim>(parameters))),
-    components_to_blocks (internal::setup_component_to_blocks<dim>(component_indices, block_indices, n_components)),
-    system_dofs_per_block (n_blocks),
-    composition_names(parameters.names_of_compositional_fields),
-    fes (std_cxx1x::get<1>(internal::setup_fes<dim>(parameters))),
-    multiplicities (std_cxx1x::get<2>(internal::setup_fes<dim>(parameters)))
+  std::vector<VariableDeclaration<dim> >
+  construct_default_variables (const Parameters<dim> &parameters)
   {
+    std::vector<VariableDeclaration<dim> > variables;
+
+    const unsigned int n_velocity_blocks = parameters.use_direct_stokes_solver ? 0 : 1;
+    variables.push_back(
+      VariableDeclaration<dim>("velocity",
+                               std_cxx11::shared_ptr<FiniteElement<dim> >(
+                                 new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                               dim,
+                               n_velocity_blocks));
+
+    variables.push_back(
+      VariableDeclaration<dim>(
+        "pressure",
+        internal::new_FE_Q_or_DGP<dim>(parameters.use_locally_conservative_discretization,
+                                       parameters.stokes_velocity_degree-1),
+        1,
+        1));
+
+    variables.push_back(
+      VariableDeclaration<dim>(
+        "temperature",
+        internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_temperature_discretization,
+                                       parameters.temperature_degree),
+        1,
+        1));
+
+    variables.push_back(
+      VariableDeclaration<dim>(
+        "compositions",
+        internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_composition_discretization,
+                                       parameters.composition_degree),
+        parameters.n_compositional_fields,
+        parameters.n_compositional_fields));
+
+    return variables;
   }
+
+
+  template <int dim>
+  Introspection<dim>::Introspection(const std::vector<VariableDeclaration<dim> > &variable_definition,
+                                    const Parameters<dim> &parameters
+                                   )
+    :
+    FEVariableCollection<dim>(variable_definition),
+    n_components (FEVariableCollection<dim>::n_components()),
+    use_discontinuous_temperature_discretization (parameters.use_discontinuous_temperature_discretization),
+    use_discontinuous_composition_discretization (parameters.use_discontinuous_composition_discretization),
+    component_indices (internal::setup_component_indices<dim>(*this)),
+    n_blocks(FEVariableCollection<dim>::n_blocks()),
+    block_indices (internal::setup_blocks<dim>(*this)),
+    extractors (component_indices),
+    base_elements (internal::setup_base_elements<dim>(*this)),
+    component_masks (*this),
+    system_dofs_per_block (n_blocks),
+    composition_names(parameters.names_of_compositional_fields)
+  {}
 
 
   template <int dim>
   Introspection<dim>::~Introspection ()
-  {
-    free_finite_element_data();
-  }
+  {}
 
-
-  template <int dim>
-  void Introspection<dim>::free_finite_element_data ()
-  {
-    for (unsigned int i=0; i<fes.size(); ++i)
-      delete fes[i];
-    fes.clear();
-    multiplicities.clear();
-  }
 
   namespace
   {
@@ -203,6 +197,31 @@ namespace aspect
     pressure (component_indices.pressure),
     temperature (component_indices.temperature),
     compositional_fields (make_extractor_sequence (component_indices.compositional_fields))
+  {}
+
+  namespace
+  {
+    template<int dim>
+    std::vector<ComponentMask>
+    make_component_mask_sequence(const FEVariable<dim> &variable)
+    {
+      std::vector<ComponentMask> result;
+      for (unsigned int i=0; i<variable.multiplicity; ++i)
+        {
+          result.push_back(ComponentMask(variable.component_mask.size(), false));
+          result.back().set(variable.first_component_index+i, true);
+        }
+      return result;
+    }
+  }
+
+  template <int dim>
+  Introspection<dim>::ComponentMasks::ComponentMasks (FEVariableCollection<dim> &fevs)
+    :
+    velocities (fevs.variable("velocity").component_mask),
+    pressure (fevs.variable("pressure").component_mask),
+    temperature (fevs.variable("temperature").component_mask),
+    compositional_fields (make_component_mask_sequence (fevs.variable("compositions")))
   {}
 
 
@@ -241,23 +260,6 @@ namespace aspect
             false);
   }
 
-  template <int dim>
-  const std::vector<const FiniteElement<dim> *> &
-  Introspection<dim>::get_fes() const
-  {
-    Assert(fes.size()>0,
-           ExcMessage("Error: finite element spaces are only available during construction."));
-    return fes;
-  }
-
-  template <int dim>
-  const std::vector<unsigned int> &
-  Introspection<dim>::get_multiplicities() const
-  {
-    Assert(multiplicities.size()>0,
-           ExcMessage("Error: finite element multiplicities are only available during construction."));
-    return multiplicities;
-  }
 
 }
 
@@ -266,7 +268,10 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template struct Introspection<dim>;
+  template struct Introspection<dim>; \
+  template \
+  std::vector<VariableDeclaration<dim> > \
+  construct_default_variables (const Parameters<dim> &parameters);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
