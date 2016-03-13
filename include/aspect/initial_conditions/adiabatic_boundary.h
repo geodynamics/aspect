@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2015 by the authors of the ASPECT code.
+   Copyright (C) 2016 by the authors of the ASPECT code.
 
    This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 
 #include <aspect/initial_conditions/interface.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/simulator.h>
 
 
@@ -44,17 +45,15 @@ namespace aspect
      * data file need to be at least 1 degree wider than the bounds
      * you use to define the region of your ellipsoid chunk geometry.
      *
-     * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps,
-     * and Wolfgang Bangerth.
+     * This plugin is developed by Tahiry Rajaonarison and D. Sarah Stamps.
      */
     template <int dim>
-    class AdiabaticBoundary : public Interface<dim>
+    class AdiabaticBoundary : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Return the initial temperature as a function of position.
          */
-
         virtual
         double initial_temperature (const Point<dim> &position) const;
 
@@ -77,30 +76,31 @@ namespace aspect
         std::string isotherm_file_name;
         double isotherm_temperature;
         double surface_temperature;
+        double temperature_gradient;
         double delta;
 
         /**
-         * A function that reads the depth of the user-defined
-         * adiabatic boundary from an ascii data file and returns
-         * the value of the depth for each position.
+         * A function that returns the isothem depth for a given position.
          */
         double
         get_isotherm_depth (const double latitude,
                             const double longitude) const;
 
         /**
-         * Return latitude and longitude from x,y and z in the WGS84
-         * Earth-Center Earth-Fixed (ECEF) reference frame.
+         * Function that returns latitude and longitude from ECEF Cartesian
+         * coordinates that account for ellipsoidal shape of the Earth
+         * with WGS84 parameters.
          */
         std::pair<double, double>
         lat_long_from_xyz_WGS84(const Point<3> &pos) const;
 
         /**
-        * Return distance from the Earth's center to a point on the
-        * surface in the WGS84 ECEF reference frane.
+        * Return distance from the Earth's center to a given coordinate on the
+        * surface in the WGS84 ECEF reference frane. Note that this radius is constant
+        * for all coordinates along one line of latitude.
         */
         double
-        radius_WGS84(const double &theta) const;
+        radius_WGS84(const double theta) const;
     };
   }
 }

@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2015 by the authors of the ASPECT code.
+   Copyright (C) 2016 by the authors of the ASPECT code.
 
    This file is part of ASPECT.
    ASPECT is free software; you can redistribute it and/or modify
@@ -18,42 +18,15 @@
 */
 
 
-#include <aspect/initial_conditions/interface.h>
 #include <aspect/initial_conditions/adiabatic_boundary.h>
 #include <fstream>
 #include <iostream>
-
-/**
- * A class that computes an initial temperature field based
- * on a user-defined adiabatic boundary for the 3D ellipsoid
- * chunk geometry model. It discretizes the model domain into
- * two regions separated by an isotherm boundary below which
- * the temperature increases adiabatically. Above the
- * user-defined isotherm boundary the temperature linearly
- * increases from a surface temperature (273.15 K or 0 degree C)
- * to the isotherm (1673.15 K or 1600 degree C). The user
- * defines the location of the isotherm boundary with an ascii
- * data file with the format defined in the ASPECT manual. Note
- * that the latitudinal and longitudinal bounds of the ascii input
- * data file need to be at least 1 degree wider than the bounds
- * you use to define the region of your ellipsoid chunk geometry.
- *
- * This plugin is developed by Tahiry Rajaonarison, D. Sarah Stamps,
- * and Wolfgang Bangerth.
- */
-
 
 namespace aspect
 {
   namespace InitialConditions
   {
     using namespace dealii;
-
-    /**
-     * Function that returns latitude and longitude from ECEF Cartesian
-     * coordinates that account for ellipsoidal shape of the Earth
-     * with WGS84 parameters.
-     */
 
     template <int dim>
     std::pair<double, double>
@@ -78,14 +51,14 @@ namespace aspect
                                              * std::cos(th)))));
 
       /* Convert to degrees. */
-      const double lon_degrees = lon * (180 / numbers::PI);
-      const double lat_degrees = lat * (180 / numbers::PI);
+      const double lon_degrees = lon * (180. / numbers::PI);
+      const double lat_degrees = lat * (180. / numbers::PI);
 
       /* Set all longitudes between [0,360]. */
-      if (lon_degrees < 0)
-        return std::make_pair(lat_degrees, lon_degrees + 360);
-      else if (lon_degrees > 360)
-        return std::make_pair(lat_degrees, lon_degrees - 360);
+      if (lon_degrees < 0.)
+        return std::make_pair(lat_degrees, lon_degrees + 360.);
+      else if (lon_degrees > 360.)
+        return std::make_pair(lat_degrees, lon_degrees - 360.);
       else
         return std::make_pair(lat_degrees, lon_degrees);
 
@@ -96,13 +69,13 @@ namespace aspect
     AdiabaticBoundary<2>::get_isotherm_depth(const double,
                                              const double) const
     {
-      AssertThrow(false, ExcInternalError());
+      AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
     }
 
-    template <int dim>
+    template <>
     double
-    AdiabaticBoundary<dim>::get_isotherm_depth(const double latitude,
+    AdiabaticBoundary<3>::get_isotherm_depth(const double latitude,
                                                const double longitude) const
     {
       /**
@@ -114,25 +87,17 @@ namespace aspect
       for (unsigned int i = 0; i <= depths_iso.size();)
         if (std::fabs(latitude - latitudes_iso[i]) <= delta && std::fabs(longitude - longitudes_iso[i]) < delta)
           {
-            return -depths_iso[i]*1000;
-          }
-        else if (std::fabs(latitude - latitudes_iso[i]) <= delta*2 && std::fabs(longitude - longitudes_iso[i]) < delta*2)
-          {
-            return -depths_iso[i]*1000;
+            return depths_iso[i];
           }
         else
           i++;
-      Assert(false, ExcInternalError());
+      Assert (false, ExcInternalError());
       return 0;
     }
 
-    /**
-     * Calculate distance from the center of the Earth to the surface of WGS84.
-     */
-
     template <int dim>
     double
-    AdiabaticBoundary<dim>::radius_WGS84(const double &theta) const
+    AdiabaticBoundary<dim>::radius_WGS84(const double theta) const
     {
       const double eccentricity    = 8.1819190842622e-2;
       const double semi_major_axis = 6378137.0;
@@ -144,27 +109,21 @@ namespace aspect
     double
     AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &) const
     {
-      Assert (false, ExcNotImplemented());
+      AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
     }
-
-    /**
-     * Get the depth of the adiabatic boundary isotherm for the current lat/long.
-     * If above the isotherm use a linear interpolation to the surface.
-     * If below the isotherm use an increase of .5 degrees per kilometer.
-     */
 
     template <>
     double
     AdiabaticBoundary<3>::initial_temperature (const Point<3> &position) const
     {
       const std::pair<double, double> lat_long = lat_long_from_xyz_WGS84(position);
-      const double depth                       = position.norm() - radius_WGS84(lat_long.first);
+      const double depth                       = radius_WGS84(lat_long.first) - position.norm();
       const double isotherm_depth              = get_isotherm_depth(lat_long.first, lat_long.second);
-      if (depth < isotherm_depth)
-        return isotherm_temperature - (depth - isotherm_depth) * 0.0005;
+      if (depth > isotherm_depth)
+        return isotherm_temperature + (depth - isotherm_depth) * temperature_gradient;
       else
-        return surface_temperature + ( depth/isotherm_depth)*(isotherm_temperature - surface_temperature);
+        return surface_temperature + (depth/isotherm_depth)*(isotherm_temperature - surface_temperature);
     }
 
 
@@ -179,16 +138,18 @@ namespace aspect
           prm.declare_entry ("Isotherm depth filename",
                              "adiabatic_boundary.txt",
                              Patterns::FileName(),
-                             "File from which the base of the lithosphere depth data is read. "
+                             "File from which the base of the lithosphere depth data is read."
                              "Note that full path (/$DIRECTORY_PATH/filename) of the location "
-                             "of the file must be provided. ");
+                             "of the file must be provided.");
           prm.declare_entry ("Isotherm temperature", "1673.15",
                              Patterns::Double (0),
-                             "The value of the isothermal boundary temperature. Units: Kelvin. ");
+                             "The value of the isothermal boundary temperature. Units: Kelvin.");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0),
-                             "The value of the suface temperature. Units: Kelvin. ");
-
+                             "The value of the suface temperature. Units: Kelvin.");
+          prm.declare_entry ("Adiabatic temperature gradient", "0.0005",
+                             Patterns::Double (0),
+                             "The value of the adiabatic temperature gradient. Units: $K m^{-1}$.");
         }
         prm.leave_subsection();
       }
@@ -206,10 +167,17 @@ namespace aspect
           isotherm_file_name = prm.get("Isotherm depth filename");
           isotherm_temperature = prm.get_double("Isotherm temperature");
           surface_temperature  = prm.get_double("Surface temperature");
+          temperature_gradient = prm.get_double("Adiabatic temperature gradient");
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      AssertThrow ((dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>
+                    (&this->get_geometry_model()) != 0),
+                   ExcMessage ("This initial condition can only be used if the geometry "
+                               "is an ellipsoidal chunk."));
+      
 
       std::ifstream input1(isotherm_file_name.c_str());
       AssertThrow (input1.is_open(),
@@ -218,32 +186,29 @@ namespace aspect
       /**
        * Reading the data file.
        */
-      while (true)
+      double latitude_iso, longitude_iso, depth_iso;
+      while (input1 >> latitude_iso >>longitude_iso >> depth_iso)
         {
-          double latitude_iso, longitude_iso, depth_iso;
-          input1 >> latitude_iso >>longitude_iso >> depth_iso;
-          if (input1.eof())
-            break;
           latitudes_iso.push_back(latitude_iso);
           longitudes_iso.push_back(longitude_iso);
-          depths_iso.push_back(depth_iso);
+          depths_iso.push_back(depth_iso*1000.);
         }
+
       /**
        * Find first 2 numbers that are different to use in
        * calculating half the difference between each position as delta.
        */
-
       if (std::fabs(latitudes_iso[0] - latitudes_iso[1]) > 1e-9)
         {
           /**
-           * Calculate delta as half the distance between points.
+           * Calculate delta as half the latitude distance.
           */
           delta = std::fabs((0.5)*(latitudes_iso[0] - latitudes_iso[1]));
         }
       else
         {
           /**
-           * Calculate delta as half the distance between points.
+           * Calculate delta as half the longitude distance.
           */
           delta = std::fabs((0.5)*(longitudes_iso[0] - longitudes_iso[1]));
         }
@@ -262,16 +227,13 @@ namespace aspect
                                        "adiabatic boundary",
                                        "An initial temperature condition that allows for discretizing "
                                        "the model domain into two layers separated by a user-defined "
-                                       "isotherm boundary using a table look-up approach. The user includes an "
-                                       "input ascii data file that is formatted as 3 columns of 'latitude', "
+                                       "isothermal boundary using a table look-up approach. The user includes an "
+                                       "input ascii data file that is formatted as 3 columns of 'latitude',"
                                        "'longitude', and 'depth', where 'depth' is in kilometers and "
-                                       "represents that depth of an initial temperature of 1673.15 K (by default). "
+                                       "represents the depth of an initial temperature of 1673.15 K (by default)."
                                        "The temperature is defined from the surface (273.15 K) to the isotherm "
                                        "as a linear gradient. Below the isotherm the temperature increases "
-                                       "adiabatically (0.0005 K per meter). This initial temperature condition "
+                                       "approximately adiabatically (0.0005 K per meter). This initial temperature condition "
                                        "is designed specifically for the ellipsoidal chunk geometry model.")
-
-
-
   }
 }

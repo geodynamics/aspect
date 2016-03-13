@@ -1,5 +1,5 @@
 # This test was created by Tahiry Rajaonarison and D. Sarah Stamps
-# for the adiabatic boundary inital conditions plugin. 
+# for the adiabatic boundary initial conditions plugin. 
 
 set Dimension                              = 3
 
@@ -20,9 +20,9 @@ subsection Geometry model
   set Model name = ellipsoidal chunk
   
   subsection Ellipsoidal chunk
-   set  NE corner = 132:-27
-   set  NW corner = 108:-27
-   set  SW corner = 108:-42
+   set  NE corner = 131:-28
+   set  NW corner = 109:-28
+   set  SW corner = 109:-41
    set  SE corner =  
   end
 end   
@@ -74,13 +74,13 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 2
+  set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics
+  set List of postprocessors =  velocity statistics
 end
 
    
