@@ -76,7 +76,7 @@ namespace aspect
     template <>
     double
     AdiabaticBoundary<3>::get_isotherm_depth(const double latitude,
-                                               const double longitude) const
+                                             const double longitude) const
     {
       /**
        * Loop over the entire array and see if we find a point
@@ -177,7 +177,7 @@ namespace aspect
                     (&this->get_geometry_model()) != 0),
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is an ellipsoidal chunk."));
-      
+
 
       std::ifstream input1(isotherm_file_name.c_str());
       AssertThrow (input1.is_open(),
