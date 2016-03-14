@@ -41,7 +41,7 @@ namespace aspect
                                             typename FunctionMap<dim>::type(),
                                             this->get_solution(),
                                             indicators,
-                                            this->introspection().component_masks.fluid_velocities,
+                                            this->introspection().variable("fluid velocity").component_mask,
                                             0,
                                             0,
                                             this->get_triangulation().locally_owned_subdomain());
@@ -74,7 +74,7 @@ namespace aspect
                                             typename FunctionMap<dim>::type(),
                                             this->get_solution(),
                                             indicators,
-                                            this->introspection().component_masks.compaction_pressure,
+                                            this->introspection().variable("compaction pressure").component_mask,
                                             0,
                                             0,
                                             this->get_triangulation().locally_owned_subdomain());
