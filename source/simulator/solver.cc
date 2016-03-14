@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/melt.h>
 
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
@@ -599,7 +600,9 @@ namespace aspect
         // convert melt pressures:
         if (parameters.include_melt_transport)
           {
-            compute_melt_variables(solution);
+            SimulatorAccess<dim> sim;
+            sim.initialize_simulator (*this);
+            Melt::compute_melt_variables(sim, solution);
           }
 
         computing_timer.exit_section();
@@ -829,7 +832,9 @@ namespace aspect
     // convert melt pressures:
     if (parameters.include_melt_transport)
       {
-        compute_melt_variables(solution);
+        SimulatorAccess<dim> sim;
+        sim.initialize_simulator (*this);
+        Melt::compute_melt_variables(sim, solution);
       }
 
     statistics.add_value("Iterations for Stokes solver",

@@ -225,6 +225,17 @@ namespace aspect
                                                     internal::Assembly::CopyData::StokesSystem<dim> &data);
     }
   }
+
+  namespace Melt
+  {
+    /**
+     * Compute fluid velocity and solid pressure in this ghosted solution vector.
+     * @param solution
+     */
+    template <int dim>
+    void compute_melt_variables(SimulatorAccess<dim>       &sim,
+                                LinearAlgebra::BlockVector &solution);
+  }
 }
 
 #endif

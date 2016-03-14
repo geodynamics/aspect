@@ -1064,42 +1064,6 @@ namespace aspect
       void output_statistics();
 
       /**
-       * This routine exchanges the solid and fluid pressure for the fluid
-       * and the compaction pressure in the solution vector (or the other
-       * way round), depending on if solid_to_fluid_pressure is set to true
-       * or false.
-       * This is needed in models with melt transport, because we solve for
-       * the fluid and compaction pressure, but we need the solid pressure
-       * as input for the material model and for the postprocessing.
-       *
-       * @param[in] input_solution A solution vector that contained the
-       * pressures to be converted.
-       *
-       * @param[in] solid_to_fluid_pressure If set to true:
-       * (p_s, p_f) -> (p_f, p_c)
-       * p_c = (1-phi)*(p_s-p_f)
-       * p_f = (p_c - (1-phi) p_s) / (phi-1) or p_s if phi=1
-       * If set to false:
-       * (p_f, p_c) -> (p_s, p_f)
-       * p_s = (p_c - (phi-1) p_f) / (1-phi) or p_f if phi=1
-       *
-       * @param[out] output_solution A solution vector where the
-       * converted pressures are stored.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      void convert_pressure_blocks(const LinearAlgebra::BlockVector &input_solution,
-                                   const bool                       solid_to_fluid_pressure,
-                                   LinearAlgebra::BlockVector       &output_solution);
-
-      /**
-       * Compute fluid velocity and solid pressure in this ghosted solution vector.
-       * @param solution
-       */
-      void compute_melt_variables(LinearAlgebra::BlockVector &solution);
-
-      /**
        * This routine computes the initial Stokes residual that is needed as a
        * convergence criterion in models with the iterated IMPES solver. We
        * calculate it in the same way as the tolerance for the linear solver,

@@ -374,6 +374,17 @@ namespace aspect
       get_material_model () const;
 
       /**
+       * This function simply calls Simulator<dim>::compute_material_model_input_values()
+       * with the given arguments.
+       */
+      void
+      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
+                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
+                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
+                                           const bool                                                   compute_strainrate,
+                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
+
+      /**
        * Return a pointer to the gravity model description.
        */
       const GravityModel::Interface<dim> &
@@ -481,6 +492,13 @@ namespace aspect
        */
       const LateralAveraging<dim> &
       get_lateral_averaging () const;
+
+      /**
+       * Return a pointer to the object that describes the
+       * current constraints.
+       */
+      const ConstraintMatrix &
+      get_current_constraints() const;
 
       /**
        * A convenience function that copies the values of the compositional
