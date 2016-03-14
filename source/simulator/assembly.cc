@@ -1010,9 +1010,15 @@ namespace aspect
                                                    scratch.phi_p[i] * scratch.div_phi_u[j]))
                                               * scratch.finite_element_values.JxW(q);
 
+              Tensor<1,dim> force_u;
+              for (unsigned int d=0; d<dim; ++d)
+                force_u[d] = scratch.material_model_outputs.force_vector[q][d];
+              const double force_p = scratch.material_model_outputs.force_vector[q][dim];
+
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
-                                       (density * gravity * scratch.phi_u[i])
+                                       (density * gravity + force_u) * scratch.phi_u[i]
+                                       + (pressure_scaling * force_p * scratch.phi_p[i])
                                        +
                                        // add the term that results from the compressibility. compared
                                        // to the manual, this term seems to have the wrong sign, but this
@@ -1084,8 +1090,14 @@ namespace aspect
                                                    scratch.phi_p[i] * scratch.div_phi_u[j]))
                                               * scratch.finite_element_values.JxW(q);
 
+              Tensor<1,dim> force_u;
+              for (unsigned int d=0; d<dim; ++d)
+                force_u[d] = scratch.material_model_outputs.force_vector[q][d];
+              const double force_p = scratch.material_model_outputs.force_vector[q][dim];
+
               for (unsigned int i=0; i<dofs_per_cell; ++i)
-                data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
+                data.local_rhs(i) += ((density * gravity + force_u) * scratch.phi_u[i]
+                                      + (pressure_scaling * force_p * scratch.phi_p[i]))
                                      * scratch.finite_element_values.JxW(q);
             }
         }

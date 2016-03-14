@@ -240,8 +240,7 @@ namespace aspect
 
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_rhs(i) += (
-                                   ((bulk_density * gravity + force_u) * scratch.phi_u[i])
-                                   + (pressure_scaling * force_p * scratch.phi_p[i])
+                                   (bulk_density * gravity * scratch.phi_u[i])
                                    +
                                    // add the term that results from the compressibility. compared
                                    // to the manual, this term seems to have the wrong sign, but this
