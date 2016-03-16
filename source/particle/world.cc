@@ -53,6 +53,7 @@ namespace aspect
                            Interpolator::Interface<dim> *property_interpolator,
                            Property::Manager<dim> *manager,
                            const ParticleLoadBalancing &load_balancing,
+                           const unsigned int min_part_per_cell,
                            const unsigned int max_part_per_cell,
                            const unsigned int weight)
     {
@@ -63,6 +64,7 @@ namespace aspect
       interpolator.reset(property_interpolator);
       property_manager.reset(manager);
       particle_load_balancing = load_balancing;
+      min_particles_per_cell = min_part_per_cell;
       max_particles_per_cell = max_part_per_cell;
       tracer_weight = weight;
 
@@ -198,10 +200,62 @@ namespace aspect
 
           triangulation.notify_ready_to_unpack(data_offset,callback_function);
 
+          apply_particle_per_cell_bounds();
+
           // Reset offset and update global number of particles. The number
           // can change because of discarded or newly generated particles
           data_offset = numbers::invalid_unsigned_int;
           update_n_global_particles();
+        }
+    }
+
+    template <int dim>
+    void
+    World<dim>::apply_particle_per_cell_bounds()
+    {
+      if ((particle_load_balancing == remove_particles) || (particle_load_balancing == remove_and_add_particles))
+        {
+
+          // Loop over all cells and update the particles cell-wise
+          typename DoFHandler<dim>::active_cell_iterator
+          cell = this->get_dof_handler().begin_active(),
+          endc = this->get_dof_handler().end();
+
+          for (; cell!=endc; ++cell)
+            if (cell->is_locally_owned())
+              {
+                const types::LevelInd found_cell(cell->level(),cell->index());
+
+                const unsigned int particles_in_cell = particles.count(found_cell);
+                // Add particles if necessary
+                if (particle_load_balancing == remove_and_add_particles)
+                  {
+                    for (unsigned int i = particles_in_cell; i < min_particles_per_cell; ++i)
+                      particles.insert(generator->generate_particle(cell,0));
+                  }
+
+                // Remove particles if necessary
+                if ((max_particles_per_cell > 0) && (particles_in_cell > max_particles_per_cell))
+                  {
+                    unsigned int particle_index = 0;
+                    const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator>
+                    particles_in_cell = particles.equal_range(found_cell);
+
+                    for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
+                         particle != particles_in_cell.second; ++particle_index)
+                      {
+                        if (particle_index % GeometryInfo<dim>::max_children_per_cell != 0)
+                        {
+                            // Make sure to not invalidate the iterator when deleting the particle
+                            typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = particle;
+                            ++particle;
+                            particles.erase(particle_to_delete);
+                        }
+                        else
+                          ++particle;
+                      }
+                  }
+              }
         }
     }
 
@@ -280,20 +334,10 @@ namespace aspect
               n_particles_in_cell += std::distance(particles_in_cell.first,particles_in_cell.second);
             }
 
-          bool reduce_tracers = false;
-          if (particle_load_balancing == remove_particles || particle_load_balancing == remove_and_add_particles)
-            if ((max_particles_per_cell > 0) && (n_particles_in_cell > max_particles_per_cell))
-              {
-                n_particles_in_cell /= GeometryInfo<dim>::max_children_per_cell;
-                reduce_tracers = true;
-              }
-
           unsigned int *ndata = static_cast<unsigned int *> (data);
           *ndata = n_particles_in_cell;
 
           data = static_cast<void *> (ndata + 1);
-
-          unsigned int particle_index = 0;
 
           for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
@@ -303,10 +347,9 @@ namespace aspect
               particles_in_cell = particles.equal_range(found_cell);
 
               for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
-                   particle != particles_in_cell.second; ++particle, ++particle_index)
+                   particle != particles_in_cell.second; ++particle)
                 {
-                  if (!reduce_tracers || (particle_index % GeometryInfo<dim>::max_children_per_cell == 0))
-                    particle->second.write_data(data);
+                  particle->second.write_data(data);
                 }
             }
         }
@@ -350,11 +393,6 @@ namespace aspect
                     {}
                 }
             }
-        }
-
-      if (particle_load_balancing == remove_and_add_particles)
-        {
-          // TODO: Add particles
         }
     }
 
@@ -886,6 +924,8 @@ namespace aspect
         }
       // Keep calling the integrator until it indicates it is finished
       while (integrator->new_integration_step());
+
+      apply_particle_per_cell_bounds();
 
       // Update particle properties
       if (property_manager->need_update() == Property::update_time_step)

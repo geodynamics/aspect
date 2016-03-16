@@ -269,18 +269,19 @@ namespace aspect
                                                   "remove and add particles|repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
-          prm.declare_entry ("Minimum tracers per cell", "100",
+          prm.declare_entry ("Minimum tracers per cell", "0",
                              Patterns::Integer (0),
-                             "Limit for how many particles are allowed per cell. This limit is "
-                             "useful to prevent coarse cells in adaptive meshes from slowing down "
-                             "the whole model. It will only be checked and enforced during "
-                             "mesh refinement and MPI transfer of tracers.");
+                             "Lower limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent fine cells from being empty "
+                             "of particles. It will be checked and enforced after mesh "
+                             "refinement and after particle movement.");
           prm.declare_entry ("Maximum tracers per cell", "100",
                              Patterns::Integer (0),
-                             "Limit for how many particles are allowed per cell. This limit is "
-                             "useful to prevent coarse cells in adaptive meshes from slowing down "
-                             "the whole model. It will only be checked and enforced during "
-                             "mesh refinement and MPI transfer of tracers.");
+                             "Upper limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent coarse cells from slowing down "
+                             "the whole model. It will be checked and enforced after mesh "
+                             "refinement, after MPI transfer of particles and after particle "
+                             "movement.");
           prm.declare_entry ("Tracer weight", "10",
                              Patterns::Integer (0),
                              "Weight that is associated with the computational load of "
@@ -321,7 +322,7 @@ namespace aspect
                              "of ghost cells around the local subdomain."));
 
       // Parameters that are handed down to the particle world in this function
-      unsigned int max_tracers_per_cell,tracer_weight;
+      unsigned int max_tracers_per_cell,min_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
 
       prm.enter_subsection("Postprocess");
@@ -332,7 +333,13 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
 
+          min_tracers_per_cell = prm.get_integer("Minimum tracers per cell");
           max_tracers_per_cell = prm.get_integer("Maximum tracers per cell");
+
+          AssertThrow(min_tracers_per_cell <= max_tracers_per_cell,
+                      ExcMessage("Please select a 'Minimum tracers per cell' parameter "
+                          "that is smaller or equal to the 'Maximum tracers per cell' parameter."));
+
           tracer_weight = prm.get_integer("Tracer weight");
 
           if (prm.get ("Load balancing strategy") == "none")
@@ -409,6 +416,7 @@ namespace aspect
                        interpolator,
                        property_manager,
                        load_balancing,
+                       min_tracers_per_cell,
                        max_tracers_per_cell,
                        tracer_weight);
     }

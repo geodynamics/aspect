@@ -100,6 +100,7 @@ namespace aspect
                         Interpolator::Interface<dim> *interpolator,
                         Property::Manager<dim> *manager,
                         const ParticleLoadBalancing &load_balancing,
+                        const unsigned int min_part_per_cell,
                         const unsigned int max_part_per_cell,
                         const unsigned int weight);
 
@@ -268,10 +269,19 @@ namespace aspect
         ParticleLoadBalancing particle_load_balancing;
 
         /**
-         * Limit for how many particles are allowed per cell. This limit is
+         * Lower limit for particle number per cell. This limit is
+         * useful for adaptive meshes to prevent fine cells from being empty
+         * of particles. It will be checked and enforced after mesh
+         * refinement and after particle movement.
+         */
+        unsigned int min_particles_per_cell;
+
+        /**
+         * Upper limit for particle number per cell. This limit is
          * useful for adaptive meshes to prevent coarse cells from slowing down
-         * the whole model. It will only be checked and enforced during mesh
-         * refinement and MPI transfer of particles.
+         * the whole model. It will be checked and enforced after mesh
+         * refinement, after MPI transfer of particles and after particle
+         * movement.
          */
         unsigned int max_particles_per_cell;
 
@@ -307,6 +317,14 @@ namespace aspect
          */
         void
         sort_particles_in_subdomains_and_cells();
+
+        /**
+         * Apply the bounds for the maximum and minimum number of particles
+         * per cell, if the appropriate @p particle_load_balancing strategy
+         * has been selected.
+         */
+        void
+        apply_particle_per_cell_bounds();
 
         /**
          * TODO: Implement this for arbitrary meshes.
