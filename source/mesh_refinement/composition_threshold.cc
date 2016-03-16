@@ -30,13 +30,17 @@ namespace aspect
   {
     template <int dim>
     void
-    CompositionThreshold<dim>::execute(Vector<float> &indicators) const
+    CompositionThreshold<dim>::tag_additional_cells () const
     {
       AssertThrow (this->n_compositional_fields() >= 1,
                    ExcMessage ("This refinement criterion can not be used when no "
                                "compositional fields are active!"));
 
-      indicators = 0;
+      // tag_additional_cells is executed before the equations are solved
+      // for the very first time. If we do not have the finite element, we
+      // do not have the compositional fields and just do nothing in this plugin.
+      if (this->get_dof_handler().n_locally_owned_dofs() == 0)
+        return;
 
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).get_unit_support_points());
       FEValues<dim> fe_values (this->get_mapping(),
@@ -48,24 +52,36 @@ namespace aspect
       // we have to extract them in this structure
       std::vector<double> composition_values (quadrature.size());
 
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        {
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-          unsigned int i=0;
-          for (; cell!=endc; ++cell, ++i)
-            if (cell->is_locally_owned())
-              {
-                fe_values.reinit(cell);
-                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                    composition_values);
 
-                // if the composition exceeds the threshold, cell is marked for refinement
-                for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
-                  if (composition_values[j] > composition_thresholds[c])
-                    indicators[i] = 1.0;
-              }
+      for (typename DoFHandler<dim>::active_cell_iterator
+          cell = this->get_dof_handler().begin_active();
+          cell != this->get_dof_handler().end(); ++cell)
+        {
+          if (cell->is_locally_owned())
+            {
+              bool refine = false;
+
+              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                {
+                  fe_values.reinit(cell);
+                  fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
+                      composition_values);
+
+                  // if the composition exceeds the threshold, cell is marked for refinement
+                  for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
+                    if (composition_values[j] > composition_thresholds[c])
+                      {
+                        refine = true;
+                        break;
+                      }
+                }
+
+              if (refine)
+                {
+                  cell->clear_coarsen_flag ();
+                  cell->set_refine_flag ();
+                }
+            }
         }
     }
 
