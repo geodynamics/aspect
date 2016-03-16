@@ -789,6 +789,7 @@ namespace aspect
             scratch.explicit_material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
           }
         scratch.explicit_material_model_inputs.cell = &cell;
+        create_additional_material_model_outputs(scratch.explicit_material_model_outputs);
 
         material_model->evaluate(scratch.explicit_material_model_inputs,scratch.explicit_material_model_outputs);
         MaterialModel::MaterialAveraging::average (parameters.material_averaging,
@@ -1379,12 +1380,12 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs)
+  create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
   {
     typedef typename std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > >
     assembler_vector_t;
 
-    for (typename assembler_vector_t::iterator it = assembler_objects.begin();
+    for (typename assembler_vector_t::const_iterator it = assembler_objects.begin();
          it != assembler_objects.end();
          ++it)
       {

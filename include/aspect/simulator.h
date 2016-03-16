@@ -620,7 +620,7 @@ namespace aspect
        * internal::Assemblers::AssemblerBase::create_additional_material_model_outputs()
        * functions from each object in Simulator::assembler_objects.
        */
-      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &);
+      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,

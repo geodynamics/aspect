@@ -385,6 +385,13 @@ namespace aspect
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
       /**
+       * This function simply calls Simulator<dim>::create_additional_material_model_outputs()
+       * with the given arguments.
+       */
+      void
+      create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &) const;
+
+      /**
        * Return a pointer to the gravity model description.
        */
       const GravityModel::Interface<dim> &

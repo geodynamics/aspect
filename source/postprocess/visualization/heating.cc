@@ -102,6 +102,7 @@ namespace aspect
         std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
+        this->create_additional_material_model_outputs(out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

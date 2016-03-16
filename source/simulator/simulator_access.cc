@@ -327,6 +327,14 @@ namespace aspect
 
 
   template <int dim>
+  void
+  SimulatorAccess<dim>::create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+  {
+    simulator->create_additional_material_model_outputs(out);
+  }
+
+
+  template <int dim>
   const std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > &
   SimulatorAccess<dim>::get_traction_boundary_conditions () const
   {

@@ -33,7 +33,7 @@ namespace aspect
 
     /**
      * A class that implements a standard adiabatic heating rate
-     * for partially modelten material.
+     * for partially molten material.
      *
      * This adds the term from adiabatic compression heating
      *    $ \alpha T (-\phi \mathbf u_s \cdot \nabla p)
