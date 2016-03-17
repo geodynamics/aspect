@@ -544,7 +544,7 @@ namespace aspect
     template <>
     void VOFEngine<3>::calc_normals ()
     {
-        // 3D interface reconstruction not yet implemented
+      // 3D interface reconstruction not yet implemented
     }
 
 
@@ -726,8 +726,8 @@ namespace aspect
                                   double timestep,
                                   unsigned int dir)
     {
-        // 3D flux calculation not yet implemented, may be later handled with
-        // more general interface code
+      // 3D flux calculation not yet implemented, may be later handled with
+      // more general interface code
     }
 
     template <int dim>

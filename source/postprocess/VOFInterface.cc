@@ -5,7 +5,7 @@
  *
  */
 
-#include <aspect/vofinterface/VOFInterface.h>
+#include <aspect/postprocess/VOFInterface.h>
 
 namespace aspect
 {
