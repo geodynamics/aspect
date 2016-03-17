@@ -43,6 +43,13 @@ namespace aspect
       }
 
       template <int dim>
+      InitializeLateParticles
+      Function<dim>::late_initialize_mode () const
+      {
+        return interpolate;
+      }
+
+      template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       Function<dim>::get_property_information() const
       {

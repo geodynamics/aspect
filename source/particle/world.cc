@@ -231,7 +231,39 @@ namespace aspect
                 if (particle_load_balancing == remove_and_add_particles)
                   {
                     for (unsigned int i = particles_in_cell; i < min_particles_per_cell; ++i)
-                      particles.insert(generator->generate_particle(cell,0));
+                      {
+                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,0);
+
+                        Vector<double> value(this->introspection().n_components);
+                        std::vector<Tensor<1,dim> > gradient (this->introspection().n_components,Tensor<1,dim>());
+
+                        std::vector<Vector<double> >  solution(1,value);
+                        std::vector<std::vector<Tensor<1,dim> > > gradients(1,gradient);
+
+                        std::vector<Point<dim> >     particle_points(1);
+                        particle_points[0] = this->get_mapping().transform_real_to_unit_cell(cell, new_particle.second.get_location());
+
+                        const Quadrature<dim> quadrature_formula(particle_points);
+                        FEValues<dim> fe_value (this->get_mapping(),
+                                                this->get_fe(),
+                                                quadrature_formula,
+                                                update_values |
+                                                update_gradients);
+
+                        fe_value.reinit (cell);
+                        fe_value.get_function_values (this->get_solution(),
+                                                      solution);
+                        fe_value.get_function_gradients (this->get_solution(),
+                                                         gradients);
+
+                        property_manager->initialize_late_particle(new_particle.second,
+                                                                   particles,
+                                                                   *interpolator,
+                                                                   solution[0],
+                                                                   gradients[0]);
+
+                        particles.insert(new_particle);
+                      }
                   }
 
                 // Remove particles if necessary
@@ -245,12 +277,12 @@ namespace aspect
                          particle != particles_in_cell.second; ++particle_index)
                       {
                         if (particle_index % GeometryInfo<dim>::max_children_per_cell != 0)
-                        {
+                          {
                             // Make sure to not invalidate the iterator when deleting the particle
                             typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = particle;
                             ++particle;
                             particles.erase(particle_to_delete);
-                        }
+                          }
                         else
                           ++particle;
                       }

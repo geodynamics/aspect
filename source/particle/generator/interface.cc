@@ -75,7 +75,7 @@ namespace aspect
       template <int dim>
       std::pair<types::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                                 const types::particle_index id)
+                                         const types::particle_index id)
       {
         Point<dim> max_bounds, min_bounds;
         // Get the bounds of the cell defined by the vertices
