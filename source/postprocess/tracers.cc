@@ -55,9 +55,15 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::generate_and_initialize_particles()
+    Tracers<dim>::generate_particles()
     {
       world.generate_particles();
+    }
+
+    template <int dim>
+    void
+    Tracers<dim>::initialize_particles()
+    {
       world.initialize_particles();
     }
 
