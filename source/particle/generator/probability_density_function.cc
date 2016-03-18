@@ -152,56 +152,7 @@ namespace aspect
             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
             cell (&(this->get_triangulation()), selected_cell.first, selected_cell.second);
 
-            Point<dim> max_bounds, min_bounds;
-            // Get the bounds of the cell defined by the vertices
-            for (unsigned int d=0; d<dim; ++d)
-              {
-                min_bounds[d] = std::numeric_limits<double>::max();
-                max_bounds[d] = - std::numeric_limits<double>::max();
-              }
-
-            for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
-              {
-                const Point<dim> vertex_position = cell->vertex(v);
-                for (unsigned int d=0; d<dim; ++d)
-                  {
-                    min_bounds[d] = std::min(vertex_position[d], min_bounds[d]);
-                    max_bounds[d] = std::max(vertex_position[d], max_bounds[d]);
-                  }
-              }
-
-            // Generate random points in these bounds until one is within the cell
-            unsigned int iteration = 0;
-            const unsigned int maximum_iterations = 100;
-            Point<dim> particle_position;
-            while (iteration < maximum_iterations)
-              {
-                for (unsigned int d=0; d<dim; ++d)
-                  {
-                    particle_position[d] = uniform_distribution_01(random_number_generator) *
-                                           (max_bounds[d]-min_bounds[d]) + min_bounds[d];
-                  }
-                try
-                  {
-                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
-                    if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
-                      break;
-                  }
-                catch (typename Mapping<dim>::ExcTransformationFailed &)
-                  {
-                    // The point is not in this cell. Do nothing, just try again.
-                  }
-                iteration++;
-              }
-            AssertThrow (iteration < maximum_iterations,
-                         ExcMessage ("Couldn't generate particle (unusual cell shape?). "
-                                     "The ratio between the bounding box volume in which the tracer is "
-                                     "generated and the actual cell volume is approximately: " +
-                                     boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
-
-            // Add the generated particle to the set
-            const Particle<dim> new_particle(particle_position, current_particle_index + first_particle_index);
-            particles.insert(std::make_pair(selected_cell, new_particle));
+            particles.insert(this->generate_particle(cell,current_particle_index + first_particle_index));
           }
       }
 

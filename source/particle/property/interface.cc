@@ -167,7 +167,7 @@ namespace aspect
             else if ((*p)->late_initialize_mode() == InitializeLateParticles::interpolate)
               {
                 const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
-                    (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
+                  (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
 
                 const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
                                                                                   std::vector<Point<dim> > (1,particle.get_location()),
