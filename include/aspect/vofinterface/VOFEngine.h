@@ -41,6 +41,7 @@
 #include <deal.II/numerics/data_out.h>
 
 #include <aspect/vofinterface/QCMid.h>
+#include <aspect/vofinterface/VOFUtils.h>
 
 // Definition
 
@@ -130,12 +131,6 @@ namespace aspect
                          const LinearAlgebra::BlockVector &par_old_soln,
                          double timestep,
                          unsigned int dir);
-
-        static double vol_from_d (Point<dim> normal,
-                                  double d);
-
-        static double d_from_vol (Point<dim> normal,
-                                  double vol);
     };
   }
 }

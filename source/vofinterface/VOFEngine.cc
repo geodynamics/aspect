@@ -19,6 +19,7 @@
  */
 
 #include <aspect/vofinterface/VOFEngine.h>
+#include <aspect/vofinterface/VOFUtils.h>
 
 namespace aspect
 {
@@ -152,7 +153,7 @@ namespace aspect
           for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
             {
               double d = 0.0;
-              Point<dim> grad;
+              Tensor<1, dim, double> grad;
               Point<dim> xU = quadrature.point (i);
               for (unsigned int di = 0; di < dim; ++di)
                 {
@@ -166,7 +167,7 @@ namespace aspect
                   grad[di] = (dL-dH);
                   d += (0.5/dim)*(dH+dL);
                 }
-              double ptvof = VOFEngine<dim>::vol_from_d (grad, d);
+              double ptvof = vol_from_d<dim> (grad, d);
               val += ptvof * (fe_init.JxW (i) / cell->measure ());
             }
           state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = val;
@@ -223,111 +224,6 @@ namespace aspect
       return state;
     }
 
-    template <>
-    double VOFEngine<2>::vol_from_d (Point<2> normal,
-                                     double d)
-    {
-      //Handle basic recursion case
-      const int dim = 2;
-      double norm1, mpos, dtest;
-
-      //Get 1-Norm
-      norm1 = 0.0;
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          norm1 += numbers::NumberTraits<double>::abs (normal (i));
-        }
-
-      //Find min component
-      mpos = 0.6;
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          double mcand = numbers::NumberTraits<double>::abs (normal (i))
-                         / norm1;
-          mpos = (mcand < mpos) ? mcand : mpos;
-        }
-
-      //Obtain volume
-      dtest = d / norm1;
-      if (dtest <= -0.5)
-        {
-          return 0.0;
-        }
-      if (dtest >= 0.5)
-        {
-          return 1.0;
-        }
-      if (dtest < mpos - 0.5)
-        {
-          return (dtest + 0.5) * (dtest + 0.5) / (2.0*mpos * (1.0 - mpos));
-        }
-      if (dtest > 0.5 - mpos)
-        {
-          return 1.0 - (dtest - 0.5) * (dtest - 0.5) / (2.0*mpos * (1.0 - mpos));
-        }
-      return 0.5 + dtest / (1.0 - mpos);
-    }
-
-    template <>
-    double VOFEngine<2>::d_from_vol (Point<2> normal,
-                                     double vol)
-    {
-      //Handle basic recursion case
-      const int dim = 2;
-      double norm1, mpos;
-
-      //Get 1-Norm
-      norm1 = 0.0;
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          norm1 += numbers::NumberTraits<double>::abs (normal (i));
-        }
-
-      //Find min component
-      mpos = 0.6;
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          double mcand = numbers::NumberTraits<double>::abs (normal (i))
-                         / norm1;
-          mpos = (mcand < mpos) ? mcand : mpos;
-        }
-
-      //Obtain const
-      if (vol <= 0.0)
-        {
-          return -0.5 * norm1;
-        }
-      if (vol >= 1.0)
-        {
-          return 0.5 * norm1;
-        }
-      if (vol < 0.5 * mpos / (1 - mpos))
-        {
-          return norm1 * (-0.5 + sqrt (2.0*vol * mpos * (1 - mpos)));
-        }
-      if (vol > 1.0 - 0.5 * mpos / (1 - mpos))
-        {
-          return norm1 * (0.5 - sqrt (2.0*(1.0 - vol) * mpos * (1 - mpos)));
-        }
-      return norm1 * (1 - mpos) * (vol - 0.5);
-    }
-
-    template <>
-    double VOFEngine<3>::vol_from_d (Point<3> normal,
-                                     double d)
-    {
-      // 3D vol calculation not yet implemented
-      return 0.0;
-    }
-
-    template <>
-    double VOFEngine<3>::d_from_vol (Point<3> normal,
-                                     double vol)
-    {
-      // 3D interface location calculation not yet implemented
-      return 0.0;
-    }
-
     template <int dim>
     void VOFEngine<dim>::do_step (const LinearAlgebra::BlockVector &par_new_soln,
                                   const LinearAlgebra::BlockVector &par_old_soln,
@@ -375,11 +271,11 @@ namespace aspect
       std::vector<double> strip_sums (dim * n_sums);
 
       const unsigned int n_normals = 6;
-      std::vector<Point<dim>> normals (n_normals);
+      std::vector<Tensor<1, dim, double>> normals (n_normals);
       std::vector<double> errs (2 * n_normals);
 
       // Normal holding vars
-      Point<dim> normal;
+      Tensor<1, dim, double> normal;
       double d;
 
       //Iterate over cells
@@ -514,15 +410,15 @@ namespace aspect
               for (unsigned int nind = 0; nind < n_normals; ++nind)
                 {
                   errs[nind] = 0.0;
-                  d = VOFEngine<dim>::d_from_vol (normals[nind], cell_vof);
+                  d = d_from_vol<dim> (normals[nind], cell_vof);
                   for (unsigned int i = 0; i < n_local; ++i)
                     {
                       double dot = 0.0;
                       for (unsigned int di = 0; di < dim; di++)
                         dot += normals[nind][di] * resc_cell_centers[i][di];
                       double val = local_vofs (i)
-                                   - VOFEngine<dim>::vol_from_d (normals[nind],
-                                                                 d - dot);
+                                   - vol_from_d<dim> (normals[nind],
+                                                      d - dot);
                       errs[nind] += val * val;
                     }
                   if (errs[mn_ind] >= errs[nind])
@@ -532,14 +428,14 @@ namespace aspect
                 }
 
               normal = normals[mn_ind];
-              d = VOFEngine<dim>::d_from_vol (normal, cell_vof);
+              d = d_from_vol<dim> (normal, cell_vof);
             }
 
           double n2 = sqrt (normal * normal);
           if (n2 > voleps)
             {
               normal = (normal / n2);
-              d = VOFEngine<dim>::d_from_vol (normal, cell_vof);
+              d = d_from_vol<dim> (normal, cell_vof);
             }
           else
             {
@@ -689,13 +585,13 @@ namespace aspect
                       double dot = normal[dir] * (1.0 - adj);
                       dot *= 0.5 * (i == 0 ? -1.0 : 1.0);
 
-                      Point<dim> adj_norm = normal;
+                      Tensor<1, dim, double> adj_norm = normal;
                       adj_norm[dir] = normal[dir] * adj;
 
                       // std::cout << "     " << adj_norm << "*x=" << d-dot << std::endl;
 
-                      flux_vof[i] = VOFEngine<dim>::vol_from_d (adj_norm,
-                                                                d - dot);
+                      flux_vof[i] = vol_from_d<dim> (adj_norm,
+                                                     d - dot);
                     }
                   else
                     {
@@ -848,7 +744,7 @@ namespace aspect
       double h = 1.0/n_samp;
 
       Point<dim> xU;
-      Point<dim> normal;
+      Tensor<1, dim, double> normal;
       double d;
 
       const unsigned int dofs_per_cell = interfaceFE.dofs_per_cell;
@@ -905,7 +801,7 @@ namespace aspect
               continue;
             }
 
-          Point<dim> grad_t;
+          Tensor<1, dim, double> grad_t;
           double d_t;
           double val = 0.0;
           double vof_reinit = 0.0;
@@ -925,15 +821,15 @@ namespace aspect
                   grad_t[di] = (dL-dH);
                   d_t += (0.5/dim)*(dH+dL);
                 }
-              double ptvof_t = VOFEngine<dim>::vol_from_d (grad_t, d_t);
+              double ptvof_t = vol_from_d<dim> (grad_t, d_t);
               vof_reinit += ptvof_t *(fe_err.JxW (i)/cell->measure ());
               for (unsigned int di = 0; di < dim; ++di)
                 {
                   xU[di] -= 0.5;
                 }
               double dot = normal * xU;
-              double ptvof_e = VOFEngine<dim>::vol_from_d (h*normal,
-                                                           (d - dot));
+              double ptvof_e = vol_from_d<dim> (h*normal,
+                                                (d - dot));
               double diff = numbers::NumberTraits<double>::abs (ptvof_t - ptvof_e);
               val += diff * fe_err.JxW (i);
             }
