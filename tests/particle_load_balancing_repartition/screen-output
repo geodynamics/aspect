@@ -19,7 +19,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      RMS, max velocity:           0.000133 m/s, 0.000329 m/s
      Compositions min/max/mass:   0/1/0.2092
      Writing graphical output:    output-particle_load_balancing_repartition/solution-00000
-     Number of advected particles 100
+     Number of advected particles: 100
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)
@@ -34,7 +34,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
      RMS, max velocity:           0.000159 m/s, 0.000376 m/s
      Compositions min/max/mass:   -0.1126/1.043/0.1966
      Writing graphical output:    output-particle_load_balancing_repartition/solution-00001
-     Number of advected particles 100
+     Number of advected particles: 100
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)
