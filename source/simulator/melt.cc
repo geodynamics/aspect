@@ -466,7 +466,7 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if(advection_field.is_temperature() && porosity >= this->get_parameters().melt_transport_threshold)
+          if (advection_field.is_temperature() && porosity >= this->get_parameters().melt_transport_threshold)
             {
               const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
               if (find (heating_model_names.begin(), heating_model_names.end(), "shear heating with melt") != heating_model_names.end())

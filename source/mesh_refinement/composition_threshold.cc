@@ -54,8 +54,8 @@ namespace aspect
 
 
       for (typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active();
-          cell != this->get_dof_handler().end(); ++cell)
+           cell = this->get_dof_handler().begin_active();
+           cell != this->get_dof_handler().end(); ++cell)
         {
           if (cell->is_locally_owned())
             {
