@@ -1,0 +1,30 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Number of advected particles 30
+     Writing graphical output:    output-particle_visualization_particle_count/solution-00000
+
+*** Timestep 1:  t=70 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system... 20 iterations.
+
+   Postprocessing:
+     Number of advected particles 30
+     Writing graphical output:    output-particle_visualization_particle_count/solution-00001
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
