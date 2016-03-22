@@ -36,6 +36,10 @@ namespace aspect
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataInitial<dim>::initialize;
 
+        virtual
+        void
+        update();
+
         /**
          For the current class, this function returns value from the text files.
          */

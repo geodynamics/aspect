@@ -19,6 +19,21 @@ namespace aspect
       Utilities::AsciiDataInitial<dim>::initialize(dim);
     }
 
+    template <int dim>
+    void
+    AsciiData<dim>::update ()
+    {
+        unsigned long timeStep = this->get_timestep_number();
+        std::string ts;
+        for(unsigned long i=0; i<(5-std::to_string(timeStep).length()); i++) ts += '0';
+        ts += std::to_string(timeStep);
+
+        std::string fileName = Utilities::AsciiDataBase<dim>::data_directory + "solution-";
+        fileName += ts;
+        fileName += ".txt";
+
+        Utilities::AsciiDataInitial<dim>::lookup->load_file(fileName, this->get_mpi_communicator());
+    }
 
     template <int dim>
     void
