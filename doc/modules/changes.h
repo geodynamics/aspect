@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> Fixed: Combining particles with initial adaptive refinement steps
+ * used to create a multiple of the selected number of particles.
+ * This is fixed now.
+ * <br>
+ * (Rene Gassmoeller, 2016/03/18)
+ *
  * <li> Improved: The Introspection class has now a new base class
  * FEVariableCollection that allows flexible modification of the finite
  * element variables involved in a computation, even inside a plugin.

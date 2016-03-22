@@ -62,13 +62,22 @@ namespace aspect
         initialize();
 
         /**
-         * Generate and initialize particles. This can not be done in another
-         * place, because we want to generate and initialize the particles
+         * Generate the particles. This can not be done in another
+         * place, because we want to generate the particles
          * before the first timestep, but after the initial conditions have
          * been set.
          */
         void
-        generate_and_initialize_particles();
+        generate_particles();
+
+        /**
+         * Initialize particle properties. This can not be done in another
+         * place, because we want to initialize the particle properties
+         * before the first timestep, but after the initial conditions have
+         * been set.
+         */
+        void
+        initialize_particles();
 
         /**
          * Returns a const reference to the particle world, in case anyone
