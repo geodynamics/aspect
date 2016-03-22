@@ -21,6 +21,7 @@
 
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
+#include <aspect/heating_model/shear_heating_with_melt.h>
 
 #include <deal.II/dofs/dof_tools.h>
 
@@ -354,6 +355,10 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
+      std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
+      FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+      scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           // precompute the values of shape functions and their gradients.
@@ -456,6 +461,21 @@ namespace aspect
           const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                     (time_step + old_time_step)) : 1.0;
 
+          // for advective transport of heat by melt, we have to consider melt velocities
+          const Tensor<1,dim> current_u_f = fluid_velocity_values[q];
+          double density_c_P_solid = density_c_P;
+          double density_c_P_melt = 0.0;
+
+          if(advection_field.is_temperature() && porosity >= this->get_parameters().melt_transport_threshold)
+            {
+              const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
+              if (find (heating_model_names.begin(), heating_model_names.end(), "shear heating with melt") != heating_model_names.end())
+                {
+                  density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
+                  density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
+                }
+            }
+
           // do the actual assembly. note that we only need to loop over the advection
           // shape functions because these are the only contributions we compute here
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
@@ -478,7 +498,10 @@ namespace aspect
                         * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
                        + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                           + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                       (density_c_P + latent_heat_LHS)
+                       (density_c_P_solid + latent_heat_LHS)
+                       + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
+                          + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                       (density_c_P_melt)
                        + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
                      )
                      * scratch.finite_element_values.JxW(q);
