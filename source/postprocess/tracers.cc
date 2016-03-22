@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -95,7 +95,8 @@ namespace aspect
       // If it's not time to generate an output file or we do not write output
       // return early with the number of particles that were advected
       if ((this->get_time() < last_output_time + output_interval) || !output)
-        return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
+        return std::make_pair("Number of advected particles:",
+                              Utilities::int_to_string(world.n_global_particles()));
 
 
       if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
@@ -114,7 +115,7 @@ namespace aspect
       // record the file base file name in the output file
       statistics.add_value ("Particle file name",
                             this->get_output_directory() + data_file_name);
-      return std::make_pair("Writing particle output: ", data_file_name);
+      return std::make_pair("Writing particle output:", data_file_name);
     }
 
 
