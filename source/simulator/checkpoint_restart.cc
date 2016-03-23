@@ -53,7 +53,6 @@ namespace aspect
   {
     computing_timer.enter_section ("Create snapshot");
     unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
-
     if (my_id == 0)
       {
         // if we have previously written a snapshot, then keep the last
@@ -65,8 +64,8 @@ namespace aspect
           {
 //            move_file (parameters.output_directory + "restart.mesh",
 //                       parameters.output_directory + "restart.mesh.old");
-            move_file (parameters.output_directory + "restart.mesh.info",
-                       parameters.output_directory + "restart.mesh.info.old");
+//            move_file (parameters.output_directory + "restart.mesh.info",
+//                       parameters.output_directory + "restart.mesh.info.old");
 //            move_file (parameters.output_directory + "restart.resume.z",
 //                       parameters.output_directory + "restart.resume.z.old");
           }
@@ -107,7 +106,7 @@ namespace aspect
           freesurface_trans->prepare_serialization(x_fs_system);
         }
 
-      triangulation.save ((parameters.output_directory + "restart.mesh-" + std::to_string(time_step)).c_str());
+      triangulation.save ((parameters.output_directory + "restart.mesh-" + std::to_string(timestep_number)).c_str());
     }
 
     // save general information This calls the serialization functions on all
@@ -142,7 +141,7 @@ namespace aspect
                 (uint32_t)compressed_data_length
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume-" + std::to_string(time_step) + ".z").c_str());
+          std::ofstream f ((parameters.output_directory + "restart.resume-" + std::to_string(timestep_number) + ".z").c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
@@ -165,7 +164,7 @@ namespace aspect
   {
     // first check existence of the two restart files
     {
-      const std::string filename = parameters.output_directory + "restart.mesh";
+      const std::string filename = parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step);
       std::ifstream in (filename.c_str());
       if (!in)
         AssertThrow (false,
