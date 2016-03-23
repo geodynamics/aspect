@@ -544,6 +544,9 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Restart from time step", "0",
+                         Patterns::Integer (0),
+                         "A time step value to restart ASPECT from");
     }
     prm.leave_subsection ();
 
@@ -885,6 +888,7 @@ namespace aspect
     {
       checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
+      resume_time_step     = prm.get_integer ("Restart from time step");
 
 #ifndef DEAL_II_WITH_ZLIB
       AssertThrow ((checkpoint_time_secs == 0)

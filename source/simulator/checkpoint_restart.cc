@@ -63,12 +63,12 @@ namespace aspect
 
         if (previous_snapshot_exists == true)
           {
-            move_file (parameters.output_directory + "restart.mesh",
-                       parameters.output_directory + "restart.mesh.old");
+//            move_file (parameters.output_directory + "restart.mesh",
+//                       parameters.output_directory + "restart.mesh.old");
             move_file (parameters.output_directory + "restart.mesh.info",
                        parameters.output_directory + "restart.mesh.info.old");
-            move_file (parameters.output_directory + "restart.resume.z",
-                       parameters.output_directory + "restart.resume.z.old");
+//            move_file (parameters.output_directory + "restart.resume.z",
+//                       parameters.output_directory + "restart.resume.z.old");
           }
         // from now on, we know that if we get into this
         // function again that a snapshot has previously
@@ -107,7 +107,7 @@ namespace aspect
           freesurface_trans->prepare_serialization(x_fs_system);
         }
 
-      triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
+      triangulation.save ((parameters.output_directory + "restart.mesh-" + std::to_string(time_step)).c_str());
     }
 
     // save general information This calls the serialization functions on all
@@ -142,7 +142,7 @@ namespace aspect
                 (uint32_t)compressed_data_length
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z").c_str());
+          std::ofstream f ((parameters.output_directory + "restart.resume-" + std::to_string(time_step) + ".z").c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
@@ -177,7 +177,7 @@ namespace aspect
                                  "> does not appear to exist!"));
     }
     {
-      const std::string filename = parameters.output_directory + "restart.resume.z";
+      const std::string filename = parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step) + ".z";
       std::ifstream in (filename.c_str());
       if (!in)
         AssertThrow (false,
@@ -193,7 +193,7 @@ namespace aspect
 
     try
       {
-        triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
+        triangulation.load ((parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step)).c_str());
       }
     catch (...)
       {
@@ -257,7 +257,7 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
+        std::ifstream ifs ((parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step) + ".z").c_str());
         AssertThrow(ifs.is_open(),
                     ExcMessage("Cannot open snapshot resume file."));
 

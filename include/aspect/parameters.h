@@ -257,6 +257,7 @@ namespace aspect
      */
     int                            checkpoint_time_secs;
     int                            checkpoint_steps;
+      int                           resume_time_step;
     /**
      * @}
      */
