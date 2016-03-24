@@ -84,12 +84,25 @@ namespace aspect
                   ExcInternalError());
           for (unsigned int i=0; i<evaluation_points.size(); ++i)
             {
-              f << /* time = */ time_point->first << ' '
+              f << /* time = */ time_point->first / (this->convert_output_to_years() ? year_in_seconds : 1.)
+                << ' '
                 << /* location = */ evaluation_points[i] << ' ';
 
               for (unsigned int c=0; c<time_point->second[i].size(); ++c)
-                f << time_point->second[i][c]
-                  << (c != time_point->second[i].size()-1 ? ' ' : '\n');
+                {
+                  // output a data element. internally, we store all point
+                  // values in the same format in which they were computed,
+                  // but we convert velocities to meters per year if so
+                  // requested
+                  if ((this->introspection().component_masks.velocities[c] == false)
+                      ||
+                      (this->convert_output_to_years() == false))
+                    f << time_point->second[i][c];
+                  else
+                    f << time_point->second[i][c] * year_in_seconds;
+
+                  f << (c != time_point->second[i].size()-1 ? ' ' : '\n');
+                }
             }
 
           // have an empty line between time steps
@@ -216,7 +229,8 @@ namespace aspect
                                   "values of the solution vector at this point. The time is provided "
                                   "in seconds or, if the "
                                   "global ``Use years in output instead of seconds'' parameter is "
-                                  "set, in years."
+                                  "set, in years. In the latter case, the velocity is also converted "
+                                  "to meters/year, instead of meters/second."
                                   "\n\n"
                                   "\\note{Evaluating the solution of a finite element field at "
                                   "arbitrarily chosen points is an expensive process. Using this "
