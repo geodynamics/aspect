@@ -59,12 +59,19 @@ namespace aspect
               // ignore
             }
 
+          // ensure that exactly one processor found things
           Assert (Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator()) > 0,
                   ExcMessage ("While trying to evaluate the values of the solution at "
                               "evaluation point " + Utilities::int_to_string(p) +
                               ", no processor reported that that point lies inside the "
                               "set of cells it owns. Are you trying to evaluate the "
                               "solution at a point that lies outside the domain?"));
+
+          // now exchange things. because we have exactly one processor that found
+          // the point, we can just add up that value plus all of the zero
+          // vectors from the other processors
+          Utilities::MPI::sum (current_point_values[p], this->get_mpi_communicator(),
+                               current_point_values[p]);
         }
 
       // finally push these point values all onto the list we keep
