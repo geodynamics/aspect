@@ -215,7 +215,6 @@ namespace aspect
     {
       if ((particle_load_balancing == remove_particles) || (particle_load_balancing == remove_and_add_particles))
         {
-
           // Loop over all cells and update the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),

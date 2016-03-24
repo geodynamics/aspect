@@ -4,11 +4,11 @@
     <Piece NumberOfPoints="5" NumberOfCells="5">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.389631 0.964846 0.0
-          0.532531 0.543211 0.0
-          0.520396 0.539676 0.0
-          0.728766 0.712652 0.0
-          0.69459 0.849372 0.0
+          0.370962 0.987719 0.0
+          0.506581 0.543979 0.0
+          0.457543 0.858738 0.0
+          0.597862 0.842217 0.0
+          0.713138 0.969571 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -38,30 +38,30 @@
         <DataArray type="UInt64" Name="id" NumberOfComponents="1" Format="ascii">
           5
           8
-          6
           7
+          6
           9
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
-          0 
-          0 
-          0 
-          0 
-          0 
+          0
+          0
+          0
+          0
+          0
         </DataArray>
         <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
-          0 
-          -5.30292e-15 
-          -5.83829e-15 
-          0 
-          0 
+          0
+          -6.48695e-15
+          0
+          0
+          0
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.388728 0.964805 0 
-          0.52442 0.550781 0 
-          0.511789 0.546401 0 
-          0.730867 0.717838 0 
-          0.695098 0.8511 0 
+          0.370641 0.987711 0
+          0.497671 0.549461 0
+          0.454651 0.858901 0
+          0.596337 0.843874 0
+          0.713385 0.969659 0
         </DataArray>
       </PointData>
     </Piece>
