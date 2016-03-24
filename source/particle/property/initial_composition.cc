@@ -38,8 +38,8 @@ namespace aspect
       }
 
       template <int dim>
-      InitializeLateParticles
-      InitialComposition<dim>::late_initialize_mode () const
+      InitializationModeForLateParticles
+      InitialComposition<dim>::late_initialization_mode () const
       {
         return interpolate;
       }

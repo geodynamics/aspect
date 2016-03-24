@@ -65,7 +65,7 @@ namespace aspect
        * have been added later than the initial particle creation, e.g. to
        * improve the load balance or to prevent empty cells.
        */
-      enum InitializeLateParticles
+      enum InitializationModeForLateParticles
       {
         /**
          * Initialize the particle as if it were created at the beginning of
@@ -193,8 +193,8 @@ namespace aspect
            * empty cells. The default implementation returns
            * initialize_to_zero, which signals that particle properties should
            * be set to zero.
-           * See the documentation of InitializeLateParticles for a list of
-           * possible values and examples for their use. Every
+           * See the documentation of InitializationModeForLateParticles for a
+           * list of possible values and examples for their use. Every
            * plugin that implements this function should return the value
            * appropriate for its purpose, unless it does not need any
            * initialization, which is the default. This function is never
@@ -202,8 +202,8 @@ namespace aspect
            * particle generation call.
            */
           virtual
-          InitializeLateParticles
-          late_initialize_mode () const;
+          InitializationModeForLateParticles
+          late_initialization_mode () const;
 
           /**
            * Set up the information about the names and number of components

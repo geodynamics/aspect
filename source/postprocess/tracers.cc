@@ -338,7 +338,7 @@ namespace aspect
 
           AssertThrow(min_tracers_per_cell <= max_tracers_per_cell,
                       ExcMessage("Please select a 'Minimum tracers per cell' parameter "
-                                 "that is smaller or equal to the 'Maximum tracers per cell' parameter."));
+                                 "that is smaller than or equal to the 'Maximum tracers per cell' parameter."));
 
           tracer_weight = prm.get_integer("Tracer weight");
 

@@ -21,7 +21,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Solving Stokes system... 21 iterations.
 
    Postprocessing:
-     Number of advected particles: 69
+     Number of advected particles: 75
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)
@@ -33,7 +33,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Solving Stokes system... 19 iterations.
 
    Postprocessing:
-     Number of advected particles: 53
+     Number of advected particles: 73
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 246 (114+18+57+57)

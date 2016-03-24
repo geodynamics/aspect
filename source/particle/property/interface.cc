@@ -64,8 +64,8 @@ namespace aspect
       }
 
       template <int dim>
-      InitializeLateParticles
-      Interface<dim>::late_initialize_mode () const
+      InitializationModeForLateParticles
+      Interface<dim>::late_initialization_mode () const
       {
         return initialize_to_zero;
       }
@@ -152,29 +152,39 @@ namespace aspect
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
           {
-            if ((*p)->late_initialize_mode() == InitializeLateParticles::initialize)
+            switch ((*p)->late_initialization_mode())
               {
-                (*p)->initialize_one_particle_property(particle.get_location(),
-                                                       solution,
-                                                       gradients,
-                                                       particle_properties);
-              }
-            else if ((*p)->late_initialize_mode() == InitializeLateParticles::initialize_to_zero)
-              {
-                for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
-                  particle_properties.push_back(0.0);
-              }
-            else if ((*p)->late_initialize_mode() == InitializeLateParticles::interpolate)
-              {
-                const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
-                  (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
+                case InitializationModeForLateParticles::initialize_to_zero:
+                {
+                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                    particle_properties.push_back(0.0);
+                  break;
+                }
 
-                const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
-                                                                                  std::vector<Point<dim> > (1,particle.get_location()),
-                                                                                  cell);
+                case InitializationModeForLateParticles::initialize:
+                {
+                  (*p)->initialize_one_particle_property(particle.get_location(),
+                                                         solution,
+                                                         gradients,
+                                                         particle_properties);
+                  break;
+                }
 
-                for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
-                  particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
+                case InitializationModeForLateParticles::interpolate:
+                {
+                  const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
+                    (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
+
+                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
+                                                                                    std::vector<Point<dim> > (1,particle.get_location()),
+                                                                                    cell);
+                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                    particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
+                  break;
+                }
+
+                default:
+                  Assert (false, ExcInternalError());
               }
           }
 

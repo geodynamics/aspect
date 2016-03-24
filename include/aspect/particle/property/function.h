@@ -72,13 +72,13 @@ namespace aspect
            * Returns an enum, which determines how this particle property is
            * initialized for particles that are created later than the initial
            * particle generation, e.g. to balance the particle load or prevent
-           * empty cells. The current implementation returns
-           * interpolate, which signals that particle properties should
-           * be interpolated from other particles in this cell.
+           * empty cells. The implementation of this function in the current
+           * class returns interpolate, which signals that particle properties
+           * should be interpolated from other particles in this cell.
            */
           virtual
-          InitializeLateParticles
-          late_initialize_mode () const;
+          InitializationModeForLateParticles
+          late_initialization_mode () const;
 
           /**
            * Set up the information about the names and number of components

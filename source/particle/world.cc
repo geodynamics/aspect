@@ -118,6 +118,20 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    World<dim>::update_next_free_particle_index()
+    {
+      types::particle_index locally_highest_index;
+      typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
+      for (; it!=particles.end(); ++it)
+        {
+          locally_highest_index = std::max(locally_highest_index,it->second.get_id());
+        }
+
+      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, this->get_mpi_communicator());
+    }
+
+    template <int dim>
     unsigned int
     World<dim>::get_global_max_tracers_per_cell() const
     {
@@ -215,7 +229,56 @@ namespace aspect
     {
       if ((particle_load_balancing == remove_particles) || (particle_load_balancing == remove_and_add_particles))
         {
-          // Loop over all cells and update the particles cell-wise
+          // First do some preparation for particle generation in poorly
+          // populated areas. For this we need to know which particle ids to
+          // generate so that they are globally unique.
+          // Ensure this by communicating the number of particles that every
+          // process is going to generate.
+          types::particle_index local_next_particle_index = next_free_particle_index;
+          if (particle_load_balancing == remove_and_add_particles)
+            {
+              types::particle_index particles_to_add_locally = 0;
+
+              // Loop over all cells and determine the number of particles to generate
+              typename DoFHandler<dim>::active_cell_iterator
+              cell = this->get_dof_handler().begin_active(),
+              endc = this->get_dof_handler().end();
+
+              for (; cell!=endc; ++cell)
+                if (cell->is_locally_owned())
+                  {
+                    const types::LevelInd found_cell(cell->level(),cell->index());
+                    const unsigned int particles_in_cell = particles.count(found_cell);
+
+                    if (particles_in_cell < min_particles_per_cell)
+                      particles_to_add_locally += static_cast<types::particle_index> (min_particles_per_cell - particles_in_cell);
+                  }
+
+              // Determine the starting particle index of this process, which
+              // is the highest currently existing particle index plus the sum
+              // of the number of newly generated particles of all
+              // processes with a lower rank.
+
+              types::particle_index local_start_index = 0.0;
+              MPI_Scan(&particles_to_add_locally, &local_start_index, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
+              local_start_index -= particles_to_add_locally;
+              local_next_particle_index += local_start_index;
+
+              const types::particle_index globally_generated_particles =
+              dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
+
+              AssertThrow (next_free_particle_index <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
+                           ExcMessage("There is no free particle index left to generate a new particle id. Please check if your"
+                               "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or"
+                               "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for"
+                               "particle ids."));
+
+              next_free_particle_index += globally_generated_particles;
+            }
+
+          boost::mt19937            random_number_generator;
+
+          // Loop over all cells and generate or remove the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),
           endc = this->get_dof_handler().end();
@@ -224,14 +287,15 @@ namespace aspect
             if (cell->is_locally_owned())
               {
                 const types::LevelInd found_cell(cell->level(),cell->index());
+                const unsigned int n_particles_in_cell = particles.count(found_cell);
 
-                const unsigned int particles_in_cell = particles.count(found_cell);
                 // Add particles if necessary
-                if (particle_load_balancing == remove_and_add_particles)
+                if ((particle_load_balancing == remove_and_add_particles) &&
+                    (n_particles_in_cell < min_particles_per_cell))
                   {
-                    for (unsigned int i = particles_in_cell; i < min_particles_per_cell; ++i)
+                    for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i)
                       {
-                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,0);
+                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index++);
 
                         Vector<double> value(this->introspection().n_components);
                         std::vector<Tensor<1,dim> > gradient (this->introspection().n_components,Tensor<1,dim>());
@@ -266,24 +330,32 @@ namespace aspect
                   }
 
                 // Remove particles if necessary
-                if ((max_particles_per_cell > 0) && (particles_in_cell > max_particles_per_cell))
+                else if (n_particles_in_cell > max_particles_per_cell)
                   {
-                    unsigned int particle_index = 0;
                     const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator>
                     particles_in_cell = particles.equal_range(found_cell);
 
-                    for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle = particles_in_cell.first;
-                         particle != particles_in_cell.second; ++particle_index)
+                    const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
+
+                    std::set<unsigned int> particle_ids_to_remove;
+                    while(particle_ids_to_remove.size() < n_particles_to_remove)
+                      particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
+
+                    std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_to_remove;
+
+                    for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
+                        id != particle_ids_to_remove.end(); ++id)
                       {
-                        if (particle_index % GeometryInfo<dim>::max_children_per_cell != 0)
-                          {
-                            // Make sure to not invalidate the iterator when deleting the particle
-                            typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = particle;
-                            ++particle;
-                            particles.erase(particle_to_delete);
-                          }
-                        else
-                          ++particle;
+                        typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_remove = particles_in_cell.first;
+                        std::advance(particle_to_remove,*id);
+
+                        particles_to_remove.push_back(particle_to_remove);
+                      }
+
+                    for (typename std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator>::iterator particle = particles_to_remove.begin();
+                        particle != particles_to_remove.end(); ++particle)
+                      {
+                        particles.erase(*particle);
                       }
                   }
               }
@@ -856,6 +928,7 @@ namespace aspect
     {
       generator->generate_particles(particles);
       update_n_global_particles();
+      update_next_free_particle_index();
     }
 
     template <int dim>

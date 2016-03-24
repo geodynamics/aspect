@@ -257,6 +257,12 @@ namespace aspect
         types::particle_index global_number_of_particles;
 
         /**
+         * This variable stores the next free particle index that is available
+         * globally in case new particles need to be generated.
+         */
+        types::particle_index next_free_particle_index;
+
+        /**
          * This variable is set by the register_store_callback_function()
          * function and used by the register_load_callback_function() function
          * to check where the tracer data was stored.
@@ -300,6 +306,13 @@ namespace aspect
          */
         void
         update_n_global_particles();
+
+        /**
+         * Calculates the next free particle index in the global model domain.
+         * This equals one plus the highest particle index currently active.
+         */
+        void
+        update_next_free_particle_index();
 
         /**
          * Returns the number of particles in the cell that contains the
@@ -395,6 +408,7 @@ namespace aspect
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particles
+         &next_free_particle_index
       ;
     }
   }
