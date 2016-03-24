@@ -33,7 +33,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 18 iterations.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0003907 K, 0.002625 K
      Heat fluxes through boundary parts: -0.2152 W, 0.07768 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
    Solving temperature system... 12 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0007814 K, 0.004368 K
      Heat fluxes through boundary parts: 0.08938 W, 0.2083 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
    Solving temperature system... 11 iterations.
@@ -72,7 +72,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.001107 K, 0.005515 K
      Heat fluxes through boundary parts: 0.5138 W, 0.3178 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time
 

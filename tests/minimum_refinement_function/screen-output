@@ -32,7 +32,7 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:                  3.8e-06 m/year, 5.98e-06 m/year
      Temperature min/avg/max:            1623 K, 1743 K, 1873 K
      Heat fluxes through boundary parts: 2.378e-11 W, 7.927e-12 W, 2.14e-11 W, -4.601e-12 W
-     Writing depth average               output-minimum_refinement_function/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 214 (on 5 levels)
 Number of degrees of freedom: 3,113 (1,906+254+953)
@@ -60,7 +60,7 @@ Number of degrees of freedom: 3,113 (1,906+254+953)
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
      Heat fluxes through boundary parts: 2.661e-11 W, 2.038e-12 W, 6.228e-11 W, 1.073e-11 W
-     Writing depth average               output-minimum_refinement_function/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 604 (on 6 levels)
 Number of degrees of freedom: 8,386 (5,146+667+2,573)
@@ -88,7 +88,7 @@ Number of degrees of freedom: 8,386 (5,146+667+2,573)
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1746 K, 1904 K
      Heat fluxes through boundary parts: 4.246e-11 W, 1.914e-11 W, 6.228e-11 W, -1.818e-11 W
-     Writing depth average               output-minimum_refinement_function/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 1,375 (on 7 levels)
 Number of degrees of freedom: 18,894 (11,610+1,479+5,805)
@@ -116,7 +116,7 @@ Number of degrees of freedom: 18,894 (11,610+1,479+5,805)
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1746 K, 1904 K
      Heat fluxes through boundary parts: 6.228e-11 W, 3.057e-12 W, 6.228e-11 W, -1.818e-11 W
-     Writing depth average               output-minimum_refinement_function/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function/depth_average.gnuplot
 
 Number of active cells: 1,387 (on 7 levels)
 Number of degrees of freedom: 19,089 (11,730+1,494+5,865)

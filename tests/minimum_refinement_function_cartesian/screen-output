@@ -32,7 +32,7 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:                  3.8e-06 m/year, 5.98e-06 m/year
      Temperature min/avg/max:            1623 K, 1743 K, 1873 K
      Heat fluxes through boundary parts: 2.378e-11 W, 7.927e-12 W, 2.14e-11 W, -4.601e-12 W
-     Writing depth average               output-minimum_refinement_function_cartesian/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function_cartesian/depth_average.gnuplot
 
 Number of active cells: 232 (on 5 levels)
 Number of degrees of freedom: 3,348 (2,050+273+1,025)
@@ -60,7 +60,7 @@ Number of degrees of freedom: 3,348 (2,050+273+1,025)
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
      Heat fluxes through boundary parts: 3.68e-11 W, -2.265e-13 W, 6.228e-11 W, 1.073e-11 W
-     Writing depth average               output-minimum_refinement_function_cartesian/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function_cartesian/depth_average.gnuplot
 
 Number of active cells: 640 (on 6 levels)
 Number of degrees of freedom: 8,969 (5,504+713+2,752)
@@ -88,7 +88,7 @@ Number of degrees of freedom: 8,969 (5,504+713+2,752)
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
      Heat fluxes through boundary parts: 4.983e-11 W, 1.687e-11 W, 5.209e-11 W, -2.837e-11 W
-     Writing depth average               output-minimum_refinement_function_cartesian/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function_cartesian/depth_average.gnuplot
 
 Number of active cells: 1,018 (on 7 levels)
 Number of degrees of freedom: 14,302 (8,786+1,123+4,393)
@@ -116,7 +116,7 @@ Number of degrees of freedom: 14,302 (8,786+1,123+4,393)
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
      Heat fluxes through boundary parts: 5.209e-11 W, 1.982e-11 W, 5.039e-11 W, -2.837e-11 W
-     Writing depth average               output-minimum_refinement_function_cartesian/depth_average.gnuplot
+     Writing depth average:              output-minimum_refinement_function_cartesian/depth_average.gnuplot
 
 Number of active cells: 1,024 (on 7 levels)
 Number of degrees of freedom: 14,374 (8,830+1,129+4,415)
