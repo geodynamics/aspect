@@ -418,7 +418,7 @@ namespace aspect
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particles
-         &next_free_particle_index
+      &next_free_particle_index
       ;
     }
   }

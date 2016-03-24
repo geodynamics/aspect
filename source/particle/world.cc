@@ -265,13 +265,13 @@ namespace aspect
               local_next_particle_index += local_start_index;
 
               const types::particle_index globally_generated_particles =
-              dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
+                dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
 
               AssertThrow (next_free_particle_index <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
                            ExcMessage("There is no free particle index left to generate a new particle id. Please check if your"
-                               "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or"
-                               "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for"
-                               "particle ids."));
+                                      "model generates unusually many new particles (by repeatedly deleting and regenerating particles), or"
+                                      "recompile deal.II with the DEAL_II_WITH_64BIT_INDICES option enabled, to use 64-bit integers for"
+                                      "particle ids."));
 
               next_free_particle_index += globally_generated_particles;
             }
@@ -338,13 +338,13 @@ namespace aspect
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
                     std::set<unsigned int> particle_ids_to_remove;
-                    while(particle_ids_to_remove.size() < n_particles_to_remove)
+                    while (particle_ids_to_remove.size() < n_particles_to_remove)
                       particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
 
                     std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator> particles_to_remove;
 
                     for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
-                        id != particle_ids_to_remove.end(); ++id)
+                         id != particle_ids_to_remove.end(); ++id)
                       {
                         typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_remove = particles_in_cell.first;
                         std::advance(particle_to_remove,*id);
@@ -353,7 +353,7 @@ namespace aspect
                       }
 
                     for (typename std::list<typename std::multimap<types::LevelInd, Particle<dim> >::iterator>::iterator particle = particles_to_remove.begin();
-                        particle != particles_to_remove.end(); ++particle)
+                         particle != particles_to_remove.end(); ++particle)
                       {
                         particles.erase(*particle);
                       }
