@@ -257,7 +257,7 @@ namespace aspect
 
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
-      return std::make_pair (std::string ("Writing depth average"),
+      return std::make_pair (std::string ("Writing depth average:"),
                              filename);
     }
 
