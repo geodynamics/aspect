@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: There is now a postprocessor "point values" that allows evaluating
+ * the solution at a number of user-defined evaluation points.
+ * <br>
+ * (Wolfgang Bangerth, 2016/03/24)
+ *
  * <li> Fixed: Combining particles with initial adaptive refinement steps
  * used to create a multiple of the selected number of particles.
  * This is fixed now.
