@@ -278,7 +278,13 @@ namespace aspect
          * Lower limit for particle number per cell. This limit is
          * useful for adaptive meshes to prevent fine cells from being empty
          * of particles. It will be checked and enforced after mesh
-         * refinement and after particle movement.
+         * refinement and after particle movement. If there are
+         * n_number_of_particles < min_particles_per_cell
+         * particles in one cell then
+         * min_particles_per_cell - n_number_of_particles particles are
+         * generated and randomly placed in this cell. If the particles carry
+         * properties the individual property plugins control how the
+         * properties of the new particles are initialized.
          */
         unsigned int min_particles_per_cell;
 
@@ -287,7 +293,11 @@ namespace aspect
          * useful for adaptive meshes to prevent coarse cells from slowing down
          * the whole model. It will be checked and enforced after mesh
          * refinement, after MPI transfer of particles and after particle
-         * movement.
+         * movement. If there are
+         * n_number_of_particles > max_particles_per_cell
+         * particles in one cell then
+         * n_number_of_particles - max_particles_per_cell
+         * particles in this cell are randomly chosen and destroyed.
          */
         unsigned int max_particles_per_cell;
 

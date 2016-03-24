@@ -34,12 +34,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      ProbabilityDensityFunction<dim>::ProbabilityDensityFunction()
-        :
-        random_number_generator(5432)
-      {}
-
-      template <int dim>
       void
       ProbabilityDensityFunction<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
@@ -140,11 +134,15 @@ namespace aspect
                                                                         const types::particle_index n_local_particles,
                                                                         std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
+        // Uniform distribution on the interval [0,1]. This
+        // will be used to generate random particle locations.
+        boost::uniform_01<double> uniform_distribution_01;
+
         // Pick cells and assign particles at random points inside them
         for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
           {
             // Draw the random number that determines the cell of the tracer
-            const double random_weight =  local_weights_map.rbegin()->first * uniform_distribution_01(random_number_generator);
+            const double random_weight =  local_weights_map.rbegin()->first * uniform_distribution_01(this->random_number_generator);
 
             const std::map<double,types::LevelInd>::const_iterator selected_cell_map_entry = local_weights_map.lower_bound(random_weight);
             const types::LevelInd selected_cell = selected_cell_map_entry->second;

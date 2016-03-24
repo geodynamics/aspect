@@ -139,14 +139,11 @@ namespace aspect
           generate_particle(const Point<dim> &position,
                             const types::particle_index id) const;
 
-        private:
           /**
-           * Random number generator and an object that describes a
-           * uniform distribution on the interval [0,1]. These
-           * will be used to generate random particle locations.
+           * Random number generator. For reproducibility of tests it is
+           * initialized in the constructor with a constant.
            */
           boost::mt19937            random_number_generator;
-          boost::uniform_01<double> uniform_distribution_01;
       };
 
       /**

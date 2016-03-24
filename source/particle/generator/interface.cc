@@ -77,6 +77,10 @@ namespace aspect
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                                          const types::particle_index id)
       {
+        // Uniform distribution on the interval [0,1]. This
+        // will be used to generate random particle locations.
+        boost::uniform_01<double> uniform_distribution_01;
+
         Point<dim> max_bounds, min_bounds;
         // Get the bounds of the cell defined by the vertices
         for (unsigned int d=0; d<dim; ++d)
