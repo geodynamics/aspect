@@ -32,7 +32,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
      RMS, max velocity:                              1.2e-09 m/s, 3.64e-09 m/s
      Temperature min/avg/max:                        0 K, 100.4 K, 1613 K
      Heat fluxes through boundary parts:             -0.1197 W, -0.2657 W, -1.004e-07 W, -1.004e-07 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 8.06e-10 m/s, 8.91e-10 m/s, 1.2e-09 m/s
 
 Number of active cells: 822 (on 6 levels)
@@ -51,7 +51,7 @@ Number of degrees of freedom: 12,427 (7,624+991+3,812)
      RMS, max velocity:                              1.26e-09 m/s, 3.74e-09 m/s
      Temperature min/avg/max:                        -200.3 K, 101.8 K, 1613 K
      Heat fluxes through boundary parts:             -0.117 W, -0.2643 W, -1.326e-06 W, -8.533e-06 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 8.5e-10 m/s, 9.28e-10 m/s, 1.26e-09 m/s
 
 *** Timestep 2:  t=2.33241e+13 seconds
@@ -63,7 +63,7 @@ Number of degrees of freedom: 12,427 (7,624+991+3,812)
      RMS, max velocity:                              1.29e-09 m/s, 3.79e-09 m/s
      Temperature min/avg/max:                        -199 K, 102.8 K, 1613 K
      Heat fluxes through boundary parts:             -0.1147 W, -0.2627 W, -2.308e-06 W, -1.453e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 8.73e-10 m/s, 9.47e-10 m/s, 1.29e-09 m/s
 
 Number of active cells: 951 (on 6 levels)
@@ -79,7 +79,7 @@ Number of degrees of freedom: 13,447 (8,250+1,072+4,125)
      RMS, max velocity:                              1.32e-09 m/s, 3.83e-09 m/s
      Temperature min/avg/max:                        -197.8 K, 103.7 K, 1613 K
      Heat fluxes through boundary parts:             -0.1126 W, -0.2615 W, -3.359e-06 W, -1.902e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 8.96e-10 m/s, 9.66e-10 m/s, 1.32e-09 m/s
 
 *** Timestep 4:  t=3.8364e+13 seconds
@@ -91,7 +91,7 @@ Number of degrees of freedom: 13,447 (8,250+1,072+4,125)
      RMS, max velocity:                              1.35e-09 m/s, 3.87e-09 m/s
      Temperature min/avg/max:                        -197 K, 104.7 K, 1613 K
      Heat fluxes through boundary parts:             -0.1105 W, -0.26 W, -4.416e-06 W, -2.285e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.19e-10 m/s, 9.84e-10 m/s, 1.35e-09 m/s
 
 Number of active cells: 1,029 (on 6 levels)
@@ -107,7 +107,7 @@ Number of degrees of freedom: 14,588 (8,950+1,163+4,475)
      RMS, max velocity:                              1.38e-09 m/s, 3.92e-09 m/s
      Temperature min/avg/max:                        -197.5 K, 105.6 K, 1613 K
      Heat fluxes through boundary parts:             -0.1086 W, -0.259 W, -5.462e-06 W, -3.318e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.42e-10 m/s, 1e-09 m/s, 1.38e-09 m/s
 
 *** Timestep 6:  t=5.32369e+13 seconds
@@ -119,7 +119,7 @@ Number of degrees of freedom: 14,588 (8,950+1,163+4,475)
      RMS, max velocity:                              1.41e-09 m/s, 3.95e-09 m/s
      Temperature min/avg/max:                        -197 K, 106.5 K, 1613 K
      Heat fluxes through boundary parts:             -0.1069 W, -0.2578 W, -6.491e-06 W, -3.627e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.66e-10 m/s, 1.02e-09 m/s, 1.41e-09 m/s
 
 Number of active cells: 1,107 (on 6 levels)
@@ -135,7 +135,7 @@ Number of degrees of freedom: 15,677 (9,618+1,250+4,809)
      RMS, max velocity:                              1.44e-09 m/s, 3.99e-09 m/s
      Temperature min/avg/max:                        -201.8 K, 107.3 K, 1613 K
      Heat fluxes through boundary parts:             -0.1054 W, -0.2569 W, -1.387e-05 W, -3.892e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 9.89e-10 m/s, 1.04e-09 m/s, 1.44e-09 m/s
 
 *** Timestep 8:  t=6.7723e+13 seconds
@@ -147,7 +147,7 @@ Number of degrees of freedom: 15,677 (9,618+1,250+4,809)
      RMS, max velocity:                              1.46e-09 m/s, 4.02e-09 m/s
      Temperature min/avg/max:                        -201.6 K, 108.1 K, 1613 K
      Heat fluxes through boundary parts:             -0.1041 W, -0.2558 W, -1.467e-05 W, -4.111e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.01e-09 m/s, 1.06e-09 m/s, 1.46e-09 m/s
 
 Number of active cells: 1,206 (on 6 levels)
@@ -163,7 +163,7 @@ Number of degrees of freedom: 17,133 (10,512+1,365+5,256)
      RMS, max velocity:                              1.49e-09 m/s, 4.06e-09 m/s
      Temperature min/avg/max:                        -201.5 K, 108.7 K, 1613 K
      Heat fluxes through boundary parts:             -0.1032 W, -0.2549 W, -1.546e-05 W, -4.292e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.04e-09 m/s, 1.08e-09 m/s, 1.49e-09 m/s
 
 *** Timestep 10:  t=8.1819e+13 seconds
@@ -175,7 +175,7 @@ Number of degrees of freedom: 17,133 (10,512+1,365+5,256)
      RMS, max velocity:                              1.52e-09 m/s, 4.09e-09 m/s
      Temperature min/avg/max:                        -201.4 K, 109.3 K, 1613 K
      Heat fluxes through boundary parts:             -0.1027 W, -0.254 W, -1.623e-05 W, -4.449e-05 W
-     Writing depth average                           output-spherical_velocity_statistics/depth_average.gnuplot
+     Writing depth average:                          output-spherical_velocity_statistics/depth_average.gnuplot
      Radial RMS, tangential RMS, total RMS velocity: 1.06e-09 m/s, 1.09e-09 m/s, 1.52e-09 m/s
 
 Number of active cells: 1,320 (on 6 levels)

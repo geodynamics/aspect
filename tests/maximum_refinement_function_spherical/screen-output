@@ -32,7 +32,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 998.6 W, 1953 W, 2479 W, 2479 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 414 (on 5 levels)
 Number of degrees of freedom: 6,181 (3,790+496+1,895)
@@ -60,7 +60,7 @@ Number of degrees of freedom: 6,181 (3,790+496+1,895)
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 1002 W, 1955 W, 2463 W, 2463 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 894 (on 6 levels)
 Number of degrees of freedom: 12,734 (7,814+1,013+3,907)
@@ -88,7 +88,7 @@ Number of degrees of freedom: 12,734 (7,814+1,013+3,907)
      RMS, max velocity:                  8.17e-07 m/year, 1.45e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 984.1 W, 1956 W, 2452 W, 2452 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 1,557 (on 6 levels)
 Number of degrees of freedom: 22,397 (13,758+1,760+6,879)
@@ -116,7 +116,7 @@ Number of degrees of freedom: 22,397 (13,758+1,760+6,879)
      RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 986.3 W, 1958 W, 2453 W, 2453 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 2,682 (on 7 levels)
 Number of degrees of freedom: 37,687 (23,154+2,956+11,577)
@@ -144,7 +144,7 @@ Number of degrees of freedom: 37,687 (23,154+2,956+11,577)
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 987.8 W, 1961 W, 2449 W, 2449 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 4,098 (on 7 levels)
 Number of degrees of freedom: 57,495 (35,338+4,488+17,669)
@@ -172,7 +172,7 @@ Number of degrees of freedom: 57,495 (35,338+4,488+17,669)
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 986.4 W, 1962 W, 2448 W, 2448 W
-     Writing depth average               output-maximum_refinement_function_spherical/depth_average.gnuplot
+     Writing depth average:              output-maximum_refinement_function_spherical/depth_average.gnuplot
 
 Number of active cells: 5,277 (on 7 levels)
 Number of degrees of freedom: 74,477 (45,778+5,810+22,889)
