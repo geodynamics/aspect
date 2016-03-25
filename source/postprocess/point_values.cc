@@ -85,10 +85,23 @@ namespace aspect
       point_values.push_back (std::make_pair (this->get_time(),
                                               current_point_values));
 
-      // now write all of the data to the file of choice
+      // now write all of the data to the file of choice. start with a pre-amble that
+      // explains the meaning of the various fields
       const std::string filename = (this->get_output_directory() +
                                     "point_values.txt");
       std::ofstream f (filename.c_str());
+      f << ("# <time> "
+            "<evaluation_point_x> "
+            "<evaluation_point_y> ")
+        << (dim == 3 ? "<evaluation_point_z> " : "")
+        << ("<velocity_x> "
+            "<velocity_y> ")
+        << (dim == 3 ? "<velocity_z> " : "")
+        << "<pressure> <temperature>";
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        f << " <" << this->introspection().name_for_compositional_index(c) << ">";
+      f << '\n';
+
       for (std::vector<std::pair<double, std::vector<Vector<double> > > >::iterator
            time_point = point_values.begin();
            time_point != point_values.end();
