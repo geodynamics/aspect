@@ -39,6 +39,7 @@ namespace aspect
     World<dim>::World()
       :
       global_number_of_particles(0),
+      next_free_particle_index(0),
       data_offset(numbers::invalid_unsigned_int)
     {}
 
@@ -121,14 +122,14 @@ namespace aspect
     void
     World<dim>::update_next_free_particle_index()
     {
-      types::particle_index locally_highest_index;
+      types::particle_index locally_highest_index = 0;
       typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator it = particles.begin();
       for (; it!=particles.end(); ++it)
         {
           locally_highest_index = std::max(locally_highest_index,it->second.get_id());
         }
 
-      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, this->get_mpi_communicator());
+      next_free_particle_index = dealii::Utilities::MPI::max (locally_highest_index, this->get_mpi_communicator()) + 1;
     }
 
     template <int dim>
@@ -276,7 +277,7 @@ namespace aspect
               next_free_particle_index += globally_generated_particles;
             }
 
-          boost::mt19937            random_number_generator;
+          boost::mt19937 random_number_generator;
 
           // Loop over all cells and generate or remove the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
@@ -293,9 +294,9 @@ namespace aspect
                 if ((particle_load_balancing == remove_and_add_particles) &&
                     (n_particles_in_cell < min_particles_per_cell))
                   {
-                    for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i)
+                    for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index++);
+                        std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
 
                         Vector<double> value(this->introspection().n_components);
                         std::vector<Tensor<1,dim> > gradient (this->introspection().n_components,Tensor<1,dim>());
