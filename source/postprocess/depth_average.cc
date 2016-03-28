@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -221,6 +221,10 @@ namespace aspect
                           DataOutBase::default_suffix(output_format));
               std::ofstream f (filename.c_str());
               data_out_stack.write (f, output_format);
+
+              AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                         "> did not succeed in the 'point values' "
+                                         "postprocessor."));
             }
           else
             {
@@ -249,7 +253,10 @@ namespace aspect
                       depth+= max_depth/static_cast<double>(point->values[0].size() );
                     }
                 }
-              f.close();
+
+              AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                         "> did not succeed in the 'point values' "
+                                         "postprocessor."));
             }
         }
 
