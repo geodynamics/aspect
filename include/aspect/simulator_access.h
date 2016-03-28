@@ -260,8 +260,9 @@ namespace aspect
        * This can be useful for plugins that want to function differently in
        * the initial adaptive refinements and later on.
        * This will be not initialized before Simulator<dim>::run() is called.
-       * It equals 0 to parameters.initial_adaptive_refinement during the
-       * refinements, and std::numeric_limits<unsigned int>::max() afterwards.
+       * It iterates upward from 0 to parameters.initial_adaptive_refinement
+       * during the initial adaptive refinement steps, and equals
+       * std::numeric_limits<unsigned int>::max() afterwards.
        */
       unsigned int
       get_pre_refinement_step () const;
