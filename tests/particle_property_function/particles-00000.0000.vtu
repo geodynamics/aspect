@@ -33,24 +33,24 @@
           2
         </DataArray>
         <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          0.000109984 -9.92431e-05 0
-          6.86697e-05 -0.000149343 0
-          -6.97016e-07 -0.000242139 0
+          0.000109984 -9.92431e-05 0 
+          6.86697e-05 -0.000149343 0 
+          -6.97016e-07 -0.000242139 0 
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
-          0
-          0
-          0
+          0 
+          0 
+          0 
         </DataArray>
         <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
-          2.76577e-12
-          -7.59124e-10
-          1.09636e-07
+          2.76577e-12 
+          -7.59124e-10 
+          1.09636e-07 
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.56014 0.464805 0
-          0.626064 0.421401 0
-          0.845142 0.342838 0
+          0.56014 0.464805 0 
+          0.626064 0.421401 0 
+          0.845142 0.342838 0 
         </DataArray>
       </PointData>
     </Piece>
