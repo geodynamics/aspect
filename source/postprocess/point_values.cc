@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,10 +60,10 @@ namespace aspect
             }
 
           // ensure that exactly one processor found things
-          Assert (Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator()) > 0,
+          Assert (Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator()) == 1,
                   ExcMessage ("While trying to evaluate the values of the solution at "
                               "evaluation point " + Utilities::int_to_string(p) +
-                              ", no processor reported that that point lies inside the "
+                              ", no (or more than one) processor reported that that point lies inside the "
                               "set of cells it owns. Are you trying to evaluate the "
                               "solution at a point that lies outside the domain?"));
 
@@ -136,6 +136,10 @@ namespace aspect
           f << '\n';
         }
 
+      AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                 "> did not succeed in the 'point values' "
+                                 "postprocessor."));
+
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
       return std::make_pair (std::string ("Writing point values:"),
@@ -152,8 +156,8 @@ namespace aspect
         prm.enter_subsection("Point values");
         {
           prm.declare_entry("Evaluation points", "",
-                            // a list of points, separated by commas; each point has
-                            // exactly 'dim' components/coordinates, separated by spaces
+                            // a list of points, separated by semicolons; each point has
+                            // exactly 'dim' components/coordinates, separated by commas
                             Patterns::List (Patterns::List (Patterns::Double(), dim, dim, ","),
                                             0, Patterns::List::max_int_value, ";"),
                             "The list of points at which the solution should be evaluated. "
