@@ -28,6 +28,8 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
 
+#include <boost/random.hpp>
+
 namespace aspect
 {
   namespace Particle
@@ -65,6 +67,11 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. Initializes the random number generator.
+           */
+          Interface ();
+
+          /**
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
@@ -87,6 +94,16 @@ namespace aspect
           virtual
           void
           generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles) = 0;
+
+          /**
+           * Generate one particle in the given cell. This function's main purpose
+           * is to provide functionality to fill up cells with too few particles
+           * after refinement. Of course it can also be utilized by derived classes
+           * to generate the initial particle distribution.
+           */
+          std::pair<types::LevelInd,Particle<dim> >
+          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                             const types::particle_index id);
 
 
           /**
@@ -121,6 +138,12 @@ namespace aspect
           std::pair<types::LevelInd,Particle<dim> >
           generate_particle(const Point<dim> &position,
                             const types::particle_index id) const;
+
+          /**
+           * Random number generator. For reproducibility of tests it is
+           * initialized in the constructor with a constant.
+           */
+          boost::mt19937            random_number_generator;
       };
 
       /**
