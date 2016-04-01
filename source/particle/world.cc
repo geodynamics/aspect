@@ -112,9 +112,6 @@ namespace aspect
                                                                 output_time);
       particle_timer->exit_section();
 
-      if (print_timing_output)
-        particle_timer->print_summary();
-
       return filename;
     }
 
@@ -1079,6 +1076,10 @@ namespace aspect
 
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
+
+      if (print_timing_output &&
+          (this->get_timestep_number() % this->get_parameters().timing_output_frequency == 0))
+        particle_timer->print_summary();
     }
 
     template <int dim>

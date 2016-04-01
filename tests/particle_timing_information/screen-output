@@ -9,12 +9,6 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 20 iterations.
 
    Postprocessing:
-
-
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-
      RMS, max velocity:         0.000133 m/s, 0.000331 m/s
      Compositions min/max/mass: 0/1/0.1914
      Writing particle output:   output-particle_timing_information/particle-00000
@@ -43,6 +37,12 @@ Number of degrees of freedom: 387 (180+27+90+90)
    Solving Stokes system... 24 iterations.
 
    Postprocessing:
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
      RMS, max velocity:            0.000185 m/s, 0.000491 m/s
      Compositions min/max/mass:    0/1.124/0.1817
      Number of advected particles: 9
@@ -53,12 +53,6 @@ Number of degrees of freedom: 387 (180+27+90+90)
    Solving Stokes system... 22 iterations.
 
    Postprocessing:
-
-
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-
      RMS, max velocity:         0.000217 m/s, 0.000582 m/s
      Compositions min/max/mass: -0.02596/1.114/0.1764
      Writing particle output:   output-particle_timing_information/particle-00001
