@@ -3200,6 +3200,7 @@ namespace aspect
                                                                       const typename DoFHandler<dim>::active_cell_iterator  &cell, \
                                                                       const bool                                             compute_strainrate, \
                                                                       MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
+  template void Simulator<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const; \
    
 
 

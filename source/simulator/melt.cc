@@ -842,13 +842,14 @@ namespace aspect
 
                 MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
                 Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
+                const FEValuesExtractors::Vector fluid_velocity_extractor = sim.introspection().variable("fluid velocity").extractor_vector();
 
                 for (unsigned int q=0; q<n_q_points; ++q)
                   for (unsigned int i=0; i<dofs_per_cell; ++i)
                     {
                       for (unsigned int j=0; j<dofs_per_cell; ++j)
-                        cell_matrix(i,j) += fe_values[sim.introspection().variable("fluid velocity").extractor_vector()].value(j,q) *
-                                            fe_values[sim.introspection().variable("fluid velocity").extractor_vector()].value(i,q) *
+                        cell_matrix(i,j) += fe_values[fluid_velocity_extractor].value(j,q) *
+                                            fe_values[fluid_velocity_extractor].value(i,q) *
                                             fe_values.JxW(q);
 
                       const double phi = std::max(0.0, porosity_values[q]);
@@ -859,7 +860,7 @@ namespace aspect
                           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                           const Tensor<1,dim>  gravity = sim.get_gravity_model().gravity_vector(in.position[q]);
                           cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
-                                            * fe_values[sim.introspection().variable("fluid velocity").extractor_vector()].value(i,q)
+                                            * fe_values[fluid_velocity_extractor].value(i,q)
                                             * fe_values.JxW(q);
                         }
 
