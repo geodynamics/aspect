@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015, 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -154,14 +154,14 @@ namespace aspect
           {
             switch ((*p)->late_initialization_mode())
               {
-                case InitializationModeForLateParticles::initialize_to_zero:
+                case aspect::Particle::Property::initialize_to_zero:
                 {
                   for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
                     particle_properties.push_back(0.0);
                   break;
                 }
 
-                case InitializationModeForLateParticles::initialize:
+                case aspect::Particle::Property::initialize:
                 {
                   (*p)->initialize_one_particle_property(particle.get_location(),
                                                          solution,
@@ -170,7 +170,7 @@ namespace aspect
                   break;
                 }
 
-                case InitializationModeForLateParticles::interpolate:
+                case aspect::Particle::Property::interpolate:
                 {
                   const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
                     (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
