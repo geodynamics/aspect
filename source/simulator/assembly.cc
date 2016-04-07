@@ -1849,8 +1849,6 @@ namespace aspect
                                       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
                                       internal::Assembly::CopyData::AdvectionSystem<dim> &data)
   {
-    const bool use_bdf2_scheme = (timestep_number > 1);
-
     const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
 
     // also have the number of dofs that correspond just to the element for
