@@ -320,7 +320,6 @@ namespace aspect
 
 
     std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_velocity_values(n_q_points);
-    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
 
     double max_local_speed_over_meshsize = 0;

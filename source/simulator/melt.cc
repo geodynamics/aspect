@@ -134,7 +134,7 @@ namespace aspect
     template <int dim>
     void
     MeltEquations<dim>::
-    local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &cell,
+    local_assemble_stokes_system_melt (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/,
                                        const double                                     pressure_scaling,
                                        const bool                                       rebuild_stokes_matrix,
                                        internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
@@ -239,7 +239,6 @@ namespace aspect
           Tensor<1,dim> force_u;
           for (unsigned int d=0; d<dim; ++d)
             force_u[d] = scratch.material_model_outputs.force_vector[q][d];
-          const double force_p = scratch.material_model_outputs.force_vector[q][dim];
 
           for (unsigned int i=0; i<dofs_per_cell; ++i)
             data.local_rhs(i) += (
@@ -273,8 +272,8 @@ namespace aspect
     template <int dim>
     void
     MeltEquations<dim>::
-    local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                                const unsigned int                                    face_no,
+    local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/,
+                                                const unsigned int                                    /*face_no*/,
                                                 const double                                          pressure_scaling,
                                                 internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                                 internal::Assembly::CopyData::StokesSystem<dim>      &data) const
@@ -296,7 +295,6 @@ namespace aspect
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.face_finite_element_values.quadrature_point(q));
           const double density_f = melt_outputs->fluid_densities[q];
-          const double density_s = scratch.face_material_model_outputs.densities[q];
 
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.face_material_model_inputs.composition[q][porosity_index],0.000);
@@ -313,8 +311,8 @@ namespace aspect
               data.local_rhs(i) += (scratch.face_finite_element_values[ex_p_f].value(i, q)
                                     * pressure_scaling * K_D *
                                     (density_f
-                                     * (scratch.face_finite_element_values.get_normal_vectors()[q] * gravity)
-                                     - (scratch.face_finite_element_values.get_normal_vectors()[q] * grad_p_f[q]))
+                                     * (scratch.face_finite_element_values.normal_vector(q) * gravity)
+                                     - (scratch.face_finite_element_values.normal_vector(q) * grad_p_f[q]))
                                     * scratch.face_finite_element_values.JxW(q));
             }
         }
@@ -760,9 +758,6 @@ namespace aspect
                      sim.introspection().index_sets.system_relevant_partitioning,
                      sim.get_mpi_communicator());
 #endif
-
-          const typename Introspection<dim>::ComponentIndices &x
-            = sim.introspection().component_indices;
 
           Table<2,DoFTools::Coupling> coupling (sim.introspection().n_components,
                                                 sim.introspection().n_components);
