@@ -90,7 +90,7 @@ namespace aspect
     template <int dim>
     bool
     MeltGlobal<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence /*dependence*/) const
     {
       return false;
     }

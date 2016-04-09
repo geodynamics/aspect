@@ -90,7 +90,7 @@ namespace aspect
     template <int dim>
     bool
     MeltSimple<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence /*dependence*/) const
     {
       return false;
     }
@@ -315,10 +315,6 @@ namespace aspect
 
               // freezing of melt below the solidus
               {
-                const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
-                const double T_solidus = A1 + 273.15
-                                         + A2 * pressure
-                                         + A3 * pressure * pressure;
                 const double freezing = freezing_rate * this->get_timestep() / year_in_seconds
                                         * 0.5 * (melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]
                                                  - std::abs(melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i])) - old_porosity[i]));

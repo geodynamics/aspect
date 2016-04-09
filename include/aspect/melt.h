@@ -38,7 +38,7 @@ namespace aspect
     {
       public:
         MeltOutputs (const unsigned int n_points,
-                     const unsigned int n_comp)
+                     const unsigned int /*n_comp*/)
         {
           compaction_viscosities.resize(n_points);
           fluid_viscosities.resize(n_points);
