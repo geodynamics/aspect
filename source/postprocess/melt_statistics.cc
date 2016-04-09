@@ -62,7 +62,7 @@ namespace aspect
       std::ostringstream output;
       output.precision(4);
 
-      double local_melt_integral;
+      double local_melt_integral = 0.0;
       double local_min_melt = std::numeric_limits<double>::max();
       double local_max_melt = -std::numeric_limits<double>::max();
 
