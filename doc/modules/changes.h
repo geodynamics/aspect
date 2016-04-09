@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Improved: The particle sorting algorithm performance was considerably
+ * improved. It now sorts neighbor cells by the distance between the particle
+ * and the face center that is between the old cell and the neighbor and then
+ * checks if the particle is in this list of neighbor cells. Only if it is
+ * not found there, a search over all local cells is performed.
+ * <br>
+ * (Rene Gassmoeller, Wolfgang Bangerth, 2016/04/12)
+ *
  * <li> New: There is now a postprocessor "point values" that allows evaluating
  * the solution at a number of user-defined evaluation points.
  * <br>
