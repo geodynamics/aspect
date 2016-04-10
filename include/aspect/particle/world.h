@@ -134,6 +134,13 @@ namespace aspect
         get_particles() const;
 
         /**
+         * Returns the number of particles in the cell that contains the
+         * most tracers in the global model.
+         */
+        unsigned int
+        get_global_max_tracers_per_cell() const;
+
+        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the tracers
          * are actually still at their old positions and the current timestep
@@ -323,13 +330,6 @@ namespace aspect
          */
         void
         update_next_free_particle_index();
-
-        /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
-         */
-        unsigned int
-        get_global_max_tracers_per_cell() const;
 
         /**
          * Finds the cells containing each particle for all particles. If
