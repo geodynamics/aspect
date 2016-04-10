@@ -43,7 +43,7 @@ namespace aspect
                                "active postprocessors. You need to select this postprocessor to "
                                "be able to select the <particle count> visualization plugin."));
 
-        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > particles =
+        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &particles =
           tracer_postprocessor->get_particle_world().get_particles();
 
         std::pair<std::string, Vector<float> *>
