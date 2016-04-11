@@ -106,6 +106,8 @@ namespace aspect
           voleps = prm.get_double ("Small volume");
 
           out_interval = prm.get_double ("Time between data output");
+          if (this->convert_output_to_years())
+            out_interval *= year_in_seconds;
 
           n_i_samp = prm.get_integer ("Number initialization samples");
 
@@ -164,10 +166,13 @@ namespace aspect
         {
           engine.calc_normals ();
           result_string += " Wrote " + output->get_filename () + ".";
+          const double output_time = (this->convert_output_to_years() ?
+                                      this->get_time() / year_in_seconds :
+                                      this->get_time());
           output->write_state (engine.get_dof_handler (),
                                ::aspect::InterfaceTracker::VOFEngine<dim>::component_names (),
                                ::aspect::InterfaceTracker::VOFEngine<dim>::component_interpretation (),
-                               engine.get_state (), this->get_time ());
+                               engine.get_state (), output_time);
           next_out_t = get_next_t (this->get_time (), out_interval);
         }
 
