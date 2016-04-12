@@ -502,6 +502,48 @@ namespace aspect
     }
 
     template <int dim>
+    bool
+    World<dim>::particle_is_in_cell(const Particle<dim> &particle,
+                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+    {
+      try
+        {
+          const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle.get_location());
+          if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+            return true;
+        }
+      catch (typename Mapping<dim>::ExcTransformationFailed &)
+        {}
+      return false;
+    }
+
+    template <int dim>
+    std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+    World<dim>::neighbor_cells_to_search(const Particle<dim> &particle,
+                                         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+    {
+      std::multimap<double,typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbor_cells;
+      for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+        if (cell->at_boundary(face_no) == false)
+          {
+            if (cell->neighbor(face_no)->active())
+              {
+                const double center_distance = (particle.get_location() - cell->face(face_no)->center()).norm();
+                neighbor_cells.insert(std::make_pair(center_distance,cell->neighbor(face_no)));
+              }
+            else
+              for (unsigned int subface_no=0; subface_no<GeometryInfo<dim>::max_children_per_face; ++subface_no)
+                {
+                  const typename parallel::distributed::Triangulation<dim>::active_cell_iterator child = cell->neighbor_child_on_subface(face_no,subface_no);
+                  const double center_distance = (particle.get_location() - child->face(cell->neighbor_of_neighbor(face_no))->center()).norm();
+                  neighbor_cells.insert(std::make_pair(center_distance,child));
+                }
+          }
+
+      return neighbor_cells;
+    }
+
+    template <int dim>
     void
     World<dim>::sort_particles_in_subdomains_and_cells()
     {
@@ -523,58 +565,76 @@ namespace aspect
       typename std::multimap<types::LevelInd, Particle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
+          // The cell the particle is in
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator current_cell;
+          bool found_cell = false;
+
           // If we know the particle's old cell, check if it is still inside
+          // or in one of its neighbors
           if (it->first != std::make_pair(-1,-1))
             {
-              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-              old_cell (&(this->get_triangulation()), it->first.first, it->first.second);
+              current_cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator (&(this->get_triangulation()), it->first.first, it->first.second);
 
-              try
+              if (particle_is_in_cell(it->second,current_cell))
                 {
-                  const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(old_cell, it->second.get_location());
-                  if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+                  // The particle is still in the old cell, move on to next particle
+                  ++it;
+                  continue;
+                }
+
+              // Now try again for all of the neighbors of the previous cell
+              // Most likely we will find the particle in them.
+              const std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+              neighbor_cells = neighbor_cells_to_search(it->second,current_cell);
+
+              for (typename std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin();
+                   neighbor_cell != neighbor_cells.end(); ++neighbor_cell)
+                {
+                  if (particle_is_in_cell(it->second,neighbor_cell->second))
                     {
-                      // The particle is still in the old cell, move on to next particle
-                      ++it;
-                      continue;
+                      current_cell = neighbor_cell->second;
+                      found_cell = true;
+                      break;
                     }
                 }
-              catch (...)
-                {}
             }
 
-          // The particle is not in its old cell. Look for the new cell.
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
-          try
+          if (!found_cell)
             {
-              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+              // The particle is not in its old cell or its surrounding.
+              // Look for the new cell in the whole domain.
+              // This case should be rare.
+              try
+                {
+                  current_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+                }
+              catch (GridTools::ExcPointNotFound<dim> &)
+                {
+                  // We can find no cell for this particle. It has left the
+                  // domain due to an integration error or an open boundary.
+                  lost_particles.insert(*it);
+
+                  // Now remove the lost particle and continue with next particle.
+                  // Also make sure we do not invalidate the iterator we are increasing.
+                  const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+                  it++;
+                  particles.erase(particle_to_delete);
+                  continue;
+                }
             }
-          catch (GridTools::ExcPointNotFound<dim> &)
-            {
-              // If we can find no cell for this particle it has left the domain due
-              // to an integration error or an open boundary.
-              lost_particles.insert(*it);
-
-              // Now remove the lost particle and continue with next particle.
-              // Also make sure we do not invalidate the iterator we are increasing.
-              const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
-              it++;
-              particles.erase(particle_to_delete);
-              continue;
-            }
 
 
-          // Reinsert the particle into our domain if we found its cell
+          // Reinsert the particle into our domain if we own its cell.
           // Mark it for MPI transfer otherwise
-          if (cell->is_locally_owned())
+          if (current_cell->is_locally_owned())
             {
-              const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
+              const types::LevelInd found_cell = std::make_pair(current_cell->level(),current_cell->index());
               moved_particles_cell.insert(std::make_pair(found_cell, it->second));
             }
           else
-            moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),it->second));
+            moved_particles_domain.insert(std::make_pair(current_cell->subdomain_id(),it->second));
 
-          // Now remove the lost particle and continue with next particle.
+          // Now remove the resorted particle and continue with next particle.
           // Also make sure we do not invalidate the iterator we are increasing.
           const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
           it++;
@@ -766,8 +826,33 @@ namespace aspect
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
 
-          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
             (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+
+          // GridTools::find_active_cell_around_point can find a different cell than
+          // particle_is_in_cell if the particle is very close to the boundary
+          // therefore, we might get a cell here that does not belong to us.
+          // But then at least one of its neighbors belongs to us, and the particle
+          // is extremely close to the boundary of these two cells. Look in the
+          // neighbor cells for the particle.
+          // TODO: remove this by sending and receiving the future CellId
+          if (!cell->is_locally_owned())
+            {
+              // Now try again for all of the neighbors of the cell
+              // Most likely we will find the particle in them.
+              const std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+              neighbor_cells = neighbor_cells_to_search(recv_particle,cell);
+
+              for (typename std::map<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin();
+                   neighbor_cell != neighbor_cells.end(); ++neighbor_cell)
+                {
+                  if (particle_is_in_cell(recv_particle,neighbor_cell->second) && neighbor_cell->second->is_locally_owned())
+                    {
+                      cell = neighbor_cell->second;
+                      break;
+                    }
+                }
+            }
 
           Assert(cell->is_locally_owned(),
                  ExcMessage("Another process sent us a particle, but the particle is not in our domain."));

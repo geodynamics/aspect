@@ -332,6 +332,23 @@ namespace aspect
         update_next_free_particle_index();
 
         /**
+         * Returns whether a given particle is in the given cell.
+         */
+        bool
+        particle_is_in_cell(const Particle<dim> &particle,
+                            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+        /**
+         * Returns a map of neighbor cells of the current cell. This map is
+         * sorted according to the distance between the particle and the face
+         * of cell that is shared with the neighbor cell. I.e. the first
+         * entries of the map are the most likely ones to find the particle in.
+         */
+        std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+        neighbor_cells_to_search(const Particle<dim> &particle,
+                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+        /**
          * Finds the cells containing each particle for all particles. If
          * particles moved out of this subdomain they will be sent
          * to their new process and inserted there. After this function call
