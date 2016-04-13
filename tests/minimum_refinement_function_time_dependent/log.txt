@@ -1,0 +1,164 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in OPTIMIZED mode
+--     . running with 2 MPI processes
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K):  3500
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     50.6848
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+
+Number of active cells: 214 (on 5 levels)
+Number of degrees of freedom: 3,113 (1,906+254+953)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K):  3500
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     50.6848
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+
+Number of active cells: 604 (on 6 levels)
+Number of degrees of freedom: 8,386 (5,146+667+2,573)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K):  3500
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     50.6848
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+
+Number of active cells: 1,375 (on 7 levels)
+Number of degrees of freedom: 18,894 (11,610+1,479+5,805)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     10
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K):  3500
+     Model domain depth (m):                        500000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     5e+24
+     Ra number:                                     50.6848
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+
+Number of active cells: 1,387 (on 7 levels)
+Number of degrees of freedom: 19,089 (11,730+1,494+5,865)
+
+*** Timestep 1:  t=7.45202e+08 years
+   Solving temperature system... 363 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+Number of active cells: 1,234 (on 7 levels)
+Number of degrees of freedom: 17,071 (10,492+1,333+5,246)
+
+*** Timestep 2:  t=1.83931e+09 years
+   Solving temperature system... 376 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+Number of active cells: 772 (on 7 levels)
+Number of degrees of freedom: 11,026 (6,772+868+3,386)
+
+*** Timestep 3:  t=3.28375e+09 years
+   Solving temperature system... 225 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+Number of active cells: 796 (on 6 levels)
+Number of degrees of freedom: 11,282 (6,924+896+3,462)
+
+*** Timestep 4:  t=5e+09 years
+   Solving temperature system... 235 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+
+Number of active cells: 1,108 (on 7 levels)
+Number of degrees of freedom: 15,461 (9,500+1,211+4,750)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      1.89s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         8 |     0.213s |        11% |
+| Assemble temperature system     |         8 |     0.211s |        11% |
+| Build Stokes preconditioner     |         8 |     0.226s |        12% |
+| Build temperature preconditioner|         8 |    0.0305s |       1.6% |
+| Solve Stokes system             |         8 |     0.414s |        22% |
+| Solve temperature system        |         8 |     0.231s |        12% |
+| Initialization                  |         5 |     0.132s |         7% |
+| Postprocessing                  |         8 |   0.00152s |     0.081% |
+| Refine mesh structure, part 1   |         8 |    0.0981s |       5.2% |
+| Refine mesh structure, part 2   |         8 |    0.0342s |       1.8% |
+| Setup dof systems               |         9 |     0.277s |        15% |
++---------------------------------+-----------+------------+------------+
+
