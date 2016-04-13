@@ -14,6 +14,12 @@
  * <br>
  * (Jonathan Perry-Houts, 2016/04/13)
  *
+ * <li> New: There is a new function Utilities::orthogonal_vectors() that
+ * allows computing one (in 2d) or two (in 3d) orthogonal vectors to a given
+ * input vector.
+ * <br>
+ * (Wolfgang Bangerth, 2016/04/13)
+ *
  * <li> Improved: The particle sorting algorithm performance was considerably
  * improved. It now sorts neighbor cells by the distance between the particle
  * and the face center that is between the old cell and the neighbor and then
@@ -49,11 +55,11 @@
  * <br>
  * (Lev Karatun, Rene Gassmoeller, 2016/02/26)
  *
- * <li> New: The advection systems (for temperature and compositions) can now 
- * be discretized using the symmetric interior penalty discontinuous Galerkin 
- * method. This can be useful to explore solution without adding artificial 
- * smoothing. This is controlled by two new input parameters in 
- * 'Discretization': use_discontinuous_temperature_discretization and 
+ * <li> New: The advection systems (for temperature and compositions) can now
+ * be discretized using the symmetric interior penalty discontinuous Galerkin
+ * method. This can be useful to explore solution without adding artificial
+ * smoothing. This is controlled by two new input parameters in
+ * 'Discretization': use_discontinuous_temperature_discretization and
  * use_discontinuous_composition_discretization.
  * <br>
  * (Sam Cox, 2016/02/22)
@@ -126,7 +132,7 @@
  * (Anne Glerum, Rene Gassmoeller, Ian Rose, 2016/01/11)
  *
  * <li> Changed: The interfaces of the boundary composition and boundary
- * temperature plugins have been deprecated. Their replacements not longer 
+ * temperature plugins have been deprecated. Their replacements not longer
  * contain references to the geometry model, which was a leftover from an
  * earlier development stage. Users should derive their plugins from
  * SimulatorAccess if they need access to the geometry model. The
@@ -139,15 +145,15 @@
  * <br>
  * (Rene Gassmoeller, 2015/12/19)
  *
- * <li> Changed: The boundary_velocity(const Point<dim> &position) const 
- * function has now been deprecated in favor of the new function 
- * boundary_velocity (const types::boundary_id boundary_indicator, 
- * const Point<dim> &position) const. 
+ * <li> Changed: The boundary_velocity(const Point<dim> &position) const
+ * function has now been deprecated in favor of the new function
+ * boundary_velocity (const types::boundary_id boundary_indicator,
+ * const Point<dim> &position) const.
  * <br>
  * (Menno Fraters, 2015/12/16)
- * 
- * <li> New: Visualization postprocessors for thermal conductivity and 
- * thermal diffusivity. 
+ *
+ * <li> New: Visualization postprocessors for thermal conductivity and
+ * thermal diffusivity.
  * <br>
  * (Anne Glerum, 2015/12/03)
  *

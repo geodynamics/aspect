@@ -115,12 +115,77 @@ namespace aspect
       return ccoord;
     }
 
+
+    template <int dim>
+    std_cxx11::array<Tensor<1,dim>,dim-1>
+    orthogonal_vectors (const Tensor<1,dim> &v)
+    {
+      Assert (v.norm() > 0,
+              ExcMessage ("This function can not be called with a zero "
+                          "input vector."));
+
+      std_cxx11::array<Tensor<1,dim>,dim-1> return_value;
+      switch (dim)
+        {
+          case 2:
+          {
+            // create a direction by swapping the two coordinates and
+            // flipping one sign; this is orthogonal to 'v' and has
+            // the same length already
+            return_value[0][0] = v[1];
+            return_value[0][1] = -v[0];
+            break;
+          }
+
+          case 3:
+          {
+            // In 3d, we can get two other vectors in a 3-step procedure:
+            // - compute a 'w' that is definitely not collinear with 'v'
+            // - compute the first direction as u[1] = v \times w,
+            //   normalize it
+            // - compute the second direction as u[2] = v \times u[1],
+            //   normalize it
+            //
+            // For the first step, use a procedure suggested by Luca Heltai:
+            // Set d to the index of the largest component of v. Make a vector
+            // with this component equal to zero, and with the other two
+            // equal to the norm of the point. Call this 'w'.
+            unsigned int max_component = 0;
+            for (unsigned int d=1; d<dim; ++d)
+              if (std::fabs(v[d]) > std::fabs(v[max_component]))
+                max_component = d;
+            Tensor<1,dim> w = v;
+            w[max_component] = 0;
+            for (unsigned int d=1; d<dim; ++d)
+              if (d != max_component)
+                w[d] = v.norm();
+
+            return_value[0] = cross_product_3d(v, w);
+            return_value[0] *= v.norm() / return_value[0].norm();
+
+            return_value[1] = cross_product_3d(v, return_value[0]);
+            return_value[1] *= v.norm() / return_value[1].norm();
+
+            break;
+          }
+
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+
+      return return_value;
+    }
+
+
+
     bool
     fexists(const std::string &filename)
     {
       std::ifstream ifile(filename.c_str());
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
+
+
 
     std::string
     read_and_distribute_file_content(const std::string &filename,
@@ -1201,5 +1266,8 @@ namespace aspect
 
     template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+
+    template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
+    template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
   }
 }
