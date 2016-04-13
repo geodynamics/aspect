@@ -55,7 +55,8 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const;
+        boundary_velocity (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position) const;
 
         /**
          * A function that is called at the beginning of each time step to

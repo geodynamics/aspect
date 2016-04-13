@@ -43,12 +43,12 @@ namespace aspect
         class SphericalHarmonicsLookup
         {
           public:
-            SphericalHarmonicsLookup(const std::string &filename)
+            SphericalHarmonicsLookup(const std::string &filename,
+                                     const MPI_Comm &comm)
             {
               std::string temp;
-              std::ifstream in(filename.c_str(), std::ios::in);
-              AssertThrow (in,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              // Read data from disk and distribute among processes
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               in >> order;
               getline(in,temp);  // throw away the rest of the line
@@ -123,12 +123,12 @@ namespace aspect
         class SplineDepthsLookup
         {
           public:
-            SplineDepthsLookup(const std::string &filename)
+            SplineDepthsLookup(const std::string &filename,
+                               const MPI_Comm &comm)
             {
               std::string temp;
-              std::ifstream in(filename.c_str(), std::ios::in);
-              AssertThrow (in,
-                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              // Read data from disk and distribute among processes
+              std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
               getline(in,temp);  // throw away the rest of the line
               getline(in,temp);  // throw away the rest of the line
@@ -159,8 +159,8 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(datadirectory+spline_depth_file_name));
+      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
+      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
     }
 
     // NOTE: this module uses the Boost spherical harmonics package which is not designed
@@ -169,11 +169,25 @@ namespace aspect
     // For more information, see:
     // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
 
-    template <int dim>
+    template <>
     double
-    SAVANIPerturbation<dim>::
-    initial_temperature (const Point<dim> &position) const
+    SAVANIPerturbation<2>::
+    initial_temperature (const Point<2> &) const
     {
+      // we shouldn't get here but instead should already have been
+      // kicked out by the assertion in the parse_parameters()
+      // function
+      Assert (false, ExcNotImplemented());
+      return 0;
+    }
+
+
+    template <>
+    double
+    SAVANIPerturbation<3>::
+    initial_temperature (const Point<3> &position) const
+    {
+      const unsigned int dim = 3;
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
@@ -320,6 +334,9 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
+      AssertThrow (dim == 3,
+                   ExcMessage ("The 'S40RTS perturbation' model for the initial "
+                               "temperature is only available for 3d computations."));
 
       prm.enter_subsection("Initial conditions");
       {

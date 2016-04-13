@@ -24,6 +24,7 @@
 #include <deal.II/base/std_cxx11/array.h>
 #include <deal.II/base/point.h>
 
+#include <deal.II/base/mpi.h>
 #include <deal.II/base/table.h>
 #include <deal.II/base/table_indices.h>
 #include <deal.II/base/function_lib.h>
@@ -34,6 +35,9 @@
 #include <aspect/geometry_model/chunk.h>
 
 #include <fstream>
+#include <string>
+#include <sys/stat.h>
+#include <errno.h>
 
 namespace aspect
 {
@@ -99,6 +103,78 @@ namespace aspect
     {
       std::ifstream ifile(filename.c_str());
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
+    }
+
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm)
+    {
+      std::string data_string;
+
+      if (Utilities::MPI::this_mpi_process(comm) == 0)
+        {
+          std::ifstream filestream(filename.c_str());
+          AssertThrow (filestream,
+                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          // Read data from disk
+          std::stringstream datastream;
+          filestream >> datastream.rdbuf();
+
+          AssertThrow (filestream.eof(),
+                       ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                   "before the end of file was reached. Is the file corrupted or"
+                                   "too large for the input buffer?"));
+
+          data_string = datastream.str();
+          unsigned int filesize = data_string.size();
+
+          // Distribute data_size and data across processes
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+        }
+      else
+        {
+          // Prepare for receiving data
+          unsigned int filesize;
+          MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          data_string.resize(filesize);
+
+          // Receive and store data
+          MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+        }
+
+      return data_string;
+    }
+
+    int
+    mkdirp(std::string pathname,const mode_t mode)
+    {
+      // force trailing / so we can handle everything in loop
+      if (pathname[pathname.size()-1] != '/')
+        {
+          pathname += '/';
+        }
+
+      size_t pre = 0;
+      size_t pos;
+
+      while ((pos = pathname.find_first_of('/',pre)) != std::string::npos)
+        {
+          const std::string subdir = pathname.substr(0,pos++);
+          pre = pos;
+
+          // if leading '/', first string is 0 length
+          if (subdir.size() == 0)
+            continue;
+
+          int mkdir_return_value;
+          if ((mkdir_return_value = mkdir(subdir.c_str(),mode)) && (errno != EEXIST))
+            return mkdir_return_value;
+
+        }
+
+      return 0;
     }
 
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
@@ -372,15 +448,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLookup<dim>::load_file(const std::string &filename)
+    AsciiDataLookup<dim>::load_file(const std::string &filename,
+                                    const MPI_Comm &comm)
     {
-      std::ifstream in(filename.c_str(), std::ios::in);
-      AssertThrow (in,
-                   ExcMessage (std::string("Could not open data file <"
-                                           +
-                                           filename
-                                           +
-                                           ">.")));
+      // Read data from disk and distribute among processes
+      std::stringstream in(read_and_distribute_file_content(filename, comm));
 
       // Read header lines and table size
       while (in.peek() == '#')
@@ -405,6 +477,17 @@ namespace aspect
                                             "the input file, or the POINTS comment in your data files "
                                             "is changing between following files."));
                 }
+        }
+
+      for (unsigned int i = 0; i < dim; i++)
+        {
+          AssertThrow(table_points[i] != 0,
+                      ExcMessage("Could not successfully read in the file header of the "
+                                 "ascii data file <" + filename + ">. One header line has to "
+                                 "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
+                                 "potentially N2 and N3 have to be the number of data points "
+                                 "in their respective dimension. Check for typos in this line "
+                                 "(e.g. a missing space character)."));
         }
 
       /**
@@ -610,7 +693,7 @@ namespace aspect
 
           const std::string filename (create_filename (current_file_number,*boundary_id));
           if (fexists(filename))
-            lookups.find(*boundary_id)->second->load_file(filename);
+            lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
           else
             AssertThrow(false,
                         ExcMessage (std::string("Ascii data file <")
@@ -635,7 +718,7 @@ namespace aspect
               if (fexists(filename))
                 {
                   lookups.find(*boundary_id)->second.swap(old_lookups.find(*boundary_id)->second);
-                  lookups.find(*boundary_id)->second->load_file(filename);
+                  lookups.find(*boundary_id)->second->load_file(filename,this->get_mpi_communicator());
                 }
               else
                 end_time_dependence ();
@@ -787,7 +870,7 @@ namespace aspect
           if (fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-              lookups.find(boundary_id)->second->load_file(filename);
+              lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
             }
 
           // If loading current_time_step failed, end time dependent part with old_file_number.
@@ -808,7 +891,7 @@ namespace aspect
       if (fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
-          lookups.find(boundary_id)->second->load_file(filename);
+          lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
       // If next file does not exist, end time dependent part with current_time_step.
@@ -959,7 +1042,7 @@ namespace aspect
                         << filename << "." << std::endl << std::endl;
 
       if (fexists(filename))
-        lookup->load_file(filename);
+        lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
                     ExcMessage (std::string("Ascii data file <")

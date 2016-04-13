@@ -33,9 +33,8 @@ namespace aspect
     template <int dim>
     double
     Constant<dim>::
-    temperature (const GeometryModel::Interface<dim> &,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim> &) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/) const
     {
       const std::map<types::boundary_id, double>::const_iterator it = boundary_temperatures.find(boundary_indicator);
       if (it != boundary_temperatures.end())

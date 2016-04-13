@@ -1,0 +1,119 @@
+#########################################################
+# SMOOTHING - COMPOSITIONAL PASSIVE
+# This is a test based off of that composition-passive.prm file.
+# All settings are exactly the same with the exception
+# that we are using entropy viscosity with smoothing,
+# and that things were made slightly simpler to make
+# the test run faster.
+#
+# See the manual for more information about this setup.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1
+set Use years in output instead of seconds = false
+set Output directory                       = output
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+subsection Discretization
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+  end
+end
+
+
+# This is the new part: We declare that there will
+# be two compositional fields that will be
+# advected along. Their initial conditions are given by
+# a function that is one for the lowermost 0.2 height
+# units of the domain and zero otherwise in the first case,
+# and one in the top most 0.2 height units in the latter.
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0)
+  end
+end

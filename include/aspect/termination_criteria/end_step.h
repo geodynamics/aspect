@@ -22,7 +22,7 @@
 #define __aspect__termination_criteria_end_step_h
 
 #include <aspect/termination_criteria/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {

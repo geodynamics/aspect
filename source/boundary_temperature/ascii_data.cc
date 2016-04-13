@@ -56,9 +56,8 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::temperature (const GeometryModel::Interface<dim> &,
-                                 const types::boundary_id             boundary_indicator,
-                                 const Point<dim>                    &position) const
+    AsciiData<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
+                                          const Point<dim> &position) const
     {
       return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                    position,

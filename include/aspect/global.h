@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,13 +23,13 @@
 #define __aspect__global_h
 
 #ifdef ASPECT_USE_PETSC
-#include <deal.II/lac/petsc_block_vector.h>
-#include <deal.II/lac/petsc_block_sparse_matrix.h>
-#include <deal.II/lac/petsc_precondition.h>
+#  include <deal.II/lac/petsc_block_vector.h>
+#  include <deal.II/lac/petsc_block_sparse_matrix.h>
+#  include <deal.II/lac/petsc_precondition.h>
 #else
-#include <deal.II/lac/trilinos_block_vector.h>
-#include <deal.II/lac/trilinos_block_sparse_matrix.h>
-#include <deal.II/lac/trilinos_precondition.h>
+#  include <deal.II/lac/trilinos_block_vector.h>
+#  include <deal.II/lac/trilinos_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_precondition.h>
 #endif
 
 #include <deal.II/lac/generic_linear_algebra.h>
@@ -341,7 +341,7 @@ void print_aspect_header(Stream &stream)
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 1.4.pre\n" //VERSION-INFO. Do not edit by hand.
+         << "--     . version 1.4.0-pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
          << "--     . running in DEBUG mode\n"
 #else

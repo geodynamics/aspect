@@ -30,7 +30,7 @@ namespace aspect
     namespace Integrator
     {
       /**
-       * Explicit Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n).
+       * Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$.
        * This requires only one step per integration, and doesn't involve any
        * additional integration steps (it is a one-step method), therefore
        * no data needs to be stored between subsequent steps.

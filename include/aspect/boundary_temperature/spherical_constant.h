@@ -24,6 +24,7 @@
 
 #include <aspect/boundary_temperature/interface.h>
 
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -38,28 +39,18 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class SphericalConstant : public Interface<dim>
+    class SphericalConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * Return the temperature that is to hold at a particular location on
-         * the boundary of the domain. This function returns the constant
-         * temperatures read from the parameter file for the inner and outer
-         * boundaries.
+         * This function returns the constant compositions read from the
+         * parameter file for the inner and outer boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain.
-         * This may be used to determine whether the boundary temperature
-         * model is implemented for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the temperature.
-         * @param location The location of the point at which we ask for the
-         * temperature.
+         * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
         virtual
-        double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location) const;
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &location) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on

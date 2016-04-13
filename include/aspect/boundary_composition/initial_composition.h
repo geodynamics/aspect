@@ -23,7 +23,7 @@
 #define __aspect__boundary_composition_initial_composition_h
 
 #include <aspect/boundary_composition/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -39,27 +39,23 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class InitialComposition : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class InitialComposition : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
-         * This function returns the constant compositions read from the
-         * parameter file for the inner and outer boundaries.
+         * This function returns the boundary compositions that are defined
+         * by the initial conditions.
          *
-         * @copydoc aspect::BoundaryComposition::Interface::composition()
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         virtual
-        double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location,
-                            const unsigned int                   compositional_field) const;
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &location,
+                                     const unsigned int compositional_field) const;
 
         /**
          * Return the minimal composition on that part of the boundary on
          * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
          */
         virtual
         double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
@@ -67,9 +63,6 @@ namespace aspect
         /**
          * Return the maximal composition on that part of the boundary on
          * which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
          */
         virtual
         double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;

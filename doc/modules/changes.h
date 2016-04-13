@@ -5,6 +5,113 @@
  * 1.3. All entries are signed with the names of the author. </p>
  *
  * <ol>
+ * <li> Fixed: The uniform radial and uniform box particle generators now 
+ * produce globally unique particle IDs.
+ * <br>
+ * (Harsha Lokavarapu, Gerry Puckett, 2016/03/04)
+ *
+ * <li> Fixed: The 'Simpler' material model produced floating point exceptions
+ * in models with compositional fields. This is fixed now.
+ * <br>
+ * (Lev Karatun, Rene Gassmoeller, 2016/02/26)
+ *
+ * <li> New: The advection systems (for temperature and compositions) can now 
+ * be discretized using the symmetric interior penalty discontinuous Galerkin 
+ * method. This can be useful to explore solution without adding artificial 
+ * smoothing. This is controlled by two new input parameters in 
+ * 'Discretization': use_discontinuous_temperature_discretization and 
+ * use_discontinuous_composition_discretization.
+ * <br>
+ * (Sam Cox, 2016/02/22)
+ *
+ * <li> Changed: ASPECT by default wrote one output file per MPI process that
+ * was written in a background thread to a temporary location first and then
+ * moved to its final location. If any of the steps failed it tried again by
+ * writing directly to the output location. This approach needed complicated
+ * logic and did not succeed on all systems. In order to increase stability
+ * the new default behaviour is to write straight to the output folder. This
+ * might decrease performance on clusters with slow network file systems.
+ * The old behaviour can be recovered by setting 'Write in background thread'
+ * to true and set a temporary storage location by 'set Temporary output
+ * location'. Note that this functionality was and is only available if
+ * 'Number of grouped files' is set to its default value of 0, and therefore
+ * MPI-IO is not used for parallel output. For larger models with hundreds of
+ * parallel processes using MPI-IO is recommended.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/14)
+ *
+ * <li> New: Added 'command' postprocessor for executing arbitrary commands.
+ * <br>
+ * (Jonathan Perry-Houts, 2016/02/11)
+ *
+ * <li> Improved: The option to increase the output resolution by linear
+ * interpolation of the quadratic elements now correctly uses the mapping of
+ * curved geometries to interpolate cells. This increases output accuracy for
+ * models that use curved geometries and use 'Set Interpolate output = true'.
+ * The simulation itself is not affected.
+ * <br>
+ * (Rene Gassmoeller, 2016/02/08)
+ *
+ * <li> Changed: The GPlates plugin is restructured in the style of the
+ * AsciiData Plugin. The major difference is that the interpolation is now
+ * performed in spherical coordinates instead of Cartesian coordinates. Note
+ * that some input parameters have changed: "Time step" is now called "Data
+ * file time step", "Velocity file start time" is now called "First data file
+ * model time", "Interpolation width" does not exist any more, but there are
+ * three new parameters called "First data file number", "Decreasing file
+ * order" and "Lithosphere thickness".
+ * <br>
+ * (Eva Bredow, Rene Gassmoeller, 2016/02/04)
+ *
+ * <li> New: ASPECT no longer relies on the availability of a command-
+ * processor (terminal) at run-time, by providing fallbacks to C
+ * commands. This adds support for architectures that do not offer a
+ * terminal on compute nodes (like IBM BlueGene/Q).
+ * <br>
+ * (Rene Gassmoeller, 2016/02/03)
+ *
+ * <li> Changed: The 'depth' function of the 'box' geometry model and
+ * the 'two merged boxes' geometry model previously threw an exception
+ * when asked for the depth of a point outside of the initial model domain.
+ * This is not longer appropriate for models with free surfaces and therefore
+ * the behaviour was changed to the behaviour of the 'spherical shell' geometry
+ * model, which is a cutoff of the depth to the range (0,maximal_depth).
+ * <br>
+ * (Rene Gassmoeller, Sascha Brune, 2016/01/11)
+ *
+ * <li> New: There is now a parameter called 'Additional tangential
+ * mesh velocity boundary indicators' that allows to specify boundaries
+ * which elements are allowed to deform tangential to the boundary.
+ * This can be useful in models with free surface and a prescribed
+ * material in-/outflow at the sides. Previously in this case the
+ * uppermost element became distorted over time, now the whole
+ * boundary mesh adjusts according to the deformation. This change
+ * also fixes the handling of traction boundary conditions in models
+ * with free surface.
+ * <br>
+ * (Anne Glerum, Rene Gassmoeller, Ian Rose, 2016/01/11)
+ *
+ * <li> Changed: The interfaces of the boundary composition and boundary
+ * temperature plugins have been deprecated. Their replacements not longer 
+ * contain references to the geometry model, which was a leftover from an
+ * earlier development stage. Users should derive their plugins from
+ * SimulatorAccess if they need access to the geometry model. The
+ * deprecated functions will be removed in a future ASPECT release.
+ * <br>
+ * (Rene Gassmoeller, 2016/01/04)
+ *
+ * <li> New: A new mesh refinement plugin was added that refines cells
+ * according to the density of particles in that cell.
+ * <br>
+ * (Rene Gassmoeller, 2015/12/19)
+ *
+ * <li> Changed: The boundary_velocity(const Point<dim> &position) const 
+ * function has now been deprecated in favor of the new function 
+ * boundary_velocity (const types::boundary_id boundary_indicator, 
+ * const Point<dim> &position) const. 
+ * <br>
+ * (Menno Fraters, 2015/12/16)
+ * 
  * <li> New: Visualization postprocessors for thermal conductivity and 
  * thermal diffusivity. 
  * <br>

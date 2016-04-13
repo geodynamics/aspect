@@ -44,11 +44,6 @@ namespace aspect
       {
         public:
           /**
-           * Constructor.
-           */
-          UniformBox();
-
-          /**
            * Generate a uniformly randomly distributed set of particles in a
            * box-like subdomain of the global domain.
            *

@@ -37,22 +37,20 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    temperature (const GeometryModel::Interface<dim> &geometry_model,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim> &) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &) const
     {
-      (void)geometry_model;
-
-      // verify that the geometry is a spherical shell or a chunk since only
-      // for geometries based on spherical shells do we know which boundary indicators are
-      // used and what they mean
-      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model) != 0
-               || dynamic_cast<const GeometryModel::Chunk<dim>*>(&geometry_model) != 0
-               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(&geometry_model) != 0),
+      // verify that the geometry is a spherical shell, a chunk, or an
+      // ellipsoidal chunk since only for geometries based on spherical shells
+      // do we know which boundary indicators are used and what they mean
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
+      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
               ExcMessage ("This boundary model is only implemented if the geometry "
                           "is a spherical shell, ellipsoidal chunk or chunk."));
 
-      const std::string boundary_name = geometry_model.translate_id_to_symbol_name(boundary_indicator);
+      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
       if (boundary_name == "inner")
         return inner_temperature;

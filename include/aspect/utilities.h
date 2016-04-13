@@ -45,6 +45,7 @@ namespace aspect
   namespace Utilities
   {
     using namespace dealii;
+    using namespace dealii::Utilities;
 
     /**
      * Returns spherical coordinates of a cartesian point. The returned array
@@ -71,6 +72,36 @@ namespace aspect
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
+
+    /**
+     * Reads the content of the ascii file @param filename on process 0 and
+     * distributes the content by MPI_Bcast to all processes. The function
+     * returns the content of the file on all processes.
+     *
+     * @param [in] filename The name of the ascii file to load.
+     * @param [in] comm The MPI communicator in which the content is
+     * distributed.
+     * @return A string which contains the data in @param filename.
+     */
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm);
+
+    /**
+     * Creates a path as if created by the shell command "mkdir -p", therefore
+     * generating directories from the highest to the lowest level if they are
+     * not already existing.
+     *
+     * @param pathname String that contains the path to create. '/' is used as
+     * directory separator.
+     * @param mode Permissions (mode bits) of the created directories. See the
+     * documentation of the chmod() command for more information.
+     * @return The function returns the error value of the last mkdir call
+     * inside. It returns zero on success. See the man page of mkdir() for
+     * more information.
+     */
+    int
+    mkdirp(std::string pathname, const mode_t mode = 0755);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used
@@ -264,7 +295,8 @@ namespace aspect
          * changes over model runtime.
          */
         void
-        load_file(const std::string &filename);
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according

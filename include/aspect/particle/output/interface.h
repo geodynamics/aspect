@@ -43,15 +43,10 @@ namespace aspect
       {
         public:
           /**
-           * Constructor.
-           */
-          Interface();
-
-          /**
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface () {}
+          virtual ~Interface ();
 
 
           /**

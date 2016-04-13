@@ -26,6 +26,9 @@ namespace aspect
   {
     namespace Interpolator
     {
+      template <int dim>
+      Interface<dim>::~Interface ()
+      {}
 
       template <int dim>
       void

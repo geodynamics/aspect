@@ -23,7 +23,7 @@
 #define __aspect__initial_conditions_adiabatic_h
 
 #include <aspect/initial_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 

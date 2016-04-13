@@ -52,6 +52,41 @@ namespace aspect
 
 
     template <int dim>
+    Tensor<1,dim>
+    Interface<dim>::boundary_velocity (const Point<dim> &) const
+    {
+      /**
+       * We can only get here if the new-style boundary_velocity function (with
+       * two arguments) calls it. This means that the derived class did not override
+       * the new-style boundary_velocity function, and because we are here, it also
+       * did not override this old-style boundary_velocity function (with one argument).
+       */
+      Assert (false, ExcMessage ("A derived class needs to override either the "
+                                 "boundary_velocity(position) (deprecated) or "
+                                 "boundary_velocity(types::boundary_id,position) "
+                                 "function."));
+
+      return Tensor<1,dim>();
+    }
+
+
+
+    template <int dim>
+    Tensor<1,dim>
+    Interface<dim>::boundary_velocity (const types::boundary_id ,
+                                       const Point<dim> &position) const
+    {
+      /**
+       * Call the old-style function without the boundary id to maintain backwards
+       * compatibility. Normarly the derived class should override this function.
+       */
+
+      return this->boundary_velocity(position);
+    }
+
+
+
+    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)

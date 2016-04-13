@@ -1,0 +1,86 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 6,996 (4,290+561+2,145)
+
+Number of free surface degrees of freedom: 1122
+*** Timestep 0:  t=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     Topography min/max: 0 m, 0 m, 
+
+*** Timestep 1:  t=220971 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     Topography min/max: -2210 m, -2210 m, 
+
+*** Timestep 2:  t=439388 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28 iterations.
+
+   Postprocessing:
+     Topography min/max: -4347 m, -4345 m, 
+
+*** Timestep 3:  t=655320 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     Topography min/max: -6414 m, -6409 m, 
+
+*** Timestep 4:  t=868786 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23 iterations.
+
+   Postprocessing:
+     Topography min/max: -8413 m, -8406 m, 
+
+*** Timestep 5:  t=1e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27 iterations.
+
+   Postprocessing:
+     Topography min/max: -9615 m, -9608 m, 
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      3.81s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         6 |      1.33s |        35% |
+| Assemble temperature system     |         6 |     0.857s |        23% |
+| Build Stokes preconditioner     |         6 |     0.716s |        19% |
+| Build temperature preconditioner|         6 |    0.0412s |       1.1% |
+| Solve Stokes system             |         6 |     0.314s |       8.2% |
+| Solve temperature system        |         6 |    0.0138s |      0.36% |
+| FreeSurface                     |         6 |     0.211s |       5.5% |
+| Initialization                  |         2 |    0.0722s |       1.9% |
+| Postprocessing                  |         6 |  0.000918s |     0.024% |
+| Setup dof systems               |         1 |     0.077s |         2% |
++---------------------------------+-----------+------------+------------+
+

@@ -30,9 +30,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      UniformRadial<dim>::UniformRadial() {}
-
-      template <int dim>
       void
       UniformRadial<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
@@ -89,10 +86,10 @@ namespace aspect
                     try
                       {
                         particles.insert(this->generate_particle(particle_position,particle_index));
-                        particle_index++;
                       }
                     catch (ExcParticlePointNotInDomain &)
                       {}
+                    particle_index++;
                   }
               }
             else if (dim == 3)
@@ -118,10 +115,10 @@ namespace aspect
                         try
                           {
                             particles.insert(this->generate_particle(particle_position,particle_index));
-                            particle_index++;
                           }
                         catch (ExcParticlePointNotInDomain &)
                           {}
+                        particle_index++;
                       }
                   }
               }

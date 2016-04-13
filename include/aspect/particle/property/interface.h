@@ -70,6 +70,11 @@ namespace aspect
       class Interface
       {
         public:
+          /**
+           * Destructor. Made virtual so that derived classes can be created
+           * and destroyed through pointers to the base class.
+           */
+          virtual ~Interface ();
 
           /**
            * Initialization function. This function is called once at the

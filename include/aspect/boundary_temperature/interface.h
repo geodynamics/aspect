@@ -64,7 +64,7 @@ namespace aspect
         virtual void initialize ();
 
         /**
-         * Return the temperature that is to hold at a particular location on
+         * Return the temperature that is to hold at a particular position on
          * the boundary of the domain.
          *
          * @param geometry_model The geometry model that describes the domain.
@@ -73,13 +73,34 @@ namespace aspect
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we
          * are requesting the temperature.
-         * @param location The location of the point at which we ask for the
+         * @param position The position of the point at which we ask for the
          * temperature.
+         * @return Boundary temperature at position @p position.
+         *
+         * @deprecated Use <code>temperature(const types::boundary_id
+         * boundary_indicator,const Point<dim> &position) const</code> instead.
+         * The reference to the geometry model can be reached by deriving
+         * plugins from aspect::SimulatorAccess<dim>.
          */
         virtual
         double temperature (const GeometryModel::Interface<dim> &geometry_model,
                             const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location) const = 0;
+                            const Point<dim>                    &position) const DEAL_II_DEPRECATED;
+
+        /**
+         * Return the temperature that is to hold at a particular position on
+         * the boundary of the domain.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the temperature.
+         * @param position The position of the point at which we ask for the
+         * temperature.
+         * @return Boundary temperature at position @p position.
+         */
+        virtual
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on

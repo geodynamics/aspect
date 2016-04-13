@@ -96,6 +96,18 @@ namespace aspect
     return (field_type == temperature_field);
   }
 
+  template <int dim>
+  bool
+  Simulator<dim>::AdvectionField::is_discontinuous(const Introspection<dim> &introspection) const
+  {
+    if (field_type == temperature_field)
+      return introspection.use_discontinuous_temperature_discretization;
+    else if (field_type == compositional_field)
+      return introspection.use_discontinuous_composition_discretization;
+
+    Assert (false, ExcInternalError());
+    return false;
+  }
 
   template <int dim>
   unsigned int
@@ -280,20 +292,21 @@ namespace aspect
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values |
+                             update_gradients |
+                             (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
+
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | update_gradients | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
-    std::vector<Tensor<1,dim> > pressure_gradients(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
-
-    double new_time_step;
-    bool convection_dominant;
 
     double max_local_speed_over_meshsize = 0;
-    double min_local_conduction_timestep = std::numeric_limits<double>::max(), min_conduction_timestep;
+    double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -315,35 +328,31 @@ namespace aspect
                                                    cell->minimum_vertex_distance());
           if (parameters.use_conduction_timestep)
             {
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
+
+              in.strain_rate.resize(0); // we do not need the viscosity
+              in.position = fe_values.get_quadrature_points();
+              in.cell = &cell;
+
               fe_values[introspection.extractors.pressure].get_function_values (solution,
-                                                                                pressure_values);
+                                                                                in.pressure);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
-                                                                                   temperature_values);
+                                                                                   in.temperature);
               fe_values[introspection.extractors.pressure].get_function_gradients (solution,
-                                                                                   pressure_gradients);
+                                                                                   in.pressure_gradient);
+
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
-
-              in.strain_rate.resize(0);// we are not reading the viscosity
-
-              for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
-                  for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-                    composition_values_at_q_point[k] = composition_values[k][q];
-
-                  in.position[q] = fe_values.quadrature_point(q);
-                  in.temperature[q] = temperature_values[q];
-                  in.pressure[q] = pressure_values[q];
-                  in.velocity[q] = velocity_values[q];
-                  in.pressure_gradient[q] = pressure_gradients[q];
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    in.composition[q][c] = composition_values_at_q_point[c];
+                    in.composition[q][c] = composition_values[c][q];
+
+                  in.velocity[q] = velocity_values[q];
                 }
-              in.cell = &cell;
 
               material_model->evaluate(in, out);
 
@@ -354,6 +363,10 @@ namespace aspect
                   const double k = out.thermal_conductivities[q];
                   const double rho = out.densities[q];
                   const double c_p = out.specific_heat[q];
+
+                  Assert(rho * c_p > 0,
+                         ExcMessage ("The product of density and c_P needs to be a "
+                                     "non-negative quantity."));
 
                   const double thermal_diffusivity = k/(rho*c_p);
 
@@ -369,19 +382,20 @@ namespace aspect
 
     const double max_global_speed_over_meshsize
       = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
-    if (parameters.use_conduction_timestep)
-      MPI_Allreduce (&min_local_conduction_timestep, &min_conduction_timestep, 1, MPI_DOUBLE, MPI_MIN, mpi_communicator);
-    else
-      min_conduction_timestep = std::numeric_limits<double>::max();
 
-    if ((max_global_speed_over_meshsize != 0.0) ||
-        (min_conduction_timestep < std::numeric_limits<double>::max()))
-      {
-        new_time_step = std::min(min_conduction_timestep,
-                                 (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
-        convection_dominant = (new_time_step < min_conduction_timestep);
-      }
-    else
+    double min_convection_timestep = std::numeric_limits<double>::max();
+    double min_conduction_timestep = std::numeric_limits<double>::max();
+
+    if (max_global_speed_over_meshsize != 0.0)
+      min_convection_timestep = parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize);
+
+    if (parameters.use_conduction_timestep)
+      min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
+
+    double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
+    bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
+
+    if (new_time_step == std::numeric_limits<double>::max())
       {
         // If the velocity is zero and we either do not compute the conduction
         // timestep or do not have any conduction, then it is somewhat
@@ -391,7 +405,6 @@ namespace aspect
                          (parameters.temperature_degree * 1));
         convection_dominant = false;
       }
-
 
     return std::make_pair(new_time_step, convection_dominant);
   }

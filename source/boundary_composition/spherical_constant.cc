@@ -22,6 +22,7 @@
 #include <aspect/boundary_composition/spherical_constant.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 
 #include <utility>
 #include <limits>
@@ -36,22 +37,21 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    composition (const GeometryModel::Interface<dim> &geometry_model,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim> &,
-                 const unsigned int                   ) const
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int /*compositional_field*/) const
     {
-      (void)geometry_model;
-
-      // verify that the geometry is a spherical shell or a chunk since only
-      // for geometries based on spherical shells do we know which boundary indicators are
-      // used and what they mean
-      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model) != 0
-               || dynamic_cast<const GeometryModel::Chunk<dim>*>(&geometry_model) != 0),
+      // verify that the geometry is a spherical shell, a chunk, or an
+      // ellipsoidal chunk since only for geometries based on spherical shells
+      // do we know which boundary indicators are used and what they mean
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
+      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
               ExcMessage ("This boundary model is only implemented if the geometry "
                           "is a spherical shell or chunk."));
 
-      const std::string boundary_name = geometry_model.translate_id_to_symbol_name(boundary_indicator);
+      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
       if (boundary_name == "inner")
         return inner_composition;

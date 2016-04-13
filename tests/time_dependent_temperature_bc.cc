@@ -41,23 +41,13 @@ namespace aspect
     {
       public:
         /**
-         * Return the temperature that is to hold at a particular location on
-         * the boundary of the domain. This function returns constant
-         * temperatures at the left and right boundaries.
+         * This plugin prescribes time dependent temperatures for all boundaries.
          *
-         * @param geometry_model The geometry model that describes the domain.
-         * This may be used to determine whether the boundary temperature
-         * model is implemented for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the temperature.
-         * @param location The location of the point at which we ask for the
-         * temperature.
+         * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
         virtual
-        double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location) const;
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on
@@ -117,14 +107,13 @@ namespace aspect
     template <int dim>
     double
     Time_Dep_Box<dim>::
-    temperature (const GeometryModel::Interface<dim> &geometry_model,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim>                    &location) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &position) const
     {
       // verify that the geometry is in fact a time_dep_box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
               != 0,
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a time_dep_box."));

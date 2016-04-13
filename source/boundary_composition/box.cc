@@ -35,17 +35,14 @@ namespace aspect
     template <int dim>
     double
     Box<dim>::
-    composition (const GeometryModel::Interface<dim> &geometry_model,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim> &,
-                 const unsigned int                   compositional_field) const
+    boundary_composition (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*position*/,
+                          const unsigned int compositional_field) const
     {
-      (void)geometry_model;
-
       // verify that the geometry is in fact a box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
+      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
               != 0,
               ExcMessage ("This boundary model is only implemented if the geometry is "
                           "in fact a box."));

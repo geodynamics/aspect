@@ -27,7 +27,7 @@ namespace aspect
     namespace Integrator
     {
       /**
-       * Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n).
+       * Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$.
        * This requires only one step per integration, and doesn't involve any extra data.
        */
       template <int dim>
@@ -38,7 +38,7 @@ namespace aspect
                                        const std::vector<Tensor<1,dim> > &,
                                        const double dt)
       {
-        Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
+        Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
                ExcMessage("The particle integrator expects the velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
@@ -66,7 +66,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(Euler,
                                           "euler",
-                                          "Explicit Euler scheme integrator, where y_{n+1} = y_n + dt * v(y_n). "
+                                          "Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$. "
                                           "This requires only one integration substep per timestep.")
     }
   }

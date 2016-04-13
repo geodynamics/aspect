@@ -166,6 +166,7 @@ namespace aspect
     double                         start_time;
     double                         CFL_number;
     double                         maximum_time_step;
+    bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
     std::string                    output_directory;
@@ -247,6 +248,7 @@ namespace aspect
     unsigned int                   stabilization_alpha;
     double                         stabilization_c_R;
     double                         stabilization_beta;
+    double                         discontinuous_penalty;
     /**
      * @}
      */
@@ -267,6 +269,8 @@ namespace aspect
      */
     unsigned int                   stokes_velocity_degree;
     bool                           use_locally_conservative_discretization;
+    bool                           use_discontinuous_temperature_discretization;
+    bool                           use_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;

@@ -79,7 +79,7 @@ namespace aspect
         update ();
 
         /**
-         * Return the composition that is to hold at a particular location on
+         * Return the composition that is to hold at a particular position on
          * the boundary of the domain.
          *
          * @param geometry_model The geometry model that describes the domain.
@@ -88,18 +88,45 @@ namespace aspect
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we
          * are requesting the composition.
-         * @param location The location of the point at which we ask for the
+         * @param position The position of the point at which we ask for the
          * composition.
-         * @param compositional_field The number of the compositional field
-         * for which we are requesting the composition.
          * @param compositional_field The index of the compositional field
          * between 0 and @p parameters.n_compositional_fields.
+         * @return Boundary value of the compositional field @p
+         * compositional_field at the position @p position.
+         *
+         * @deprecated Use <code>composition(const types::boundary_id
+         * boundary_indicator,const Point<dim> &position, const unsigned
+         * int compositional_field) const</code> instead. The reference to
+         * the geometry model can be reached by deriving plugins from
+         * aspect::SimulatorAccess<dim>.
          */
         virtual
-        double composition (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &location,
-                            const unsigned int                   compositional_field) const = 0;
+        double
+        composition (const GeometryModel::Interface<dim> &geometry_model,
+                     const types::boundary_id             boundary_indicator,
+                     const Point<dim>                    &position,
+                     const unsigned int                   compositional_field) const DEAL_II_DEPRECATED;
+
+        /**
+         * Return the composition that is to hold at a particular position on
+         * the boundary of the domain.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the composition.
+         * @param position The position of the point at which we ask for the
+         * composition.
+         * @param compositional_field The index of the compositional field
+         * between 0 and @p parameters.n_compositional_fields.
+         * @return Boundary value of the compositional field @p
+         * compositional_field at the position @p position.
+         */
+        virtual
+        double
+        boundary_composition (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position,
+                              const unsigned int compositional_field) const;
 
         /**
          * Declare the parameters this class takes through input files. The

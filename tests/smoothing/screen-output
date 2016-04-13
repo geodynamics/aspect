@@ -1,0 +1,89 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            0 K, 0.1027 K, 1 K
+     Heat fluxes through boundary parts: -1.881e-07 W, 0 W, -1.466e-06 W, -1.667e-05 W
+     Writing graphical output:           output-smoothing/solution-00000
+
+*** Timestep 1:  t=0.0883883 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.03523 K, 0.1029 K, 1.078 K
+     Heat fluxes through boundary parts: -4.343e-07 W, -3.89e-08 W, -1.456e-06 W, -9.256e-06 W
+
+*** Timestep 2:  t=0.176777 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.04009 K, 0.103 K, 0.9628 K
+     Heat fluxes through boundary parts: -6.525e-07 W, -5.777e-08 W, -1.28e-06 W, -1.997e-06 W
+     Writing graphical output:           output-smoothing/solution-00001
+
+*** Timestep 3:  t=0.265165 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.02034 K, 0.1029 K, 0.8343 K
+     Heat fluxes through boundary parts: -6.214e-07 W, -6.202e-08 W, -8.74e-07 W, 2.38e-06 W
+     Writing graphical output:           output-smoothing/solution-00002
+
+*** Timestep 4:  t=0.353553 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.01347 K, 0.1026 K, 0.741 K
+     Heat fluxes through boundary parts: -5.513e-07 W, -6.183e-08 W, -5.297e-07 W, 4.284e-06 W
+     Writing graphical output:           output-smoothing/solution-00003
+
+*** Timestep 5:  t=0.441942 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.005222 K, 0.1023 K, 0.6859 K
+     Heat fluxes through boundary parts: -5.134e-07 W, -6.968e-08 W, -2.809e-07 W, 4.732e-06 W
+     Writing graphical output:           output-smoothing/solution-00004
+
+*** Timestep 6:  t=0.5 seconds
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.816 m/s, 1.37 m/s
+     Temperature min/avg/max:            -0.003637 K, 0.102 K, 0.6668 K
+     Heat fluxes through boundary parts: -3.903e-07 W, -7.964e-08 W, -1.892e-07 W, 4.504e-06 W
+     Writing graphical output:           output-smoothing/solution-00005
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      1.16s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble temperature system     |         7 |     0.438s |        38% |
+| Build temperature preconditioner|         7 |   0.00554s |      0.48% |
+| Solve temperature system        |         7 |      0.01s |      0.86% |
+| Initialization                  |         2 |    0.0936s |       8.1% |
+| Postprocessing                  |         7 |     0.161s |        14% |
+| Setup dof systems               |         1 |    0.0328s |       2.8% |
++---------------------------------+-----------+------------+------------+
+

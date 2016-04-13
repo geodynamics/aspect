@@ -1,0 +1,205 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libprescribed_velocity_boundary.so>
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+*** Timestep 0:  t=0 seconds
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =0
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =1
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =2
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+Boundary_velocity called with boundary_id =3
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0 iterations.
+      Nonlinear Stokes residual: 0
+
+   Postprocessing:
+     Writing graphical output:      output-prescribed_velocity_boundary/solution-00000
+     Errors u_L1, p_L1, u_L2, p_L2: 3.788740e+00, 1.006800e+00, 1.557561e+00, 9.191893e-01
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

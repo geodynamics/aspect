@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/assembly.h>
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -98,6 +99,7 @@ namespace aspect
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
+    assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
     introspection (parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
@@ -365,6 +367,26 @@ namespace aspect
     // if any plugin wants access to the Simulator by deriving from SimulatorAccess, initialize it and
     // call the initialize() functions immediately after.
     //
+    // up front, we can not know whether a plugin derives from
+    // SimulatorAccess. all we have is a pointer to the base class of
+    // each plugin type (the 'Interface' class in the namespace
+    // corresponding to each plugin type), but this base class is not
+    // derived from SimulatorAccess. in order to find out whether a
+    // concrete plugin derives from this base (interface) class AND
+    // the SimulatorAccess class via multiple inheritance, we need to
+    // do a sideways dynamic_cast to this putative sibling of the
+    // interface class, and investigate if the dynamic_cast
+    // succeeds. if it succeeds, the dynamic_cast returns a non-NULL
+    // result, and we can test this in an if-statement. there is a nice
+    // idiom whereby we can write
+    //    if (SiblingClass *ptr = dynamic_cast<SiblingClass*>(ptr_to_base))
+    //      ptr->do_something()
+    // where we declare a variable *inside* the 'if' condition, and only
+    // enter the code block guarded by the 'if' in case the so-declared
+    // variable evaluates to something non-zero, which here means that
+    // the dynamic_cast succeeded and returned the address of the subling
+    // object.
+    //
     // we also need to let all models parse their parameters. this is done *after* setting
     // up their SimulatorAccess base class so that they can query, for example, the
     // geometry model's description of symbolic names for boundary parts. note that
@@ -561,9 +583,13 @@ namespace aspect
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
 
-    // the very last action is to let user-provided plugins let their slots
+    // let user-provided plugins let their slots
     // connect to the signals we provide
     internals::SimulatorSignals::call_connector_functions (signals);
+
+    // now that all member variables have been set up, also
+    // connect the functions that will actually do the assembly
+    set_assemblers();
 
     computing_timer.exit_section();
   }
@@ -779,8 +805,11 @@ namespace aspect
           p->second->update ();
           VectorFunctionFromVelocityFunctionObject<dim> vel
           (introspection.n_components,
-           std_cxx11::bind (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity,
+           std_cxx11::bind (static_cast<Tensor<1,dim> (VelocityBoundaryConditions::Interface<dim>::*)(
+                              const types::boundary_id,
+                              const Point<dim> &) const> (&VelocityBoundaryConditions::Interface<dim>::boundary_velocity),
                             p->second,
+                            p->first,
                             std_cxx11::_1));
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
@@ -829,68 +858,70 @@ namespace aspect
         }
     }
 
-    // do the same for the temperature variable: evaluate the current boundary temperature
-    // and add these constraints as well
-    {
-      // If there is a fixed boundary temperature,
-      // update the temperature boundary condition.
-      if (boundary_temperature.get())
-        boundary_temperature->update();
+    // if using continuous temperature FE, do the same for the temperature variable:
+    // evaluate the current boundary temperature and add these constraints as well
+    if (!parameters.use_discontinuous_temperature_discretization)
+      {
+        // If there is a fixed boundary temperature,
+        // update the temperature boundary condition.
+        if (boundary_temperature.get())
+          boundary_temperature->update();
 
-      // obtain the boundary indicators that belong to Dirichlet-type
-      // temperature boundary conditions and interpolate the temperature
-      // there
-      for (std::set<types::boundary_id>::const_iterator
-           p = parameters.fixed_temperature_boundary_indicators.begin();
-           p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
-        {
-          Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
-                  ExcInternalError());
-          VectorTools::interpolate_boundary_values (dof_handler,
-                                                    *p,
-                                                    VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
-                                                        std_cxx11::cref(*boundary_temperature),
-                                                        std_cxx11::cref(*geometry_model),
-                                                        *p,
-                                                        std_cxx11::_1),
-                                                        introspection.component_masks.temperature.first_selected_component(),
-                                                        introspection.n_components),
-                                                    current_constraints,
-                                                    introspection.component_masks.temperature);
-        }
-    }
-
-    // now do the same for the composition variable:
-    {
-      // If there are fixed boundary compositions,
-      // update the composition boundary condition.
-      if (boundary_composition.get())
-        boundary_composition->update();
-
-      // obtain the boundary indicators that belong to Dirichlet-type
-      // composition boundary conditions and interpolate the composition
-      // there
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+        // obtain the boundary indicators that belong to Dirichlet-type
+        // temperature boundary conditions and interpolate the temperature
+        // there
         for (std::set<types::boundary_id>::const_iterator
-             p = parameters.fixed_composition_boundary_indicators.begin();
-             p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+             p = parameters.fixed_temperature_boundary_indicators.begin();
+             p != parameters.fixed_temperature_boundary_indicators.end(); ++p)
           {
             Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
                     ExcInternalError());
             VectorTools::interpolate_boundary_values (dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
-                                                          std_cxx11::cref(*boundary_composition),
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                          std_cxx11::cref(*boundary_temperature),
                                                           std_cxx11::cref(*geometry_model),
                                                           *p,
-                                                          std_cxx11::_1,
-                                                          c),
-                                                          introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                          std_cxx11::_1),
+                                                          introspection.component_masks.temperature.first_selected_component(),
                                                           introspection.n_components),
                                                       current_constraints,
-                                                      introspection.component_masks.compositional_fields[c]);
+                                                      introspection.component_masks.temperature);
           }
-    }
+      }
+
+    // now do the same for the composition variable:
+    if (!parameters.use_discontinuous_composition_discretization)
+      {
+        // If there are fixed boundary compositions,
+        // update the composition boundary condition.
+        if (boundary_composition.get())
+          boundary_composition->update();
+
+        // obtain the boundary indicators that belong to Dirichlet-type
+        // composition boundary conditions and interpolate the composition
+        // there
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (std::set<types::boundary_id>::const_iterator
+               p = parameters.fixed_composition_boundary_indicators.begin();
+               p != parameters.fixed_composition_boundary_indicators.end(); ++p)
+            {
+              Assert (is_element (*p, geometry_model->get_used_boundary_indicators()),
+                      ExcInternalError());
+              VectorTools::interpolate_boundary_values (dof_handler,
+                                                        *p,
+                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                            std_cxx11::cref(*boundary_composition),
+                                                            std_cxx11::cref(*geometry_model),
+                                                            *p,
+                                                            std_cxx11::_1,
+                                                            c),
+                                                            introspection.component_masks.compositional_fields[c].first_selected_component(),
+                                                            introspection.n_components),
+                                                        current_constraints,
+                                                        introspection.component_masks.compositional_fields[c]);
+            }
+      }
 
 
     // let plugins add more constraints if they so choose, then close the
@@ -953,6 +984,12 @@ namespace aspect
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
+    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+      DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                            sp,
+                                            constraints, false,
+                                            Utilities::MPI::
+                                            this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
@@ -1006,6 +1043,13 @@ namespace aspect
                                      constraints, false,
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
+    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+      DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                            sp,
+                                            constraints, false,
+                                            Utilities::MPI::
+                                            this_mpi_process(mpi_communicator));
+
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),

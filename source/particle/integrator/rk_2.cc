@@ -40,7 +40,7 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &velocities,
                                      const double dt)
       {
-        Assert(std::distance(begin_particle, end_particle) == old_velocities.size(),
+        Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
                ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));

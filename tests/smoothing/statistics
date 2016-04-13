@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Time step size (seconds)
+# 8: RMS velocity (m/s)
+# 9: Max. velocity (m/s)
+# 10: Minimal temperature (K)
+# 11: Average temperature (K)
+# 12: Maximal temperature (K)
+# 13: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 14: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 15: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 16: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 17: Visualization file name
+0 0.0000e+00 64 659 289  0 8.8388e-02 8.16496581e-01 1.37436751e+00  0.00000000e+00 1.02664060e-01 1.00000000e+00 -1.88097075e-07  0.00000000e+00 -1.46628901e-06 -1.66666667e-05 output-smoothing/solution-00000 
+1 8.8388e-02 64 659 289 10 8.8388e-02 8.16496581e-01 1.37436751e+00 -3.52345976e-02 1.02915561e-01 1.07768580e+00 -4.34308362e-07 -3.89008058e-08 -1.45646162e-06 -9.25550559e-06                              "" 
+2 1.7678e-01 64 659 289 10 8.8388e-02 8.16496581e-01 1.37436751e+00 -4.00937189e-02 1.03019127e-01 9.62750876e-01 -6.52458131e-07 -5.77719420e-08 -1.28016306e-06 -1.99659197e-06 output-smoothing/solution-00001 
+3 2.6517e-01 64 659 289  9 8.8388e-02 8.16496581e-01 1.37436751e+00 -2.03362631e-02 1.02899801e-01 8.34300789e-01 -6.21410355e-07 -6.20200945e-08 -8.74043867e-07  2.37987130e-06 output-smoothing/solution-00002 
+4 3.5355e-01 64 659 289  9 8.8388e-02 8.16496581e-01 1.37436751e+00 -1.34722683e-02 1.02626546e-01 7.40998425e-01 -5.51284121e-07 -6.18278888e-08 -5.29688490e-07  4.28428713e-06 output-smoothing/solution-00003 
+5 4.4194e-01 64 659 289  9 5.8058e-02 8.16496581e-01 1.37436751e+00 -5.22188798e-03 1.02276162e-01 6.85927468e-01 -5.13415416e-07 -6.96842607e-08 -2.80867216e-07  4.73241771e-06 output-smoothing/solution-00004 
+6 5.0000e-01 64 659 289  8 8.8388e-02 8.16496581e-01 1.37436751e+00 -3.63734064e-03 1.02035520e-01 6.66776950e-01 -3.90272755e-07 -7.96429267e-08 -1.89153787e-07  4.50437462e-06 output-smoothing/solution-00005 

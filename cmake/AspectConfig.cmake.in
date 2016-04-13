@@ -55,4 +55,10 @@ IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
 ENDIF()
 
+
+# automatically create a symbolic link to aspect in the current directory:
+ADD_CUSTOM_COMMAND(
+    TARGET ${_target} POST_BUILD
+    COMMAND ln -sf ${ASPECT_DIR}/aspect .)
+
 ENDMACRO()
