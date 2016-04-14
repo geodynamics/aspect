@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Improved: Mesh refinement plugins can now update member variables
+ * at the beginning of each time step. This can be used to make things like
+ * time-dependent mesh refinement criteria, or fancy models that depend on
+ * calling an external program. The most immediate added functionality is
+ * the ability to define time-dependent minimum/maximum refinement functions.
+ * <br>
+ * (Jonathan Perry-Houts, 2016/04/13)
+ *
  * <li> Improved: The particle sorting algorithm performance was considerably
  * improved. It now sorts neighbor cells by the distance between the particle
  * and the face center that is between the old cell and the neighbor and then
