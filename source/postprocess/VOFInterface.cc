@@ -31,12 +31,12 @@ namespace aspect
     VOFInterface<dim>::VOFInterface ()
       : voleps (std::numeric_limits<double>::quiet_NaN ()),
         out_interval (std::numeric_limits<double>::quiet_NaN ()),
-        next_out_t (0.0),
+        next_out_t (std::numeric_limits<double>::quiet_NaN ()),
         n_i_samp (1),
         n_e_samp (1),
         mms (false),
         err_interval (std::numeric_limits<double>::quiet_NaN ()),
-        next_err_t (0.0),
+        next_err_t (std::numeric_limits<double>::quiet_NaN ()),
         initialized (false),
         output (NULL)
     {
@@ -165,7 +165,8 @@ namespace aspect
       if (out_interval > 0 && this->get_time () >= next_out_t)
         {
           engine.calc_normals ();
-          statistics.add_value("VOF filename", output->get_filename ());
+          statistics.add_value("VOF file name",
+                               this->get_output_directory() + output->get_filename ());
           result_string += " Wrote " + output->get_filename () + ".";
           const double output_time = (this->convert_output_to_years() ?
                                       this->get_time() / year_in_seconds :
