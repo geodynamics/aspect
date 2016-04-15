@@ -165,6 +165,7 @@ namespace aspect
       if (out_interval > 0 && this->get_time () >= next_out_t)
         {
           engine.calc_normals ();
+          statistics.add_value("VOF filename", output->get_filename ());
           result_string += " Wrote " + output->get_filename () + ".";
           const double output_time = (this->convert_output_to_years() ?
                                       this->get_time() / year_in_seconds :
@@ -176,29 +177,42 @@ namespace aspect
           next_out_t = get_next_t (this->get_time (), out_interval);
         }
 
-      if (mms && this->get_time () >= next_err_t)
+      if (mms)
         {
-          std::vector<std::string> err_names = engine.error_names ();
-          std::vector<std::string> err_abrev = engine.error_abrev ();
-          std::vector<double> err_vals = engine.calc_error (initFunc, n_e_samp,
-                                                            this->get_time ());
-          std::ostringstream err_str;
-          int i=0;
-          std::vector<std::string>::iterator it1, it2;
-          it2 = err_abrev.begin();
-          for (it1=err_names.begin(); it1!=err_names.end(); ++it1,++it2,++i)
+          if (this->get_time () >= next_err_t)
             {
-              double err = err_vals[i];
-              statistics.add_value(*it1, err_vals[i]);
-              statistics.set_precision(*it1, 8);
-              statistics.set_scientific(*it1, true);
-              err_str << " " << *it2 << "=";
-              err_str << std::scientific << std::setprecision (15)
-                      << err;
+              std::vector<std::string> err_names = engine.error_names ();
+              std::vector<std::string> err_abrev = engine.error_abrev ();
+              std::vector<double> err_vals = engine.calc_error (initFunc, n_e_samp,
+                                                                this->get_time ());
+              std::ostringstream err_str;
+              int i=0;
+              std::vector<std::string>::iterator it1, it2;
+              it2 = err_abrev.begin();
+              for (it1=err_names.begin(); it1!=err_names.end(); ++it1,++it2,++i)
+                {
+                  double err = err_vals[i];
+                  statistics.add_value(*it1, err_vals[i]);
+                  statistics.set_precision(*it1, 8);
+                  statistics.set_scientific(*it1, true);
+                  err_str << " " << *it2 << "=";
+                  err_str << std::scientific << std::setprecision (15)
+                          << err;
+                }
+              err_str << ".";
+              result_string += err_str.str ();
+              next_err_t = get_next_t (this->get_time (), err_interval);
             }
-          err_str << ".";
-          result_string += err_str.str ();
-          next_err_t = get_next_t (this->get_time (), err_interval);
+          else
+            {
+              std::vector<std::string> err_names = engine.error_names ();
+              std::vector<std::string> err_abrev = engine.error_abrev ();
+              std::vector<std::string>::iterator it1;
+              for (it1=err_names.begin(); it1!=err_names.end(); ++it1)
+                {
+                  statistics.add_value(*it1, std::numeric_limits<double>::quiet_NaN ());
+                }
+            }
         }
 
       engine.do_step (this->get_solution (), this->get_old_solution (),
