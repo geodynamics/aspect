@@ -85,7 +85,7 @@ namespace aspect
        * as much as delta.
        */
       for (unsigned int i = 0; i <= depths_iso.size();)
-        if (std::fabs(latitude - latitudes_iso[i]) <= delta && std::fabs(longitude - longitudes_iso[i]) < delta)
+        if (std::fabs(latitude - latitudes_iso[i]) <= delta && std::fabs(longitude - longitudes_iso[i]) <= delta)
           {
             return depths_iso[i];
           }
@@ -105,9 +105,9 @@ namespace aspect
                                        * std::sin(numbers::PI*theta/180)*std::sin(numbers::PI*theta/180));
     }
 
-    template <int dim>
+    template <>
     double
-    AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &) const
+    AdiabaticBoundary<2>::initial_temperature (const Point<dim> &) const
     {
       AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
@@ -135,6 +135,10 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
+          prm.declare_entry("Crustal thickness filename",
+        	                 "crustal_thickness.txt",
+        	                  Patterns::FileName(),
+        	                  "Surface coordinates and depths to the Mohovoric discontinuity. Units: degrees and kilometers.");
           prm.declare_entry ("Isotherm depth filename",
                              "adiabatic_boundary.txt",
                              Patterns::FileName(),
