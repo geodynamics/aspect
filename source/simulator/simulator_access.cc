@@ -171,6 +171,14 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  SimulatorAccess<dim>::get_pre_refinement_step () const
+  {
+    return simulator->pre_refinement_step;
+  }
+
+
+  template <int dim>
+  unsigned int
   SimulatorAccess<dim>::n_compositional_fields () const
   {
     return simulator->parameters.n_compositional_fields;
@@ -284,7 +292,7 @@ namespace aspect
   const FiniteElement<dim> &
   SimulatorAccess<dim>::get_fe () const
   {
-    Assert (simulator->dof_handler.n_locally_owned_dofs() != 0,
+    Assert (simulator->dof_handler.n_dofs() > 0,
             ExcMessage("You are trying to access the FiniteElement before the DOFs have been "
                        "initialized. This may happen when accessing the Simulator from a plugin "
                        "that gets executed early in some cases (like material models) or from "

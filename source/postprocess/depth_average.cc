@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -159,6 +159,7 @@ namespace aspect
       // On the root process, write out the file. do this using the DataOutStack
       // class on a piecewise constant finite element space on
       // a 1d mesh with the correct subdivisions
+      std::string filename;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           Triangulation<1> mesh;
@@ -215,15 +216,19 @@ namespace aspect
                 }
 
 
-              const std::string filename = (this->get_output_directory() +
-                                            "depth_average" +
-                                            DataOutBase::default_suffix(output_format));
+              filename = (this->get_output_directory() +
+                          "depth_average" +
+                          DataOutBase::default_suffix(output_format));
               std::ofstream f (filename.c_str());
               data_out_stack.write (f, output_format);
+
+              AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                         "> did not succeed in the 'point values' "
+                                         "postprocessor."));
             }
           else
             {
-              const std::string filename = (this->get_output_directory() + "depth_average.txt");
+              filename = (this->get_output_directory() + "depth_average.txt");
               std::ofstream f(filename.c_str(), std::ofstream::out);
 
               //Write the header
@@ -248,7 +253,10 @@ namespace aspect
                       depth+= max_depth/static_cast<double>(point->values[0].size() );
                     }
                 }
-              f.close();
+
+              AssertThrow (f, ExcMessage("Writing data to <" + filename +
+                                         "> did not succeed in the 'point values' "
+                                         "postprocessor."));
             }
         }
 
@@ -256,10 +264,8 @@ namespace aspect
 
       // return what should be printed to the screen. note that we had
       // just incremented the number, so use the previous value
-      return std::make_pair (std::string ("Writing depth average"),
-                             this->get_output_directory() +
-                             "depth_average" +
-                             (ascii_output ? ".txt" : DataOutBase::default_suffix(output_format)));
+      return std::make_pair (std::string ("Writing depth average:"),
+                             filename);
     }
 
 

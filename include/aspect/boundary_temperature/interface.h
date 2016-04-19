@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -77,7 +77,7 @@ namespace aspect
          * temperature.
          * @return Boundary temperature at position @p position.
          *
-         * @deprecated Use <code>temperature(const types::boundary_id
+         * @deprecated Use <code>boundary_temperature(const types::boundary_id
          * boundary_indicator,const Point<dim> &position) const</code> instead.
          * The reference to the geometry model can be reached by deriving
          * plugins from aspect::SimulatorAccess<dim>.

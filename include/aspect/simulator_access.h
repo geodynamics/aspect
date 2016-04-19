@@ -256,6 +256,18 @@ namespace aspect
       convert_output_to_years () const;
 
       /**
+       * Return the number of the current pre refinement step.
+       * This can be useful for plugins that want to function differently in
+       * the initial adaptive refinements and later on.
+       * This will be not initialized before Simulator<dim>::run() is called.
+       * It iterates upward from 0 to parameters.initial_adaptive_refinement
+       * during the initial adaptive refinement steps, and equals
+       * std::numeric_limits<unsigned int>::max() afterwards.
+       */
+      unsigned int
+      get_pre_refinement_step () const;
+
+      /**
        * Return the number of compositional fields specified in the input
        * parameter file that will be advected along with the flow field.
        */

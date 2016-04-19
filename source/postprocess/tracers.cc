@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -55,9 +55,15 @@ namespace aspect
 
     template <int dim>
     void
-    Tracers<dim>::generate_and_initialize_particles()
+    Tracers<dim>::generate_particles()
     {
       world.generate_particles();
+    }
+
+    template <int dim>
+    void
+    Tracers<dim>::initialize_particles()
+    {
       world.initialize_particles();
     }
 
@@ -87,15 +93,20 @@ namespace aspect
           last_output_time = this->get_time() - output_interval;
         }
 
-      // Advance the particles in the world to the current time
-      world.advance_timestep();
+      // Do not advect the particles in the initial refinement stage
+      const bool in_initial_refinement = (this->get_timestep_number() == 0)
+                                         && (this->get_pre_refinement_step() < this->get_parameters().initial_adaptive_refinement);
+      if (!in_initial_refinement)
+        // Advance the particles in the world to the current time
+        world.advance_timestep();
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
       // If it's not time to generate an output file or we do not write output
       // return early with the number of particles that were advected
       if ((this->get_time() < last_output_time + output_interval) || !output)
-        return std::make_pair("Number of advected particles",Utilities::int_to_string(world.n_global_particles()));
+        return std::make_pair("Number of advected particles:",
+                              Utilities::int_to_string(world.n_global_particles()));
 
 
       if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
@@ -114,7 +125,7 @@ namespace aspect
       // record the file base file name in the output file
       statistics.add_value ("Particle file name",
                             this->get_output_directory() + data_file_name);
-      return std::make_pair("Writing particle output: ", data_file_name);
+      return std::make_pair("Writing particle output:", data_file_name);
     }
 
 
@@ -262,18 +273,31 @@ namespace aspect
                                                   "remove and add particles|repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
-          prm.declare_entry ("Minimum tracers per cell", "100",
+          prm.declare_entry ("Minimum tracers per cell", "0",
                              Patterns::Integer (0),
-                             "Limit for how many particles are allowed per cell. This limit is "
-                             "useful to prevent coarse cells in adaptive meshes from slowing down "
-                             "the whole model. It will only be checked and enforced during "
-                             "mesh refinement and MPI transfer of tracers.");
+                             "Lower limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent fine cells from being empty "
+                             "of particles. It will be checked and enforced after mesh "
+                             "refinement and after particle movement. "
+                             "If there are "
+                             "n_number_of_particles < min_particles_per_cell "
+                             "particles in one cell then "
+                             "min_particles_per_cell - n_number_of_particles "
+                             "particles are generated and randomly placed in "
+                             "this cell. If the particles carry properties the "
+                             "individual property plugins control how the "
+                             "properties of the new particles are initialized.");
           prm.declare_entry ("Maximum tracers per cell", "100",
                              Patterns::Integer (0),
-                             "Limit for how many particles are allowed per cell. This limit is "
-                             "useful to prevent coarse cells in adaptive meshes from slowing down "
-                             "the whole model. It will only be checked and enforced during "
-                             "mesh refinement and MPI transfer of tracers.");
+                             "Upper limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent coarse cells from slowing down "
+                             "the whole model. It will be checked and enforced after mesh "
+                             "refinement, after MPI transfer of particles and after particle "
+                             "movement. If there are "
+                             "n_number_of_particles > max_particles_per_cell "
+                             "particles in one cell then "
+                             "n_number_of_particles - max_particles_per_cell "
+                             "particles in this cell are randomly chosen and destroyed.");
           prm.declare_entry ("Tracer weight", "10",
                              Patterns::Integer (0),
                              "Weight that is associated with the computational load of "
@@ -314,7 +338,7 @@ namespace aspect
                              "of ghost cells around the local subdomain."));
 
       // Parameters that are handed down to the particle world in this function
-      unsigned int max_tracers_per_cell,tracer_weight;
+      unsigned int max_tracers_per_cell,min_tracers_per_cell,tracer_weight;
       typename aspect::Particle::World<dim>::ParticleLoadBalancing load_balancing;
 
       prm.enter_subsection("Postprocess");
@@ -325,7 +349,13 @@ namespace aspect
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
 
+          min_tracers_per_cell = prm.get_integer("Minimum tracers per cell");
           max_tracers_per_cell = prm.get_integer("Maximum tracers per cell");
+
+          AssertThrow(min_tracers_per_cell <= max_tracers_per_cell,
+                      ExcMessage("Please select a 'Minimum tracers per cell' parameter "
+                                 "that is smaller than or equal to the 'Maximum tracers per cell' parameter."));
+
           tracer_weight = prm.get_integer("Tracer weight");
 
           if (prm.get ("Load balancing strategy") == "none")
@@ -402,6 +432,7 @@ namespace aspect
                        interpolator,
                        property_manager,
                        load_balancing,
+                       min_tracers_per_cell,
                        max_tracers_per_cell,
                        tracer_weight);
     }

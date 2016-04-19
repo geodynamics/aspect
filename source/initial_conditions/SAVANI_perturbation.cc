@@ -196,8 +196,14 @@ namespace aspect
                                             reference_temperature;
 
       //get the degree from the input file (60)
-      const int maxdegree = spherical_harmonics_lookup->maxdegree();
-      // const int maxdegree = 60;
+      int max_degree = spherical_harmonics_lookup->maxdegree();
+
+      // lower the maximum order if needed
+      if (lower_max_order)
+        {
+          AssertThrow(max_order <= max_degree, ExcMessage("Specifying a maximum order higher than the order of spherical harmonic data is not allowed"));
+          max_degree = max_order;
+        }
 
       const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
 
@@ -224,7 +230,7 @@ namespace aspect
 
       for (int depth_interp = 0; depth_interp < num_spline_knots; depth_interp++)
         {
-          for (int degree_l = 0; degree_l < maxdegree+1; degree_l++)
+          for (int degree_l = 0; degree_l < max_degree+1; degree_l++)
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
@@ -297,7 +303,7 @@ namespace aspect
                              Patterns::Anything(),
                              "The file name of the spline knots taken from the 28 spherical layers"
                              "of SAVANI tomography model.");
-          prm.declare_entry ("vs to density scaling", "0.25",
+          prm.declare_entry ("Vs to density scaling", "0.25",
                              Patterns::Double (0),
                              "This parameter specifies how the perturbation in shear wave velocity "
                              "as prescribed by SAVANI is scaled into a density perturbation. "
@@ -323,6 +329,16 @@ namespace aspect
                              "of 660km, but your closest spherical depth layers are only at 500km and "
                              "750km (due to a coarse resolution) it will only zero out heterogeneities "
                              "down to 500km. Similar caution has to be taken when using adaptive meshing.");
+          prm.declare_entry ("Specify a lower maximum order","false",
+                             Patterns::Bool (),
+                             "Option to use a lower maximum order when reading the data file of spherical "
+                             "harmonic coefficients. This is probably used for the faster tests or when the "
+                             "users only want to see the spherical harmonic pattern up to a certain order.");
+          prm.declare_entry ("Maximum order","20",
+                             Patterns::Integer (0),
+                             "The maximum order the users specify when reading the data file of spherical harmonic "
+                             "coefficients, which must be smaller than the maximum order the data file stored. "
+                             "This parameter will be used only if 'Specify a lower maximum order' is set to true");
         }
         prm.leave_subsection ();
       }
@@ -353,11 +369,13 @@ namespace aspect
           }
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
-          vs_to_density           = prm.get_double ("vs to density scaling");
+          vs_to_density           = prm.get_double ("Vs to density scaling");
           thermal_alpha           = prm.get_double ("Thermal expansion coefficient in initial temperature scaling");
           zero_out_degree_0       = prm.get_bool ("Remove degree 0 from perturbation");
           reference_temperature   = prm.get_double ("Reference temperature");
           no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
+          lower_max_order         = prm.get_bool ("Specify a lower maximum order");
+          max_order               = prm.get_integer ("Maximum order");
         }
         prm.leave_subsection ();
       }

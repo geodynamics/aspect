@@ -44,6 +44,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
+        /*
+         * At the beginning of each time step, update the time for the
+         * ParsedFunction.
+         */
+        virtual
+        void
+        update ();
+
         /**
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate.

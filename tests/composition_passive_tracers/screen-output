@@ -28,7 +28,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 12 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 2:  t=0.125 seconds
    Solving temperature system... 10 iterations.
@@ -49,7 +49,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 4:  t=0.25 seconds
    Solving temperature system... 10 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 7:  t=0.4375 seconds
    Solving temperature system... 10 iterations.
@@ -113,7 +113,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 10:  t=0.625 seconds
    Solving temperature system... 10 iterations.
@@ -134,7 +134,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 12:  t=0.75 seconds
    Solving temperature system... 11 iterations.
@@ -166,7 +166,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 9 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 15:  t=0.9375 seconds
    Solving temperature system... 10 iterations.

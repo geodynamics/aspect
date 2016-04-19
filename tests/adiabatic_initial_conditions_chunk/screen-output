@@ -39,7 +39,7 @@ Number of degrees of freedom: 5,173 (3,174+412+1,587)
    Solving Stokes system... 30+17 iterations.
 
    Postprocessing:
-     Writing depth average output-adiabatic_initial_conditions_chunk/depth_average.gnuplot
+     Writing depth average:output-adiabatic_initial_conditions_chunk/depth_average.gnuplot
 
 Termination requested by criterion: end time
 

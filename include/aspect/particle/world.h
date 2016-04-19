@@ -100,6 +100,7 @@ namespace aspect
                         Interpolator::Interface<dim> *interpolator,
                         Property::Manager<dim> *manager,
                         const ParticleLoadBalancing &load_balancing,
+                        const unsigned int min_part_per_cell,
                         const unsigned int max_part_per_cell,
                         const unsigned int weight);
 
@@ -131,6 +132,13 @@ namespace aspect
          */
         const std::multimap<types::LevelInd, Particle<dim> > &
         get_particles() const;
+
+        /**
+         * Returns the number of particles in the cell that contains the
+         * most tracers in the global model.
+         */
+        unsigned int
+        get_global_max_tracers_per_cell() const;
 
         /**
          * Advance particles by the old timestep using the current
@@ -256,6 +264,12 @@ namespace aspect
         types::particle_index global_number_of_particles;
 
         /**
+         * This variable stores the next free particle index that is available
+         * globally in case new particles need to be generated.
+         */
+        types::particle_index next_free_particle_index;
+
+        /**
          * This variable is set by the register_store_callback_function()
          * function and used by the register_load_callback_function() function
          * to check where the tracer data was stored.
@@ -268,10 +282,29 @@ namespace aspect
         ParticleLoadBalancing particle_load_balancing;
 
         /**
-         * Limit for how many particles are allowed per cell. This limit is
+         * Lower limit for particle number per cell. This limit is
+         * useful for adaptive meshes to prevent fine cells from being empty
+         * of particles. It will be checked and enforced after mesh
+         * refinement and after particle movement. If there are
+         * n_number_of_particles < min_particles_per_cell
+         * particles in one cell then
+         * min_particles_per_cell - n_number_of_particles particles are
+         * generated and randomly placed in this cell. If the particles carry
+         * properties the individual property plugins control how the
+         * properties of the new particles are initialized.
+         */
+        unsigned int min_particles_per_cell;
+
+        /**
+         * Upper limit for particle number per cell. This limit is
          * useful for adaptive meshes to prevent coarse cells from slowing down
-         * the whole model. It will only be checked and enforced during mesh
-         * refinement and MPI transfer of particles.
+         * the whole model. It will be checked and enforced after mesh
+         * refinement, after MPI transfer of particles and after particle
+         * movement. If there are
+         * n_number_of_particles > max_particles_per_cell
+         * particles in one cell then
+         * n_number_of_particles - max_particles_per_cell
+         * particles in this cell are randomly chosen and destroyed.
          */
         unsigned int max_particles_per_cell;
 
@@ -292,11 +325,28 @@ namespace aspect
         update_n_global_particles();
 
         /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
+         * Calculates the next free particle index in the global model domain.
+         * This equals one plus the highest particle index currently active.
          */
-        unsigned int
-        get_global_max_tracers_per_cell() const;
+        void
+        update_next_free_particle_index();
+
+        /**
+         * Returns whether a given particle is in the given cell.
+         */
+        bool
+        particle_is_in_cell(const Particle<dim> &particle,
+                            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+        /**
+         * Returns a map of neighbor cells of the current cell. This map is
+         * sorted according to the distance between the particle and the face
+         * of cell that is shared with the neighbor cell. I.e. the first
+         * entries of the map are the most likely ones to find the particle in.
+         */
+        std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+        neighbor_cells_to_search(const Particle<dim> &particle,
+                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
 
         /**
          * Finds the cells containing each particle for all particles. If
@@ -307,6 +357,14 @@ namespace aspect
          */
         void
         sort_particles_in_subdomains_and_cells();
+
+        /**
+         * Apply the bounds for the maximum and minimum number of particles
+         * per cell, if the appropriate @p particle_load_balancing strategy
+         * has been selected.
+         */
+        void
+        apply_particle_per_cell_bounds();
 
         /**
          * TODO: Implement this for arbitrary meshes.
@@ -377,6 +435,7 @@ namespace aspect
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particles
+      &next_free_particle_index
       ;
     }
   }
