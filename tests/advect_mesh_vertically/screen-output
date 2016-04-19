@@ -8,7 +8,7 @@ Number of free surface degrees of freedom: 378
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14 iterations.
+   Solving Stokes system... 14+0 iterations.
 
 Number of active cells: 94 (on 4 levels)
 Number of degrees of freedom: 1,962 (918+126+459+459)
@@ -19,7 +19,7 @@ Number of free surface degrees of freedom: 252
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 27+0 iterations.
 
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,567 (1,202+163+601+601)
@@ -30,7 +30,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-advect_mesh_vertically/solution-00000
@@ -42,7 +42,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Topography min/max: -298.7 m, 140.6 m, 
@@ -53,7 +53,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Topography min/max: -592 m, 266.7 m, 
@@ -64,7 +64,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Topography min/max: -880.8 m, 381.1 m, 
@@ -75,7 +75,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      Topography min/max: -1165 m, 485.3 m, 
@@ -86,7 +86,7 @@ Number of free surface degrees of freedom: 326
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Topography min/max: -1445 m, 579.5 m, 
@@ -101,7 +101,7 @@ Number of free surface degrees of freedom: 446
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Topography min/max: -1720 m, 663.4 m, 
@@ -112,7 +112,7 @@ Number of free surface degrees of freedom: 446
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Topography min/max: -1992 m, 736.8 m, 
@@ -123,7 +123,7 @@ Number of free surface degrees of freedom: 446
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      Topography min/max: -2260 m, 801.4 m, 
@@ -134,7 +134,7 @@ Number of free surface degrees of freedom: 446
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Topography min/max: -2522 m, 857.3 m, 
@@ -145,7 +145,7 @@ Number of free surface degrees of freedom: 446
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Topography min/max: -2779 m, 904.7 m, 

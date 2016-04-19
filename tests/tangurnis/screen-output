@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libtangurnis.so>
 
@@ -15,17 +8,17 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
       Nonlinear Stokes residual: 0.0056096
-   Solving Stokes system... 26 iterations.
+   Solving Stokes system... 26+0 iterations.
       Nonlinear Stokes residual: 0.0126531
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 20+0 iterations.
       Nonlinear Stokes residual: 0.000344376
-   Solving Stokes system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
       Nonlinear Stokes residual: 2.54573e-05
-   Solving Stokes system... 10 iterations.
+   Solving Stokes system... 10+0 iterations.
       Nonlinear Stokes residual: 1.03201e-06
-   Solving Stokes system... 6 iterations.
+   Solving Stokes system... 6+0 iterations.
       Nonlinear Stokes residual: 7.38617e-08
-   Solving Stokes system... 2 iterations.
+   Solving Stokes system... 2+0 iterations.
       Nonlinear Stokes residual: 3.43053e-09
 
    Postprocessing:
@@ -33,7 +26,7 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
      Writing graphical output: output-tangurnis/solution-00000
 
 *** Timestep 1:  t=0.0001 seconds
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 1.11606e-09
 
    Postprocessing:
@@ -44,15 +37,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      29.3s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         8 |      9.55s |        33% |
-| Build Stokes preconditioner     |         1 |      3.02s |        10% |
-| Solve Stokes system             |         8 |      2.63s |         9% |
-| Initialization                  |         2 |      3.53s |        12% |
-| Postprocessing                  |         2 |      2.72s |       9.3% |
-| Setup dof systems               |         1 |      3.43s |        12% |
 +---------------------------------+-----------+------------+------------+
 
