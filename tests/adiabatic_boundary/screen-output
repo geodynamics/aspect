@@ -6,13 +6,6 @@
 --     . using Trilinos
 -----------------------------------------------------------------------------
 
-
------------------------------------------------------------------------------
-The output directory <output/> provided in the input file appears not to exist.
-ASPECT will create it for you.
------------------------------------------------------------------------------
-
-
 Number of active cells: 8 (on 2 levels)
 Number of degrees of freedom: 527 (375+27+125)
 
@@ -23,27 +16,27 @@ Number of degrees of freedom: 527 (375+27+125)
    Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0 iterations.
-   Residual after nonlinear iteration 2: 3.94978e-06
+   Residual after nonlinear iteration 2: 4.01961e-06
 
    Postprocessing:
-     RMS, max velocity: 0.00495 m/year, 0.00871 m/year
+     RMS, max velocity: 0.00495 m/year, 0.00881 m/year
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.675s |            |
+| Total wallclock time elapsed since start    |     0.462s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0945s |        14% |
-| Assemble temperature system     |         1 |    0.0727s |        11% |
-| Build Stokes preconditioner     |         1 |    0.0488s |       7.2% |
-| Build temperature preconditioner|         1 |   0.00169s |      0.25% |
-| Solve Stokes system             |         2 |    0.0261s |       3.9% |
-| Solve temperature system        |         1 |   0.00701s |         1% |
-| Initialization                  |         2 |     0.314s |        47% |
-| Postprocessing                  |         1 |   0.00285s |      0.42% |
-| Setup dof systems               |         1 |    0.0579s |       8.6% |
+| Assemble Stokes system          |         2 |    0.0903s |        20% |
+| Assemble temperature system     |         1 |    0.0791s |        17% |
+| Build Stokes preconditioner     |         1 |    0.0527s |        11% |
+| Build temperature preconditioner|         1 |    0.0021s |      0.45% |
+| Solve Stokes system             |         2 |    0.0298s |       6.4% |
+| Solve temperature system        |         1 |   0.00135s |      0.29% |
+| Initialization                  |         2 |    0.0983s |        21% |
+| Postprocessing                  |         1 |   0.00336s |      0.73% |
+| Setup dof systems               |         1 |    0.0634s |        14% |
 +---------------------------------+-----------+------------+------------+
 

@@ -21,7 +21,7 @@
 
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -74,6 +74,7 @@ namespace aspect
         std::vector<double>  longitudes_iso;
         std::vector<double>  depths_iso;
         std::string isotherm_file_name;
+        std::string data_directory;
         double isotherm_temperature;
         double surface_temperature;
         double temperature_gradient;

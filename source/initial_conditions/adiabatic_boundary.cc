@@ -85,12 +85,14 @@ namespace aspect
        * as much as delta.
        */
       for (unsigned int i = 0; i <= depths_iso.size();)
-        if (std::fabs(latitude - latitudes_iso[i]) <= delta && std::fabs(longitude - longitudes_iso[i]) <= delta)
-          {
-            return depths_iso[i];
-          }
-        else
-          i++;
+        {
+          if (std::fabs(latitude - latitudes_iso[i]) <= delta && std::fabs(longitude - longitudes_iso[i]) <= delta)
+            {
+              return depths_iso[i];
+            }
+          else
+            i++;
+        }
       Assert (false, ExcInternalError());
       return 0;
     }
@@ -107,15 +109,15 @@ namespace aspect
 
     template <>
     double
-    AdiabaticBoundary<2>::initial_temperature (const Point<dim> &) const
+    AdiabaticBoundary<2>::initial_temperature (const Point<2> &) const
     {
       AssertThrow (false, ExcMessage ("The 'adiabatic boundary' initial temperature plugin is only implemented for 3d cases."));
       return 0;
     }
 
-    template <>
+    template <int dim>
     double
-    AdiabaticBoundary<3>::initial_temperature (const Point<3> &position) const
+    AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
     {
       const std::pair<double, double> lat_long = lat_long_from_xyz_WGS84(position);
       const double depth                       = radius_WGS84(lat_long.first) - position.norm();
@@ -135,14 +137,13 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
-          prm.declare_entry("Crustal thickness filename",
-        	                 "crustal_thickness.txt",
-        	                  Patterns::FileName(),
-        	                  "Surface coordinates and depths to the Mohovoric discontinuity. Units: degrees and kilometers.");
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/tests/adiabatic_boundary/",
+                             Patterns::DirectoryName (),
+                             "The path to the isotherm depth data file");
           prm.declare_entry ("Isotherm depth filename",
                              "adiabatic_boundary.txt",
-                             Patterns::FileName(),
-                             "File from which the base of the lithosphere depth data is read."
+                             Patterns::FileName (),
+                             "File from which the isotherm  depth data is read. "
                              "Note that full path (/$DIRECTORY_PATH/filename) of the location "
                              "of the file must be provided.");
           prm.declare_entry ("Isotherm temperature", "1673.15",
@@ -168,6 +169,16 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
+          data_directory     = prm.get ("Data directory");
+          {
+            const std::string subst_text = ("$ASPECT_SOURCE_DIR");
+            std::string::size_type position;
+            while (position = data_directory.find (subst_text), position!=std::string::npos)
+              data_directory.replace (data_directory.begin()+position,
+                                      data_directory.begin()+position+subst_text.size(),
+                                      ASPECT_SOURCE_DIR);
+          }
+
           isotherm_file_name = prm.get("Isotherm depth filename");
           isotherm_temperature = prm.get_double("Isotherm temperature");
           surface_temperature  = prm.get_double("Surface temperature");
@@ -182,16 +193,16 @@ namespace aspect
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is an ellipsoidal chunk."));
 
-
-      std::ifstream input1(isotherm_file_name.c_str());
+      const std::string data_file = data_directory+isotherm_file_name;
+      std::ifstream input1(data_file.c_str());
       AssertThrow (input1.is_open(),
-                   ExcMessage (std::string("Can't read from file <") + isotherm_file_name + ">"));
+                   ExcMessage (std::string("Can't read from file <") + data_file + ">"));
 
       /**
        * Reading the data file.
        */
       double latitude_iso, longitude_iso, depth_iso;
-      while (input1 >> latitude_iso >>longitude_iso >> depth_iso)
+      while (input1 >> latitude_iso >> longitude_iso >> depth_iso)
         {
           latitudes_iso.push_back(latitude_iso);
           longitudes_iso.push_back(longitude_iso);
@@ -232,9 +243,9 @@ namespace aspect
                                        "An initial temperature condition that allows for discretizing "
                                        "the model domain into two layers separated by a user-defined "
                                        "isothermal boundary using a table look-up approach. The user includes an "
-                                       "input ascii data file that is formatted as 3 columns of 'latitude',"
+                                       "input ascii data file that is formatted as 3 columns of 'latitude', "
                                        "'longitude', and 'depth', where 'depth' is in kilometers and "
-                                       "represents the depth of an initial temperature of 1673.15 K (by default)."
+                                       "represents the depth of an initial temperature of 1673.15 K (by default). "
                                        "The temperature is defined from the surface (273.15 K) to the isotherm "
                                        "as a linear gradient. Below the isotherm the temperature increases "
                                        "approximately adiabatically (0.0005 K per meter). This initial temperature condition "

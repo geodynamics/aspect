@@ -1,5 +1,5 @@
 # This test was created by Tahiry Rajaonarison and D. Sarah Stamps
-# for the adiabatic boundary initial conditions plugin. 
+# for the adiabatic boundary inital conditions plugin. 
 
 set Dimension                              = 3
 
@@ -35,7 +35,7 @@ end
 subsection Initial conditions
   set Model name = adiabatic boundary
   subsection Adiabatic boundary
-    set Isotherm depth filename = $ASPECT_SOURCE_DIR/tests/adiabatic_boundary/adiabatic_boundary.txt 
+    set Isotherm depth filename = adiabatic_boundary.txt
   end
 end
 
@@ -80,7 +80,6 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors =  velocity statistics
-end
-
+  set List of postprocessors = velocity statistics
+end 
    
