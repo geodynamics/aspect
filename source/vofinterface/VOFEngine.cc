@@ -704,10 +704,9 @@ namespace aspect
             }
           dflux *= timestep / cell_vol;
 
-          //state(cell_vof_ind) += deltaState(cell_vof_ind);
-          state (cell_vof_ind) = (state (cell_vof_ind) * (1 + 0.5 * dflux)
+          state (cell_vof_ind) = (state (cell_vof_ind)
                                   + deltaState (cell_vof_ind))
-                                 / (1 - 0.5 * dflux);
+                                 / (1 - dflux);
 
           ++par_cell;
         }
