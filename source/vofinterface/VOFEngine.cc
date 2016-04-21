@@ -112,7 +112,7 @@ namespace aspect
       AssertThrow(parent_sim_handler!=NULL,
                   ExcMessage ("vofinterface requires parent simulation dofs."));
 
-      const QCMid<dim> quadrature (n_samp);
+      const QIterated<dim> quadrature (QMidpoint<1>(), n_samp);
       FEValues<dim> fe_init (*mapping, interfaceFE, quadrature,
                              update_JxW_values | update_quadrature_points);
 
@@ -713,7 +713,7 @@ namespace aspect
       const unsigned int dofs_per_cell = interfaceFE.dofs_per_cell;
       std::vector<types::global_dof_index> local_dof_indicies (dofs_per_cell);
 
-      const QCMid<dim> quadrature (n_samp);
+      const QIterated<dim> quadrature (QMidpoint<1>(), n_samp);
       FEValues<dim> fe_err (*mapping, interfaceFE, quadrature,
                             update_JxW_values | update_quadrature_points);
 

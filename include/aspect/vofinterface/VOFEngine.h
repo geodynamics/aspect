@@ -40,7 +40,6 @@
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/numerics/data_out.h>
 
-#include <aspect/vofinterface/QCMid.h>
 #include <aspect/vofinterface/VOFUtils.h>
 
 // Definition
