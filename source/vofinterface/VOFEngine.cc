@@ -163,7 +163,7 @@ namespace aspect
           if (d_func >= 0.5*cell_diam)
             {
               state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = 1.0;
-              vol_init += cell->measure ();
+              vol_init += cell_vol;
               continue;
             }
 
@@ -186,10 +186,10 @@ namespace aspect
                   d += (0.5/dim)*(dH+dL);
                 }
               double ptvof = vol_from_d<dim> (grad, d);
-              val += ptvof * (fe_init.JxW (i) / cell->measure ());
+              val += ptvof * (fe_init.JxW (i) / cell_vol);
             }
           state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = val;
-          vol_init += val*cell->measure ();
+          vol_init += val*cell_vol;
         }
 
       normals_calced = false;
@@ -310,14 +310,14 @@ namespace aspect
             interfaceFE.dofs_per_cell);
           types::global_dof_index cell_vof_index;
           double cell_vof;
-          unsigned int n_cell_normal_index, n_cell_d_index;
+          unsigned int cell_normal_index, cell_d_index;
 
           // Obtain data for this cell and neighbors
           cell->get_dof_indices (cell_dof_indicies);
           cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
-          n_cell_normal_index = cell->active_cell_index()*n_interface_components
+          cell_normal_index = cell->active_cell_index()*n_interface_components
                                 + first_inter_normal_ind;
-          n_cell_d_index = cell->active_cell_index()*n_interface_components
+          cell_d_index = cell->active_cell_index()*n_interface_components
                            + inter_d_ind;
           cell_vof = state (cell_vof_index);
 
@@ -465,9 +465,9 @@ namespace aspect
             }
           for (unsigned int i=0; i < dim; ++i)
             {
-              interfaceData (n_cell_normal_index + i) = normal[i];
+              interfaceData (cell_normal_index + i) = normal[i];
             }
-          interfaceData (n_cell_d_index) = d;
+          interfaceData (cell_d_index) = d;
         }
 
       normals_calced = true;
@@ -532,126 +532,129 @@ namespace aspect
           std::vector<types::global_dof_index> cell_dof_indicies (
             interfaceFE.dofs_per_cell);
           types::global_dof_index cell_vof_index;
-          unsigned int n_cell_normal_index, n_cell_d_index;
+          unsigned int cell_normal_index, cell_d_index;
           double cell_vof, cell_vol;
 
           // Obtain data for this cell and neighbors
           cell->get_dof_indices (cell_dof_indicies);
           cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
-          n_cell_normal_index = cell->active_cell_index()*n_interface_components
+          cell_normal_index = cell->active_cell_index()*n_interface_components
                                 + first_inter_normal_ind;
-          n_cell_d_index = cell->active_cell_index()*n_interface_components
+          cell_d_index = cell->active_cell_index()*n_interface_components
                            + inter_d_ind;
           cell_vof = state (cell_vof_index);
           cell_vol = cell->measure ();
 
-          if (cell_vof > voleps)
+          double dflux = 0;
+          par_new_state.set_active_cell (par_cell);
+          par_old_state.set_active_cell (par_cell);
+          for (unsigned int i = 0; i < 2; ++i)
             {
-              // std::cout << "Cen: " << cell->center () << std::endl;
-              // std::cout << "  Ind: " << cell_vof_index << std::endl;
-              // std::cout << "  VOF: " << cell_vof << std::endl;
-
-              for (unsigned int i=0; i < dim; ++i)
+              fe_face.reinit (cell, 2 * dir + i);
+              flux[i] = 0.0;
+              const std::vector<double> &jxw = fe_face.get_JxW_values ();
+              const std::vector<Tensor<1, dim>> &normals =
+                                               fe_face.get_all_normal_vectors ();
+              par_new_state.vector_value_list (
+                fe_face.get_quadrature_points (), nvels);
+              par_old_state.vector_value_list (
+                fe_face.get_quadrature_points (), ovels);
+              for (unsigned int j = 0; j < fe_face.n_quadrature_points;
+                   ++j)
                 {
-                  normal[i] = interfaceData (n_cell_normal_index + i);
+                  Point<dim> vel;
+                  Point<dim> vGrad;
+                  for (unsigned int vdi = 0; vdi < dim; ++vdi)
+                    {
+                      if (old_vel_set)
+                        {
+                          vel[vdi] = 0.5 * (nvels[j][vdi] + ovels[j][vdi]);
+                        }
+                      else
+                        {
+                          vel[vdi] = nvels[j][vdi];
+                        }
+                    }
+                  flux[i] += timestep * jxw[j] * (normals[j] * vel);
                 }
-              d = interfaceData (n_cell_d_index);
+              // std::cout << "    " << i << " " << flux[i] << std::endl;
+              dflux += flux[i];
+            }
 
+          if (cell_vof <= voleps)
+            {
+              for (unsigned int i = 0; i < 2; ++i)
+                {
+                  flux_vof[i] = 0.0;
+                }
+            }
+          else
+            {
               if (cell_vof > 1.0 - voleps)
                 {
-                  normal[0] = 0.0;
-                  normal[1] = 1.0;
-                }
-
-              // std::cout << "  N,d: " << normal << ", " << d << std::endl;
-              // std::cout << "  Vol Fluxes: " << std::endl;
-
-              double dflux = 0;
-              par_new_state.set_active_cell (par_cell);
-              par_old_state.set_active_cell (par_cell);
-              for (unsigned int i = 0; i < 2; ++i)
-                {
-                  fe_face.reinit (cell, 2 * dir + i);
-                  flux[i] = 0.0;
-                  const std::vector<double> &jxw = fe_face.get_JxW_values ();
-                  const std::vector<Tensor<1, dim>> &normals =
-                                                   fe_face.get_all_normal_vectors ();
-                  par_new_state.vector_value_list (
-                    fe_face.get_quadrature_points (), nvels);
-                  par_old_state.vector_value_list (
-                    fe_face.get_quadrature_points (), ovels);
-                  for (unsigned int j = 0; j < fe_face.n_quadrature_points;
-                       ++j)
+                  for (unsigned int i = 0; i < 2; ++i)
                     {
-                      Point<dim> vel;
-                      Point<dim> vGrad;
-                      for (unsigned int vdi = 0; vdi < dim; ++vdi)
+                      flux_vof[i] = (flux[i]>0.0)?1.0:0.0;
+                    }
+                }
+              else
+                {
+                  for (unsigned int i=0; i < dim; ++i)
+                    {
+                      normal[i] = interfaceData (cell_normal_index + i);
+                    }
+                  d = interfaceData (cell_d_index);
+
+
+
+                  for (unsigned int i = 0; i < 2; ++i)
+                    {
+                      double adj = flux[i]/cell_vol;
+                      if (adj > voleps)
                         {
-                          if (old_vel_set)
-                            {
-                              vel[vdi] = 0.5 * (nvels[j][vdi] + ovels[j][vdi]);
-                            }
-                          else
-                            {
-                              vel[vdi] = nvels[j][vdi];
-                            }
+                          double dot = normal[dir] * (1.0 - adj);
+                          dot *= 0.5 * (i == 0 ? -1.0 : 1.0);
+
+                          Tensor<1, dim, double> adj_norm = normal;
+                          adj_norm[dir] = normal[dir] * adj;
+
+                          // std::cout << "     " << adj_norm << "*x=" << d-dot << std::endl;
+
+                          flux_vof[i] = vol_from_d<dim> (adj_norm,
+                                                         d - dot);
                         }
-                      flux[i] += jxw[j] * (normals[j] * (timestep*vel));
+                      else
+                        {
+                          flux_vof[i] = 0.0;
+                        }
+                      // std::cout << "    " << i << " " << flux_vof[i] << std::endl;
                     }
-                  // std::cout << "    " << i << " " << flux[i] << std::endl;
-                  dflux += flux[i];
                 }
+            }
 
-              // std::cout << "  Flux Fracs: " << std::endl;
+          // std::cout << "  Fluxes:" << std::endl;
 
-              for (unsigned int i = 0; i < 2; ++i)
+          for (unsigned int i = 0; i < n_neighbor; ++i)
+            {
+              dvofs[i] = flux_vof[i] * flux[i];
+
+              // std::cout << "    " << i << " " << dvofs[i] << std::endl;
+            }
+
+          system_matrix.add(cell_vof_index, cell_vof_index, cell_vol-dflux);
+          rhs(cell_vof_index) += cell_vol*state(cell_vof_index);
+          // Set valid fluxes
+          for (unsigned int i = 0; i < n_neighbor; ++i)
+            {
+              rhs(cell_vof_index) -= dvofs[i];
+              typename DoFHandler<dim>::active_cell_iterator curr;
+              curr = cell->neighbor (2 * dir + i);
+              if (curr != endc)
                 {
-                  double adj = flux[i]/cell_vol;
-                  if (adj > voleps)
-                    {
-                      double dot = normal[dir] * (1.0 - adj);
-                      dot *= 0.5 * (i == 0 ? -1.0 : 1.0);
-
-                      Tensor<1, dim, double> adj_norm = normal;
-                      adj_norm[dir] = normal[dir] * adj;
-
-                      // std::cout << "     " << adj_norm << "*x=" << d-dot << std::endl;
-
-                      flux_vof[i] = vol_from_d<dim> (adj_norm,
-                                                     d - dot);
-                    }
-                  else
-                    {
-                      flux_vof[i] = 0.0;
-                    }
-                  // std::cout << "    " << i << " " << flux_vof[i] << std::endl;
-                }
-
-              // std::cout << "  Fluxes:" << std::endl;
-
-              for (unsigned int i = 0; i < n_neighbor; ++i)
-                {
-                  dvofs[i] = flux_vof[i] * flux[i];
-
-                  // std::cout << "    " << i << " " << dvofs[i] << std::endl;
-                }
-
-              system_matrix.add(cell_vof_index, cell_vof_index, cell_vol-dflux);
-              rhs(cell_vof_index) += cell_vol*state(cell_vof_index);
-              // Set valid fluxes
-              for (unsigned int i = 0; i < n_neighbor; ++i)
-                {
-                  rhs(cell_vof_index) -= dvofs[i];
-                  typename DoFHandler<dim>::active_cell_iterator curr;
-                  curr = cell->neighbor (2 * dir + i);
-                  if (curr != endc)
-                    {
-                      curr->get_dof_indices (cell_dof_indicies);
-                      double curr_vol = curr->measure ();
-                      types::global_dof_index curr_vof_ind;
-                      curr_vof_ind = cell_dof_indicies[VOFEngine<dim>::vof_ind];
-                      rhs(curr_vof_ind) += dvofs[i];
-                    }
+                  curr->get_dof_indices (cell_dof_indicies);
+                  types::global_dof_index curr_vof_ind;
+                  curr_vof_ind = cell_dof_indicies[VOFEngine<dim>::vof_ind];
+                  rhs(curr_vof_ind) += dvofs[i];
                 }
             }
           ++par_cell;
@@ -762,7 +765,7 @@ namespace aspect
             {
               if (d >= 0.5*nnorm1)
                 {
-                  curr_vol += cell->measure ();
+                  curr_vol += cell_vol;
                 }
               continue;
             }
@@ -788,7 +791,7 @@ namespace aspect
                   d_t += (0.5/dim)*(dH+dL);
                 }
               double ptvof_t = vol_from_d<dim> (grad_t, d_t);
-              vof_reinit += ptvof_t *(fe_err.JxW (i)/cell->measure ());
+              vof_reinit += ptvof_t *(fe_err.JxW (i)/cell_vol);
               for (unsigned int di = 0; di < dim; ++di)
                 {
                   xU[di] -= 0.5;
@@ -801,8 +804,8 @@ namespace aspect
             }
           I_err_est += val;
           F_err_est += numbers::NumberTraits<double>::abs (cell_vof-vof_reinit)
-                       *cell->measure ();
-          curr_vol += cell_vof*cell->measure ();
+                       * cell_vol;
+          curr_vol += cell_vof*cell_vol;
         }
 
       std::vector<double> errors(1, I_err_est);
