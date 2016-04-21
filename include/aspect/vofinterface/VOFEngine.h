@@ -101,6 +101,10 @@ namespace aspect
         static const unsigned int first_inter_normal_ind = 0;
         static const unsigned int inter_d_ind = dim;
 
+        // Solver config
+        const unsigned int solv_iter = 10;
+        const double solv_tol = 1e-12;
+
         // Configuration vars
         double voleps;
 
@@ -109,7 +113,7 @@ namespace aspect
         DoFHandler<dim> *dof_handler;
         bool normals_calced;
         bool old_vel_set;
-        Vector<double> state, deltaState;
+        Vector<double> state;
         Vector<double> interfaceData;
         unsigned int dir_order;
         const int qorder;
@@ -122,6 +126,11 @@ namespace aspect
         const DoFHandler<dim> *parent_sim_handler;
         const Mapping<dim> *mapping;
 
+        // Matrix vars
+        SparsityPattern sparsity_pattern;
+        SparseMatrix<double> system_matrix;
+        Vector<double> rhs;
+
         // Communication vars
         MPI_Comm communicator;
 
@@ -133,10 +142,7 @@ namespace aspect
                         const LinearAlgebra::BlockVector &par_old_soln,
                         double timestep,
                         unsigned int dir);
-        void update_vof (const LinearAlgebra::BlockVector &par_new_soln,
-                         const LinearAlgebra::BlockVector &par_old_soln,
-                         double timestep,
-                         unsigned int dir);
+        void update_vof ();
     };
   }
 }
