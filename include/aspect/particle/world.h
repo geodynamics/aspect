@@ -343,10 +343,16 @@ namespace aspect
         unsigned int tracer_weight;
 
         /**
-         * Diagnostic timing output for particles. Because the collection will
-         * not create significant overhead it is always computed. Output
-         * is only written however, when the print_timing_output() function
-         * is called.
+         * An object that collects diagnostic timing information. Because the
+         * collection of timing data does not create significant overhead, this
+         * is always done. Output is only written, however, when the
+         * print_timing_output() function is called.
+         *
+         * This object is a pointer, rather than just a member variable,
+         * because the initialization of a TimerOutput object requires
+         * information (such as MPI communicators) that is not available
+         * at the time the surrounding object is created, but only at the
+         * time initialize() is called.
          */
         std_cxx11::shared_ptr<TimerOutput> particle_timer;
 
