@@ -80,10 +80,6 @@ namespace aspect
                              Patterns::Integer (1),
                              "Number of sampled points per dimension when estimating error");
 
-          prm.declare_entry ("Error filename", "",
-                             Patterns::FileName (Patterns::FileName::output),
-                             "File to write error estimates to for MMS runs, leave blank for no separate record");
-
           prm.enter_subsection ("Initial conditions");
           {
             Functions::ParsedFunction<dim>::declare_parameters (prm, 1);

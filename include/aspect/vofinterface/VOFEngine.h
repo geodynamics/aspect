@@ -60,8 +60,11 @@ namespace aspect
 
         // Component info
         static std::vector<std::string> component_names ();
+        static std::vector<std::string> interface_component_names ();
         static std::vector<DataComponentInterpretation::DataComponentInterpretation>
         component_interpretation ();
+        static std::vector<DataComponentInterpretation::DataComponentInterpretation>
+        interface_component_interpretation ();
 
         // Code logic
         void init (Function<dim> &func,
@@ -87,14 +90,16 @@ namespace aspect
         void set_comm (const MPI_Comm new_comm_world);
         DoFHandler<dim> *get_dof_handler ();
         Vector<double> &get_state ();
+        Vector<double> &get_interfaceData ();
         void clear_dof_handler ();
 
       private:
         // variable locations
-        static const unsigned int n_components = dim + 2;
+        static const unsigned int n_components = 1;
         static const unsigned int vof_ind = 0;
-        static const unsigned int first_normal_ind = 1;
-        static const unsigned int d_ind = dim + 1;
+        static const unsigned int n_interface_components = dim + 1;
+        static const unsigned int first_inter_normal_ind = 0;
+        static const unsigned int inter_d_ind = dim;
 
         // Configuration vars
         double voleps;
@@ -105,6 +110,7 @@ namespace aspect
         bool normals_calced;
         bool old_vel_set;
         Vector<double> state, deltaState;
+        Vector<double> interfaceData;
         unsigned int dir_order;
         const int qorder;
 

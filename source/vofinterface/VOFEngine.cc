@@ -32,8 +32,13 @@ namespace aspect
     std::vector<std::string> VOFEngine<dim>::component_names ()
     {
       std::vector<std::string> names (1, "VOF1");
-      names.push_back ("vofNormal");
-      names.push_back ("vofNormal");
+      return names;
+    }
+
+    template <int dim>
+    std::vector<std::string> VOFEngine<dim>::interface_component_names ()
+    {
+      std::vector<std::string> names (2, "vofNormal");
       names.push_back ("vofD");
       return names;
     }
@@ -44,10 +49,15 @@ namespace aspect
     {
       std::vector<DataComponentInterpretation::DataComponentInterpretation> data_component_interpretation (
         1, DataComponentInterpretation::component_is_scalar);
-      data_component_interpretation.push_back (
-        DataComponentInterpretation::component_is_part_of_vector);
-      data_component_interpretation.push_back (
-        DataComponentInterpretation::component_is_part_of_vector);
+      return data_component_interpretation;
+    }
+
+    template <int dim>
+    std::vector<DataComponentInterpretation::DataComponentInterpretation> VOFEngine<
+    dim>::interface_component_interpretation ()
+    {
+      std::vector<DataComponentInterpretation::DataComponentInterpretation> data_component_interpretation (
+        2, DataComponentInterpretation::component_is_part_of_vector);
       data_component_interpretation.push_back (
         DataComponentInterpretation::component_is_scalar);
       return data_component_interpretation;
@@ -56,7 +66,7 @@ namespace aspect
     template <int dim>
     VOFEngine<dim>::VOFEngine ()
       : voleps (std::numeric_limits<double>::quiet_NaN ()),
-        interfaceFE (FE_DGP<dim> (0), VOFEngine<dim>::n_components),
+        interfaceFE (FE_DGP<dim> (0), 1),
         dof_handler (NULL),
         normals_calced (false),
         old_vel_set (false),
@@ -113,6 +123,7 @@ namespace aspect
 
       state.reinit (dof_handler->n_dofs ());
       deltaState.reinit (dof_handler->n_dofs ());
+      interfaceData.reinit (triangulation->n_active_cells()*n_interface_components);
 
       // Required references
       const unsigned int dofs_per_cell = interfaceFE.dofs_per_cell;
@@ -225,6 +236,12 @@ namespace aspect
     }
 
     template <int dim>
+    Vector<double> &VOFEngine<dim>::get_interfaceData ()
+    {
+      return interfaceData;
+    }
+
+    template <int dim>
     void VOFEngine<dim>::do_step (const LinearAlgebra::BlockVector &par_new_soln,
                                   const LinearAlgebra::BlockVector &par_old_soln,
                                   double timestep)
@@ -285,20 +302,18 @@ namespace aspect
         {
           std::vector<types::global_dof_index> cell_dof_indicies (
             interfaceFE.dofs_per_cell);
-          types::global_dof_index cell_vof_index, cell_normal_x_index,
-                cell_normal_y_index, cell_d_index;
-          double cell_vof, cell_vol;
+          types::global_dof_index cell_vof_index;
+          double cell_vof;
+          unsigned int n_cell_normal_index, n_cell_d_index;
 
           // Obtain data for this cell and neighbors
           cell->get_dof_indices (cell_dof_indicies);
           cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
-          cell_normal_x_index =
-            cell_dof_indicies[VOFEngine<dim>::first_normal_ind];
-          cell_normal_y_index =
-            cell_dof_indicies[VOFEngine<dim>::first_normal_ind + 1];
-          cell_d_index = cell_dof_indicies[VOFEngine<dim>::d_ind];
+          n_cell_normal_index = cell->active_cell_index()*n_interface_components
+                                + first_inter_normal_ind;
+          n_cell_d_index = cell->active_cell_index()*n_interface_components
+                           + inter_d_ind;
           cell_vof = state (cell_vof_index);
-          cell_vol = cell->measure ();
 
           normal[0] = 0.0;
           normal[1] = 0.0;
@@ -414,7 +429,7 @@ namespace aspect
                   for (unsigned int i = 0; i < n_local; ++i)
                     {
                       double dot = 0.0;
-                      for (unsigned int di = 0; di < dim; di++)
+                      for (unsigned int di = 0; di < dim; ++di)
                         dot += normals[nind][di] * resc_cell_centers[i][di];
                       double val = local_vofs (i)
                                    - vol_from_d<dim> (normals[nind],
@@ -442,9 +457,11 @@ namespace aspect
               normal[0] = 0.0;
               normal[1] = 0.0;
             }
-          state (cell_normal_x_index) = normal[0];
-          state (cell_normal_y_index) = normal[1];
-          state (cell_d_index) = d;
+          for (unsigned int i=0; i < dim; ++i)
+            {
+              interfaceData (n_cell_normal_index + i) = normal[i];
+            }
+          interfaceData (n_cell_d_index) = d;
         }
 
       normals_calced = true;
@@ -507,18 +524,17 @@ namespace aspect
         {
           std::vector<types::global_dof_index> cell_dof_indicies (
             interfaceFE.dofs_per_cell);
-          types::global_dof_index cell_vof_index, cell_normal_x_index,
-                cell_normal_y_index, cell_d_index;
+          types::global_dof_index cell_vof_index;
+          unsigned int n_cell_normal_index, n_cell_d_index;
           double cell_vof, cell_vol;
 
           // Obtain data for this cell and neighbors
           cell->get_dof_indices (cell_dof_indicies);
           cell_vof_index = cell_dof_indicies[VOFEngine<dim>::vof_ind];
-          cell_normal_x_index =
-            cell_dof_indicies[VOFEngine<dim>::first_normal_ind];
-          cell_normal_y_index =
-            cell_dof_indicies[VOFEngine<dim>::first_normal_ind + 1];
-          cell_d_index = cell_dof_indicies[VOFEngine<dim>::d_ind];
+          n_cell_normal_index = cell->active_cell_index()*n_interface_components
+                                + first_inter_normal_ind;
+          n_cell_d_index = cell->active_cell_index()*n_interface_components
+                           + inter_d_ind;
           cell_vof = state (cell_vof_index);
           cell_vol = cell->measure ();
 
@@ -528,9 +544,11 @@ namespace aspect
               // std::cout << "  Ind: " << cell_vof_index << std::endl;
               // std::cout << "  VOF: " << cell_vof << std::endl;
 
-              normal[0] = state (cell_normal_x_index);
-              normal[1] = state (cell_normal_y_index);
-              d = state (cell_d_index);
+              for (unsigned int i=0; i < dim; ++i)
+                {
+                  normal[i] = interfaceData (n_cell_normal_index + i);
+                }
+              d = interfaceData (n_cell_d_index);
 
               if (cell_vof > 1.0 - voleps)
                 {
@@ -645,8 +663,6 @@ namespace aspect
                                      double timestep,
                                      unsigned int dir)
     {
-      bool last_update = false;
-
       Functions::FEFieldFunction<dim, DoFHandler<dim>,
                 LinearAlgebra::BlockVector> par_new_state (*parent_sim_handler,
                                                            par_new_soln, *mapping);
@@ -660,13 +676,9 @@ namespace aspect
       std::vector<Vector<double>> nvels (fe_face.n_quadrature_points);
       std::vector<Vector<double>> ovels (fe_face.n_quadrature_points);
 
-      last_update = (dir == (dim - 1) * dir_order);
 
       typename DoFHandler<dim>::active_cell_iterator par_cell =
         parent_sim_handler->begin_active ();
-      // double term, sum;
-      // sum = 0.0;
-      // vofs += deltaVOF;
 
       for (auto cell : dof_handler->active_cell_iterators ())
         {
@@ -763,8 +775,8 @@ namespace aspect
 
           std::vector<types::global_dof_index> cell_dof_indicies (
             interfaceFE.dofs_per_cell);
-          types::global_dof_index cell_vof_index, cell_normal_x_index,
-                cell_normal_y_index, cell_d_index;
+          types::global_dof_index cell_vof_index;
+          unsigned int cell_normal_index, cell_d_index;
           double cell_vof, cell_vol;
           double cell_diam;
           double d_func;
@@ -772,11 +784,10 @@ namespace aspect
           // Obtain data for this cell and neighbors
           cell->get_dof_indices (local_dof_indicies);
           cell_vof_index = local_dof_indicies[VOFEngine<dim>::vof_ind];
-          cell_normal_x_index =
-            local_dof_indicies[VOFEngine<dim>::first_normal_ind];
-          cell_normal_y_index =
-            local_dof_indicies[VOFEngine<dim>::first_normal_ind + 1];
-          cell_d_index = local_dof_indicies[VOFEngine<dim>::d_ind];
+          cell_normal_index = cell->active_cell_index()*n_interface_components
+                              + first_inter_normal_ind;
+          cell_d_index = cell->active_cell_index()*n_interface_components
+                           + inter_d_ind;
 
           // Calculate approximation for volume
           fe_err.reinit (cell);
@@ -785,15 +796,19 @@ namespace aspect
           cell_diam = cell->diameter();
           d_func = func.value(cell->barycenter());
           cell_vof = state (cell_vof_index);
-          normal[0] = state (cell_normal_x_index);
-          normal[1] = state (cell_normal_y_index);
-          d = state (cell_d_index);
+          double nnorm1 = 0;
+          for (unsigned int i=0; i < dim; ++i)
+            {
+              normal[i] = interfaceData (cell_normal_index + i);
+              nnorm1 += numbers::NumberTraits<double>::abs (normal[i]);
+            }
+          d = interfaceData (cell_d_index);
 
-          if (numbers::NumberTraits<double>::abs (d) >= 0.5 &&
+          if (numbers::NumberTraits<double>::abs (d) >= 0.5*nnorm1 &&
               numbers::NumberTraits<double>::abs (d_func) >= 0.5*cell_diam &&
               d*d_func>=0.0)
             {
-              if (d >= 0.5)
+              if (d >= 0.5*nnorm1)
                 {
                   curr_vol += cell->measure ();
                 }
