@@ -95,7 +95,7 @@ namespace aspect
 
     template <int dim>
     std::string
-    World<dim>::print_output() const
+    World<dim>::generate_output() const
     {
       // If we do not write output
       // return early with the number of particles that were advected

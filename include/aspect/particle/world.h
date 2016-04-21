@@ -198,10 +198,10 @@ namespace aspect
         void update_particles();
 
         /**
-         * Print the selected particle output.
+         * Generate the selected particle output.
          */
         std::string
-        print_output() const;
+        generate_output() const;
 
         /**
          * Serialize the contents of this class.

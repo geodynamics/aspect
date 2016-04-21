@@ -109,7 +109,7 @@ namespace aspect
 
       set_last_output_time (this->get_time());
 
-      const std::string data_file_name = world.print_output();
+      const std::string data_file_name = world.generate_output();
 
       // If we do not write output return early with the number of particles
       // that were advected
