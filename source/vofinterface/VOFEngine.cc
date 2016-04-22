@@ -144,6 +144,7 @@ namespace aspect
       initFunc.set_time (time);
 
       vol_init = 0.0;
+      double curr_vol = 0.0, curr_vol_corr = 0.0;
 
       // Initialize state based on provided function
       for (auto cell : dof_handler->active_cell_iterators ())
@@ -156,41 +157,50 @@ namespace aspect
           d_func = initFunc.value(cell->barycenter());
           fe_init.reinit (cell);
 
+          double vof_val = 0.0;
+
           if (d_func <=-0.5*cell_diam)
             {
-              continue;
+              vof_val = 0.0;
             }
-          if (d_func >= 0.5*cell_diam)
+          else
             {
-              state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = 1.0;
-              vol_init += cell_vol;
-              continue;
-            }
-
-          double val = 0.0;
-          for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
-            {
-              double d = 0.0;
-              Tensor<1, dim, double> grad;
-              Point<dim> xU = quadrature.point (i);
-              for (unsigned int di = 0; di < dim; ++di)
+              if (d_func >= 0.5*cell_diam)
                 {
-                  Point<dim> xH, xL;
-                  xH = xU;
-                  xL = xU;
-                  xH[di] += 0.5*h;
-                  xL[di] -= 0.5*h;
-                  double dH = initFunc.value(cell->intermediate_point(xH));
-                  double dL = initFunc.value(cell->intermediate_point(xL));
-                  grad[di] = (dL-dH);
-                  d += (0.5/dim)*(dH+dL);
+                  vof_val = 1.0;
                 }
-              double ptvof = vof_from_d<dim> (grad, d);
-              val += ptvof * (fe_init.JxW (i) / cell_vol);
+              else
+                {
+
+                  for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
+                    {
+                      double d = 0.0;
+                      Tensor<1, dim, double> grad;
+                      Point<dim> xU = quadrature.point (i);
+                      for (unsigned int di = 0; di < dim; ++di)
+                        {
+                          Point<dim> xH, xL;
+                          xH = xU;
+                          xL = xU;
+                          xH[di] += 0.5*h;
+                          xL[di] -= 0.5*h;
+                          double dH = initFunc.value(cell->intermediate_point(xH));
+                          double dL = initFunc.value(cell->intermediate_point(xL));
+                          grad[di] = (dL-dH);
+                          d += (0.5/dim)*(dH+dL);
+                        }
+                      double ptvof = vof_from_d<dim> (grad, d);
+                      vof_val += ptvof * (fe_init.JxW (i) / cell_vol);
+                    }
+                }
             }
-          state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = val;
-          vol_init += val*cell_vol;
+          state (local_dof_indicies[VOFEngine<dim>::vof_ind]) = vof_val;
+          double c_nterm = vof_val * cell_vol - curr_vol_corr;
+          double nsum = curr_vol + c_nterm;
+          curr_vol_corr = (nsum - curr_vol) - c_nterm;
+          curr_vol = nsum;
         }
+      vol_init = curr_vol;
 
       normals_calced = false;
     }
@@ -661,7 +671,7 @@ namespace aspect
     {
       double I_err_est = 0.0;
       double F_err_est = 0.0;
-      double curr_vol = 0.0;
+      double curr_vol = 0.0, curr_vol_corr = 0.0;
       double h = 1.0/n_samp;
 
       Point<dim> xU;
@@ -714,14 +724,15 @@ namespace aspect
             }
           d = interfaceData (cell_d_index);
 
+          double c_nterm = cell_vof * cell_vol - curr_vol_corr;
+          double nsum = curr_vol + c_nterm;
+          curr_vol_corr = (nsum - curr_vol) - c_nterm;
+          curr_vol = nsum;
+
           if (numbers::NumberTraits<double>::abs (d) >= 0.5*nnorm1 &&
               numbers::NumberTraits<double>::abs (d_func) >= 0.5*cell_diam &&
               d*d_func>=0.0)
             {
-              if (d >= 0.5*nnorm1)
-                {
-                  curr_vol += cell_vol;
-                }
               continue;
             }
 
@@ -760,7 +771,6 @@ namespace aspect
           I_err_est += val;
           F_err_est += numbers::NumberTraits<double>::abs (cell_vof-vof_reinit)
                        * cell_vol;
-          curr_vol += cell_vof*cell_vol;
         }
 
       std::vector<double> errors(1, I_err_est);
