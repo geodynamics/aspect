@@ -486,8 +486,6 @@ namespace aspect
                                     double timestep,
                                     unsigned int dir)
     {
-      //const int dim = 2;
-
       // Boundary reference
       typename DoFHandler<dim>::active_cell_iterator endc =
         dof_handler->end ();
@@ -499,9 +497,6 @@ namespace aspect
       double d;
 
       // Flux Computation Vars
-
-      const unsigned int n_neighbor = 2;
-      Vector<double> dvofs (n_neighbor);
 
       Functions::FEFieldFunction<dim, DoFHandler<dim>,
                 LinearAlgebra::BlockVector> par_new_state (*parent_sim_handler,
@@ -515,6 +510,9 @@ namespace aspect
                                  | update_normal_vectors);
       std::vector<Vector<double>> nvels (fe_face.n_quadrature_points);
       std::vector<Vector<double>> ovels (fe_face.n_quadrature_points);
+
+      const unsigned int n_neighbor = 2;
+      Vector<double> dvofs (n_neighbor);
 
       Vector<double> flux (n_neighbor);
       Vector<double> flux_vof (n_neighbor);
@@ -580,42 +578,22 @@ namespace aspect
               dflux += flux[i];
             }
 
-          if (cell_vof <= voleps)
+          for (unsigned int i=0; i < dim; ++i)
             {
-              for (unsigned int i = 0; i < 2; ++i)
-                {
-                  flux_vof[i] = 0.0;
-                }
+              normal[i] = interfaceData (cell_normal_index + i);
             }
-          else
+          d = interfaceData (cell_d_index);
+
+
+
+          for (unsigned int i = 0; i < 2; ++i)
             {
-              if (cell_vof > 1.0 - voleps)
-                {
-                  for (unsigned int i = 0; i < 2; ++i)
-                    {
-                      flux_vof[i] = (flux[i]>voleps*cell_vol)?1.0:0.0;
-                    }
-                }
-              else
-                {
-                  for (unsigned int i=0; i < dim; ++i)
-                    {
-                      normal[i] = interfaceData (cell_normal_index + i);
-                    }
-                  d = interfaceData (cell_d_index);
-
-
-
-                  for (unsigned int i = 0; i < 2; ++i)
-                    {
-                      double adj = flux[i]/cell_vol;
-                      Tensor<1, dim, double> dir_t;
-                      Tensor<1, dim, double> vflux;
-                      dir_t[dir] = (i == 0 ? -1.0 : 1.0);
-                      vflux[dir] = adj*dir_t[dir];
-                      flux_vof[i] = calc_vof_flux_edge<dim> (dir_t, vflux, normal, d);
-                    }
-                }
+              double adj = flux[i]/cell_vol;
+              Tensor<1, dim, double> dir_t;
+              Tensor<1, dim, double> vflux;
+              dir_t[dir] = (i == 0 ? -1.0 : 1.0);
+              vflux[dir] = adj*dir_t[dir];
+              flux_vof[i] = calc_vof_flux_edge<dim> (dir_t, vflux, normal, d);
             }
 
           for (unsigned int i = 0; i < n_neighbor; ++i)
@@ -627,6 +605,7 @@ namespace aspect
             {
               dflux = 0.0;
             }
+
           system_matrix.add(cell_vof_index, cell_vof_index, cell_vol-dflux);
           rhs(cell_vof_index) += cell_vol*state(cell_vof_index);
           // Set valid fluxes
