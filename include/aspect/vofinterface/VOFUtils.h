@@ -30,12 +30,18 @@ namespace aspect
     using namespace dealii;
 
     template<int dim>
-    double vol_from_d (Tensor<1, dim, double> normal,
+    double vof_from_d (Tensor<1, dim, double> normal,
                        double d);
 
     template<int dim>
-    double d_from_vol (Tensor<1, dim, double> normal,
+    double d_from_vof (Tensor<1, dim, double> normal,
                        double vol);
+
+    template<int dim>
+    double calc_vof_flux_edge (Tensor<1, dim, double> dir,
+                               Tensor<1, dim, double> vflux,
+                               Tensor<1, dim, double> normal,
+                               double d);
   }
 }
 

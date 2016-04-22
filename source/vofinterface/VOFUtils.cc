@@ -27,38 +27,33 @@ namespace aspect
     using namespace dealii;
 
     template<>
-    double vol_from_d<2> (Tensor<1, 2, double> normal,
+    double vof_from_d<2> (Tensor<1, 2, double> normal,
                           double d)
     {
       const int dim = 2;
-      double norm1, mpos, dtest;
+      double norm1, max, mpos, dtest;
 
       //Get 1-Norm
       norm1 = 0.0;
+      max = 0.0;
       for (unsigned int i = 0; i < dim; ++i)
         {
-          norm1 += numbers::NumberTraits<double>::abs (normal[i]);
-        }
-
-      //Find min component
-      mpos = 0.6;
-      for (unsigned int i = 0; i < dim; ++i)
-        {
-          double mcand = numbers::NumberTraits<double>::abs (normal[i])
-                         / norm1;
-          mpos = (mcand < mpos) ? mcand : mpos;
+          double term = numbers::NumberTraits<double>::abs (normal[i]);
+          norm1 += term;
+          max = (max < term) ? term : max;
         }
 
       //Obtain volume
-      dtest = d / norm1;
-      if (dtest <= -0.5)
+      if (d <= -0.5*norm1)
         {
           return 0.0;
         }
-      if (dtest >= 0.5)
+      if (d >= 0.5*norm1)
         {
           return 1.0;
         }
+      dtest = d / norm1;
+      mpos = 1.0 - max/norm1;
       if (dtest < mpos - 0.5)
         {
           return (dtest + 0.5) * (dtest + 0.5) / (2.0*mpos * (1.0 - mpos));
@@ -71,26 +66,30 @@ namespace aspect
     }
 
     template<>
-    double d_from_vol<2> (Tensor<1, 2, double> normal,
+    double d_from_vof<2> (Tensor<1, 2, double> normal,
                           double vol)
     {
       const int dim = 2;
-      double norm1, mpos;
+      double norm1, max, mpos;
 
       //Get 1-Norm
       norm1 = 0.0;
+      max = 0.0;
       for (unsigned int i = 0; i < dim; ++i)
         {
-          norm1 += numbers::NumberTraits<double>::abs (normal[i]);
+          double term = numbers::NumberTraits<double>::abs (normal[i]);
+          norm1 += term;
+          max = (max < term) ? term : max;
         }
 
-      //Find min component
-      mpos = 0.6;
-      for (unsigned int i = 0; i < dim; ++i)
+      if (norm1 == 0.0)
         {
-          double mcand = numbers::NumberTraits<double>::abs (normal[i])
-                         / norm1;
-          mpos = (mcand < mpos) ? mcand : mpos;
+          norm1 = 1.0;
+          mpos = 0.0;
+        }
+      else
+        {
+          mpos = 1.0 - max/norm1;
         }
 
       //Obtain const
@@ -115,7 +114,7 @@ namespace aspect
     }
 
     template<>
-    double vol_from_d<3> (Tensor<1, 3, double> normal,
+    double vof_from_d<3> (Tensor<1, 3, double> normal,
                           double d)
     {
       // 3D vol calculation not yet implemented
@@ -124,13 +123,53 @@ namespace aspect
     }
 
     template<>
-    double d_from_vol<3> (Tensor<1, 3, double> normal,
+    double d_from_vof<3> (Tensor<1, 3, double> normal,
                           double vol)
     {
       // 3D interface location calculation not yet implemented
       // Almost certain to require iterative method
       return 0.0;
     }
+
+    template<int dim>
+    double calc_vof_flux_edge (Tensor<1, dim, double> dir,
+                               Tensor<1, dim, double> vflux,
+                               Tensor<1, dim, double> normal,
+                               double d)
+    {
+      // If flux outward, return 0
+      if (dir*vflux<=0.0)
+        {
+          return 0.0;
+        }
+      Tensor<1, dim, double> i_normal;
+      double i_d;
+
+      i_d = d+0.5*(normal*vflux-dir*normal);
+      for (unsigned int i = 0; i<dim; ++i)
+        {
+          if (dir[i] == 0.0)
+            {
+              i_normal[i] = normal[i];
+            }
+          else
+            {
+              i_normal[i] = normal*vflux;
+            }
+        }
+      return vof_from_d (i_normal, i_d);
+    }
+
+    template
+    double calc_vof_flux_edge<2>(Tensor<1, 2, double> dir,
+                                 Tensor<1, 2, double> vflux,
+                                 Tensor<1, 2, double> normal,
+                                 double d);
+    template
+    double calc_vof_flux_edge<3>(Tensor<1, 3, double> dir,
+                                 Tensor<1, 3, double> vflux,
+                                 Tensor<1, 3, double> normal,
+                                 double d);
 
   }
 }
