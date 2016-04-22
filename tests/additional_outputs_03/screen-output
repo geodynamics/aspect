@@ -74,7 +74,7 @@ averaging!
 * evaluate called with additional outputs!
 averaging!
 
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!
