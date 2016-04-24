@@ -152,9 +152,10 @@ namespace aspect
     namespace Integrator
     {
       ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
-                                          "rk2",
-                                          "Runge Kutta second order integrator, where "
-                                          "$y_{n+1} = y_n + dt*v(0.5*k_1)$, $k_1 = dt*v(y_n)$.")
+                                          "RK2",
+                                          "Second Order Runge Kutta integrator"
+                                          "$y_{n+1} = y_n + dt*v(t_{n+1/2}, y_{n} + 0.5*k_1)$"
+                                          "where $k_1 = y_n + 0.5*dt*v(t_{n}, y_{n})$")
     }
   }
 }
