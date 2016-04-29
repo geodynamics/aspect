@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,7 +90,7 @@ namespace aspect
                                                      "input data: The first lines may contain any number of comments"
                                                      "if they begin with '#', but one of these lines needs to"
                                                      "contain the number of grid points in each dimension as"
-                                                     "for example '# POINTS: 3 3'."
+                                                     "for example '\\# POINTS: 3 3'."
                                                      "The order of the data columns "
                                                      "has to be 'x', 'y', 'composition1', 'composition2', "
                                                      "etc. in a 2d model and 'x', 'y', 'z', 'composition1', "
