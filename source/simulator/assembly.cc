@@ -2883,7 +2883,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  copy_local_to_global_advection_system (const AdvectionField &advection_field,
+  copy_local_to_global_advection_system (const AdvectionField &/*advection_field*/,
                                          const internal::Assembly::CopyData::AdvectionSystem<dim> &data)
   {
     // copy entries into the global matrix. note that these local contributions
