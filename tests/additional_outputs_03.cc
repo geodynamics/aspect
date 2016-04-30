@@ -86,7 +86,7 @@ namespace aspect
   {
     public:
 
-      virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out)
+      virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
