@@ -1206,9 +1206,9 @@ namespace aspect
                              "of particles. It will be checked and enforced after mesh "
                              "refinement and after particle movement. "
                              "If there are "
-                             "n_number_of_particles < min_particles_per_cell "
+                             "\\texttt{n\_number\_of\_particles} $<$ \texttt{min\\_particles\\_per\\_cell} "
                              "particles in one cell then "
-                             "min_particles_per_cell - n_number_of_particles "
+                             "\\texttt{min_particles_per_cell} - \\texttt{n_number_of_particles} "
                              "particles are generated and randomly placed in "
                              "this cell. If the particles carry properties the "
                              "individual property plugins control how the "
@@ -1220,9 +1220,9 @@ namespace aspect
                              "the whole model. It will be checked and enforced after mesh "
                              "refinement, after MPI transfer of particles and after particle "
                              "movement. If there are "
-                             "n_number_of_particles > max_particles_per_cell "
+                             "\\texttt{n_number_of_particles} $>$ \\texttt{max_particles_per_cell} "
                              "particles in one cell then "
-                             "n_number_of_particles - max_particles_per_cell "
+                             "\\texttt{n_number_of_particles} - \\texttt{max_particles_per_cell} "
                              "particles in this cell are randomly chosen and destroyed.");
           prm.declare_entry ("Tracer weight", "10",
                              Patterns::Integer (0),
