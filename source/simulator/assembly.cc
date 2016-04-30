@@ -1550,7 +1550,7 @@ namespace aspect
 
                   this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
                                                              scratch.neighbor_face_material_model_outputs,
-                                                                 scratch.neighbor_face_heating_model_outputs);
+                                                             scratch.neighbor_face_heating_model_outputs);
 
                   std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
                   // get all dof indices on the neighbor, then extract those
@@ -1639,7 +1639,7 @@ namespace aspect
                       const double neighbor_latent_heat_LHS =
                         ((advection_field.is_temperature())
                          ?
-                             scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                          :
                          0.0);
                       Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
@@ -1853,7 +1853,7 @@ namespace aspect
 
                   this->get_heating_model_manager().evaluate(scratch.face_material_model_inputs,
                                                              scratch.face_material_model_outputs,
-                                                                 scratch.face_heating_model_outputs);
+                                                             scratch.face_heating_model_outputs);
 
                   //set up neighbor values
                   scratch.neighbor_face_finite_element_values->reinit (neighbor_child, neighbor2);
@@ -1868,7 +1868,7 @@ namespace aspect
 
                   this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
                                                              scratch.neighbor_face_material_model_outputs,
-                                                                 scratch.neighbor_face_heating_model_outputs);
+                                                             scratch.neighbor_face_heating_model_outputs);
 
                   std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
                   // get all dof indices on the neighbor, then extract those
@@ -1913,7 +1913,7 @@ namespace aspect
                       const double latent_heat_LHS =
                         ((advection_field.is_temperature())
                          ?
-                             scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                          :
                          0.0);
                       Assert (density_c_P + latent_heat_LHS >= 0,
@@ -1957,7 +1957,7 @@ namespace aspect
                       const double neighbor_latent_heat_LHS =
                         ((advection_field.is_temperature())
                          ?
-                             scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                          :
                          0.0);
                       Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
