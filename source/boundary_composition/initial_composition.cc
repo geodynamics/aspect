@@ -31,10 +31,10 @@ namespace aspect
     double
     InitialComposition<dim>::
     boundary_composition (const types::boundary_id /*boundary_indicator*/,
-                          const Point<dim> &location,
+                          const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
-      return this->get_compositional_initial_conditions().initial_composition(location, compositional_field);
+      return this->get_compositional_initial_conditions().initial_composition(position, compositional_field);
     }
 
 

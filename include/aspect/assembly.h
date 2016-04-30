@@ -260,12 +260,18 @@ namespace aspect
         {
           /**
            * Constructor.
-           * @param finite_element The element that describes the field for which we
-           *    are trying to assemble a linear system. <b>Not</b> the global finite
-           *    element.
+           *
+           * @param finite_element The element that describes the field for
+           *    which we are trying to assemble a linear system. <b>Not</b>
+           *    the global finite element.
+           * @param field_is_discontinuous If true, the field is a DG element.
            */
           AdvectionSystem (const FiniteElement<dim> &finite_element,
                            const bool                field_is_discontinuous);
+
+          /**
+           * Copy constructor.
+           */
           AdvectionSystem (const AdvectionSystem &data);
 
           /**
