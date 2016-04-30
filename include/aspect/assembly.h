@@ -163,8 +163,8 @@ namespace aspect
           std::vector<double>         old_temperature_values;
           std::vector<double>         old_old_temperature_values;
 
-          std::vector<double>        *old_field_values;
-          std::vector<double>        *old_old_field_values;
+          std::vector<double>         old_field_values;
+          std::vector<double>         old_old_field_values;
           std::vector<Tensor<1,dim> > old_field_grads;
           std::vector<Tensor<1,dim> > old_old_field_grads;
           std::vector<double>         old_field_laplacians;
@@ -196,14 +196,6 @@ namespace aspect
           MaterialModel::MaterialModelOutputs<dim> neighbor_face_material_model_outputs;
 
           /**
-           * Material model inputs and outputs computed at a previous
-           * time step's solution, or an extrapolation from previous
-           * time steps.
-           */
-          MaterialModel::MaterialModelInputs<dim> explicit_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> explicit_material_model_outputs;
-
-          /**
            * Heating model outputs computed at the quadrature points of the
            * current cell at the time of the current linearization point.
            * As explained in the class documentation of
@@ -212,6 +204,7 @@ namespace aspect
            */
           HeatingModel::HeatingModelOutputs heating_model_outputs;
           HeatingModel::HeatingModelOutputs face_heating_model_outputs;
+          HeatingModel::HeatingModelOutputs neighbor_face_heating_model_outputs;
         };
 
 
@@ -352,7 +345,7 @@ namespace aspect
              * get_additional_output() returns an instance before adding a new
              * one to the additional_outputs vector.
              */
-            virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) {}
+            virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const {}
         };
       }
 
