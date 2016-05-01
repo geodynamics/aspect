@@ -1,0 +1,56 @@
+#!/bin/bash
+## ---------------------------------------------------------------------
+##
+## Copyright (C) 2016 by the authors of the ASPECT code.
+##
+## This file is part of ASPECT.
+##
+## ASPECT is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## ASPECT is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with ASPECT; see the file doc/COPYING.  If not see
+## <http://www.gnu.org/licenses/>.
+##
+## ---------------------------------------------------------------------
+
+# Purpose: Update the copyright years of every file based on all
+#          modifications recorded in the git logs.
+
+if test ! -d source -o ! -d include -o ! -d benchmark ; then
+  echo "*** This script must be run from the top-level directory of Aspect."
+  exit
+fi
+
+files=`grep -lR --exclude="$(basename $0)" "Copyright (C) .* by the authors of the ASPECT code." \
+    benchmark/ \
+    cmake/ \
+    cookbooks/ \
+    data/ \
+    doc/ \
+    include/ \
+    source/ \
+    tests/ \
+    CMakeLists.txt \
+    readme.html \
+    README.md`
+
+for i in $files; do
+    # get a list of all years in which the file was modified from
+    # the git log. Ignore patches that just updated the copyright
+    # year.
+    years=`git log --format="format:%cD %s" $i | \
+        egrep -i -v "update.*copyright|copyright.*update" | \
+        awk '{if($1) print $4}' | sort | uniq | sed ':a;N;s/\n/, /;ta'`
+
+    # Print a status message, and update the file contents.
+    echo "Processing $i: Copyright (C) $years by the authors of the ASPECT code."
+    sed -i "s/Copyright .C. .* by the authors of the ASPECT code/Copyright (C) $years by the authors of the ASPECT code/" $i
+done
