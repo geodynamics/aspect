@@ -79,6 +79,16 @@ namespace aspect
     cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
+     * Given a vector @p v in @p dim dimensional space, return a set
+     * of (dim-1) vectors that are orthogonal to @p v and to each
+     * other. The lengths of these vectors equals that of the original
+     * vector @p v to ensure a well-conditioned basis.
+     */
+    template <int dim>
+    std_cxx11::array<Tensor<1,dim>,dim-1>
+    orthogonal_vectors (const Tensor<1,dim> &v);
+
+    /**
      * Checks whether a file named filename exists.
      *
      * @param filename File to check existence
@@ -86,14 +96,14 @@ namespace aspect
     bool fexists(const std::string &filename);
 
     /**
-     * Reads the content of the ascii file @param filename on process 0 and
+     * Reads the content of the ascii file @p filename on process 0 and
      * distributes the content by MPI_Bcast to all processes. The function
      * returns the content of the file on all processes.
      *
      * @param [in] filename The name of the ascii file to load.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
-     * @return A string which contains the data in @param filename.
+     * @return A string which contains the data in @p filename.
      */
     std::string
     read_and_distribute_file_content(const std::string &filename,

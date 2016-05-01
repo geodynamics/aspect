@@ -28,9 +28,12 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
+
+#include <deal.II/base/timer.h>
 
 namespace aspect
 {
@@ -72,36 +75,9 @@ namespace aspect
         };
 
         /**
-         * Initialize the particle world. Most of the arguments are read by the
-         * Tracer postprocessor and handed to this function, because the
-         * particle world currently does not declare own input parameters.
-         *
-         * @param [in] generator The particle generator for this world.
-         * @param [in] integrator The Integrator scheme for this world.
-         * @param [in] interpolator The Interpolator scheme for this
-         * world. This object defines how particle properties are interpolated
-         * to arbitrary positions within the domain. An example could be to
-         * take the properties of the closest particle, but more complicated
-         * schemes are possible.
-         * @param [in] manager The property manager for this world.
-         * @param [in] load_balancing The strategy used to balance the
-         * computational load for particle advection across processes.
-         * @param [in] max_part_per_cell Threshold for removing
-         * particles from cells.
-         * @param [in] weight The computational load that is associated with
-         * integrating and updating one particle.
-         *
-         * @note World takes ownership of the @p generator, @p integrator, @p
-         * interpolator, and @p manager object in this function.
-         *
+         * Initialize the particle world.
          */
-        void initialize(Generator::Interface<dim> *generator,
-                        Integrator::Interface<dim> *integrator,
-                        Interpolator::Interface<dim> *interpolator,
-                        Property::Manager<dim> *manager,
-                        const ParticleLoadBalancing &load_balancing,
-                        const unsigned int max_part_per_cell,
-                        const unsigned int weight);
+        void initialize();
 
         /**
          * Get the particle property manager for this particle world.
@@ -131,6 +107,13 @@ namespace aspect
          */
         const std::multimap<types::LevelInd, Particle<dim> > &
         get_particles() const;
+
+        /**
+         * Returns the number of particles in the cell that contains the
+         * most tracers in the global model.
+         */
+        unsigned int
+        get_global_max_tracers_per_cell() const;
 
         /**
          * Advance particles by the old timestep using the current
@@ -215,10 +198,44 @@ namespace aspect
         void update_particles();
 
         /**
+         * Generate the selected particle output.
+         */
+        std::string
+        generate_output() const;
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of the object.
+         */
+        virtual
+        void
+        save (std::ostringstream &os) const;
+
+        /**
+         * Restore the state of the object.
+         */
+        virtual
+        void
+        load (std::istringstream &is);
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
       private:
         /**
@@ -244,6 +261,11 @@ namespace aspect
         std_cxx11::unique_ptr<Property::Manager<dim> > property_manager;
 
         /**
+         * Pointer to an output object
+         */
+        std_cxx11::unique_ptr<Output::Interface<dim> > output;
+
+        /**
          * Set of particles currently in the local domain, organized by
          * the level/index of the cell they are in.
          */
@@ -254,6 +276,12 @@ namespace aspect
          * calculated by update_n_global_particles().
          */
         types::particle_index global_number_of_particles;
+
+        /**
+         * This variable stores the next free particle index that is available
+         * globally in case new particles need to be generated.
+         */
+        types::particle_index next_free_particle_index;
 
         /**
          * This variable is set by the register_store_callback_function()
@@ -267,11 +295,40 @@ namespace aspect
          */
         ParticleLoadBalancing particle_load_balancing;
 
+
         /**
-         * Limit for how many particles are allowed per cell. This limit is
+         * Write a summary of the computing time spent in each part
+         * of the particle algorithm every time particle output is
+         * written. This is mostly useful for benchmarking purposes.
+         * ASPECT's usual output of compute times is unaffected by
+         * this additional output.
+         */
+        bool print_timing_output;
+
+        /**
+         * Lower limit for particle number per cell. This limit is
+         * useful for adaptive meshes to prevent fine cells from being empty
+         * of particles. It will be checked and enforced after mesh
+         * refinement and after particle movement. If there are
+         * n_number_of_particles < min_particles_per_cell
+         * particles in one cell then
+         * min_particles_per_cell - n_number_of_particles particles are
+         * generated and randomly placed in this cell. If the particles carry
+         * properties the individual property plugins control how the
+         * properties of the new particles are initialized.
+         */
+        unsigned int min_particles_per_cell;
+
+        /**
+         * Upper limit for particle number per cell. This limit is
          * useful for adaptive meshes to prevent coarse cells from slowing down
-         * the whole model. It will only be checked and enforced during mesh
-         * refinement and MPI transfer of particles.
+         * the whole model. It will be checked and enforced after mesh
+         * refinement, after MPI transfer of particles and after particle
+         * movement. If there are
+         * n_number_of_particles > max_particles_per_cell
+         * particles in one cell then
+         * n_number_of_particles - max_particles_per_cell
+         * particles in this cell are randomly chosen and destroyed.
          */
         unsigned int max_particles_per_cell;
 
@@ -286,17 +343,49 @@ namespace aspect
         unsigned int tracer_weight;
 
         /**
+         * An object that collects diagnostic timing information. Because the
+         * collection of timing data does not create significant overhead, this
+         * is always done. Output is only written, however, when the
+         * print_timing_output() function is called.
+         *
+         * This object is a pointer, rather than just a member variable,
+         * because the initialization of a TimerOutput object requires
+         * information (such as MPI communicators) that is not available
+         * at the time the surrounding object is created, but only at the
+         * time initialize() is called.
+         */
+        std_cxx11::shared_ptr<TimerOutput> particle_timer;
+
+
+        /**
          * Calculates the number of particles in the global model domain.
          */
         void
         update_n_global_particles();
 
         /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
+         * Calculates the next free particle index in the global model domain.
+         * This equals one plus the highest particle index currently active.
          */
-        unsigned int
-        get_global_max_tracers_per_cell() const;
+        void
+        update_next_free_particle_index();
+
+        /**
+         * Returns whether a given particle is in the given cell.
+         */
+        bool
+        particle_is_in_cell(const Particle<dim> &particle,
+                            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+        /**
+         * Returns a map of neighbor cells of the current cell. This map is
+         * sorted according to the distance between the particle and the face
+         * of cell that is shared with the neighbor cell. I.e. the first
+         * entries of the map are the most likely ones to find the particle in.
+         */
+        std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+        neighbor_cells_to_search(const Particle<dim> &particle,
+                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
 
         /**
          * Finds the cells containing each particle for all particles. If
@@ -307,6 +396,14 @@ namespace aspect
          */
         void
         sort_particles_in_subdomains_and_cells();
+
+        /**
+         * Apply the bounds for the maximum and minimum number of particles
+         * per cell, if the appropriate @p particle_load_balancing strategy
+         * has been selected.
+         */
+        void
+        apply_particle_per_cell_bounds();
 
         /**
          * TODO: Implement this for arbitrary meshes.
@@ -377,6 +474,7 @@ namespace aspect
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &particles
+      &next_free_particle_index
       ;
     }
   }

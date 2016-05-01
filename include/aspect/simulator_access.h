@@ -35,6 +35,7 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
@@ -262,6 +263,18 @@ namespace aspect
       convert_output_to_years () const;
 
       /**
+       * Return the number of the current pre refinement step.
+       * This can be useful for plugins that want to function differently in
+       * the initial adaptive refinements and later on.
+       * This will be not initialized before Simulator<dim>::run() is called.
+       * It iterates upward from 0 to parameters.initial_adaptive_refinement
+       * during the initial adaptive refinement steps, and equals
+       * std::numeric_limits<unsigned int>::max() afterwards.
+       */
+      unsigned int
+      get_pre_refinement_step () const;
+
+      /**
        * Return the number of compositional fields specified in the input
        * parameter file that will be advected along with the flow field.
        */
@@ -297,6 +310,19 @@ namespace aspect
       /** @name Accessing variables that identify the solution of the problem */
       /** @{ */
 
+      /**
+       * Return a reference to the vector that has the current linearization
+       * point of the entire system, i.e. the velocity and pressure variables
+       * as well as the temperature and compositional fields. This vector is
+       * associated with the DoFHandler object returned by get_dof_handler().
+       * This vector is only different from the one returned by get_solution()
+       * during the solver phase.
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
+      const LinearAlgebra::BlockVector &
+      get_current_linearization_point () const;
 
       /**
        * Return a reference to the vector that has the current solution of the
@@ -427,6 +453,23 @@ namespace aspect
        */
       const BoundaryTemperature::Interface<dim> &
       get_boundary_temperature () const;
+
+      /**
+       * Return whether the current model has a boundary composition object
+       * set. This is useful because a simulation does not actually have to
+       * declare any boundary composition model, for example if all
+       * boundaries are reflecting. In such cases, there is no
+       * boundary composition model that can provide, for example,
+       * a minimal and maximal temperature on the boundary.
+       */
+      bool has_boundary_composition () const;
+
+      /**
+       * Return a reference to the object that describes the composition
+       * boundary values.
+       */
+      const BoundaryComposition::Interface<dim> &
+      get_boundary_composition () const;
 
       /**
        * Return a reference to the object that describes traction

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015, 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,6 +19,9 @@
  */
 
 #include <aspect/particle/property/interface.h>
+
+#include <deal.II/grid/grid_tools.h>
+
 #include <list>
 
 namespace aspect
@@ -58,6 +61,13 @@ namespace aspect
       Interface<dim>::need_update () const
       {
         return update_never;
+      }
+
+      template <int dim>
+      InitializationModeForLateParticles
+      Interface<dim>::late_initialization_mode () const
+      {
+        return initialize_to_zero;
       }
 
       template <int dim>
@@ -125,6 +135,59 @@ namespace aspect
                                                    gradients,
                                                    particle_properties);
           }
+        particle.set_properties(particle_properties);
+      }
+
+      template <int dim>
+      void
+      Manager<dim>::initialize_late_particle (Particle<dim> &particle,
+                                              const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                              const Interpolator::Interface<dim> &interpolator,
+                                              const Vector<double> &solution,
+                                              const std::vector<Tensor<1,dim> > &gradients) const
+      {
+        std::vector<double> particle_properties (0);
+
+        unsigned int property_index = 0;
+        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+             p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
+          {
+            switch ((*p)->late_initialization_mode())
+              {
+                case aspect::Particle::Property::initialize_to_zero:
+                {
+                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                    particle_properties.push_back(0.0);
+                  break;
+                }
+
+                case aspect::Particle::Property::initialize:
+                {
+                  (*p)->initialize_one_particle_property(particle.get_location(),
+                                                         solution,
+                                                         gradients,
+                                                         particle_properties);
+                  break;
+                }
+
+                case aspect::Particle::Property::interpolate:
+                {
+                  const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
+                    (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
+
+                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
+                                                                                    std::vector<Point<dim> > (1,particle.get_location()),
+                                                                                    cell);
+                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                    particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
+                  break;
+                }
+
+                default:
+                  Assert (false, ExcInternalError());
+              }
+          }
+
         particle.set_properties(particle_properties);
       }
 

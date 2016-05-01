@@ -221,13 +221,6 @@ namespace aspect
 
           }
 
-#ifdef DEBUG
-      Assert(n_left_to_find == 0, ExcMessage("Error, couldn't find a velocity DoF to constrain."));
-
-      for (unsigned int d=0; d<dim; ++d)
-        Assert(vel_idx[d] != numbers::invalid_dof_index,
-               ExcMessage("Error, couldn't find a velocity DoF to constrain."));
-#endif
     }
 
 
@@ -242,9 +235,23 @@ namespace aspect
     for (unsigned int d=0; d<dim; ++d)
       if (parameters.nullspace_removal & flags[d])
         {
-          // Make a reduction to find the smallest index (processors with a larger candidate
-          // just happened to not be able to store that index)
-          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(vel_idx[d], mpi_communicator);
+          // Make a reduction to find the smallest index (processors that
+          // found a larger candidate just happened to not be able to store
+          // that index with the minimum value). Note that it is possible that
+          // some processors might not be able to find a potential DoF, for
+          // example because they don't own any DoFs. On those processors we
+          // will use dof_handler.n_dofs() when building the minimum (larger
+          // than any valid DoF index).
+          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(
+                                                       (vel_idx[d] != numbers::invalid_dof_index)
+                                                       ?
+                                                       vel_idx[d]
+                                                       :
+                                                       dof_handler.n_dofs(),
+                                                       mpi_communicator);
+
+          Assert(global_idx < dof_handler.n_dofs(),
+                 ExcMessage("Error, couldn't find a velocity DoF to constrain."));
 
           // Finally set this DoF to zero (if we care about it):
           if (constraints.can_store_line(global_idx))

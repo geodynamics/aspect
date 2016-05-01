@@ -181,7 +181,16 @@ namespace aspect
 
     // If the tracer postprocessor has been selected
     if (tracer_postprocessor != 0)
-      tracer_postprocessor->generate_and_initialize_particles();
+      {
+        // If we are in the first adaptive refinement cycle generate particles
+        if (pre_refinement_step == 0)
+          tracer_postprocessor->generate_particles();
+
+        // And initialize the tracer properties according to the initial
+        // conditions on the current mesh
+        tracer_postprocessor->initialize_particles();
+      }
+
   }
 
 

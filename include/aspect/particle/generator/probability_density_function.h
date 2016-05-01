@@ -65,12 +65,6 @@ namespace aspect
       {
         public:
           /**
-           * Constructor.
-           *
-           */
-          ProbabilityDensityFunction();
-
-          /**
            * Generate a set of particles in the current
            * particle world. The particle density is set by an analytically
            * prescribed density function that is set as an input parameter.
@@ -111,14 +105,6 @@ namespace aspect
 
         private:
           /**
-           * Random number generator and an object that describes a
-           * uniform distribution on the interval [0,1]. These
-           * will be used to generate particle locations at random.
-           */
-          boost::mt19937            random_number_generator;
-          boost::uniform_01<double> uniform_distribution_01;
-
-          /**
            * Number of particles to create
            */
           types::particle_index n_tracers;
@@ -137,7 +123,7 @@ namespace aspect
            * for all locally owned active cells.
            * @param [in] local_start_id The starting ID to assign to generated particles of the local process.
            * @param [in] n_local_particles The local number of particles to generate.
-           * @return A map between cells and all generated particles.
+           * @param [out] particles A map between cells and all generated particles.
            *
            */
           void

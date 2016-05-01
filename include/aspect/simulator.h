@@ -234,7 +234,6 @@ namespace aspect
         /**
          * Return whether this object refers to the porosity field.
          */
-
         bool
         is_porosity (const Introspection<dim> &introspection) const;
 

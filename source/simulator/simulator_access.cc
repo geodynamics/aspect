@@ -171,6 +171,14 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  SimulatorAccess<dim>::get_pre_refinement_step () const
+  {
+    return simulator->pre_refinement_step;
+  }
+
+
+  template <int dim>
+  unsigned int
   SimulatorAccess<dim>::n_compositional_fields () const
   {
     return simulator->parameters.n_compositional_fields;
@@ -248,6 +256,13 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_current_linearization_point () const
+  {
+    return simulator->current_linearization_point;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_solution () const
   {
     return simulator->solution;
@@ -291,7 +306,7 @@ namespace aspect
   const FiniteElement<dim> &
   SimulatorAccess<dim>::get_fe () const
   {
-    Assert (simulator->dof_handler.n_locally_owned_dofs() != 0,
+    Assert (simulator->dof_handler.n_dofs() > 0,
             ExcMessage("You are trying to access the FiniteElement before the DOFs have been "
                        "initialized. This may happen when accessing the Simulator from a plugin "
                        "that gets executed early in some cases (like material models) or from "
@@ -355,9 +370,27 @@ namespace aspect
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
-    Assert (simulator->boundary_temperature.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    AssertThrow (simulator->boundary_temperature.get() != 0,
+                 ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_temperature.get();
+  }
+
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::has_boundary_composition () const
+  {
+    return (simulator->boundary_composition.get() != 0);
+  }
+
+
+  template <int dim>
+  const BoundaryComposition::Interface<dim> &
+  SimulatorAccess<dim>::get_boundary_composition () const
+  {
+    AssertThrow (simulator->boundary_composition.get() != 0,
+                 ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->boundary_composition.get();
   }
 
 

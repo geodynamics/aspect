@@ -836,6 +836,7 @@ namespace aspect
     gravity_model->update();
     heating_model_manager.update();
     adiabatic_conditions->update();
+    mesh_refinement_manager.update();
 
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();

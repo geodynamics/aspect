@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
@@ -14,7 +7,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00000
@@ -25,17 +18,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 2:  t=0.125 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00001
@@ -46,17 +39,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 4:  t=0.25 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00002
@@ -67,7 +60,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00003
@@ -78,17 +71,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 7:  t=0.4375 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00004
@@ -99,7 +92,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00005
@@ -110,17 +103,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 10:  t=0.625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00006
@@ -131,17 +124,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 12:  t=0.75 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00007
@@ -152,7 +145,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00008
@@ -163,17 +156,17 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
-     Number of advected particles 10
+     Number of advected particles: 10
 
 *** Timestep 15:  t=0.9375 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00009
@@ -184,7 +177,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00010
@@ -194,21 +187,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       4.1s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        17 |      1.48s |        36% |
-| Assemble composition system     |        34 |     0.676s |        17% |
-| Assemble temperature system     |        17 |     0.382s |       9.3% |
-| Build Stokes preconditioner     |        17 |      0.97s |        24% |
-| Build composition preconditioner|        34 |    0.0248s |       0.6% |
-| Build temperature preconditioner|        17 |    0.0127s |      0.31% |
-| Solve Stokes system             |        17 |     0.143s |       3.5% |
-| Solve composition system        |        34 |    0.0318s |      0.78% |
-| Solve temperature system        |        17 |    0.0158s |      0.38% |
-| Initialization                  |         2 |    0.0714s |       1.7% |
-| Postprocessing                  |        17 |     0.159s |       3.9% |
-| Setup dof systems               |         1 |     0.017s |      0.41% |
 +---------------------------------+-----------+------------+------------+
 

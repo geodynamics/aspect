@@ -78,9 +78,6 @@ namespace aspect
       /**
        * Compute a lateral average of the current viscosity.
        *
-       * @param composition_index The index of the compositional field
-       * to laterally average.
-       *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
        * depth slices.

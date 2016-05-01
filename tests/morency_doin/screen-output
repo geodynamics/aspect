@@ -17,7 +17,7 @@ Number of degrees of freedom: 22,214 (8,450+1,089+4,225+4,225+4,225)
    Solving Stokes system... 30+23 iterations.
 
    Postprocessing:
-     Writing depth average output-morency_doin/depth_average.gnuplot
+     Writing depth average:output-morency_doin/depth_average.gnuplot
 
 Termination requested by criterion: end step
 
