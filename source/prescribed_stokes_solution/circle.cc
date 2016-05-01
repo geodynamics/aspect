@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,27 +20,21 @@
 
 
 #include <aspect/global.h>
-#include <aspect/prescribed_stokes_solution/interface.h>
+#include <aspect/prescribed_stokes_solution/circle.h>
 
 namespace aspect
 {
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    class Circle: public Interface<dim>
+    void Circle<dim>::stokes_solution (const Point<dim> &p, Vector<double> &value) const
     {
-      public:
-
-        virtual
-        void stokes_solution (const Point<dim> &p, Vector<double> &value) const
-        {
-          value(0) = -p(1);
-          value(1) = p(0);
-          if (dim == 3)
-            value(2) = 0;
-          value(dim) = 0;
-        }
-    };
+      value(0) = -p(1);
+      value(1) = p(0);
+      if (dim == 3)
+        value(2) = 0;
+      value(dim) = 0;
+    }
   }
 }
 
