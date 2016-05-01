@@ -20,7 +20,7 @@
   . fix formatting, apply astyle, copyright years:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
       astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
-      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2015 by the authors of the ASPECT code./}' $file; done
+      doc/update-copyright
       git status # check!
       git commit -a -m "doxygen formatting, astyle, comment wrapping" # or rather create a pull-request
   . create branch for master PR to update changes.h in doc/modules:
