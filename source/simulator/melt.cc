@@ -24,6 +24,7 @@
 #include <aspect/heating_model/shear_heating_with_melt.h>
 
 #include <deal.II/dofs/dof_tools.h>
+#include <deal.II/lac/sparsity_tools.h>
 
 using namespace dealii;
 
@@ -778,7 +779,9 @@ namespace aspect
                                                      sim.get_mpi_communicator(), sim.introspection().index_sets.system_relevant_set);
 
           sp.compress();
-          matrix.reinit (system_partitioning, system_partitioning, sp, sim.get_mpi_communicator());
+          matrix.reinit (sim.introspection().index_sets.system_partitioning,
+                         sim.introspection().index_sets.system_partitioning,
+                         sp, sim.get_mpi_communicator());
 #else
           sp.compress();
           matrix.reinit (sp);
