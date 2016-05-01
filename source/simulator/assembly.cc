@@ -55,7 +55,6 @@ namespace aspect
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
-                              const Quadrature<dim-1>  &face_quadrature,
                               const Mapping<dim>       &mapping,
                               const UpdateFlags         update_flags,
                               const unsigned int        n_compositional_fields,
@@ -118,7 +117,7 @@ namespace aspect
                       const unsigned int        n_compositional_fields,
                       const bool                add_compaction_pressure)
           :
-          StokesPreconditioner<dim> (finite_element, quadrature, face_quadrature,
+          StokesPreconditioner<dim> (finite_element, quadrature,
                                      mapping,
                                      update_flags,
                                      n_compositional_fields,
@@ -701,12 +700,6 @@ namespace aspect
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
-        const unsigned int solution_component
-          = (advection_field.field_type == AdvectionField::temperature_field
-             ?
-             introspection.component_indices.temperature
-             :
-             introspection.component_indices.compositional_fields[advection_field.compositional_variable]);
         const FEValuesExtractors::Scalar solution_field
           = (advection_field.is_temperature()
              ?
@@ -2476,7 +2469,6 @@ namespace aspect
     system_preconditioner_matrix = 0;
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
-    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
     typedef
     FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
@@ -2507,7 +2499,7 @@ namespace aspect
                           this,
                           std_cxx11::_1),
          internal::Assembly::Scratch::
-         StokesPreconditioner<dim> (finite_element, quadrature_formula, face_quadrature_formula,
+         StokesPreconditioner<dim> (finite_element, quadrature_formula,
                                     mapping,
                                     cell_update_flags,
                                     parameters.n_compositional_fields,

@@ -87,7 +87,7 @@ namespace aspect
     template <int dim>
     bool
     Keller<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
+    thermal_conductivity_depends_on (const NonlinearDependence::Dependence /*dependence*/) const
     {
       return false;
     }

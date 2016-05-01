@@ -50,7 +50,7 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &prm)
+    Interface<dim>::parse_parameters (dealii::ParameterHandler &/*prm*/)
     {}
 
 

@@ -48,7 +48,6 @@ namespace aspect
         {
           StokesPreconditioner (const FiniteElement<dim> &finite_element,
                                 const Quadrature<dim>    &quadrature,
-                                const Quadrature<dim-1>  &face_quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
                                 const unsigned int        n_compositional_fields,
