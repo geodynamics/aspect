@@ -44,7 +44,7 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &prm)
+    declare_parameters (dealii::ParameterHandler &/*prm*/)
     {}
 
 
