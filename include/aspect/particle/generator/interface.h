@@ -126,6 +126,18 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          void
+          parse_global_parameters (ParameterHandler &prm);
+
+          bool
+          isTimeToGenerateParticles(unsigned int timeStepNumber);
+
+          unsigned int
+          getParticleIdx();
+
+          void
+          setParticleIdx(unsigned int pIdx);
+
         protected:
           /**
            * Generate a particle at the specified position and with the
@@ -144,6 +156,13 @@ namespace aspect
            * initialized in the constructor with a constant.
            */
           boost::mt19937            random_number_generator;
+
+          /**
+           * Control structure for adding particles to the Particle world.
+           */
+          bool repeatedlyGenerateParticles;
+          unsigned int nTimeStepNumberInterval;
+          unsigned int maxParticleIndex;
       };
 
       /**
@@ -190,7 +209,6 @@ namespace aspect
       template <int dim>
       void
       declare_parameters (ParameterHandler &prm);
-
 
       /**
        * Given a class name, a name, and a description for the parameter file

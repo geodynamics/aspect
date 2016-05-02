@@ -1144,6 +1144,12 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      // Generate more particles
+      if (generator->isTimeToGenerateParticles(this->get_timestep_number()))
+      {
+        generate_particles();
+      }
+
       do
         {
           advect_particles();
@@ -1243,6 +1249,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      Generator::Interface<dim>::declare_parameters(prm);
       Generator::declare_parameters<dim>(prm);
       Output::declare_parameters<dim>(prm);
       Integrator::declare_parameters<dim>(prm);
@@ -1303,6 +1310,7 @@ namespace aspect
       generator.reset(Generator::create_particle_generator<dim> (prm));
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
         sim->initialize_simulator (this->get_simulator());
+      generator->parse_global_parameters(prm);
       generator->parse_parameters(prm);
 
       // Create an output object depending on what the parameters specify
