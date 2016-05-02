@@ -1,0 +1,10 @@
+# Test MeshRefinement::ArtificialViscosity
+
+include $ASPECT_SOURCE_DIR/tests/refinement_artificial_viscosity_1.prm
+
+subsection Mesh refinement
+  subsection Artificial viscosity
+    set Temperature scaling factor = 0.0
+    set Compositional field scaling factors = 0.0, 1.0
+  end
+end
