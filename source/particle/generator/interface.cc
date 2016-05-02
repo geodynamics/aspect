@@ -34,7 +34,8 @@ namespace aspect
       template <int dim>
       Interface<dim>::Interface()
         :
-        random_number_generator(5432)
+        random_number_generator(5432),
+        maxParticleIndex(0)
       {}
 
       template <int dim>
@@ -136,14 +137,90 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
+      Interface<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection ("Postprocess");
+        {
+          prm.enter_subsection ("Tracers");
+          {
+            prm.enter_subsection("Generator");
+            {
+              prm.declare_entry("Generate particles multiple times", "false",
+                                Patterns::Bool(),
+                                "Set to generate particles at every time step number interval specified.");
+              prm.declare_entry("Time step number interval", "100",
+                                Patterns::Integer(),
+                                "Generate particles at ever Time step number interval");
+            }
+            prm.leave_subsection ();
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
 
       template <int dim>
       void
       Interface<dim>::parse_parameters (ParameterHandler &)
       {}
 
+      template <int dim>
+      void
+      Interface<dim>::parse_global_parameters (ParameterHandler &prm)
+      {
+        std::string name;
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Tracers");
+          {
+            name = prm.get ("Particle generator name");
+            prm.enter_subsection("Generator");
+            {
+              repeatedlyGenerateParticles = prm.get_bool("Generate particles multiple times");
+              if (repeatedlyGenerateParticles)
+                nTimeStepNumberInterval = prm.get_integer("Time step number interval");
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+
+        if (repeatedlyGenerateParticles)
+        {
+          AssertThrow((name != "probability density function") && (name != "random uniform"),
+                  ExcMessage ("ASPECT cannot generate particles multiple times for the specified generator: "
+                              + name + ".\n" +
+                              "Select one of the following models: ascii file, uniform box or uniform radial.")) 
+          AssertThrow(nTimeStepNumberInterval > 0, 
+                  ExcMessage ("Please specify a valid time step number interval that is larger than 0."
+                              "\n Specify as 1 to generate particles at every time step."))
+        }
+      }
+
+      template <int dim>
+      bool
+      Interface<dim>::isTimeToGenerateParticles(unsigned int currentTimeStep)
+      {
+        if (currentTimeStep == 0 || !repeatedlyGenerateParticles || (currentTimeStep % nTimeStepNumberInterval != 0))
+          return false;
+        else
+          return true;
+      }
+
+      template <int dim>
+      unsigned int
+      Interface<dim>::getParticleIdx()
+      {
+        return maxParticleIndex;
+      }
+
+      template <int dim>
+      void
+      Interface<dim>::setParticleIdx(unsigned int pIdx)
+      {
+        maxParticleIndex = pIdx;
+      }
 
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time

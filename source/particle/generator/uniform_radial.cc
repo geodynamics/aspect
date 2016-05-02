@@ -67,7 +67,7 @@ namespace aspect
 
         // Generate particles
 
-        types::particle_index particle_index = 0;
+        types::particle_index particle_index = this->getParticleIdx();
         std_cxx11::array<double,dim> spherical_coordinates;
         for (unsigned int i = 0; i < radial_layers; ++i)
           {
@@ -125,6 +125,7 @@ namespace aspect
             else
               ExcNotImplemented();
           }
+        this->setParticleIdx(particle_index);
       }
 
 

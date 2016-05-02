@@ -50,7 +50,7 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
-        types::particle_index particle_index = 0;
+        types::particle_index particle_index = this->getParticleIdx();
 
         for (unsigned int i = 0; i < n_particles_per_direction[0]; ++i)
           {
@@ -89,6 +89,8 @@ namespace aspect
                   ExcNotImplemented();
               }
           }
+
+        this->setParticleIdx(particle_index);
       }
 
 
