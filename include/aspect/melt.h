@@ -235,6 +235,14 @@ namespace aspect
     template <int dim>
     void compute_melt_variables(SimulatorAccess<dim>       &sim,
                                 LinearAlgebra::BlockVector &solution);
+
+    /**
+     * Return whether this object refers to the porosity field.
+     */
+    template <int dim>
+    bool
+    is_porosity (const typename Simulator<dim>::AdvectionField &advection_field,
+                 const Introspection<dim> &introspection);
   }
 }
 

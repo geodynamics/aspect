@@ -412,7 +412,7 @@ namespace aspect
              0.0);
 
           const double reaction_term =
-            ((advection_field.is_temperature() || advection_field.is_porosity(introspection))
+            ((advection_field.is_temperature() || Melt::is_porosity(advection_field,introspection))
              ?
              0.0
              :
@@ -443,7 +443,7 @@ namespace aspect
             current_u -= scratch.mesh_velocity_values[q];
 
           const double melt_transport_LHS =
-            (advection_field.is_porosity(introspection)
+            (Melt::is_porosity(advection_field,introspection)
              ?
              scratch.current_velocity_divergences[q]
              + (this->get_material_model().is_compressible()
@@ -560,7 +560,7 @@ namespace aspect
              0.0);
 
           const double dreaction_term_dt =
-            (advection_field.is_temperature() || this->get_old_timestep() == 0 || (advection_field.is_porosity(this->introspection())
+            (advection_field.is_temperature() || this->get_old_timestep() == 0 || (Melt::is_porosity(advection_field,this->introspection())
                                                                                    && this->include_melt_transport()))
             ?
             0.0
@@ -575,7 +575,7 @@ namespace aspect
                                                                  q);
 
           const double melt_transport_LHS =
-            (advection_field.is_porosity(this->introspection())
+            (Melt::is_porosity(advection_field,this->introspection())
              ?
              scratch.current_velocity_divergences[q]
              + (this->get_material_model().is_compressible()
@@ -665,7 +665,7 @@ namespace aspect
                         const typename Simulator<dim>::AdvectionField     &advection_field,
                         const unsigned int q_point) const
     {
-      if ((!advection_field.is_porosity(this->introspection())) || (!this->include_melt_transport()))
+      if ((!Melt::is_porosity(advection_field,this->introspection())) || (!this->include_melt_transport()))
         return 0.0;
 
       Assert (material_model_outputs.densities[q_point] > 0,
@@ -1029,6 +1029,17 @@ namespace aspect
         distributed_vector.block(block_p).compress(VectorOperation::insert);
         solution.block(block_p) = distributed_vector.block(block_p);
       }
+    }
+
+    template <int dim>
+    bool
+    is_porosity(const typename Simulator<dim>::AdvectionField &advection_field,
+                const Introspection<dim> &introspection)
+    {
+      if (advection_field.field_type != Simulator<dim>::AdvectionField::compositional_field)
+        return false;
+      else
+        return (introspection.name_for_compositional_index(advection_field.compositional_variable) == "porosity");
     }
   }
 }

@@ -232,12 +232,6 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Return whether this object refers to the porosity field.
-         */
-        bool
-        is_porosity (const Introspection<dim> &introspection) const;
-
-        /**
          * Return whether this object refers to a field discretized by discontinuous finite elements.
          */
         bool

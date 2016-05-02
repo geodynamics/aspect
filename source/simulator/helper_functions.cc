@@ -111,17 +111,6 @@ namespace aspect
   }
 
   template <int dim>
-  bool
-  Simulator<dim>::AdvectionField::is_porosity(const Introspection<dim> &introspection) const
-  {
-    if (field_type != compositional_field)
-      return false;
-    else
-      return (introspection.name_for_compositional_index(compositional_variable) == "porosity");
-  }
-
-
-  template <int dim>
   unsigned int
   Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
