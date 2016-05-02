@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: The variable $ASPECT_SOURCE_DIR can now be used inside
+ * .prm files in various locations (including "include" statements).
+ * <br>
+ * (Timo Heister, 2016/05/02)
+ *
  * <li> Improved: Mesh refinement plugins can now update member variables
  * at the beginning of each time step. This can be used to make things like
  * time-dependent mesh refinement criteria, or fancy models that depend on
