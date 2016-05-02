@@ -11,5 +11,5 @@
 # 11: Schur complement iterations in Stokes preconditioner
 # 12: Time step size (seconds)
 # 13: Visualization file name
-0 0.0000e+00 256 2467 1089 1089 0 0 18 19 166 1.7956e+23                                     "" 
-0 0.0000e+00 430 4338 1916 1916 0 0 18 19 161 1.3956e+23 output-petsc_refinement/solution-00000 
+0 0.000000000000e+00 256 2467 1089 1089 0 0 18 19 166 1.795597605835e+23                                     "" 
+0 0.000000000000e+00 430 4338 1916 1916 0 0 18 19 161 1.395584226098e+23 output-petsc_refinement/solution-00000 

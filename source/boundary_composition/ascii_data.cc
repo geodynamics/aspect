@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -103,10 +103,10 @@ namespace aspect
                                                "Implementation of a model in which the boundary "
                                                "composition is derived from files containing data "
                                                "in ascii format. Note the required format of the "
-                                               "input data: The first lines may contain any number of comments"
-                                               "if they begin with '#', but one of these lines needs to"
-                                               "contain the number of grid points in each dimension as"
-                                               "for example '# POINTS: 3 3'."
+                                               "input data: The first lines may contain any number of comments "
+                                               "if they begin with '#', but one of these lines needs to "
+                                               "contain the number of grid points in each dimension as "
+                                               "for example '# POINTS: 3 3'. "
                                                "The order of the data columns "
                                                "has to be 'x', 'composition1', 'composition2', "
                                                "etc. in a 2d model and "
@@ -114,14 +114,14 @@ namespace aspect
                                                "etc., in a 3d model, according "
                                                "to the number of compositional fields, which means that "
                                                "there has to be a single column "
-                                               "for every composition in the model."
+                                               "for every composition in the model. "
                                                "Note that the data in the input "
                                                "files need to be sorted in a specific order: "
                                                "the first coordinate needs to ascend first, "
                                                "followed by the second in order to "
                                                "assign the correct data to the prescribed coordinates."
                                                "If you use a spherical model, "
-                                               "then the data will still be handled as cartesian,"
+                                               "then the data will still be handled as Cartesian, "
                                                "however the assumed grid changes. 'x' will be replaced by "
                                                "the radial distance of the point to the bottom of the model, "
                                                "'y' by the azimuth angle and 'z' by the polar angle measured "
@@ -129,6 +129,6 @@ namespace aspect
                                                "a latitude-longitude grid. Note that the order "
                                                "of spherical coordinates is 'r', 'phi', 'theta' "
                                                "and not 'r', 'theta', 'phi', since this allows "
-                                               "for dimension independent expressions. ")
+                                               "for dimension independent expressions.")
   }
 }

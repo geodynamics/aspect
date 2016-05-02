@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -789,11 +789,8 @@ namespace aspect
 
     // print the number of iterations to screen and record it in the
     // statistics file
-    if (solver_control_expensive.last_step() == 0)
-      pcout << solver_control_cheap.last_step()  << " iterations.";
-    else
-      pcout << solver_control_cheap.last_step() << '+'
-            << solver_control_expensive.last_step() << " iterations.";
+    pcout << solver_control_cheap.last_step() << '+'
+          << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
 
     statistics.add_value("Iterations for Stokes solver",

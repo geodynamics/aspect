@@ -28,9 +28,12 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
+
+#include <deal.II/base/timer.h>
 
 namespace aspect
 {
@@ -72,37 +75,9 @@ namespace aspect
         };
 
         /**
-         * Initialize the particle world. Most of the arguments are read by the
-         * Tracer postprocessor and handed to this function, because the
-         * particle world currently does not declare own input parameters.
-         *
-         * @param [in] generator The particle generator for this world.
-         * @param [in] integrator The Integrator scheme for this world.
-         * @param [in] interpolator The Interpolator scheme for this
-         * world. This object defines how particle properties are interpolated
-         * to arbitrary positions within the domain. An example could be to
-         * take the properties of the closest particle, but more complicated
-         * schemes are possible.
-         * @param [in] manager The property manager for this world.
-         * @param [in] load_balancing The strategy used to balance the
-         * computational load for particle advection across processes.
-         * @param [in] max_part_per_cell Threshold for removing
-         * particles from cells.
-         * @param [in] weight The computational load that is associated with
-         * integrating and updating one particle.
-         *
-         * @note World takes ownership of the @p generator, @p integrator, @p
-         * interpolator, and @p manager object in this function.
-         *
+         * Initialize the particle world.
          */
-        void initialize(Generator::Interface<dim> *generator,
-                        Integrator::Interface<dim> *integrator,
-                        Interpolator::Interface<dim> *interpolator,
-                        Property::Manager<dim> *manager,
-                        const ParticleLoadBalancing &load_balancing,
-                        const unsigned int min_part_per_cell,
-                        const unsigned int max_part_per_cell,
-                        const unsigned int weight);
+        void initialize();
 
         /**
          * Get the particle property manager for this particle world.
@@ -223,10 +198,44 @@ namespace aspect
         void update_particles();
 
         /**
+         * Generate the selected particle output.
+         */
+        std::string
+        generate_output() const;
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of the object.
+         */
+        virtual
+        void
+        save (std::ostringstream &os) const;
+
+        /**
+         * Restore the state of the object.
+         */
+        virtual
+        void
+        load (std::istringstream &is);
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
       private:
         /**
@@ -250,6 +259,11 @@ namespace aspect
          * these properties.
          */
         std_cxx11::unique_ptr<Property::Manager<dim> > property_manager;
+
+        /**
+         * Pointer to an output object
+         */
+        std_cxx11::unique_ptr<Output::Interface<dim> > output;
 
         /**
          * Set of particles currently in the local domain, organized by
@@ -280,6 +294,16 @@ namespace aspect
          * Strategy for tracer load balancing.
          */
         ParticleLoadBalancing particle_load_balancing;
+
+
+        /**
+         * Write a summary of the computing time spent in each part
+         * of the particle algorithm every time particle output is
+         * written. This is mostly useful for benchmarking purposes.
+         * ASPECT's usual output of compute times is unaffected by
+         * this additional output.
+         */
+        bool print_timing_output;
 
         /**
          * Lower limit for particle number per cell. This limit is
@@ -317,6 +341,21 @@ namespace aspect
          * to represent a cost of 1000.
          */
         unsigned int tracer_weight;
+
+        /**
+         * An object that collects diagnostic timing information. Because the
+         * collection of timing data does not create significant overhead, this
+         * is always done. Output is only written, however, when the
+         * print_timing_output() function is called.
+         *
+         * This object is a pointer, rather than just a member variable,
+         * because the initialization of a TimerOutput object requires
+         * information (such as MPI communicators) that is not available
+         * at the time the surrounding object is created, but only at the
+         * time initialize() is called.
+         */
+        std_cxx11::shared_ptr<TimerOutput> particle_timer;
+
 
         /**
          * Calculates the number of particles in the global model domain.

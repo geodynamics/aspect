@@ -251,7 +251,7 @@ namespace aspect
                                   "temperature, and compositional fields along with other fields that "
                                   "are treated as primary variables) at the end of every time step "
                                   "at a given set of points and then writes this data into the file "
-                                  "<point_values.txt> in the output directory. The points at which "
+                                  "<point\\_values.txt> in the output directory. The points at which "
                                   "the solution should be evaluated are specified in the section "
                                   "\\texttt{Postprocess/Point values} in the input file."
                                   "\n\n"

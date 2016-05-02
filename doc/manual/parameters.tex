@@ -457,7 +457,7 @@ For more information, see the section in the manual that discusses the general m
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'composition1', 'composition2', etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+`ascii data': Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'composition1', 'composition2', etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
 
 `box': A model in which the composition is chosen constant on all the sides of a box.
 
@@ -859,7 +859,7 @@ Because this class simply takes what the initial composition had described, this
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'Temperature [K]' in a 2d model and  'x', 'y', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+`ascii data': Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'Temperature [K]' in a 2d model and  'x', 'y', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
 
 `box': A model in which the temperature is chosen constant on all the sides of a box.
 
@@ -1627,19 +1627,83 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [DirectoryName]
-\item {\it Parameter name:} {\tt Interpolation width}
-\phantomsection\label{parameters:Boundary velocity model/GPlates model/Interpolation width}
+\item {\it Parameter name:} {\tt Data file time step}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/Data file time step}
 
 
-\index[prmindex]{Interpolation width}
-\index[prmindexfull]{Boundary velocity model!GPlates model!Interpolation width}
+\index[prmindex]{Data file time step}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Data file time step}
+{\it Value:} 1e6
+
+
+{\it Default:} 1e6
+
+
+{\it Description:} Time step between following velocity files. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Decreasing file order}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/Decreasing file order}
+
+
+\index[prmindex]{Decreasing file order}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Decreasing file order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} In some cases the boundary files are not numbered in increasing but in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True' the plugin will first load the file with the number 'First velocity file number' and decrease the file number during the model run.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt First data file model time}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/First data file model time}
+
+
+\index[prmindex]{First data file model time}
+\index[prmindexfull]{Boundary velocity model!GPlates model!First data file model time}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Determines the width of the velocity interpolation zone around the current point. Currently equals the arc distance between evaluation point and velocity data point that is still included in the interpolation. The weighting of the points currently only accounts for the surface area a single data point is covering ('moving window' interpolation without distance weighting).
+{\it Description:} Time from which on the velocity file with number 'First velocity file number' is used as boundary condition. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt First data file number}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/First data file number}
+
+
+\index[prmindex]{First data file number}
+\index[prmindexfull]{Boundary velocity model!GPlates model!First data file number}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} Number of the first velocity file to be loaded when the model time is larger than 'First velocity file model time'.
+
+
+{\it Possible values:} [Integer range -2147483648...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Lithosphere thickness}
+\phantomsection\label{parameters:Boundary velocity model/GPlates model/Lithosphere thickness}
+
+
+\index[prmindex]{Lithosphere thickness}
+\index[prmindexfull]{Boundary velocity model!GPlates model!Lithosphere thickness}
+{\it Value:} 100000
+
+
+{\it Default:} 100000
+
+
+{\it Description:} Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model as well as at the surface.
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
@@ -1691,22 +1755,6 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Time step}
-\phantomsection\label{parameters:Boundary velocity model/GPlates model/Time step}
-
-
-\index[prmindex]{Time step}
-\index[prmindexfull]{Boundary velocity model!GPlates model!Time step}
-{\it Value:} 1e6
-
-
-{\it Default:} 1e6
-
-
-{\it Description:} Time step between following velocity files. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years. The default is one million, i.e., either one million seconds or one million years.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Velocity file name}
 \phantomsection\label{parameters:Boundary velocity model/GPlates model/Velocity file name}
 
@@ -1723,22 +1771,6 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
-\item {\it Parameter name:} {\tt Velocity file start time}
-\phantomsection\label{parameters:Boundary velocity model/GPlates model/Velocity file start time}
-
-
-\index[prmindex]{Velocity file start time}
-\index[prmindexfull]{Boundary velocity model!GPlates model!Velocity file start time}
-{\it Value:} 0.0
-
-
-{\it Default:} 0.0
-
-
-{\it Description:} Time at which the velocity file with number 0 shall be loaded. Previous to this time, a no-slip boundary condition is assumed. Depending on the setting of the global 'Use years in output instead of seconds' flag in the input file, this number is either interpreted as seconds or as years.
-
-
-{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Checkpointing}
@@ -1851,7 +1883,7 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+`ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'composition1', 'composition2', etc. in a 2d model and 'x', 'y', 'z', 'composition1', 'composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
 
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -2025,6 +2057,38 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Integer range 1...2147483647 (inclusive)]
+\item {\it Parameter name:} {\tt Use discontinuous composition discretization}
+\phantomsection\label{parameters:Discretization/Use discontinuous composition discretization}
+
+
+\index[prmindex]{Use discontinuous composition discretization}
+\index[prmindexfull]{Discretization!Use discontinuous composition discretization}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a composition discretization that is discontinuous as opposed to continuous. This then requires the assembly of face terms between cells, and weak imposition of boundary terms for the composition field via the discontinuous Galerkin method.
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Use discontinuous temperature discretization}
+\phantomsection\label{parameters:Discretization/Use discontinuous temperature discretization}
+
+
+\index[prmindex]{Use discontinuous temperature discretization}
+\index[prmindexfull]{Discretization!Use discontinuous temperature discretization}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a temperature discretization that is discontinuous as opposed to continuous. This then requires the assembly of face terms between cells, and weak imposition of boundary terms for the temperature field via the interior-penalty discontinuous Galerkin method.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Use locally conservative discretization}
 \phantomsection\label{parameters:Discretization/Use locally conservative discretization}
 
@@ -2055,6 +2119,22 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 \label{parameters:Discretization/Stabilization_20parameters}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Discontinuous penalty}
+\phantomsection\label{parameters:Discretization/Stabilization parameters/Discontinuous penalty}
+
+
+\index[prmindex]{Discontinuous penalty}
+\index[prmindexfull]{Discretization!Stabilization parameters!Discontinuous penalty}
+{\it Value:} 10
+
+
+{\it Default:} 10
+
+
+{\it Description:} The value used to penalize discontinuities in the discontinuous Galerkin method. This is used only for the temperature field, and not for the composition field, as pure advection does not use the interior penalty method. This is largely empirically decided -- it must be large enough to ensure the bilinear form is coercive, but not so large as to penalize discontinuity at all costs.
+
+
+{\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
 \item {\it Parameter name:} {\tt Use artificial viscosity smoothing}
 \phantomsection\label{parameters:Discretization/Stabilization parameters/Use artificial viscosity smoothing}
 
@@ -3615,7 +3695,7 @@ If the function you are describing represents a vector-valued function with mult
 
 `adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
 
-`ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'y', 'Temperature [K]' in a 2d model and  'x', 'y', 'z', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+`ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'Temperature [K]' in a 2d model and  'x', 'y', 'z', 'Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
 
 `function': Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -4173,6 +4253,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Maximum order}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Maximum order}
+
+
+\index[prmindex]{Maximum order}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Maximum order}
+{\it Value:} 20
+
+
+{\it Default:} 20
+
+
+{\it Description:} The maximum order the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum order the data file stored. This parameter will be used only if 'Specify a lower maximum order' is set to true
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Reference temperature}
 \phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Reference temperature}
 
@@ -4217,10 +4313,26 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} -1.7976931348623157e+308
 
 
-{\it Description:} This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters).Note that your resolution has to be adquate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+{\it Description:} This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adquate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Specify a lower maximum order}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Specify a lower maximum order}
+
+
+\index[prmindex]{Specify a lower maximum order}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Specify a lower maximum order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to use a lower maximum order when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain order.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Spline knots depth file name}
 \phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Spline knots depth file name}
 
@@ -4253,12 +4365,12 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt vs to density scaling}
-\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/vs to density scaling}
+\item {\it Parameter name:} {\tt Vs to density scaling}
+\phantomsection\label{parameters:Initial conditions/S40RTS perturbation/Vs to density scaling}
 
 
-\index[prmindex]{vs to density scaling}
-\index[prmindexfull]{Initial conditions!S40RTS perturbation!vs to density scaling}
+\index[prmindex]{Vs to density scaling}
+\index[prmindexfull]{Initial conditions!S40RTS perturbation!Vs to density scaling}
 {\it Value:} 0.25
 
 
@@ -4307,6 +4419,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Maximum order}
+\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Maximum order}
+
+
+\index[prmindex]{Maximum order}
+\index[prmindexfull]{Initial conditions!SAVANI perturbation!Maximum order}
+{\it Value:} 20
+
+
+{\it Default:} 20
+
+
+{\it Description:} The maximum order the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum order the data file stored. This parameter will be used only if 'Specify a lower maximum order' is set to true
+
+
+{\it Possible values:} [Integer range 0...2147483647 (inclusive)]
 \item {\it Parameter name:} {\tt Reference temperature}
 \phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Reference temperature}
 
@@ -4355,6 +4483,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Specify a lower maximum order}
+\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Specify a lower maximum order}
+
+
+\index[prmindex]{Specify a lower maximum order}
+\index[prmindexfull]{Initial conditions!SAVANI perturbation!Specify a lower maximum order}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to use a lower maximum order when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain order.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Spline knots depth file name}
 \phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Spline knots depth file name}
 
@@ -4387,12 +4531,12 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt vs to density scaling}
-\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/vs to density scaling}
+\item {\it Parameter name:} {\tt Vs to density scaling}
+\phantomsection\label{parameters:Initial conditions/SAVANI perturbation/Vs to density scaling}
 
 
-\index[prmindex]{vs to density scaling}
-\index[prmindexfull]{Initial conditions!SAVANI perturbation!vs to density scaling}
+\index[prmindex]{Vs to density scaling}
+\index[prmindexfull]{Initial conditions!SAVANI perturbation!Vs to density scaling}
 {\it Value:} 0.25
 
 
@@ -7761,17 +7905,17 @@ To use this refinement criterion, you may want to combine it with other refineme
 
 `density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
-`maximum refinement function': A mesh refinement criterion that ensures a maximum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer.
+`maximum refinement function': A mesh refinement criterion that ensures a maximum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. Each coordinate system also includes a final 't' variable which represents the model time, evaluated in years if the 'Use years in output instead of seconds' parameter is set, otherwise evaluated in seconds. After evaluating the function, its values are rounded to the nearest integer.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
-`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. After evaluating the function, its values are rounded to the nearest integer.
+`minimum refinement function': A mesh refinement criterion that ensures a minimum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables 'x', 'y' and 'z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected 'depth' for the coordinate system, then 'x' refers to the depth variable and 'y' and 'z' will simply always be zero. If you have selected a spherical coordinate system, then 'x' will refer to the radial distance of the point to the origin, 'y' to the azimuth angle and 'z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. Each coordinate system also includes a final 't' variable which represents the model time, evaluated in years if the 'Use years in output instead of seconds' parameter is set, otherwise evaluated in seconds. After evaluating the function, its values are rounded to the nearest integer.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 `nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
-`particle density': A mesh refinement criterion that computes refinement indicators that equal the areal (in 2d) or volumetric (in 3d) density of particles in this cell. This plugin is useful for models with inhomogeneous particle density, e.g. when tracking an initial interface with a high particle density, or when the spatial particle density denotes the region of interest. Additionally, this plugin tends to balance the computational load between processes in parallel computations, because the particle number per cell is more similar.
+`particle density': A mesh refinement criterion that computes refinement indicators based on the density of particles. In practice this plugin equilibrates the number of particles per cell, leading to fine cells in high particle density regions and coarse cells in low particle density regions. This plugin is mostly useful for models with inhomogeneous particle density, e.g. when tracking an initial interface with a high particle density, or when the spatial particle density denotes the region of interest. Additionally, this plugin tends to balance the computational load between processes in parallel computations, because the particle and mesh density is more aligned.
 
 `slope': A class that implements a mesh refinement criterion intended for use with a free surface. It calculates a local slope based on the angle between the surface normal and the local gravity vector. Cells with larger angles are marked for refinement.
 
@@ -8250,6 +8394,8 @@ The following postprocessors are available:
 
 `boundary pressures': A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
 
+`command': A postprocessor that executes a command line process.
+
 `composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; dx$.
 
 `depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
@@ -8273,6 +8419,12 @@ As stated, this postprocessor computes the \textit{outbound} heat flux. If you a
 
 As stated, this postprocessor computes the \textit{outbound} mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
+`point values': A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
+
+In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
+
+\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the 'visualization' postprocessor.}
+
 `pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
 `spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
@@ -8294,10 +8446,64 @@ The information produced by this postprocessor is a subset of what is generated 
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 
-{\it Possible values:} [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|composition statistics|depth average|dynamic topography|heat flux statistics|heating statistics|mass flux statistics|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization ]
+{\it Possible values:} [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|command|composition statistics|depth average|dynamic topography|heat flux statistics|heating statistics|mass flux statistics|point values|pressure statistics|spherical velocity statistics|temperature statistics|topography|tracers|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization ]
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Postprocess/Command}
+\label{parameters:Postprocess/Command}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Command}
+\phantomsection\label{parameters:Postprocess/Command/Command}
+
+
+\index[prmindex]{Command}
+\index[prmindexfull]{Postprocess!Command!Command}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Command to execute.
+
+
+{\it Possible values:} [Anything]
+\item {\it Parameter name:} {\tt Run on all processes}
+\phantomsection\label{parameters:Postprocess/Command/Run on all processes}
+
+
+\index[prmindex]{Run on all processes}
+\index[prmindexfull]{Postprocess!Command!Run on all processes}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to run command from all processes (true), or only on process 0 (false).
+
+
+{\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Terminate on failure}
+\phantomsection\label{parameters:Postprocess/Command/Terminate on failure}
+
+
+\index[prmindex]{Terminate on failure}
+\index[prmindexfull]{Postprocess!Command!Terminate on failure}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Select whether \aspect{} should terminate if the command returns a non-zero exit status.
+
+
+{\it Possible values:} [Bool]
+\end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Depth average}
 \label{parameters:Postprocess/Depth_20average}
@@ -8391,6 +8597,28 @@ The information produced by this postprocessor is a subset of what is generated 
 {\it Possible values:} [Bool]
 \end{itemize}
 
+\subsection{Parameters in section \tt Postprocess/Point values}
+\label{parameters:Postprocess/Point_20values}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Evaluation points}
+\phantomsection\label{parameters:Postprocess/Point values/Evaluation points}
+
+
+\index[prmindex]{Evaluation points}
+\index[prmindexfull]{Postprocess!Point values!Evaluation points}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The list of points at which the solution should be evaluated. Points need to be separated by semicolons, and coordinates of each point need to be separated by commas.
+
+
+{\it Possible values:} [List list of [List list of [Double -1.79769e+308...1.79769e+308 (inclusive)] of length 2...2 (inclusive)] of length 0...4294967295 (inclusive) separated by <;>]
+\end{itemize}
+
 \subsection{Parameters in section \tt Postprocess/Tracers}
 \label{parameters:Postprocess/Tracers}
 
@@ -8429,11 +8657,17 @@ The information produced by this postprocessor is a subset of what is generated 
 {\it Default:} rk2
 
 
-{\it Description:} Select one of the following models:
+{\it Description:} This parameter is used to decide which method to use to solve the equation that describes the position of particles, i.e., $\frac{d}{dt}\mathbf x_k(t) = \mathbf u(\mathbf x_k(t),t)$, where $k$ is an index that runs over all particles, and $\mathbf u(\mathbf x,t)$ is the velocity field that results from the Stokes equations.
+
+In practice, the exact velocity $\mathbf u(\mathbf x,t)$ is of course not available, but only a numerical approximation $\mathbf u_h(\mathbf x,t)$. Furthermore, this approximation is only available at discrete time steps, $\mathbf u^n(\mathbf x)=\mathbf u(\mathbf x,t^n)$, and these need to be interpolated between time steps if the integrator for the equation above requires an evaluation at time points between the discrete time steps. If we denote this interpolation in time by $\tilde{\mathbf u}_h(\mathbf x,t)$ where $\tilde{\mathbf u}_h(\mathbf x,t^n)=\mathbf u^n(\mathbf x)$, then the equation the differential equation solver really tries to solve is $\frac{d}{dt}\tilde{\mathbf x}_k(t) =  \tilde{\mathbf u}_h(\mathbf x_k(t),t)$.
+
+As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integator converges with forth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like $$  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p$$ where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the \textit{exact} velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form $$  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|$$ with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
+
+Select one of the following models:
 
 `euler': Explicit Euler scheme integrator, where $y_{n+1} = y_n + dt * v(y_n)$. This requires only one integration substep per timestep.
 
-`rk2': Runge Kutta second order integrator, where $y_{n+1} = y_n + dt*v(0.5*k_1)$, $k_1 = dt*v(y_n)$.
+`rk2': Second Order Runge Kutta integrator $y_{n+1} = y_n + dt*v(t_{n+1/2}, y_{n} + 0.5*k_1)$ where $k_1 = y_n + 0.5*dt*v(t_{n}, y_{n})$
 
 `rk4': Runge Kutta fourth order integrator, where $y_{n+1} = y_n + (1/6)*k_1 + (1/3)*k_2 + (1/3)*k_3 + (1/6)*k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 
@@ -8527,7 +8761,7 @@ The following properties are available:
 {\it Default:} 100
 
 
-{\it Description:} Limit for how many particles are allowed per cell. This limit is useful to prevent coarse cells in adaptive meshes from slowing down the whole model. It will only be checked and enforced during mesh refinement and MPI transfer of tracers.
+{\it Description:} Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are \texttt{n\_number\_of\_particles} $>$ \texttt{max\_particles\_per\_cell} particles in one cell then \texttt{n\_number\_of\_particles} - \texttt{max\_particles\_per\_cell} particles in this cell are randomly chosen and destroyed.
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
@@ -8537,13 +8771,13 @@ The following properties are available:
 
 \index[prmindex]{Minimum tracers per cell}
 \index[prmindexfull]{Postprocess!Tracers!Minimum tracers per cell}
-{\it Value:} 100
+{\it Value:} 0
 
 
-{\it Default:} 100
+{\it Default:} 0
 
 
-{\it Description:} Limit for how many particles are allowed per cell. This limit is useful to prevent coarse cells in adaptive meshes from slowing down the whole model. It will only be checked and enforced during mesh refinement and MPI transfer of tracers.
+{\it Description:} Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are \texttt{n\_number\_of\_particles} $<$ \texttt{min\_particles\_per\_cell} particles in one cell then \texttt{min\_particles\_per\_cell} - \texttt{n\_number\_of\_particles} particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
@@ -8607,6 +8841,22 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Timing output}
+\phantomsection\label{parameters:Postprocess/Tracers/Timing output}
+
+
+\index[prmindex]{Timing output}
+\index[prmindexfull]{Postprocess!Tracers!Timing output}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Write a summary of the computing time spent in each part of the particle algorithm every time particle output is written. This is mostly useful for benchmarking purposes. ASPECT's usual output of compute times is unaffected by this additional output.
+
+
+{\it Possible values:} [Bool]
 \item {\it Parameter name:} {\tt Tracer weight}
 \phantomsection\label{parameters:Postprocess/Tracers/Tracer weight}
 
@@ -8789,99 +9039,99 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Postprocess/Tracers/Generator/Uniform_20box}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Maximal x}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal x}
+\item {\it Parameter name:} {\tt Maximum x}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum x}
 
 
-\index[prmindex]{Maximal x}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal x}
+\index[prmindex]{Maximum x}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum x}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximal x coordinate for the region of tracers.
+{\it Description:} Maximum x coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Maximal y}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal y}
+\item {\it Parameter name:} {\tt Maximum y}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum y}
 
 
-\index[prmindex]{Maximal y}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal y}
+\index[prmindex]{Maximum y}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum y}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximal y coordinate for the region of tracers.
+{\it Description:} Maximum y coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Maximal z}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximal z}
+\item {\it Parameter name:} {\tt Maximum z}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Maximum z}
 
 
-\index[prmindex]{Maximal z}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximal z}
+\index[prmindex]{Maximum z}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Maximum z}
 {\it Value:} 1
 
 
 {\it Default:} 1
 
 
-{\it Description:} Maximal z coordinate for the region of tracers.
+{\it Description:} Maximum z coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Minimal x}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal x}
+\item {\it Parameter name:} {\tt Minimum x}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum x}
 
 
-\index[prmindex]{Minimal x}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal x}
+\index[prmindex]{Minimum x}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum x}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimal x coordinate for the region of tracers.
+{\it Description:} Minimum x coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Minimal y}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal y}
+\item {\it Parameter name:} {\tt Minimum y}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum y}
 
 
-\index[prmindex]{Minimal y}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal y}
+\index[prmindex]{Minimum y}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum y}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimal y coordinate for the region of tracers.
+{\it Description:} Minimum y coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
-\item {\it Parameter name:} {\tt Minimal z}
-\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimal z}
+\item {\it Parameter name:} {\tt Minimum z}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Uniform box/Minimum z}
 
 
-\index[prmindex]{Minimal z}
-\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimal z}
+\index[prmindex]{Minimum z}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Uniform box/Minimum z}
 {\it Value:} 0
 
 
 {\it Default:} 0
 
 
-{\it Description:} Minimal z coordinate for the region of tracers.
+{\it Description:} Minimum z coordinate for the region of tracers.
 
 
 {\it Possible values:} [Double -1.79769e+308...1.79769e+308 (inclusive)]
@@ -9129,6 +9379,8 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 `nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the pressure.
 
+`particle count': A visualization output object that generates output about the number of particles per cell.
+
 `partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
 
 `seismic vp': A visualization output object that generates output for the seismic P-wave speed.
@@ -9158,7 +9410,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 `viscosity ratio': A visualization output object that generates output for the ratio between dislocation viscosity and diffusion viscosity.
 
 
-{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|boundary indicators|compositional vector|density|depth|dynamic topography|error indicator|friction heating|gravity|heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|partition|seismic vp|seismic vs|shear stress|specific heat|strain rate|stress|thermal conductivity|thermal diffusivity|thermal expansivity|thermodynamic phase|vertical heat flux|viscosity|viscosity ratio ]
+{\it Possible values:} [MultipleSelection Vp anomaly|Vs anomaly|artificial viscosity|boundary indicators|compositional vector|density|depth|dynamic topography|error indicator|friction heating|gravity|heating|material properties|melt fraction|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|seismic vp|seismic vs|shear stress|specific heat|strain rate|stress|thermal conductivity|thermal diffusivity|thermal expansivity|thermodynamic phase|vertical heat flux|viscosity|viscosity ratio ]
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 
@@ -9171,7 +9423,7 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 {\it Default:} 0
 
 
-{\it Description:} VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor in a background thread. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are mpi ranks).
+{\it Description:} VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are mpi ranks).
 
 
 {\it Possible values:} [Integer range 0...2147483647 (inclusive)]
@@ -9207,6 +9459,22 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 
 {\it Possible values:} [Bool]
+\item {\it Parameter name:} {\tt Temporary output location}
+\phantomsection\label{parameters:Postprocess/Visualization/Temporary output location}
+
+
+\index[prmindex]{Temporary output location}
+\index[prmindexfull]{Postprocess!Visualization!Temporary output location}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
+
+
+{\it Possible values:} [Anything]
 \item {\it Parameter name:} {\tt Time between graphical output}
 \phantomsection\label{parameters:Postprocess/Visualization/Time between graphical output}
 
@@ -9223,6 +9491,22 @@ Strictly speaking, the dynamic topography is of course a quantity that is only o
 
 
 {\it Possible values:} [Double 0...1.79769e+308 (inclusive)]
+\item {\it Parameter name:} {\tt Write in background thread}
+\phantomsection\label{parameters:Postprocess/Visualization/Write in background thread}
+
+
+\index[prmindex]{Write in background thread}
+\index[prmindexfull]{Postprocess!Visualization!Write in background thread}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to 'true' moves this process into a background thread, while the rest of the model continues.
+
+
+{\it Possible values:} [Bool]
 \end{itemize}
 
 
@@ -9623,7 +9907,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 {\it Description:} Select one of the following models:
 
-`ascii data': Implementation of a model in which the velocityis derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of commentsif they begin with '\#', but one of these lines needs tocontain the number of grid points in each dimension asfor example '\# POINTS: 3 3'.The order of the data columns has to be 'x', 'y', 'v$_x$' , 'v$_y$' in a 2d model and  'x', 'y', 'z', 'v$_x$' , 'v$_y$' , 'v$_z$' in a 3d model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the data will still be handled as cartesian,however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions. 
+`ascii data': Implementation of a model in which the velocityis derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'y', 'v$_x$' , 'v$_y$' in a 2d model and  'x', 'y', 'z', 'v$_x$' , 'v$_y$' , 'v$_z$' in a 3d model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the radial distance of the point to the bottom of the model, 'y' by the azimuth angle and 'z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is 'r', 'phi', 'theta' and not 'r', 'theta', 'phi', since this allows for dimension independent expressions.
 
 `circle': This value describes a vector field that rotates around the z-axis with constant angular velocity (i.e., with a velocity that increases with distance from the axis). The pressure is set to zero.
 
