@@ -137,15 +137,13 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
-          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/tests/adiabatic_boundary/",
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-conditions/adiabatic-boundary/",
                              Patterns::DirectoryName (),
                              "The path to the isotherm depth data file");
           prm.declare_entry ("Isotherm depth filename",
                              "adiabatic_boundary.txt",
                              Patterns::FileName (),
-                             "File from which the isotherm  depth data is read. "
-                             "Note that full path (/$DIRECTORY_PATH/filename) of the location "
-                             "of the file must be provided.");
+                             "File from which the isotherm depth data is read.");
           prm.declare_entry ("Isotherm temperature", "1673.15",
                              Patterns::Double (0),
                              "The value of the isothermal boundary temperature. Units: Kelvin.");
@@ -193,16 +191,18 @@ namespace aspect
                    ExcMessage ("This initial condition can only be used if the geometry "
                                "is an ellipsoidal chunk."));
 
-      const std::string data_file = data_directory+isotherm_file_name;
-      std::ifstream input1(data_file.c_str());
-      AssertThrow (input1.is_open(),
-                   ExcMessage (std::string("Can't read from file <") + data_file + ">"));
+      const std::string filename = data_directory+isotherm_file_name;
 
       /**
-       * Reading the data file.
+       * Read data from disk and distribute among processes
+       */
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
+
+      /**
+       * Reading data lines.
        */
       double latitude_iso, longitude_iso, depth_iso;
-      while (input1 >> latitude_iso >> longitude_iso >> depth_iso)
+      while (in >> latitude_iso >> longitude_iso >> depth_iso)
         {
           latitudes_iso.push_back(latitude_iso);
           longitudes_iso.push_back(longitude_iso);

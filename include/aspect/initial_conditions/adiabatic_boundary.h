@@ -22,6 +22,7 @@
 #include <aspect/initial_conditions/interface.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 
 namespace aspect
