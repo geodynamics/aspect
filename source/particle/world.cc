@@ -934,6 +934,8 @@ namespace aspect
       it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
+          if (it->second.get_properties().size() == property_manager->get_n_property_components())
+            continue;
           property_manager->initialize_one_particle(it->second,
                                                     values[i],
                                                     gradients[i]);
@@ -1129,9 +1131,10 @@ namespace aspect
     {
       // Generate more particles
       if (generator->isTimeToGenerateParticles(this->get_timestep_number()))
-      {
-        generate_particles();
-      }
+        {
+          generate_particles();
+          initialize_particles();
+        }
 
       do
         {
