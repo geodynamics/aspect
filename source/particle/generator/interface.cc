@@ -23,6 +23,7 @@
 #include <deal.II/base/std_cxx1x/tuple.h>
 #include <deal.II/grid/grid_tools.h>
 
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -30,6 +31,12 @@ namespace aspect
   {
     namespace Generator
     {
+      template <int dim>
+      Interface<dim>::Interface()
+        :
+        random_number_generator(5432)
+      {}
+
       template <int dim>
       Interface<dim>::~Interface ()
       {}
@@ -63,6 +70,68 @@ namespace aspect
 
         // Avoid warnings about missing return
         return std::pair<types::LevelInd,Particle<dim> >();
+      }
+
+      template <int dim>
+      std::pair<types::LevelInd,Particle<dim> >
+      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                         const types::particle_index id)
+      {
+        // Uniform distribution on the interval [0,1]. This
+        // will be used to generate random particle locations.
+        boost::uniform_01<double> uniform_distribution_01;
+
+        Point<dim> max_bounds, min_bounds;
+        // Get the bounds of the cell defined by the vertices
+        for (unsigned int d=0; d<dim; ++d)
+          {
+            min_bounds[d] = std::numeric_limits<double>::max();
+            max_bounds[d] = - std::numeric_limits<double>::max();
+          }
+
+        for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
+          {
+            const Point<dim> vertex_position = cell->vertex(v);
+            for (unsigned int d=0; d<dim; ++d)
+              {
+                min_bounds[d] = std::min(vertex_position[d], min_bounds[d]);
+                max_bounds[d] = std::max(vertex_position[d], max_bounds[d]);
+              }
+          }
+
+        // Generate random points in these bounds until one is within the cell
+        unsigned int iteration = 0;
+        const unsigned int maximum_iterations = 100;
+        Point<dim> particle_position;
+        while (iteration < maximum_iterations)
+          {
+            for (unsigned int d=0; d<dim; ++d)
+              {
+                particle_position[d] = uniform_distribution_01(random_number_generator) *
+                                       (max_bounds[d]-min_bounds[d]) + min_bounds[d];
+              }
+            try
+              {
+                const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
+                if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+                  break;
+              }
+            catch (typename Mapping<dim>::ExcTransformationFailed &)
+              {
+                // The point is not in this cell. Do nothing, just try again.
+              }
+            iteration++;
+          }
+        AssertThrow (iteration < maximum_iterations,
+                     ExcMessage ("Couldn't generate particle (unusual cell shape?). "
+                                 "The ratio between the bounding box volume in which the tracer is "
+                                 "generated and the actual cell volume is approximately: " +
+                                 boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
+
+        // Add the generated particle to the set
+        const Particle<dim> new_particle(particle_position, id);
+        const types::LevelInd cellid(cell->level(), cell->index());
+        return std::make_pair(cellid,new_particle);
       }
 
       template <int dim>

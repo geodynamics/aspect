@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -218,12 +218,16 @@ namespace aspect
 
     if (parameters.convert_to_years == true)
       {
+        statistics.set_precision("Time (years)", 12);
         statistics.set_scientific("Time (years)", true);
+        statistics.set_precision("Time step size (years)", 12);
         statistics.set_scientific("Time step size (years)", true);
       }
     else
       {
+        statistics.set_precision("Time (seconds)", 12);
         statistics.set_scientific("Time (seconds)", true);
+        statistics.set_precision("Time step size (seconds)", 12);
         statistics.set_scientific("Time step size (seconds)", true);
       }
 

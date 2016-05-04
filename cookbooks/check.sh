@@ -29,6 +29,8 @@ run_all_prms ()
     echo "Running '$prm' at `pwd` with '$BUILD' ..."
     cp $prm $prm.tmp
     echo "set End time=0" >> $prm.tmp
+    echo "set Max nonlinear iterations = 5" >> $prm.tmp
+
     $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
     rm -f $prm.tmp
     done

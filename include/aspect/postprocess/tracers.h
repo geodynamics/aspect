@@ -23,7 +23,6 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/particle/world.h>
-#include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/particle/particle.h>
@@ -62,13 +61,22 @@ namespace aspect
         initialize();
 
         /**
-         * Generate and initialize particles. This can not be done in another
-         * place, because we want to generate and initialize the particles
+         * Generate the particles. This can not be done in another
+         * place, because we want to generate the particles
          * before the first timestep, but after the initial conditions have
          * been set.
          */
         void
-        generate_and_initialize_particles();
+        generate_particles();
+
+        /**
+         * Initialize particle properties. This can not be done in another
+         * place, because we want to initialize the particle properties
+         * before the first timestep, but after the initial conditions have
+         * been set.
+         */
+        void
+        initialize_particles();
 
         /**
          * Returns a const reference to the particle world, in case anyone
@@ -146,20 +154,15 @@ namespace aspect
         Particle::World<dim> world;
 
         /**
-         * Pointer to an output object
-         */
-        std_cxx11::shared_ptr<Particle::Output::Interface<dim> > output;
-
-        /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)
          */
-        double                          output_interval;
+        double output_interval;
 
         /**
          * Records time for next output to occur
          */
-        double                          last_output_time;
+        double last_output_time;
 
         /**
          * Save the last time output was generated assuming that

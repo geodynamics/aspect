@@ -163,8 +163,6 @@ namespace aspect
       typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
 
 
-    private:
-
       /**
        * A structure that is used as an argument to functions that can work on
        * both the temperature and the compositional variables and that need to
@@ -233,7 +231,8 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Return whether this object refers to a field discretized by discontinuous finite elements.
+         * Return whether this object refers to a field discretized by
+         * discontinuous finite elements.
          */
         bool
         is_discontinuous (const Introspection<dim> &introspection) const;
@@ -257,6 +256,9 @@ namespace aspect
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
       };
+
+
+    private:
 
 
       /**
@@ -611,7 +613,7 @@ namespace aspect
        * internal::Assemblers::AssemblerBase::create_additional_material_model_outputs()
        * functions from each object in Simulator::assembler_objects.
        */
-      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &);
+      void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
@@ -1058,8 +1060,10 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
-      Introspection<dim>                  introspection;
       SimulatorSignals<dim>               signals;
+      const IntermediaryConstructorAction post_signal_creation;
+      Introspection<dim>                  introspection;
+
 
       MPI_Comm                            mpi_communicator;
 
@@ -1093,7 +1097,7 @@ namespace aspect
       TableHandler                        statistics;
 
       Postprocess::Manager<dim>           postprocess_manager;
-      TimerOutput                         computing_timer;
+      mutable TimerOutput                 computing_timer;
 
       /**
        * In output_statistics(), where we output the statistics object above,

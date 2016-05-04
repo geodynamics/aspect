@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 by the authors of the ASPECT code.
+  Copyright (C) 2013, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -95,7 +95,7 @@ namespace aspect
          * @return Boundary value of the compositional field @p
          * compositional_field at the position @p position.
          *
-         * @deprecated Use <code>composition(const types::boundary_id
+         * @deprecated Use <code>boundary_composition(const types::boundary_id
          * boundary_indicator,const Point<dim> &position, const unsigned
          * int compositional_field) const</code> instead. The reference to
          * the geometry model can be reached by deriving plugins from

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
       const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
 
       AssertThrow(tracer_postprocessor != 0,
-                  ExcMessage("The mesh refinement plugin 'tracer distribution' requires the "
+                  ExcMessage("The mesh refinement plugin 'particle density' requires the "
                              "postprocessor plugin 'tracers' to be selected. Please activate the "
                              "tracers or deactivate this mesh refinement plugin."));
 
@@ -51,10 +51,11 @@ namespace aspect
             const Particle::types::LevelInd cell_index (cell->level(),cell->index());
             const unsigned int n_tracers = particles->count(cell_index);
 
-            // Note that measure() only gives a linear approximation of the cell's volume.
-            // This is unaccurate for curved cells, but the exact measure is likely not
-            // important for this plugin since the cell distortion is usually small.
-            indicators(i) = n_tracers / cell->measure();
+            // Note  that this refinement indicator will level out the number
+            // of particles per cell, therefore creating fine cells in regions
+            // of high particle density and coarse cells in low particle
+            // density regions.
+            indicators(i) = static_cast<float>(n_tracers);
           }
       return;
     }
@@ -69,14 +70,17 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(ParticleDensity,
                                               "particle density",
                                               "A mesh refinement criterion that computes "
-                                              "refinement indicators that equal the areal (in 2d) "
-                                              "or volumetric (in 3d) density of particles in this cell. "
-                                              "This plugin is useful for models with inhomogeneous "
+                                              "refinement indicators based on the density "
+                                              "of particles. In practice this plugin "
+                                              "equilibrates the number of particles per cell, "
+                                              "leading to fine cells in high particle density regions "
+                                              "and coarse cells in low particle density regions. "
+                                              "This plugin is mostly useful for models with inhomogeneous "
                                               "particle density, e.g. when tracking an initial interface "
                                               "with a high particle density, or when the spatial particle "
                                               "density denotes the region of interest. Additionally, this "
                                               "plugin tends to balance the computational load between "
                                               "processes in parallel computations, because the particle "
-                                              "number per cell is more similar.")
+                                              "and mesh density is more aligned.")
   }
 }

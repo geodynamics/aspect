@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/assembly.h>
+#include <aspect/utilities.h>
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -75,6 +76,22 @@ namespace aspect
 
       return false;
     }
+
+    /**
+     * Helper function to construct the final std::vector of FEVariable before
+     * it is used to construct the Introspection object. Create the default
+     * setup based on parameters followed by a signal to allow modifications.
+     */
+    template <int dim>
+    std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
+                                                               SimulatorSignals<dim> &signals)
+    {
+      std::vector<VariableDeclaration<dim> > variables
+        = construct_default_variables (parameters);
+
+      signals.edit_finite_element_variables(variables);
+      return variables;
+    }
   }
 
 
@@ -101,7 +118,10 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
-    introspection (parameters),
+    post_signal_creation(
+      std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
+                       std_cxx11::ref(signals))),
+    introspection (construct_variables<dim>(parameters, signals), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),
@@ -110,7 +130,9 @@ namespace aspect
             this_mpi_process(mpi_communicator)
             == 0)),
 
-    computing_timer (pcout, TimerOutput::never,
+    computing_timer (mpi_communicator,
+                     pcout,
+                     TimerOutput::never,
                      TimerOutput::wall_times),
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
@@ -174,9 +196,6 @@ namespace aspect
     rebuild_stokes_matrix (true),
     rebuild_stokes_preconditioner (true)
   {
-    // FE data is no longer needed because we constructed finite_element above
-    introspection.free_finite_element_data();
-
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         // only open the logfile on processor 0, the other processors won't be
@@ -583,10 +602,6 @@ namespace aspect
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
 
-    // let user-provided plugins let their slots
-    // connect to the signals we provide
-    internals::SimulatorSignals::call_connector_functions (signals);
-
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
     set_assemblers();
@@ -772,6 +787,7 @@ namespace aspect
     gravity_model->update();
     heating_model_manager.update();
     adiabatic_conditions->update();
+    mesh_refinement_manager.update();
 
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
@@ -1082,7 +1098,7 @@ namespace aspect
     // cells are created.
     DoFRenumbering::hierarchical (dof_handler);
     DoFRenumbering::component_wise (dof_handler,
-                                    introspection.components_to_blocks);
+                                    introspection.get_components_to_blocks());
 
     // set up the introspection object that stores all sorts of
     // information about components of the finite element, component
@@ -1309,93 +1325,42 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
-    // initialize the component masks, if not already set
-    if (introspection.component_masks.velocities == ComponentMask())
-      {
-        introspection.component_masks.velocities
-          = finite_element.component_mask (introspection.extractors.velocities);
-        introspection.component_masks.pressure
-          = finite_element.component_mask (introspection.extractors.pressure);
-        introspection.component_masks.temperature
-          = finite_element.component_mask (introspection.extractors.temperature);
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          introspection.component_masks.compositional_fields
-          .push_back (finite_element.component_mask(introspection.extractors.compositional_fields[c]));
-      }
-
-
-    // now also compute the various partitionings between processors and blocks
+    // compute the various partitionings between processors and blocks
     // of vectors and matrices
     DoFTools::count_dofs_per_block (dof_handler,
                                     introspection.system_dofs_per_block,
-                                    introspection.components_to_blocks);
+                                    introspection.get_components_to_blocks());
     {
-      types::global_dof_index n_u = introspection.system_dofs_per_block[0],
-                              n_p = introspection.system_dofs_per_block[introspection.block_indices.pressure],
-                              n_T = introspection.system_dofs_per_block[introspection.block_indices.temperature];
+      IndexSet system_index_set = dof_handler.locally_owned_dofs();
+      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
+                                         system_index_set,
+                                         introspection.index_sets.system_partitioning);
+
+      DoFTools::extract_locally_relevant_dofs (dof_handler,
+                                               introspection.index_sets.system_relevant_set);
+      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
+                                         introspection.index_sets.system_relevant_set,
+                                         introspection.index_sets.system_relevant_partitioning);
+      if (parameters.use_direct_stokes_solver)
+        {
+          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+        }
+      else
+        {
+          introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+        }
+
+      introspection.index_sets.stokes_partitioning.clear ();
+      introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.velocities]);
+      if (!parameters.use_direct_stokes_solver)
+        {
+          introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
+        }
+
 
       Assert(!parameters.use_direct_stokes_solver ||
              (introspection.block_indices.velocities == introspection.block_indices.pressure),
              ExcInternalError());
-
-      // only count pressure once if velocity and pressure are in the same block,
-      // i.e., direct solver is used.
-      if (introspection.block_indices.velocities == introspection.block_indices.pressure)
-        n_p = 0;
-
-      std::vector<types::global_dof_index> n_C (parameters.n_compositional_fields);
-      for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-        n_C[c] = introspection.system_dofs_per_block
-                 [introspection.block_indices.compositional_fields[c]];
-
-
-      IndexSet system_index_set = dof_handler.locally_owned_dofs();
-      introspection.index_sets.system_partitioning.clear ();
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set.get_view(n_u,n_u+n_p);
-          introspection.index_sets.system_partitioning.push_back(introspection.index_sets.locally_owned_pressure_dofs);
-        }
-      else
-        {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
-        }
-      introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p,n_u+n_p+n_T));
-
-      introspection.index_sets.stokes_partitioning.clear ();
-      introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.stokes_partitioning.push_back(system_index_set.get_view(n_u,n_u+n_p));
-        }
-
-      DoFTools::extract_locally_relevant_dofs (dof_handler,
-                                               introspection.index_sets.system_relevant_set);
-      introspection.index_sets.system_relevant_partitioning.clear ();
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(0,n_u));
-      if (n_p != 0)
-        {
-          introspection.index_sets.system_relevant_partitioning
-          .push_back(introspection.index_sets.system_relevant_set.get_view(n_u,n_u+n_p));
-        }
-      introspection.index_sets.system_relevant_partitioning
-      .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p, n_u+n_p+n_T));
-
-      {
-        unsigned int n_C_so_far = 0;
-
-        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-          {
-            introspection.index_sets.system_partitioning.push_back(system_index_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                   n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            introspection.index_sets.system_relevant_partitioning
-            .push_back(introspection.index_sets.system_relevant_set.get_view(n_u+n_p+n_T+n_C_so_far,
-                                                                             n_u+n_p+n_T+n_C_so_far+n_C[c]));
-            n_C_so_far += n_C[c];
-          }
-      }
     }
 
   }

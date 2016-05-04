@@ -6,10 +6,10 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 17+0 iterations.
       Nonlinear Stokes residual: 2.73902e-06
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4 iterations.
+   Solving Stokes system... 4+0 iterations.
       Nonlinear Stokes residual: 2.33624e-13
 
    Postprocessing:

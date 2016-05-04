@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
@@ -33,66 +26,51 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 1:  t=2.81625e+12 seconds
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0003907 K, 0.002625 K
      Heat fluxes through boundary parts: -0.2152 W, 0.07768 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 2:  t=5.6325e+12 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0007814 K, 0.004368 K
      Heat fluxes through boundary parts: 0.08938 W, 0.2083 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 *** Timestep 3:  t=8e+12 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.001107 K, 0.005515 K
      Heat fluxes through boundary parts: 0.5138 W, 0.3178 W
-     Writing depth average               output-passive_comp/depth_average.gnuplot
+     Writing depth average:              output-passive_comp/depth_average.gnuplot
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      35.9s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         4 |      5.46s |        15% |
-| Assemble composition system     |         4 |      3.55s |       9.9% |
-| Assemble temperature system     |         4 |      3.78s |        11% |
-| Build Stokes preconditioner     |         4 |         3s |       8.4% |
-| Build composition preconditioner|         4 |    0.0231s |     0.064% |
-| Build temperature preconditioner|         4 |    0.0223s |     0.062% |
-| Solve Stokes system             |         4 |     0.328s |      0.91% |
-| Solve composition system        |         4 |    0.0338s |     0.094% |
-| Solve temperature system        |         4 |    0.0281s |     0.078% |
-| Initialization                  |         2 |      1.11s |       3.1% |
-| Postprocessing                  |         4 |      16.2s |        45% |
-| Setup dof systems               |         1 |     0.404s |       1.1% |
 +---------------------------------+-----------+------------+------------+
 

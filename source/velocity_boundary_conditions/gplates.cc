@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -745,7 +745,8 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     GPlates<dim>::
-    boundary_velocity (const Point<dim> &position) const
+    boundary_velocity (const types::boundary_id /*boundary_indicator*/,
+                       const Point<dim> &position) const
     {
       // We compare the depth of the current point to the lithosphere thickness.
       // The depth is calculated using squares, sums, square-roots and differences
@@ -852,18 +853,9 @@ namespace aspect
       {
         prm.enter_subsection("GPlates model");
         {
-          // Get the path to the data files. If it contains a reference
-          // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
-          // as a #define
-          data_directory        = prm.get ("Data directory");
-          {
-            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-            std::string::size_type position;
-            while (position = data_directory.find (subst_text),  position!=std::string::npos)
-              data_directory.replace (data_directory.begin()+position,
-                                      data_directory.begin()+position+subst_text.size(),
-                                      ASPECT_SOURCE_DIR);
-          }
+          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                        "$ASPECT_SOURCE_DIR",
+                                                        ASPECT_SOURCE_DIR);
 
           velocity_file_name              = prm.get ("Velocity file name");
           data_file_time_step             = prm.get_double ("Data file time step");
