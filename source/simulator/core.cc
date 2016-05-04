@@ -130,7 +130,9 @@ namespace aspect
             this_mpi_process(mpi_communicator)
             == 0)),
 
-    computing_timer (pcout, TimerOutput::never,
+    computing_timer (mpi_communicator,
+                     pcout,
+                     TimerOutput::never,
                      TimerOutput::wall_times),
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
