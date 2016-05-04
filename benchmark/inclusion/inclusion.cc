@@ -513,8 +513,11 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      unsigned int n = this->get_solution().block(0).size() +
-                       this->get_solution().block(1).size();
+      unsigned int n = this->get_solution().block(this->introspection().block_indices.velocities).size();
+
+      if(this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
+        n += this->get_solution().block(this->introspection().block_indices.pressure).size();
+
       std::ostringstream os;
       os << n << "; "
          << std::scientific  << cellwise_errors_u.l1_norm()

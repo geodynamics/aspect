@@ -8,8 +8,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 
-set Output directory                       = output/adaptive
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = Stokes only
 
@@ -42,8 +40,6 @@ subsection Material model
   subsection Inclusion
     set Viscosity jump = 1e3
   end
-
-  set Material averaging = none
 end
 
 
