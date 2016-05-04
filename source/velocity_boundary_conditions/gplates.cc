@@ -745,7 +745,8 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     GPlates<dim>::
-    boundary_velocity (const Point<dim> &position) const
+    boundary_velocity (const types::boundary_id /*boundary_indicator*/,
+                       const Point<dim> &position) const
     {
       // We compare the depth of the current point to the lithosphere thickness.
       // The depth is calculated using squares, sums, square-roots and differences
