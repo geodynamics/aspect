@@ -49,9 +49,20 @@ namespace aspect
       //parallel::distributed::Triangulation<dim> triangulation2(this->get_mpi_communicator());
       //triangulation2.copy_triangulation(this->get_triangulation());
       triangulation->load(fileName.c_str(), true);
+      DoFHandler<dim> dof_handler (*triangulation);
+      dof_handler.distribute_dofs(this->get_fe());
 //        this->get_triangulation();
-      parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
-      sol_trans.deserialize(solution);
+     // parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
+      parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
+      LinearAlgebra::BlockVector sol(this->get_solution());
+      sol_trans.deserialize(sol);
+      triangulation->clear();
+
+      std::string fileNameTmp = this->get_output_directory() + "/" + "solution-" + Utilities::int_to_string(this->get_timestep_number(), 5) + ".txt"; 
+      std::ofstream output(fileNameTmp);
+      dealii::BlockVector<double> solTmp(sol);
+      solTmp.print(output);
+      output.close(); 
     }
 
     template <int dim>
