@@ -530,7 +530,6 @@ namespace aspect
                     average_entropy - (-global_for_max[0]));
   }
 
-
   template <int dim>
   double
   Simulator<dim>::
@@ -2834,7 +2833,6 @@ namespace aspect
     for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
       {
         const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-
         if ((has_boundary_face_assemblers && face->at_boundary()) ||
             (has_interior_face_assemblers && !face->at_boundary()))
           {

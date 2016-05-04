@@ -101,7 +101,6 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics,tracers
 
   subsection Tracers
-    set Timing output = true
     set Number of tracers = 10
     set Time between data output = 70
     set Data output format = ascii

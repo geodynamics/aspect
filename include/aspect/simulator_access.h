@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2015, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #ifndef __aspect__simulator_access_h
 #define __aspect__simulator_access_h
 
+#include <deal.II/base/timer.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/dofs/dof_handler.h>
@@ -157,6 +158,15 @@ namespace aspect
        */
       MPI_Comm
       get_mpi_communicator () const;
+
+      /**
+       * Return the timer object for this simulation. Since the timer is
+       * mutable in the Simulator class, this allows plugins to define their
+       * own sections in the timer to measure the time spent in sections of
+       * their code.
+       */
+      TimerOutput &
+      get_computing_timer () const;
 
       /**
        * Return a reference to the stream object that only outputs something
