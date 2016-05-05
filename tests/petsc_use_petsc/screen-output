@@ -17,7 +17,7 @@ Number of degrees of freedom: 49 (18+4+9+9+9)
    Solving peridotite system ... 0 iterations.
    Solving eclogite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-petsc_use_petsc/solution-00000

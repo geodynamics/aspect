@@ -28,9 +28,12 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/output/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
+
+#include <deal.II/base/timer.h>
 
 namespace aspect
 {
@@ -72,37 +75,9 @@ namespace aspect
         };
 
         /**
-         * Initialize the particle world. Most of the arguments are read by the
-         * Tracer postprocessor and handed to this function, because the
-         * particle world currently does not declare own input parameters.
-         *
-         * @param [in] generator The particle generator for this world.
-         * @param [in] integrator The Integrator scheme for this world.
-         * @param [in] interpolator The Interpolator scheme for this
-         * world. This object defines how particle properties are interpolated
-         * to arbitrary positions within the domain. An example could be to
-         * take the properties of the closest particle, but more complicated
-         * schemes are possible.
-         * @param [in] manager The property manager for this world.
-         * @param [in] load_balancing The strategy used to balance the
-         * computational load for particle advection across processes.
-         * @param [in] max_part_per_cell Threshold for removing
-         * particles from cells.
-         * @param [in] weight The computational load that is associated with
-         * integrating and updating one particle.
-         *
-         * @note World takes ownership of the @p generator, @p integrator, @p
-         * interpolator, and @p manager object in this function.
-         *
+         * Initialize the particle world.
          */
-        void initialize(Generator::Interface<dim> *generator,
-                        Integrator::Interface<dim> *integrator,
-                        Interpolator::Interface<dim> *interpolator,
-                        Property::Manager<dim> *manager,
-                        const ParticleLoadBalancing &load_balancing,
-                        const unsigned int min_part_per_cell,
-                        const unsigned int max_part_per_cell,
-                        const unsigned int weight);
+        void initialize();
 
         /**
          * Get the particle property manager for this particle world.
@@ -223,10 +198,44 @@ namespace aspect
         void update_particles();
 
         /**
+         * Generate the selected particle output.
+         */
+        std::string
+        generate_output() const;
+
+        /**
          * Serialize the contents of this class.
          */
         template <class Archive>
         void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of the object.
+         */
+        virtual
+        void
+        save (std::ostringstream &os) const;
+
+        /**
+         * Restore the state of the object.
+         */
+        virtual
+        void
+        load (std::istringstream &is);
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
 
       private:
         /**
@@ -250,6 +259,11 @@ namespace aspect
          * these properties.
          */
         std_cxx11::unique_ptr<Property::Manager<dim> > property_manager;
+
+        /**
+         * Pointer to an output object
+         */
+        std_cxx11::unique_ptr<Output::Interface<dim> > output;
 
         /**
          * Set of particles currently in the local domain, organized by

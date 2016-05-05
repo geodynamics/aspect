@@ -1,22 +1,22 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
- This file is part of ASPECT.
+  This file is part of ASPECT.
 
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
 
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file doc/COPYING.  If not see
- <http://www.gnu.org/licenses/>.
- */
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file doc/COPYING.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
 
 #include <aspect/particle/world.h>
 #include <aspect/global.h>
@@ -49,25 +49,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize(Generator::Interface<dim> *particle_generator,
-                           Integrator::Interface<dim> *particle_integrator,
-                           Interpolator::Interface<dim> *property_interpolator,
-                           Property::Manager<dim> *manager,
-                           const ParticleLoadBalancing &load_balancing,
-                           const unsigned int min_part_per_cell,
-                           const unsigned int max_part_per_cell,
-                           const unsigned int weight)
+    World<dim>::initialize()
     {
       connect_to_signals(this->get_signals());
-
-      generator.reset(particle_generator);
-      integrator.reset(particle_integrator);
-      interpolator.reset(property_interpolator);
-      property_manager.reset(manager);
-      particle_load_balancing = load_balancing;
-      min_particles_per_cell = min_part_per_cell;
-      max_particles_per_cell = max_part_per_cell;
-      tracer_weight = weight;
 
 #if DEAL_II_VERSION_GTE(8,4,0)
       if (particle_load_balancing == repartition)
@@ -102,6 +86,27 @@ namespace aspect
     World<dim>::get_particles() const
     {
       return particles;
+    }
+
+    template <int dim>
+    std::string
+    World<dim>::generate_output() const
+    {
+      // If we do not write output
+      // return early with the number of particles that were advected
+      if (!output)
+        return "";
+
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Output");
+      const double output_time = (this->convert_output_to_years() ?
+                                  this->get_time() / year_in_seconds :
+                                  this->get_time());
+
+      const std::string filename = output->output_particle_data(particles,
+                                                                property_manager->get_data_info(),
+                                                                output_time);
+
+      return filename;
     }
 
     template <int dim>
@@ -168,6 +173,8 @@ namespace aspect
     void
     World<dim>::register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
     {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, store");
+
       // Only save and load tracers if there are any, we might get here for
       // example before the tracer generation in timestep 0, or if somebody
       // selected the tracer postprocessor but generated 0 tracers
@@ -197,6 +204,8 @@ namespace aspect
     void
     World<dim>::register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
     {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, load");
+
       // All particles have been stored, when we reach this point. Empty the
       // map and fill with new particles.
       particles.clear();
@@ -558,102 +567,108 @@ namespace aspect
       std::multimap<types::subdomain_id, Particle<dim> > moved_particles_domain;
       std::multimap<types::LevelInd, Particle<dim> >     lost_particles;
 
-      // Find the cells that the particles moved to.
-      // Note that the iterator in the following loop is increased in a
-      // very particular way, because it is changed, if elements
-      // get erased. A change can result in invalid memory access.
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator   it;
-      for (it=particles.begin(); it!=particles.end();)
-        {
-          // The cell the particle is in
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator current_cell;
-          bool found_cell = false;
+      {
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
 
-          // If we know the particle's old cell, check if it is still inside
-          // or in one of its neighbors
-          if (it->first != std::make_pair(-1,-1))
-            {
-              current_cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator (&(this->get_triangulation()), it->first.first, it->first.second);
+        // Find the cells that the particles moved to.
+        // Note that the iterator in the following loop is increased in a
+        // very particular way, because it is changed, if elements
+        // get erased. A change can result in invalid memory access.
+        typename std::multimap<types::LevelInd, Particle<dim> >::iterator   it;
+        for (it=particles.begin(); it!=particles.end();)
+          {
+            // The cell the particle is in
+            typename parallel::distributed::Triangulation<dim>::active_cell_iterator current_cell;
+            bool found_cell = false;
 
-              if (particle_is_in_cell(it->second,current_cell))
-                {
-                  // The particle is still in the old cell, move on to next particle
-                  ++it;
-                  continue;
-                }
+            // If we know the particle's old cell, check if it is still inside
+            // or in one of its neighbors
+            if (it->first != std::make_pair(-1,-1))
+              {
+                current_cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator (&(this->get_triangulation()), it->first.first, it->first.second);
 
-              // Now try again for all of the neighbors of the previous cell
-              // Most likely we will find the particle in them.
-              const std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
-              neighbor_cells = neighbor_cells_to_search(it->second,current_cell);
+                if (particle_is_in_cell(it->second,current_cell))
+                  {
+                    // The particle is still in the old cell, move on to next particle
+                    ++it;
+                    continue;
+                  }
 
-              for (typename std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin();
-                   neighbor_cell != neighbor_cells.end(); ++neighbor_cell)
-                {
-                  if (particle_is_in_cell(it->second,neighbor_cell->second))
-                    {
-                      current_cell = neighbor_cell->second;
-                      found_cell = true;
-                      break;
-                    }
-                }
-            }
+                // Now try again for all of the neighbors of the previous cell
+                // Most likely we will find the particle in them.
+                const std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+                neighbor_cells = neighbor_cells_to_search(it->second,current_cell);
 
-          if (!found_cell)
-            {
-              // The particle is not in its old cell or its surrounding.
-              // Look for the new cell in the whole domain.
-              // This case should be rare.
-              try
-                {
-                  current_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
-                }
-              catch (GridTools::ExcPointNotFound<dim> &)
-                {
-                  // We can find no cell for this particle. It has left the
-                  // domain due to an integration error or an open boundary.
-                  lost_particles.insert(*it);
+                for (typename std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin();
+                     neighbor_cell != neighbor_cells.end(); ++neighbor_cell)
+                  {
+                    if (particle_is_in_cell(it->second,neighbor_cell->second))
+                      {
+                        current_cell = neighbor_cell->second;
+                        found_cell = true;
+                        break;
+                      }
+                  }
+              }
 
-                  // Now remove the lost particle and continue with next particle.
-                  // Also make sure we do not invalidate the iterator we are increasing.
-                  const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
-                  it++;
-                  particles.erase(particle_to_delete);
-                  continue;
-                }
-            }
+            if (!found_cell)
+              {
+                // The particle is not in its old cell or its surrounding.
+                // Look for the new cell in the whole domain.
+                // This case should be rare.
+                try
+                  {
+                    current_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+                  }
+                catch (GridTools::ExcPointNotFound<dim> &)
+                  {
+                    // We can find no cell for this particle. It has left the
+                    // domain due to an integration error or an open boundary.
+                    lost_particles.insert(*it);
+
+                    // Now remove the lost particle and continue with next particle.
+                    // Also make sure we do not invalidate the iterator we are increasing.
+                    const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+                    it++;
+                    particles.erase(particle_to_delete);
+                    continue;
+                  }
+              }
 
 
-          // Reinsert the particle into our domain if we own its cell.
-          // Mark it for MPI transfer otherwise
-          if (current_cell->is_locally_owned())
-            {
-              const types::LevelInd found_cell = std::make_pair(current_cell->level(),current_cell->index());
-              moved_particles_cell.insert(std::make_pair(found_cell, it->second));
-            }
-          else
-            moved_particles_domain.insert(std::make_pair(current_cell->subdomain_id(),it->second));
+            // Reinsert the particle into our domain if we own its cell.
+            // Mark it for MPI transfer otherwise
+            if (current_cell->is_locally_owned())
+              {
+                const types::LevelInd found_cell = std::make_pair(current_cell->level(),current_cell->index());
+                moved_particles_cell.insert(std::make_pair(found_cell, it->second));
+              }
+            else
+              moved_particles_domain.insert(std::make_pair(current_cell->subdomain_id(),it->second));
 
-          // Now remove the resorted particle and continue with next particle.
-          // Also make sure we do not invalidate the iterator we are increasing.
-          const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
-          it++;
-          particles.erase(particle_to_delete);
-        }
+            // Now remove the resorted particle and continue with next particle.
+            // Also make sure we do not invalidate the iterator we are increasing.
+            const typename std::multimap<types::LevelInd, Particle<dim> >::iterator particle_to_delete = it;
+            it++;
+            particles.erase(particle_to_delete);
+          }
 
-      // If particles fell out of the mesh, put them back in if they have crossed
-      // a periodic boundary. If they have left the mesh otherwise, they will be
-      // discarded by being deleted from lost_particles, and not inserted anywhere.
-      move_particles_back_into_mesh(lost_particles,
-                                    moved_particles_cell,
-                                    moved_particles_domain);
+        // If particles fell out of the mesh, put them back in if they have crossed
+        // a periodic boundary. If they have left the mesh otherwise, they will be
+        // discarded by being deleted from lost_particles, and not inserted anywhere.
+        move_particles_back_into_mesh(lost_particles,
+                                      moved_particles_cell,
+                                      moved_particles_domain);
 
-      // Reinsert all local particles with their cells
-      particles.insert(moved_particles_cell.begin(),moved_particles_cell.end());
-
+        // Reinsert all local particles with their cells
+        particles.insert(moved_particles_cell.begin(),moved_particles_cell.end());
+      }
       // Swap lost particles between processors if we have more than one process
       if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
-        send_recv_particles(moved_particles_domain);
+        {
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Communicate");
+          send_recv_particles(moved_particles_domain);
+        }
     }
 
     template <int dim>
@@ -1013,6 +1028,8 @@ namespace aspect
     void
     World<dim>::generate_particles()
     {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
+
       generator->generate_particles(particles);
       update_n_global_particles();
       update_next_free_particle_index();
@@ -1023,9 +1040,10 @@ namespace aspect
     World<dim>::initialize_particles()
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
-
       if (property_manager->get_n_property_components() > 0)
         {
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialize properties");
+
           // Loop over all cells and initialize the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),
@@ -1055,6 +1073,8 @@ namespace aspect
 
       if (property_manager->get_n_property_components() > 0)
         {
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
+
           // Loop over all cells and update the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),
@@ -1081,6 +1101,7 @@ namespace aspect
     World<dim>::advect_particles()
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
       // Loop over all cells and advect the particles cell-wise
       typename DoFHandler<dim>::active_cell_iterator
@@ -1124,6 +1145,171 @@ namespace aspect
 
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
+    }
+
+    template <int dim>
+    void
+    World<dim>::save (std::ostringstream &os) const
+    {
+      aspect::oarchive oa (os);
+      oa << (*this);
+      output->save(os);
+    }
+
+    template <int dim>
+    void
+    World<dim>::load (std::istringstream &is)
+    {
+      aspect::iarchive ia (is);
+      ia >> (*this);
+      output->load(is);
+    }
+
+    template <int dim>
+    void
+    World<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Tracers");
+        {
+          prm.declare_entry ("Load balancing strategy", "none",
+                             Patterns::Selection ("none|remove particles|"
+                                                  "remove and add particles|repartition"),
+                             "Strategy that is used to balance the computational"
+                             "load across processors for adaptive meshes.");
+          prm.declare_entry ("Minimum tracers per cell", "0",
+                             Patterns::Integer (0),
+                             "Lower limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent fine cells from being empty "
+                             "of particles. It will be checked and enforced after mesh "
+                             "refinement and after particle movement. "
+                             "If there are "
+                             "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
+                             "particles in one cell then "
+                             "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
+                             "particles are generated and randomly placed in "
+                             "this cell. If the particles carry properties the "
+                             "individual property plugins control how the "
+                             "properties of the new particles are initialized.");
+          prm.declare_entry ("Maximum tracers per cell", "100",
+                             Patterns::Integer (0),
+                             "Upper limit for particle number per cell. This limit is "
+                             "useful for adaptive meshes to prevent coarse cells from slowing down "
+                             "the whole model. It will be checked and enforced after mesh "
+                             "refinement, after MPI transfer of particles and after particle "
+                             "movement. If there are "
+                             "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
+                             "particles in one cell then "
+                             "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
+                             "particles in this cell are randomly chosen and destroyed.");
+          prm.declare_entry ("Tracer weight", "10",
+                             Patterns::Integer (0),
+                             "Weight that is associated with the computational load of "
+                             "a single particle. The sum of tracer weights will be added "
+                             "to the sum of cell weights to determine the partitioning of "
+                             "the mesh. Every cell without tracers is associated with a "
+                             "weight of 1000.");
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+
+      Generator::declare_parameters<dim>(prm);
+      Output::declare_parameters<dim>(prm);
+      Integrator::declare_parameters<dim>(prm);
+      Interpolator::declare_parameters<dim>(prm);
+      Property::Manager<dim>::declare_parameters(prm);
+    }
+
+
+    template <int dim>
+    void
+    World<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      // First do some error checking. The current algorithm does not find
+      // the cells around particles, if the particles moved more than one
+      // cell in one timestep and we are running in parallel, because they
+      // skip the layer of ghost cells around our local domain. Assert this
+      // is not possible.
+      const double CFL_number = prm.get_double ("CFL number");
+      const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+      AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
+                  ExcMessage("The current tracer algorithm does not work in "
+                             "parallel if the CFL number is larger than 1.0, because "
+                             "in this case tracers can move more than one cell's "
+                             "diameter in one time step and therefore skip the layer "
+                             "of ghost cells around the local subdomain."));
+
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Tracers");
+        {
+          min_particles_per_cell = prm.get_integer("Minimum tracers per cell");
+          max_particles_per_cell = prm.get_integer("Maximum tracers per cell");
+
+          AssertThrow(min_particles_per_cell <= max_particles_per_cell,
+                      ExcMessage("Please select a 'Minimum tracers per cell' parameter "
+                                 "that is smaller than or equal to the 'Maximum tracers per cell' parameter."));
+
+          tracer_weight = prm.get_integer("Tracer weight");
+
+          if (prm.get ("Load balancing strategy") == "none")
+            particle_load_balancing = no_balancing;
+          else if (prm.get ("Load balancing strategy") == "remove particles")
+            particle_load_balancing = remove_particles;
+          else if (prm.get ("Load balancing strategy") == "remove and add particles")
+            particle_load_balancing = remove_and_add_particles;
+          else if (prm.get ("Load balancing strategy") == "repartition")
+            particle_load_balancing = repartition;
+          else
+            AssertThrow (false, ExcNotImplemented());
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
+
+      // Create a generator object depending on what the parameters specify
+      generator.reset(Generator::create_particle_generator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      generator->parse_parameters(prm);
+
+      // Create an output object depending on what the parameters specify
+      output.reset(Output::create_particle_output<dim>
+                   (prm));
+
+      // We allow to not generate any output plugin, in which case output is
+      // a null pointer. Only initialize output if it was created.
+      if (output)
+        {
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
+            sim->initialize_simulator (this->get_simulator());
+          output->parse_parameters(prm);
+          output->initialize();
+        }
+
+      // Create an integrator object depending on the specified parameter
+      integrator.reset(Integrator::create_particle_integrator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      integrator->parse_parameters(prm);
+
+      // Create an interpolator object depending on the specified parameter
+      interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      interpolator->parse_parameters(prm);
+
+      // Creaty an property_manager object and initialize its properties
+      property_manager.reset(new Property::Manager<dim> ());
+      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+      sim->initialize_simulator (this->get_simulator());
+      property_manager->parse_parameters(prm);
+      property_manager->initialize();
     }
   }
 }

@@ -52,32 +52,32 @@ namespace aspect
 
         // TODO: currently old_velocity is not used in this scheme, but it should,
         // to make it at least second-order accurate in time.
-        typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
-        typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
+        typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
 
         for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-             it != end_particle; ++it, ++vel, ++old_vel)
+             it != end_particle; ++it, ++velocity, ++old_velocity)
           {
             const types::particle_index particle_id = it->second.get_id();
             if (integrator_substep == 0)
               {
                 loc0[particle_id] = it->second.get_location();
-                k1[particle_id] = dt * (*vel);
+                k1[particle_id] = dt * (*old_velocity);
                 it->second.set_location(it->second.get_location() + 0.5*k1[particle_id]);
               }
             else if (integrator_substep == 1)
               {
-                k2[particle_id] = dt * (*vel);
+                k2[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
                 it->second.set_location(loc0[particle_id] + 0.5*k2[particle_id]);
               }
             else if (integrator_substep == 2)
               {
-                k3[particle_id] = dt * (*vel);
+                k3[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
                 it->second.set_location(loc0[particle_id] + k3[particle_id]);
               }
             else if (integrator_substep == 3)
               {
-                const Tensor<1,dim> k4 = dt * (*vel);
+                const Tensor<1,dim> k4 = dt * (*velocity);
                 it->second.set_location(loc0[particle_id] + (k1[particle_id] + 2.0*k2[particle_id] + 2.0*k3[particle_id] + k4)/6.0);
               }
             else

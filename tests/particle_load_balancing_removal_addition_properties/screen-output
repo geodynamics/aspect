@@ -6,7 +6,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20 iterations.
+   Solving Stokes system... 20+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition_properties/particle-00000
@@ -18,7 +18,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      Number of advected particles: 70
@@ -30,7 +30,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Number of advected particles: 73
@@ -42,7 +42,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition_properties/particle-00001

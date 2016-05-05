@@ -12,9 +12,9 @@
 # 12: Time step size (seconds)
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.0000e+00 64 659 289 289 0  0 24 25  24 1.0090e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00000 
-1 1.0090e+02 25 296 129 129 0 10 24 25  93 1.7352e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00001 
-2 2.7442e+02 25 296 129 129 0  9 24 25  89 1.3347e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00002 
-3 4.0789e+02 25 296 129 129 0 11 24 25  91 6.9759e+01 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00003 
-4 4.7765e+02 16 207  90  90 0 10 24 25 101 2.2351e+01 10                                                                                                       "" 
-5 5.0000e+02 10 132  57  57 0  8 23 24  95 5.7746e+01 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00004 
+0 0.000000000000e+00 64 659 289 289 0  0 24 25  24 1.008967269522e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00000 
+1 1.008967269522e+02 25 296 129 129 0 10 24 25  93 1.735217300301e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00001 
+2 2.744184569823e+02 25 296 129 129 0  9 24 25  89 1.334715798382e+02 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00002 
+3 4.078900368205e+02 25 296 129 129 0 11 24 25  91 6.975919412787e+01 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00003 
+4 4.776492309484e+02 16 207  90  90 0 10 24 25 101 2.235076905163e+01 10                                                                                                       "" 
+5 5.000000000000e+02 10 132  57  57 0  8 23 24  95 5.774584945011e+01 10 output-particle_load_balancing_refinement_02/output-particle_load_balancing_refinement_02/particle-00004 

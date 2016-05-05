@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -123,10 +123,10 @@ namespace aspect
                                                  "Implementation of a model in which the boundary "
                                                  "velocity is derived from files containing data "
                                                  "in ascii format. Note the required format of the "
-                                                 "input data: The first lines may contain any number of comments"
-                                                 "if they begin with '#', but one of these lines needs to"
-                                                 "contain the number of grid points in each dimension as"
-                                                 "for example '# POINTS: 3 3'."
+                                                 "input data: The first lines may contain any number of comments "
+                                                 "if they begin with '#', but one of these lines needs to "
+                                                 "contain the number of grid points in each dimension as "
+                                                 "for example '# POINTS: 3 3'. "
                                                  "The order of the data columns "
                                                  "has to be 'x', 'velocity_x', 'velocity_y' in a 2d model "
                                                  "or 'x', 'y', 'velocity_x', 'velocity_y', "
@@ -137,7 +137,7 @@ namespace aspect
                                                  "followed by the second in order to "
                                                  "assign the correct data to the prescribed coordinates."
                                                  "If you use a spherical model, "
-                                                 "then the velocities will still be handled as cartesian,"
+                                                 "then the velocities will still be handled as Cartesian, "
                                                  "however the assumed grid changes. 'x' will be replaced by "
                                                  "the radial distance of the point to the bottom of the model, "
                                                  "'y' by the azimuth angle and 'z' by the polar angle measured "
@@ -149,6 +149,6 @@ namespace aspect
                                                  "No matter which geometry model is chosen, "
                                                  "the unit of the velocities is assumed to be "
                                                  "m/s or m/yr depending on the 'Use years in output "
-                                                 "instead of seconds' flag. ")
+                                                 "instead of seconds' flag.")
   }
 }

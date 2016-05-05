@@ -12,7 +12,7 @@
 # 12: Time step size (seconds)
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.0000e+00 16 187 81 81 0 0 20 21 20 2.4849e+02 103 output-particle_load_balancing_removal_addition_properties/output-particle_load_balancing_removal_addition_properties/particle-00000 
-1 2.4849e+02 10 132 57 57 0 9 21 22 66 1.9829e+02  70                                                                                                                                   "" 
-2 4.4677e+02 10 132 57 57 0 8 19 20 60 5.3229e+01  73                                                                                                                                   "" 
-3 5.0000e+02 10 132 57 57 0 7 18 19 57 1.7766e+02  74 output-particle_load_balancing_removal_addition_properties/output-particle_load_balancing_removal_addition_properties/particle-00001 
+0 0.000000000000e+00 16 187 81 81 0 0 20 21 20 2.484857051185e+02 103 output-particle_load_balancing_removal_addition_properties/output-particle_load_balancing_removal_addition_properties/particle-00000 
+1 2.484857051185e+02 10 132 57 57 0 9 21 22 66 1.982857872599e+02  70                                                                                                                                   "" 
+2 4.467714923784e+02 10 132 57 57 0 8 19 20 60 5.322850762156e+01  73                                                                                                                                   "" 
+3 5.000000000000e+02 10 132 57 57 0 7 18 19 57 1.776583963089e+02  74 output-particle_load_balancing_removal_addition_properties/output-particle_load_balancing_removal_addition_properties/particle-00001 
