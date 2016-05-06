@@ -191,15 +191,15 @@ namespace aspect
         prm.leave_subsection();
 
         if (repeatedlyGenerateParticles)
-        {
-          AssertThrow((name != "probability density function") && (name != "random uniform"),
-                  ExcMessage ("ASPECT cannot generate particles multiple times for the specified generator: "
-                              + name + ".\n" +
-                              "Select one of the following models: ascii file, uniform box or uniform radial.")) 
-          AssertThrow(nTimeStepNumberInterval > 0, 
-                  ExcMessage ("Please specify a valid time step number interval that is larger than 0."
-                              "\n Specify as 1 to generate particles at every time step."))
-        }
+          {
+            AssertThrow((name != "probability density function") && (name != "random uniform"),
+                        ExcMessage ("ASPECT cannot generate particles multiple times for the specified generator: "
+                                    + name + ".\n" +
+                                    "Select one of the following models: ascii file, uniform box or uniform radial."))
+            AssertThrow(nTimeStepNumberInterval > 0,
+                        ExcMessage ("Please specify a valid time step number interval that is larger than 0."
+                                    "\n Specify as 1 to generate particles at every time step."))
+          }
       }
 
       template <int dim>

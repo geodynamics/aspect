@@ -1,0 +1,247 @@
+# At the top, we define the number of space dimensions we would like to
+# work in:
+
+set Dimension                              = 2
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+
+set Use years in output instead of seconds = false
+set End time                               = 1.0
+set CFL number                             = 0.9
+set Output directory = particle_injection
+set Resume computation = false
+# Then there are variables that describe the tolerance of
+# the linear solver as well as how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+
+set Linear solver tolerance                = 1e-7
+set Temperature solver tolerance           = 1e-10
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+#set Nonlinear solver scheme = 
+
+#subsection Prescribed Stokes solution
+#  set Model name = circle
+#end
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    # set X extent = 5.65625  #
+    set X extent = 2.8125 
+    set Y extent = 1.0
+    set X repetitions = 90
+    set Y repetitions = 32
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+# subsection Initial conditions
+#  set Model name = function
+#  # EGP 2015-11-17: This st the perturbation T' from equation (6.312) in
+#  # page 495 in Geodynamics by Turcotte and Schubert (2/e). 
+#  subsection Function
+#    set Variable names      = x, z
+#     set Function constants  = T1=1, L=2.8125, zbox=1, pi=3.14159265359, z1=0.1, z2=0.9
+#     set Function expression = if(z<z1*zbox, (T1-z/zbox), if(z>z2*zbox, (zbox-z)/zbox, 0.5)) + 0.1 * sin(pi*z) * cos(pi*x/L)
+#  end
+#end 
+subsection Initial conditions
+  set Model name = function
+  # EGP 2015-11-17: This set the perturbation T' from equation (6.312) in
+  # page 495 in Geodynamics by Turcotte and Schubert (2/e). 
+  # EGP 2016-11-17: I removed 
+  # the perturbation cos(pi*z) in the vertical direction z.
+  subsection Function
+    set Variable names      = x, z
+    set Function constants  = perturb_magnitude=0.01, L=2.8125, pi=3.1415926535897932
+    set Function expression = (1.0-z) + perturb_magnitude*cos(2*pi*x/L) # T0*cos(pi*y)*cos(2*pi*x/L)
+  end
+end
+
+
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above. (As will be seen
+# in the next section, the actual temperature prescribed here
+# at the left and right does not matter.)
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = bottom, top # left, right 
+
+  # The next parameters then describe on which parts of the
+  # boundary we prescribe a zero or nonzero velocity and
+  # on which parts the flow is allowed to be tangential.
+  # Here, all four sides of the box allow tangential
+  # unrestricted flow but with a zero normal component:
+
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = bottom, top, left, right
+
+  # The final part of this section describes whether we
+  # want to include adiabatic heating (from a small
+  # compressibility of the medium) or from shear friction,
+  # as well as the rate of internal heating. We do not
+  # want to use any of these options here:
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+
+# HL: A Rayleigh number of 1E5
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10   # = Ra / Thermal expansion coefficient
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1E-3
+  end
+end
+
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement.
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. 
+
+subsection Postprocess
+   set List of postprocessors = basic statistics, visualization, tracers, heat flux statistics, velocity statistics
+#  set List of postprocessors = basic statistics, visualization, heat flux statistics, velocity statistics
+#  set List of postprocessors = basic statistics, heat flux statistics, velocity statistics
+#  set List of postprocessors = basic statistics, heat flux statistics, velocity statistics, tracers
+
+   subsection Visualization
+     set Output format                 = vtu
+     set Number of grouped files       = 1
+     set Time between graphical output = 0
+   end
+
+  subsection Tracers
+    set Number of tracers = 1440 # = 45*32
+    set Time between data output = 0
+    set Data output format = vtu
+
+    set Particle generator name = uniform box
+    set Integration scheme = rk2
+
+    set List of tracer properties = initial position, position, velocity
+
+    subsection Generator
+      # Prevent particles from being placed on the boundary layer within a 
+      # length of 0.5 * 1/32 = 0.015625
+      set Initially generate particles      = false
+      set Generate particles multiple times = true
+      set Time step number interval = 500
+      subsection Uniform box
+        set Minimum x = 0.015625
+        set Maximum x = 1.390625
+        set Minimum y = 0.015625
+        set Maximum y = 0.984375
+      end
+      subsection Uniform radial
+        set Minimum radius = 0.015625
+        set Maximum radius = 0.484375
+        set Minimum longitude =   0.0
+        set Maximum longitude = 360.0
+        set Center x = 0.703125
+        set Center y = 0.5
+        set Radial layers = 2
+      end
+    end
+  end
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria = end step
+  set End step = 1000
+#  subsection Steady state velocity
+#    set Maximum relative deviation = 0.05
+#    set Time in steady state       = 0.5
+#  end
+end
+
+subsection Checkpointing
+#  set Steps between checkpoint = 500
+#  set Restart from time step = 4
+end
