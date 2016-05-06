@@ -68,7 +68,8 @@ namespace aspect
         iterated_IMPES,
         iterated_Stokes,
         Stokes_only,
-        Advection_only
+        Advection_only,
+        Binary_input
       };
     };
 
@@ -170,6 +171,7 @@ namespace aspect
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
     std::string                    output_directory;
+    std::string                    input_directory;
     double                         surface_pressure;
     double                         adiabatic_surface_temperature;
     unsigned int                   timing_output_frequency;

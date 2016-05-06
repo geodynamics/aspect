@@ -343,7 +343,7 @@ namespace aspect
 
       const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
-      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
+      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only || parameters.nonlinear_solver!=NonlinearSolver::Binary_input)
         {
           // next make sure that all listed indicators are actually used by
           // this geometry
@@ -361,7 +361,7 @@ namespace aspect
           // next make sure that there are no listed indicators
           for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
             AssertThrow (boundary_indicator_lists[i].empty(),
-                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
+                         ExcMessage ("With solver type Advection only or Binary data, one cannot set boundary conditions for velocity."));
         }
 
 
@@ -1976,6 +1976,26 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::Binary_input:
+        {
+          // Identical to IMPES except does not solve Stokes equation
+          if (parameters.free_surface_enabled)
+            free_surface->execute ();
+       
+          std::string fileName = parameters.input_directory + "/" + "solution-" + Utilities::int_to_string(timestep_number, 5) + ".mesh";
+          triangulation.load(fileName.c_str());
+          parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
+          sol_trans.deserialize (solution);
+          //triangulation.clear();
+       
+          /*std::string fileNameTmp = parameters.output_directory + "/" + "solution-" + Utilities::int_to_string(timestep_number, 5) + ".txt";
+          std::ofstream output(fileNameTmp);
+          dealii::BlockVector<double> solTmp(solution);
+          solTmp.print(output);
+          output.close(); */
+          break;  
+        }   
+          
         default:
           Assert (false, ExcNotImplemented());
       }
