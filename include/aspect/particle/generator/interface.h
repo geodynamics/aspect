@@ -132,6 +132,9 @@ namespace aspect
           bool
           isTimeToGenerateParticles(unsigned int timeStepNumber);
 
+          bool
+          getGenerateParticlesInitially();
+
           unsigned int
           getParticleIdx();
 
@@ -161,6 +164,7 @@ namespace aspect
            * Control structure for adding particles to the Particle world.
            */
           bool repeatedlyGenerateParticles;
+          bool generateParticlesInitially;
           unsigned int nTimeStepNumberInterval;
           unsigned int maxParticleIndex;
       };

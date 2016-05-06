@@ -151,6 +151,9 @@ namespace aspect
               prm.declare_entry("Time step number interval", "100",
                                 Patterns::Integer(),
                                 "Generate particles at ever Time step number interval");
+              prm.declare_entry("Initially generate particles", "true",
+                                Patterns::Bool(),
+                                "Set to false to prevent the geneartion of particles at time step number 0.");
             }
             prm.leave_subsection ();
           }
@@ -179,6 +182,7 @@ namespace aspect
               repeatedlyGenerateParticles = prm.get_bool("Generate particles multiple times");
               if (repeatedlyGenerateParticles)
                 nTimeStepNumberInterval = prm.get_integer("Time step number interval");
+              generateParticlesInitially = prm.get_bool("Initially generate particles");
             }
             prm.leave_subsection();
           }
@@ -206,6 +210,13 @@ namespace aspect
           return false;
         else
           return true;
+      }
+
+      template <int dim>
+      bool
+      Interface<dim>::getGenerateParticlesInitially()
+      {
+        return generateParticlesInitially;
       }
 
       template <int dim>

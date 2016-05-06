@@ -1040,6 +1040,8 @@ namespace aspect
     void
     World<dim>::generate_particles()
     {
+      if (!generator->getGenerateParticlesInitially() && this->get_timestep_number() == 0)
+        return;
       particle_timer->enter_section("Generate particles");
 
       generator->generate_particles(particles);
