@@ -295,16 +295,6 @@ namespace aspect
          */
         ParticleLoadBalancing particle_load_balancing;
 
-
-        /**
-         * Write a summary of the computing time spent in each part
-         * of the particle algorithm every time particle output is
-         * written. This is mostly useful for benchmarking purposes.
-         * ASPECT's usual output of compute times is unaffected by
-         * this additional output.
-         */
-        bool print_timing_output;
-
         /**
          * Lower limit for particle number per cell. This limit is
          * useful for adaptive meshes to prevent fine cells from being empty
@@ -341,21 +331,6 @@ namespace aspect
          * to represent a cost of 1000.
          */
         unsigned int tracer_weight;
-
-        /**
-         * An object that collects diagnostic timing information. Because the
-         * collection of timing data does not create significant overhead, this
-         * is always done. Output is only written, however, when the
-         * print_timing_output() function is called.
-         *
-         * This object is a pointer, rather than just a member variable,
-         * because the initialization of a TimerOutput object requires
-         * information (such as MPI communicators) that is not available
-         * at the time the surrounding object is created, but only at the
-         * time initialize() is called.
-         */
-        std_cxx11::shared_ptr<TimerOutput> particle_timer;
-
 
         /**
          * Calculates the number of particles in the global model domain.

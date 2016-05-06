@@ -251,15 +251,12 @@ namespace aspect
 
           if (viscosity_source == File)
             {
-              std::string datadirectory                = prm.get ("Data directory");
+              std::string datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                                       "$ASPECT_SOURCE_DIR",
+                                                                       ASPECT_SOURCE_DIR);
+
               const std::string radial_viscosity_file_name   = prm.get ("Viscosity depth file");
 
-              const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-              std::string::size_type position;
-              while (position = datadirectory.find (subst_text),  position!=std::string::npos)
-                datadirectory.replace (datadirectory.begin()+position,
-                                       datadirectory.begin()+position+subst_text.size(),
-                                       ASPECT_SOURCE_DIR);
               /* If using the File method for depth-dependence, initialize the lookup table */
               read_viscosity_file(datadirectory+radial_viscosity_file_name,this->get_mpi_communicator());
             }
