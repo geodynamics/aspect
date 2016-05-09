@@ -15,7 +15,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system... 0+6 iterations.
    Residual after nonlinear iteration 1: 1
 
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
    Residual after nonlinear iteration 2: 4.01961e-06
 
    Postprocessing:
@@ -25,18 +25,18 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.462s |            |
+| Total wallclock time elapsed since start    |      2.46s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |    0.0903s |        20% |
-| Assemble temperature system     |         1 |    0.0791s |        17% |
-| Build Stokes preconditioner     |         1 |    0.0527s |        11% |
-| Build temperature preconditioner|         1 |    0.0021s |      0.45% |
-| Solve Stokes system             |         2 |    0.0298s |       6.4% |
-| Solve temperature system        |         1 |   0.00135s |      0.29% |
-| Initialization                  |         2 |    0.0983s |        21% |
-| Postprocessing                  |         1 |   0.00336s |      0.73% |
-| Setup dof systems               |         1 |    0.0634s |        14% |
+| Assemble Stokes system          |         2 |     0.511s |        21% |
+| Assemble temperature system     |         1 |     0.433s |        18% |
+| Build Stokes preconditioner     |         1 |     0.311s |        13% |
+| Build temperature preconditioner|         1 |   0.00172s |      0.07% |
+| Solve Stokes system             |         2 |     0.181s |       7.3% |
+| Solve temperature system        |         1 |     0.021s |      0.85% |
+| Initialization                  |         2 |     0.388s |        16% |
+| Postprocessing                  |         1 |    0.0316s |       1.3% |
+| Setup dof systems               |         1 |     0.352s |        14% |
 +---------------------------------+-----------+------------+------------+
 
