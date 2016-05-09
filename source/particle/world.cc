@@ -1012,7 +1012,7 @@ namespace aspect
                               update_values);
 
       fe_value.reinit (cell);
-      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_current_linearization_point(),
                                                                                  result);
       fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
                                                                                  old_result);
@@ -1021,7 +1021,7 @@ namespace aspect
                                        end_particle,
                                        old_result,
                                        result,
-                                       this->get_old_timestep());
+                                       this->get_timestep());
     }
 
     template <int dim>

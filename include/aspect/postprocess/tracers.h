@@ -79,6 +79,12 @@ namespace aspect
         initialize_particles();
 
         /**
+         * Advect particles.
+         */
+        void
+        advect_particles();
+
+        /**
          * Returns a const reference to the particle world, in case anyone
          * wants to query something about tracers.
          */

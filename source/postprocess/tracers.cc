@@ -63,6 +63,13 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    Tracers<dim>::advect_particles()
+    {
+      world.advance_timestep();
+    }
+
+    template <int dim>
     const Particle::World<dim> &
     Tracers<dim>::get_particle_world() const
     {
@@ -87,13 +94,6 @@ namespace aspect
         {
           last_output_time = this->get_time() - output_interval;
         }
-
-      // Do not advect the particles in the initial refinement stage
-      const bool in_initial_refinement = (this->get_timestep_number() == 0)
-                                         && (this->get_pre_refinement_step() < this->get_parameters().initial_adaptive_refinement);
-      if (!in_initial_refinement)
-        // Advance the particles in the world to the current time
-        world.advance_timestep();
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
