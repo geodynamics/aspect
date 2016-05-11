@@ -5760,7 +5760,7 @@ The next input parameters describe the scaling from the shear wave velocity
 perturbation to the final temperature field. The shear wave velocity perturbation 
 $\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
 constant that is specified in the initial condition section of the input parameter 
-file as `vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+file as `Vs to density scaling'. Here we choose a constant scaling of 0.2. This 
 perturbation is further translated into a temperature difference $\Delta T$ by 
 multiplying it by the negative inverse of thermal expansion, which is also 
 specified in this section of the parameter file as `Thermal expansion coefficient 
@@ -5773,7 +5773,7 @@ their shear wave perturbation would not contribute buoyancy variations. We there
 additional option to zero out temperature perturbations within a certain depth. 
 In this example we set this parameter `Remove temperature heterogeneity down to specified 
 depth' to 200km. The chemical variation within the mantle 
-might require a more sophisticated `vs to density' scaling that varies for 
+might require a more sophisticated `Vs to density' scaling that varies for 
 example with depth or as a function of the perturbation itself, which is not captured
 in this model. The described procedure 
 provides an absolute temperature for every point, which will only be adjusted 
