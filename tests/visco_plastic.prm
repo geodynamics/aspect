@@ -27,12 +27,12 @@ set Timing output frequency                = 1
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-# Model geometry (100x100 km, 1 km spacing)
+# Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X repetitions = 100
-    set Y repetitions = 100
+    set X repetitions = 10
+    set Y repetitions = 10
     set X extent      = 100e3
     set Y extent      = 100e3
   end
@@ -184,18 +184,12 @@ subsection Gravity model
   end
 end
 
-# Stop at specified time step
-subsection Termination criteria
-  set Termination criteria = end step
-  set End step = 0
-end
-
 # Post processing (use output data to compare to predicted viscosities)
 subsection Postprocess
   set List of postprocessors = depth average
  
  subsection Depth average
-    set Number of zones = 100
+    set Number of zones = 10
     set Output format = gnuplot
   end
   

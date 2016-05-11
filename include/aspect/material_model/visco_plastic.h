@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,17 +37,17 @@ namespace aspect
      * dislocation and diffusion creep:
      *   $ v = 0.5 * A^{-\frac{1}{n}} * d^{-\frac{m}{n}} *
      *               \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} *
-     *               \exp\left(\frac{E + PV}{nRT}\right)\ $
+     *               \exp\left(\frac{E + PV}{nRT}\right) $
      * where
      *   where $A$ is the prefactor, $n$ is the stress exponent,
-     *   \dot{\varepsilon}_{ii} is the square root of the deviatoric
+     *   $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric
      *   strain rate tensor second invariant, $d$ is grain size,
      *   $m$ is the grain size exponent, $E$ is activation energy,
      *   $V$ is activation volume, $P$ is pressure, $R$ is the gas
      *   exponent and $T$ is temperature.
      *
-     * One may select to use the diffusion ($\v_{diff}$; $n$=1, m!=0),
-     * dislocation ($\v_{disl}$, n>1, m=0) or composite
+     * One may select to use the diffusion ($\v_{diff}$; $n=1$, $m!=0$),
+     * dislocation ($\v_{disl}$, $n>1$, $m=0$) or composite
      * $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form.
      *
      * Viscous stress is limited by plastic deformation, which follows

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -215,8 +215,8 @@ namespace aspect
                                     cohesions[j] * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
 
 
-          // If the viscous stress is great than the yield strength, rescale the viscosity back to yield surface
-          double viscosity_yield = 0.0;
+          // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
+          double viscosity_yield;
           if ( viscous_stress >= yield_strength  )
             {
               viscosity_yield = yield_strength / (2.0 * edot_ii);
@@ -242,10 +242,9 @@ namespace aspect
     {
       for (unsigned int i=0; i < in.temperature.size(); ++i)
         {
-          // const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
-          const double pressure= in.pressure[i];
-          const std::vector<double> composition = in.composition[i];
+          const double pressure = in.pressure[i];
+          const std::vector<double> & composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
 
           // Averaging composition-field dependent properties
@@ -256,7 +255,7 @@ namespace aspect
             {
               //not strictly correct if thermal expansivities are different, since we are interpreting
               //these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
+              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_T));
               density += volume_fractions[j] * densities[j] * temperature_factor;
             }
 
@@ -455,13 +454,13 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of angles of internal friction, \\phi, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "For a value of zero, in 2D the von Mises criterion is retrieved "
-                             " Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+                             "For a value of zero, in 2D the von Mises criterion is retrieved. "
+                             "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
           prm.declare_entry ("Cohesions", "1e20",
                              Patterns::List(Patterns::Double(0)),
                              "List of cohesions, $C$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from"
+                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: $Pa$.");
 
 
@@ -484,8 +483,6 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
-          // Initialise empty vector for compositional field variables
-          std::vector<double> x_values;
 
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
@@ -563,58 +560,58 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(ViscoPlastic,
                                    "visco plastic",
-                                   " An implementation of a visco-plastic rheology with options for "
-                                   " selecting dislocation creep, diffusion creep or composite "
-                                   " viscous flow laws.  Plasticity limits viscous stresses through "
-                                   " a Drucker Prager yield criterion. The model is incompressible. "
-                                   " Note that this material model is based heavily on the "
-                                   " diffusion_dislocation (Rene Gassmoeller) and drucker_prager "
-                                   " (Cedric Thieiulot) material models. "
-                                   " \n\n "
-                                   " The viscosity for dislocation or diffusion creep is defined as "
-                                   "   $\\v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
-                                   "          \\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
-                                   "          \\exp\\left(\\frac{E + PV}{nRT}\\right)\\$ "
-                                   " where $A$ is the prefactor, $n$ is the stress exponent, "
-                                   " \\dot{\\varepsilon}_{ii} is the square root of the deviatoric "
-                                   " strain rate tensor second invariant, $d$ is grain size, "
-                                   " $m$ is the grain size exponent, $E$ is activation energy, "
-                                   " $V$ is activation volume, $P$ is pressure, $R$ is the gas "
-                                   " exponent and $T$ is temperature. "
-                                   " This form of the viscosity equation is commonly used in "
-                                   " geodnynamic simulations.  See, for example, Billen and Hirth "
-                                   " (2007), G3, 8, Q08012."
-                                   " \n\n "
-                                   " One may select to use the diffusion (\\v_{diff}; $n$=1, m!=0), "
-                                   " dislocation (\\v_{disl}, n>1, m=0) or composite "
-                                   " \\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}} equation form. "
-                                   " \n\n "
-                                   " Plasticity limits viscous stress through a Drucker Prager "
-                                   " yield criterion, where the yield stress in 3D is  "
-                                   " $\\sigma_y = \\frac{6*C*\\cos(\\phi) + 2*P*\\sin(\\phi)} "
-                                   "              {\\sqrt(3)*(3+\\sin(\\phi))}$ "
-                                   " and "
-                                   " $\\simga_y = C*\\cos(\\phi) + P*\\sin(\\phi)$ "
-                                   " in 2D. Above, $C$ is cohesion and $\\phi$  is the angle of "
-                                   " internal friction.  Note that the 2D form is equivalent to the "
-                                   " Mohr Coloumb yield surface.  If $\\phi$ is 0, the yield stress "
-                                   " is fixed and equal to the cohesion (Von Mises yield criterion) "
-                                   " When the viscous stress ($2*v*{\\varepsilon}_{ii}$) "
-                                   " the yield stress, the viscosity is rescaled back to the yield "
-                                   " surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
-                                   " This form of plasticity is commonly used in geodynamic models "
-                                   " See, for example, Thieulot, C. (2011), PEPI 188, 47-68. "
-                                   " \n\n "
-                                   " Compositional fields can each be assigned individual values of"
-                                   " thermal diffusivity, heat capacity, density, thermal "
-                                   " expansivity and rheological parameters. "
-                                   " \n\n "
-                                   " If more than one compositional field is present at a given "
-                                   " point, viscosities are averaged with an arithmetic, geometric "
-                                   " harmonic (default) or maximum composition scheme. "
-                                   " \n\n "
-                                   " The value for the components of this formula and additional "
-                                   " parameters are read from the parameter file in subsection "
-                                   " 'Material model/ViscoPlastic'.")
+                                   "An implementation of a visco-plastic rheology with options for "
+                                   "selecting dislocation creep, diffusion creep or composite "
+                                   "viscous flow laws.  Plasticity limits viscous stresses through "
+                                   "a Drucker Prager yield criterion. The model is incompressible. "
+                                   "Note that this material model is based heavily on the "
+                                   "DiffusionDislocation (Rene Gassmoeller) and DruckerPrager "
+                                   "(Cedric Thieiulot) material models. "
+                                   "\n\n "
+                                   "The viscosity for dislocation or diffusion creep is defined as "
+                                   "$\\v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
+                                   "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
+                                   "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\$ "
+                                   "where $A$ is the prefactor, $n$ is the stress exponent, "
+                                   "$\\dot{\\varepsilon}_{ii}$ is the square root of the deviatoric "
+                                   "strain rate tensor second invariant, $d$ is grain size, "
+                                   "$m$ is the grain size exponent, $E$ is activation energy, "
+                                   "$V$ is activation volume, $P$ is pressure, $R$ is the gas "
+                                   "exponent and $T$ is temperature. "
+                                   "This form of the viscosity equation is commonly used in "
+                                   "geodnynamic simulations.  See, for example, Billen and Hirth "
+                                   "(2007), G3, 8, Q08012."
+                                   "\n\n "
+                                   "One may select to use the diffusion ($\\v_{diff}$; $n=1$, $m!=0$), "
+                                   "dislocation ($\\v_{disl}$, $n>1$, $m=0$) or composite "
+                                   "$\\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. "
+                                   "\n\n "
+                                   "Plasticity limits viscous stress through a Drucker Prager "
+                                   "yield criterion, where the yield stress in 3D is  "
+                                   "$\\sigma_y = \\frac{6*C*\\cos(\\phi) + 2*P*\\sin(\\phi)} "
+                                   "{\\sqrt(3)*(3+\\sin(\\phi))}$ "
+                                   "and "
+                                   "$\\simga_y = C*\\cos(\\phi) + P*\\sin(\\phi)$ "
+                                   "in 2D. Above, $C$ is cohesion and $\\phi$  is the angle of "
+                                   "internal friction.  Note that the 2D form is equivalent to the "
+                                   "Mohr Coloumb yield surface.  If $\\phi$ is 0, the yield stress "
+                                   "is fixed and equal to the cohesion (Von Mises yield criterion) "
+                                   "When the viscous stress ($2*v*{\\varepsilon}_{ii}$) "
+                                   "the yield stress, the viscosity is rescaled back to the yield "
+                                   "surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
+                                   "This form of plasticity is commonly used in geodynamic models "
+                                   "See, for example, Thieulot, C. (2011), PEPI 188, 47-68. "
+                                   "\n\n "
+                                   "Compositional fields can each be assigned individual values of"
+                                   "thermal diffusivity, heat capacity, density, thermal "
+                                   "expansivity and rheological parameters. "
+                                   "\n\n "
+                                   "If more than one compositional field is present at a given "
+                                   "point, viscosities are averaged with an arithmetic, geometric "
+                                   "harmonic (default) or maximum composition scheme. "
+                                   "\n\n "
+                                   "The value for the components of this formula and additional "
+                                   "parameters are read from the parameter file in subsection "
+                                   " 'Material model/Visco Plastic'.")
   }
 }
