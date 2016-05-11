@@ -5057,6 +5057,67 @@ Figure \ref{fig:smoothing}.
 
 
 
+\subsubsection{Tracking finite strain}
+\label{sec:finite-strain}
+\textit{This section was contributed by Juliane Dannberg}
+
+\textit{Notation: Here, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+$\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
+with the velocity $\mathbf u$, and the strain tensor as $e$, where 
+$e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
+with the displacement $\mathbf d$.}
+
+In many geophysical settings, material properties, and in particular the rheology, do not only depend
+on the current temperature, pressure and strain rate, but also on the history of the system. 
+This can be incorporated in \aspect{} models by tracking history variables through compositional fields. 
+In this cookbook, we will show how to do this by tracking the strain that accumulates over time at every 
+(Lagrangian) point in the model.
+
+Here, we use a material model plugin that defines the compositional fields as the components of the strain 
+tensor $e_{ij}$, and modifies the right-hand side of 
+the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
+\verb!out.reaction_terms! variable:
+\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+
+Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
+as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
+component of the velocity field, plus the strain increment $\varepsilon(\mathbf u^n) \Delta t^n$ 
+accumulated over the current time step.
+Hence, the right-hand side term of the advection equation for the accumulated strain consists of two parts:
+The first one, $R e^{n-1} R^T$, rotates $e^{n-1}$, the accumulated strain from all the previous time steps;
+and the second part adds the strain of the current time step. 
+
+The full plugin can be found in \url{cookbooks/finite_strain/finite_strain.cc} and can be compiled 
+with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory. 
+It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
+model. As it is derived from the ``simple'' material model, all input parameters for the material
+properties are read in from the subsection \texttt{Simple model}. 
+\lstinputlisting[language=prmfile]{cookbooks/finite_strain/finite_strain_part.prm.out}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{cookbooks/finite_strain/finite_strain.pdf}
+    \caption{Accumulated finite strain in an example convection model, as described in Section 
+             \ref{sec:finite-strain}.}
+    \label{fig:finite_strain}
+\end{figure}
+
+We will demonstrate its use at the example of a 2D Cartesian convection model (Figure \ref{fig:finite_strain}):
+Heating from the bottom leads to the the ascent of plumes from the bottom boundary layer, and the
+associated deformation is visible in the components of the accumulated finite strain. 
+Material moves to the sides at the top of the plume head, so that it is shortened in vertical 
+direction (blue areas in the $yy$ component) and stretched in horizontal direction (red areas in 
+the $xx$ component). The sides of the plume head show the opposite effect. Shear occurs mostly at the 
+edges of the plume head and in the plume tail (blue and red areas in the $xy$ component). 
+
+The example used here shows how history variables can be integrated up over the model evolution. 
+While we do not use these variables actively in the computation so far (in our example, there is no 
+influence of the accumulated strain on the rheology or any other material property), it would be trivial 
+to extend this material model in a way that material properties depend on the integrated strain: 
+Because the values of the compositional fields are part of what the material model gets as inputs, 
+they can easily be used for computing material model outputs such as the viscosity.  
+
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
