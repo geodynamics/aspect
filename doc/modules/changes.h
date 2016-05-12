@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: There is now an initial temperature field for the ellipsoidal
+ * chunk geometry model that allows discretizing the model domain into 
+ * two layers separated by a user-defined isothermal boundary. 
+ * <br> 
+ * (Tahiry Rajaonarison and D. Sarah Stamps, 2016/05/09)
+ *
  * <li> New: The variable $ASPECT_SOURCE_DIR can now be used inside
  * .prm files in various locations (including "include" statements).
  * <br>
