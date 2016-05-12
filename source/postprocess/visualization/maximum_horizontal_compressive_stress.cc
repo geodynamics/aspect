@@ -166,11 +166,26 @@ namespace aspect
 
                   // finally compute the actual direction * magnitude,
                   // now taking into account the pressure (with the
-                  // correct sign for the *compressive* stress)
+                  // correct sign in front of the pressure for the
+                  // *compressive* stress)
+                  //
+                  // the magnitude is computed as discussed in the
+                  // description of the plugin below
+                  const double maximum_horizontal_compressive_stress_magnitude
+                    = (n * (compressive_stress
+                            -
+                            in.pressure[q] * unit_symmetric_tensor<dim>()) * n);
+                  const Tensor<1,dim> n_perp = std::sin(alpha) * orthogonal_directions[0] -
+                                               std::cos(alpha) * orthogonal_directions[1];
+
+                  const double minimum_horizontal_compressive_stress_magnitude
+                    = (n_perp * (compressive_stress
+                                 -
+                                 in.pressure[q] * unit_symmetric_tensor<dim>()) * n_perp);
+
                   maximum_horizontal_compressive_stress
-                    = n * (n * (compressive_stress
-                                -
-                                in.pressure[q] * unit_symmetric_tensor<dim>()) * n);
+                    = n * (maximum_horizontal_compressive_stress_magnitude -
+                           minimum_horizontal_compressive_stress_magnitude);
 
                   break;
                 }
@@ -235,7 +250,7 @@ namespace aspect
                                                   "\\textit{compressive} stress is simply the negative stress, "
                                                   "$\\sigma_c=-\\sigma=-\\left["
                                                   "     2\\eta (\\varepsilon(\\mathbf u)"
-                                                  "             - \\frac 13 \\text{trace}\\varepsilon(\\mathbf u) I)"
+                                                  "             - \\frac 13 (\\nabla \\cdot \\mathbf u) I)"
                                                   "     + pI\\right]$."
                                                   "\n\n"
                                                   "Following \\cite{LundTownend07}, we define the maximum horizontal "
@@ -245,7 +260,10 @@ namespace aspect
                                                   "gravity vector $\\mathbf g$."
                                                   "\n\n"
                                                   "In two space dimensions, $\\mathbf n$ is simply a vector that "
-                                                  "is horizontal (we choose one of the two possible choices)."
+                                                  "is horizontal (we choose one of the two possible choices). "
+                                                  "This direction is then scaled by the size of the horizontal stress "
+                                                  "in this direction, i.e., the plugin outputs the vector "
+                                                  "$\\mathbf w = (\\mathbf n^T \\sigma_c \\mathbf n) \\; \\mathbf n$."
                                                   "\n\n"
                                                   "In three space dimensions, given two horizontal, perpendicular, "
                                                   "unit length, but otherwise arbitrarily chosen vectors "
@@ -284,11 +302,75 @@ namespace aspect
                                                   "$f(\\alpha)$, and from this immediately arrives at the correct "
                                                   "form for the maximum horizontal stress $\\mathbf n$."
                                                   "\n\n"
-                                                  "The description above computes a \\textit{direction} vector "
-                                                  "$\\mathbf n$. The quantity this plugin then outputs is "
-                                                  "this direction scaled by the size of the horizontal stress in "
-                                                  "this direction, i.e., the vector "
-                                                  "$\\mathbf w = (\\mathbf n^T \\sigma_c \\mathbf n) \\; \\mathbf n$.")
+                                                  "The description above computes a 3d \\textit{direction} vector "
+                                                  "$\\mathbf n$. If one were to scale this vector the same way "
+                                                  "as done in 2d, i.e., with the magnitude of the stress in "
+                                                  "this direction, one will typically get vectors whose length "
+                                                  "is principally determined by the hydrostatic pressure at "
+                                                  "a given location simply because the hydrostatic pressure "
+                                                  "is the largest component of the overall stress. On the other "
+                                                  "hand, the hydrostatic pressure does not determine any "
+                                                  "principle direction because it is an isotropic, anti-compressive "
+                                                  "force. As a consequence, there are often points in simulations "
+                                                  "(e.g., at the center of convection rolls) where the stress has "
+                                                  "no dominant horizontal direction, and the algorithm above will "
+                                                  "then in essence choose a random direction because the stress "
+                                                  "is approximately equal in all horizontal directions. If one "
+                                                  "scaled the output by the magnitude of the stress in this "
+                                                  "direction (i.e., approximately equal to the hydrostatic "
+                                                  "pressure at this point), one would get randomly oriented vectors "
+                                                  "at these locations with significant lengths."
+                                                  "\n\n"
+                                                  "To avoid this problem, we scale the maximal horizontal "
+                                                  "compressive stress direction $\\mathbf n$ by the \\textit{difference} "
+                                                  "between the stress in the maximal and minimal horizontal stress "
+                                                  "directions. In other words, let "
+                                                  "$\\mathbf n_\\perp=(\\sin \\alpha)\\mathbf u - (\\cos\\alpha)\\mathbf v$ "
+                                                  "be the horizontal direction perpendicular to "
+                                                  "$\\mathbf n$, then this plugin outputs the vector quantity "
+                                                  "$\\mathbf w = (\\mathbf n^T \\sigma_c \\mathbf n "
+                                                  "               -\\mathbf n^T_\\perp \\sigma_c \\mathbf n_\\perp) "
+                                                  "              \\; \\mathbf n$. "
+                                                  "In other words, the length of the vector produced indicates "
+                                                  "\\textit{how dominant} the direction of maximal horizontal "
+                                                  "compressive strength is."
+                                                  "\n\n"
+                                                  "Fig.~\\ref{fig:max-horizontal-compressive-stress} shows a "
+                                                  "simple example for this kind of visualization in 3d."
+                                                  "\n\n"
+                                                  "\\begin{figure}"
+                                                  "  \\includegraphics[width=0.3\\textwidth]"
+                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}"
+                                                  "  \\hfill"
+                                                  "  \\includegraphics[width=0.3\\textwidth]"
+                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}"
+                                                  "  \\hfill"
+                                                  "  \\includegraphics[width=0.3\\textwidth]"
+                                                  "    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}"
+                                                  "  \\caption{\\it Illustration of the `maximum horizontal "
+                                                  "    compressive stress' visualization plugin. The left "
+                                                  "    figure shows a ridge-like temperature anomaly. Together "
+                                                  "    with no-slip boundary along all six boundaries, this "
+                                                  "    results in two convection rolls (center). The maximal "
+                                                  "    horizontal compressive strength at the bottom center "
+                                                  "    of the domain is perpendicular to the ridge because "
+                                                  "    the flow comes together there from the left and right, "
+                                                  "    yielding a compressive force in left-right direction. "
+                                                  "    At the top of the model, the flow separates outward, "
+                                                  "    leading to a \\textit{negative} compressive stress "
+                                                  "    in left-right direction; because there is no flow "
+                                                  "    in front-back direction, the compressive strength "
+                                                  "    in front-back direction is zero, making the along-ridge "
+                                                  "    direction the dominant one. At the center of the "
+                                                  "    convection rolls, both horizontal directions yield "
+                                                  "    the same stress; the plugin therefore chooses an "
+                                                  "    essentially arbitrary horizontal vector, but then "
+                                                  "    uses a zero magnitude given that the difference "
+                                                  "    between the maximal and minimal horizontal stress "
+                                                  "    is zero at these points.}"
+                                                  "  \\label{fig:max-horizontal-compressive-stress}"
+                                                  "\\end{figure}"
+                                                 )
     }
   }
 }
