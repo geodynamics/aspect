@@ -244,7 +244,7 @@ namespace aspect
         {
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
-          const std::vector<double> & composition = in.composition[i];
+          const std::vector<double> &composition = in.composition[i];
           const std::vector<double> volume_fractions = compute_volume_fractions(composition);
 
           // Averaging composition-field dependent properties
@@ -565,8 +565,8 @@ namespace aspect
                                    "viscous flow laws.  Plasticity limits viscous stresses through "
                                    "a Drucker Prager yield criterion. The model is incompressible. "
                                    "Note that this material model is based heavily on the "
-                                   "DiffusionDislocation (Rene Gassmoeller) and DruckerPrager "
-                                   "(Cedric Thieiulot) material models. "
+                                   "DiffusionDislocation (Bob Myhill) and DruckerPrager "
+                                   "(Anne Glerum) material models. "
                                    "\n\n "
                                    "The viscosity for dislocation or diffusion creep is defined as "
                                    "$\\v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
