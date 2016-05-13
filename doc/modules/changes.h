@@ -12,7 +12,7 @@
  * <br> 
  * (Tahiry Rajaonarison and D. Sarah Stamps, 2016/05/09)
  *
- * <li> New: The variable $ASPECT_SOURCE_DIR can now be used inside
+ * <li> New: The variable \$ASPECT_SOURCE_DIR can now be used inside
  * .prm files in various locations (including "include" statements).
  * <br>
  * (Timo Heister, 2016/05/02)
