@@ -58,5 +58,11 @@ echo "Checking cookbooks using $BUILD/aspect ..."
 
 (cd future && run_all_prms ) || { echo "FAILED"; exit 1; } 
 
+(cd finite_strain; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; }
+
+(cd sinker-with-averaging; run_all_prms ) || { echo "FAILED"; exit 1; }
+
+
+
 echo "all good! :-)"
 exit 0
