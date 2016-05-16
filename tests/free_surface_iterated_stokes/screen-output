@@ -11,7 +11,7 @@ Number of free surface degrees of freedom: 1394
    Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 4.38453e-08
+   Residual after nonlinear iteration 2: 4.3798e-08
 
 Number of active cells: 220 (on 5 levels)
 Number of degrees of freedom: 3,320 (2,034+269+1,017)
@@ -25,7 +25,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 2.98302e-08
+   Residual after nonlinear iteration 2: 3.51902e-08
 
    Postprocessing:
 
@@ -52,7 +52,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 1.446
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 4.73899e-08
+   Residual after nonlinear iteration 2: 5.25059e-08
 
    Postprocessing:
      Topography min/max: -78.79 m, 178.3 m, 
@@ -66,7 +66,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 1.65226
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 9.92511e-08
+   Residual after nonlinear iteration 2: 9.99573e-08
 
    Postprocessing:
      Topography min/max: -106.9 m, 83.96 m, 
@@ -76,11 +76,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
+   Solving Stokes system... 0+13 iterations.
    Residual after nonlinear iteration 1: 0.565363
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 4.03374e-08
+   Residual after nonlinear iteration 2: 8.16581e-08
 
    Postprocessing:
      Topography min/max: -12.75 m, 42.42 m, 
@@ -94,7 +94,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 0.452537
 
    Solving Stokes system... 0+1 iterations.
-   Residual after nonlinear iteration 2: 5.85636e-08
+   Residual after nonlinear iteration 2: 3.42908e-08
 
    Postprocessing:
      Topography min/max: -18.65 m, 59.93 m, 
@@ -107,8 +107,8 @@ Number of free surface degrees of freedom: 538
    Solving Stokes system... 0+13 iterations.
    Residual after nonlinear iteration 1: 0.220893
 
-   Solving Stokes system... 0+1 iterations.
-   Residual after nonlinear iteration 2: 8.85826e-08
+   Solving Stokes system... 0+0 iterations.
+   Residual after nonlinear iteration 2: 7.25524e-08
 
    Postprocessing:
      Topography min/max: -14.47 m, 50.23 m, 
@@ -128,7 +128,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 0.141654
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 4.2346e-08
+   Residual after nonlinear iteration 2: 3.6207e-08
 
    Postprocessing:
      Topography min/max: -16.58 m, 55 m, 
@@ -142,7 +142,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 0.065792
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 7.04216e-08
+   Residual after nonlinear iteration 2: 4.10731e-08
 
    Postprocessing:
      Topography min/max: -15.62 m, 52.96 m, 
@@ -156,7 +156,7 @@ Number of free surface degrees of freedom: 538
    Residual after nonlinear iteration 1: 0.0356575
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 4.54794e-08
+   Residual after nonlinear iteration 2: 3.25884e-08
 
    Postprocessing:
      Topography min/max: -16.11 m, 54.21 m, 
@@ -166,11 +166,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system... 0+11 iterations.
    Residual after nonlinear iteration 1: 0.0190831
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 2.04256e-08
+   Residual after nonlinear iteration 2: 8.38009e-08
 
    Postprocessing:
      Topography min/max: -15.89 m, 53.76 m, 
@@ -180,11 +180,11 @@ Number of free surface degrees of freedom: 538
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
-   Residual after nonlinear iteration 1: 0.0106439
+   Solving Stokes system... 0+11 iterations.
+   Residual after nonlinear iteration 1: 0.0106438
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 2.05497e-08
+   Residual after nonlinear iteration 2: 5.38435e-08
 
    Postprocessing:
      Topography min/max: -16.05 m, 54.2 m, 
