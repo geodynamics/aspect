@@ -209,7 +209,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+4 iterations.
+   Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution-00020

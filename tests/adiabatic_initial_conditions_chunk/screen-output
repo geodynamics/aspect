@@ -29,7 +29,7 @@ Number of degrees of freedom: 5,173 (3,174+412+1,587)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+17 iterations.
+   Solving Stokes system... 30+16 iterations.
 
    Postprocessing:
      Writing depth average: output-adiabatic_initial_conditions_chunk/depth_average.gnuplot
