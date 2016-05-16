@@ -278,6 +278,20 @@ namespace aspect
 
 
     template <int dim>
+    MaterialModelDerivatives<dim>::MaterialModelDerivatives(const unsigned int n_points,
+                                                            const unsigned int n_comp)
+      :
+      dviscosities_dvelocity(std::vector<double>(n_points, aspect::Utilities::signaling_nan<double>())),
+      dviscosities_dpressure(std::vector<double>(n_points, aspect::Utilities::signaling_nan<double>())),
+      dviscosities_dtemperature(std::vector<double>(n_points, aspect::Utilities::signaling_nan<double>())),
+      dviscosities_dstrain_rate(std::vector<SymmetricTensor<2,dim> >(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >()))
+    {
+
+    }
+
+
+
+    template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
       :
@@ -724,6 +738,8 @@ namespace aspect
   template struct MaterialModelOutputs<dim>; \
   \
   template class AdditionalMaterialOutputs<dim>; \
+  \
+  template class MaterialModelDerivatives<dim>; \
   \
   namespace MaterialAveraging \
   { \

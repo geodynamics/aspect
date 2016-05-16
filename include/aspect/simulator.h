@@ -1140,6 +1140,7 @@ namespace aspect
       double                                                    old_time_step;
       unsigned int                                              timestep_number;
       unsigned int                                              pre_refinement_step;
+      unsigned int                                              nonlinear_iteration_number;
       /**
        * @}
        */
@@ -1245,6 +1246,8 @@ namespace aspect
       std_cxx11::shared_ptr<LinearAlgebra::PreconditionILU>     C_preconditioner;
 
       bool                                                      rebuild_stokes_matrix;
+      bool                                                      assemble_newton_stokes_matrix;
+      bool                                                      assemble_newton_stokes_system;
       bool                                                      rebuild_stokes_preconditioner;
 
       /**

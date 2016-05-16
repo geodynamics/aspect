@@ -117,6 +117,7 @@ namespace aspect
           grads_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
           div_phi_u (finite_element.dofs_per_cell, Utilities::signaling_nan<double>()),
           velocity_values (quadrature.size(), Utilities::signaling_nan<Tensor<1,dim> >()),
+          velocity_divergence (quadrature.size(), Utilities::signaling_nan<double>()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields)
         {}
@@ -138,6 +139,7 @@ namespace aspect
           grads_phi_u (scratch.grads_phi_u),
           div_phi_u (scratch.div_phi_u),
           velocity_values (scratch.velocity_values),
+          velocity_divergence (scratch.velocity_divergence),
           face_material_model_inputs(scratch.face_material_model_inputs),
           face_material_model_outputs(scratch.face_material_model_outputs)
         {}
@@ -2127,6 +2129,1310 @@ namespace aspect
         }
     };
 
+    /**
+     * A class for the definition of functions that implement the
+     * non-linear system terms for the newton compressible or
+     * incompressible equations.
+     */
+    template <int dim>
+    class NewtonStokes : public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        local_assemble_stokes_preconditioner (const double                                             pressure_scaling,
+                                              internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
+                                              internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
+        {
+          const Introspection<dim> &introspection = this->introspection();
+          const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+          const unsigned int   dofs_per_cell   = fe.dofs_per_cell;
+          const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              for (unsigned int k = 0; k < dofs_per_cell; ++k)
+                {
+                  scratch.grads_phi_u[k] =
+                    scratch.finite_element_values[introspection.extractors
+                                                  .velocities].symmetric_gradient(k, q);
+                  scratch.phi_p[k] = scratch.finite_element_values[introspection
+                                                                   .extractors.pressure].value(k, q);
+                }
+              const double eta = scratch.material_model_outputs.viscosities[q];
+              const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
+              //TODO: This might be nessesary for the proconditioning later?
+              //const double velocity_divergence = scratch.velocity_divergence[q];
+
+              AssertThrow(scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != NULL
+                          ,ExcMessage ("Error: The newton method requires the derivatives"));
+
+              MaterialModel::MaterialModelDerivatives<dim> *derivatives;
+
+              derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+              const SymmetricTensor<2,dim> dviscosities_dstrain_rate = derivatives->dviscosities_dstrain_rate[q];
+              const double                 dviscosities_dpressure    = derivatives->dviscosities_dpressure[q];
+
+              const SymmetricTensor<4, dim> &stress_strain_director = scratch .material_model_outputs.stress_strain_directors[q];
+              const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim>());
+
+              const double alpha = 1; // TODO:Compute a optimal value for this.
+              for (unsigned int i = 0; i < dofs_per_cell; ++i)
+                for (unsigned int j = 0; j < dofs_per_cell; ++j)
+                  {
+                    if (fe.system_to_component_index(i).first ==
+                        fe.system_to_component_index(j).first)
+                      data.local_matrix(i, j) += (
+                                                   scratch.grads_phi_u[i] * 2.0 * eta * scratch.grads_phi_u[j]
+                                                   + alpha * (scratch.grads_phi_u[i] * (dviscosities_dstrain_rate * scratch.grads_phi_u[j]) * strain_rate
+                                                              + scratch.grads_phi_u[j] * (dviscosities_dstrain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                   + (1. / eta) * pressure_scaling
+                                                   * pressure_scaling
+                                                   * (scratch.phi_p[i] * scratch
+                                                      .phi_p[j]))
+                                                 * scratch.finite_element_values.JxW(
+                                                   q);
+                  }
+            }
+        }
+
+
+
+        void
+        local_assemble_stokes_system_compressible (const double                                     pressure_scaling,
+                                                   const bool                                       rebuild_stokes_matrix,
+                                                   internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                   internal::Assembly::CopyData::StokesSystem<dim> &data) const
+        {
+          //TODO: also implement newton for compressible.
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
+                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+                  scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+                  scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
+                }
+
+              // Viscosity scalar
+              const double eta = scratch.material_model_outputs.viscosities[q];
+
+              const Tensor<1,dim> velocity = scratch.material_model_inputs.velocity[q];
+              const double pressure = scratch.material_model_inputs.pressure[q];
+              const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[1];
+
+              /*if (scratch.material_model_outputs.get_additional_output<MaterialModelDerivatives<dim> >() != NULL)
+                  throw "Error: The newton method requires the derivatives."; // TODO: Maybe we don't need to throw an error
+
+              MaterialModelDerivatives<dim> *derivatives;
+              derivatives = scratch.material_model_outputs.get_additional_output<MaterialModelDerivatives<dim> >();
+
+              const SymmetricTensor<2,dim> dviscosities_dstrain_rate = derivatives->dviscosities_dstrain_rate[q];
+              const double                 dviscosities_dpressure    = derivatives->dviscosities_dpressure[q];*/
+
+              const SymmetricTensor<4,dim> &stress_strain_director =
+                scratch.material_model_outputs.stress_strain_directors[q];
+              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+
+              const Tensor<1,dim>
+              gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+              const double compressibility
+                = scratch.material_model_outputs.compressibilities[q];
+              const double density = scratch.material_model_outputs.densities[q];
+
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                  data.local_matrix(i,j) += ( (use_tensor ?
+                                               eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                               :
+                                               eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
+                                               /*+ 2 * (dviscosities_dstrain_rate[i] * ) * (scratch.grads_phi_u[i] * )*/)
+                                              - (use_tensor ?
+                                                 eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                                 :
+                                                 eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                )
+                                              - (pressure_scaling *
+                                                 scratch.div_phi_u[i] * scratch.phi_p[j])
+                                              // finally the term -div(u). note the negative sign to make this
+                                              // operator adjoint to the grad(p) term
+                                              - (pressure_scaling *
+                                                 scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                            * scratch.finite_element_values.JxW(q);
+
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                data.local_rhs(i) += (
+                                       (density * gravity * scratch.phi_u[i])
+                                       +
+                                       // add the term that results from the compressibility. compared
+                                       // to the manual, this term seems to have the wrong sign, but this
+                                       // is because we negate the entire equation to make sure we get
+                                       // -div(u) as the adjoint operator of grad(p) (see above where
+                                       // we assemble the matrix)
+                                       (pressure_scaling *
+                                        compressibility * density *
+                                        (scratch.velocity_values[q] * gravity) *
+                                        scratch.phi_p[i])
+                                     )
+                                     * scratch.finite_element_values.JxW(q);
+            }
+        }
+
+
+
+        void
+        local_assemble_stokes_system_incompressible (const double                                     pressure_scaling,
+                                                     const bool                                       assemble_newton_stokes_matrix,
+                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                     internal::Assembly::CopyData::StokesSystem<dim> &data) const
+        {
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
+                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+                  scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+                  scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
+
+                }
+
+              // Viscosity scalar
+              const double eta = scratch.material_model_outputs.viscosities[q];
+              const double pressure = scratch.material_model_inputs.pressure[q];
+              const SymmetricTensor<2,dim> strain_rate = scratch.material_model_inputs.strain_rate[q];
+              const double velocity_divergence = scratch.velocity_divergence[q];
+
+              // This one is only avaiable in debug mode, because normally the AssertTrow in should already caught the problem.
+              Assert(scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != NULL
+                     ,ExcMessage ("Error: The newton method requires the derivatives"));
+
+              MaterialModel::MaterialModelDerivatives<dim> *derivatives;
+
+              derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+              const SymmetricTensor<2,dim> dviscosities_dstrain_rate = derivatives->dviscosities_dstrain_rate[q];
+              const double                 dviscosities_dpressure    = derivatives->dviscosities_dpressure[q];
+
+              const SymmetricTensor<4,dim> &stress_strain_director = scratch.material_model_outputs.stress_strain_directors[q];
+              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+
+              const Tensor<1,dim>
+              gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+              const double density = scratch.material_model_outputs.densities[q];
+
+              const double alpha = 1; // TODO:Compute a optimal value for this.
+
+              if (assemble_newton_stokes_matrix)
+                {
+                  for (unsigned int i=0; i<dofs_per_cell; ++i)
+                    {
+                      for (unsigned int j=0; j<dofs_per_cell; ++j)
+                        {
+                          data.local_matrix(i,j) += ( // using tensor thing is complecating everything quite a bit, so removed it for now.
+                                                      scratch.grads_phi_u[i] * 2.0 * eta * scratch.grads_phi_u[j]
+                                                      + alpha * (scratch.grads_phi_u[i] * (dviscosities_dstrain_rate * scratch.grads_phi_u[j]) * strain_rate
+                                                                 + scratch.grads_phi_u[j] * (dviscosities_dstrain_rate * scratch.grads_phi_u[i]) * strain_rate)
+                                                      - (pressure_scaling *
+                                                         scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                      // finally the term -div(u). note the negative sign to make this
+                                                      // operator adjoint to the grad(p) term
+                                                      - (pressure_scaling *
+                                                         scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                    * scratch.finite_element_values.JxW(q);
+                          Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),ExcMessage ("Error: Assembly matrix is not finite."));
+                        }
+                    }
+                }
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                {
+                  data.local_rhs(i) -= ( // using tensor thing is complecating everything quite a bit, so removed it for now.
+                                         (eta * 2.0 * (scratch.grads_phi_u[i] * strain_rate))
+                                         // because we now have the real pressure, we have to divide it by the pressure scaling
+                                         // to get it to the same pressure units. This means the pressure scaling term drops in
+                                         //this term.
+                                         - (scratch.div_phi_u[i] * pressure)
+                                         - (pressure_scaling * scratch.phi_p[i] * velocity_divergence)
+                                         - density * gravity * scratch.phi_u[i])
+                                       * scratch.finite_element_values.JxW(q);
+                  Assert(dealii::numbers::is_finite(data.local_rhs(i)),ExcMessage ("Error: Assembly rhs is not finite."));
+                }
+            }
+        }
+
+        void
+        local_assemble_advection_system (const typename Simulator<dim>::AdvectionField &advection_field,
+                                         const double artificial_viscosity,
+                                         internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
+                                         internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
+        {
+          const Introspection<dim> &introspection = this->introspection();
+          const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
+          const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+          const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+          const double time_step = this->get_timestep();
+          const double old_time_step = this->get_old_timestep();
+
+          const unsigned int solution_component
+            = (advection_field.is_temperature()
+               ?
+               introspection.component_indices.temperature
+               :
+               introspection.component_indices.compositional_fields[advection_field.compositional_variable]
+              );
+
+          const FEValuesExtractors::Scalar solution_field
+            = (advection_field.is_temperature()
+               ?
+               introspection.extractors.temperature
+               :
+               introspection.extractors.compositional_fields[advection_field.compositional_variable]
+              );
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              // precompute the values of shape functions and their gradients.
+              // We only need to look up values of shape functions if they
+              // belong to 'our' component. They are zero otherwise anyway.
+              // Note that we later only look at the values that we do set here.
+              for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                {
+                  scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
+                  scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
+                }
+
+              const double density_c_P              =
+                ((advection_field.is_temperature())
+                 ?
+                 scratch.material_model_outputs.densities[q] *
+                 scratch.material_model_outputs.specific_heat[q]
+                 :
+                 1.0);
+
+              Assert (density_c_P >= 0,
+                      ExcMessage ("The product of density and c_P needs to be a "
+                                  "non-negative quantity."));
+
+              const double conductivity =
+                ((advection_field.is_temperature())
+                 ?
+                 scratch.material_model_outputs.thermal_conductivities[q]
+                 :
+                 0.0);
+              const double latent_heat_LHS =
+                ((advection_field.is_temperature())
+                 ?
+                 scratch.heating_model_outputs.lhs_latent_heat_terms[q]
+                 :
+                 0.0);
+              Assert (density_c_P + latent_heat_LHS >= 0,
+                      ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                  "to the left hand side needs to be a non-negative quantity."));
+
+              const double gamma =
+                ((advection_field.is_temperature())
+                 ?
+                 scratch.heating_model_outputs.heating_source_terms[q]
+                 :
+                 0.0);
+
+              const double reaction_term =
+                ((advection_field.is_temperature())
+                 ?
+                 0.0
+                 :
+                 scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+
+              const double field_term_for_rhs
+                = (use_bdf2_scheme ?
+                   (scratch.old_field_values[q] *
+                    (1 + time_step/old_time_step)
+                    -
+                    scratch.old_old_field_values[q] *
+                    (time_step * time_step) /
+                    (old_time_step * (time_step + old_time_step)))
+                   :
+                   scratch.old_field_values[q])
+                  *
+                  (density_c_P + latent_heat_LHS);
+
+              Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+              //Subtract off the mesh velocity for ALE corrections if necessary
+              if (this->get_parameters().free_surface_enabled)
+                current_u -= scratch.mesh_velocity_values[q];
+
+              const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                        (time_step + old_time_step)) : 1.0;
+
+              // do the actual assembly. note that we only need to loop over the advection
+              // shape functions because these are the only contributions we compute here
+              for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                {
+                  data.local_rhs(i)
+                  += (field_term_for_rhs * scratch.phi_field[i]
+                      + time_step *
+                      scratch.phi_field[i]
+                      * gamma
+                      + scratch.phi_field[i]
+                      * reaction_term)
+                     *
+                     scratch.finite_element_values.JxW(q);
+
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      data.local_matrix(i,j)
+                      += (
+                           (this->get_timestep() * (conductivity + artificial_viscosity)
+                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                           + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                              + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                           (density_c_P + latent_heat_LHS)
+                         )
+                         * scratch.finite_element_values.JxW(q);
+                    }
+                }
+            }
+        }
+
+
+        std::vector<double>
+        compute_advection_system_residual(const typename Simulator<dim>::AdvectionField     &advection_field,
+                                          internal::Assembly::Scratch::AdvectionSystem<dim> &scratch) const
+        {
+          const unsigned int n_q_points = scratch.old_field_values.size();
+          std::vector<double> residuals(n_q_points);
+
+          HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->get_parameters().n_compositional_fields);
+          this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
+                                                     scratch.material_model_outputs,
+                                                     heating_model_outputs);
+
+          for (unsigned int q=0; q < n_q_points; ++q)
+            {
+              const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                       scratch.old_old_velocity_values[q]) / 2;
+
+              const double dField_dt = (this->get_old_timestep() == 0.0) ? 0 :
+                                       (
+                                         (scratch.old_field_values[q] - scratch.old_old_field_values[q])
+                                         / this->get_old_timestep());
+              const double u_grad_field = u * (scratch.old_field_grads[q] +
+                                               scratch.old_old_field_grads[q]) / 2;
+
+              const double density              = ((advection_field.is_temperature())
+                                                   ? scratch.material_model_outputs.densities[q] : 1.0);
+              const double conductivity = ((advection_field.is_temperature()) ? scratch.material_model_outputs.thermal_conductivities[q] : 0.0);
+              const double c_P                  = ((advection_field.is_temperature()) ? scratch.material_model_outputs.specific_heat[q] : 1.0);
+              const double k_Delta_field = conductivity
+                                           * (scratch.old_field_laplacians[q] +
+                                              scratch.old_old_field_laplacians[q]) / 2;
+
+              const double gamma =
+                ((advection_field.is_temperature())
+                 ?
+                 heating_model_outputs.heating_source_terms[q]
+                 :
+                 0.0);
+
+              const double latent_heat_LHS =
+                ((advection_field.is_temperature())
+                 ?
+                 heating_model_outputs.lhs_latent_heat_terms[q]
+                 :
+                 0.0);
+
+              const double dreaction_term_dt =
+                (advection_field.is_temperature() || this->get_old_timestep() == 0)
+                ?
+                0.0
+                :
+                (scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                 / this->get_old_timestep());
+
+              residuals[q]
+                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
+                           - dreaction_term_dt);
+            }
+          return residuals;
+        }
+
+
+        void
+        local_assemble_discontinuous_advection_boundary_face_terms(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                   const unsigned int face_no,
+                                                                   const typename Simulator<dim>::AdvectionField &advection_field,
+                                                                   internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
+        {
+          const Parameters<dim> &parameters = this->get_parameters();
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
+
+          const double time_step = this->get_timestep();
+
+          if (!advection_field.is_discontinuous(introspection))
+            return;
+
+          // also have the number of dofs that correspond just to the element for
+          // the system we are currently trying to assemble
+          const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+          Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
+          Assert (scratch.face_grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+          Assert (scratch.face_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+
+          const unsigned int solution_component = advection_field.component_index(introspection);
+
+          const FEValuesExtractors::Scalar solution_field
+            = (advection_field.is_temperature()
+               ?
+               introspection.extractors.temperature
+               :
+               introspection.extractors.compositional_fields[advection_field.compositional_variable]
+              );
+
+          typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+
+          if (((parameters.fixed_temperature_boundary_indicators.find(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                  face->boundary_id()
+#else
+                  face->boundary_indicator()
+#endif
+                )
+                != parameters.fixed_temperature_boundary_indicators.end())
+               && (advection_field.is_temperature()))
+              ||
+              (( parameters.fixed_composition_boundary_indicators.find(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                   face->boundary_id()
+#else
+                   face->boundary_indicator()
+#endif
+                 )
+                 != parameters.fixed_composition_boundary_indicators.end())
+               && (!advection_field.is_temperature())))
+            {
+              /*
+               * We are in the case of a Dirichlet temperature or composition boundary.
+               * In the temperature case, impose the Dirichlet value weakly using a matrix term
+               * and RHS term. In the composition case, Dirichlet conditions can only be imposed
+               * on inflow boundaries, and we only have the flow-dependent terms, so we only
+               * assemble the corresponding flow-dependent and matrix and RHS terms
+               * if we are on an inflow boundary.
+               */
+
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  // precompute the values of shape functions and their gradients.
+                  // We only need to look up values of shape functions if they
+                  // belong to 'our' component. They are zero otherwise anyway.
+                  // Note that we later only look at the values that we do set here.
+                  for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                    {
+                      scratch.face_grad_phi_field[k] = (*scratch.face_finite_element_values)[solution_field].gradient (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                      scratch.face_phi_field[k]      = (*scratch.face_finite_element_values)[solution_field].value (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                    }
+                  const double density_c_P              =
+                    ((advection_field.is_temperature())
+                     ?
+                     scratch.face_material_model_outputs.densities[q] *
+                     scratch.face_material_model_outputs.specific_heat[q]
+                     :
+                     1.0);
+
+                  Assert (density_c_P >= 0,
+                          ExcMessage ("The product of density and c_P needs to be a "
+                                      "non-negative quantity."));
+
+                  const double conductivity =
+                    ((advection_field.is_temperature())
+                     ?
+                     scratch.face_material_model_outputs.thermal_conductivities[q]
+                     :
+                     0.0);
+                  const double latent_heat_LHS =
+                    ((advection_field.is_temperature())
+                     ?
+                     scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
+                     :
+                     0.0);
+                  Assert (density_c_P + latent_heat_LHS >= 0,
+                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                      "to the left hand side needs to be a non-negative quantity."));
+
+                  const double penalty = (advection_field.is_temperature()
+                                          ?
+                                          parameters.discontinuous_penalty
+                                          * parameters.temperature_degree
+                                          * parameters.temperature_degree
+                                          / face->measure()
+                                          * conductivity
+                                          / (density_c_P + latent_heat_LHS)
+                                          :
+                                          0.0);
+
+                  const double dirichlet_value = (advection_field.is_temperature()
+                                                  ?
+                                                  this->get_boundary_temperature().boundary_temperature(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                                                    cell->face(face_no)->boundary_id(),
+#else
+                                                    cell->face(face_no)->boundary_indicator(),
+#endif
+                                                    scratch.face_finite_element_values->quadrature_point(q))
+                                                  :
+                                                  this->get_boundary_composition().boundary_composition(
+#if DEAL_II_VERSION_GTE(8,3,0)
+                                                    cell->face(face_no)->boundary_id(),
+#else
+                                                    cell->face(face_no)->boundary_indicator(),
+#endif
+                                                    scratch.face_finite_element_values->quadrature_point(q),
+                                                    advection_field.compositional_variable));
+
+                  Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
+                  //Subtract off the mesh velocity for ALE corrections if necessary
+                  if (parameters.free_surface_enabled)
+                    current_u -= scratch.face_mesh_velocity_values[q];
+
+                  /**
+                   * The discontinuous Galerkin method uses 2 types of jumps over edges:
+                   * undirected and directed jumps. Undirected jumps are dependent only
+                   * on the order of the numbering of cells. Directed jumps are dependent
+                   * on the direction of the flow. Thus the flow-dependent terms below are
+                   * only calculated if the edge is an inflow edge.
+                   */
+                  const bool inflow = ((current_u * scratch.face_finite_element_values->normal_vector(q)) < 0.);
+
+                  for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                    {
+                      data.local_rhs(i)
+                      += (- time_step *  conductivity
+                          * scratch.face_grad_phi_field[i]
+                          * scratch.face_finite_element_values->normal_vector(q)
+                          * dirichlet_value
+
+                          + time_step
+                          * (density_c_P + latent_heat_LHS)
+                          * penalty
+                          * scratch.face_phi_field[i]
+                          * dirichlet_value
+
+                          + (inflow
+                             ?
+                             - (density_c_P + latent_heat_LHS)
+                             * time_step
+                             * (current_u
+                                * scratch.face_finite_element_values->normal_vector(q))
+                             * dirichlet_value
+                             * scratch.face_phi_field[i]
+                             :
+                             0.)
+                         )
+                         *
+                         scratch.face_finite_element_values->JxW(q);
+
+                      // local_matrix terms
+                      for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                        {
+                          data.local_matrix(i,j)
+                          += (- time_step *  conductivity
+                              * scratch.face_grad_phi_field[i]
+                              * scratch.face_finite_element_values->normal_vector(q)
+                              * scratch.face_phi_field[j]
+
+                              - time_step *  conductivity
+                              * scratch.face_grad_phi_field[j]
+                              * scratch.face_finite_element_values->normal_vector(q)
+                              * scratch.face_phi_field[i]
+
+                              + time_step
+                              * (density_c_P + latent_heat_LHS)
+                              * penalty
+                              * scratch.face_phi_field[i]
+                              * scratch.face_phi_field[j]
+
+                              + (inflow
+                                 ?
+                                 - (density_c_P + latent_heat_LHS)
+                                 * time_step
+                                 * (current_u
+                                    * scratch.face_finite_element_values->normal_vector(q))
+                                 * scratch.face_phi_field[i]
+                                 * scratch.face_phi_field[j]
+                                 :
+                                 0.)
+                             )
+                             * scratch.face_finite_element_values->JxW(q);
+                        }
+                    }
+                }
+            }
+          else
+            {
+              //Neumann temperature term - no non-zero contribution as only homogeneous Neumann boundary conditions are implemented elsewhere for temperature
+            }
+        }
+
+        void
+        local_assemble_discontinuous_advection_interior_face_terms(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                                   const unsigned int face_no,
+                                                                   const typename Simulator<dim>::AdvectionField &advection_field,
+                                                                   internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
+                                                                   internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
+        {
+          const Parameters<dim> &parameters = this->get_parameters();
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
+
+          const double time_step = this->get_timestep();
+
+          if (!advection_field.is_discontinuous(introspection))
+            return;
+
+          // also have the number of dofs that correspond just to the element for
+          // the system we are currently trying to assemble
+          const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+          Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
+          Assert (scratch.face_grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+          Assert (scratch.face_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
+
+          const unsigned int solution_component = advection_field.component_index(introspection);
+
+          const FEValuesExtractors::Scalar solution_field
+            = (advection_field.is_temperature()
+               ?
+               introspection.extractors.temperature
+               :
+               introspection.extractors.compositional_fields[advection_field.compositional_variable]
+              );
+
+          typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
+
+          //interior face - no contribution on RHS
+          Assert (cell->neighbor(face_no).state() == IteratorState::valid,
+                  ExcInternalError());
+          const typename DoFHandler<dim>::cell_iterator neighbor = cell->neighbor(face_no); //note: NOT active_cell_iterator, so this includes cells that are refined.
+
+          if (!(face->has_children()))
+            {
+              if (!cell->neighbor_is_coarser(face_no) &&
+                  (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
+                   ||
+                   ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))
+                {
+                  Assert (cell->is_locally_owned(), ExcInternalError());
+                  //cell and neighbor are equal-sized, and cell has been chosen to assemble this face, so calculate from cell
+
+                  //how does the neighbor talk about this cell?
+                  const unsigned int neighbor2=cell->neighbor_of_neighbor(face_no);
+
+                  //set up neighbor values
+                  scratch.neighbor_face_finite_element_values->reinit (neighbor, neighbor2);
+
+                  this->compute_material_model_input_values (this->get_current_linearization_point(),
+                                                             *scratch.neighbor_face_finite_element_values,
+                                                             neighbor,
+                                                             true,
+                                                             scratch.neighbor_face_material_model_inputs);
+                  this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
+                                                      scratch.neighbor_face_material_model_outputs);
+
+                  this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
+                                                             scratch.neighbor_face_material_model_outputs,
+                                                             scratch.neighbor_face_heating_model_outputs);
+
+                  std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
+                  // get all dof indices on the neighbor, then extract those
+                  // that correspond to the solution_field we are interested in
+                  neighbor->get_dof_indices (neighbor_dof_indices);
+                  for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                    data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face][i] = neighbor_dof_indices[scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, i)];
+                  data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face] = true;
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      // precompute the values of shape functions and their gradients.
+                      // We only need to look up values of shape functions if they
+                      // belong to 'our' component. They are zero otherwise anyway.
+                      // Note that we later only look at the values that we do set here.
+                      for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                        {
+                          scratch.face_grad_phi_field[k]          = (*scratch.face_finite_element_values)[solution_field].gradient (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.face_phi_field[k]               = (*scratch.face_finite_element_values)[solution_field].value (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.neighbor_face_grad_phi_field[k] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.neighbor_face_phi_field[k]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                        }
+
+                      const double density_c_P              =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_material_model_outputs.densities[q] *
+                         scratch.face_material_model_outputs.specific_heat[q]
+                         :
+                         1.0);
+
+                      Assert (density_c_P >= 0,
+                              ExcMessage ("The product of density and c_P needs to be a "
+                                          "non-negative quantity."));
+
+                      const double conductivity =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_material_model_outputs.thermal_conductivities[q]
+                         :
+                         0.0);
+                      const double latent_heat_LHS =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         :
+                         0.0);
+                      Assert (density_c_P + latent_heat_LHS >= 0,
+                              ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                          "to the left hand side needs to be a non-negative quantity."));
+
+                      const double penalty = (advection_field.is_temperature()
+                                              ?
+                                              parameters.discontinuous_penalty
+                                              * parameters.temperature_degree
+                                              * parameters.temperature_degree
+                                              / face->measure()
+                                              * conductivity
+                                              / (density_c_P + latent_heat_LHS)
+                                              :
+                                              0.0);
+
+                      Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
+                      //Subtract off the mesh velocity for ALE corrections if necessary
+                      if (parameters.free_surface_enabled)
+                        current_u -= scratch.face_mesh_velocity_values[q];
+
+                      const double neighbor_density_c_P              =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_material_model_outputs.densities[q] *
+                         scratch.neighbor_face_material_model_outputs.specific_heat[q]
+                         :
+                         1.0);
+
+                      Assert (neighbor_density_c_P >= 0,
+                              ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                          "non-negative quantity."));
+
+                      const double neighbor_conductivity =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_material_model_outputs.thermal_conductivities[q]
+                         :
+                         0.0);
+                      const double neighbor_latent_heat_LHS =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         :
+                         0.0);
+                      Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                              ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                          "to the left hand side on the neighbor needs to be a non-negative quantity."));
+
+                      const double neighbor_penalty = (advection_field.is_temperature()
+                                                       ?
+                                                       parameters.discontinuous_penalty
+                                                       * parameters.temperature_degree
+                                                       * parameters.temperature_degree
+                                                       / neighbor->face(neighbor2)->measure()
+                                                       * neighbor_conductivity
+                                                       / (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                                       :
+                                                       0.0);
+
+                      const double max_penalty = std::max(penalty, neighbor_penalty);
+
+                      const double max_density_c_P_and_latent_heat =
+                        std::max(density_c_P + latent_heat_LHS,
+                                 neighbor_density_c_P + neighbor_latent_heat_LHS);
+
+                      Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
+                              ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                      Assert (max_density_c_P_and_latent_heat >= 0,
+                              ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                          "non-negative quantity."));
+
+                      /**
+                       * The discontinuous Galerkin method uses 2 types of jumps over edges:
+                       * undirected and directed jumps. Undirected jumps are dependent only
+                       * on the order of the numbering of cells. Directed jumps are dependent
+                       * on the direction of the flow. Thus the flow-dependent terms below are
+                       * only calculated if the edge is an inflow edge.
+                       */
+                      const bool inflow = ((current_u * scratch.face_finite_element_values->normal_vector(q)) < 0.);
+
+                      for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                        {
+                          for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                            {
+                              data.local_matrix(i,j)
+                              += (- 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
+
+                                  - 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
+
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[i]
+                                  * scratch.face_phi_field[j]
+
+                                  - (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.face_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.face_finite_element_values->JxW(q);
+
+                              data.local_matrices_int_ext[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                              += (- 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[j]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
+
+                                  + 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  - time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.neighbor_face_phi_field[j]
+                                  * scratch.face_phi_field[i]
+
+                                  + (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.face_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.neighbor_face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.face_finite_element_values->JxW(q);
+
+                              data.local_matrices_ext_int[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                              += (+ 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  - 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[i]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
+
+                                  - time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[j]
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  - (!inflow
+                                     ?
+                                     (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.face_finite_element_values->normal_vector(q))
+                                     * scratch.neighbor_face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.face_finite_element_values->JxW(q);
+
+                              data.local_matrices_ext_ext[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                              += (+ 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[i]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  + 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[j]
+                                  * scratch.face_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.neighbor_face_phi_field[i]
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  + (!inflow
+                                     ?
+                                     (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.face_finite_element_values->normal_vector(q))
+                                     * scratch.neighbor_face_phi_field[i]
+                                     * scratch.neighbor_face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.face_finite_element_values->JxW(q);
+                            }
+                        }
+                    }
+                }
+              else
+                {
+                  /* neighbor is taking responsibility for assembly of this face, because
+                   * either (1) neighbor is coarser, or
+                   *        (2) neighbor is equally-sized and
+                   *           (a) neighbor is on a different subdomain, with lower subdmain_id(), or
+                   *           (b) neighbor is on the same subdomain and has lower index().
+                  */
+                }
+            }
+          else //face->has_children(), so always assemble from here.
+            {
+              //how does the neighbor talk about this cell?
+              const unsigned int neighbor2 = cell->neighbor_face_no(face_no);
+
+              //loop over subfaces
+              for (unsigned int subface_no=0; subface_no<face->number_of_children(); ++subface_no)
+                {
+                  const typename DoFHandler<dim>::active_cell_iterator neighbor_child
+                    = cell->neighbor_child_on_subface (face_no, subface_no);
+
+                  //set up subface values
+                  scratch.subface_finite_element_values->reinit (cell, face_no, subface_no);
+
+                  //subface->face
+                  (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_current_linearization_point(),
+                      scratch.face_current_velocity_values);
+
+                  //get the mesh velocity, as we need to subtract it off of the advection systems
+                  if (parameters.free_surface_enabled)
+                    (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
+                        scratch.face_mesh_velocity_values);
+
+                  //get the mesh velocity, as we need to subtract it off of the advection systems
+                  if (parameters.free_surface_enabled)
+                    (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
+                        scratch.face_mesh_velocity_values);
+
+                  this->compute_material_model_input_values (this->get_current_linearization_point(),
+                                                             *scratch.subface_finite_element_values,
+                                                             cell,
+                                                             true,
+                                                             scratch.face_material_model_inputs);
+                  this->get_material_model().evaluate(scratch.face_material_model_inputs,
+                                                      scratch.face_material_model_outputs);
+
+                  this->get_heating_model_manager().evaluate(scratch.face_material_model_inputs,
+                                                             scratch.face_material_model_outputs,
+                                                             scratch.face_heating_model_outputs);
+
+                  //set up neighbor values
+                  scratch.neighbor_face_finite_element_values->reinit (neighbor_child, neighbor2);
+
+                  this->compute_material_model_input_values (this->get_current_linearization_point(),
+                                                             *scratch.neighbor_face_finite_element_values,
+                                                             neighbor_child,
+                                                             true,
+                                                             scratch.neighbor_face_material_model_inputs);
+                  this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
+                                                      scratch.neighbor_face_material_model_outputs);
+
+                  this->get_heating_model_manager().evaluate(scratch.neighbor_face_material_model_inputs,
+                                                             scratch.neighbor_face_material_model_outputs,
+                                                             scratch.neighbor_face_heating_model_outputs);
+
+                  std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
+                  // get all dof indices on the neighbor, then extract those
+                  // that correspond to the solution_field we are interested in
+                  neighbor_child->get_dof_indices (neighbor_dof_indices);
+                  for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                    data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no][i] = neighbor_dof_indices[scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, i)];
+                  data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no] = true;
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      // precompute the values of shape functions and their gradients.
+                      // We only need to look up values of shape functions if they
+                      // belong to 'our' component. They are zero otherwise anyway.
+                      // Note that we later only look at the values that we do set here.
+                      for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                        {
+                          scratch.face_grad_phi_field[k]          = (*scratch.subface_finite_element_values)[solution_field].gradient (scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.face_phi_field[k]               = (*scratch.subface_finite_element_values)[solution_field].value (scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.neighbor_face_grad_phi_field[k] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          scratch.neighbor_face_phi_field[k]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                        }
+
+                      const double density_c_P              =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_material_model_outputs.densities[q] *
+                         scratch.face_material_model_outputs.specific_heat[q]
+                         :
+                         1.0);
+
+                      Assert (density_c_P >= 0,
+                              ExcMessage ("The product of density and c_P needs to be a "
+                                          "non-negative quantity."));
+
+                      const double conductivity =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_material_model_outputs.thermal_conductivities[q]
+                         :
+                         0.0);
+                      const double latent_heat_LHS =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         :
+                         0.0);
+                      Assert (density_c_P + latent_heat_LHS >= 0,
+                              ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                          "to the left hand side needs to be a non-negative quantity."));
+
+                      const double penalty = (advection_field.is_temperature()
+                                              ?
+                                              parameters.discontinuous_penalty
+                                              * parameters.temperature_degree
+                                              * parameters.temperature_degree
+                                              / face->measure()
+                                              * conductivity
+                                              / (density_c_P + latent_heat_LHS)
+                                              :
+                                              0.0);
+
+                      Tensor<1,dim> current_u = scratch.face_current_velocity_values[q];
+                      //Subtract off the mesh velocity for ALE corrections if necessary
+                      if (parameters.free_surface_enabled)
+                        current_u -= scratch.face_mesh_velocity_values[q];
+
+                      const double neighbor_density_c_P              =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_material_model_outputs.densities[q] *
+                         scratch.neighbor_face_material_model_outputs.specific_heat[q]
+                         :
+                         1.0);
+
+                      Assert (neighbor_density_c_P >= 0,
+                              ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                          "non-negative quantity."));
+
+                      const double neighbor_conductivity =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_material_model_outputs.thermal_conductivities[q]
+                         :
+                         0.0);
+                      const double neighbor_latent_heat_LHS =
+                        ((advection_field.is_temperature())
+                         ?
+                         scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
+                         :
+                         0.0);
+                      Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                              ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                          "to the left hand side on the neighbor needs to be a non-negative quantity."));
+
+                      const double neighbor_penalty = (advection_field.is_temperature()
+                                                       ?
+                                                       parameters.discontinuous_penalty
+                                                       * parameters.temperature_degree
+                                                       * parameters.temperature_degree
+                                                       / neighbor_child->face(neighbor2)->measure()
+                                                       * neighbor_conductivity
+                                                       / (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                                       :
+                                                       0.0);
+
+                      const double max_penalty = std::max(penalty, neighbor_penalty);
+
+                      const double max_density_c_P_and_latent_heat =
+                        std::max(density_c_P + latent_heat_LHS,
+                                 neighbor_density_c_P + neighbor_latent_heat_LHS);
+
+                      Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
+                              ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                      Assert (max_density_c_P_and_latent_heat >= 0,
+                              ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                          "non-negative quantity."));
+
+                      /**
+                       * The discontinuous Galerkin method uses 2 types of jumps over edges:
+                       * undirected and directed jumps. Undirected jumps are dependent only
+                       * on the order of the numbering of cells. Directed jumps are dependent
+                       * on the direction of the flow. Thus the flow-dependent terms below are
+                       * only calculated if the edge is an inflow edge.
+                       */
+                      const bool inflow = ((current_u * scratch.subface_finite_element_values->normal_vector(q)) < 0.);
+
+                      for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                        {
+                          for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                            {
+                              data.local_matrix(i,j)
+                              += (- 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
+
+                                  - 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
+
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[i]
+                                  * scratch.face_phi_field[j]
+
+                                  - (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.subface_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.subface_finite_element_values->JxW(q);
+
+                              data.local_matrices_int_ext[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                              += (- 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[j]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[i]
+
+                                  + 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[i]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  - time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.neighbor_face_phi_field[j]
+                                  * scratch.face_phi_field[i]
+
+                                  + (inflow
+                                     ?
+                                     (density_c_P + latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.subface_finite_element_values->normal_vector(q))
+                                     * scratch.face_phi_field[i]
+                                     * scratch.neighbor_face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.subface_finite_element_values->JxW(q);
+
+                              data.local_matrices_ext_int[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                              += (+ 0.5 * time_step * conductivity
+                                  * scratch.face_grad_phi_field[j]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  - 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[i]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.face_phi_field[j]
+
+                                  - time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.face_phi_field[j]
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  - (!inflow
+                                     ?
+                                     (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.subface_finite_element_values->normal_vector(q))
+                                     * scratch.neighbor_face_phi_field[i]
+                                     * scratch.face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.subface_finite_element_values->JxW(q);
+
+                              data.local_matrices_ext_ext[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                              += (+ 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[i]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  + 0.5 * time_step * neighbor_conductivity
+                                  * scratch.neighbor_face_grad_phi_field[j]
+                                  * scratch.subface_finite_element_values->normal_vector(q)
+                                  * scratch.neighbor_face_phi_field[i]
+
+                                  + time_step
+                                  * max_density_c_P_and_latent_heat
+                                  * max_penalty
+                                  * scratch.neighbor_face_phi_field[i]
+                                  * scratch.neighbor_face_phi_field[j]
+
+                                  + (!inflow
+                                     ?
+                                     (neighbor_density_c_P + neighbor_latent_heat_LHS)
+                                     * time_step
+                                     * (current_u
+                                        * scratch.subface_finite_element_values->normal_vector(q))
+                                     * scratch.neighbor_face_phi_field[i]
+                                     * scratch.neighbor_face_phi_field[j]
+                                     :
+                                     0.)
+                                 )
+                                 * scratch.subface_finite_element_values->JxW(q);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
 
     /**
      * A namespace for the definition of functions that implement various
@@ -2194,6 +3500,7 @@ namespace aspect
                     )->second
                     ->traction (scratch.face_finite_element_values.quadrature_point(q),
                                 scratch.face_finite_element_values.normal_vector(q));
+
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
                                        traction *
@@ -2228,37 +3535,156 @@ namespace aspect
   Simulator<dim>::
   set_assemblers ()
   {
-    // create an object for the complete equations assembly; add its
-    // member functions to the signals and add the object the list
-    // of assembler objects
-    aspect::Assemblers::CompleteEquations<dim> *complete_equation_assembler
-      = new aspect::Assemblers::CompleteEquations<dim>();
+    if (assemble_newton_stokes_system ==false)
+      {
+        // create an object for the complete equations assembly; add its
+        // member functions to the signals and add the object the list
+        // of assembler objects
+        aspect::Assemblers::CompleteEquations<dim> *complete_equation_assembler
+          = new aspect::Assemblers::CompleteEquations<dim>();
 
-    assemblers->local_assemble_stokes_preconditioner
-    .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_preconditioner,
-                              std_cxx11::cref (*complete_equation_assembler),
-                              std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+        assemblers->local_assemble_stokes_preconditioner
+        .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_preconditioner,
+                                  std_cxx11::cref (*complete_equation_assembler),
+                                  std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
-    if (material_model->is_compressible())
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+        else
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+        assembler_objects.push_back (std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+                                     (complete_equation_assembler));
+
+        assemblers->local_assemble_advection_system
+        .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_advection_system,
+                                  std_cxx11::cref (*complete_equation_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3,
+                                  std_cxx11::_4,
+                                  std_cxx11::_5));
+
+        assemblers->compute_advection_system_residual
+        .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::compute_advection_system_residual,
+                                  std_cxx11::cref (*complete_equation_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3));
+
+        if (parameters.use_discontinuous_temperature_discretization ||
+            parameters.use_discontinuous_composition_discretization)
+          {
+            assemblers->local_assemble_advection_system_on_interior_face
+            .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_interior_face_terms,
+                                     std_cxx11::cref (*complete_equation_assembler),
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3,
+                                     std_cxx11::_4,
+                                     std_cxx11::_5));
+
+            assemblers->local_assemble_advection_system_on_boundary_face
+            .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
+                                     std_cxx11::cref (*complete_equation_assembler),
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3,
+                                     std_cxx11::_4,
+                                     std_cxx11::_5));
+
+            assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data = true;
+          }
+
+
+      }
     else
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
-    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                 (complete_equation_assembler));
+      {
+        // create an object for the newton equations assembly; add its
+        // member functions to the signals and add the object the list
+        // of assembler objects
+        aspect::Assemblers::NewtonStokes<dim> *newton_stokes_system_assembler
+          = new aspect::Assemblers::NewtonStokes<dim>();
+
+        assemblers->local_assemble_stokes_preconditioner
+        .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_stokes_preconditioner,
+                                  std_cxx11::cref (*newton_stokes_system_assembler),
+                                  std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_stokes_system_compressible,
+                                    std_cxx11::cref (*newton_stokes_system_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,//assemble_newton_stokes_matrix,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+        else
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_stokes_system_incompressible,
+                                    std_cxx11::cref (*newton_stokes_system_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,//assemble_newton_stokes_matrix,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+        assembler_objects.push_back (std_cxx11::unique_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+                                     (newton_stokes_system_assembler));
+
+        assemblers->local_assemble_advection_system
+        .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_advection_system,
+                                  std_cxx11::cref (*newton_stokes_system_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3,
+                                  std_cxx11::_4,
+                                  std_cxx11::_5));
+
+        assemblers->compute_advection_system_residual
+        .connect (std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::compute_advection_system_residual,
+                                  std_cxx11::cref (*newton_stokes_system_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3));
+
+        if (parameters.use_discontinuous_temperature_discretization ||
+            parameters.use_discontinuous_composition_discretization)
+          {
+            assemblers->local_assemble_advection_system_on_interior_face
+            .connect(std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_discontinuous_advection_interior_face_terms,
+                                     std_cxx11::cref (*newton_stokes_system_assembler),
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3,
+                                     std_cxx11::_4,
+                                     std_cxx11::_5));
+
+            assemblers->local_assemble_advection_system_on_boundary_face
+            .connect(std_cxx11::bind(&aspect::Assemblers::NewtonStokes<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
+                                     std_cxx11::cref (*newton_stokes_system_assembler),
+                                     std_cxx11::_1,
+                                     std_cxx11::_2,
+                                     std_cxx11::_3,
+                                     std_cxx11::_4,
+                                     std_cxx11::_5));
+
+            assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data = true;
+          }
+      }
 
 
     // add the terms for traction boundary conditions
@@ -2283,46 +3709,6 @@ namespace aspect
                                 std_cxx11::_4,
                                 std_cxx11::_5));
 
-    assemblers->local_assemble_advection_system
-    .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_advection_system,
-                              std_cxx11::cref (*complete_equation_assembler),
-                              // discard cell,
-                              std_cxx11::_2,
-                              std_cxx11::_3,
-                              std_cxx11::_4,
-                              std_cxx11::_5));
-
-    assemblers->compute_advection_system_residual
-    .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::compute_advection_system_residual,
-                              std_cxx11::cref (*complete_equation_assembler),
-                              // discard cell,
-                              std_cxx11::_2,
-                              std_cxx11::_3));
-
-    if (parameters.use_discontinuous_temperature_discretization ||
-        parameters.use_discontinuous_composition_discretization)
-      {
-        assemblers->local_assemble_advection_system_on_interior_face
-        .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_interior_face_terms,
-                                 std_cxx11::cref (*complete_equation_assembler),
-                                 std_cxx11::_1,
-                                 std_cxx11::_2,
-                                 std_cxx11::_3,
-                                 std_cxx11::_4,
-                                 std_cxx11::_5));
-
-        assemblers->local_assemble_advection_system_on_boundary_face
-        .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
-                                 std_cxx11::cref (*complete_equation_assembler),
-                                 std_cxx11::_1,
-                                 std_cxx11::_2,
-                                 std_cxx11::_3,
-                                 std_cxx11::_4,
-                                 std_cxx11::_5));
-
-        assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data = true;
-      }
-
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers, assembler_objects);
 
@@ -2346,6 +3732,8 @@ namespace aspect
 
     data.local_matrix = 0;
 
+    if (assemble_newton_stokes_system == true)
+      scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.temperature.size(), scratch.material_model_inputs.composition.size());
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
@@ -2518,8 +3906,10 @@ namespace aspect
     data.local_rhs = 0;
     if (do_pressure_rhs_compatibility_modification)
       data.local_pressure_shape_function_integrals = 0;
-
+//std::cout << "b" << assemble_newton_stokes_system;
     // initialize the material model data on the cell
+    if (assemble_newton_stokes_system == true)
+      scratch.material_model_outputs.create_additional_material_outputs(scratch.material_model_inputs.temperature.size(), scratch.material_model_inputs.composition.size());
     compute_material_model_input_values (current_linearization_point,
                                          scratch.finite_element_values,
                                          cell,
@@ -2538,10 +3928,17 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
+    scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
+        scratch.velocity_divergence);
+
     // trigger the invocation of the various functions that actually do
     // all of the assembling
-    assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
-                                             scratch, data);
+    if (assemble_newton_stokes_system ==false)
+      assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
+                                               scratch, data);
+    else
+      assemblers->local_assemble_stokes_system(cell, pressure_scaling, assemble_newton_stokes_matrix,
+                                               scratch, data);
 
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
@@ -2552,6 +3949,7 @@ namespace aspect
 
           if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
+
               compute_material_model_input_values (current_linearization_point,
                                                    scratch.face_finite_element_values,
                                                    cell,
