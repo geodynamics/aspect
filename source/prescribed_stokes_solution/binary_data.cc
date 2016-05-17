@@ -54,7 +54,7 @@ namespace aspect
       dof_handler.distribute_dofs(this->get_fe());
       DoFRenumbering::hierarchical (dof_handler);
       DoFRenumbering::component_wise (dof_handler,
-                                      this->introspection().get_components_to_blocks());
+                                      this->get_components_to_blocks());
 //        this->get_triangulation();
      // parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
