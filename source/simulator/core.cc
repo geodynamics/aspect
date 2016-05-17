@@ -1770,7 +1770,15 @@ namespace aspect
         {
           double initial_temperature_residual = 0;
           double initial_stokes_residual      = 0;
+          std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > initial_particles;
+
           std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+
+          // If the tracer postprocessor has been selected advect the particles
+          Postprocess::Tracers<dim> *tracer_postprocessor = const_cast<Postprocess::Tracers<dim> *>
+                                                            (postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >());
+          if (tracer_postprocessor != 0)
+            initial_particles = tracer_postprocessor->get_particle_world().get_particles();
 
           unsigned int iteration = 0;
 
@@ -1810,10 +1818,11 @@ namespace aspect
                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
               // If the tracer postprocessor has been selected advect the particles
-              Postprocess::Tracers<dim> *tracer_postprocessor = const_cast<Postprocess::Tracers<dim> *>
-                                                                (postprocess_manager.template find_postprocessor<Postprocess::Tracers<dim> >());
               if (tracer_postprocessor != 0)
-                tracer_postprocessor->advect_particles();
+                {
+                  tracer_postprocessor->get_particle_world().get_particles() = initial_particles;
+                  tracer_postprocessor->advect_particles();
+                }
 
               // the Stokes matrix depends on the viscosity. if the viscosity
               // depends on other solution variables, then after we need to
