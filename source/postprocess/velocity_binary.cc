@@ -23,6 +23,11 @@ namespace aspect {
           parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
           sol_trans.prepare_serialization (this->get_solution());
           this->get_triangulation().save(fileName.c_str());
+
+           std::ofstream output (this->get_output_directory() + "solution-" + Utilities::int_to_string(this->get_timestep_number(), 5) + ".txt");
+           dealii::BlockVector<double> solution(this->get_solution());
+           solution.block_write(output);
+
            return std::make_pair("Writing binary output to: ", fileName);
        }
    }
