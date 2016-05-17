@@ -22,6 +22,7 @@
 #include <aspect/global.h>
 #include <aspect/prescribed_stokes_solution/binary_data.h>
 #include <deal.II/distributed/solution_transfer.h>
+#include <deal.II/dofs/dof_renumbering.h>
 
 namespace aspect
 {
@@ -51,6 +52,9 @@ namespace aspect
       triangulation->load(fileName.c_str(), true);
       DoFHandler<dim> dof_handler (*triangulation);
       dof_handler.distribute_dofs(this->get_fe());
+      DoFRenumbering::hierarchical (dof_handler);
+      DoFRenumbering::component_wise (dof_handler,
+                                      this->get_components_to_blocks());
 //        this->get_triangulation();
      // parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
