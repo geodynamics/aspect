@@ -70,8 +70,7 @@ namespace aspect
     }
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     Tensor<1,dim>
     Interface<dim>::boundary_velocity (const types::boundary_id ,
@@ -84,8 +83,7 @@ namespace aspect
 
       return this->boundary_velocity(position);
     }
-#pragma GCC diagnostic pop
-
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>

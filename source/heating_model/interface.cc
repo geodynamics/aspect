@@ -52,8 +52,7 @@ namespace aspect
 
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     void
     Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -72,7 +71,7 @@ namespace aspect
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
-#pragma GCC diagnostic pop
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>
