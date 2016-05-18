@@ -39,6 +39,7 @@
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
+#include <deal.II/base/std_cxx11/unique_ptr.h>
 
 #include <aspect/compat.h>
 
@@ -349,11 +350,7 @@ void print_aspect_header(Stream &stream)
 #endif
          << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
   const int n_threads =
-#if DEAL_II_VERSION_GTE(8,3,0)
     dealii::MultithreadInfo::n_threads();
-#else
-    dealii::multithread_info.n_threads();
-#endif
   if (n_threads>1)
     stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 #ifdef ASPECT_USE_PETSC

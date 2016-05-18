@@ -1301,21 +1301,13 @@ namespace aspect
           typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
           if (((parameters.fixed_temperature_boundary_indicators.find(
-#if DEAL_II_VERSION_GTE(8,3,0)
                   face->boundary_id()
-#else
-                  face->boundary_indicator()
-#endif
                 )
                 != parameters.fixed_temperature_boundary_indicators.end())
                && (advection_field.is_temperature()))
               ||
               (( parameters.fixed_composition_boundary_indicators.find(
-#if DEAL_II_VERSION_GTE(8,3,0)
                    face->boundary_id()
-#else
-                   face->boundary_indicator()
-#endif
                  )
                  != parameters.fixed_composition_boundary_indicators.end())
                && (!advection_field.is_temperature())))
@@ -1382,19 +1374,11 @@ namespace aspect
                   const double dirichlet_value = (advection_field.is_temperature()
                                                   ?
                                                   this->get_boundary_temperature().boundary_temperature(
-#if DEAL_II_VERSION_GTE(8,3,0)
-                                                    cell->face(face_no)->boundary_id(),
-#else
                                                     cell->face(face_no)->boundary_indicator(),
-#endif
                                                     scratch.face_finite_element_values->quadrature_point(q))
                                                   :
                                                   this->get_boundary_composition().boundary_composition(
-#if DEAL_II_VERSION_GTE(8,3,0)
                                                     cell->face(face_no)->boundary_id(),
-#else
-                                                    cell->face(face_no)->boundary_indicator(),
-#endif
                                                     scratch.face_finite_element_values->quadrature_point(q),
                                                     advection_field.compositional_variable));
 
@@ -2169,13 +2153,7 @@ namespace aspect
         // we need to assemble force terms for the right hand side
         const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
         if (simulator_access.get_traction_boundary_conditions()
-            .find (
-#if DEAL_II_VERSION_GTE(8,3,0)
-              cell->face(face_no)->boundary_id()
-#else
-              cell->face(face_no)->boundary_indicator()
-#endif
-            )
+            .find (cell->face(face_no)->boundary_id())
             !=
             simulator_access.get_traction_boundary_conditions().end())
           {
@@ -2185,11 +2163,7 @@ namespace aspect
               {
                 const Tensor<1,dim> traction
                   = simulator_access.get_traction_boundary_conditions().find(
-#if DEAL_II_VERSION_GTE(8,3,0)
                       cell->face(face_no)->boundary_id()
-#else
-                      cell->face(face_no)->boundary_indicator()
-#endif
                     )->second
                     ->traction (scratch.face_finite_element_values.quadrature_point(q),
                                 scratch.face_finite_element_values.normal_vector(q));
