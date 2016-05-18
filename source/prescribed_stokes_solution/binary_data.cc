@@ -37,7 +37,7 @@ namespace aspect
     void
     BinaryData<dim>::initialize ()
     {
-      triangulation = new parallel::distributed::Triangulation<dim>(this->get_mpi_communicator());
+      triangulation = new parallel::distributed::Triangulation<dim>(this->get_mpi_communicator()); 
     }
 
     template <int dim>
@@ -45,28 +45,24 @@ namespace aspect
     BinaryData<dim>::update ()
     {
       std::string fileName = dataDirectory + "/" + "solution-" + Utilities::int_to_string(this->get_timestep_number(), 5) + ".mesh";
-       //this->get_triangulation().load(fileName.c_str());
       triangulation->copy_triangulation(this->get_triangulation());
-      //parallel::distributed::Triangulation<dim> triangulation2(this->get_mpi_communicator());
-      //triangulation2.copy_triangulation(this->get_triangulation());
       triangulation->load(fileName.c_str(), true);
       DoFHandler<dim> dof_handler (*triangulation);
       dof_handler.distribute_dofs(this->get_fe());
       DoFRenumbering::hierarchical (dof_handler);
       DoFRenumbering::component_wise (dof_handler,
-                                      this->get_components_to_blocks());
-//        this->get_triangulation();
-     // parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
+                                      this->introspection().get_components_to_blocks());
+      LinearAlgebra::BlockVector tmp_solution (this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
-      LinearAlgebra::BlockVector sol(this->get_solution());
-      sol_trans.deserialize(sol);
-      triangulation->clear();
+      sol_trans.deserialize(tmp_solution);
 
       std::string fileNameTmp = this->get_output_directory() + "/" + "solution-" + Utilities::int_to_string(this->get_timestep_number(), 5) + ".txt"; 
       std::ofstream output(fileNameTmp);
-      dealii::BlockVector<double> solTmp(sol);
+      dealii::BlockVector<double> solTmp(tmp_solution);
       solTmp.print(output);
       output.close(); 
+
+      triangulation->clear();
     }
 
     template <int dim>
