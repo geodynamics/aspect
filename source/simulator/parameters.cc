@@ -150,7 +150,7 @@ namespace aspect
                        "heat conduction in determining the length of each time step.");
 
     prm.declare_entry ("Nonlinear solver scheme", "IMPES",
-                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only|Binary input"),
+                       Patterns::Selection ("IMPES|iterated IMPES|iterated Stokes|Stokes only|Advection only"),
                        "The kind of scheme used to resolve the nonlinearity in the system. "
                        "'IMPES' is the classical IMplicit Pressure Explicit Saturation scheme "
                        "in which ones solves the temperatures and Stokes equations exactly "
@@ -228,11 +228,6 @@ namespace aspect
                        Patterns::DirectoryName(),
                        "The name of the directory into which all output files should be "
                        "placed. This may be an absolute or a relative path.");
-
-    prm.declare_entry ("Input directory", "input",
-                       Patterns::DirectoryName(),
-                       "The name of the directory in which the binary solution data at each "
-                       "time step number resides.");
 
     prm.declare_entry ("Use direct solver for Stokes system", "false",
                        Patterns::Bool(),
@@ -758,11 +753,6 @@ namespace aspect
       nonlinear_solver = NonlinearSolver::Stokes_only;
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
-    else if (prm.get ("Nonlinear solver scheme") == "Binary input")
-    {
-      nonlinear_solver = NonlinearSolver::Binary_input;
-      input_directory = prm.get ("Input directory");
-    }
     else
       AssertThrow (false, ExcNotImplemented());
 
