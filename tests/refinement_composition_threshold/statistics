@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Time step size (seconds)
+# 11: Visualization file name
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: Average nondimensional temperature (K)
+# 16: Minimal value for composition Alice
+# 17: Maximal value for composition Alice
+# 18: Global mass for composition Alice
+# 19: Minimal value for composition Bob
+# 20: Maximal value for composition Bob
+# 21: Global mass for composition Bob
+0 0.000000000000e+00  256  2467 1089 2178  0  0  0 2.209708691208e-02 output-refinement_composition_threshold/solution-00000 1.00000000e-01 1.77256944e-01 5.00000000e-01 2.04762641e-05 1.00000000e-01 1.00000000e+00 1.69238281e-01 1.00000503e+00 1.99921906e+00 1.15592689e+00 
+1 2.209708691208e-02  256  2467 1089 2178 14 11 14 2.209708691208e-02 output-refinement_composition_threshold/solution-00001 7.51701533e-02 1.77257469e-01 5.33747830e-01 2.70573324e-05 6.71307531e-02 1.05317305e+00 1.69276003e-01 1.00001242e+00 1.99021843e+00 1.15609067e+00 
+2 4.419417382416e-02  364  3675 1627 3254 17 14 17 1.758993861826e-02 output-refinement_composition_threshold/solution-00002 7.11757196e-02 1.77496628e-01 5.41243668e-01 2.81794086e-05 3.48982828e-02 1.08736166e+00 1.69339147e-01 1.00001969e+00 1.98799454e+00 1.15622287e+00 
+3 6.178411244242e-02 1138 11015 4886 9772 37 27 44 8.215887557583e-03 output-refinement_composition_threshold/solution-00003 7.07400241e-02 1.77509451e-01 5.31594074e-01 2.82982842e-05 4.28738440e-02 1.08210716e+00 1.69416863e-01 1.00002612e+00 1.98708583e+00 1.15633807e+00 
+4 7.000000000000e-02 1138 11015 4886 9772 15 10 15 9.038769075777e-03 output-refinement_composition_threshold/solution-00004 7.26906015e-02 1.77509234e-01 5.26434194e-01 2.77812438e-05 3.89202161e-02 1.07855683e+00 1.69460186e-01 1.00002943e+00 1.98763091e+00 1.15639050e+00 
