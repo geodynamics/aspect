@@ -39,9 +39,7 @@
  * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
  * really understood, but the extra include makes it work for now.
  */
-#if DEAL_II_VERSION_GTE(8,3,0)
 #include <deal.II/numerics/vector_tools.templates.h>
-#endif
 
 using namespace dealii;
 
