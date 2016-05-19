@@ -39,7 +39,6 @@
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
-#include <deal.II/base/std_cxx11/unique_ptr.h>
 
 #include <aspect/compat.h>
 
