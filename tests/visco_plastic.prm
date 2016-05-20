@@ -1,0 +1,202 @@
+# A simple model to test if the visco_plastic material
+# model returns the correct viscosity for the specified
+# viscous flaws, brittle parameters and geotherm. The 
+# model (100x100 km) contains two distinct materials
+# (crust & mantle), with the crust (upper 30 km) specified
+# by a compositional field. The specified geotherm is typical
+# of the continental lithosphere. The top and bottom boundaries  
+# have fixed temepratures (sides are insulating), while all the
+# boundaries are free-slip (tangential velocity b.c.). The strain-rate 
+# used in the viscous flow laws is specified in the material model
+# As we only want to check the viscosity profile, no need to do more
+# than 1 nonlinear iteration. See additional comments below for more details.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Linear solver tolerance                = 1e-7
+set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver tolerance             = 1e-8
+set Max nonlinear iterations               = 1
+set Number of cheap Stokes solver steps    = 0
+set CFL number                             = 0.5
+set Output directory                       = visco_plastic
+set Timing output frequency                = 1
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Model geometry (100x100 km, 1 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 100
+    set Y repetitions = 100
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications (no global or adaptive refinement)
+subsection Mesh refinement
+  set Initial global refinement                 = 0
+  set Initial adaptive refinement               = 0
+end
+
+# Boundary classifications (free-slip, fixed T at top & bottom, insulating side) 
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = bottom, top
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Number and name of compositional fields (1 compositional field for 'crust')
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = crust
+end
+
+# Spatial domain of different compositional fields (crust is present in upper 30 km)
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y>=70.e3, 1, 0);
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+# Temperature boundary conditions (fixed: top = 273 K, bottom = 1573 K)
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Left temperature   =  273
+    set Right temperature  =  273
+    set Top temperature    =  273
+  end
+end
+
+# Initial temperature field
+# Typical continental geotherm based equations 4-6 from Chapman 1986 (Geol. Soc. Lon.)
+# The initial constraints are:
+#   surface temperature (ts) = 273 K; basal temperature (tb) = 1573 K; Moho
+#   temperature (tm) = 873 K; crust heat production (A) = 9.e-7 W/m^3; crust
+#   thermal conductivity (kc) = 2.5 (W/(m K)); 
+# To satisfy these constraints, the following values are required:
+#   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
+#   mantle thermal conducitivty (km) = 3.65 (W/(m K)); 
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names = x,y
+    set Function constants = h=100e3,ts=273,tm=873.,qs=0.0635,qb=0.0365,kc=2.5,km=3.65,A=9.e-7
+    set Function expression = if( (h-y)<=30.e3, \
+                                  ts + (qs/kc)*(h-y) - (A*(h-y)*(h-y))/(2.0*kc), \
+                                  tm + (qb/km)*(h-y-30.e3))                             
+  end
+end
+
+# Internal heating (only internal heating for crust)
+# Assuming a very large decay time, the heat production (W/m^3) is effectively:
+#   radioactive_heating_rate (W/kg) * density (kg/m^3)
+# For a reference crustal density of 2800 kg/m^3 and 9.e-7 W/m^3 heating production,
+# the heating rate (assuming a single element) is 9.e-7/2800. = 3.214287e-10.
+subsection Heating model
+  set Model name = radioactive decay
+  subsection Radioactive decay
+    set Number of elements    = 1
+    set Heating rates                 = 3.2142857e-10
+    set Half decay times              = 1.e20
+    set Initial concentrations mantle = 0.0
+    set Initial concentrations crust  = 1.0 
+    set Crust defined by composition  = true
+    set Crust composition number      = 0
+  end
+end
+
+
+# Material model (values for background material & crust compositional field)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Reference temperature = 293
+
+    # As the boundaries are all free-slip, so use the reference strain-rate
+    # (used on first nonlinear iteration) to specify the strain-rate used
+    # in the viscous flow law.  Set the minimum strain-rate to the same value.
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-20
+
+    # Minimum, maximum and reference viscosity 
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e28
+    set Reference viscosity = 1e22
+
+    # Thermal diffusivity is adjusted to match thermal conductivities
+    # assumed in the assigning the initial geotherm
+    set Thermal diffusivities = 1.474747e-6,1.190476e-6
+    set Heat capacities = 750.,750.
+    set Densities = 3300,2800
+    set Thermal expansivities = 0.,0.
+
+    # Harmonic viscosity averaging
+    set Viscosity averaging scheme = harmonic
+    
+    # Choose to have the viscosity (pre-yield) follow a dislocation
+    # diffusion or composite flow law.  Here, dislocation is selected
+    # so no need to specify diffusion creep parameters below, which are
+    # only used if "diffusion" or "composite" option is selected.
+    set Viscous flow law = dislocation
+
+    # Dislocation creep parameters for background material (dry olivine;
+    # Hirth & Kohlstedt, 2004) and crust compositional field (wet quarzite;
+    # (Rutter & Brodie, 2004).
+    set Prefactors for dislocation creep = 6.52e-16,8.57e-28
+    set Stress exponents for dislocation creep = 3.5,4.0
+    set Activation energies for dislocation creep = 530.e3,223.e3
+    set Activation volumes for dislocation creep = 18.e-6,0.
+
+    # Parameters for Drucker Prager yield criterion.  The cohesion is set to
+    # a very large value to ensure yielding does not occur here.  The output viscosity
+    # should consequently directly follow the disclocation creep flow low.
+    set Angles of internal friction = 20.,20.
+    set Cohesions = 1.e20,1.e20
+
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Stop at specified time step
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 0
+end
+
+# Post processing (use output data to compare to predicted viscosities)
+subsection Postprocess
+  set List of postprocessors = depth average
+ 
+ subsection Depth average
+    set Number of zones = 100
+    set Output format = gnuplot
+  end
+  
+end
