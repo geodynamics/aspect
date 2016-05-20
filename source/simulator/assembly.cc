@@ -2165,8 +2165,9 @@ namespace aspect
                   = simulator_access.get_traction_boundary_conditions().find(
                       cell->face(face_no)->boundary_id()
                     )->second
-                    ->traction (scratch.face_finite_element_values.quadrature_point(q),
-                                scratch.face_finite_element_values.normal_vector(q));
+                    ->boundary_traction (cell->face(face_no)->boundary_id(),
+                                         scratch.face_finite_element_values.quadrature_point(q),
+                                         scratch.face_finite_element_values.normal_vector(q));
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   data.local_rhs(i) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
                                        traction *

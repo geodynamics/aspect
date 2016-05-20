@@ -37,8 +37,9 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     Function<dim>::
-    traction (const Point<dim> &p,
-              const Tensor<1,dim> &) const
+    boundary_traction (const types::boundary_id,
+                       const Point<dim> &p,
+                       const Tensor<1,dim> &) const
     {
       Tensor<1,dim> traction;
       for (unsigned int d=0; d<dim; ++d)
