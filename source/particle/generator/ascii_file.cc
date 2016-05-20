@@ -110,19 +110,9 @@ namespace aspect
             {
               prm.enter_subsection("Ascii file");
               {
-                // Get the path to the data files. If it contains a reference
-                // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
-                // as a #define
-                data_directory        = prm.get ("Data directory");
-                {
-                  const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-                  std::string::size_type position;
-                  while (position = data_directory.find (subst_text),  position!=std::string::npos)
-                    data_directory.replace (data_directory.begin()+position,
-                                            data_directory.begin()+position+subst_text.size(),
-                                            ASPECT_SOURCE_DIR);
-                }
-
+                data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                              "$ASPECT_SOURCE_DIR",
+                                                              ASPECT_SOURCE_DIR);
                 data_filename    = prm.get ("Data file name");
               }
               prm.leave_subsection();

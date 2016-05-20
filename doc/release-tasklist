@@ -6,23 +6,26 @@
       are up to date in the manual
     . check that readme.html is okay and the links to the mailinglists are
       working (also in manual.pdf)
-    . run benchmarks/check.sh and cookbooks/check.sh (and be patient)
-    . indent tests/*cc
+    . run (and be patient):
+      cd benchmarks && ./check.sh BUILDDIR
+      cd cookbooks && ./check.sh BUILDDIR
   . determine new version roughly following semantic versioning: http://semver.org/
     - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
     - backwards incompatible changes require incrementing X, adding features incrementing Y
   . setup:
-      export OLDVER=1.3;export VER=1.4.0;export NEXTVER=1.5.0-pre
-      export DEALSRCDIR=/path/to/dealii-installed
+      export OLDVER=1.3;export VER=1.4.0;export VERSHORT=1.4;export NEXTVER=1.5.0-pre
+      export DEALSRCDIR=/ssd/deal-git/
   . fix doxygen errors:
       find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/tests/scripts/checkdoxygen.py
     and commit.
-  . fix formatting, apply astyle, copyright years:
+  . fix formatting, copyright years:
+      old:
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-      astyle --options=doc/astyle.rc `find include source | egrep '\.(h|cc)$'`
-      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2015 by the authors of the ASPECT code./}' $file; done
+      new: use the deal.II copyright script!
+      ./doc/indent
+      find . -name "*.h" -o -name "*.cc" -print | while read file;do sed -i '0,/^.*Copyright.*/{s/^.*Copyright.*/  Copyright (C) 2011 - 2016 by the authors of the ASPECT code./}' $file; done
       git status # check!
-      git commit -a -m "doxygen formatting, astyle, comment wrapping" # or rather create a pull-request
+      git commit -a -m "doxygen formatting, comment wrapping" # or rather create a pull-request
   . create branch for master PR to update changes.h in doc/modules:
       git checkout -b post-release-$VER
       cd doc/modules; ./increment_version.sh $OLDVER $VER;cd ../..
@@ -30,16 +33,16 @@
       git commit -m "release task: update version and changes.h"
   . create a branch, bump version:
       git checkout post-release-$VER && \
-      git checkout -b aspect-$VER && \
+      git checkout -b aspect-$VERSHORT && \
       cd doc && ./bump_version.sh $VER && cd .. && \
       git commit -m "release task: update version info"
   . compile aspect, make sure you have a symlink in the main directory for the next step
   . update doc/manual/parameters.tex and documentation:
-      cd doc && ./update_parameters.sh && make manual.pdf && cd .. && \
-      git add doc/manual/parameters.tex doc/manual.pdf && \
+      cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
+      git add doc/manual/parameters.tex && \
       git commit -m "release task: update manual"
   . make sure the .prm and .xml files we ship match the default values of
-    parameters
+    parameters (?!)
   . create a RC tar file:
       export PREFIX=aspect-$VER-rc1 && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
@@ -47,7 +50,7 @@
       rm $PREFIX.tar.gz &&  cp doc/manual.pdf $PREFIX/doc && \
       tar czf $PREFIX.tar.gz $PREFIX && rm -rf $PREFIX
   . Tag the release:
-      git tag -a v$VER -m "tag version $VER"
+      git tag -s v$VER -m "tag version $VER"
   . create a tar file:
       export PREFIX=aspect-$VER && rm -rf $PREFIX.tar.gz && \
       git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz && \
@@ -57,7 +60,7 @@
   . make public (branch and tag):
       git push cig aspect-$VER
       git push cig v$VER
-  . create a release on github, upload tarball
+  . create a release on github, upload tarball, upload manual-$VER.pdf
   . link it on download.html, update version info etc.
   . ask Eric to update http://geodynamics.org/cig/software/aspect/
   . announce on
@@ -66,8 +69,57 @@
        cig-mc@geodynamics.org
        cig-cs@geodynamics.org
        dealii@googlegroups.com
-  . update manual on mainline: use .pdf from last release?!
-  
+
+
+Announcement for 1.4.0 (May 15, 2016)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 1.4.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.dealii.org/
+
+and the release is available from
+
+        https://github.com/geodynamics/aspect/releases/tag/v1.4.0
+
+This release includes the following changes:
+- Complete overhaul of the particle architecture.
+- Modularization of the assembly process.
+- Large improvements to serial and parallel performance of particle handling.
+- Support for traction boundary conditions.
+- Support for time-dependent mesh refinement criteria.
+- Flexible support for modifying the underlying FEM variables for the PDE.
+- Optional DG support for temperature and compositional fields.
+- More robust parallel file I/O.
+- Support for tangential mesh velocity boundaries in free surface
+  computations.
+- Support for anisotropic viscosity.
+- Various fixes to free surface computations: checkpointing, better
+  stabilization, crash fixes
+- New Chunk Geometry model.
+- New material property averaging options.
+- Complete rewrite of the heating model infrastructure.
+- Several new cookbooks.
+- Several new postprocessors.
+- Support for signals in various locations that allows plugins to
+  inspect/manipulate things inside the core application.
+- Several new mesh refinement plugins.
+- Improved spherical interpolation of data used in the GPlates plugin. 
+- Many other fixes and small improvements.
+
+A complete list of changes can be found at
+  https://aspect.dealii.org/doc/doxygen/changes_between_1_83_and_1_84_80.html
+and the release is also available from
+  https://github.com/geodynamics/aspect/releases/tag/v1.4.0
+
+Wolfgang Bangerth, Timo Heister, and many other contributors.
+
+
+
+
 
 Announcement for 1.3 (May 18, 2015)
 -----------------------------------------

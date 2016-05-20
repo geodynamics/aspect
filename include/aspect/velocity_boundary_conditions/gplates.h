@@ -188,7 +188,8 @@ namespace aspect
          * current class, this function returns value from gplates.
          */
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const;
+        boundary_velocity (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position) const;
 
         // avoid -Woverloaded-virtual warning until the deprecated function
         // is removed from the interface:

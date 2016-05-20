@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,9 +32,9 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion based on the
-     * absolute value of the compositional fields (if available). Every cell
-     * than contains a value exceeding a threshold given in the input file is
-     * marked for refinement.
+     * absolute value of the compositional fields. Every cell that contains a
+     * value exceeding a threshold given in the input file is marked for
+     * refinement.
      *
      * @ingroup MeshRefinement
      */
@@ -46,7 +46,6 @@ namespace aspect
         /**
          * After cells have been marked for coarsening/refinement, apply
          * additional criteria independent of the error estimate.
-         *
          */
         virtual
         void

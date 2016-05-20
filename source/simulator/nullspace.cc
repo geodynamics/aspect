@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -110,57 +110,6 @@ namespace aspect
           return translation;
         }
     };
-
-    /**
-     * Perform an MPI sum of the entries of a tensor.
-     */
-    template <int rank, int dim, typename Number>
-    inline
-    Tensor<rank,dim,Number>
-    sum (const Tensor<rank,dim,Number> &local,
-         const MPI_Comm &mpi_communicator)
-    {
-      const unsigned int n_entries = Tensor<rank,dim,Number>::n_independent_components;
-      Number entries[ Tensor<rank,dim,Number>::n_independent_components ];
-
-      for (unsigned int i=0; i< n_entries; ++i)
-        entries[i] = local[ local.unrolled_to_component_indices(i) ];
-
-      Number global_entries[ Tensor<rank,dim,Number>::n_independent_components ];
-      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
-
-      Tensor<rank,dim,Number> global;
-      for (unsigned int i=0; i< n_entries; ++i)
-        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
-
-      return global;
-    }
-
-    /**
-     * Perform an MPI sum of the entries of a symmetric tensor.
-     */
-    template <int rank, int dim, typename Number>
-    inline
-    SymmetricTensor<rank,dim,Number>
-    sum (const SymmetricTensor<rank,dim,Number> &local,
-         const MPI_Comm &mpi_communicator)
-    {
-      const unsigned int n_entries = SymmetricTensor<rank,dim,Number>::n_independent_components;
-      Number entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
-
-      for (unsigned int i=0; i< n_entries; ++i)
-        entries[i] = local[ local.unrolled_to_component_indices(i) ];
-
-      Number global_entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
-      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
-
-      SymmetricTensor<rank,dim,Number> global;
-      for (unsigned int i=0; i< n_entries; ++i)
-        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
-
-      return global;
-    }
-
   }
 
 
@@ -361,11 +310,7 @@ namespace aspect
 
     //Calculate the total mass and velocity correction
     const double mass = Utilities::MPI::sum( local_mass, mpi_communicator);
-#if DEAL_II_VERSION_GTE(8,3,0)
     Tensor<1,dim> velocity_correction = Utilities::MPI::sum(local_momentum, mpi_communicator)/mass;
-#else
-    Tensor<1,dim> velocity_correction = internal::sum(local_momentum, mpi_communicator)/mass;
-#endif
 
     //We may only want to remove the nullspace for a single component, so zero out
     //the velocity correction if it is not selected by the NullspaceRemoval flag
@@ -520,19 +465,11 @@ namespace aspect
       }
     else
       {
-#if DEAL_II_VERSION_GTE(8,3,0)
         //sum up the local contributions to moment of inertia
         const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
                                                                               mpi_communicator );
         //sum up the local contributions to angular momentum
         const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
-#else
-        //sum up the local contributions to moment of inertia
-        const SymmetricTensor<2,dim> moment_of_inertia = internal::sum( local_moment_of_inertia,
-                                                                        mpi_communicator );
-        //sum up the local contributions to angular momentum
-        const Tensor<1,dim> angular_momentum = internal::sum( local_angular_momentum, mpi_communicator );
-#endif
 
         //Solve for the rotation vector that cancels the net momentum
         SymmetricTensor<2,dim> inverse_moment ( invert( Tensor<2,dim>(moment_of_inertia) ) );

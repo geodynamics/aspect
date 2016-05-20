@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -80,8 +80,9 @@ namespace aspect
               const std::string field_name = prm.get("Name of compositional field");
 
               AssertThrow(this->introspection().compositional_name_exists(field_name),
-                          ExcMessage("The compositional field whose artificial viscosity you want to "
-                                     "visualize does not exist."));
+                          ExcMessage("No compositional field with name <" +
+                                     field_name +
+                                     "> exists for which you want to visualize the artificial viscosity."));
 
               compositional_field = this->introspection().compositional_index_for_name(field_name);
             }

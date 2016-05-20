@@ -1,4 +1,4 @@
-# Copyright (C) 2013, 2014 by the authors of the ASPECT code.
+# Copyright (C) 2013 - 2016 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -29,7 +29,7 @@ INCLUDE_DIRECTORIES(include)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
-FIND_PACKAGE(deal.II 8.2 QUIET
+FIND_PACKAGE(deal.II 8.4.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})

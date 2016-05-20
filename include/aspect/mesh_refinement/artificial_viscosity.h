@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
 
     /**
      * A class that implements a mesh refinement criterion based on the
-     * artificial viscosity of the compositional fields (if available).
+     * artificial viscosity of the temperature or compositional fields.
      *
      * @ingroup MeshRefinement
      */
@@ -42,12 +42,7 @@ namespace aspect
     {
       public:
         /**
-         * Execute this mesh refinement criterion.
-         *
-         * @param[out] error_indicators A vector that for every active cell of
-         * the current mesh (which may be a partition of a distributed mesh)
-         * provides an error indicator. This vector will already have the
-         * correct size when the function is called.
+         * @copydoc Interface<dim>::execute()
          */
         virtual
         void
@@ -68,9 +63,14 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
+
         /**
-         * The scaling factors that should be applied to the individual
-         * refinement indicators before merging.
+         * Scaling factor for the temperature indicator.
+         */
+        double temperature_scaling_factor;
+
+        /**
+         * The scaling factors for each compositional field.
          */
         std::vector<double> composition_scaling_factors;
     };

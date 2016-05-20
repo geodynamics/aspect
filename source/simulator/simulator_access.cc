@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -85,9 +85,17 @@ namespace aspect
 
 
   template <int dim>
-  MPI_Comm SimulatorAccess<dim>::get_mpi_communicator () const
+  MPI_Comm
+  SimulatorAccess<dim>::get_mpi_communicator () const
   {
     return simulator->mpi_communicator;
+  }
+
+  template <int dim>
+  TimerOutput &
+  SimulatorAccess<dim>::get_computing_timer () const
+  {
+    return simulator->computing_timer;
   }
 
   template <int dim>

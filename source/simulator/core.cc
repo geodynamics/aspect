@@ -166,7 +166,9 @@ namespace aspect
             this_mpi_process(mpi_communicator)
             == 0)),
 
-    computing_timer (pcout, TimerOutput::never,
+    computing_timer (mpi_communicator,
+                     pcout,
+                     TimerOutput::never,
                      TimerOutput::wall_times),
 
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
@@ -587,11 +589,11 @@ namespace aspect
         TractionBoundaryConditions::Interface<dim> *bv
           = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
             (p->second.second);
+        traction_boundary_conditions[p->first].reset (bv);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
           sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
-        traction_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver

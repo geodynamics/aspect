@@ -105,11 +105,8 @@ namespace aspect
                   }
                 // then merge them with the min/max velocities we found for other faces with the same boundary indicator
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(f)->boundary_id();
-#else
-                  = cell->face(f)->boundary_indicator();
-#endif
+
                 local_max_vel[boundary_indicator] = std::max(local_max,
                                                              local_max_vel[boundary_indicator]);
                 local_min_vel[boundary_indicator] = std::min(local_min,

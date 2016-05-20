@@ -123,7 +123,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.4.0-pre %VERSION-INFO%
+1.5.0-pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -1176,7 +1176,7 @@ and the shear heating term in equation \eqref{eq:temperature} to
 where $C = C_{ijkl}$ is defined by the material model. For physical reasons, $C$ needs
 to be a symmetric rank-4 tensor: i.e., when multiplied by a symmetric (strain rate)
 tensor of rank 2 it needs to return another symmetric tensor of rank 2. In mathematical
-terms this, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
+terms, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
 also require that $C$ is positive definite: i.e., for any $\varepsilon \neq 0$, the
 scalar $\varepsilon : (C \varepsilon)$ must be positive.
 
@@ -1860,7 +1860,7 @@ prerequisites:
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 8.2 or later.
+  The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
   This version can be downloaded and installed from
   \url{https://www.dealii.org/download.html}.
 
@@ -1982,10 +1982,9 @@ CMake is a cross-platform, open-source build system that can be downloaded from 
 \end{verbatim}
 
 \item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
-%Current latest deal.ii version is 8.2.1.
 {\footnotesize
 \begin{verbatim}
-open  https://github.com/dealii/dealii/releases/download/v8.2.1/dealii-8.2.1-parallel-bundle.dmg
+open  https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.dmg
 \end{verbatim}
 }
 Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
@@ -2019,7 +2018,7 @@ This should display something like:
 
 {\footnotesize
 \begin{verbatim}
-Project  aspect  set up with  deal.II-8.2.1  found at /Applications/deal.II.app/Contents/Resources
+Project  aspect  set up with  deal.II-8.4.1  found at /Applications/deal.II.app/Contents/Resources
 \end{verbatim}}
 
 \item Run make:
@@ -5184,6 +5183,67 @@ Figure \ref{fig:smoothing}.
 
 
 
+\subsubsection{Tracking finite strain}
+\label{sec:finite-strain}
+\textit{This section was contributed by Juliane Dannberg}
+
+\textit{Notation: Here, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+$\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
+with the velocity $\mathbf u$, and the strain tensor as $e$, where 
+$e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
+with the displacement $\mathbf d$.}
+
+In many geophysical settings, material properties, and in particular the rheology, do not only depend
+on the current temperature, pressure and strain rate, but also on the history of the system. 
+This can be incorporated in \aspect{} models by tracking history variables through compositional fields. 
+In this cookbook, we will show how to do this by tracking the strain that accumulates over time at every 
+(Lagrangian) point in the model.
+
+Here, we use a material model plugin that defines the compositional fields as the components of the strain 
+tensor $e_{ij}$, and modifies the right-hand side of 
+the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
+\verb!out.reaction_terms! variable:
+\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+
+Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
+as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
+component of the velocity field, plus the strain increment $\varepsilon(\mathbf u^n) \Delta t^n$ 
+accumulated over the current time step.
+Hence, the right-hand side term of the advection equation for the accumulated strain consists of two parts:
+The first one, $R e^{n-1} R^T$, rotates $e^{n-1}$, the accumulated strain from all the previous time steps;
+and the second part adds the strain of the current time step. 
+
+The full plugin can be found in \url{cookbooks/finite_strain/finite_strain.cc} and can be compiled 
+with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory. 
+It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
+model. As it is derived from the ``simple'' material model, all input parameters for the material
+properties are read in from the subsection \texttt{Simple model}. 
+\lstinputlisting[language=prmfile]{cookbooks/finite_strain/finite_strain_part.prm.out}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{cookbooks/finite_strain/finite_strain.pdf}
+    \caption{Accumulated finite strain in an example convection model, as described in Section 
+             \ref{sec:finite-strain}.}
+    \label{fig:finite_strain}
+\end{figure}
+
+We will demonstrate its use at the example of a 2D Cartesian convection model (Figure \ref{fig:finite_strain}):
+Heating from the bottom leads to the the ascent of plumes from the bottom boundary layer, and the
+associated deformation is visible in the components of the accumulated finite strain. 
+Material moves to the sides at the top of the plume head, so that it is shortened in vertical 
+direction (blue areas in the $yy$ component) and stretched in horizontal direction (red areas in 
+the $xx$ component). The sides of the plume head show the opposite effect. Shear occurs mostly at the 
+edges of the plume head and in the plume tail (blue and red areas in the $xy$ component). 
+
+The example used here shows how history variables can be integrated up over the model evolution. 
+While we do not use these variables actively in the computation so far (in our example, there is no 
+influence of the accumulated strain on the rheology or any other material property), it would be trivial 
+to extend this material model in a way that material properties depend on the integrated strain: 
+Because the values of the compositional fields are part of what the material model gets as inputs, 
+they can easily be used for computing material model outputs such as the viscosity.  
+
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
@@ -5826,7 +5886,7 @@ The next input parameters describe the scaling from the shear wave velocity
 perturbation to the final temperature field. The shear wave velocity perturbation 
 $\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
 constant that is specified in the initial condition section of the input parameter 
-file as `vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+file as `Vs to density scaling'. Here we choose a constant scaling of 0.2. This 
 perturbation is further translated into a temperature difference $\Delta T$ by 
 multiplying it by the negative inverse of thermal expansion, which is also 
 specified in this section of the parameter file as `Thermal expansion coefficient 
@@ -5839,7 +5899,7 @@ their shear wave perturbation would not contribute buoyancy variations. We there
 additional option to zero out temperature perturbations within a certain depth. 
 In this example we set this parameter `Remove temperature heterogeneity down to specified 
 depth' to 200km. The chemical variation within the mantle 
-might require a more sophisticated `vs to density' scaling that varies for 
+might require a more sophisticated `Vs to density' scaling that varies for 
 example with depth or as a function of the perturbation itself, which is not captured
 in this model. The described procedure 
 provides an absolute temperature for every point, which will only be adjusted 
@@ -6147,6 +6207,7 @@ can be reproduced with the following parameters.
 \end{figure}
 
 \subsubsection{Crustal deformation}
+\label{sec:cookbooks-crustal-deformation}
 
 \textit{This section was contributed by Cedric Thieulot, and makes use of the Drucker-Prager 
 material model written by Anne Glerum and the free surface plugin by Ian Rose.}

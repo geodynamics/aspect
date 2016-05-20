@@ -73,7 +73,7 @@ subsection Initial conditions
 # velocity perturbation to temperature differences. We chose the
 # scaling to density perturbation as 0.2 and zero out
 # heterogeneities in the upper 200km.
-    set vs to density scaling             = 0.2 
+    set Vs to density scaling             = 0.2 
     set Remove temperature heterogeneity down to specified depth = 200000
     set Thermal expansion coefficient in initial temperature scaling = 3e-5
 

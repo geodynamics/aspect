@@ -111,8 +111,8 @@ Number of degrees of freedom: 14,302 (8,786+1,123+4,393)
      Heat fluxes through boundary parts: 2.604e-11 W, -2.604e-11 W, 3.284e-11 W, 1.076e-11 W
      Writing depth average:              output-minimum_refinement_function_cartesian/depth_average.gnuplot
 
-Number of active cells: 1,024 (on 7 levels)
-Number of degrees of freedom: 14,374 (8,830+1,129+4,415)
+Number of active cells: 1,120 (on 7 levels)
+Number of degrees of freedom: 16,045 (9,858+1,258+4,929)
 
 Termination requested by criterion: end time
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,9 +62,9 @@ namespace aspect
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_gradients (this->get_solution(),
                     composition_gradients);
 
-                // for each composition dof, write into the output
-                // vector the compositon gradient. Note that quadrature points and
-                // dofs are enumerated in the same order.
+                // For each composition dof, write into the output vector the
+                // composition gradient. Note that quadrature points and dofs
+                // are enumerated in the same order.
                 for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
                   indicators[i] += composition_gradients[j].norm() * composition_scaling_factors[c];
 
@@ -92,7 +92,7 @@ namespace aspect
                             "",
                             Patterns::List (Patterns::Double(0)),
                             "A list of scaling factors by which every individual compositional "
-                            "field gradient will be multiplied by. If only a single compositional "
+                            "field gradient will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
                             "On the other hand, if multiple criteria are chosen, then these "
                             "factors are used to weigh the various indicators relative to "
@@ -146,7 +146,7 @@ namespace aspect
                                               "A mesh refinement criterion that computes refinement "
                                               "indicators from the gradients of compositional fields. "
                                               "If there is more than one compositional field, then "
-                                              "it simply takes the sum of the indicators computed "
-                                              "from each of the compositional field.")
+                                              "it simply takes the sum of the indicators times "
+                                              "a user-specified weight for each field.")
   }
 }

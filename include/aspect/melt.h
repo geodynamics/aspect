@@ -125,7 +125,7 @@ namespace aspect
          */
         virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs);
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
 
 
         /**

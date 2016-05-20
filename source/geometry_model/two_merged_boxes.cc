@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,49 +48,29 @@ namespace aspect
           // first set the default boundary indicators
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->face(f)->at_boundary())
-#if DEAL_II_VERSION_GTE(8,3,0)
               cell->face(f)->set_boundary_id (f);
-#else
-              cell->face(f)->set_boundary_indicator (f);
-#endif
 
           if (cell->face(0)->at_boundary())
             // set the lithospheric part of the left boundary to indicator 2*dim
             if (cell->face(0)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
-#if DEAL_II_VERSION_GTE(8,3,0)
               cell->face(0)->set_boundary_id (2*dim);
-#else
-              cell->face(0)->set_boundary_indicator (2*dim);
-#endif
 
           if (cell->face(1)->at_boundary())
             // set the lithospheric part of the right boundary to indicator 2*dim+1
             if (cell->face(1)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
-#if DEAL_II_VERSION_GTE(8,3,0)
               cell->face(1)->set_boundary_id (2*dim+1);
-#else
-              cell->face(1)->set_boundary_indicator (2*dim+1);
-#endif
 
           if (dim==3)
             {
               // set the lithospheric part of the front boundary to indicator 2*dim+2
               if (cell->face(2)->at_boundary())
                 if (cell->face(2)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
-#if DEAL_II_VERSION_GTE(8,3,0)
                   cell->face(2)->set_boundary_id (2*dim+2);
-#else
-                  cell->face(2)->set_boundary_indicator (2*dim+2);
-#endif
 
               // set the lithospheric part of the back boundary to indicator 2*dim+3
               if (cell->face(3)->at_boundary())
                 if (cell->face(3)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
-#if DEAL_II_VERSION_GTE(8,3,0)
                   cell->face(3)->set_boundary_id (2*dim+3);
-#else
-                  cell->face(3)->set_boundary_indicator (2*dim+3);
-#endif
             }
         }
     }

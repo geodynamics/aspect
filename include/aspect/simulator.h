@@ -1117,7 +1117,7 @@ namespace aspect
       TableHandler                        statistics;
 
       Postprocess::Manager<dim>           postprocess_manager;
-      TimerOutput                         computing_timer;
+      mutable TimerOutput                 computing_timer;
 
       /**
        * In output_statistics(), where we output the statistics object above,

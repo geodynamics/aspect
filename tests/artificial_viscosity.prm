@@ -5,11 +5,11 @@
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 0.1
 set Nonlinear solver scheme                = IMPES
-set Temperature solver tolerance           = 1e-20
-set Composition solver tolerance           = 1e-20
+set Temperature solver tolerance           = 1e-8
+set Composition solver tolerance           = 1e-8
 
 set Dimension                              = 2
-set End time                               = 0.05
+set End time                               = 0.005
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -34,14 +34,6 @@ end
 
 subsection Boundary temperature model
   set Model name = initial temperature
-
-  subsection Initial temperature
-    # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773 # default: 6000
-
-    # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Minimal temperature = 273  # default: 0
-  end
 
 end
 
@@ -101,19 +93,12 @@ subsection Compositional initial conditions
 end
 
 subsection Material model
-  set Model name = melt global
-  subsection Melt global
-    set Exponential melt weakening factor = 1.0
-    set Thermal conductivity              = 0.0
-    set Reference solid density           = 1.0
-    set Reference melt density            = 1.0
-    set Reference specific heat           = 1.0
-    set Thermal expansion coefficient     = 0.0
-  end
-end
+  set Model name = simpler
 
-subsection Fluid Pressure Boundary Condition
-  set Plugin name = density
+  subsection Simpler model
+    set Thermal conductivity          = 0.0
+  end
+
 end
 
 subsection Mesh refinement
@@ -133,8 +118,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       = 
 
-  set Include melt transport                  = false
-  set Melt transport threshold                = 1e-4
   set Include shear heating                   = false
 end
 
@@ -149,7 +132,7 @@ subsection Postprocess
 
     set Number of grouped files       = 0
     set Output format                 = gnuplot
-    set Time between graphical output = 0.05
+    set Time between graphical output = 0.004
 
     subsection Artificial viscosity composition
       set Name of compositional field = porosity

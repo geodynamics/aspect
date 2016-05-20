@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -450,17 +450,16 @@ namespace aspect
 
             case geometric_average:
             {
-              double prod = 1;
+              double average = 1;
               for (unsigned int i=0; i<N; ++i)
                 {
                   Assert (values_out[i] >= 0,
                           ExcMessage ("Computing the geometric average "
                                       "only makes sense for non-negative "
                                       "quantities."));
-                  prod *= values_out[i];
+                  average *= std::pow (values_out[i], 1./N);
                 }
 
-              const double average = std::pow (prod, 1./N);
               for (unsigned int i=0; i<N; ++i)
                 values_out[i] = average;
               break;

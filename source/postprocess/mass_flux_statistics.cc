@@ -139,11 +139,7 @@ namespace aspect
                   }
 
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(f)->boundary_id();
-#else
-                  = cell->face(f)->boundary_indicator();
-#endif
                 local_boundary_fluxes[boundary_indicator] += local_normal_flux * in_years;
               }
 

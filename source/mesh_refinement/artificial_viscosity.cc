@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,20 +29,20 @@ namespace aspect
     void
     ArtificialViscosity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
       indicators = 0;
+      if (temperature_scaling_factor > 0.0)
+        {
+          this->get_artificial_viscosity(indicators);
+          indicators *= temperature_scaling_factor;
+        }
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
           Vector<float> this_indicator (indicators.size());
-
           this->get_artificial_viscosity_composition(this_indicator, c);
 
-          for (unsigned int i=0; i<indicators.size(); ++i)
-            this_indicator[i] *= composition_scaling_factors[c];
-          indicators += this_indicator;
+          // compute indicators += c*this_indicator:
+          indicators.add(composition_scaling_factors[c], this_indicator);
         }
     }
 
@@ -55,18 +55,21 @@ namespace aspect
       {
         prm.enter_subsection("Artificial viscosity");
         {
+          prm.declare_entry("Temperature scaling factor",
+                            "0.0",
+                            Patterns::Double(0),
+                            "A scaling factor for the artificial viscosity "
+                            " of the temperature equation. Use 0.0 to disable.");
           prm.declare_entry("Compositional field scaling factors",
                             "",
                             Patterns::List (Patterns::Double(0)),
                             "A list of scaling factors by which every individual compositional "
-                            "field will be multiplied by. If only a single compositional "
-                            "field exists, then this parameter has no particular meaning. "
-                            "On the other hand, if multiple criteria are chosen, then these "
+                            "field will be multiplied. These "
                             "factors are used to weigh the various indicators relative to "
-                            "each other. "
+                            "each other and to the temperature. "
                             "\n\n"
                             "If the list of scaling factors given in this parameter is empty, then this "
-                            "indicates that they should all be chosen equal to one. If the list "
+                            "indicates that they should all be chosen equal to 0. If the list "
                             "is not empty then it needs to have as many entries as there are "
                             "compositional fields.");
         }
@@ -83,6 +86,8 @@ namespace aspect
       {
         prm.enter_subsection("Artificial viscosity");
         {
+          temperature_scaling_factor = prm.get_double("Temperature scaling factor");
+
           composition_scaling_factors
             = Utilities::string_to_double(
                 Utilities::split_string_list(prm.get("Compositional field scaling factors")));
@@ -94,7 +99,15 @@ namespace aspect
                                    "zero or equal to the number of chosen refinement criteria."));
 
           if (composition_scaling_factors.size() == 0)
-            composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
+            composition_scaling_factors.resize (this->n_compositional_fields(), 0.0);
+
+          const double sum_composition_factors =
+            std::accumulate (composition_scaling_factors.begin(),
+                             composition_scaling_factors.end(), 0.0);
+
+          AssertThrow(sum_composition_factors + temperature_scaling_factor > 0.0,
+                      ExcMessage("You need to have a positive scaling factor "
+                                 "for at least one variable."));
         }
         prm.leave_subsection();
       }
@@ -112,9 +125,7 @@ namespace aspect
                                               "artificial viscosity",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators from the artificial viscosity "
-                                              "of the compositional fields. "
-                                              "If there is more than one compositional field, then "
-                                              "it simply takes the sum of the indicators computed "
-                                              "from each of the compositional field.")
+                                              "of the temperature or compositional fields "
+                                              "based on user specified weights.")
   }
 }

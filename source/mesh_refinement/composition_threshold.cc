@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,14 +96,9 @@ namespace aspect
         {
           prm.declare_entry("Compositional field thresholds",
                             "",
-                            Patterns::List (Patterns::Double(0)),
+                            Patterns::List (Patterns::Double()),
                             "A list of thresholds that every individual compositional "
-                            "field will be evaluated against. "
-                            "\n\n"
-                            "If the list of scaling factors given in this parameter is empty, then this "
-                            "indicates that they should all be chosen equal to one. If the list "
-                            "is not empty then it needs to have as many entries as there are "
-                            "compositional fields.");
+                            "field will be evaluated against.");
         }
         prm.leave_subsection();
       }
@@ -122,14 +117,9 @@ namespace aspect
             = Utilities::string_to_double(
                 Utilities::split_string_list(prm.get("Compositional field thresholds")));
 
-          AssertThrow (composition_thresholds.size() == this->n_compositional_fields()
-                       ||
-                       composition_thresholds.size() == 0,
-                       ExcMessage ("The number of thresholds given here must either be "
-                                   "zero or equal to the number of chosen refinement criteria."));
-
-          if (composition_thresholds.size() == 0)
-            composition_thresholds.resize (this->n_compositional_fields(), 1.0);
+          AssertThrow (composition_thresholds.size() == this->n_compositional_fields(),
+                       ExcMessage ("The number of thresholds given here must be "
+                                   "equal to the number of chosen refinement criteria."));
         }
         prm.leave_subsection();
       }
@@ -146,10 +136,8 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(CompositionThreshold,
                                               "composition threshold",
                                               "A mesh refinement criterion that computes refinement "
-                                              "indicators from the compositional fields. If it exceeds "
-                                              "a threshold given in the input file, the cell is marked "
-                                              "for refinement. "
-                                              "If there is more than one compositional field, then "
-                                              "all the fields are evaluated with their individual thresholds.")
+                                              "indicators from the compositional fields. If any field "
+                                              "exceeds the threshold given in the input file, the cell "
+                                              "is marked for refinement.")
   }
 }
