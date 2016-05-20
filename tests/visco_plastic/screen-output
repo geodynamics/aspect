@@ -18,48 +18,49 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
 
    Postprocessing:
-     Writing depth average: visco_plastic/depth_average.gnuplot
+     RMS, max velocity:                  1.39e-10 m/year, 5.01e-10 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.192s |            |
+| Total wallclock time elapsed since start    |      0.12s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.022s |        11% |
-| Assemble composition system     |         1 |    0.0108s |       5.6% |
-| Assemble temperature system     |         1 |    0.0118s |       6.1% |
-| Build Stokes preconditioner     |         1 |    0.0194s |        10% |
-| Build composition preconditioner|         1 |   0.00053s |      0.28% |
-| Build temperature preconditioner|         1 |  0.000676s |      0.35% |
-| Solve Stokes system             |         1 |   0.00327s |       1.7% |
-| Solve composition system        |         1 |  0.000243s |      0.13% |
-| Solve temperature system        |         1 |  0.000311s |      0.16% |
-| Initialization                  |         2 |    0.0318s |        17% |
-| Postprocessing                  |         1 |    0.0722s |        38% |
-| Setup dof systems               |         1 |    0.0156s |       8.1% |
+| Assemble Stokes system          |         1 |    0.0218s |        18% |
+| Assemble composition system     |         1 |    0.0108s |         9% |
+| Assemble temperature system     |         1 |    0.0118s |       9.8% |
+| Build Stokes preconditioner     |         1 |    0.0169s |        14% |
+| Build composition preconditioner|         1 |  0.000551s |      0.46% |
+| Build temperature preconditioner|         1 |  0.000703s |      0.59% |
+| Solve Stokes system             |         1 |   0.00331s |       2.8% |
+| Solve composition system        |         1 |   0.00025s |      0.21% |
+| Solve temperature system        |         1 |  0.000318s |      0.27% |
+| Initialization                  |         2 |    0.0326s |        27% |
+| Postprocessing                  |         1 |   0.00132s |       1.1% |
+| Setup dof systems               |         1 |    0.0156s |        13% |
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.193s |            |
+| Total wallclock time elapsed since start    |      0.12s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |     0.022s |        11% |
-| Assemble composition system     |         1 |    0.0108s |       5.6% |
-| Assemble temperature system     |         1 |    0.0118s |       6.1% |
-| Build Stokes preconditioner     |         1 |    0.0194s |        10% |
-| Build composition preconditioner|         1 |   0.00053s |      0.28% |
-| Build temperature preconditioner|         1 |  0.000676s |      0.35% |
-| Solve Stokes system             |         1 |   0.00327s |       1.7% |
-| Solve composition system        |         1 |  0.000243s |      0.13% |
-| Solve temperature system        |         1 |  0.000311s |      0.16% |
-| Initialization                  |         2 |    0.0318s |        17% |
-| Postprocessing                  |         1 |    0.0722s |        37% |
-| Setup dof systems               |         1 |    0.0156s |       8.1% |
+| Assemble Stokes system          |         1 |    0.0218s |        18% |
+| Assemble composition system     |         1 |    0.0108s |         9% |
+| Assemble temperature system     |         1 |    0.0118s |       9.8% |
+| Build Stokes preconditioner     |         1 |    0.0169s |        14% |
+| Build composition preconditioner|         1 |  0.000551s |      0.46% |
+| Build temperature preconditioner|         1 |  0.000703s |      0.59% |
+| Solve Stokes system             |         1 |   0.00331s |       2.8% |
+| Solve composition system        |         1 |   0.00025s |      0.21% |
+| Solve temperature system        |         1 |  0.000318s |      0.27% |
+| Initialization                  |         2 |    0.0326s |        27% |
+| Postprocessing                  |         1 |   0.00132s |       1.1% |
+| Setup dof systems               |         1 |    0.0156s |        13% |
 +---------------------------------+-----------+------------+------------+
 

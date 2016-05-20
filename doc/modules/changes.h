@@ -13,7 +13,9 @@
  *
  * <ol>
  *
- * <li> New: A material model plugin for visco-plastic rheologies.
+ * <li> New: A material model plugin for visco-plastic rheologies,
+ * which combines diffusion, dislocation or composite viscous 
+ * creep with a Drucker Prager yield criterion.
  * <br>
  * (John Naliboff, 2016/05/19)
  *
