@@ -186,11 +186,5 @@ end
 
 # Post processing (use output data to compare to predicted viscosities)
 subsection Postprocess
-  set List of postprocessors = depth average
- 
- subsection Depth average
-    set Number of zones = 10
-    set Output format = gnuplot
-  end
-  
+  set List of postprocessors = velocity statistics, mass flux statistics
 end
