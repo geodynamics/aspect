@@ -45,7 +45,6 @@ namespace aspect
       /**
        * Exception denoting a division by zero.
        */
-#if DEAL_II_VERSION_GTE(8,3,0)
       DeclExceptionMsg (ExcParticlePointNotInDomain,
                         "You requested to generate a particle at a position that "
                         "is not owned by this process, therefore the "
@@ -53,9 +52,6 @@ namespace aspect
                         "refused to create it. You can circumvent this error message "
                         "by catching the ExcParticlePointNotInDomain exception and "
                         "do whatever you think is appropriate in this case.");
-#else
-      DeclException0(ExcParticlePointNotInDomain);
-#endif
 
       /**
        * Abstract base class used for classes that generate particles.

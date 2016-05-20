@@ -52,11 +52,8 @@ namespace aspect
             if (cell->face(face_no)->at_boundary())
               {
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(face_no)->boundary_id();
-#else
-                  = cell->face(face_no)->boundary_indicator();
-#endif
+
                 if ( this->get_free_surface_boundary_indicators().find(boundary_indicator) !=
                      this->get_free_surface_boundary_indicators().end() )
                   {

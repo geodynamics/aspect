@@ -215,13 +215,7 @@ namespace aspect
              coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
         for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
-            {
-#if DEAL_II_VERSION_GTE(8,3,0)
-              cell->face(f)->set_boundary_id(f);
-#else
-              cell->face(f)->set_boundary_indicator(f);
-#endif
-            }
+            cell->face(f)->set_boundary_id(f);
     }
 
     template <int dim>

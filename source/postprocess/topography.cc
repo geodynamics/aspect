@@ -84,13 +84,7 @@ namespace aspect
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
             if (cell->face(face_no)->at_boundary())
               {
-                const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
-                  = cell->face(face_no)->boundary_id();
-#else
-                  = cell->face(face_no)->boundary_indicator();
-#endif
-                if (boundary_indicator != relevant_boundary)
+                if ( cell->face(face_no)->boundary_id() != relevant_boundary)
                   continue;
 
                 for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
