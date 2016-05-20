@@ -515,7 +515,7 @@ namespace aspect
 
       unsigned int n = this->get_solution().block(this->introspection().block_indices.velocities).size();
 
-      if(this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
+      if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
         n += this->get_solution().block(this->introspection().block_indices.pressure).size();
 
       std::ostringstream os;

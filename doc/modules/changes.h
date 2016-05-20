@@ -3,6 +3,12 @@
  *
  * <p> This is the list of changes made after the release of Aspect version
  * 1.4.0. All entries are signed with the names of the author. </p>
+ *
+ * <li> New: There is a new boundary traction model "ascii data"
+ * that prescribes the boundary traction according to pressure values
+ * read from an ascii data file.
+ * <br>
+ * (Juliane Dannberg, 2016/05/24)
  * 
  * <li> Changed: The traction boundary conditions now use a new interface
  * that includes the boundary indicator (analogous to the velocity boundary 
