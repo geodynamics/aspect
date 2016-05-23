@@ -39,7 +39,9 @@
  * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
  * really understood, but the extra include makes it work for now.
  */
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/numerics/vector_tools.templates.h>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 using namespace dealii;
 
