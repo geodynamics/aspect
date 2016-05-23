@@ -2371,6 +2371,31 @@ namespace aspect
                                   std_cxx11::_3));
       }
 
+    if (parameters.use_discontinuous_temperature_discretization ||
+        parameters.use_discontinuous_composition_discretization)
+      {
+        AssertThrow(!parameters.include_melt_transport, ExcNotImplemented());
+
+        assemblers->local_assemble_advection_system_on_interior_face
+        .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_interior_face_terms,
+                                 std_cxx11::cref (*complete_equation_assembler),
+                                 std_cxx11::_1,
+                                 std_cxx11::_2,
+                                 std_cxx11::_3,
+                                 std_cxx11::_4,
+                                 std_cxx11::_5));
+
+        assemblers->local_assemble_advection_system_on_boundary_face
+        .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_boundary_face_terms,
+                                 std_cxx11::cref (*complete_equation_assembler),
+                                 std_cxx11::_1,
+                                 std_cxx11::_2,
+                                 std_cxx11::_3,
+                                 std_cxx11::_4,
+                                 std_cxx11::_5));
+
+        assemblers->advection_system_assembler_on_face_properties.need_face_material_model_data = true;
+      }
 
     // allow other assemblers to add themselves or modify the existing ones by firing the signal
     this->signals.set_assemblers(*this, *assemblers, assembler_objects);
