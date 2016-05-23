@@ -25,7 +25,9 @@
 
 #include <deal.II/base/parsed_function.h>
 
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
 {
