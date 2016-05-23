@@ -1,0 +1,28 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Time step size (seconds)
+# 10: RMS velocity (m/s)
+# 11: Max. velocity (m/s)
+# 12: Minimal pressure (Pa)
+# 13: Average pressure (Pa)
+# 14: Maximal pressure (Pa)
+# 15: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 16: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 17: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 18: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 19: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 20: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 21: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 22: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+0 0.0000e+00 1024 11717 4225 4225 0  0 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0    0    0 0  0 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.0000e+00    0     0    0    0 0  0 0.0000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.4205e-02 1024 11717 4225 4225 0  0 1.4205e-02 6.65835279e-01 1.09647815e+00 -1.79899928e+01 -3.36763640e+00 4.75713175e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
+2 2.5000e-02 1024 11717 4225 4225 0 11 1.0795e-02 6.65835279e-01 1.09647815e+00 -1.79899929e+01 -3.36770514e+00 4.75699886e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 
+0 0.0000e+00    0     0    0    0 0  7 1.4205e-02 6.65835279e-01 1.09647815e+00 -1.79899928e+01 -3.36774790e+00 4.75690954e-01 1.09647807e+00 1.03521927e-01 1.09647807e+00 1.03521927e-01 1.00000000e-01 1.00000000e-01 1.10000000e+00 1.10000000e+00 

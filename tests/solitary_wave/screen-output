@@ -1,0 +1,88 @@
+
+Loading shared library <./libsolitary_wave.so>
+
+Initialize solitary wave solution
+Number of active cells: 2,560 (on 4 levels)
+Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+23 iterations.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 3.05006e-17, 3.10506e+10
+      Total relative nonlinear residual: 0.999786
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 3.05006e-17, 2.96141
+      Total relative nonlinear residual: 9.53533e-11
+
+
+
+   Postprocessing:
+     Writing graphical output:    output-solitary_wave/solution-00000
+     Compositions min/max/mass:   0.001/0.01/13.3
+     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
+     Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 1.710566e-15
+
+*** Timestep 1:  t=3738.96 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 27 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+9 iterations.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 2.8881e-05, 24323
+      Total relative nonlinear residual: 7.83167e-07
+
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0.001/0.01/13.3
+     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
+     Errors e_f, e_p, e_c, delta: 9.179852e-04, 2.204448e-02, 1.421077e-02, 8.802844e-03
+
+*** Timestep 2:  t=7477.92 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 17 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+5 iterations.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 4.85678e-07, 3080.43
+      Total relative nonlinear residual: 9.91858e-08
+
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0.001/0.01/13.3
+     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
+     Errors e_f, e_p, e_c, delta: 1.832876e-03, 2.240394e-02, 1.420976e-02, 1.760444e-02
+
+*** Timestep 3:  t=10000 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 1.68434e-07, 1065.68
+      Total relative nonlinear residual: 3.43135e-08
+
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0.001/0.01/13.3
+     RMS, max velocity:           0.000166 m/year, 0.000167 m/year
+     Errors e_f, e_p, e_c, delta: 2.450018e-03, 2.281710e-02, 1.420856e-02, 2.353990e-02
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

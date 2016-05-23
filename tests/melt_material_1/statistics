@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Time step size (years)
+# 11: Minimal value for composition peridotite
+# 12: Maximal value for composition peridotite
+# 13: Global mass for composition peridotite
+# 14: Minimal value for composition porosity
+# 15: Maximal value for composition porosity
+# 16: Global mass for composition porosity
+0 0.0000e+00 1024 11717 4225 8450  0  0  0 9.6680e-10  0.00000000e+00 3.00000000e-01 3.74877930e+10  0.00000000e+00 3.00000000e-01 3.00781250e+10 
+1 9.6680e-10 1024 11717 4225 8450 14 15 16 9.3304e-10 -2.46150921e-02 3.25311508e-01 3.74877724e+10 -1.80767382e-02 3.16571319e-01 3.00781250e+10 
+2 1.8998e-09 1024 11717 4225 8450 14 16 16 8.2878e-10 -1.80372951e-02 3.18539268e-01 3.74877694e+10 -1.29483613e-02 3.14914302e-01 3.00780963e+10 
+3 2.7286e-09 1024 11717 4225 8450 13 15 15 9.0134e-10 -1.07321225e-02 3.17264756e-01 3.74877713e+10 -5.50169938e-03 3.12440360e-01 3.00780845e+10 
+4 3.6300e-09 1024 11717 4225 8450 13 16 16 3.7005e-10 -6.08303433e-03 3.14210278e-01 3.74877729e+10 -3.12667210e-03 3.11690429e-01 3.00780714e+10 
+5 4.0000e-09 1024 11717 4225 8450 10 12 12 8.3518e-10 -7.26759209e-03 3.11606979e-01 3.74877730e+10 -3.09653981e-03 3.09412626e-01 3.00780742e+10 

@@ -59,6 +59,7 @@ namespace aspect
   {
     template <int dim> class Manager;
   }
+  template <int dim> class MeltHandler;
 
   /**
    * SimulatorAccess is base class for different plugins like postprocessors.
@@ -240,11 +241,16 @@ namespace aspect
       include_latent_heat () const;
 
       /**
+       * Return whether we solve the equations for melt transport.
+       */
+      bool
+      include_melt_transport () const;
+
+      /**
        * Return the stokes velocity degree.
        */
       int
       get_stokes_velocity_degree () const;
-
 
       /**
        * Return the adiabatic surface temperature.
@@ -415,6 +421,13 @@ namespace aspect
                                            MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
       /**
+       * This function simply calls Simulator<dim>::create_additional_material_model_outputs()
+       * with the given arguments.
+       */
+      void
+      create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &) const;
+
+      /**
        * Return a pointer to the gravity model description.
        */
       const GravityModel::Interface<dim> &
@@ -526,12 +539,25 @@ namespace aspect
       get_heating_model_manager () const;
 
       /**
+       * Return a pointer to the melt handler.
+       */
+      const MeltHandler<dim> &
+      get_melt_handler () const;
+
+      /**
        * Return a reference to the lateral averaging object owned
        * by the simulator, which can be used to query lateral averages
        * of various quantities at depth slices.
        */
       const LateralAveraging<dim> &
       get_lateral_averaging () const;
+
+      /**
+       * Return a pointer to the object that describes the
+       * current constraints.
+       */
+      const ConstraintMatrix &
+      get_current_constraints() const;
 
       /**
        * A convenience function that copies the values of the compositional

@@ -1,0 +1,85 @@
+
+Loading shared library <./libmelt_compressible_advection.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 3.21779e-18, 84.1264
+      Total relative nonlinear residual: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 3.21779e-18, 4.10904
+      Total relative nonlinear residual: 0.0488436
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 3.21779e-18, 0.0214138
+      Total relative nonlinear residual: 0.000254543
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 3.21779e-18, 0.000614662
+      Total relative nonlinear residual: 7.30642e-06
+
+
+
+   Postprocessing:
+     RMS, max velocity:                         0.666 m/s, 1.1 m/s
+     Pressure min/avg/max:                      -17.99 Pa, -3.368 Pa, 0.4757 Pa
+     Max and min velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 1.096 m/s, 0.1035 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s
+     Error porosity_L2:                         1.164557e-04
+
+*** Timestep 1:  t=0.0142045 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 3.65774e-07, 0.000600539
+      Total relative nonlinear residual: 2.4356e-05
+
+
+
+   Postprocessing:
+     RMS, max velocity:                         0.666 m/s, 1.1 m/s
+     Pressure min/avg/max:                      -17.99 Pa, -3.368 Pa, 0.4757 Pa
+     Max and min velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 1.096 m/s, 0.1035 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s
+     Error porosity_L2:                         1.280999e-04
+
+*** Timestep 2:  t=0.025 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 13 iterations.
+      Nonlinear residuals: 0, 2.70241e-08, 0.000635327
+      Total relative nonlinear residual: 1.67982e-05
+
+
+
+   Postprocessing:
+     RMS, max velocity:                         0.666 m/s, 1.1 m/s
+     Pressure min/avg/max:                      -17.99 Pa, -3.368 Pa, 0.4757 Pa
+     Max and min velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 1.096 m/s, 0.1035 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s
+     Error porosity_L2:                         1.408015e-04
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
