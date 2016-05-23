@@ -331,7 +331,7 @@ namespace aspect
     //set up the matrix
     LinearAlgebra::SparseMatrix mass_matrix;
 #ifdef ASPECT_USE_PETSC
-    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 
 #else
     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
@@ -458,7 +458,7 @@ namespace aspect
       coupling[c][c] = DoFTools::always;
 
 #ifdef ASPECT_USE_PETSC
-    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 #else
     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                           mesh_locally_owned,

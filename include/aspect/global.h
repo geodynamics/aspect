@@ -275,8 +275,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::BlockCompressedSimpleSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::BlockDynamicSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::DynamicSparsityPattern DynamicSparsityPattern;
 #else
     /**
      * Typedef for the vector type used.
@@ -327,8 +331,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::TrilinosWrappers::SparsityPattern DynamicSparsityPattern;
 #endif
   }
 }
