@@ -71,6 +71,16 @@ namespace aspect
   struct SimulatorSignals
   {
     /**
+      * A signal that is fired during the construction of the Simulator<dim>
+      * and allows plugins to initialize their SimulatorAccess<dim> by calling
+      * SimulatorAccess<dim>::initialize_simulator(). This happens after
+      * Parameters<dim>::parse_parameters() but before
+      * SimulatorSignals<dim>::parse_additional_parameters().
+      */
+    boost::signals2::signal<void (const Simulator<dim> &)>
+    initialize_simulator;
+
+    /**
      * A signal that is called before the list of finite element variables is
      * used to construct the Introspection class.
      *

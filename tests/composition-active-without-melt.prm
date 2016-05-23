@@ -32,7 +32,6 @@ subsection Model settings
   set Prescribed velocity boundary indicators = 3: function
 
   set Include melt transport                  = false
-  set Melt transport threshold                = 0.0
 end
 
 subsection Heating model

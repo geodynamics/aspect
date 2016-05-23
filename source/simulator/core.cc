@@ -23,6 +23,8 @@
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -525,18 +527,6 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
-    if (parameters.include_melt_transport)
-      {
-        fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
-
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
-          sim->initialize_simulator (*this);
-
-        fluid_pressure_boundary_conditions->parse_parameters (prm);
-        fluid_pressure_boundary_conditions->initialize ();
-      }
-
-
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
@@ -595,6 +585,14 @@ namespace aspect
         bv->parse_parameters (prm);
         bv->initialize ();
       }
+
+    // let other plugins initialize themselves (or their SimulatorAccess)
+    signals.initialize_simulator(*this);
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::parse_additional_parameters (parameters, prm);
 
     // determine how to treat the pressure. we have to scale it for the solver
     // to make velocities and pressures of roughly the same (numerical) size,

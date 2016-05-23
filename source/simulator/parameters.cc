@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -314,11 +315,6 @@ namespace aspect
                          "Whether to include the transport of melt into the model or not. If this "
                          "is set to true, an additional compositional field for the porosity and "
                          "an additional pressure (the compaction pressure) will be added.");
-      prm.declare_entry ("Melt transport threshold", "1e-3",
-                         Patterns::Double (),
-                         "The porosity limit for melt migration. For smaller porosities, the equations "
-                         "reduce to the Stokes equations and do neglect melt transport. Only used "
-                         "if Include melt transport is true. ");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -867,7 +863,7 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
-      melt_transport_threshold  = prm.get_double ("Melt transport threshold");
+
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -1036,12 +1032,6 @@ namespace aspect
           (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
-
-
-    // then, finally, let user additions that do not go through the usual
-    // plugin mechanism, declare their parameters if they have subscribed
-    // to the relevant signals
-    SimulatorSignals<dim>::parse_additional_parameters (*this, prm);
   }
 
 
@@ -1329,6 +1319,7 @@ namespace aspect
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters<dim>::declare_parameters (prm);
+    MeltHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
@@ -1344,7 +1335,7 @@ namespace aspect
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
     TractionBoundaryConditions::declare_parameters<dim> (prm);
-    FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
+
   }
 }
 

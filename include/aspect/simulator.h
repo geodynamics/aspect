@@ -68,6 +68,9 @@ namespace aspect
 {
   using namespace dealii;
 
+  template <int dim>
+  class MeltHandler;
+
   namespace internal
   {
     namespace Assembly
@@ -1147,7 +1150,6 @@ namespace aspect
       const std_cxx11::unique_ptr<AdiabaticConditions::Interface<dim> >       adiabatic_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<VelocityBoundaryConditions::Interface<dim> > > velocity_boundary_conditions;
       std::map<types::boundary_id,std_cxx11::shared_ptr<TractionBoundaryConditions::Interface<dim> > > traction_boundary_conditions;
-      std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
 
       /**
        * @}

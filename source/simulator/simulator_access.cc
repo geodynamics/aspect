@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/melt.h>
 
 namespace aspect
 {
@@ -438,9 +439,9 @@ namespace aspect
   const FluidPressureBoundaryConditions::Interface<dim> &
   SimulatorAccess<dim>::get_fluid_pressure_boundary_conditions () const
   {
-    Assert (simulator->fluid_pressure_boundary_conditions.get() != 0,
+    Assert (MeltHandler<dim>::get().fluid_pressure_boundary_conditions.get() != 0,
             ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->fluid_pressure_boundary_conditions.get();
+    return *MeltHandler<dim>::get().fluid_pressure_boundary_conditions.get();
   }
 
 

@@ -244,6 +244,32 @@ namespace aspect
     is_porosity (const typename Simulator<dim>::AdvectionField &advection_field,
                  const Introspection<dim> &introspection);
   }
+
+  /**
+   * Class to contain all runtime parameters and other helper functions
+   * related to melt transport. A global instance can be retrieved with
+   * MeltHandler<dim>::get(), but keep in mind that it only exists if
+   * parameters.include_melt_transport is true.
+   */
+  template <int dim>
+  class MeltHandler: public SimulatorAccess<dim>
+  {
+    public:
+      static MeltHandler<dim> & get ();
+
+      static void declare_parameters (ParameterHandler &prm);
+      void parse_parameters (ParameterHandler &prm);
+
+      virtual void initialize_simulator (const Simulator<dim> &simulator_object);
+
+      double melt_transport_threshold;
+      //bool melt_advects_heat;
+      std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
+
+  private:
+      const Simulator<dim> *simulator_object;
+  };
+
 }
 
 #endif

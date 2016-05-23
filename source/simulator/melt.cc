@@ -89,7 +89,7 @@ namespace aspect
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 0.0);
 
-          double K_D = (porosity > this->get_parameters().melt_transport_threshold
+          double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
                         ?
                         melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                         :
@@ -189,7 +189,7 @@ namespace aspect
 
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
-          const double K_D = (porosity > this->get_parameters().melt_transport_threshold
+          const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
                               ?
                               melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                               :
@@ -300,7 +300,7 @@ namespace aspect
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.face_material_model_inputs.composition[q][porosity_index],0.000);
 
-          const double K_D = (porosity > this->get_parameters().melt_transport_threshold
+          const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
                               ?
                               melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                               :
@@ -465,7 +465,7 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if (advection_field.is_temperature() && porosity >= this->get_parameters().melt_transport_threshold)
+          if (advection_field.is_temperature() && porosity >= MeltHandler<dim>::get().melt_transport_threshold)
             {
               const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
               if (find (heating_model_names.begin(), heating_model_names.end(), "shear heating with melt") != heating_model_names.end())
@@ -624,7 +624,7 @@ namespace aspect
       const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
       const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
       const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
-      const double K_D = (porosity > this->get_parameters().melt_transport_threshold
+      const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
                           ?
                           melt_out->permeabilities[q_point] / melt_out->fluid_viscosities[q_point]
                           :
@@ -688,7 +688,8 @@ namespace aspect
       double melt_transport_RHS = melting_rate / density
                                   + divergence_u + compressibility * density * (current_u * gravity);
 
-      if (current_phi < this->get_parameters().melt_transport_threshold && melting_rate < this->get_parameters().melt_transport_threshold)
+      if (current_phi < MeltHandler<dim>::get().melt_transport_threshold
+          && melting_rate < MeltHandler<dim>::get().melt_transport_threshold)
         melt_transport_RHS = melting_rate / density;
 
       return melt_transport_RHS;
@@ -853,7 +854,7 @@ namespace aspect
                       const double phi = std::max(0.0, porosity_values[q]);
 
                       // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                      if (phi > sim.get_parameters().melt_transport_threshold)
+                      if (phi > MeltHandler<dim>::get().melt_transport_threshold)
                         {
                           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                           const Tensor<1,dim>  gravity = sim.get_gravity_model().gravity_vector(in.position[q]);
@@ -959,7 +960,7 @@ namespace aspect
 
                     double value = 0.0;
                     // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                    if (phi > sim.get_parameters().melt_transport_threshold)
+                    if (phi > MeltHandler<dim>::get().melt_transport_threshold)
                       {
                         const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                         const double gravity_d = sim.get_gravity_model().gravity_vector(in.position[q])[d];
@@ -1020,7 +1021,7 @@ namespace aspect
                   const double phi = std::max(0.0, porosity_values[j]);
 
                   double p = p_f_values[j];
-                  if (phi < 1.0-sim.get_parameters().melt_transport_threshold)
+                  if (phi < 1.0-MeltHandler<dim>::get().melt_transport_threshold)
                     p = (p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
 
                   distributed_vector(local_dof_indices[pressure_idx]) = p;
@@ -1042,18 +1043,106 @@ namespace aspect
         return (introspection.name_for_compositional_index(advection_field.compositional_variable) == "porosity");
     }
   }
+
+
+  template <int dim>
+  void parse_parameters_helper(const Parameters<dim> &parameters,
+                        ParameterHandler &prm)
+  {
+    if (!parameters.include_melt_transport)
+      return;
+
+    MeltHandler<dim>::get().parse_parameters(prm);
+  }
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  initialize_simulator (const Simulator<dim> &simulator_object)
+  {
+    SimulatorAccess<dim>::initialize_simulator(simulator_object);
+    this->simulator_object = &simulator_object;
+  }
+
+  template <int dim>
+  void initialize(const Simulator<dim> & simulator)
+  {
+    MeltHandler<dim>::get().initialize_simulator(simulator);
+  }
+
+  template <int dim>
+  void signal_connector (SimulatorSignals<dim> &signals)
+  {
+    SimulatorSignals<dim>::parse_additional_parameters.connect (&parse_parameters_helper<dim>);
+    signals.initialize_simulator.connect(&initialize<dim>);
+  }
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  declare_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection ("Melt settings");
+
+    prm.declare_entry ("Melt transport threshold", "1e-3",
+                       Patterns::Double (),
+                       "The porosity limit for melt migration. For smaller porosities, the equations "
+                       "reduce to the Stokes equations and do neglect melt transport. Only used "
+                       "if Include melt transport is true. ");
+    prm.leave_subsection();
+
+    FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
+
+
+    // register the signal_connector function, which will allow us to register
+    // to various signals
+    aspect::internals::SimulatorSignals::register_connector_function_2d (signal_connector<2>);
+    aspect::internals::SimulatorSignals::register_connector_function_3d (signal_connector<3>);
+  }
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  parse_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection ("Melt settings");
+    this->melt_transport_threshold = prm.get_double("Melt transport threshold");
+    prm.leave_subsection();
+
+    fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+      sim->initialize_simulator (*simulator_object);
+    fluid_pressure_boundary_conditions->parse_parameters (prm);
+    fluid_pressure_boundary_conditions->initialize ();
+  }
+
+
+
+  template <int dim>
+  MeltHandler<dim> & MeltHandler<dim>::get ()
+  {
+    static MeltHandler<dim> handler;
+    return handler;
+  }
+
 }
+
+
 
 
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
-//   template class MeltOutputs<dim>;
 
 #define INSTANTIATE(dim) \
   \
   template \
   void create_melt_material_outputs<dim>(MaterialModel::MaterialModelOutputs<dim> &output); \
+  \
+  template \
+  class \
+  MeltHandler<dim>; \
   \
   namespace Assemblers \
   { \
