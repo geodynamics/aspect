@@ -985,7 +985,7 @@ namespace aspect
           = DoFTools::always;
     }
 
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
@@ -1044,7 +1044,7 @@ namespace aspect
         else
           coupling[c][d] = DoFTools::none;
 
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else

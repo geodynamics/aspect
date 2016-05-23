@@ -39,7 +39,9 @@
  * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
  * really understood, but the extra include makes it work for now.
  */
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/numerics/vector_tools.templates.h>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 using namespace dealii;
 
@@ -331,7 +333,7 @@ namespace aspect
     //set up the matrix
     LinearAlgebra::SparseMatrix mass_matrix;
 #ifdef ASPECT_USE_PETSC
-    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 
 #else
     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
@@ -458,7 +460,7 @@ namespace aspect
       coupling[c][c] = DoFTools::always;
 
 #ifdef ASPECT_USE_PETSC
-    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 #else
     TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                           mesh_locally_owned,
