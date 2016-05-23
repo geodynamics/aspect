@@ -129,7 +129,6 @@ subsection Mesh refinement
 
   set Initial adaptive refinement              = 0                    # default: 2
   set Initial global refinement                = 5                    # default: 2
-  set Strategy                                 = composition threshold, minimum refinement function #, nonadiabatic temperature
   set Time steps between mesh refinement       = 0
 end
 
