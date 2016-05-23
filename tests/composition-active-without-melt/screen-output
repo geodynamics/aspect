@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libcomposition-active-without-melt.so>
 
@@ -16,7 +9,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -27,7 +20,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 5 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5011 K, 1 K
@@ -38,7 +31,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5021 K, 1 K
@@ -49,7 +42,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5032 K, 1 K
@@ -60,7 +53,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5038 K, 1 K
@@ -71,7 +64,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 5 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5044 K, 1 K
@@ -82,7 +75,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5045 K, 1 K
@@ -93,7 +86,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5046 K, 1 K
@@ -104,7 +97,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5049 K, 1 K
@@ -115,7 +108,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5049 K, 1 K
@@ -126,7 +119,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5051 K, 1 K
@@ -137,7 +130,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5055 K, 1 K
@@ -148,7 +141,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5065 K, 1 K
@@ -159,7 +152,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5074 K, 1 K
@@ -170,7 +163,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5084 K, 1 K
@@ -181,7 +174,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5091 K, 1 K
@@ -192,7 +185,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5097 K, 1 K
@@ -202,21 +195,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.617s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        17 |     0.125s |        20% |
-| Assemble composition system     |        34 |     0.113s |        18% |
-| Assemble temperature system     |        17 |    0.0739s |        12% |
-| Build Stokes preconditioner     |        17 |     0.132s |        21% |
-| Build composition preconditioner|        34 |    0.0063s |         1% |
-| Build temperature preconditioner|        17 |   0.00975s |       1.6% |
-| Solve Stokes system             |        17 |    0.0804s |        13% |
-| Solve composition system        |        34 |   0.00773s |       1.3% |
-| Solve temperature system        |        17 |   0.00727s |       1.2% |
-| Initialization                  |         2 |    0.0306s |         5% |
-| Postprocessing                  |        17 |   0.00791s |       1.3% |
-| Setup dof systems               |         1 |    0.0063s |         1% |
 +---------------------------------+-----------+------------+------------+
 

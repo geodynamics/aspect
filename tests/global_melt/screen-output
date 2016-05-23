@@ -89,7 +89,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00109 m/year, 0.00297 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average      output-global_melt/depth_average.gnuplot
+     Writing depth average:     output-global_melt/depth_average.gnuplot
 
 *** Timestep 1:  t=1e+06 years
    Solving temperature system... 10 iterations.
@@ -148,7 +148,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00111 m/year, 0.00304 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
-     Writing depth average      output-global_melt/depth_average.gnuplot
+     Writing depth average:     output-global_melt/depth_average.gnuplot
 
 *** Timestep 2:  t=2e+06 years
    Solving temperature system... 10 iterations.
@@ -207,7 +207,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00113 m/year, 0.00311 m/year
      Temperature min/avg/max:   293 K, 2024 K, 3700 K
-     Writing depth average      output-global_melt/depth_average.gnuplot
+     Writing depth average:     output-global_melt/depth_average.gnuplot
 
 *** Timestep 3:  t=3e+06 years
    Solving temperature system... 9 iterations.
@@ -236,7 +236,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
    Solving for u_f in 0 iterations.
-      Nonlinear residuals: 5.5602e+12, 0, 0, 1.16701e+09
+      Nonlinear residuals: 5.56021e+12, 0, 0, 1.16701e+09
       Total relative nonlinear residual: 1.58951e-05
 
 
@@ -246,7 +246,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
    Solving for u_f in 0 iterations.
-      Nonlinear residuals: 6.73184e+11, 0, 0, 2.2174e+08
+      Nonlinear residuals: 6.7314e+11, 0, 0, 2.2174e+08
       Total relative nonlinear residual: 3.02019e-06
 
 
@@ -256,7 +256,7 @@ Number of degrees of freedom: 5,290 (1,666+450+1,666+225+833+225+225)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.00114 m/year, 0.00317 m/year
      Temperature min/avg/max:   293 K, 2024 K, 3700 K
-     Writing depth average      output-global_melt/depth_average.gnuplot
+     Writing depth average:     output-global_melt/depth_average.gnuplot
 
 Termination requested by criterion: end time
 

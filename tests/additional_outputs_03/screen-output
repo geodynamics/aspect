@@ -9,15 +9,6 @@ Number of degrees of freedom: 84 (50+9+25)
 
 *** Timestep 0:  t=0 seconds
 * create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
-* evaluate called with additional outputs!
-averaging!
-* create_additional_material_model_outputs() called
    creating additional output!
 * evaluate called with additional outputs!
 averaging!

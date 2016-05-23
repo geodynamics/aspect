@@ -17,7 +17,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
    Solving for u_f in 11 iterations.
       Nonlinear residuals: 0, 3.1174e-17, 0.000458191
       Total relative nonlinear residual: 9.78969e-07

@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libmelt_transport_convergence_simple.so>
 
@@ -24,10 +17,10 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
    Solving for u_f in 7 iterations.
-      Nonlinear residuals: 0, 2.15237e-16, 4.47231e-09
-      Total relative nonlinear residual: 6.97341e-11
+      Nonlinear residuals: 0, 2.15237e-16, 4.89396e-09
+      Total relative nonlinear residual: 7.63087e-11
 
 
 
@@ -35,27 +28,12 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
      RMS, max velocity:                                      1.41 m/s, 1.41 m/s
      Pressure min/avg/max:                                   0.3686 Pa, 1.176 Pa, 2.718 Pa
      Max and min velocity along boundary parts:              1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.028061e-04, 1.709338e-02, 1.709900e-02, 6.920536e-05, 2.402420e-03, 4.334907e-03
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.028061e-04, 1.709338e-02, 1.709900e-02, 6.920539e-05, 2.402420e-03, 4.334907e-03
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      2.98s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |     0.823s |        28% |
-| Assemble composition system     |         2 |     0.093s |       3.1% |
-| Assemble temperature system     |         2 |    0.0874s |       2.9% |
-| Build Stokes preconditioner     |         2 |     0.216s |       7.2% |
-| Build composition preconditioner|         2 |   0.00966s |      0.32% |
-| Build temperature preconditioner|         2 |      0.01s |      0.34% |
-| Solve Stokes system             |         2 |      1.58s |        53% |
-| Solve composition system        |         2 |   0.00214s |     0.072% |
-| Solve temperature system        |         2 |    0.0023s |     0.077% |
-| Initialization                  |         2 |    0.0355s |       1.2% |
-| Postprocessing                  |         1 |    0.0346s |       1.2% |
-| Setup dof systems               |         1 |    0.0662s |       2.2% |
 +---------------------------------+-----------+------------+------------+
 
