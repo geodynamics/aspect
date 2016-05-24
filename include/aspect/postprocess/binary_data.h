@@ -1,5 +1,5 @@
-#ifndef __aspect__postprocess_velocity_binary_h 
-#define __aspect__postprocess_velocity_binary_h 
+#ifndef __aspect__postprocess_binary_data_h
+#define __aspect__postprocess_binary_data_h
 
 
 #include <aspect/postprocess/interface.h>
@@ -9,20 +9,20 @@ namespace aspect {
     namespace Postprocess {
 
         template<int dim>
-        class VelocityBinary : public Interface<dim>, public ::aspect::SimulatorAccess<dim> {
+        class BinaryData : public Interface<dim>, public ::aspect::SimulatorAccess<dim> {
         public:
-            VelocityBinary();
+            BinaryData();
 
-            ~VelocityBinary();
+            ~BinaryData();
 
             void initialize();
 
             std::pair<std::string, std::string> execute(TableHandler &statistics);
 
-           /* static void declare_parameters(ParameterHandler &prm);
+           static void declare_parameters(ParameterHandler &prm);
 
-            virtual void parse_parameters(ParameterHandler &prm);
-
+           virtual void parse_parameters(ParameterHandler &prm);
+/*
             void save();
 
             void load();
@@ -30,7 +30,9 @@ namespace aspect {
 /*            template<class Archive>
             void serialize(Archive &ar, const unsigned int version);
 */
-            // private:
+        private:
+            unsigned int my_id;
+            std::string filename_prefix;
         };
     }
 }

@@ -68,7 +68,8 @@ namespace aspect
         iterated_IMPES,
         iterated_Stokes,
         Stokes_only,
-        Advection_only
+        Advection_only,
+        Binary_input
       };
     };
 
@@ -299,6 +300,14 @@ namespace aspect
     /**
      * @}
      */
+    /**
+     * @name Parameters related to the reading in of binary solution data
+     *       (Temperature, Velocity, Pressure, and Compositional fields if enabled).
+     * @{
+     */
+    std::string                    binary_data_directory;
+    std::string                    binary_data_file_name;
+    unsigned int                   binary_data_ts_number;
 
   };
 
