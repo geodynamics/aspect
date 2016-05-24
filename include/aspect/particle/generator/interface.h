@@ -28,7 +28,9 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
 
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <boost/random.hpp>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
 {
