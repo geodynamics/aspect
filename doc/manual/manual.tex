@@ -1615,7 +1615,7 @@ The original formulation of the equations in section \ref{sec:equations} describ
 
 We use the indices $s$ to indicate properties of the solid and $f$ for the properties of the fluid. The equations are solved for the solid velocity $\mathbf{u_s}$, the fluid pressure $p_f$, and an additional variable, the compaction pressure $p_c$, which is related to the fluid and solid pressure through the relation $p_c = (1-\phi) (p_s-p_f)$. $K_D$ is the Darcy coefficient, which is defined as the quotient of the permeability and the fluid viscosity and $\Gamma$ is the melting rate. $\eta$ and $\xi$ are the shear and compaction viscosities and can depend on the porosity, temperature, pressure, strain rate and composition. However, there are various laws for these quantities and so this is implemented in the material model. Common formulations for the dependence on porosity are $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with $\alpha_\phi \approx 25...30$ and $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
 
-To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density (for both the solid phase) is dominated by the change in static pressure, which can be written as
+To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in solid density is dominated by the change in static pressure, which can be written as
 $\nabla p_s \approx \nabla p_\text{static} \approx \rho_s \textbf{g}$.
 This finally allows us to write
 \begin{equation*}
@@ -1698,7 +1698,7 @@ so we get
 + (1 - \phi) (\nabla \cdot \mathbf u_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u_s} ).
 \end{equation*}
 
-More details on the implementation can be found in \cite{DH2015}. A benchmark case demonstrating the propagation of solitary waves can be found in Section \ref{sec:benchmark-solitary_wave}. %, and an example for a model including melt migration is presented in Section ...
+More details on the implementation can be found in \cite{DH2015}. A benchmark case demonstrating the propagation of solitary waves can be found in Section \ref{sec:benchmark-solitary_wave}.
 
 \subsection{Nullspace removal}
 

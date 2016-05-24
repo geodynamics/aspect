@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,8 +75,6 @@ namespace aspect
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
 
-        in.cell = NULL; // we do not know the cell index
-
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
         AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt density."));
@@ -130,8 +128,6 @@ namespace aspect
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
 
-        in.cell = NULL; // we do not know the cell index
-
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
         AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the compaction viscosity."));
@@ -179,8 +175,6 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
-
-        in.cell = NULL; // we do not know the cell index
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -234,8 +228,6 @@ namespace aspect
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
           }
-
-        in.cell = NULL; // we do not know the cell index
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();

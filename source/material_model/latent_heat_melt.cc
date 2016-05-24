@@ -299,6 +299,21 @@ namespace aspect
       return entropy_gradient;
     }
 
+
+    template <int dim>
+    void
+    LatentHeatMelt<dim>::
+    melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
+                   std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        melt_fractions[q] = melt_fraction(in.temperature[q],
+                                          std::max(0.0, in.pressure[q]),
+                                          in.composition[q],
+                                          in.position[q]);
+      return;
+    }
+
     template <int dim>
     double
     LatentHeatMelt<dim>::

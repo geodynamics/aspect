@@ -141,8 +141,11 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = true
-  set Melt transport threshold                = 1e-4
   set Include shear heating                   = false
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 1e-4
 end
 
 

@@ -69,9 +69,9 @@ namespace aspect
           std::vector<std::vector<double> >    composition_values;
 
           /**
-          * Material model inputs and outputs computed at the current
-          * linearization point.
-          */
+           * Material model inputs and outputs computed at the current
+           * linearization point.
+           */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
         };

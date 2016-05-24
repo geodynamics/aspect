@@ -145,6 +145,9 @@ subsection Model settings
   set Zero velocity boundary indicators       =           # default: 
 
   set Include melt transport                  = true
+end
+
+subsection Melt settings
   set Melt transport threshold                = 0
 end
 

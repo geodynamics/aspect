@@ -96,6 +96,18 @@ namespace aspect
         }
     };
 
+    /**
+     * Base model for material models that implement a melt fraction function.
+     * This is used to compute some statistics about the melt fraction.
+     */
+    template <int dim>
+    class MeltFractionModel
+    {
+      public:
+        virtual void melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
+                                    std::vector<double> &melt_fractions) const=0;
+    };
+
   }
 
   /**
@@ -263,7 +275,7 @@ namespace aspect
       virtual void initialize_simulator (const Simulator<dim> &simulator_object);
 
       double melt_transport_threshold;
-      //bool melt_advects_heat;
+      bool heat_advection_by_melt;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
 
   private:

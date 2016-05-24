@@ -21,7 +21,6 @@
 
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
-#include <aspect/heating_model/shear_heating_with_melt.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/sparsity_tools.h>
@@ -465,14 +464,11 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if (advection_field.is_temperature() && porosity >= MeltHandler<dim>::get().melt_transport_threshold)
+          if (advection_field.is_temperature() && porosity >= MeltHandler<dim>::get().melt_transport_threshold
+                                               && MeltHandler<dim>::get().heat_advection_by_melt)
             {
-              const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
-              if (find (heating_model_names.begin(), heating_model_names.end(), "shear heating with melt") != heating_model_names.end())
-                {
-                  density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
-                  density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
-                }
+              density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
+              density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
             }
 
           // do the actual assembly. note that we only need to loop over the advection
@@ -1090,6 +1086,14 @@ namespace aspect
                        "The porosity limit for melt migration. For smaller porosities, the equations "
                        "reduce to the Stokes equations and do neglect melt transport. Only used "
                        "if Include melt transport is true. ");
+    prm.declare_entry ("Heat advection by melt", "false",
+                       Patterns::Bool (),
+                       "Whether to use a porosity weighted average of  the melt and solid velocity "
+                       "to advect heat in the temperature equation or not. If this is set to true, "
+                       "additional terms are assembled on the left-hand side of the temperature "
+                       "advection equation. Only used if Include melt transport is true."
+                       "If this is set to false, only the solid velocity is used (as in models "
+                       "without melt migration).");
     prm.leave_subsection();
 
     FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
@@ -1108,6 +1112,7 @@ namespace aspect
   {
     prm.enter_subsection ("Melt settings");
     this->melt_transport_threshold = prm.get_double("Melt transport threshold");
+    this->heat_advection_by_melt = prm.get_bool("Heat advection by melt");
     prm.leave_subsection();
 
     fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));

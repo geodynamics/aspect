@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,7 +66,7 @@ namespace aspect
          * for each quadrature point.
          *
          * The return value can typically contain @p material_model_outputs.fluid_densities[q]
-         * or @p material_model_outputs.densities[q].
+         * or @p material_model_outputs.densities[q], multiplied by the gravity vector.
          *
          * @param material_model_inputs The material property inputs.
          * @param material_model_inputs The material property outputs.
@@ -102,17 +102,17 @@ namespace aspect
 
 
     /**
-     * Register a boundary composition model so that it can be selected from
+     * Register a fluid pressure boundary model so that it can be selected from
      * the parameter file.
      *
-     * @param name A string that identifies the boundary composition model
+     * @param name A string that identifies the fluid pressure boundary model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be
-     * used to declare the parameters that this geometry model wants to read
-     * from input files.
+     * used to declare the parameters that this fluid pressure boundary model
+     * wants to read from input files.
      * @param factory_function A pointer to a function that can create an
-     * object of this boundary composition model.
+     * object of this fluid pressure boundary model.
      *
      * @ingroup FluidPressureBoundaryConditions
      */
@@ -139,7 +139,7 @@ namespace aspect
 
 
     /**
-     * Declare the runtime parameters of the registered boundary composition
+     * Declare the runtime parameters of the registered fluid pressure boundary
      * models.
      *
      * @ingroup FluidPressureBoundaryConditions
@@ -151,7 +151,7 @@ namespace aspect
 
     /**
      * Given a class name, a name, and a description for the parameter file
-     * for a boundary composition model, register it with the functions that
+     * for a fluid pressure boundary model, register it with the functions that
      * can declare their parameters and create these objects.
      *
      * @ingroup FluidPressureBoundaryConditions

@@ -68,8 +68,6 @@ namespace aspect
     public:
       /**
        * Constructor.
-       * @param add_compaction_pressure Set to true if the compaction pressure
-       * should be added. TODO: there are different cases for the block
        */
       Introspection (const std::vector<VariableDeclaration<dim> > &variables,
                      const Parameters<dim> &parameters);

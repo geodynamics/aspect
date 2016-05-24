@@ -526,8 +526,6 @@ namespace aspect
 
 
 
-
-
     /**
      * A base class for parameterizations of material models. Classes derived
      * from this class will need to implement functions that provide material

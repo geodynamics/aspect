@@ -22,8 +22,7 @@
 
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/melt_global.h>
-#include <aspect/material_model/melt_simple.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -79,23 +78,18 @@ namespace aspect
             .get_function_values (this->get_solution(),
                                   in.temperature);
             in.position = fe_values.get_quadrature_points();
+            // TODO: add additional inputs
+
+            std::vector<double> melt_fractions(n_q_points, 0.0);
+            if(const MaterialModel::MeltFractionModel<dim> *
+               melt_material_model = dynamic_cast <const MaterialModel::MeltFractionModel<dim>*> (&this->get_material_model()))
+              melt_material_model->melt_fraction(in, melt_fractions);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                double melt_fraction = 0.0;
-                if (const MaterialModel::MeltGlobal<dim> *
-                    melt_material_model = dynamic_cast <const MaterialModel::MeltGlobal<dim>*> (&this->get_material_model()))
-                  melt_fraction = melt_material_model->melt_fraction(in.temperature[q],
-                                                                     this->get_adiabatic_conditions().pressure(in.position[q]),
-                                                                     0.0);
-                else if (const MaterialModel::MeltSimple<dim> *
-                         melt_material_model = dynamic_cast <const MaterialModel::MeltSimple<dim>*> (&this->get_material_model()))
-                  melt_fraction = melt_material_model->melt_fraction(in.temperature[q],
-                                                                     this->get_adiabatic_conditions().pressure(in.position[q]));
-
-                local_melt_integral += melt_fraction * fe_values.JxW(q);
-                local_min_melt       = std::min(local_min_melt, melt_fraction);
-                local_max_melt       = std::max(local_max_melt, melt_fraction);
+                local_melt_integral += melt_fractions[q] * fe_values.JxW(q);
+                local_min_melt       = std::min(local_min_melt, melt_fractions[q]);
+                local_max_melt       = std::max(local_max_melt, melt_fractions[q]);
               }
 
           }
@@ -128,7 +122,7 @@ namespace aspect
       statistics.add_value ("Maximal melt fraction",
                             global_max_melt);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal melt fraction",

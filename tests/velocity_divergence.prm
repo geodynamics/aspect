@@ -146,7 +146,6 @@ subsection Model settings
 
   set Include melt transport                  = false
   set Include latent heat                     = false
-  set Melt transport threshold                = 0.0
 end
 
 

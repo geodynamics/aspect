@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,8 +33,9 @@ namespace aspect
 
     /**
      * A postprocessor that computes some statistics about the
-     * melt fraction. For now, this only works with the global
-     * melt material model.
+     * melt fraction. This only works for material models that
+     * are derived from MaterialModel::MeltFractionModel and
+     * implement their own melt_fraction function.
      *
      * @ingroup Postprocessing
      */
