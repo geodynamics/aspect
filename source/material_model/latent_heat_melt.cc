@@ -303,8 +303,8 @@ namespace aspect
     template <int dim>
     void
     LatentHeatMelt<dim>::
-    melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
-                   std::vector<double> &melt_fractions) const
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
     {
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],

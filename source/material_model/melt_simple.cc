@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/melt_simple.h>
-#include <aspect/melt.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
 
@@ -225,6 +225,19 @@ namespace aspect
     template <int dim>
     void
     MeltSimple<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        melt_fractions[q] = this->melt_fraction(in.temperature[q],
+                                                std::max(0.0, in.pressure[q]));
+      return;
+    }
+
+
+    template <int dim>
+    void
+    MeltSimple<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       std::vector<double> maximum_melt_fractions(in.position.size());
@@ -366,7 +379,12 @@ namespace aspect
           else
             {
               const double delta_temp = in.temperature[i]-reference_T;
-              visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+              const double T_dependence = (thermal_viscosity_exponent == 0.0
+                                           ?
+                                           0.0
+                                           :
+                                           thermal_viscosity_exponent*delta_temp/reference_T);
+              visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
             }
           out.viscosities[i] *= visc_temperature_dependence;
         }
@@ -421,7 +439,12 @@ namespace aspect
               else
                 {
                   const double delta_temp = in.temperature[i]-reference_T;
-                  visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/reference_T),1e4),1e-4);
+                  const double T_dependence = (thermal_viscosity_exponent == 0.0
+                                               ?
+                                               0.0
+                                               :
+                                               thermal_viscosity_exponent*delta_temp/reference_T);
+                  visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
                 }
               melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
             }

@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/melt_global.h>
-#include <aspect/melt.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
 
@@ -125,6 +125,30 @@ namespace aspect
         melt_fraction = (temperature - T_solidus) / (T_liquidus - T_solidus);
 
       return melt_fraction;
+    }
+
+
+    template <int dim>
+    void
+    MeltGlobal<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      double depletion = 0.0;
+
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        {
+          if(this->include_melt_transport())
+            {
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+              depletion = in.composition[q][peridotite_idx] - in.composition[q][porosity_idx];
+            }
+          melt_fractions[q] = this->melt_fraction(in.temperature[q],
+                                                  std::max(0.0, in.pressure[q]),
+                                                  depletion);
+        }
+      return;
     }
 
 

@@ -122,8 +122,8 @@ namespace aspect
          * @}
          */
 
-        virtual void melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
-                                    std::vector<double> &melt_fractions) const;
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
 
 
         /**

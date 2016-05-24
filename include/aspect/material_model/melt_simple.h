@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
+#include <aspect/melt.h>
 
 namespace aspect
 {
@@ -48,9 +49,8 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltSimple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class MeltSimple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
-        friend class ::aspect::Postprocess::MeltStatistics<dim>;
       public:
         /**
          * Return true if the viscosity() function returns something that may
@@ -114,6 +114,9 @@ namespace aspect
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
+
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
 
         /**
          * @name Functions used in dealing with run-time parameters

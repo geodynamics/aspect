@@ -39,20 +39,16 @@ namespace aspect
     std::pair<std::string,std::string>
     MeltStatistics<dim>::execute (TableHandler &statistics)
     {
-      Assert (dynamic_cast<const MaterialModel::MeltGlobal<dim>*> (&this->get_material_model()) != 0 ||
-              dynamic_cast<const MaterialModel::MeltSimple<dim>*> (&this->get_material_model()) != 0,
-              ExcMessage ("This postprocessor can only be used with the melt simple "
-                          "or melt global material model."));
-      // TODO: this could easily be extended to also include the latent heat melt material model
-
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,
                                update_values   |
+                               update_gradients |
                                update_quadrature_points |
                                update_JxW_values);
 
@@ -73,17 +69,42 @@ namespace aspect
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
           {
+            // fill material model inputs
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.temperature]
             .get_function_values (this->get_solution(),
                                   in.temperature);
-            in.position = fe_values.get_quadrature_points();
-            // TODO: add additional inputs
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_values (this->get_solution(),
+                                  in.pressure);
+            fe_values[this->introspection().extractors.velocities]
+            .get_function_values (this->get_solution(),
+                                  in.velocity);
+            fe_values[this->introspection().extractors.pressure]
+            .get_function_gradients (this->get_solution(),
+                                     in.pressure_gradient);
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              fe_values[this->introspection().extractors.compositional_fields[c]]
+              .get_function_values(this->get_solution(),
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
 
+            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+                in.strain_rate);
+            in.position = fe_values.get_quadrature_points();
+            in.cell = &cell;
+
+            // we can only postprocess melt fractions if the material model that is used
+            // in the simulation has implemented them
+            // otherwise, set them to zero
             std::vector<double> melt_fractions(n_q_points, 0.0);
             if(const MaterialModel::MeltFractionModel<dim> *
                melt_material_model = dynamic_cast <const MaterialModel::MeltFractionModel<dim>*> (&this->get_material_model()))
-              melt_material_model->melt_fraction(in, melt_fractions);
+              melt_material_model->melt_fractions(in, melt_fractions);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
