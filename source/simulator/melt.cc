@@ -465,7 +465,7 @@ namespace aspect
           double density_c_P_melt = 0.0;
 
           if (advection_field.is_temperature() && porosity >= MeltHandler<dim>::get().melt_transport_threshold
-                                               && MeltHandler<dim>::get().heat_advection_by_melt)
+              && MeltHandler<dim>::get().heat_advection_by_melt)
             {
               density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
               density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
@@ -1043,7 +1043,7 @@ namespace aspect
 
   template <int dim>
   void parse_parameters_helper(const Parameters<dim> &parameters,
-                        ParameterHandler &prm)
+                               ParameterHandler &prm)
   {
     if (!parameters.include_melt_transport)
       return;
@@ -1061,13 +1061,13 @@ namespace aspect
   }
 
   template <int dim>
-  void initialize(const Simulator<dim> & simulator)
+  void initialize(const Simulator<dim> &simulator)
   {
     MeltHandler<dim>::get().initialize_simulator(simulator);
   }
 
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void melt_signal_connector (SimulatorSignals<dim> &signals)
   {
     SimulatorSignals<dim>::parse_additional_parameters.connect (&parse_parameters_helper<dim>);
     signals.initialize_simulator.connect(&initialize<dim>);
@@ -1101,8 +1101,8 @@ namespace aspect
 
     // register the signal_connector function, which will allow us to register
     // to various signals
-    aspect::internals::SimulatorSignals::register_connector_function_2d (signal_connector<2>);
-    aspect::internals::SimulatorSignals::register_connector_function_3d (signal_connector<3>);
+    aspect::internals::SimulatorSignals::register_connector_function_2d (&melt_signal_connector<2>);
+    aspect::internals::SimulatorSignals::register_connector_function_3d (&melt_signal_connector<3>);
   }
 
   template <int dim>
@@ -1125,7 +1125,7 @@ namespace aspect
 
 
   template <int dim>
-  MeltHandler<dim> & MeltHandler<dim>::get ()
+  MeltHandler<dim> &MeltHandler<dim>::get ()
   {
     static MeltHandler<dim> handler;
     return handler;

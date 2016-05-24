@@ -267,7 +267,7 @@ namespace aspect
   class MeltHandler: public SimulatorAccess<dim>
   {
     public:
-      static MeltHandler<dim> & get ();
+      static MeltHandler<dim> &get ();
 
       static void declare_parameters (ParameterHandler &prm);
       void parse_parameters (ParameterHandler &prm);
@@ -278,7 +278,7 @@ namespace aspect
       bool heat_advection_by_melt;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
 
-  private:
+    private:
       const Simulator<dim> *simulator_object;
   };
 

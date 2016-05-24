@@ -138,7 +138,7 @@ namespace aspect
 
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
-          if(this->include_melt_transport())
+          if (this->include_melt_transport())
             {
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");

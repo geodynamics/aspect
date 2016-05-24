@@ -85,6 +85,10 @@ subsection Model settings
   set Include melt transport                  = true
 end
 
+subsection Melt settings
+  set Heat advection by melt = true
+end
+
 subsection Heating model
   set List of model names = shear heating, shear heating with melt
 end
