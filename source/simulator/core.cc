@@ -1123,7 +1123,7 @@ namespace aspect
       pcout << "Number of active cells: "
             << triangulation.n_global_active_cells()
             << " (on "
-            << triangulation.n_levels()
+            << triangulation.n_global_levels()
             << " levels)"
             << std::endl
             << "Number of degrees of freedom: "
