@@ -1,5 +1,5 @@
 
-Number of active cells: 16 (on 1 levels)
+Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 years
@@ -7,7 +7,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
 
-Number of active cells: 16 (on 1 levels)
+Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 years
@@ -53,7 +53,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      RMS, max velocity: 401 m/year, 1.2e+03 m/year
 
-Number of active cells: 16 (on 1 levels)
+Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 4:  t=133.725 years
@@ -78,7 +78,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      RMS, max velocity: 401 m/year, 1.2e+03 m/year
 
-Number of active cells: 16 (on 1 levels)
+Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 7:  t=234.03 years
