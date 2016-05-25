@@ -273,6 +273,7 @@ namespace aspect
       void parse_parameters (ParameterHandler &prm);
 
       virtual void initialize_simulator (const Simulator<dim> &simulator_object);
+      void melt_edit_finite_element_variables(std::vector<VariableDeclaration<dim> > &variables);
 
       double melt_transport_threshold;
       bool heat_advection_by_melt;

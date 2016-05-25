@@ -91,42 +91,6 @@ namespace aspect
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
 
-
-      if (parameters.include_melt_transport)
-        {
-          //TODO: move this block into a signal
-
-          variables.insert(variables.begin()+1,
-                           VariableDeclaration<dim>(
-                             "fluid pressure",
-                             (parameters.use_locally_conservative_discretization)
-                             ?
-                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                             :
-                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
-                             1,
-                             0)); // same block as p_c even without a direct solver!
-
-          variables.insert(variables.begin()+2,
-                           VariableDeclaration<dim>(
-                             "compaction pressure",
-                             (parameters.use_locally_conservative_discretization)
-                             ?
-                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
-                             :
-                             std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
-                             1,
-                             1));
-
-          variables.insert(variables.begin()+3,
-                           VariableDeclaration<dim>("fluid velocity",
-                                                    std_cxx11::shared_ptr<FiniteElement<dim> >(
-                                                      new FE_Q<dim>(parameters.stokes_velocity_degree)),
-                                                    dim,
-                                                    1));
-
-        }
-
       signals.edit_finite_element_variables(variables);
       return variables;
     }

@@ -25,6 +25,11 @@
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/sparsity_tools.h>
 
+#include <deal.II/fe/fe_q.h>
+#include <deal.II/fe/fe_dgq.h>
+#include <deal.II/fe/fe_dgp.h>
+#include <deal.II/fe/fe_values.h>
+
 using namespace dealii;
 
 
@@ -1067,10 +1072,54 @@ namespace aspect
   }
 
   template <int dim>
+  void
+  MeltHandler<dim>::
+  melt_edit_finite_element_variables(std::vector<VariableDeclaration<dim> > &variables)
+  {
+
+    if (!this->get_parameters().include_melt_transport)
+         return;
+
+        variables.insert(variables.begin()+1,
+                         VariableDeclaration<dim>(
+                           "fluid pressure",
+                           (this->get_parameters().use_locally_conservative_discretization)
+                           ?
+                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(this->get_parameters().stokes_velocity_degree-1))
+                           :
+                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(this->get_parameters().stokes_velocity_degree-1)),
+                           1,
+                           0)); // same block as p_c even without a direct solver!
+
+        variables.insert(variables.begin()+2,
+                         VariableDeclaration<dim>(
+                           "compaction pressure",
+                           (this->get_parameters().use_locally_conservative_discretization)
+                           ?
+                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(this->get_parameters().stokes_velocity_degree-1))
+                           :
+                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(this->get_parameters().stokes_velocity_degree-1)),
+                           1,
+                           1));
+
+        variables.insert(variables.begin()+3,
+                         VariableDeclaration<dim>("fluid velocity",
+                                                  std_cxx11::shared_ptr<FiniteElement<dim> >(
+                                                    new FE_Q<dim>(this->get_parameters().stokes_velocity_degree)),
+                                                  dim,
+                                                  1));
+
+  }
+
+
+  template <int dim>
   void melt_signal_connector (SimulatorSignals<dim> &signals)
   {
     SimulatorSignals<dim>::parse_additional_parameters.connect (&parse_parameters_helper<dim>);
     signals.initialize_simulator.connect(&initialize<dim>);
+    MeltHandler<dim> & melt_handler = MeltHandler<dim>::get();
+    signals.edit_finite_element_variables.connect(      std_cxx11::bind (&MeltHandler<dim>::melt_edit_finite_element_variables,
+                                                                         std_cxx11::ref(melt_handler), std_cxx11::_1 ));
   }
 
 
