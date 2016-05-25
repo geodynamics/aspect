@@ -770,12 +770,12 @@ namespace aspect
     else if (prm.get ("Nonlinear solver scheme") == "Advection only")
       nonlinear_solver = NonlinearSolver::Advection_only;
     else if (prm.get ("Nonlinear solver scheme") == "Binary input")
-    {
-      nonlinear_solver = NonlinearSolver::Binary_input;
-      binary_data_directory = prm.get ("Binary data directory");
-      binary_data_file_name = prm.get ("Binary data file name");
-      binary_data_ts_number = prm.get_integer ("Binary data initial time step number");
-    }
+      {
+        nonlinear_solver = NonlinearSolver::Binary_input;
+        binary_data_directory = prm.get ("Binary data directory");
+        binary_data_file_name = prm.get ("Binary data file name");
+        binary_data_ts_number = prm.get_integer ("Binary data initial time step number");
+      }
     else
       AssertThrow (false, ExcNotImplemented());
 

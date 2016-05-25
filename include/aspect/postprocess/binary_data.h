@@ -5,36 +5,60 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-namespace aspect {
-    namespace Postprocess {
+#include <boost/serialization/serialization.hpp>
 
-        template<int dim>
-        class BinaryData : public Interface<dim>, public ::aspect::SimulatorAccess<dim> {
-        public:
-            BinaryData();
+namespace aspect
+{
+  namespace Postprocess
+  {
 
-            ~BinaryData();
+    struct Field
+    {
+        double time;
+        double time_step;
+        double old_time_step;
+        unsigned int timestep_number;
 
-            void initialize();
+      public:
+        template <class Archive>
+        void serialize(Archive &ar, const unsigned int version)
+        {
+          ar &time;
+          ar &time_step;
+          ar &old_time_step;
+          ar &timestep_number;
+        }
+    };
 
-            std::pair<std::string, std::string> execute(TableHandler &statistics);
+    template<int dim>
+    class BinaryData : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    {
+      public:
+        BinaryData();
 
-           static void declare_parameters(ParameterHandler &prm);
+        ~BinaryData();
 
-           virtual void parse_parameters(ParameterHandler &prm);
-/*
-            void save();
+        void initialize();
 
-            void load();
-*/
-/*            template<class Archive>
-            void serialize(Archive &ar, const unsigned int version);
-*/
-        private:
-            unsigned int my_id;
-            std::string filename_prefix;
-        };
-    }
+        void update_time();
+
+        std::pair<std::string, std::string> execute(TableHandler &statistics);
+
+        static void declare_parameters(ParameterHandler &prm);
+
+        virtual void parse_parameters(ParameterHandler &prm);
+        /*
+                    void save();
+
+                    void load();
+        */
+      private:
+        unsigned int my_id;
+        std::string filename_prefix;
+
+        Field attributes;
+    };
+  }
 }
 
 #endif

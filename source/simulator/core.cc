@@ -1980,7 +1980,7 @@ namespace aspect
         {
           AssertThrow (!parameters.free_surface_enabled,
                        ExcMessage (std::string("Currently, we do not support free surface mesh with the \"nonlinear\" binary input scheme.")));
-       
+
           std::string fileName = parameters.binary_data_directory + "/" + parameters.binary_data_file_name + Utilities::int_to_string(timestep_number + parameters.binary_data_ts_number, 5) + ".mesh";
 
           triangulation.load(fileName.c_str());
@@ -1989,9 +1989,9 @@ namespace aspect
           sol_trans.deserialize (tmp_solution);
           solution = tmp_solution;
 
-          break;  
-        }   
-          
+          break;
+        }
+
         default:
           Assert (false, ExcNotImplemented());
       }
