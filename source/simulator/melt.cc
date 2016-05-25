@@ -747,7 +747,7 @@ namespace aspect
 
 
           LinearAlgebra::BlockSparseMatrix matrix;
-          LinearAlgebra::BlockCompressedSparsityPattern sp;
+          LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
           sp.reinit (sim.introspection().index_sets.system_relevant_partitioning);
 #else

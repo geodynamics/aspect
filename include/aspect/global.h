@@ -23,8 +23,8 @@
 #define __aspect__global_h
 
 #ifdef ASPECT_USE_PETSC
-#  include <deal.II/lac/petsc_block_vector.h>
-#  include <deal.II/lac/petsc_block_sparse_matrix.h>
+#  include <deal.II/lac/petsc_parallel_block_vector.h>
+#  include <deal.II/lac/petsc_parallel_block_sparse_matrix.h>
 #  include <deal.II/lac/petsc_precondition.h>
 #else
 #  include <deal.II/lac/trilinos_block_vector.h>
@@ -275,8 +275,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::BlockCompressedSimpleSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::BlockDynamicSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::DynamicSparsityPattern DynamicSparsityPattern;
 #else
     /**
      * Typedef for the vector type used.
@@ -327,8 +331,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::TrilinosWrappers::SparsityPattern DynamicSparsityPattern;
 #endif
   }
 }

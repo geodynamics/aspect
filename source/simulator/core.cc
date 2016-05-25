@@ -1058,7 +1058,7 @@ namespace aspect
           = DoFTools::always;
     }
 
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
@@ -1130,7 +1130,8 @@ namespace aspect
 
     for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
 
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
