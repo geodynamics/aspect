@@ -9,7 +9,7 @@ Number of free surface degrees of freedom: 1394
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
 
-Number of active cells: 232 (on 4 levels)
+Number of active cells: 232 (on 5 levels)
 Number of degrees of freedom: 3,502 (2,146+283+1,073)
 
 Number of free surface degrees of freedom: 566
