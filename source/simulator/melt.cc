@@ -93,7 +93,7 @@ namespace aspect
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 0.0);
 
-          double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
+          double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
                         ?
                         melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                         :
@@ -193,7 +193,7 @@ namespace aspect
 
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
-          const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
+          const double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
                               ?
                               melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                               :
@@ -291,9 +291,9 @@ namespace aspect
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
-      this->get_fluid_pressure_boundary_conditions().fluid_pressure_gradient(scratch.face_material_model_inputs,
-                                                                             scratch.face_material_model_outputs,
-                                                                             grad_p_f);
+      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(scratch.face_material_model_inputs,
+          scratch.face_material_model_outputs,
+          grad_p_f);
 
       for (unsigned int q=0; q<n_face_q_points; ++q)
         {
@@ -304,7 +304,7 @@ namespace aspect
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.face_material_model_inputs.composition[q][porosity_index],0.000);
 
-          const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
+          const double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
                               ?
                               melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
                               :
@@ -416,7 +416,7 @@ namespace aspect
              0.0);
 
           const double reaction_term =
-            ((advection_field.is_temperature() || Melt::is_porosity(advection_field,introspection))
+            ((advection_field.is_temperature() || this->get_melt_handler().is_porosity(advection_field))
              ?
              0.0
              :
@@ -447,7 +447,7 @@ namespace aspect
             current_u -= scratch.mesh_velocity_values[q];
 
           const double melt_transport_LHS =
-            (Melt::is_porosity(advection_field,introspection)
+            (this->get_melt_handler().is_porosity(advection_field)
              ?
              scratch.current_velocity_divergences[q]
              + (this->get_material_model().is_compressible()
@@ -469,8 +469,8 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if (advection_field.is_temperature() && porosity >= MeltHandler<dim>::get().melt_transport_threshold
-              && MeltHandler<dim>::get().heat_advection_by_melt)
+          if (advection_field.is_temperature() && porosity >= this->get_melt_handler().melt_transport_threshold
+              && this->get_melt_handler().heat_advection_by_melt)
             {
               density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
               density_c_P_melt = porosity * melt_outputs->fluid_densities[q] * scratch.material_model_outputs.specific_heat[q];
@@ -561,7 +561,7 @@ namespace aspect
              0.0);
 
           const double dreaction_term_dt =
-            (advection_field.is_temperature() || this->get_old_timestep() == 0 || (Melt::is_porosity(advection_field,this->introspection())
+            (advection_field.is_temperature() || this->get_old_timestep() == 0 || (this->get_melt_handler().is_porosity(advection_field)
                                                                                    && this->include_melt_transport()))
             ?
             0.0
@@ -576,7 +576,7 @@ namespace aspect
                                                                  q);
 
           const double melt_transport_LHS =
-            (Melt::is_porosity(advection_field,this->introspection())
+            (this->get_melt_handler().is_porosity(advection_field)
              ?
              scratch.current_velocity_divergences[q]
              + (this->get_material_model().is_compressible()
@@ -625,7 +625,7 @@ namespace aspect
       const Tensor<1,dim> fluid_density_gradient = melt_out->fluid_density_gradients[q_point];
       const Tensor<1,dim> current_u = scratch.velocity_values[q_point];
       const double porosity         = std::max(material_model_inputs.composition[q_point][porosity_index],0.0);
-      const double K_D = (porosity > MeltHandler<dim>::get().melt_transport_threshold
+      const double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
                           ?
                           melt_out->permeabilities[q_point] / melt_out->fluid_viscosities[q_point]
                           :
@@ -666,7 +666,7 @@ namespace aspect
                         const typename Simulator<dim>::AdvectionField     &advection_field,
                         const unsigned int q_point) const
     {
-      if ((!Melt::is_porosity(advection_field,this->introspection())) || (!this->include_melt_transport()))
+      if ((!this->get_melt_handler().is_porosity(advection_field)) || (!this->include_melt_transport()))
         return 0.0;
 
       Assert (material_model_outputs.densities[q_point] > 0,
@@ -689,8 +689,8 @@ namespace aspect
       double melt_transport_RHS = melting_rate / density
                                   + divergence_u + compressibility * density * (current_u * gravity);
 
-      if (current_phi < MeltHandler<dim>::get().melt_transport_threshold
-          && melting_rate < MeltHandler<dim>::get().melt_transport_threshold)
+      if (current_phi < this->get_melt_handler().melt_transport_threshold
+          && melting_rate < this->get_melt_handler().melt_transport_threshold)
         melt_transport_RHS = melting_rate / density;
 
       return melt_transport_RHS;
@@ -723,403 +723,284 @@ namespace aspect
   }
 
 
-  namespace Melt
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  compute_melt_variables(LinearAlgebra::BlockVector &solution)
   {
-    template <int dim>
-    void compute_melt_variables(SimulatorAccess<dim>       &sim,
-                                LinearAlgebra::BlockVector &solution)
+    if (!this->include_melt_transport())
+      return;
+
+    LinearAlgebra::BlockVector distributed_vector (this->introspection().index_sets.system_partitioning,
+                                                   this->get_mpi_communicator());
+
+    const unsigned int por_idx = this->introspection().compositional_index_for_name("porosity");
+
+
     {
-      if (!sim.include_melt_transport())
-        return;
-
-      LinearAlgebra::BlockVector distributed_vector (sim.introspection().index_sets.system_partitioning,
-                                                     sim.get_mpi_communicator());
-
-      const unsigned int por_idx = sim.introspection().compositional_index_for_name("porosity");
-
-
       // compute fluid_velocity
       // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-      if (true)
-        {
-          // solve mass matrix problem
+      // by solving a mass matrix problem
 
-          // TODO: lots of cleanup/optimization opportunities here:
-          // - store matrix?
-          // - reuse system matrix/sparsity pattern?
-          // - only construct matrix for specific u_f block?
-          // - clean up solver/preconditioner
+      // TODO: lots of cleanup/optimization opportunities here:
+      // - store matrix between timesteps
+      // - can we maybe reuse system matrix/sparsity pattern?
+      // - only construct matrix for the u_f block instead of a block matrix?
 
-
-          LinearAlgebra::BlockSparseMatrix matrix;
-          LinearAlgebra::BlockDynamicSparsityPattern sp;
+      LinearAlgebra::BlockSparseMatrix matrix;
+      LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
-          sp.reinit (sim.introspection().index_sets.system_relevant_partitioning);
+      sp.reinit (this->introspection().index_sets.system_relevant_partitioning);
 #else
-          sp.reinit (sim.introspection().index_sets.system_partitioning,
-                     sim.introspection().index_sets.system_partitioning,
-                     sim.introspection().index_sets.system_relevant_partitioning,
-                     sim.get_mpi_communicator());
+      sp.reinit (this->introspection().index_sets.system_partitioning,
+                 this->introspection().index_sets.system_partitioning,
+                 this->introspection().index_sets.system_relevant_partitioning,
+                 this->get_mpi_communicator());
 #endif
 
-          Table<2,DoFTools::Coupling> coupling (sim.introspection().n_components,
-                                                sim.introspection().n_components);
-          const unsigned int first_fluid_c_i = sim.introspection().variable("fluid velocity").first_component_index;
-          for (unsigned int c=0; c<dim; ++c)
-            for (unsigned int d=0; d<dim; ++d)
-              coupling[first_fluid_c_i+c][first_fluid_c_i+d] = DoFTools::always;
+      Table<2,DoFTools::Coupling> coupling (this->introspection().n_components,
+                                            this->introspection().n_components);
+      const unsigned int first_fluid_c_i = this->introspection().variable("fluid velocity").first_component_index;
+      for (unsigned int c=0; c<dim; ++c)
+        for (unsigned int d=0; d<dim; ++d)
+          coupling[first_fluid_c_i+c][first_fluid_c_i+d] = DoFTools::always;
 
-          DoFTools::make_sparsity_pattern (sim.get_dof_handler(),
-                                           coupling, sp,
-                                           sim.get_current_constraints(), false,
-                                           Utilities::MPI::
-                                           this_mpi_process(sim.get_mpi_communicator()));
+      DoFTools::make_sparsity_pattern (this->get_dof_handler(),
+                                       coupling, sp,
+                                       this->get_current_constraints(), false,
+                                       Utilities::MPI::
+                                       this_mpi_process(this->get_mpi_communicator()));
 
 #ifdef ASPECT_USE_PETSC
-          SparsityTools::distribute_sparsity_pattern(sp,
-                                                     sim.get_dof_handler().locally_owned_dofs_per_processor(),
-                                                     sim.get_mpi_communicator(), sim.introspection().index_sets.system_relevant_set);
+      SparsityTools::distribute_sparsity_pattern(sp,
+                                                 this->get_dof_handler().locally_owned_dofs_per_processor(),
+                                                 this->get_mpi_communicator(), this->introspection().index_sets.system_relevant_set);
 
-          sp.compress();
-          matrix.reinit (sim.introspection().index_sets.system_partitioning,
-                         sim.introspection().index_sets.system_partitioning,
-                         sp, sim.get_mpi_communicator());
+      sp.compress();
+      matrix.reinit (this->introspection().index_sets.system_partitioning,
+                     this->introspection().index_sets.system_partitioning,
+                     sp, this->get_mpi_communicator());
 #else
-          sp.compress();
-          matrix.reinit (sp);
+      sp.compress();
+      matrix.reinit (sp);
 #endif
 
-          LinearAlgebra::BlockVector rhs, distributed_solution;
-          rhs.reinit(sim.introspection().index_sets.system_partitioning, sim.get_mpi_communicator());
-          distributed_solution.reinit(sim.introspection().index_sets.system_partitioning, sim.get_mpi_communicator());
+      LinearAlgebra::BlockVector rhs, distributed_solution;
+      rhs.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
+      distributed_solution.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
 
-          const QGauss<dim> quadrature(sim.get_parameters().stokes_velocity_degree+1);
+      const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
 
-          FEValues<dim> fe_values (sim.get_mapping(),
-                                   sim.get_fe(),
-                                   quadrature,
-                                   update_quadrature_points | update_values | update_gradients);
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature,
+                               update_quadrature_points | update_values | update_gradients);
 
-          const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
-                             n_q_points    = fe_values.n_quadrature_points;
+      const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
+                         n_q_points    = fe_values.n_quadrature_points;
 
-          std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
-          Vector<double> cell_vector (dofs_per_cell);
-          FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
+      std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+      Vector<double> cell_vector (dofs_per_cell);
+      FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-          std::vector<double> porosity_values(quadrature.size());
-          std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
-          std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+      std::vector<double> porosity_values(quadrature.size());
+      std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
+      std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
 
-          MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), sim.n_compositional_fields());
-          MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), sim.n_compositional_fields());
-          create_melt_material_outputs(out);
+      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      create_melt_material_outputs(out);
 
-          typename DoFHandler<dim>::active_cell_iterator cell = sim.get_dof_handler().begin_active(),
-                                                         endc = sim.get_dof_handler().end();
-          for (; cell!=endc; ++cell)
-            if (cell->is_locally_owned())
-              {
-                cell_vector = 0;
-                cell_matrix = 0;
-                cell->get_dof_indices (cell_dof_indices);
-                fe_values.reinit (cell);
+      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
+                                                     endc = this->get_dof_handler().end();
+      for (; cell!=endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            cell_vector = 0;
+            cell_matrix = 0;
+            cell->get_dof_indices (cell_dof_indices);
+            fe_values.reinit (cell);
 
-                fe_values[sim.introspection().extractors.compositional_fields[por_idx]].get_function_values (
-                  solution, porosity_values);
-                fe_values[sim.introspection().extractors.velocities].get_function_values (
-                  solution, u_s_values);
+            fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
+              solution, porosity_values);
+            fe_values[this->introspection().extractors.velocities].get_function_values (
+              solution, u_s_values);
 
-                fe_values[sim.introspection().variable("fluid pressure").extractor_scalar()].get_function_gradients (
-                  solution, grad_p_f_values);
-                sim.compute_material_model_input_values (solution,
-                                                         fe_values,
-                                                         cell,
-                                                         true, // TODO: use rebuild_stokes_matrix here?
-                                                         in);
+            fe_values[this->introspection().variable("fluid pressure").extractor_scalar()].get_function_gradients (
+              solution, grad_p_f_values);
+            this->compute_material_model_input_values (solution,
+                                                       fe_values,
+                                                       cell,
+                                                       true,
+                                                       in);
 
-                sim.get_material_model().evaluate(in, out);
+            this->get_material_model().evaluate(in, out);
 
-                MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-                Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
-                const FEValuesExtractors::Vector fluid_velocity_extractor = sim.introspection().variable("fluid velocity").extractor_vector();
+            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+            Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
+            const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
-                for (unsigned int q=0; q<n_q_points; ++q)
-                  for (unsigned int i=0; i<dofs_per_cell; ++i)
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                {
+                  for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    cell_matrix(i,j) += fe_values[fluid_velocity_extractor].value(j,q) *
+                                        fe_values[fluid_velocity_extractor].value(i,q) *
+                                        fe_values.JxW(q);
+
+                  const double phi = std::max(0.0, porosity_values[q]);
+
+                  // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+                  if (phi > this->get_melt_handler().melt_transport_threshold)
                     {
-                      for (unsigned int j=0; j<dofs_per_cell; ++j)
-                        cell_matrix(i,j) += fe_values[fluid_velocity_extractor].value(j,q) *
-                                            fe_values[fluid_velocity_extractor].value(i,q) *
-                                            fe_values.JxW(q);
-
-                      const double phi = std::max(0.0, porosity_values[q]);
-
-                      // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                      if (phi > MeltHandler<dim>::get().melt_transport_threshold)
-                        {
-                          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                          const Tensor<1,dim>  gravity = sim.get_gravity_model().gravity_vector(in.position[q]);
-                          cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
-                                            * fe_values[fluid_velocity_extractor].value(i,q)
-                                            * fe_values.JxW(q);
-                        }
-
+                      const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+                      const Tensor<1,dim>  gravity = this->get_gravity_model().gravity_vector(in.position[q]);
+                      cell_vector(i) += (u_s_values[q] - K_D * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity) / phi)
+                                        * fe_values[fluid_velocity_extractor].value(i,q)
+                                        * fe_values.JxW(q);
                     }
 
-                sim.get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
-                                                                          cell_dof_indices, matrix, rhs, false);
-              }
+                }
 
-          rhs.compress (VectorOperation::add);
-          matrix.compress (VectorOperation::add);
+            this->get_current_constraints().distribute_local_to_global (cell_matrix, cell_vector,
+                                                                        cell_dof_indices, matrix, rhs, false);
+          }
+
+      rhs.compress (VectorOperation::add);
+      matrix.compress (VectorOperation::add);
 
 
 
-          LinearAlgebra::PreconditionAMG preconditioner;
-          LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
+      LinearAlgebra::PreconditionAMG preconditioner;
+      LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
 #ifdef ASPECT_USE_PETSC
-          Amg_data.symmetric_operator = false;
+      Amg_data.symmetric_operator = false;
 #else
-          //Amg_data.constant_modes = constant_modes;
-          Amg_data.elliptic = true;
-          Amg_data.higher_order_elements = false;
-          Amg_data.smoother_sweeps = 2;
-          Amg_data.aggregation_threshold = 0.02;
+      //Amg_data.constant_modes = constant_modes;
+      Amg_data.elliptic = true;
+      Amg_data.higher_order_elements = false;
+      Amg_data.smoother_sweeps = 2;
+      Amg_data.aggregation_threshold = 0.02;
 #endif
-          const unsigned int block_idx = sim.introspection().variable("fluid velocity").block_index;
-          preconditioner.initialize(matrix.block(block_idx, block_idx));
+      const unsigned int block_idx = this->introspection().variable("fluid velocity").block_index;
+      preconditioner.initialize(matrix.block(block_idx, block_idx));
 
-          SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
-          SolverCG<LinearAlgebra::Vector> cg(solver_control);
+      SolverControl solver_control(5*rhs.size(), 1e-8*rhs.block(block_idx).l2_norm());
+      SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-          cg.solve (matrix.block(block_idx, block_idx), distributed_solution.block(block_idx), rhs.block(block_idx), preconditioner);
-          sim.get_pcout() << "   Solving for u_f in " << solver_control.last_step() <<" iterations."<< std::endl;
+      cg.solve (matrix.block(block_idx, block_idx), distributed_solution.block(block_idx), rhs.block(block_idx), preconditioner);
+      this->get_pcout() << "   Solving for u_f in " << solver_control.last_step() <<" iterations."<< std::endl;
 
-          sim.get_current_constraints().distribute (distributed_solution);
-          solution.block(block_idx) = distributed_solution.block(block_idx);
-        }
-      else
-        {
-          // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
+      this->get_current_constraints().distribute (distributed_solution);
+      solution.block(block_idx) = distributed_solution.block(block_idx);
+    }
 
-          const Quadrature<dim> quadrature(sim.get_fe().base_element(
-                                             sim.introspection().variable("fluid velocity").base_index).get_unit_support_points());
+    //compute solid pressure
+    {
+      const unsigned int block_p = this->introspection().block_indices.pressure;
 
-          MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), sim.n_compositional_fields());
-          MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), sim.n_compositional_fields());
-          create_melt_material_outputs(out);
+      // Think what we need to do if the pressure is not an FE_Q...
+      Assert(this->get_parameters().use_locally_conservative_discretization == false, ExcNotImplemented());
+      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.pressure).get_unit_support_points());
+      std::vector<double> porosity_values(quadrature.size());
+      std::vector<double> p_c_values(quadrature.size());
+      std::vector<double> p_f_values(quadrature.size());
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature,
+                               update_quadrature_points | update_values);
 
-          std::vector<double> porosity_values(quadrature.size());
-          std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
-          std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit(cell);
+            cell->get_dof_indices (local_dof_indices);
+            fe_values[this->introspection().extractors.compositional_fields[por_idx]].get_function_values (
+              solution, porosity_values);
+            fe_values[this->introspection().variable("compaction pressure").extractor_scalar()].get_function_values (
+              solution, p_c_values);
+            fe_values[this->introspection().variable("fluid pressure").extractor_scalar()].get_function_values (
+              solution, p_f_values);
 
-          FEValues<dim> fe_values (sim.get_mapping(),
-                                   sim.get_fe(),
-                                   quadrature,
-                                   update_quadrature_points | update_values | update_gradients);
-          std::vector<types::global_dof_index> local_dof_indices (sim.get_fe().dofs_per_cell);
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = sim.get_dof_handler().begin_active(),
-          endc = sim.get_dof_handler().end();
-          for (; cell != endc; ++cell)
-            if (cell->is_locally_owned())
+            for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.pressure).dofs_per_cell; ++j)
               {
-                fe_values.reinit(cell);
-                cell->get_dof_indices (local_dof_indices);
-                fe_values[sim.introspection().extractors.compositional_fields[por_idx]].get_function_values (
-                  solution, porosity_values);
-                fe_values[sim.introspection().extractors.velocities].get_function_values (
-                  solution, u_s_values);
-                fe_values[sim.introspection().variable("fluid pressure").extractor_scalar()].get_function_gradients (
-                  solution, grad_p_f_values);
-                sim.compute_material_model_input_values (solution,
-                                                         fe_values,
-                                                         cell,
-                                                         true, // TODO: use rebuild_stokes_matrix here?
-                                                         in);
-
-                sim.get_material_model().evaluate(in, out);
-
-                MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-                Assert(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
-
-                for (unsigned int j=0; j < sim.get_fe().dofs_per_cell; ++j)
-                  {
-                    std::pair<unsigned int, unsigned int> base_index
-                      = sim.get_fe().system_to_base_index(j).first;
-                    if (base_index.first != sim.introspection().variable("fluid velocity").base_index)
-                      continue;
-                    const unsigned int q = sim.get_fe().system_to_base_index(j).second;
-                    const unsigned int d = base_index.second;
-                    Assert(q < quadrature.size(), ExcInternalError());
-
-                    // skip entries that are not locally owned:
-                    if (!sim.get_dof_handler().locally_owned_dofs().is_element(local_dof_indices[j]))
-                      continue;
-
-                    const double phi = std::max(0.0, porosity_values[q]);
-
-                    double value = 0.0;
-                    // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                    if (phi > MeltHandler<dim>::get().melt_transport_threshold)
-                      {
-                        const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-                        const double gravity_d = sim.get_gravity_model().gravity_vector(in.position[q])[d];
-                        // v_f =  v_s - K_D (nabla p_f - rho_f g) / phi
-                        value = u_s_values[q][d] - K_D * (grad_p_f_values[q][d] - melt_outputs->fluid_densities[q] * gravity_d) / phi;
-                      }
-
-                    distributed_vector(local_dof_indices[j]) = value;
-                  }
-              }
-          distributed_vector.block(sim.introspection().variable("fluid velocity").block_index).compress(VectorOperation::insert);
-          solution.block(sim.introspection().variable("fluid velocity").block_index)
-            = distributed_vector.block(sim.introspection().variable("fluid velocity").block_index);
-        }
-
-      //compute solid pressure
-      {
-        const unsigned int block_p = sim.introspection().block_indices.pressure;
-        // current_constraints.distribute.
-
-        // Think what we need to do if the pressure is not an FE_Q...
-        Assert(sim.get_parameters().use_locally_conservative_discretization == false, ExcNotImplemented());
-        const Quadrature<dim> quadrature(sim.get_fe().base_element(sim.introspection().base_elements.pressure).get_unit_support_points());
-        std::vector<double> porosity_values(quadrature.size());
-        std::vector<double> p_c_values(quadrature.size());
-        std::vector<double> p_f_values(quadrature.size());
-        FEValues<dim> fe_values (sim.get_mapping(),
-                                 sim.get_fe(),
-                                 quadrature,
-                                 update_quadrature_points | update_values);
-
-        std::vector<types::global_dof_index> local_dof_indices (sim.get_fe().dofs_per_cell);
-        typename DoFHandler<dim>::active_cell_iterator
-        cell = sim.get_dof_handler().begin_active(),
-        endc = sim.get_dof_handler().end();
-        for (; cell != endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit(cell);
-              cell->get_dof_indices (local_dof_indices);
-              fe_values[sim.introspection().extractors.compositional_fields[por_idx]].get_function_values (
-                solution, porosity_values);
-              fe_values[sim.introspection().variable("compaction pressure").extractor_scalar()].get_function_values (
-                solution, p_c_values);
-              fe_values[sim.introspection().variable("fluid pressure").extractor_scalar()].get_function_values (
-                solution, p_f_values);
-
-              for (unsigned int j=0; j<sim.get_fe().base_element(sim.introspection().base_elements.pressure).dofs_per_cell; ++j)
-                {
-                  const unsigned int pressure_idx
-                    = sim.get_fe().component_to_system_index(sim.introspection().component_indices.pressure,
+                const unsigned int pressure_idx
+                  = this->get_fe().component_to_system_index(this->introspection().component_indices.pressure,
                                                              /*dof index within component=*/ j);
 
-                  // skip entries that are not locally owned:
-                  if (!sim.get_dof_handler().locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
-                    continue;
+                // skip entries that are not locally owned:
+                if (!this->get_dof_handler().locally_owned_dofs().is_element(local_dof_indices[pressure_idx]))
+                  continue;
 
-                  const double phi = std::max(0.0, porosity_values[j]);
+                const double phi = std::max(0.0, porosity_values[j]);
 
-                  double p = p_f_values[j];
-                  if (phi < 1.0-MeltHandler<dim>::get().melt_transport_threshold)
-                    p = (p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
+                double p = p_f_values[j];
+                if (phi < 1.0-this->get_melt_handler().melt_transport_threshold)
+                  p = (p_c_values[j] - (phi-1.0) * p_f_values[j]) / (1.0-phi);
 
-                  distributed_vector(local_dof_indices[pressure_idx]) = p;
-                }
-            }
-        distributed_vector.block(block_p).compress(VectorOperation::insert);
-        solution.block(block_p) = distributed_vector.block(block_p);
-      }
+                distributed_vector(local_dof_indices[pressure_idx]) = p;
+              }
+          }
+      distributed_vector.block(block_p).compress(VectorOperation::insert);
+      solution.block(block_p) = distributed_vector.block(block_p);
     }
+  }
 
-    template <int dim>
-    bool
-    is_porosity(const typename Simulator<dim>::AdvectionField &advection_field,
-                const Introspection<dim> &introspection)
-    {
-      if (advection_field.field_type != Simulator<dim>::AdvectionField::compositional_field)
-        return false;
-      else
-        return (introspection.name_for_compositional_index(advection_field.compositional_variable) == "porosity");
-    }
+  template <int dim>
+  bool
+  MeltHandler<dim>::
+  is_porosity(const typename Simulator<dim>::AdvectionField &advection_field) const
+  {
+    if (advection_field.field_type != Simulator<dim>::AdvectionField::compositional_field)
+      return false;
+    else
+      return (this->introspection().name_for_compositional_index(advection_field.compositional_variable) == "porosity");
   }
 
 
   template <int dim>
-  void parse_parameters_helper(const Parameters<dim> &parameters,
-                               ParameterHandler &prm)
+  void
+  MeltHandler<dim>::
+  edit_finite_element_variables(const Parameters<dim> &parameters,
+                                std::vector<VariableDeclaration<dim> > &variables)
   {
+
     if (!parameters.include_melt_transport)
       return;
 
-    MeltHandler<dim>::get().parse_parameters(prm);
-  }
+    variables.insert(variables.begin()+1,
+                     VariableDeclaration<dim>(
+                       "fluid pressure",
+                       (parameters.use_locally_conservative_discretization)
+                       ?
+                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                       :
+                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                       1,
+                       0)); // same block as p_c even without a direct solver!
 
-  template <int dim>
-  void
-  MeltHandler<dim>::
-  initialize_simulator (const Simulator<dim> &simulator_object)
-  {
-    SimulatorAccess<dim>::initialize_simulator(simulator_object);
-    this->simulator_object = &simulator_object;
-  }
+    variables.insert(variables.begin()+2,
+                     VariableDeclaration<dim>(
+                       "compaction pressure",
+                       (parameters.use_locally_conservative_discretization)
+                       ?
+                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(parameters.stokes_velocity_degree-1))
+                       :
+                       std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(parameters.stokes_velocity_degree-1)),
+                       1,
+                       1));
 
-  template <int dim>
-  void initialize(const Simulator<dim> &simulator)
-  {
-    MeltHandler<dim>::get().initialize_simulator(simulator);
-  }
+    variables.insert(variables.begin()+3,
+                     VariableDeclaration<dim>("fluid velocity",
+                                              std_cxx11::shared_ptr<FiniteElement<dim> >(
+                                                new FE_Q<dim>(parameters.stokes_velocity_degree)),
+                                              dim,
+                                              1));
 
-  template <int dim>
-  void
-  MeltHandler<dim>::
-  melt_edit_finite_element_variables(std::vector<VariableDeclaration<dim> > &variables)
-  {
-
-    if (!this->get_parameters().include_melt_transport)
-         return;
-
-        variables.insert(variables.begin()+1,
-                         VariableDeclaration<dim>(
-                           "fluid pressure",
-                           (this->get_parameters().use_locally_conservative_discretization)
-                           ?
-                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(this->get_parameters().stokes_velocity_degree-1))
-                           :
-                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(this->get_parameters().stokes_velocity_degree-1)),
-                           1,
-                           0)); // same block as p_c even without a direct solver!
-
-        variables.insert(variables.begin()+2,
-                         VariableDeclaration<dim>(
-                           "compaction pressure",
-                           (this->get_parameters().use_locally_conservative_discretization)
-                           ?
-                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_DGP<dim>(this->get_parameters().stokes_velocity_degree-1))
-                           :
-                           std_cxx11::shared_ptr<FiniteElement<dim> >(new FE_Q<dim>(this->get_parameters().stokes_velocity_degree-1)),
-                           1,
-                           1));
-
-        variables.insert(variables.begin()+3,
-                         VariableDeclaration<dim>("fluid velocity",
-                                                  std_cxx11::shared_ptr<FiniteElement<dim> >(
-                                                    new FE_Q<dim>(this->get_parameters().stokes_velocity_degree)),
-                                                  dim,
-                                                  1));
-
-  }
-
-
-  template <int dim>
-  void melt_signal_connector (SimulatorSignals<dim> &signals)
-  {
-    SimulatorSignals<dim>::parse_additional_parameters.connect (&parse_parameters_helper<dim>);
-    signals.initialize_simulator.connect(&initialize<dim>);
-    MeltHandler<dim> & melt_handler = MeltHandler<dim>::get();
-    signals.edit_finite_element_variables.connect(      std_cxx11::bind (&MeltHandler<dim>::melt_edit_finite_element_variables,
-                                                                         std_cxx11::ref(melt_handler), std_cxx11::_1 ));
   }
 
 
@@ -1146,12 +1027,22 @@ namespace aspect
     prm.leave_subsection();
 
     FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
+  }
 
+  template <int dim>
+  MeltHandler<dim>::MeltHandler (ParameterHandler &prm)
+  {
+    parse_parameters(prm);
+  }
 
-    // register the signal_connector function, which will allow us to register
-    // to various signals
-    aspect::internals::SimulatorSignals::register_connector_function_2d (&melt_signal_connector<2>);
-    aspect::internals::SimulatorSignals::register_connector_function_3d (&melt_signal_connector<3>);
+  template <int dim>
+  void
+  MeltHandler<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
+  {
+    this->SimulatorAccess<dim>::initialize_simulator(simulator_object);
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
+      sim->initialize_simulator (simulator_object);
+    fluid_pressure_boundary_conditions->initialize ();
   }
 
   template <int dim>
@@ -1165,21 +1056,8 @@ namespace aspect
     prm.leave_subsection();
 
     fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
-    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(fluid_pressure_boundary_conditions.get()))
-      sim->initialize_simulator (*simulator_object);
     fluid_pressure_boundary_conditions->parse_parameters (prm);
-    fluid_pressure_boundary_conditions->initialize ();
   }
-
-
-
-  template <int dim>
-  MeltHandler<dim> &MeltHandler<dim>::get ()
-  {
-    static MeltHandler<dim> handler;
-    return handler;
-  }
-
 }
 
 
@@ -1210,11 +1088,7 @@ namespace aspect
                                                                        internal::Assembly::CopyData::StokesSystem<dim> &data); \
     } \
   } \
-  namespace Melt \
-  { \
-    template void compute_melt_variables<dim> (SimulatorAccess<dim>       &sim, \
-                                               LinearAlgebra::BlockVector &solution); \
-  }
+   
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 }

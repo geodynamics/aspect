@@ -1032,6 +1032,12 @@ namespace aspect
           (prm.get ("Material averaging"));
     }
     prm.leave_subsection ();
+
+
+    // then, finally, let user additions that do not go through the usual
+    // plugin mechanism, declare their parameters if they have subscribed
+    // to the relevant signals
+    SimulatorSignals<dim>::parse_additional_parameters (*this, prm);
   }
 
 

@@ -20,7 +20,6 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/melt.h>
 
 namespace aspect
 {
@@ -436,16 +435,6 @@ namespace aspect
 
 
   template <int dim>
-  const FluidPressureBoundaryConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_fluid_pressure_boundary_conditions () const
-  {
-    Assert (MeltHandler<dim>::get().fluid_pressure_boundary_conditions.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *MeltHandler<dim>::get().fluid_pressure_boundary_conditions.get();
-  }
-
-
-  template <int dim>
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
@@ -498,6 +487,15 @@ namespace aspect
   SimulatorAccess<dim>::get_heating_model_manager () const
   {
     return simulator->heating_model_manager;
+  }
+
+  template <int dim>
+  const MeltHandler<dim> &
+  SimulatorAccess<dim>::get_melt_handler () const
+  {
+    Assert (simulator->melt_handler.get() != 0,
+            ExcMessage("You can not call this function if melt transport is not enabled."));
+    return *(simulator->melt_handler);
   }
 
   template <int dim>

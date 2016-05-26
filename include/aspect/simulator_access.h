@@ -41,7 +41,6 @@
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
 #include <aspect/traction_boundary_conditions/interface.h>
-#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/heating_model/interface.h>
@@ -60,6 +59,7 @@ namespace aspect
   {
     template <int dim> class Manager;
   }
+  template <int dim> class MeltHandler;
 
   /**
    * SimulatorAccess is base class for different plugins like postprocessors.
@@ -531,19 +531,18 @@ namespace aspect
       get_prescribed_velocity_boundary_conditions () const;
 
       /**
-       * Return a pointer to the object that describes the fluid
-       * pressure boundary conditions.
-       */
-      const FluidPressureBoundaryConditions::Interface<dim> &
-      get_fluid_pressure_boundary_conditions () const;
-
-      /**
        * Return a pointer to the manager of the heating model.
        * This can then i.e. be used to get the names of the heating models
        * used in a computation.
        */
       const HeatingModel::Manager<dim> &
       get_heating_model_manager () const;
+
+      /**
+       * Return a pointer to the melt handler.
+       */
+      const MeltHandler<dim> &
+      get_melt_handler () const;
 
       /**
        * Return a reference to the lateral averaging object owned

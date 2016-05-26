@@ -602,7 +602,7 @@ namespace aspect
           {
             SimulatorAccess<dim> sim;
             sim.initialize_simulator (*this);
-            Melt::compute_melt_variables(sim, solution);
+            melt_handler->compute_melt_variables(solution);
           }
 
         computing_timer.exit_section();
@@ -686,10 +686,9 @@ namespace aspect
     // succeeds in 30 steps or less (or whatever the chosen value for the
     // corresponding parameter is).
     SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
-                                        solver_tolerance, true);
-    const unsigned int max_its = system_matrix.block(block_vel,block_p).m() +
-                                 system_matrix.block(block_p,block_vel).m();
-    SolverControl solver_control_expensive (100*max_its, solver_tolerance, true);
+                                        solver_tolerance);
+    SolverControl solver_control_expensive (system_matrix.block(block_vel,block_p).m() +
+                                            system_matrix.block(block_p,block_vel).m(), solver_tolerance);
 
     unsigned int its_A = 0, its_S = 0;
     try
@@ -831,7 +830,7 @@ namespace aspect
       {
         SimulatorAccess<dim> sim;
         sim.initialize_simulator (*this);
-        Melt::compute_melt_variables(sim, solution);
+        melt_handler->compute_melt_variables(solution);
       }
 
     statistics.add_value("Iterations for Stokes solver",

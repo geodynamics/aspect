@@ -26,6 +26,7 @@
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 
 namespace aspect
 {
@@ -238,24 +239,6 @@ namespace aspect
     }
   }
 
-  namespace Melt
-  {
-    /**
-     * Compute fluid velocity and solid pressure in this ghosted solution vector.
-     * @param solution
-     */
-    template <int dim>
-    void compute_melt_variables(SimulatorAccess<dim>       &sim,
-                                LinearAlgebra::BlockVector &solution);
-
-    /**
-     * Return whether this object refers to the porosity field.
-     */
-    template <int dim>
-    bool
-    is_porosity (const typename Simulator<dim>::AdvectionField &advection_field,
-                 const Introspection<dim> &introspection);
-  }
 
   /**
    * Class to contain all runtime parameters and other helper functions
@@ -267,20 +250,28 @@ namespace aspect
   class MeltHandler: public SimulatorAccess<dim>
   {
     public:
-      static MeltHandler<dim> &get ();
+      MeltHandler(ParameterHandler &prm);
 
       static void declare_parameters (ParameterHandler &prm);
       void parse_parameters (ParameterHandler &prm);
 
-      virtual void initialize_simulator (const Simulator<dim> &simulator_object);
-      void melt_edit_finite_element_variables(std::vector<VariableDeclaration<dim> > &variables);
+      void edit_finite_element_variables(const Parameters<dim> &parameters, std::vector<VariableDeclaration<dim> > &variables);
+      void initialize_simulator (const Simulator<dim> &simulator_object);
+
+      /**
+       * Compute fluid velocity and solid pressure in this ghosted solution vector.
+       * @param solution
+       */
+      void compute_melt_variables(LinearAlgebra::BlockVector &solution);
+
+      /**
+       * Return whether this object refers to the porosity field.
+       */
+      bool is_porosity (const typename Simulator<dim>::AdvectionField &advection_field) const;
 
       double melt_transport_threshold;
       bool heat_advection_by_melt;
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
-
-    private:
-      const Simulator<dim> *simulator_object;
   };
 
 }

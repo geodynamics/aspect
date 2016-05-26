@@ -86,10 +86,12 @@ namespace aspect
      */
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
-                                                               SimulatorSignals<dim> &signals)
+                                                               SimulatorSignals<dim> &signals,
+                                                               MeltHandler<dim>      &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
+      melt_handler.edit_finite_element_variables (parameters, variables);
 
       signals.edit_finite_element_variables(variables);
       return variables;
@@ -120,10 +122,11 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
+    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
     post_signal_creation(
       std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                        std_cxx11::ref(signals))),
-    introspection (construct_variables<dim>(parameters, signals), parameters),
+    introspection (construct_variables<dim>(parameters, signals, *melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),
@@ -506,6 +509,17 @@ namespace aspect
         free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
       }
 
+    // Initialize the melt handler
+    if (parameters.include_melt_transport)
+      {
+        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
+                     !parameters.use_discontinuous_composition_discretization,
+                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
+        AssertThrow( !parameters.free_surface_enabled,
+                     ExcMessage("Melt transport together with a free surface has not been tested.") );
+        melt_handler->initialize_simulator (*this);
+      }
+
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
@@ -549,14 +563,6 @@ namespace aspect
         bv->parse_parameters (prm);
         bv->initialize ();
       }
-
-    // let other plugins initialize themselves (or their SimulatorAccess)
-    signals.initialize_simulator(*this);
-
-    // then, finally, let user additions that do not go through the usual
-    // plugin mechanism, declare their parameters if they have subscribed
-    // to the relevant signals
-    SimulatorSignals<dim>::parse_additional_parameters (parameters, prm);
 
     // determine how to treat the pressure. we have to scale it for the solver
     // to make velocities and pressures of roughly the same (numerical) size,
@@ -1231,21 +1237,6 @@ namespace aspect
 
     // This needs to happen after the periodic constraints are added:
     setup_nullspace_constraints(constraints);
-
-    // TODO: make this optional
-    if (false && parameters.include_melt_transport)
-      {
-        // add a single pressure DoF
-        const types::global_dof_index global_idx = introspection.system_dofs_per_block[0];
-
-        // Finally set this DoF to zero (if we care about it):
-        if (constraints.can_store_line(global_idx))
-          {
-            Assert(!constraints.is_constrained((global_idx)), ExcInternalError());
-            constraints.add_line(global_idx);
-          }
-
-      }
 
     // then compute constraints for the velocity. the constraints we compute
     // here are the ones that are the same for all following time steps. in
