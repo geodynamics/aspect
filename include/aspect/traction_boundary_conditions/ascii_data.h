@@ -54,6 +54,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
+
         /**
          * Return the boundary traction as a function of position. The
          * (outward) normal vector to the domain is also provided as
