@@ -1,18 +1,11 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.1.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using PETSc
------------------------------------------------------------------------------
 
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 49 (18+4+9+9+9)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving peridotite system ... 0 iterations.
-   Solving eclogite system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping eclogite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
 
@@ -24,21 +17,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.194s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00551s |       2.8% |
-| Assemble composition system     |         2 |    0.0328s |        17% |
-| Assemble temperature system     |         1 |    0.0199s |        10% |
-| Build Stokes preconditioner     |         1 |    0.0134s |       6.9% |
-| Build composition preconditioner|         2 |  0.000357s |      0.18% |
-| Build temperature preconditioner|         1 |   0.00038s |       0.2% |
-| Solve Stokes system             |         1 |    0.0477s |        25% |
-| Solve composition system        |         2 |   0.00298s |       1.5% |
-| Solve temperature system        |         1 |   0.00209s |       1.1% |
-| Initialization                  |         2 |    0.0328s |        17% |
-| Postprocessing                  |         1 |   0.00423s |       2.2% |
-| Setup dof systems               |         1 |    0.0257s |        13% |
 +---------------------------------+-----------+------------+------------+
 

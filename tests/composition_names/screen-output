@@ -4,8 +4,8 @@ Number of degrees of freedom: 49 (18+4+9+9+9)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving peridotite system ... 0 iterations.
-   Solving eclogite system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping eclogite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
 

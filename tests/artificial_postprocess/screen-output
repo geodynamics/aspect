@@ -6,7 +6,7 @@ Number of degrees of freedom: 430 (162+25+81+81+81)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving comp1 system ... 0 iterations.
+   Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -23,7 +23,7 @@ EV composition 1:
 
 *** Timestep 1:  t=2.13881e+10 years
    Solving temperature system... 18 iterations.
-   Solving comp1 system ... 0 iterations.
+   Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 13 iterations.
    Solving Stokes system... 20+0 iterations.
 
@@ -39,7 +39,7 @@ EV composition 1:
 
 *** Timestep 2:  t=6.66473e+10 years
    Solving temperature system... 19 iterations.
-   Solving comp1 system ... 0 iterations.
+   Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 12 iterations.
    Solving Stokes system... 20+0 iterations.
 
@@ -55,7 +55,7 @@ EV composition 1:
 
 *** Timestep 3:  t=1e+11 years
    Solving temperature system... 16 iterations.
-   Solving comp1 system ... 0 iterations.
+   Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 8 iterations.
    Solving Stokes system... 16+0 iterations.
 
