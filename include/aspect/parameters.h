@@ -307,7 +307,7 @@ namespace aspect
      */
     std::string                    binary_data_directory;
     std::string                    binary_data_file_name;
-    unsigned int                   binary_data_ts_number;
+    int                   binary_data_ts_number;
 
   };
 

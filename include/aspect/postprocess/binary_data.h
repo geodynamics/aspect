@@ -4,6 +4,7 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <boost/serialization/serialization.hpp>
 
@@ -12,23 +13,23 @@ namespace aspect
   namespace Postprocess
   {
 
-    struct Field
-    {
-        double time;
-        double time_step;
-        double old_time_step;
-        unsigned int timestep_number;
-
-      public:
-        template <class Archive>
-        void serialize(Archive &ar, const unsigned int version)
-        {
-          ar &time;
-          ar &time_step;
-          ar &old_time_step;
-          ar &timestep_number;
-        }
-    };
+//    struct Field
+//    {
+//        double time;
+//        double time_step;
+//        double old_time_step;
+//        unsigned int timestep_number;
+//
+//      public:
+//        template <class Archive>
+//        void serialize(Archive &ar, const unsigned int version)
+//        {
+//          ar &time;
+//          ar &time_step;
+//          ar &old_time_step;
+//          ar &timestep_number;
+//        }
+//    };
 
     template<int dim>
     class BinaryData : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
@@ -56,7 +57,7 @@ namespace aspect
         unsigned int my_id;
         std::string filename_prefix;
 
-        Field attributes;
+        aspect::Utilities::BinaryInputFields attributes;
     };
   }
 }

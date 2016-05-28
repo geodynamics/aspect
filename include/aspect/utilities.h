@@ -599,6 +599,29 @@ namespace aspect
          */
         std_cxx11::shared_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
     };
+
+
+      /*
+       * Struct containing time sensitive data for the nonlinear solver kind, "Binary_input"
+       */
+
+      struct BinaryInputFields
+      {
+          double time;
+          double time_step;
+          double old_time_step;
+          unsigned int timestep_number;
+
+      public:
+          template <class Archive>
+          void serialize(Archive &ar, const unsigned int version)
+          {
+              ar &time;
+              ar &time_step;
+              ar &old_time_step;
+              ar &timestep_number;
+          }
+      };
   }
 }
 

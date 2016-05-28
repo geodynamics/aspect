@@ -66,8 +66,10 @@ namespace aspect
         {
           this->update_time();
 
-          std::ofstream ofs(this->get_output_directory() + "/" + filename_prefix +
-                            Utilities::int_to_string(this->get_timestep_number(), 5) + ".time");
+          //std::ofstream ofs(this->get_output_directory() + "/" + filename_prefix +
+          //                  Utilities::int_to_string(this->get_timestep_number(), 5) + ".time");
+          std::ofstream ofs(this->get_output_directory() + "fields-" +
+                                    Utilities::int_to_string(this->get_timestep_number(), 5) + ".bin");
           boost::archive::binary_oarchive oa(ofs);
           oa << attributes;
           ofs.close();
