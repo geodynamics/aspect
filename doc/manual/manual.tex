@@ -1104,11 +1104,23 @@ right hand side -- quite outside what the original term
 \textit{compositional field} was supposed to indicate -- is to track
 the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
 
-Inside the material model, the interaction is given by {\tt reaction\_term}
-which is defined as $\triangle t \cdot \mathfrak q$.
+In actual practice, one finds that it is often useful to allow
+$\mathfrak q$ to be a function that has both a smooth (say,
+continuous) in time component, and one that is singular in time (i.e.,
+contains Dirac delta, or ``impulse'' functions). Typical time
+integrators require the evaluation of the right hand side at specific
+points in time, but this would preclude the use of delta
+functions. Consequently, the integrators in \aspect{} only require
+material models to provide an \textit{integrated} value
+$\int_t^{t+\Delta t} \mathfrak q(\tau) \;
+\text{d}\tau$ through the {\tt reaction\_term} output
+variable. Implementations often approximate this as $\triangle t \cdot
+\mathfrak q(t)$, or similar formulas.
 
-Modeling reactions between different compositional fields often involves
-finding an equilibrium state between state between different fields because
+A second application for only providing integrated right hand sides
+comes from the fact that
+modeling reactions between different compositional fields often involves
+finding an equilibrium state between different fields because
 chemical reactions happen on a much faster time scale than transport. In other
 words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 \begin{align*}
@@ -1117,9 +1129,12 @@ words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 Consequently, the material model methods that deal with source terms for the
 compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
 to the previous value of the compositional fields so that the sum of the
-previous values and the increment equals $\mathfrak c^\ast$. This is opposed
-to the usual approach of evaluating the right hand side term $\mathfrak q$,
-which corresponds to a \textit{rate}, instead of an increment.
+previous values and the increment equals $\mathfrak c^\ast$. This
+corresponds to an \textit{impulse change} in the compositions at every
+time step, as opposed
+to the usual approach of evaluating the right hand side term
+$\mathfrak q$ as a continuous function in time,
+which corresponds to a \textit{rate}.
 
 On the other hand, there are other uses of compositional fields that do not
 actually have anything to do with quantities that can be considered related to
