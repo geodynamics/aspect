@@ -614,7 +614,7 @@ namespace aspect
 
       public:
           template <class Archive>
-          void serialize(Archive &ar, const unsigned int version)
+          void serialize(Archive &ar, const unsigned int version=2)
           {
               ar &time;
               ar &time_step;

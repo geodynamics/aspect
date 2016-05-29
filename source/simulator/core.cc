@@ -1979,14 +1979,14 @@ namespace aspect
           AssertThrow (!parameters.free_surface_enabled,
                        ExcMessage (std::string("Currently, we do not support free surface mesh with the \"nonlinear\" binary input scheme.")));
 
-          std::string filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name + Utilities::int_to_string(timestep_number + parameters.binary_data_ts_number, 5) + ".mesh";
+          std::string filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name + Utilities::int_to_string(timestep_number, 5) + ".mesh";
 
           triangulation.load(filename.c_str());
           LinearAlgebra::BlockVector tmp_solution (introspection.index_sets.system_partitioning, mpi_communicator);
           parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
           sol_trans.deserialize (tmp_solution);
           solution = tmp_solution;
-          triangulation.clear();
+          //triangulation.clear();
 
           break;
         }
@@ -2074,17 +2074,12 @@ namespace aspect
           triangulation.load(filename.c_str());
           sol_trans.deserialize (tmp_solution);
           old_solution = tmp_solution;
-          free(&tmp_solution);
-          free(&sol_trans);
-//        filename = parameters.output_directory + parameters. +
-//                        Utilities::int_to_string(timestep_number, 5) + ".bin";
-//        std::ifstream input_stream (filename);
-//        AssertThrow(input_stream,
-//                    ExcMessage(std::string("Failed to read the " + filename +
-//                                           " for the " + timestep_number + " using Nonlinear solver mode \"Binary_input\".")));
-//        Utilities::BinaryInputFields input_fields;
-//        boost::archive::binary_iarchive ia(input_stream);
-//        ia >> input_fields;
+
+          filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
+                     Utilities::int_to_string(parameters.binary_data_ts_number, 5) + ".mesh";
+          triangulation.load(filename.c_str());
+          sol_trans.deserialize (tmp_solution);
+          solution = tmp_solution;
         }
       }
 
@@ -2124,8 +2119,6 @@ namespace aspect
           timestep_number = input_fields.timestep_number;
           old_time_step = input_fields.old_time_step;
           input_stream.close();
-          free(&ia);
-          free(&input_fields);
         }
       }
 
