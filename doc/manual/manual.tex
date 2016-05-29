@@ -1099,7 +1099,12 @@ and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
 then one can also model interaction between species -- for example to simulate
 phase changes where one compositional field, indicating a particular phase,
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
+several phases combine to other phases. Another example of using a
+right hand side -- quite outside what the original term
+\textit{compositional field} was supposed to indicate -- is to track
+the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
+
+Inside the material model, the interaction is given by {\tt reaction\_term}
 which is defined as $\triangle t \cdot \mathfrak q$.
 
 Modeling reactions between different compositional fields often involves
