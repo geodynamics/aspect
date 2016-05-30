@@ -8,7 +8,6 @@ Exception on processing:
 
 --------------------------------------------------------
 An error occurred in file <main.cc> in function
-    int main(int, char**)
 The violated condition was: 
     (dim >= 2) && (dim <= 3)
 The name and call sequence of the exception was:
