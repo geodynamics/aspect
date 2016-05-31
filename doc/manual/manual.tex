@@ -1076,14 +1076,17 @@ a vector $\mathfrak c$.
 
 Compositional fields were originally intended to track what their name
 suggest, namely the chemical composition of the convecting medium. In this
-interpretation, they composition is a quantity that is simply advected along
+interpretation, the composition is a quantity that is simply advected along
 passively, i.e., it would satisfy the equation
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
   = 0.
 \end{align*}
-However, these compositional fields participate in determining the values of
-the various coefficients as discussed in Section~\ref{sec:coefficients}.
+However, the compositional fields may also participate in determining the values of
+the various coefficients as discussed in
+Section~\ref{sec:coefficients}, and in this sense the equation above
+describes a composition that is \textit{passively advected}, but an
+\textit{active participant} in the equations.
 
 That said, over time compositional fields have shown to be a much more useful
 tool than originally intended. For example, they can be used to track where
@@ -1094,13 +1097,30 @@ and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
   = \mathfrak q,
 \end{align*}
 then one can also model interaction between species -- for example to simulate
-phase changes where one compositional field indicating a particular phase
+phase changes where one compositional field, indicating a particular phase,
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
-which is defined as $\triangle t \cdot \mathfrak q$.
+several phases combine to other phases. Another example of using a
+right hand side -- quite outside what the original term
+\textit{compositional field} was supposed to indicate -- is to track
+the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
 
-Modeling reactions between different compositional fields often involves
-finding an equilibrium state between state between different fields because
+In actual practice, one finds that it is often useful to allow
+$\mathfrak q$ to be a function that has both a smooth (say,
+continuous) in time component, and one that is singular in time (i.e.,
+contains Dirac delta, or ``impulse'' functions). Typical time
+integrators require the evaluation of the right hand side at specific
+points in time, but this would preclude the use of delta
+functions. Consequently, the integrators in \aspect{} only require
+material models to provide an \textit{integrated} value
+$\int_t^{t+\Delta t} \mathfrak q(\tau) \;
+\text{d}\tau$ through the {\tt reaction\_term} output
+variable. Implementations often approximate this as $\triangle t \cdot
+\mathfrak q(t)$, or similar formulas.
+
+A second application for only providing integrated right hand sides
+comes from the fact that
+modeling reactions between different compositional fields often involves
+finding an equilibrium state between different fields because
 chemical reactions happen on a much faster time scale than transport. In other
 words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 \begin{align*}
@@ -1109,9 +1129,12 @@ words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 Consequently, the material model methods that deal with source terms for the
 compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
 to the previous value of the compositional fields so that the sum of the
-previous values and the increment equals $\mathfrak c^\ast$. This is opposed
-to the usual approach of evaluating the right hand side term $\mathfrak q$,
-which corresponds to a \textit{rate}, instead of an increment.
+previous values and the increment equals $\mathfrak c^\ast$. This
+corresponds to an \textit{impulse change} in the compositions at every
+time step, as opposed
+to the usual approach of evaluating the right hand side term
+$\mathfrak q$ as a continuous function in time,
+which corresponds to a \textit{rate}.
 
 On the other hand, there are other uses of compositional fields that do not
 actually have anything to do with quantities that can be considered related to
@@ -5060,11 +5083,12 @@ Figure \ref{fig:smoothing}.
 \label{sec:finite-strain}
 \textit{This section was contributed by Juliane Dannberg}
 
-\textit{Notation: Here, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+\note{In this section, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
 $\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
-with the velocity $\mathbf u$, and the strain tensor as $e$, where 
+and $\mathbf u$ the velocity. We denote the strain tensor by $e$, where 
 $e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
-with the displacement $\mathbf d$.}
+with the displacement $\mathbf d$ the difference between a point's
+position at time $t$ and at time zero.}
 
 In many geophysical settings, material properties, and in particular the rheology, do not only depend
 on the current temperature, pressure and strain rate, but also on the history of the system. 
