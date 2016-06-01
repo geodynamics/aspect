@@ -356,12 +356,12 @@ $c_i$ that we call \textit{compositional fields}:
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p &=
   \rho \mathbf g
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:stokes-2}
   \nabla \cdot (\rho \mathbf u) &= 0
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature}
@@ -384,7 +384,7 @@ $c_i$ that we call \textit{compositional fields}:
   \\
   &\quad
   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
-  & \quad
+  &
   & \textrm{in $\Omega$},
   \notag
   \\
@@ -392,7 +392,7 @@ $c_i$ that we call \textit{compositional fields}:
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
   q_i
-  & \quad
+  &
   & \textrm{in $\Omega$},
   i=1\ldots C
 \end{align}
@@ -512,7 +512,7 @@ essentially as tracer quantities that only keep track of where material came
 from.
 
 These equations are
-augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
+augmented by boundary conditions that can either be of Dirichlet, Neumann, or
 tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
@@ -532,8 +532,9 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
   \mathbf n \cdot k\nabla T &= 0
    & \qquad &\textrm{on $\Gamma_{N,T}$}.
   \\
-  c_i &= 0
-   & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
+  \label{eq:gamma-in-composition}
+  c_i &= c_{i,\text{prescribed}}
+   & \qquad &\textrm{on $\Gamma_{\text{in}}=\{\mathbf x: \mathbf
    u\cdot\mathbf n<0\}$}.
 \end{align}
 Here, the boundary conditions for velocity and temperature are subdivided into
@@ -560,14 +561,20 @@ tangential component undetermined.
 of the shell that constitutes the domain the Earth mantle occupies is
 simulated).
 \end{itemize}
- We require that one of these boundary conditions hold at each
+We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
 $\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
   u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
   u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be
-posed for the compositional fields at those parts of the boundary where flow is either
-tangential to the boundary or points outward.
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. 
+
+Boundary conditions have to be imposed for the compositional fields only
+at those parts of the boundary where flow points inward, see equation
+\eqref{eq:gamma-in-composition}, but not where it is either tangential
+to the boundary or points outward. The difference in treatment between
+temperature and compositional boundary conditions is due to the fact
+that the temperature equation contains a (possibly small) diffusion
+component, whereas the compositional equations do not.
 
 
 \subsubsection{Comments on the final set of equations}
