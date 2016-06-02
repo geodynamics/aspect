@@ -18,39 +18,6 @@ namespace aspect
   class MeltMaterial:
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      virtual bool
-      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-      virtual bool
-      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
       virtual bool is_compressible () const
       {
         return false;

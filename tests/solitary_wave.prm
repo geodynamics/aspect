@@ -1,6 +1,8 @@
 # Listing of Parameters
 # ---------------------
 # Set up the solitary wave benchmark
+# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011; 
+# Keller et al., 2013; Schmeling, 2000)
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0

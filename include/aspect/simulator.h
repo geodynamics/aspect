@@ -235,7 +235,8 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Return whether this object refers to a field discretized by discontinuous finite elements.
+         * Return whether this object refers to a field discretized by
+         * discontinuous finite elements.
          */
         bool
         is_discontinuous (const Introspection<dim> &introspection) const;
@@ -706,21 +707,6 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
-
-      /**
-       * Compute the right-hand side for the fluid pressure equation of the Staokes
-       * system in case the simulation uses melt transport. This includes a term
-       * derived from Darcy's law, a term including the melting rate and a term dependent
-       * on the densities and velocities of fluid and solid.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                        MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                                        const unsigned int q_point) const;
-
       /**
        * Copy the contribution to the advection system from a single cell into
        * the global matrix that stores these elements.
@@ -817,8 +803,11 @@ namespace aspect
       /**
        * Invert the action of the function above.
        *
-       * This function modifies @p vector in-place and uses a second copy with relevant
-       * dofs (@p relevant_vector) for accessing the pressure values. Both @p vector and @p relevant_vector are expected to already contain
+       * This function modifies @p vector in-place. In some cases, we need
+       * locally_relevant values of the pressure. To avoid creating a new vector
+       * and transferring data, this function uses a second vector with relevant
+       * dofs (@p relevant_vector) for accessing these pressure values. Both
+       * @p vector and @p relevant_vector are expected to already contain
        * the correct pressure values.
        *
        * This function is implemented in

@@ -133,11 +133,10 @@ subsection Mesh refinement
 end
 
 
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
   set Plugin name = density
   subsection Density
-    set Include Fluid Density = true
-    set Include Solid Density = false
+    set Density formulation = solid density
   end
 end
 

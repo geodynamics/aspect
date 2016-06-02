@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/melt.h>
-#include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 #include <aspect/material_model/interface.h>
 

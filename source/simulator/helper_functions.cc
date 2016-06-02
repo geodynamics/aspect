@@ -400,7 +400,6 @@ namespace aspect
                     }
                 }
             }
-
         }
 
     const double max_global_speed_over_meshsize
@@ -860,15 +859,13 @@ namespace aspect
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
 
-    const double global_normal_velocity_integral = 0.0;
-
     // In the following we integrate the right hand side. This integral is the
     // correction term that needs to be added to the pressure right hand side.
     // (so that the integral of right hand side is set to zero).
     if (!parameters.include_melt_transport && introspection.block_indices.velocities != introspection.block_indices.pressure)
       {
         const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-        const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+        const double correction = (- mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
         vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
       }
     else
@@ -886,8 +883,12 @@ namespace aspect
             pressure_sum += vector(idx);
           }
 
+        // We do not have to integrate over the normal velocity at the
+        // boundaries with a prescribed velocity because the constraints
+        // are already distributed to the right hand side in
+        // current_constraints.distribute.
         const double global_pressure_sum = Utilities::MPI::sum(pressure_sum, mpi_communicator);
-        const double correction = (global_normal_velocity_integral - global_pressure_sum) / global_volume;
+        const double correction = (- global_pressure_sum) / global_volume;
 
         for (unsigned int i=0; i < idxset.n_elements(); ++i)
           {
@@ -955,10 +956,10 @@ namespace aspect
       }
     else
       {
-        double residual_u = system_matrix.block(0,1).residual (residual.block(0),
-                                                               remap.block(1),
-                                                               system_rhs.block(0));
-        double residual_p = system_rhs.block(block_p).l2_norm();
+        const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
+                                                                     remap.block(1),
+                                                                     system_rhs.block(0));
+        const double residual_p = system_rhs.block(block_p).l2_norm();
         return sqrt(residual_u*residual_u+residual_p*residual_p);
       }
   }

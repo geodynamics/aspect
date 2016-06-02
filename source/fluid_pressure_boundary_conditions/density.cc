@@ -34,19 +34,35 @@ namespace aspect
     void
     Density<dim>::
     fluid_pressure_gradient (
+      const types::boundary_id boundary_indicator,
       const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
       const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-      std::vector<Tensor<1,dim> > &output
+      std::vector<Tensor<1,dim> > &fluid_pressure_gradient_outputs
     ) const
     {
       const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
       Assert(melt_outputs!=NULL, ExcMessage("Error, MeltOutputs are missing in fluid_pressure_gradient()"));
-      for (unsigned int q=0; q<output.size(); ++q)
+      for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
         {
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);
-          output[q] = (((include_rho_s) ? material_model_outputs.densities[q] : 0.0)
-                       + ((include_rho_f) ? melt_outputs->fluid_densities[q] : 0.0))
-                      * gravity;
+
+          switch (density_formulation)
+            {
+              case DensityFormulation::solid_density:
+              {
+                fluid_pressure_gradient_outputs[q] = material_model_outputs.densities[q] * gravity;
+                break;
+              }
+
+              case DensityFormulation::fluid_density:
+              {
+                fluid_pressure_gradient_outputs[q] = melt_outputs->fluid_densities[q] * gravity;
+                break;
+              }
+
+              default:
+                Assert (false, ExcNotImplemented());
+            }
         }
     }
 
@@ -54,22 +70,24 @@ namespace aspect
     void
     Density<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Fluid Pressure Boundary Condition");
+      prm.enter_subsection("Boundary fluid pressure model");
       {
         prm.enter_subsection("Density");
         {
-          prm.declare_entry ("Include Fluid Density", "false", Patterns::Bool(),
-                             "Prescribing the gradient of the fluid pressure as "
-                             "fluid density times gravity causes melt to flow in "
+          prm.declare_entry ("Density formulation", "solid density",
+                             Patterns::Selection ("solid density|fluid density"),
+                             "The density formulation used to compute the fluid pressure gradient "
+                             "at the model boundary. "
+                             "'solid density' prescribes the gradient of the fluid pressure as "
+                             "solid density times gravity (which is the lithostatic "
+                             "pressure) and leads to approximately the same pressure in "
+                             "the melt as in the solid, so that fluid is only flowing "
+                             "in or out due to differences in dynamic pressure."
+                             "'fluid density' prescribes the gradient of the fluid pressure as "
+                             "fluid density times gravity and causes melt to flow in "
                              "with the same velocity as inflowing solid material, "
                              "or no melt flowing in or out if the solid velocity "
                              "normal to the boundary is zero.");
-          prm.declare_entry ("Include Solid Density", "true", Patterns::Bool(),
-                             "Prescribing the gradient of the fluid pressure as "
-                             "solid density times gravity (which is the lithostatic "
-                             "pressure) leads to approximately the same pressure in "
-                             "the melt as in the solid, so that fluid is only flowing "
-                             "in or out due to differences in dynamic pressure. ");
         }
         prm.leave_subsection ();
       }
@@ -81,26 +99,21 @@ namespace aspect
     void
     Density<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Fluid Pressure Boundary Condition");
+      prm.enter_subsection("Boundary fluid pressure model");
       {
         prm.enter_subsection("Density");
         {
-          include_rho_f = prm.get_bool("Include Fluid Density");
-          include_rho_s = prm.get_bool("Include Solid Density");
+          if (prm.get ("Density formulation") == "solid density")
+            density_formulation = DensityFormulation::solid_density;
+          else if (prm.get ("Density formulation") == "fluid density")
+            density_formulation = DensityFormulation::fluid_density;
+          else
+            AssertThrow (false, ExcNotImplemented());
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
-
-
-
-    template <int dim>
-    void
-    Density<dim>::initialize()
-    {
-    }
-
   }
 }
 
@@ -113,6 +126,6 @@ namespace aspect
                                                        "density",
                                                        "A plugin that prescribes the fluid pressure gradient at "
                                                        "the boundary based on fluid/solid density from the material "
-                                                       "model. ")
+                                                       "model.")
   }
 }

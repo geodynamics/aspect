@@ -23,7 +23,7 @@
 #include <aspect/fluid_pressure_boundary_conditions/interface.h>
 
 #include <deal.II/base/exceptions.h>
-#include <deal.II/base/std_cxx1x/tuple.h>
+#include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
 
@@ -87,14 +87,14 @@ namespace aspect
     create_fluid_pressure_boundary (ParameterHandler &prm)
     {
       std::string model_name;
-      prm.enter_subsection ("Fluid Pressure Boundary Condition");
+      prm.enter_subsection ("Boundary fluid pressure model");
       {
         model_name = prm.get ("Plugin name");
       }
       prm.leave_subsection ();
 
       return std_cxx1x::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                    "Fluid pressure boundary condition::Plugin name");
+                                                                    "Boundary fluid pressure model::Plugin name");
     }
 
 
@@ -103,7 +103,7 @@ namespace aspect
     void
     declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection ("Fluid Pressure Boundary Condition");
+      prm.enter_subsection ("Boundary fluid pressure model");
       const std::string pattern_of_names
         = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
       prm.declare_entry ("Plugin name", "density",

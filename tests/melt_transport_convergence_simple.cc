@@ -13,8 +13,6 @@
 #include <deal.II/numerics/vector_tools.h>
 
 const double c = 1.0;
-const double pi = 3.14159265359;
-
 
 
 namespace aspect
@@ -24,41 +22,6 @@ namespace aspect
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool
-      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
-          return true;
-        return false;
-      }
-
-      virtual bool
-      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
       virtual bool is_compressible () const
       {
         return false;
@@ -131,7 +94,7 @@ namespace aspect
       {
         double x = p(0);
         double z = p(1);
-        const double porosity = 0.15 + 1.0/20.0 * (pi/2.0 + std::atan(x + 2*z));
+        const double porosity = 0.15 + 1.0/20.0 * (numbers::PI/2.0 + std::atan(x + 2*z));
 
         values[0]= 1.0;       //x vel
         values[1]= 1.0;    //z vel
@@ -141,7 +104,7 @@ namespace aspect
         values[5]= 1.0;    //y melt vel
         values[6]= std::exp(z/10.0);  // p_s
         values[7]= 0; // T
-        values[8]= 0.15 + 1.0/20.0 * (pi/2.0 + std::atan(x + 2*z));
+        values[8]= porosity;
       }
   };
 
@@ -253,6 +216,7 @@ namespace aspect
     public:
       virtual
       void fluid_pressure_gradient (
+        const types::boundary_id boundary_indicator,
         const typename MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const typename MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
         std::vector<Tensor<1,dim> > &output

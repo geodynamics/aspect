@@ -313,8 +313,13 @@ namespace aspect
       prm.declare_entry ("Include melt transport", "false",
                          Patterns::Bool (),
                          "Whether to include the transport of melt into the model or not. If this "
-                         "is set to true, an additional compositional field for the porosity and "
-                         "an additional pressure (the compaction pressure) will be added.");
+                         "is set to true, two additional pressures (the fluid pressure and the "
+                         "and the compaction pressure) will be added to the finite element. "
+                         "Including melt transport in the simulation also requires that there is "
+                         "one compositional field that has the name 'porosity'. This field will "
+                         "be used for computing the additional pressures and the melt velocity, "
+                         "and has a different advection equation than other compositional fields, "
+                         "as it is effectively advected with the melt velocity.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "

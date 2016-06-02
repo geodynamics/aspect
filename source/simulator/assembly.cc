@@ -65,8 +65,8 @@ namespace aspect
                                  update_flags),
           grads_phi_u (finite_element.dofs_per_cell, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
           phi_p (finite_element.dofs_per_cell, numbers::signaling_nan<double>()),
-          phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
-          grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0),
+          phi_p_c (add_compaction_pressure ? finite_element.dofs_per_cell : 0, Utilities::signaling_nan<double>()),
+          grad_phi_p (add_compaction_pressure ? finite_element.dofs_per_cell : 0, Utilities::signaling_nan<Tensor<1,dim> >()),
           temperature_values (quadrature.size(), numbers::signaling_nan<double>()),
           pressure_values (quadrature.size(), numbers::signaling_nan<double>()),
           strain_rates (quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
@@ -249,7 +249,7 @@ namespace aspect
           current_strain_rates(quadrature.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
           current_composition_values(n_compositional_fields,
                                      std::vector<double>(quadrature.size(), numbers::signaling_nan<double>())),
-          current_velocity_divergences(quadrature.size()),
+          current_velocity_divergences(quadrature.size(), Utilities::signaling_nan<double>()),
           material_model_inputs(quadrature.size(), n_compositional_fields),
           material_model_outputs(quadrature.size(), n_compositional_fields),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
@@ -345,6 +345,7 @@ namespace aspect
         {}
 
 
+
         template <int dim>
         StokesPreconditioner<dim>::
         ~StokesPreconditioner ()
@@ -375,8 +376,6 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_pressure_shape_function_integrals (data.local_pressure_shape_function_integrals.size())
         {}
-
-
 
 
 
@@ -444,6 +443,7 @@ namespace aspect
         {}
 
       }
+
 
 
       template <int dim>
@@ -772,6 +772,12 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
                                                                                scratch.old_old_field_laplacians);
 
+        if (parameters.include_melt_transport && melt_handler->is_porosity(advection_field))
+          {
+            scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences (current_linearization_point,
+                scratch.current_velocity_divergences);
+          }
+
         /**
          * Explicit material model inputs and outputs.
          */
@@ -1012,7 +1018,7 @@ namespace aspect
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
-                                       (density * gravity) * scratch.phi_u[i]
+                                       (density * gravity * scratch.phi_u[i])
                                        +
                                        // add the term that results from the compressibility. compared
                                        // to the manual, this term seems to have the wrong sign, but this
@@ -1085,7 +1091,7 @@ namespace aspect
                                               * scratch.finite_element_values.JxW(q);
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
-                data.local_rhs(i) += ((density * gravity) * scratch.phi_u[i])
+                data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
                                      * scratch.finite_element_values.JxW(q);
             }
         }

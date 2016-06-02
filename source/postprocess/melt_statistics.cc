@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,7 +21,6 @@
 
 
 #include <aspect/postprocess/melt_statistics.h>
-#include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -177,6 +176,8 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(MeltStatistics,
                                   "melt statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "the melt fraction, averaged by volume. ")
+                                  "the melt fraction, averaged by volume. If the material model "
+                                  "does not implement a melt fraction function, the output is "
+                                  "set to zero.")
   }
 }

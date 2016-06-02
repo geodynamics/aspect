@@ -3,7 +3,7 @@
 # with zero velocity boundary conditions at the bottom boundary, 
 # tangential velocities at the sides and an open boundary at the top.
 #
-# We the choose a Darcy coefficient (= permeability divided by fluid
+# We then choose a Darcy coefficient (= permeability divided by fluid
 # viscosity) of 0.5+y^2/2 and otherwise constant material parameters 
 # so that the gradient of the fluid pressure vanishes. The velocity
 # should then be y^2/2, the compaction pressure -y and the fluid
@@ -38,7 +38,7 @@ subsection Compositional fields
 end
 
 # prescribe the fluid pressure as in the analytical solution
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
   set Plugin name = PressureBdry
 end
 

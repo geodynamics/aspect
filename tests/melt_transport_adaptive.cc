@@ -91,41 +91,6 @@ namespace aspect
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool
-      viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        if ((dependence & MaterialModel::NonlinearDependence::compositional_fields) != MaterialModel::NonlinearDependence::none)
-          return true;
-        return false;
-      }
-
-      virtual bool
-      density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
-
-      virtual bool
-      thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-      {
-        return false;
-      }
-
       virtual bool is_compressible () const
       {
         return false;
@@ -350,6 +315,7 @@ namespace aspect
     public:
       virtual
       void fluid_pressure_gradient (
+        const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
         std::vector<Tensor<1,dim> > &output

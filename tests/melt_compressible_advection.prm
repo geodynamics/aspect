@@ -2,7 +2,7 @@
 # field in compressible cases.
 # With a prescribed velocity of u = (0,z) and 
 # density, gravity and compressibilities set to 1,
-# phi = A * exp(-z) / z + 1. The z coordinated is
+# phi = A * exp(-z) / z + 1. The z coordinate is
 # shifted z --> z+0.1 to avoind deviding by 0.  
 
 set Adiabatic surface temperature          = 1623               # default: 0
@@ -33,7 +33,7 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
   set Plugin name = PressureBdry
 end
 

@@ -91,8 +91,9 @@ namespace aspect
           average_property (operation, projection_matrix, expansion_matrix,
                             fluid_densities);
 
-          // the fluid density gradients are unfortunately stored in reverse
-          // indexing. it's also not quite clear whether these should
+          // The fluid density gradients are unfortunately stored in reverse
+          // indexing and averaging is not implemented for tensors (only for
+          // doubles). It's also not quite clear whether these should
           // really be averaged, so avoid this for now
         }
     };
@@ -106,13 +107,13 @@ namespace aspect
     {
       public:
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const=0;
+                                     std::vector<double> &melt_fractions) const = 0;
     };
 
   }
 
   /**
-   * Creates additional material model output object that are
+   * Creates additional material model output objects that are
    * needed for a simulation, and attaches a pointer to them to the
    * corresponding vector in the MaterialModel::MaterialModelOutputs
    * structure.
@@ -194,8 +195,10 @@ namespace aspect
 
       private:
         /**
-         * Returns the right hand side of the fluid pressure equation in
-         * the case of melt migration for a single quadrature point.
+         * Compute the right-hand side of the fluid pressure equation of the Stokes
+         * system in case the simulation uses melt transport. This includes a term
+         * derived from Darcy's law, a term including the melting rate and a term dependent
+         * on the densities and velocities of fluid and solid.
          */
         double
         compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
@@ -204,18 +207,18 @@ namespace aspect
                                    const unsigned int q_point) const;
 
         /**
-         * Compute the right-hand side for the advection system index. This is
-         * 0 for the temperature and all of the compositional fields, except for
-         * the porosity. It includes the melting rate and a term dependent
+         * Compute the right-hand side for the porosity system. This function
+         * returns 0 for the temperature and all of the compositional fields, except
+         * for the porosity. It includes the melting rate and a term dependent
          * on the density and velocity.
          *
          * This function is implemented in
-         * <code>source/simulator/assembly.cc</code>.
+         * <code>source/simulator/melt.cc</code>.
          */
         double
         compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                            typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                            const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                            const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                             const typename Simulator<dim>::AdvectionField &advection_field,
                             const unsigned int q_point) const;
     };
@@ -252,10 +255,33 @@ namespace aspect
     public:
       MeltHandler(ParameterHandler &prm);
 
+      /**
+       * Declare additional parameters that are needed in models with
+       * melt transport (including the fluid pressure boundary conditions).
+       */
       static void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse additional parameters that are needed in models with
+       * melt transport (including the fluid pressure boundary conditions).
+       *
+       * This has to be called before edit_finite_element_variables,
+       * so that the finite elements that are used for the additional melt
+       * variables can be specified in the input file and are parsed before
+       * the introspection object is created.
+       */
       void parse_parameters (ParameterHandler &prm);
 
+      /**
+       * Add the additional variables we need in simulations with melt
+       * migration to the list of variables, which will be used later
+       * to set up the introspection object.
+       */
       void edit_finite_element_variables(const Parameters<dim> &parameters, std::vector<VariableDeclaration<dim> > &variables);
+
+      /**
+       * Setup SimulatorAccess for the plugins related to melt transport.
+       */
       void initialize_simulator (const Simulator<dim> &simulator_object);
 
       /**
@@ -269,8 +295,32 @@ namespace aspect
        */
       bool is_porosity (const typename Simulator<dim>::AdvectionField &advection_field) const;
 
+      /**
+       * The porosity limit for melt migration. For smaller porosities, the equations
+       * reduce to the Stokes equations and neglect melt transport. In practice, this
+       * means that all terms in the assembly related to the migration of melt are set
+       * to zero for porosities smaller than this threshold.
+       * This does not include the compaction term $p_c/\xi$, which is necessary for the
+       * solvability of the linear system, but does not influence the solution variables
+       * of the Stokes problem (in the absence of porosity).
+       */
       double melt_transport_threshold;
+
+      /**
+       * Whether to use a porosity weighted average of the melt and solid velocity
+       * to advect heat in the temperature equation or not. If this is set to true,
+       * additional terms are assembled on the left-hand side of the temperature
+       * advection equation in models with melt migration.
+       * If this is set to false, only the solid velocity is used (as in models
+       * without melt migration).
+       */
       bool heat_advection_by_melt;
+
+      /**
+       * Store a pointer to the fluid pressure boundary plugin, so that the
+       * initialization can be done together with the other objects related to melt
+       * transport.
+       */
       std::auto_ptr<FluidPressureBoundaryConditions::Interface<dim> > fluid_pressure_boundary_conditions;
   };
 

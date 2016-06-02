@@ -45,6 +45,7 @@ namespace aspect
          */
         virtual
         void fluid_pressure_gradient (
+          const types::boundary_id boundary_indicator,
           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
           std::vector<Tensor<1,dim> > &output
@@ -64,20 +65,21 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        /**
-         * @copydoc Interface::initialilze()
-         */
-        virtual void initialize ();
-
       private:
         /**
-         * If true, the solid density is used.
+         * Identify which density to use to compute the fluid pressure
+         * gradient at the model boundary.
          */
-        bool include_rho_s;
-        /**
-         * If true, the fluid density is used.
-         */
-        bool include_rho_f;
+        struct DensityFormulation
+        {
+          enum Kind
+          {
+            solid_density,
+            fluid_density
+          };
+        };
+
+        typename DensityFormulation::Kind density_formulation;
     };
   }
 }

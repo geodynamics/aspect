@@ -175,7 +175,6 @@ namespace aspect
     timestep_number (0),
 
     triangulation (mpi_communicator,
-//                   Triangulation<dim>::none,
                    typename Triangulation<dim>::MeshSmoothing
                    (Triangulation<dim>::smoothing_on_refinement |
                     Triangulation<dim>::smoothing_on_coarsening),
@@ -982,6 +981,10 @@ namespace aspect
     // - temperature only couples with itself when using the impes
     //   scheme
     // - compositional fields only couple with themselves
+    // this is also valid in the case of melt transport (for the
+    // fluid and the compaction pressure
+    // additionally, fluid pressure and compaction pressures couple
+    // with themselves
     {
       const typename Introspection<dim>::ComponentIndices &x
         = introspection.component_indices;
@@ -1084,8 +1087,8 @@ namespace aspect
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
 
-    for (unsigned int c=0; c<dim; ++c)
-      coupling[x.velocities[c]][x.velocities[c]] = DoFTools::always;
+    for (unsigned int d=0; d<dim; ++d)
+      coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
 
     if (parameters.include_melt_transport)
       {
@@ -1867,7 +1870,6 @@ namespace aspect
                 initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
 
               const double temperature_residual = solve_advection(AdvectionField::temperature());
-
 
               current_linearization_point.block(introspection.block_indices.temperature)
                 = solution.block(introspection.block_indices.temperature);

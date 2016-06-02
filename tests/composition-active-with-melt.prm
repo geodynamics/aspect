@@ -126,11 +126,10 @@ subsection Discretization
   set Composition polynomial degree        = 1
 end
 
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
   set Plugin name = density
   subsection Density
-    set Include Fluid Density = false
-    set Include Solid Density = true
+    set Density formulation = solid density
   end
 
 end

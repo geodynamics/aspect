@@ -44,7 +44,7 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
  set Plugin name = PressureBdry
 end
 

@@ -47,7 +47,7 @@ subsection Compositional fields
 end
 
 # prescribe the fluid pressure as in the analytical solution
-subsection Fluid Pressure Boundary Condition
+subsection Boundary fluid pressure model
   set Plugin name = PressureBdry
 end
 

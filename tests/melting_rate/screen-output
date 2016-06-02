@@ -65,7 +65,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 7 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 9.81079e+11, 2123.63, 1814.83, 3.6152e+10
+      Nonlinear residuals: 9.81079e+11, 2123.64, 1814.83, 3.6152e+10
       Total relative nonlinear residual: 0.0201335
 
 
@@ -74,8 +74,8 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 5 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 6.28663e+10, 156.256, 10.5419, 5.53389e+07
-      Total relative nonlinear residual: 3.0819e-05
+      Nonlinear residuals: 6.28663e+10, 156.257, 10.542, 5.53387e+07
+      Total relative nonlinear residual: 3.08189e-05
 
 
    Solving temperature system... 1 iterations.
@@ -83,13 +83,13 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 2 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 3.45812e+07, 0.167251, 0.00613062, 63396.8
-      Total relative nonlinear residual: 3.53066e-08
+      Nonlinear residuals: 3.45814e+07, 0.166928, 0.00613047, 63421.4
+      Total relative nonlinear residual: 3.53203e-08
 
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.793e-11/0.2002/1.258e+08 // -5.002e-13/0.2002/1.258e+08
+     Compositions min/max/mass: -3.804e-11/0.2002/1.258e+08 // -5.002e-13/0.2002/1.258e+08
 
 Termination requested by criterion: end time
 

@@ -68,15 +68,19 @@ namespace aspect
          * The return value can typically contain @p material_model_outputs.fluid_densities[q]
          * or @p material_model_outputs.densities[q], multiplied by the gravity vector.
          *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the fluid pressure gradients.
          * @param material_model_inputs The material property inputs.
          * @param material_model_inputs The material property outputs.
-         * @param output Result to be filled.
+         * @param fluid_pressure_gradient_outputs Result to be filled.
          */
         virtual
         void fluid_pressure_gradient (
+          const types::boundary_id boundary_indicator,
           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-          std::vector<Tensor<1,dim> > &output
+          std::vector<Tensor<1,dim> > &fluid_pressure_gradient_outputs
         ) const = 0;
 
         /**

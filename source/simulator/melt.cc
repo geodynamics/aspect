@@ -71,8 +71,8 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
-      FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
-      FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -91,14 +91,14 @@ namespace aspect
             S = - (1/eta + 1/viscosity_c)  M_p  for p_c
           */
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-          double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 0.0);
+          const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 0.0);
 
-          double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
-                        ?
-                        melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
-                        :
-                        0.0);
-          double viscosity_c = melt_outputs->compaction_viscosities[q];
+          const double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
+                              ?
+                              melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q]
+                              :
+                              0.0);
+          const double viscosity_c = melt_outputs->compaction_viscosities[q];
 
           const SymmetricTensor<4,dim> &stress_strain_director =
             scratch.material_model_outputs.stress_strain_directors[q];
@@ -150,7 +150,7 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
       const FEValuesExtractors::Scalar extractor_pressure = introspection.variable("fluid pressure").extractor_scalar();
-      FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -273,8 +273,8 @@ namespace aspect
     template <int dim>
     void
     MeltEquations<dim>::
-    local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/,
-                                                const unsigned int                                    /*face_no*/,
+    local_assemble_stokes_system_melt_boundary (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                const unsigned int                                    face_no,
                                                 const double                                          pressure_scaling,
                                                 internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                                 internal::Assembly::CopyData::StokesSystem<dim>      &data) const
@@ -282,12 +282,13 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
       const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-      FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
-      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(scratch.face_material_model_inputs,
+      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(cell->face(face_no)->boundary_id(),
+          scratch.face_material_model_inputs,
           scratch.face_material_model_outputs,
           grad_p_f);
 
@@ -298,7 +299,7 @@ namespace aspect
           const double density_f = melt_outputs->fluid_densities[q];
 
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-          const double porosity = std::max(scratch.face_material_model_inputs.composition[q][porosity_index],0.000);
+          const double porosity = std::max(scratch.face_material_model_inputs.composition[q][porosity_index],0.0);
 
           const double K_D = (porosity > this->get_melt_handler().melt_transport_threshold
                               ?
@@ -355,7 +356,7 @@ namespace aspect
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-      FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+      const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -370,11 +371,9 @@ namespace aspect
               scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
             }
 
-          double bulk_density = scratch.material_model_outputs.densities[q];
-
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-          const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
-          bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
+          const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.0);
+          const double bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
 
           const double density_c_P              =
             ((advection_field.is_temperature())
@@ -657,8 +656,8 @@ namespace aspect
     double
     MeltEquations<dim>::
     compute_melting_RHS(const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
-                        typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
-                        typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
+                        const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
+                        const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
                         const typename Simulator<dim>::AdvectionField     &advection_field,
                         const unsigned int q_point) const
     {
@@ -706,7 +705,7 @@ namespace aspect
         const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
         const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
-        FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+        const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
 
         for (unsigned int q=0; q<n_q_points; ++q)
           for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -1006,20 +1005,21 @@ namespace aspect
   declare_parameters (ParameterHandler &prm)
   {
     prm.enter_subsection ("Melt settings");
-
-    prm.declare_entry ("Melt transport threshold", "1e-3",
-                       Patterns::Double (),
-                       "The porosity limit for melt migration. For smaller porosities, the equations "
-                       "reduce to the Stokes equations and do neglect melt transport. Only used "
-                       "if Include melt transport is true. ");
-    prm.declare_entry ("Heat advection by melt", "false",
-                       Patterns::Bool (),
-                       "Whether to use a porosity weighted average of  the melt and solid velocity "
-                       "to advect heat in the temperature equation or not. If this is set to true, "
-                       "additional terms are assembled on the left-hand side of the temperature "
-                       "advection equation. Only used if Include melt transport is true."
-                       "If this is set to false, only the solid velocity is used (as in models "
-                       "without melt migration).");
+    {
+      prm.declare_entry ("Melt transport threshold", "1e-3",
+                         Patterns::Double (),
+                         "The porosity limit for melt migration. For smaller porosities, the equations "
+                         "reduce to the Stokes equations and do neglect melt transport. Only used "
+                         "if Include melt transport is true. ");
+      prm.declare_entry ("Heat advection by melt", "false",
+                         Patterns::Bool (),
+                         "Whether to use a porosity weighted average of the melt and solid velocity "
+                         "to advect heat in the temperature equation or not. If this is set to true, "
+                         "additional terms are assembled on the left-hand side of the temperature "
+                         "advection equation. Only used if Include melt transport is true. "
+                         "If this is set to false, only the solid velocity is used (as in models "
+                         "without melt migration).");
+    }
     prm.leave_subsection();
 
     FluidPressureBoundaryConditions::declare_parameters<dim> (prm);
@@ -1047,8 +1047,10 @@ namespace aspect
   parse_parameters (ParameterHandler &prm)
   {
     prm.enter_subsection ("Melt settings");
-    this->melt_transport_threshold = prm.get_double("Melt transport threshold");
-    this->heat_advection_by_melt = prm.get_bool("Heat advection by melt");
+    {
+      melt_transport_threshold = prm.get_double("Melt transport threshold");
+      heat_advection_by_melt = prm.get_bool("Heat advection by melt");
+    }
     prm.leave_subsection();
 
     fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
