@@ -33,7 +33,7 @@ namespace aspect
                                                               const std::vector<Tensor<1,dim> > &,
                                                               std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
           data.push_back(0.0);
       }
 
@@ -45,21 +45,36 @@ namespace aspect
                                                           const std::vector<Tensor<1,dim> > &gradients,
                                                           std::vector<double> &data) const
       {
-        Tensor<2,dim> old_strain;
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          old_strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = data[data_position + i];
+        SymmetricTensor<2,dim> old_strain;
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+          old_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = data[data_position + i];
 
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
 
+        // Note: We use the old_timestep, because this function is called as
+        // postprocessor right now, and get_timestep() is already updated for
+        // the next timestep.
         const double dt = this->get_old_timestep();
-        const Tensor<2,dim> deformation_rate (symmetrize(grad_u));
-        const Tensor<2,dim> rotation (dt * (grad_u - deformation_rate) + unit_symmetric_tensor<dim>());
-        const Tensor<2,dim> new_strain = rotation * old_strain * transpose(rotation) + dt * deformation_rate;
 
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data[data_position + i] = new_strain[Tensor<2,dim>::unrolled_to_component_indices(i)];
+        // Here we update the integrated strain by rotating the already existing
+        // strain with the rotational (asymmetric) part of the velocity gradient
+        // tensor, and afterwards add the additionally experienced deformation.
+        const SymmetricTensor<2,dim> deformation_rate (symmetrize(grad_u));
+
+        // rotation tensor =
+        //     asymmetric part of the displacement in this time step
+        //                (= time step * (velocity gradient tensor - symmetric_part))
+        //   + unit tensor
+        const Tensor<2,dim> rotation (dt * (grad_u - deformation_rate) + unit_symmetric_tensor<dim>());
+
+        // the new strain is the rotated old strain plus the
+        // strain of the current time step
+        const SymmetricTensor<2,dim> new_strain = symmetrize(rotation * Tensor<2,dim>(old_strain) * transpose(rotation)) + dt * deformation_rate;
+
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+          data[data_position + i] = new_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
       }
 
       template <int dim>
@@ -73,7 +88,8 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int> >
       IntegratedStrain<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("integrated strain",Tensor<2,dim>::n_independent_components));
+        const unsigned int n_components = SymmetricTensor<2,dim>::n_independent_components;
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("integrated strain",n_components));
         return property_information;
       }
     }
@@ -89,12 +105,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(IntegratedStrain,
                                         "integrated strain",
-                                        "Implementation of a plugin in which the tracer "
-                                        "property is defined as the integrated strain this "
-                                        "particle has experienced. Note that the current "
-                                        "implementation assumes that in each timestep only "
-                                        "an infinite amount of strain is accumulated."
-                                        "\n\n")
+                                        "A plugin in which the tracer property tensor is "
+                                        "defined as the integrated strain this "
+                                        "particle has experienced.")
     }
   }
 }

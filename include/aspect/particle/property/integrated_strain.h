@@ -33,6 +33,9 @@ namespace aspect
       /**
        * A class that integrates the finite strain that a particle has
        * experienced.
+       * The implementation of this property is equivalent to the implementation
+       * for compositional fields that is described in the cookbook
+       * finite_strain <code>cookbooks/finite_strain/finite_strain.cc</code>.
        *
        * @ingroup ParticleProperties
        */
@@ -96,7 +99,7 @@ namespace aspect
 
           /**
            * This implementation tells the particle manager that
-           * we need to update tracer properties over time.
+           * we need to update tracer properties every time step.
            */
           UpdateTimeFlags
           need_update () const;
