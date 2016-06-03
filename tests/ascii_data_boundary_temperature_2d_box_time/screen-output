@@ -9,7 +9,7 @@ Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 0:  t=0 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+4 iterations.
 
@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
 
 *** Timestep 1:  t=82500 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 

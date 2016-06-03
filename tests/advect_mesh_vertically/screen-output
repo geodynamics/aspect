@@ -5,7 +5,7 @@ Number of degrees of freedom: 2,977 (1,394+189+697+697)
 Number of free surface degrees of freedom: 378
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,962 (918+126+459+459)
 Number of free surface degrees of freedom: 252
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 2,567 (1,202+163+601+601)
 Number of free surface degrees of freedom: 326
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29+0 iterations.
@@ -39,7 +39,7 @@ Number of free surface degrees of freedom: 326
 
 *** Timestep 1:  t=316.49 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -50,7 +50,7 @@ Number of free surface degrees of freedom: 326
 
 *** Timestep 2:  t=658.949 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
@@ -61,7 +61,7 @@ Number of free surface degrees of freedom: 326
 
 *** Timestep 3:  t=1012.67 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
@@ -72,7 +72,7 @@ Number of free surface degrees of freedom: 326
 
 *** Timestep 4:  t=1382.88 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -83,7 +83,7 @@ Number of free surface degrees of freedom: 326
 
 *** Timestep 5:  t=1772.03 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
@@ -98,7 +98,7 @@ Number of degrees of freedom: 3,587 (1,682+223+841+841)
 Number of free surface degrees of freedom: 446
 *** Timestep 6:  t=2178.46 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -109,7 +109,7 @@ Number of free surface degrees of freedom: 446
 
 *** Timestep 7:  t=2595.91 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
@@ -120,7 +120,7 @@ Number of free surface degrees of freedom: 446
 
 *** Timestep 8:  t=3036.53 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
@@ -131,7 +131,7 @@ Number of free surface degrees of freedom: 446
 
 *** Timestep 9:  t=3501.64 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
@@ -142,7 +142,7 @@ Number of free surface degrees of freedom: 446
 
 *** Timestep 10:  t=3992.46 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
@@ -157,7 +157,7 @@ Number of degrees of freedom: 4,420 (2,074+272+1,037+1,037)
 Number of free surface degrees of freedom: 544
 *** Timestep 11:  t=4504.34 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+16 iterations.
@@ -168,7 +168,7 @@ Number of free surface degrees of freedom: 544
 
 *** Timestep 12:  t=5040.64 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+21 iterations.
@@ -179,7 +179,7 @@ Number of free surface degrees of freedom: 544
 
 *** Timestep 13:  t=5602.42 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+11 iterations.
@@ -190,7 +190,7 @@ Number of free surface degrees of freedom: 544
 
 *** Timestep 14:  t=6189.59 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+13 iterations.
@@ -201,7 +201,7 @@ Number of free surface degrees of freedom: 544
 
 *** Timestep 15:  t=6801.98 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+9 iterations.
@@ -216,7 +216,7 @@ Number of degrees of freedom: 4,556 (2,138+280+1,069+1,069)
 Number of free surface degrees of freedom: 560
 *** Timestep 16:  t=7439.04 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+27 iterations.
@@ -227,7 +227,7 @@ Number of free surface degrees of freedom: 560
 
 *** Timestep 17:  t=8099.89 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+17 iterations.
@@ -238,7 +238,7 @@ Number of free surface degrees of freedom: 560
 
 *** Timestep 18:  t=8782.96 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+11 iterations.
@@ -249,7 +249,7 @@ Number of free surface degrees of freedom: 560
 
 *** Timestep 19:  t=9487.36 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+8 iterations.
@@ -260,7 +260,7 @@ Number of free surface degrees of freedom: 560
 
 *** Timestep 20:  t=10212.1 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+14 iterations.

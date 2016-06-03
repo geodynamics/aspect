@@ -5,7 +5,7 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
    Residual after nonlinear iteration 1: 1
@@ -24,7 +24,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-   Residual after nonlinear iteration 5: 2.11507e-06
+   Residual after nonlinear iteration 5: 2.11502e-06
 
    Postprocessing:
 
@@ -48,7 +48,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-   Residual after nonlinear iteration 1: 2.20615e-07
+   Residual after nonlinear iteration 1: 2.20604e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.003202 K, 0.003462 K
@@ -58,7 +58,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-   Residual after nonlinear iteration 1: 2.09917e-07
+   Residual after nonlinear iteration 1: 2.09902e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.006333 K, 0.006918 K
@@ -68,7 +68,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-   Residual after nonlinear iteration 1: 2.12537e-07
+   Residual after nonlinear iteration 1: 2.12359e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.009376 K, 0.01037 K
@@ -78,7 +78,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
-   Residual after nonlinear iteration 1: 1.12544e-07
+   Residual after nonlinear iteration 1: 1.12424e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.01093 K, 0.01215 K

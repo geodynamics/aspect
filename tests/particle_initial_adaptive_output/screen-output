@@ -3,7 +3,7 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
@@ -17,7 +17,7 @@ Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 490 (228+34+114+114)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
@@ -31,7 +31,7 @@ Number of active cells: 31 (on 4 levels)
 Number of degrees of freedom: 673 (314+45+157+157)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 25+0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 673 (314+45+157+157)
      Number of advected particles: 9
 
 *** Timestep 1:  t=70 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Solving Stokes system... 24+0 iterations.
 

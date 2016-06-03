@@ -1678,8 +1678,6 @@ namespace aspect
             free_surface->execute ();
 
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner(AdvectionField::temperature(),
-                                         T_preconditioner);
           solve_advection(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
@@ -1688,8 +1686,6 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner(AdvectionField::composition(c),
-                                             C_preconditioner);
               solve_advection(AdvectionField::composition(c));
             }
 
@@ -1769,8 +1765,6 @@ namespace aspect
           do
             {
               assemble_advection_system(AdvectionField::temperature());
-              build_advection_preconditioner(AdvectionField::temperature(),
-                                             T_preconditioner);
 
               if (iteration == 0)
                 initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
@@ -1785,8 +1779,6 @@ namespace aspect
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
                   assemble_advection_system (AdvectionField::composition(c));
-                  build_advection_preconditioner(AdvectionField::composition(c),
-                                                 C_preconditioner);
 
                   if (iteration == 0)
                     initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
@@ -1862,10 +1854,8 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
-          // solve the temperature system once...
+          // solve the temperature and composition systems once...
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner (AdvectionField::temperature (),
-                                          T_preconditioner);
           solve_advection(AdvectionField::temperature());
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
@@ -1873,8 +1863,6 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner (AdvectionField::composition (c),
-                                              C_preconditioner);
               solve_advection(AdvectionField::composition(c));
             }
 
@@ -1956,8 +1944,6 @@ namespace aspect
           solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner(AdvectionField::temperature(),
-                                         T_preconditioner);
           solve_advection(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
@@ -1966,8 +1952,6 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner(AdvectionField::composition(c),
-                                             C_preconditioner);
               solve_advection(AdvectionField::composition(c));
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
