@@ -41,7 +41,7 @@ Exception on processing:
 
 --------------------------------------------------------
 An error occurred in file <solver.cc> in function
-    double aspect::Simulator<dim>::solve_advection(const aspect::Simulator<dim>::AdvectionField&) [with int dim = 2]
+(line in output replaced by default.sh script)
 The violated condition was: 
     system_matrix.block(block_idx, block_idx).linfty_norm() > std::numeric_limits<double>::min()
 The name and call sequence of the exception was:

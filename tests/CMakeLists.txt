@@ -214,7 +214,7 @@ FOREACH(_test ${_tests})
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
         SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default.sh")
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default")
     ENDIF()
 
     # If a .prm contains the keyword "EXPECT FAILURE", make sure aspect fails
