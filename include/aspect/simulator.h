@@ -804,6 +804,15 @@ namespace aspect
        */
       void denormalize_pressure(LinearAlgebra::BlockVector &vector);
 
+      /**
+       * Apply the bound preserving limiter to the discontinuous galerkin solutions:
+       * i.e., given two fixed upper and lower bound [min, max], after applying the limiter,
+       * the discontinuous galerkin solution will stay in the predescribed bounds.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
       /**
        * Interpolate the given function onto the velocity FE space and write

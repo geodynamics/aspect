@@ -611,6 +611,7 @@ namespace aspect
                          "as opposed to continuous. This then requires the assembly of face terms "
                          "between cells, and weak imposition of boundary terms for the composition "
                          "field via the discontinuous Galerkin method.");
+
       prm.enter_subsection ("Stabilization parameters");
       {
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
@@ -657,6 +658,46 @@ namespace aspect
                            "is largely empirically decided -- it must be large enough to ensure "
                            "the bilinear form is coercive, but not so large as to penalize "
                            "discontinuity at all costs.");
+        prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after computing "
+                           "the discontinous temperature solution. Currently we apply this only to the "
+                           "temperature solution if the 'Global temperature maximum' and "
+                           "'Global temperature minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "'Global temperature maximum' and 'Global temperature minimum'.");
+        prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after having "
+                           "the discontinous composition solution. Currently we apply this only to the "
+                           "compositional solution if the 'Global composition maximum' and "
+                           "'Global composition minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "Global composition maximum' and 'Global composition minimum'.");
+        prm.declare_entry ("Global temperature maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The maximum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global temperature minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The minimum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global composition maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The maximum global composition values that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition maximum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
+        prm.declare_entry ("Global composition minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The minimum global composition value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition minimum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
       }
       prm.leave_subsection ();
     }
@@ -937,6 +978,22 @@ namespace aspect
         stabilization_c_R                   = prm.get_double ("cR");
         stabilization_beta                  = prm.get_double ("beta");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
+        use_limiter_for_discontinuous_temperature_solution
+          = prm.get_bool("Use limiter for discontinuous temperature solution");
+        use_limiter_for_discontinuous_composition_solution
+          = prm.get_bool("Use limiter for discontinuous composition solution");
+        if (use_limiter_for_discontinuous_temperature_solution
+            || use_limiter_for_discontinuous_composition_solution)
+          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
+                       ExcMessage ("The bound preserving limiter currently is "
+                                   "only implemented for the scheme using IMPES nonlinear solver. "
+                                   "Please deactivate the limiter or change the solver scheme."));
+        global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
+        global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
+        global_composition_max_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition maximum")));
+        global_composition_min_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition minimum")));
       }
       prm.leave_subsection ();
 
@@ -995,6 +1052,16 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
+      // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
+      if (use_limiter_for_discontinuous_temperature_solution
+          || use_limiter_for_discontinuous_composition_solution)
+        AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
+                      && global_composition_min_preset.size() == (n_compositional_fields)),
+                     ExcMessage ("The number of multiple 'Global composition maximum' values "
+                                 "and the number of multiple 'Global composition minimum' values "
+                                 "have to be the same as the total number of compositional fields"));
     }
     prm.leave_subsection ();
 

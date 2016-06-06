@@ -1680,13 +1680,20 @@ namespace aspect
           assemble_advection_system (AdvectionField::temperature());
           solve_advection(AdvectionField::temperature());
 
+          if (parameters.use_discontinuous_temperature_discretization
+              && parameters.use_limiter_for_discontinuous_temperature_solution)
+            apply_limiter_to_dg_solutions(AdvectionField::temperature());
+
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
               solve_advection(AdvectionField::composition(c));
+              if (parameters.use_discontinuous_composition_discretization
+                  && parameters.use_limiter_for_discontinuous_composition_solution)
+                apply_limiter_to_dg_solutions(AdvectionField::composition(c));
             }
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
