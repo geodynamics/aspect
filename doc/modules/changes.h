@@ -4,6 +4,15 @@
  * <p> This is the list of changes made after the release of Aspect version
  * 1.4.0. All entries are signed with the names of the author. </p>
  *
+ * <li> New: This is a new optional feature for the discontinuous temperature
+ * and compositional solutions. After solving the advection equation, 
+ * a "bound preserving limiter" working as a correction procedure is applied
+ * to the discontinuous advection fields. The limiter will stabilize the 
+ * discontinuous advection solutions and keep it in the range of user defined 
+ * global maximum/minimum values. 
+ * <br>
+ * (Ying He, 2016/06/02)
+ *
  * <li> New: Tests can now be marked that they are expected to fail by the
  * EXPECT FAILURE keyword in the .prm.
  * <br>

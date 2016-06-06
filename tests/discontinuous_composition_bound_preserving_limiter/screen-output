@@ -1,0 +1,119 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+1 iterations.
+
+Number of active cells: 157 (on 6 levels)
+Number of degrees of freedom: 5,244 (1,482+195+741+1,413+1,413)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00884 m/year, 0.0198 m/year
+     Compositions min/max/mass: 0/1/9.854e+09 // 0/2/4.241e+10
+
+Number of active cells: 178 (on 6 levels)
+Number of degrees of freedom: 5,936 (1,676+218+838+1,602+1,602)
+
+*** Timestep 1:  t=196886 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0089 m/year, 0.02 m/year
+     Compositions min/max/mass: -0.0003358/1.011/9.854e+09 // -0.0001204/2/4.241e+10
+
+Number of active cells: 187 (on 6 levels)
+Number of degrees of freedom: 6,280 (1,788+232+894+1,683+1,683)
+
+*** Timestep 2:  t=392781 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00895 m/year, 0.0201 m/year
+     Compositions min/max/mass: -0.02221/1.01/9.855e+09 // -0.01115/2/4.241e+10
+
+Number of active cells: 208 (on 6 levels)
+Number of degrees of freedom: 6,944 (1,964+254+982+1,872+1,872)
+
+*** Timestep 3:  t=587566 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00901 m/year, 0.0203 m/year
+     Compositions min/max/mass: -0.02555/1.003/9.857e+09 // -0.02933/2.006/4.241e+10
+
+Number of active cells: 211 (on 6 levels)
+Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+
+*** Timestep 4:  t=780404 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00907 m/year, 0.0205 m/year
+     Compositions min/max/mass: -0.02757/1.005/9.858e+09 // -0.02003/2.005/4.241e+10
+
+Number of active cells: 211 (on 6 levels)
+Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+
+*** Timestep 5:  t=971454 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00912 m/year, 0.0206 m/year
+     Compositions min/max/mass: -0.02749/1.003/9.859e+09 // -0.02346/2.022/4.241e+10
+
+Number of active cells: 211 (on 6 levels)
+Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+
+*** Timestep 6:  t=1e+06 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00913 m/year, 0.0207 m/year
+     Compositions min/max/mass: -0.0277/1.003/9.859e+09 // -0.02878/2.017/4.241e+10
+
+Number of active cells: 211 (on 6 levels)
+Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
