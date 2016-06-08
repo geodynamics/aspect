@@ -153,7 +153,7 @@ namespace aspect
           local_values.push_back (local_boundary_fluxes[*p]);
 
         // then collect contributions from all processors
-        std::vector<double> global_values;
+        std::vector<double> global_values (local_values.size());
         Utilities::MPI::sum (local_values, this->get_mpi_communicator(), global_values);
 
         // and now take them apart into the global map again
