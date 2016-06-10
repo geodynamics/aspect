@@ -119,9 +119,10 @@ namespace aspect
                 {
                   maximum_horizontal_compressive_stress = orthogonal_directions[0] *
                                                           (orthogonal_directions[0] *
-                                                           (compressive_stress +
-                                                            in.pressure[q] * unit_symmetric_tensor<dim>()) *
-                                                           orthogonal_directions[0]);
+                                                           ((compressive_stress
+                                                             -
+                                                             in.pressure[q] * unit_symmetric_tensor<dim>()) *
+                                                            orthogonal_directions[0]));
                   break;
                 }
 
@@ -130,14 +131,14 @@ namespace aspect
                 case 3:
                 {
                   const double a = orthogonal_directions[0] *
-                                   compressive_stress *
-                                   orthogonal_directions[0];
+                                   (compressive_stress *
+                                    orthogonal_directions[0]);
                   const double b = orthogonal_directions[1] *
-                                   compressive_stress *
-                                   orthogonal_directions[1];
+                                   (compressive_stress *
+                                    orthogonal_directions[1]);
                   const double c = orthogonal_directions[0] *
-                                   compressive_stress *
-                                   orthogonal_directions[1];
+                                   (compressive_stress *
+                                    orthogonal_directions[1]);
 
                   // compute the two stationary points of f(alpha)
                   const double alpha_1 = 1./2 * std::atan2 (c, a-b);
@@ -172,16 +173,16 @@ namespace aspect
                   // the magnitude is computed as discussed in the
                   // description of the plugin below
                   const double maximum_horizontal_compressive_stress_magnitude
-                    = (n * (compressive_stress
-                            -
-                            in.pressure[q] * unit_symmetric_tensor<dim>()) * n);
+                    = (n * ((compressive_stress
+                             -
+                             in.pressure[q] * unit_symmetric_tensor<dim>()) * n));
                   const Tensor<1,dim> n_perp = std::sin(alpha) * orthogonal_directions[0] -
                                                std::cos(alpha) * orthogonal_directions[1];
 
                   const double minimum_horizontal_compressive_stress_magnitude
-                    = (n_perp * (compressive_stress
-                                 -
-                                 in.pressure[q] * unit_symmetric_tensor<dim>()) * n_perp);
+                    = (n_perp * ((compressive_stress
+                                  -
+                                  in.pressure[q] * unit_symmetric_tensor<dim>()) * n_perp));
 
                   maximum_horizontal_compressive_stress
                     = n * (maximum_horizontal_compressive_stress_magnitude -
