@@ -49,6 +49,10 @@ namespace aspect
         std::vector<std::string> solution_names;
 
         for (unsigned int i=0; i<property_names.size(); ++i)
+          if (property_names[i] == "fluid density gradient")
+            for (unsigned int i=0; i<dim; ++i)
+              solution_names.push_back ("fluid_density_gradient");
+          else
             {
               solution_names.push_back(property_names[i]);
               std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
@@ -99,8 +103,7 @@ namespace aspect
 
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (uh[0].size() == this->introspection().n_components,   ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
@@ -198,7 +201,7 @@ namespace aspect
         prm.leave_subsection();
       }
 
-}
+    }
   }
 }
 
