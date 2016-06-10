@@ -37,8 +37,8 @@ subsection Boundary temperature model
 end
 
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = strain1, strain2, strain3, strain4
+  set Number of fields = 3
+  set Names of fields = strain_xx, strain_yy, strain_xy
 end
 
 subsection Boundary composition model
@@ -84,7 +84,7 @@ subsection Initial conditions
     set Radius                    = 350000
 
     subsection Function
-      set Function expression       = 0;0;0;0
+      set Function expression       = 0;0;0
     end
   end
 
@@ -97,7 +97,7 @@ subsection Compositional initial conditions
   set Model name = function
   subsection Function
     set Function constants  = pi=3.1415926,a = 0.0, b = 2500000, c = 100000, d=1450000
-    set Function expression = 0;0;0;0
+    set Function expression = 0;0;0
     set Variable names      = x,y
   end
 end
