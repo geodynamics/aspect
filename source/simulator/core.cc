@@ -1423,10 +1423,14 @@ namespace aspect
                                          introspection.index_sets.system_relevant_set,
                                          introspection.index_sets.system_relevant_partitioning);
 
-      if (parameters.use_direct_stokes_solver)
-        introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
-      else
-        introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+      if (!parameters.include_melt_transport)
+        {
+          // locally_owned_melt_pressure_dofs is only used if not using melt
+          if (parameters.use_direct_stokes_solver)
+            introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          else
+            introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+        }
 
       if (parameters.include_melt_transport)
         {

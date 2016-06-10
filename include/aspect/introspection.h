@@ -268,19 +268,21 @@ namespace aspect
 
         /**
          * Pressure unknowns that are locally owned. This IndexSet is needed
-         * if velocity and pressure end up in the same block. If melt transport
-         * is enabled, this will contain both pressures.
+         * if velocity and pressure end up in the same block and is used for
+         * pressure scaling and in make_pressure_rhs_compatible().  If melt
+         * transport is enabled, this field is unused and not filled.
          */
         IndexSet locally_owned_pressure_dofs;
 
         /**
-         * Fluid and compaction pressure unknowns that are locally owned. Only valid if
-         * melt transport is enabled.
+         * Fluid and compaction pressure unknowns that are locally owned. Only
+         * valid if melt transport is enabled.
          */
         IndexSet locally_owned_melt_pressure_dofs;
 
         /**
-         * Fluid pressure unknowns that are locally owned. Only valid if melt transport is enabled.
+         * Fluid pressure unknowns that are locally owned. Only valid if melt
+         * transport is enabled.
          */
         IndexSet locally_owned_fluid_pressure_dofs;
       };
