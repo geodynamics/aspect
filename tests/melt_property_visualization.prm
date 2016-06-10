@@ -1,21 +1,28 @@
 # A testcase that demonstrates melt transport with a compactible matrix,
-# but incompressible matrix and fluid. It solves the equation on a box
-# with zero velocity boundary conditions at the bottom boundary, 
-# tangential velocities at the sides and an open boundary at the top.
-#
-# We then choose a Darcy coefficient (= permeability divided by fluid
-# viscosity) of 0.5+y^2/2 and otherwise constant material parameters 
-# so that the gradient of the fluid pressure vanishes. The velocity
-# should then be y^2/2, the compaction pressure -y and the fluid
-# pressure should be constant.
-#
+# and compressible matrix and fluid. Boundary conditions for the 
+# velocity and fluid pressure as well as porosity initial conditions 
+# are applied as described by the the derived analytical solution,
+# which can be found in the manuscript on compressible melt transport 
+# in Aspect.
 # We compute these material properties in a new material model, which
-# is implemented in the .cc file.     
+# is implemented in the .cc file, together with a postprocessor to calculate 
+# the error and a new pressure boundary cinsition.     
 # 
+subsection Discretization
+  # The polynomial degree to use for the composition variable(s). Units:
+  # None.
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+
+  # The polynomial degree to use for the temperature variable. Units: None.
+  set Temperature polynomial degree           = 2
+end
 
 set Adiabatic surface temperature          = 1623               # default: 0
-set CFL number                             = 1
+set CFL number                             = 1.0
 set Composition solver tolerance           = 1e-12
+set Nonlinear solver scheme                = iterated IMPES
+set Max nonlinear iterations               = 50
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -37,9 +44,8 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-# prescribe the fluid pressure as in the analytical solution
 subsection Boundary fluid pressure model
-  set Plugin name = PressureBdry
+ set Plugin name = PressureBdry
 end
 
 subsection Boundary temperature model
@@ -72,20 +78,17 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
-
-
-  subsection Vertical
-    # Magnitude of the gravity vector in $m/s^2$. The direction is always
-    # radially outward from the center of the earth.
-    set Magnitude = 1.0 # default: 30
+  set Model name = function
+  subsection Function
+    set Function expression = 0;-exp(y)
+    set Variable names      = x,y
   end
 
 end
 
 subsection Boundary velocity model
   subsection Function
-    set Function expression = 0;0.5*y*y
+    set Function expression = 0.1*exp(y);-0.3/4.0*exp(y)
     set Variable names      = x,y
   end
 end  
@@ -94,7 +97,7 @@ end
 subsection Initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function expression = 1
+    set Function expression = 0
     set Variable names      = x,y
   end
 end
@@ -102,7 +105,7 @@ end
 subsection Compositional initial conditions
   set Model name = function # default: 
   subsection Function
-    set Function expression = 0.5
+    set Function expression = 1.0 - 0.3 * exp(y)
     set Variable names      = x,y
   end
 end
@@ -110,7 +113,7 @@ end
 
 subsection Material model
 
-  set Model name = MeltMaterial2 # default: 
+  set Model name = compressible melt material
   
 
 end
@@ -121,7 +124,7 @@ subsection Mesh refinement
   set Refinement fraction                      = 0.0
 
   set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial global refinement                = 6                    # default: 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -130,9 +133,9 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 2,3        # default: 
   set Fixed composition boundary indicators   = 0,1,2,3   
-  set Prescribed velocity boundary indicators = 2:function 
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
 
-  set Tangential velocity boundary indicators = 0,1
+  set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       =           # default: 
 
   set Include melt transport                  = true
@@ -141,8 +144,16 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics
+  set List of postprocessors = visualization
 
+  subsection Visualization
+    set List of output variables      = melt material properties
+    set Output format                 = gnuplot
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density gradient
+    end
+  end
 end
 
 

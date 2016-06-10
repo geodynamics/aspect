@@ -146,32 +146,6 @@ subsection Postprocess
 
   set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, compressible melt error
 
-  subsection Visualization
-
-    set List of output variables      = melt density, permeability, melt viscosity, compaction viscosity, gravity, material properties, nonadiabatic pressure
-#    set List of output variables      = gravity, material properties, nonadiabatic pressure
-
-    subsection Material properties
-    set List of material properties   = density, viscosity, thermal expansivity, reaction terms, compressibility
-    end
-
-    # VTU file output supports grouping files from several CPUs into one file
-    # using MPI I/O when writing on a parallel filesystem. Select 0 for no
-    # grouping. This will disable parallel file output and instead write one
-    # file per processor in a background thread. A value of 1 will generate
-    # one big file containing the whole solution.
-    set Number of grouped files       = 0
-
-    # The file format to be used for graphical output.
-    set Output format                 = vtu
-    set Interpolate output = true
-
-    # The time interval between each generation of graphical output files. A
-    # value of zero indicates that output should be generated in each time
-    # step. Units: years if the 'Use years in output instead of seconds'
-    # parameter is set; seconds otherwise.
-    set Time between graphical output = 0                                                                                # default: 1e8
-  end
 
 end
 

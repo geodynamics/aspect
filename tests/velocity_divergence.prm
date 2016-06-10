@@ -154,7 +154,6 @@ subsection Postprocess
 
   subsection Visualization
 
-#    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, melt density, permeability, melt viscosity, compaction viscosity, melt fraction, artificial viscosity composition
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate
 
     subsection Material properties

@@ -26,6 +26,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
 
    Postprocessing:
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
+     Writing graphical output:  output-melting_rate/solution-00000
 
 *** Timestep 1:  t=117.058 years
    Solving temperature system... 6 iterations.
@@ -58,6 +59,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
 
    Postprocessing:
      Compositions min/max/mass: -1.948e-11/0.2001/1.257e+08 // -1.463e-13/0.2001/1.257e+08
+     Writing graphical output:  output-melting_rate/solution-00001
 
 *** Timestep 2:  t=200 years
    Solving temperature system... 5 iterations.
@@ -90,6 +92,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
 
    Postprocessing:
      Compositions min/max/mass: -3.804e-11/0.2002/1.258e+08 // -5.002e-13/0.2002/1.258e+08
+     Writing graphical output:  output-melting_rate/solution-00002
 
 Termination requested by criterion: end time
 

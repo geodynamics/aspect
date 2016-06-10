@@ -35,16 +35,59 @@ namespace aspect
     {
 
       template <int dim>
-      MeltDensity<dim>::
-      MeltDensity ()
+      MeltMaterialProperties<dim>::
+      MeltMaterialProperties ()
         :
-        DataPostprocessorScalar<dim> ("melt_density",
-                                      update_values | update_q_points)
+        DataPostprocessor<dim> ()
       {}
 
       template <int dim>
+      std::vector<std::string>
+      MeltMaterialProperties<dim>::
+      get_names () const
+      {
+        std::vector<std::string> solution_names;
+
+        for (unsigned int i=0; i<property_names.size(); ++i)
+            {
+              solution_names.push_back(property_names[i]);
+              std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
+            }
+
+        return solution_names;
+      }
+
+      template <int dim>
+      std::vector<DataComponentInterpretation::DataComponentInterpretation>
+      MeltMaterialProperties<dim>::
+      get_data_component_interpretation () const
+      {
+        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
+        for (unsigned int i=0; i<property_names.size(); ++i)
+          {
+            if (property_names[i] == "fluid density gradient")
+              {
+                for (unsigned int c=0; c<dim; ++c)
+                  interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+              }
+            else
+              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+          }
+
+        return interpretation;
+      }
+
+      template <int dim>
+      UpdateFlags
+      MeltMaterialProperties<dim>::
+      get_needed_update_flags () const
+      {
+        return update_gradients | update_values  | update_q_points;
+      }
+
+      template <int dim>
       void
-      MeltDensity<dim>::
+      MeltMaterialProperties<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
                                          const std::vector<std::vector<Tensor<1,dim> > > &/*duh*/,
                                          const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
@@ -76,167 +119,86 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt density."));
+        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
+
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = melt_outputs->fluid_densities[q];
+          {
+            unsigned output_index = 0;
+            for (unsigned int i=0; i<property_names.size(); ++i, ++output_index)
+              {
+                if (property_names[i] == "compaction viscosity")
+                  computed_quantities[q][output_index] = melt_outputs->compaction_viscosities[q];
+                else if (property_names[i] == "fluid viscosity")
+                  computed_quantities[q][output_index] = melt_outputs->fluid_viscosities[q];
+                else if (property_names[i] == "permeability")
+                  computed_quantities[q][output_index] = melt_outputs->permeabilities[q];
+                else if (property_names[i] == "fluid density")
+                  computed_quantities[q][output_index] = melt_outputs->fluid_densities[q];
+                else if (property_names[i] == "fluid density gradient")
+                  {
+                    for (unsigned int k=0; k<dim; ++k, ++output_index)
+                      {
+                        computed_quantities[q][output_index] = melt_outputs->fluid_density_gradients[q][k];
+                      }
+                    --output_index;
+                  }
+                else
+                  AssertThrow(false, ExcNotImplemented());
+              }
+          }
       }
-
-      template <int dim>
-      CompactionViscosity<dim>::
-      CompactionViscosity ()
-        :
-        DataPostprocessorScalar<dim> ("compaction_viscosity",
-                                      update_values | update_gradients | update_q_points)
-      {}
 
       template <int dim>
       void
-      CompactionViscosity<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                         const std::vector<Point<dim> >                  &/*normals*/,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      MeltMaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
       {
-        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
-
-        const unsigned int n_quadrature_points = uh.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-        Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
-
-        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
-        create_melt_material_outputs(out);
-
-        in.position = evaluation_points;
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
           {
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
-            in.strain_rate[q] = symmetrize (grad_u);
+            prm.enter_subsection("Melt material properties");
+            {
+              const std::string pattern_of_names
+                = "compaction viscosity|fluid viscosity|permeability|"
+                  "fluid density|fluid density gradient";
 
-            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+              prm.declare_entry("List of properties",
+                                "compaction viscosity,permeability",
+                                Patterns::MultipleSelection(pattern_of_names),
+                                "A comma separated list of melt properties that should be "
+                                "written whenever writing graphical output. "
+                                "The following material properties are available:\n\n"
+                                +
+                                pattern_of_names);
+            }
+            prm.leave_subsection();
           }
-
-        this->get_material_model().evaluate(in, out);
-        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the compaction viscosity."));
-
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = melt_outputs->compaction_viscosities[q];
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
-
-      template <int dim>
-      Permeability<dim>::
-      Permeability ()
-        :
-        DataPostprocessorScalar<dim> ("permeability",
-                                      update_values | update_q_points)
-      {}
 
       template <int dim>
       void
-      Permeability<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &/*duh*/,
-                                         const std::vector<std::vector<Tensor<2,dim> > > &/*dduh*/,
-                                         const std::vector<Point<dim> >                  &/*normals*/,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
+      MeltMaterialProperties<dim>::parse_parameters (ParameterHandler &prm)
       {
-        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
-
-        const unsigned int n_quadrature_points = uh.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-
-        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
-        create_melt_material_outputs(out);
-
-        in.position = evaluation_points;
-        in.strain_rate.resize(0); // we do not need the viscosity
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Visualization");
           {
-            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+            prm.enter_subsection("Melt material properties");
+            {
+              property_names = Utilities::split_string_list(prm.get ("List of properties"));
+            }
+            prm.leave_subsection();
           }
-
-        this->get_material_model().evaluate(in, out);
-        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the permeabilities."));
-
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = melt_outputs->permeabilities[q];
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
       }
 
-      template <int dim>
-      MeltViscosity<dim>::
-      MeltViscosity ()
-        :
-        DataPostprocessorScalar<dim> ("melt_viscosity",
-                                      update_values | update_gradients | update_q_points)
-      {}
-
-      template <int dim>
-      void
-      MeltViscosity<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                                         const std::vector<std::vector<Tensor<2,dim> > > & /*dduh*/,
-                                         const std::vector<Point<dim> >                  &/*normals*/,
-                                         const std::vector<Point<dim> >                  &evaluation_points,
-                                         std::vector<Vector<double> >                    &computed_quantities) const
-      {
-        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
-
-        const unsigned int n_quadrature_points = uh.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-        Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
-
-        MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
-        create_melt_material_outputs(out);
-
-        in.position = evaluation_points;
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          {
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
-            in.strain_rate[q] = symmetrize (grad_u);
-
-            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
-          }
-
-        this->get_material_model().evaluate(in, out);
-        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt viscosity."));
-
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = melt_outputs->fluid_viscosities[q];
-      }
-
-    }
+}
   }
 }
 
@@ -248,22 +210,11 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltDensity,
-                                                  "melt density",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltMaterialProperties,
+                                                  "melt material properties",
                                                   "A visualization output object that generates output "
-                                                  "for melt density.")
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(CompactionViscosity,
-                                                  "compaction viscosity",
-                                                  "A visualization output object that generates output "
-                                                  "for compaction viscosity.")
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Permeability,
-                                                  "permeability",
-                                                  "A visualization output object that generates output "
-                                                  "for permeability.")
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(MeltViscosity,
-                                                  "melt viscosity",
-                                                  "A visualization output object that generates output "
-                                                  "for melt viscosity.")
+                                                  "for melt related properties of the material model.")
+
     }
   }
 }
