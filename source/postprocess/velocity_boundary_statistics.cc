@@ -129,9 +129,9 @@ namespace aspect
             local_min_values.push_back (local_min_vel[*p]);
           }
         // then collect contributions from all processors
-        std::vector<double> global_max_values;
+        std::vector<double> global_max_values (local_max_values.size());
         Utilities::MPI::max (local_max_values, this->get_mpi_communicator(), global_max_values);
-        std::vector<double> global_min_values;
+        std::vector<double> global_min_values (local_min_values.size());
         Utilities::MPI::min (local_min_values, this->get_mpi_communicator(), global_min_values);
 
         // and now take them apart into the global map again
