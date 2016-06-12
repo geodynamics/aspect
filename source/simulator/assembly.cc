@@ -1128,6 +1128,21 @@ namespace aspect
                :
                introspection.extractors.compositional_fields[advection_field.compositional_variable]
               );
+/*
+          MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, this->n_compositional_fields());
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+              approximate_inputs.temperature[q] = this->get_adiabatic_conditions().temperature(approximate_inputs.position[q]);
+              approximate_inputs.pressure[q] = this->get_adiabatic_conditions().pressure(approximate_inputs.position[q]);
+            }
+
+          std::vector<double> approximate_densities (n_q_points);
+          if (parameters.formulation_mass == Parameters<dim>::FormulationType::full)
+            approximate_densities = scratch.material_model_outputs.densities;
+          else if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+            this->get_material_model().density_approximation(approximate_inputs,approximate_densities);
+*/
 
           for (unsigned int q=0; q<n_q_points; ++q)
             {
@@ -2880,10 +2895,22 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+    MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+    for (unsigned int q=0; q<n_q_points; ++q)
+      {
+        approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+        approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
+        approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+      }
+
+    std::vector<double> approximate_densities (n_q_points);
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+      material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
+
     heating_model_manager.evaluate(scratch.material_model_inputs,
                                    scratch.material_model_outputs,
                                    scratch.heating_model_outputs);
-
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per
