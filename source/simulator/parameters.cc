@@ -943,8 +943,6 @@ namespace aspect
           formulation_temperature = FormulationType::parse(prm.get("Temperature density approximation"));
         }
       else AssertThrow(false, ExcNotImplemented());
-
-      prm.leave_subsection();
     }
     prm.leave_subsection ();
 
