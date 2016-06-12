@@ -960,7 +960,8 @@ namespace aspect
         local_assemble_stokes_system_compressible (const double                                     pressure_scaling,
                                                    const bool                                       rebuild_stokes_matrix,
                                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesSystem<dim> &data) const
+                                                   internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                   const Parameters<dim> &parameters) const
         {
           const Introspection<dim> &introspection = this->introspection();
           const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
@@ -997,6 +998,10 @@ namespace aspect
                 = scratch.material_model_outputs.compressibilities[q];
               const double density = scratch.material_model_outputs.densities[q];
 
+              const double rho_in_div =
+                (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+                ? density : 1.0;
+
               if (rebuild_stokes_matrix)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
@@ -1014,22 +1019,25 @@ namespace aspect
                                                 // finally the term -div(u). note the negative sign to make this
                                                 // operator adjoint to the grad(p) term
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                   scratch.phi_p[i] * rho_in_div * scratch.div_phi_u[j]))
                                               * scratch.finite_element_values.JxW(q);
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
                                        (density * gravity * scratch.phi_u[i])
                                        +
-                                       // add the term that results from the compressibility. compared
-                                       // to the manual, this term seems to have the wrong sign, but this
-                                       // is because we negate the entire equation to make sure we get
-                                       // -div(u) as the adjoint operator of grad(p) (see above where
-                                       // we assemble the matrix)
-                                       (pressure_scaling *
-                                        compressibility * density *
-                                        (scratch.velocity_values[q] * gravity) *
-                                        scratch.phi_p[i])
+                                       ((parameters.formulation_mass == Parameters<dim>::FormulationType::full)
+                                        ?
+                                        // add the term that results from the compressibility. compared
+                                        // to the manual, this term seems to have the wrong sign, but this
+                                        // is because we negate the entire equation to make sure we get
+                                        // -div(u) as the adjoint operator of grad(p) (see above where
+                                        // we assemble the matrix)
+                                        (pressure_scaling *
+                                         compressibility * density *
+                                         (scratch.velocity_values[q] * gravity) *
+                                         scratch.phi_p[i])
+                                        : 0.0)
                                      )
                                      * scratch.finite_element_values.JxW(q);
             }
@@ -2263,7 +2271,8 @@ namespace aspect
                                 std_cxx11::_2,
                                 std_cxx11::_3,
                                 std_cxx11::_4,
-                                std_cxx11::_5));
+                                std_cxx11::_5,
+                                std_cxx11::cref(this->parameters)));
     else
       assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
