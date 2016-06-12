@@ -310,13 +310,13 @@ namespace aspect
                          Patterns::Selection ("full|custom|ALA|TALA|EBA|BA"),
                          "");
 
-      prm.declare_entry ("Buoyancy density approximation", "",
+      prm.declare_entry ("Buoyancy density approximation", "full",
                          Patterns::Selection ("full|adiabatic pressure|adiabatic"),
                          "");
-      prm.declare_entry ("Mass density approximation", "",
+      prm.declare_entry ("Mass density approximation", "full",
                          Patterns::Selection ("full|adiabatic"),
                          "");
-      prm.declare_entry ("Temperature density approximation", "",
+      prm.declare_entry ("Temperature density approximation", "full",
                          Patterns::Selection ("full|adiabatic"),
                          "");
     }
