@@ -62,6 +62,10 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
+        virtual void density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
+                                            std::vector<double> &densities) const;
+
+
         virtual double density (const double temperature,
                                 const double pressure,
                                 const std::vector<double> &compositional_fields,
@@ -180,8 +184,10 @@ namespace aspect
 
       //BA:
       //Di=0;gamma=10000; //=inf
+
       //EBA:
       //Di=0.5;gamma=inf;
+
       //TALA:
       Di=0.5;
       gamma=1.0;
@@ -279,6 +285,17 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    TanGurnis<dim>::density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
+                                           std::vector<double> &densities) const
+    {
+      for (unsigned int i=0; i<inputs.position.size(); ++i)
+        {
+          const double depth = 1.0-inputs.position[i](dim-1);
+          densities[i] = 1.0*exp(Di/gamma*(depth));
+        }
+    }
 
     template <int dim>
     double
@@ -290,7 +307,7 @@ namespace aspect
     {
       const double depth = 1.0-pos(dim-1);
       const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
-      return -1.0*temperature*exp(Di/gamma*(depth));
+      return (-1.0*temperature)*exp(Di/gamma*(depth));
     }
 
 
@@ -316,7 +333,9 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      double d = density(temperature, pressure, compositional_fields, pos);
+      const double depth = 1.0-pos(dim-1);
+      double d = 1.0*exp(Di/gamma*(depth));
+
       return (d==0) ? 1.0 : (Di/gamma / d);
     }
 

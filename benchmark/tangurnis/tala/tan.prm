@@ -7,6 +7,12 @@ set Additional shared libraries            = ./code/libtangurnis.so
 # simulation
 set Dimension = 2
 
+subsection Formulation
+  set Buoyancy density approximation    = full
+  set Formulation                       = custom
+  set Mass density approximation        = adiabatic
+  set Temperature density approximation = full
+end
 
 # In computations, the time step $k$ is chosen according to $k = c \min_K
 # \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
@@ -26,10 +32,11 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear solver scheme                = Stokes only
+set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = output
+set Output directory                       = outputnew
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -204,6 +211,7 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
+    #set Reference density = 1
     set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
