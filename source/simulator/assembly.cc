@@ -2923,8 +2923,7 @@ namespace aspect
         approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
       }
 
-    std::vector<double> approximate_densities (n_q_points);
-    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+    if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
       material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
 
     heating_model_manager.evaluate(scratch.material_model_inputs,
