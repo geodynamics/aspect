@@ -1,0 +1,44 @@
+
+Loading shared library <./libtangurnis-mass-expl.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+      Nonlinear Stokes residual: 0.0223157
+   Solving Stokes system... 24+0 iterations.
+      Nonlinear Stokes residual: 0.0491024
+   Solving Stokes system... 18+0 iterations.
+      Nonlinear Stokes residual: 0.00132485
+   Solving Stokes system... 14+0 iterations.
+      Nonlinear Stokes residual: 9.85797e-05
+   Solving Stokes system... 9+0 iterations.
+      Nonlinear Stokes residual: 3.96932e-06
+   Solving Stokes system... 5+0 iterations.
+      Nonlinear Stokes residual: 2.85353e-07
+   Solving Stokes system... 3+0 iterations.
+      Nonlinear Stokes residual: 1.20932e-08
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 2.75317e-09
+
+   Postprocessing:
+     writing:                  output.csv
+     Writing graphical output: output-tangurnis-mass-expl/solution-00000
+
+*** Timestep 1:  t=0.0001 seconds
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 2.75317e-09
+
+   Postprocessing:
+     writing:                  output.csv
+     Writing graphical output: output-tangurnis-mass-expl/solution-00001
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

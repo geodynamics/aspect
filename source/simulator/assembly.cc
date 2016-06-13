@@ -1010,7 +1010,8 @@ namespace aspect
               const double density = scratch.material_model_outputs.densities[q];
 
               const double approx_rho =
-                (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+                (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
+                 || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
                 ? scratch.mass_densities[q] : density;
 
               if (rebuild_stokes_matrix)
@@ -1030,7 +1031,12 @@ namespace aspect
                                                 // finally the term -div(u). note the negative sign to make this
                                                 // operator adjoint to the grad(p) term
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                   scratch.phi_p[i] * scratch.div_phi_u[j])
+                                                - (parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic ?
+                                                   (pressure_scaling * compressibility * approx_rho
+                                                    *(scratch.phi_u[j] * gravity)
+                                                    * scratch.phi_p[i]) : 0.0 )
+                                              )
                                               * scratch.finite_element_values.JxW(q);
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -1042,10 +1048,10 @@ namespace aspect
                                        // is because we negate the entire equation to make sure we get
                                        // -div(u) as the adjoint operator of grad(p) (see above where
                                        // we assemble the matrix)
-                                       (pressure_scaling *
-                                        compressibility * approx_rho *
-                                        (scratch.velocity_values[q] * gravity) *
-                                        scratch.phi_p[i])
+                                       (parameters.formulation_mass != Parameters<dim>::FormulationType::implicit_adiabatic ? (pressure_scaling *
+                                           compressibility * approx_rho *
+                                           (scratch.velocity_values[q] * gravity) *
+                                           scratch.phi_p[i]) : 0.0)
                                      )
                                      * scratch.finite_element_values.JxW(q);
             }
@@ -2645,7 +2651,8 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
-    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
+        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         scratch.mass_densities.resize(n_q_points);

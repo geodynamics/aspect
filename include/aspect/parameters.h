@@ -195,7 +195,7 @@ namespace aspect
     {
       enum Kind
       {
-        full, adiabatic_pressure, adiabatic
+        full, adiabatic_pressure, adiabatic, implicit_adiabatic
       };
       static Kind parse(const std::string &input)
       {
@@ -205,6 +205,8 @@ namespace aspect
           return FormulationType::adiabatic;
         else if (input == "adiabatic pressure")
           return FormulationType::adiabatic_pressure;
+        else if (input == "implicit adiabatic")
+          return FormulationType::implicit_adiabatic;
         else
           AssertThrow(false, ExcNotImplemented());
         return FormulationType::full;
