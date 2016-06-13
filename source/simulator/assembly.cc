@@ -924,8 +924,7 @@ namespace aspect
         void
         local_assemble_stokes_preconditioner (const double                                             pressure_scaling,
                                               internal::Assembly::Scratch::StokesPreconditioner<dim>  &scratch,
-                                              internal::Assembly::CopyData::StokesPreconditioner<dim> &data,
-                                              const Parameters<dim> &parameters) const
+                                              internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
         {
           const Introspection<dim> &introspection = this->introspection();
           const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
@@ -2262,9 +2261,7 @@ namespace aspect
       assemblers->local_assemble_stokes_preconditioner
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_preconditioner,
                                 std_cxx11::cref (*complete_equation_assembler),
-                              std_cxx11::_1, std_cxx11::_2, std_cxx11::_3,
-                              std_cxx11::cref (this->parameters)
-                             ));
+                              std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
     if (parameters.include_melt_transport)
       assemblers->local_assemble_stokes_system
