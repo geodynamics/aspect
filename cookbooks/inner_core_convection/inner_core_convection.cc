@@ -24,66 +24,11 @@ namespace aspect
       public:
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
-    };
 
-  }
-}
-
-namespace aspect
-{
-  namespace MaterialModel
-  {
-
-    template <int dim>
-    void
-    InnerCore<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
-    {
-      // First, we use the material descriptions of the 'simple' material model to fill all of the material
-      // model outputs. Below, we will then overwrite selected properties (the specific heat) to make the
-      // product of density and specifi heat a constant.
-      Simple<dim>::evaluate(in, out);
-
-      // we want density * cp to be 1
-      for (unsigned int q=0; q < in.position.size(); ++q)
-        out.specific_heat[q] /= out.densities[q];
-    }
-
-  }
-}
-
-namespace aspect
-{
-  namespace TractionBoundaryConditions
-  {
-    using namespace dealii;
-
-    /**
-     * A class that implements traction boundary conditions based on a
-     * functional description provided in the input file.
-     *
-     * @ingroup TractionBoundaryConditionsModels
-     */
-    template <int dim>
-    class NormalFunction : public Interface<dim>, public SimulatorAccess<dim>
-    {
-      public:
         /**
          * Constructor.
          */
-        NormalFunction ();
-
-        /**
-         * Return the boundary traction as a function of position. The
-         * (outward) normal vector to the domain is also provided as
-         * a second argument.
-         */
-        virtual
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const;
+        InnerCore ();
 
         /**
          * A function that is called at the beginning of each time step to
@@ -115,41 +60,51 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-      private:
         /**
-         * A function object representing the components of the traction.
+         * A function object representing traction normal to the boundary.
          */
         Functions::ParsedFunction<dim> boundary_traction_function;
     };
+
   }
 }
 
 namespace aspect
 {
-  namespace TractionBoundaryConditions
+  namespace MaterialModel
   {
+
     template <int dim>
-    NormalFunction<dim>::NormalFunction ()
+    void
+    InnerCore<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      // First, we use the material descriptions of the 'simple' material model to fill all of the material
+      // model outputs. Below, we will then overwrite selected properties (the specific heat) to make the
+      // product of density and specific heat a constant.
+      Simple<dim>::evaluate(in, out);
+
+      // We want the right-hand side of the momentum equation to be (- Ra T gravity) and
+      // density * cp to be 1
+      for (unsigned int q=0; q < in.position.size(); ++q)
+          {
+            out.densities[q] = - out.thermal_expansion_coefficients[q] * (in.temperature[q]);
+            if (std::abs(out.densities[q]) > 0.0)
+              out.specific_heat[q] /= out.densities[q];
+          }
+    }
+
+    template <int dim>
+    InnerCore<dim>::InnerCore ()
       :
       boundary_traction_function (1)
     {}
 
 
-
-    template <int dim>
-    Tensor<1,dim>
-    NormalFunction<dim>::
-    boundary_traction (const types::boundary_id,
-                       const Point<dim> &p,
-                       const Tensor<1,dim> &normal_vector) const
-    {
-      return boundary_traction_function.value(p) * normal_vector;;
-    }
-
-
     template <int dim>
     void
-    NormalFunction<dim>::update()
+    InnerCore<dim>::update()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
@@ -162,9 +117,11 @@ namespace aspect
 
     template <int dim>
     void
-    NormalFunction<dim>::declare_parameters (ParameterHandler &prm)
+    InnerCore<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Boundary traction model");
+      Simple<dim>::declare_parameters (prm);
+
+      prm.enter_subsection("Phase boundary model");
       {
         prm.enter_subsection("Normal function");
         {
@@ -178,9 +135,11 @@ namespace aspect
 
     template <int dim>
     void
-    NormalFunction<dim>::parse_parameters (ParameterHandler &prm)
+    InnerCore<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Boundary traction model");
+      Simple<dim>::parse_parameters (prm);
+
+      prm.enter_subsection("Phase boundary model");
       {
         prm.enter_subsection("Normal function");
         try
@@ -190,7 +149,7 @@ namespace aspect
         catch (...)
           {
             std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Boundary traction model.Function'\n"
+                      << "\t'Phase boundary model.Function'\n"
                       << "with expression\n"
                       << "\t'" << prm.get("Function expression") << "'"
                       << "More information about the cause of the parse error \n"
@@ -204,6 +163,7 @@ namespace aspect
 
   }
 }
+
 
 
 namespace aspect
@@ -320,11 +280,37 @@ namespace aspect
 
 namespace aspect
 {
+  /**
+   * A new assembler class that implements boundary conditions for the
+   * normal stress and the normal velocity that take into account the
+   * rate of phase change (melting/freezing) at the inner-outer core
+   * boundary. The model is based on Deguen, Alboussiere, and Cardin
+   * (2013), Thermal convection in Earth’s inner core with phase change
+   * at its boundary. GJI, 194, 1310-133.
+   *
+   * The mechanical boundary conditions for the inner core are
+   * tangential stress-free and continuity of the normal stress at the
+   * inner-outer core boundary. For the non-dimensional equations, that
+   * means that we can define a 'phase change number' P so that the
+   * normal stress at the boundary is $-P u_r$ with the radial velocity
+   * $u_r$. This number characterizes the resistance to phase change at
+   * the boundary, with P-->inifinity corresponding to infinitely slow
+   * melting/freezing (free slip boundary), and P-->o corresponding to
+   * instantaneous melting/freezing (zero normal stress, open boundary).
+   *
+   * In the weak form, this results in boundary conditions of the form
+   * of a surface integral:
+   * $$\int_S P (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS$$,
+   * with the normal vector $\mathbf n$.
+   *
+   * The function value of P is taken from the inner core material model.
+   */
     template <int dim>
     class PhaseBoundaryAssembler :
       public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
             public SimulatorAccess<dim>
     {
+
       public:
 
         virtual
@@ -336,8 +322,7 @@ namespace aspect
         {
           const Introspection<dim> &introspection = this->introspection();
 
-          // see if any of the faces are traction boundaries for which
-          // we need to assemble force terms for the right hand side
+          //assemble force terms for the matrix
           const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
           if (this->get_traction_boundary_conditions()
               .find (cell->face(face_no)->boundary_id())
@@ -348,13 +333,8 @@ namespace aspect
 
               for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
                 {
-                  const Tensor<1,dim> traction
-                    = this->get_traction_boundary_conditions().find(
-                        cell->face(face_no)->boundary_id()
-                      )->second
-                      ->boundary_traction (cell->face(face_no)->boundary_id(),
-                                           scratch.face_finite_element_values.quadrature_point(q),
-                                           scratch.face_finite_element_values.normal_vector(q));
+                  const Tensor<1,dim> traction = dynamic_cast<const MaterialModel::InnerCore<dim>&>
+                       (this->get_material_model()).boundary_traction_function.value(scratch.material_model_inputs.position[q]) * scratch.face_finite_element_values.normal_vector(q);
 
                   // boundary term: P*u*n*v*n*JxW(q);
                   for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -380,7 +360,7 @@ namespace aspect
       PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
       assembler_objects.push_back(std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >(phase_boundary_assembler));
 
-      // add the terms for traction boundary conditions
+      // add the terms for phase change boundary conditions
       assemblers.local_assemble_stokes_system_on_boundary_face
       .connect (std_cxx11::bind(&PhaseBoundaryAssembler<dim>::phase_change_boundary_conditions,
                                 std_cxx11::cref (*phase_boundary_assembler),
@@ -393,7 +373,6 @@ namespace aspect
 
 
     }
-
 
 }
 
@@ -418,21 +397,6 @@ namespace aspect
                                    "inner core material",
                                    "A simple material model that is like the "
                                    "'Simple' model, but has a constant $\rho c_p$.")
-  }
-
-  namespace TractionBoundaryConditions
-  {
-    ASPECT_REGISTER_TRACTION_BOUNDARY_CONDITIONS(NormalFunction,
-                                                 "normal function",
-                                                 "Implementation of a model in which the boundary "
-                                                 "traction is given in terms of an explicit formula "
-                                                 "that is elaborated in the parameters in section "
-                                                 "``Boundary traction model|Function''. "
-                                                 "\n\n"
-                                                 "The formula you describe in the mentioned "
-                                                 "section constains only a normal component of the traction."
-                                                 "for each of the $d$ components of the traction vector. "
-                                                 "The formula is interpreted as having units Pa.")
   }
 
   namespace HeatingModel
