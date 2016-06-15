@@ -6241,9 +6241,35 @@ the end of the first time step after one level of strain rate-based adaptive mes
 \end{figure}
 
 
+\subsubsection{Inner core convection}
+\label{sec:cookbooks-inner-core-convection}
 
+\textit{This section was contributed by Juliane Dannberg, and the model setup was insipired 
+by discussions with John Rudge.}
 
+This is an example for convection in the inner core of the Earth. It uses a spherical geometry 
+and is characterized by a single material with temperature dependent density, that makes it
+unstably stratified as temperature increases towards the center of the core. 
+The boundary conditions combine normal stress and normal velocity, and take into account the
+rate of phase change (melting/freezing) at the inner-outer core boundary. Gravity decreases 
+linearly from the boundary to zero at the center of the inner core. 
+The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
+are chosen in a way that the equations are non-dimensional.
 
+The mechanical boundary conditions for the inner core are
+tangential stress-free and continuity of the normal stress at the
+inner-outer core boundary. For the non-dimensional equations, that
+means that we can define a 'phase change number' $\mathcal{P}$ so that the
+normal stress at the boundary is $-\mathcal{P} u_r$ with the radial velocity
+$u_r$. This number characterizes the resistance to phase change at
+the boundary, with $\mathcal{P}\rightarrow\infty$ corresponding to infinitely slow
+melting/freezing (or a free slip boundary), and $\mathcal{P}\rightarrow0$ corresponding to
+instantaneous melting/freezing (or a zero normal stress, corresponding to an open boundary).
+
+In the weak form, this results in boundary conditions of the form
+of a surface integral:
+$$\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,$$
+with the normal vector $\mathbf n$.
 
 
 

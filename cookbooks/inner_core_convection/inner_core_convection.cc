@@ -300,19 +300,21 @@ namespace aspect
    * The mechanical boundary conditions for the inner core are
    * tangential stress-free and continuity of the normal stress at the
    * inner-outer core boundary. For the non-dimensional equations, that
-   * means that we can define a 'phase change number' P so that the
-   * normal stress at the boundary is $-P u_r$ with the radial velocity
-   * $u_r$. This number characterizes the resistance to phase change at
-   * the boundary, with P-->inifinity corresponding to infinitely slow
-   * melting/freezing (free slip boundary), and P-->o corresponding to
+   * means that we can define a 'phase change number' $\mathcal{P}$ so
+   * that the normal stress at the boundary is $-\mathcal{P} u_r$ with
+   * the radial velocity $u_r$. This number characterizes the resistance
+   * to phase change at the boundary, with $\mathcal{P}\rightarrow\infty$
+   * corresponding to infinitely slow melting/freezing (free slip
+   * boundary), and $\mathcal{P}\rightarrow0$ corresponding to
    * instantaneous melting/freezing (zero normal stress, open boundary).
    *
    * In the weak form, this results in boundary conditions of the form
    * of a surface integral:
-   * $$\int_S P (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS$$,
+   * $$\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,$$,
    * with the normal vector $\mathbf n$.
    *
-   * The function value of P is taken from the inner core material model.
+   * The function value of $\mathcal{P}$ is taken from the inner core
+   * material model.
    */
     template <int dim>
     class PhaseBoundaryAssembler :
