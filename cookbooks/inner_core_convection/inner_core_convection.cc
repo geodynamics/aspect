@@ -61,9 +61,10 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * A function object representing traction normal to the boundary.
+         * A function object representing resistance to phase change at the
+         * inner core boundary.
          */
-        Functions::ParsedFunction<dim> boundary_traction_function;
+        Functions::ParsedFunction<dim> resistance_to_phase_change;
     };
 
   }
@@ -98,7 +99,7 @@ namespace aspect
     template <int dim>
     InnerCore<dim>::InnerCore ()
       :
-      boundary_traction_function (1)
+      resistance_to_phase_change (1)
     {}
 
 
@@ -109,9 +110,9 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        boundary_traction_function.set_time (this->get_time() / year_in_seconds);
+        resistance_to_phase_change.set_time (this->get_time() / year_in_seconds);
       else
-        boundary_traction_function.set_time (this->get_time());
+        resistance_to_phase_change.set_time (this->get_time());
     }
 
 
@@ -121,13 +122,17 @@ namespace aspect
     {
       Simple<dim>::declare_parameters (prm);
 
-      prm.enter_subsection("Phase boundary model");
+      prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Normal function");
+      prm.enter_subsection("Inner core");
+      {
+        prm.enter_subsection("Phase change resistance function");
         {
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
+      }
+      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -139,12 +144,14 @@ namespace aspect
     {
       Simple<dim>::parse_parameters (prm);
 
-      prm.enter_subsection("Phase boundary model");
+      prm.enter_subsection("Material model");
       {
-        prm.enter_subsection("Normal function");
+      prm.enter_subsection("Inner core");
+      {
+        prm.enter_subsection("Phase change resistance function");
         try
           {
-            boundary_traction_function.parse_parameters (prm);
+            resistance_to_phase_change.parse_parameters (prm);
           }
         catch (...)
           {
@@ -157,6 +164,8 @@ namespace aspect
             throw;
           }
         prm.leave_subsection();
+      }
+      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -334,7 +343,7 @@ namespace aspect
               for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
                 {
                   const Tensor<1,dim> traction = dynamic_cast<const MaterialModel::InnerCore<dim>&>
-                       (this->get_material_model()).boundary_traction_function.value(scratch.material_model_inputs.position[q]) * scratch.face_finite_element_values.normal_vector(q);
+                       (this->get_material_model()).resistance_to_phase_change.value(scratch.material_model_inputs.position[q]) * scratch.face_finite_element_values.normal_vector(q);
 
                   // boundary term: P*u*n*v*n*JxW(q);
                   for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -396,7 +405,10 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(InnerCore,
                                    "inner core material",
                                    "A simple material model that is like the "
-                                   "'Simple' model, but has a constant $\rho c_p$.")
+                                   "'Simple' model, but has a constant $\rho c_p$, "
+                                   "and implements a function that characterizes the "
+                                   "resistance to melting/freezing at the inner core "
+                                   "boundary.")
   }
 
   namespace HeatingModel
