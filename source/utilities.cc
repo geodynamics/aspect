@@ -49,7 +49,10 @@ namespace aspect
   {
     using namespace dealii;
 
-
+    /**
+     * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+     * given by the @p dofs_per_block structure.
+     */
     void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
                          const IndexSet &whole_set,
                          std::vector<IndexSet> &partitioned)

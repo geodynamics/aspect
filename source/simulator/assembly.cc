@@ -2368,8 +2368,6 @@ namespace aspect
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
       {
-        AssertThrow(!parameters.include_melt_transport, ExcNotImplemented());
-
         assemblers->local_assemble_advection_system_on_interior_face
         .connect(std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_discontinuous_advection_interior_face_terms,
                                  std_cxx11::cref (*complete_equation_assembler),
@@ -2842,8 +2840,10 @@ namespace aspect
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.current_velocity_values);
-    scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
-        scratch.current_velocity_divergences);
+
+    if (parameters.include_melt_transport)
+      scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
+          scratch.current_velocity_divergences);
 
     // get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.free_surface_enabled)

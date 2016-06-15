@@ -34,6 +34,10 @@ namespace aspect
      * A class that implements simple fluid pressure boundary conditions
      * based on the fluid or solid density from the material model.
      *
+     * The fluid pressure gradient can either be set to
+     * $\rho_s \textbf{g}$ (solid density times gravity) or to
+     * $\rho_f \textbf{g}$ (fluid density times gravity).
+     *
      * @ingroup FluidPressureBoundaryConditions
      */
     template <int dim>

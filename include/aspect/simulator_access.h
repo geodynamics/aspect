@@ -554,7 +554,7 @@ namespace aspect
 
       /**
        * Return a pointer to the object that describes the
-       * current constraints.
+       * constraints for the time step we are solving at the moment.
        */
       const ConstraintMatrix &
       get_current_constraints() const;

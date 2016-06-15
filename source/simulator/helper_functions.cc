@@ -312,7 +312,8 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
 
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points), fluid_velocity_values(n_q_points);
+    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+    std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
 
     double max_local_speed_over_meshsize = 0;
@@ -335,7 +336,7 @@ namespace aspect
 
           if (parameters.include_melt_transport)
             {
-              FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+              const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
               fe_values[ex_u_f].get_function_values (solution,fluid_velocity_values);
 
               for (unsigned int q=0; q<n_q_points; ++q)
@@ -755,7 +756,8 @@ namespace aspect
    * inverse to normalize_pressure.
    */
   template <int dim>
-  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector)
+  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector,
+                                             const LinearAlgebra::BlockVector &relevant_vector)
   {
     if (parameters.pressure_normalization == "no")
       return;

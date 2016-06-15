@@ -314,7 +314,7 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether to include the transport of melt into the model or not. If this "
                          "is set to true, two additional pressures (the fluid pressure and the "
-                         "and the compaction pressure) will be added to the finite element. "
+                         "compaction pressure) will be added to the finite element. "
                          "Including melt transport in the simulation also requires that there is "
                          "one compositional field that has the name 'porosity'. This field will "
                          "be used for computing the additional pressures and the melt velocity, "
@@ -1021,6 +1021,11 @@ namespace aspect
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
                                "element of degree zero for the pressure, which does not exist."))
+
+      if (use_discontinuous_temperature_discretization || use_discontinuous_composition_discretization)
+        AssertThrow(!include_melt_transport,
+                    ExcMessage ("Using discontinuous elements for temperature "
+                                "or composition in models with melt transport is currently not implemented."));
     }
     prm.leave_subsection ();
 
@@ -1413,7 +1418,6 @@ namespace aspect
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
     TractionBoundaryConditions::declare_parameters<dim> (prm);
-
   }
 }
 

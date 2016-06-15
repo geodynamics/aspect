@@ -77,12 +77,14 @@ namespace aspect
           prm.declare_entry ("Density formulation", "solid density",
                              Patterns::Selection ("solid density|fluid density"),
                              "The density formulation used to compute the fluid pressure gradient "
-                             "at the model boundary. "
+                             "at the model boundary."
+                             "\n\n"
                              "'solid density' prescribes the gradient of the fluid pressure as "
                              "solid density times gravity (which is the lithostatic "
                              "pressure) and leads to approximately the same pressure in "
                              "the melt as in the solid, so that fluid is only flowing "
                              "in or out due to differences in dynamic pressure."
+                             "\n\n"
                              "'fluid density' prescribes the gradient of the fluid pressure as "
                              "fluid density times gravity and causes melt to flow in "
                              "with the same velocity as inflowing solid material, "

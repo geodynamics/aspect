@@ -35,6 +35,29 @@ using namespace dealii;
 
 namespace aspect
 {
+  namespace MaterialModel
+  {
+    template <int dim>
+    void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
+                                    const FullMatrix<double>  &projection_matrix,
+                                    const FullMatrix<double>  &expansion_matrix)
+    {
+      average_property (operation, projection_matrix, expansion_matrix,
+                        compaction_viscosities);
+      average_property (operation, projection_matrix, expansion_matrix,
+                        fluid_viscosities);
+      average_property (operation, projection_matrix, expansion_matrix,
+                        permeabilities);
+      average_property (operation, projection_matrix, expansion_matrix,
+                        fluid_densities);
+
+      // The fluid density gradients are unfortunately stored in reverse
+      // indexing and averaging is not implemented for tensors (only for
+      // doubles). It's also not quite clear whether these should
+      // really be averaged, so avoid this for now
+    }
+  }
+
   template <int dim>
   void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
@@ -201,7 +224,7 @@ namespace aspect
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
-          const double p_f_RHS = compute_fluid_pressure_RHS(scratch,
+          const double p_f_RHS = compute_fluid_pressure_rhs(scratch,
                                                             scratch.material_model_inputs,
                                                             scratch.material_model_outputs,
                                                             q);
@@ -597,7 +620,7 @@ namespace aspect
     template <int dim>
     double
     MeltEquations<dim>::
-    compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+    compute_fluid_pressure_rhs(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                                MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                                const unsigned int q_point) const
@@ -725,6 +748,9 @@ namespace aspect
   {
     if (!this->include_melt_transport())
       return;
+
+    Assert (this->include_melt_transport(), ExcMessage ("'Include melt transport' has to be on to "
+                                                        "compute melt variables"));
 
     LinearAlgebra::BlockVector distributed_vector (this->introspection().index_sets.system_partitioning,
                                                    this->get_mpi_communicator());

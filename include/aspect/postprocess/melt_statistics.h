@@ -35,7 +35,8 @@ namespace aspect
      * A postprocessor that computes some statistics about the
      * melt fraction. This only works for material models that
      * are derived from MaterialModel::MeltFractionModel and
-     * implement their own melt_fraction function.
+     * implement their own
+     * MaterialModel::MeltFractionModel::melt_fraction function.
      *
      * @ingroup Postprocessing
      */

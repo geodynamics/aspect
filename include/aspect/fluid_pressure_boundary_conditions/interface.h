@@ -67,6 +67,9 @@ namespace aspect
          *
          * The return value can typically contain @p material_model_outputs.fluid_densities[q]
          * or @p material_model_outputs.densities[q], multiplied by the gravity vector.
+         * If the solid density is used, fluid is only flowing in or out due to differences in
+         * dynamic pressure, if the fluid density is used, melt flows in with the same velocity
+         * as inflowing solid material.
          *
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we

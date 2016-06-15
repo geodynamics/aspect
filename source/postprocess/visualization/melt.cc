@@ -99,7 +99,8 @@ namespace aspect
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-        AssertThrow(this->include_melt_transport()==true, ExcMessage("include_melt_transport has to be on when using melt transport postprocessors."));
+        AssertThrow(this->include_melt_transport()==true,
+                    ExcMessage("'Include melt transport' has to be on when using melt transport postprocessors."));
 
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -122,7 +123,8 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
         MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
-        AssertThrow(melt_outputs != NULL, ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
+        AssertThrow(melt_outputs != NULL,
+                    ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)

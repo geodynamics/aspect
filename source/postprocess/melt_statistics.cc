@@ -41,7 +41,8 @@ namespace aspect
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
+      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
+                                                            std::vector<double> (n_q_points));
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -137,7 +138,7 @@ namespace aspect
       // finally produce something for the statistics file
       statistics.add_value ("Minimal melt fraction",
                             global_min_melt);
-      statistics.add_value ("Total melt fraction",
+      statistics.add_value ("Total melt volume",
                             global_melt_integral);
       statistics.add_value ("Maximal melt fraction",
                             global_max_melt);
@@ -146,7 +147,7 @@ namespace aspect
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal melt fraction",
-                                  "Total melt fraction",
+                                  "Total melt volume",
                                   "Maximal melt fraction"
                                 };
         for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
@@ -176,7 +177,7 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(MeltStatistics,
                                   "melt statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "the melt fraction, averaged by volume. If the material model "
+                                  "the melt (volume) fraction. If the material model "
                                   "does not implement a melt fraction function, the output is "
                                   "set to zero.")
   }

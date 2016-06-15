@@ -78,28 +78,18 @@ namespace aspect
          */
         std::vector<Tensor<1,dim> > fluid_density_gradients;
 
+        /**
+         * Do the requested averaging operation for the melt outputs.
+         * The projection matrix argument is only used if the operation
+         * chosen is project_to_Q1.
+         */
         void average (const MaterialAveraging::AveragingOperation operation,
                       const FullMatrix<double>  &projection_matrix,
-                      const FullMatrix<double>  &expansion_matrix)
-        {
-          average_property (operation, projection_matrix, expansion_matrix,
-                            compaction_viscosities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            fluid_viscosities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            permeabilities);
-          average_property (operation, projection_matrix, expansion_matrix,
-                            fluid_densities);
-
-          // The fluid density gradients are unfortunately stored in reverse
-          // indexing and averaging is not implemented for tensors (only for
-          // doubles). It's also not quite clear whether these should
-          // really be averaged, so avoid this for now
-        }
+                      const FullMatrix<double>  &expansion_matrix);
     };
 
     /**
-     * Base model for material models that implement a melt fraction function.
+     * Base class for material models that implement a melt fraction function.
      * This is used to compute some statistics about the melt fraction.
      */
     template <int dim>
@@ -108,15 +98,22 @@ namespace aspect
       public:
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const = 0;
+
+        /**
+         * Destructor. Does nothing but is virtual so that derived classes
+         * destructors are also virtual.
+         */
+        virtual ~MeltFractionModel ()
+        {};
     };
 
   }
 
   /**
-   * Creates additional material model output objects that are
-   * needed for a simulation, and attaches a pointer to them to the
-   * corresponding vector in the MaterialModel::MaterialModelOutputs
-   * structure.
+   * Create an additional material model output object that contains
+   * the additional output variables needed in simulation with melt transport,
+   * and attaches a pointer to it to the corresponding vector in the
+   * MaterialModel::MaterialModelOutputs structure.
    */
   template <int dim>
   void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
@@ -135,7 +132,7 @@ namespace aspect
     {
       public:
         /**
-         * Attaches melt outputs.
+         * Attach melt outputs.
          */
         virtual
         void
@@ -201,7 +198,7 @@ namespace aspect
          * on the densities and velocities of fluid and solid.
          */
         double
-        compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+        compute_fluid_pressure_rhs(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                    MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                                    MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                                    const unsigned int q_point) const;
@@ -244,10 +241,10 @@ namespace aspect
 
 
   /**
-   * Class to contain all runtime parameters and other helper functions
+   * Class that contains all runtime parameters and other helper functions
    * related to melt transport. A global instance can be retrieved with
-   * MeltHandler<dim>::get(), but keep in mind that it only exists if
-   * parameters.include_melt_transport is true.
+   * SimulatorAccess<dim>::get_melt_handler(), but keep in mind that it only
+   * exists if parameters.include_melt_transport is true.
    */
   template <int dim>
   class MeltHandler: public SimulatorAccess<dim>
@@ -277,7 +274,8 @@ namespace aspect
        * migration to the list of variables, which will be used later
        * to set up the introspection object.
        */
-      void edit_finite_element_variables(const Parameters<dim> &parameters, std::vector<VariableDeclaration<dim> > &variables);
+      void edit_finite_element_variables(const Parameters<dim> &parameters,
+                                         std::vector<VariableDeclaration<dim> > &variables);
 
       /**
        * Setup SimulatorAccess for the plugins related to melt transport.
@@ -286,7 +284,13 @@ namespace aspect
 
       /**
        * Compute fluid velocity and solid pressure in this ghosted solution vector.
-       * @param solution
+       * The fluid velocity is computed by solving a mass matrix problem, and the
+       * solid pressure is computed algebraically.
+       *
+       * @param solution The existing solution vector that contains the values
+       * for porosity, compaction pressure, fluid pressure and solid velocity
+       * obtained by solving the Stokes and advection system, and that will be
+       * updated with the computed values for fluid velocity and solid pressure.
        */
       void compute_melt_variables(LinearAlgebra::BlockVector &solution);
 
