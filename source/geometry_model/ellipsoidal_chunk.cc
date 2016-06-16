@@ -29,6 +29,7 @@
 #include <aspect/compat.h>
 
 
+
 /**
  * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel.
  * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
@@ -40,6 +41,148 @@ namespace aspect
   {
     using namespace dealii;
 
+    template <int dim>
+    bool
+    EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+    { // TODO: refer to origin code
+      int pointNo = pointList.size();
+      int    wn = 0;    // the  winding number counter
+      int   j=pointNo-1; 
+
+      // loop through all edges of the polygon
+      for (int i=0; i<pointNo; i++) {   // edge from V[i] to  V[i+1]
+          if(point[1]>4.99){
+          }
+          if (pointList[j][1] <= point[1]) {          // start y <= P.y
+              if (pointList[i][1]  > point[1])      // an upward crossing
+                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                    - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0){  // P left of  edge
+                    ++wn;            // have  a valid up intersect
+                }
+          }
+          else {                        // start y > P.y (no test needed)
+              if (pointList[i][1]  <= point[1])     // a downward crossing
+                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                    - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0){  // P right of  edge
+                    --wn;            // have  a valid down intersect
+                }
+          }
+          j=i;
+      }
+      return (wn != 0);
+    }
+
+    /**
+     * the EllipsoidalChunkTopography class
+     */
+    // constructor
+        template <int dim>
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
+       // :
+       // point_lists({{{0}}})
+ /*       :
+        topography_data_uniform (std_cxx11::array< std::vector< double >, dim > (),
+                         Table<2,double> (1, 0,
+                                          0))*/
+        {}
+        
+        template <int dim>
+        double
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::value (const double lon,
+                                                                  const double lat) const
+        {
+          double value = 0;
+          //std::cout << "Topo_type = " << topo_type << ":" << PRM_EXACT << std::endl;
+          switch(topo_type)
+          {
+          case NO_TOPOGRAPHY:
+            return 0;
+            break;
+            
+          case PRM_EXACT:
+            for(unsigned int i = 0; i < point_lists.size(); i++)
+              {
+                Point<2> p1(lon * 180/numbers::PI,lat * 180/numbers::PI);
+                //std::cout << "lat = " << lat << ", long = " << lon << ", lat/pi = " << lat * 180/numbers::PI << ", lon/pi = " << lon * 180/numbers::PI << ", p1 = " << p1 << std::endl;
+                //if(lon > numbers::PI*2 || lat > numbers::PI*2)
+                //std::cout << lon << ":" << lat << ", p1 = " << p1 << ", pl0 = " << point_lists[i][0][0] << ":" << point_lists[i][0][1] << ", pl1 = " << point_lists[i][1][0] << ":" << point_lists[i][1][1] <<  ", pl2 = " << point_lists[i][2][0] << ":" << point_lists[i][1][2] << std::endl;
+                bool true_or_false = In2dPolygon(p1, point_lists[i]);
+                if(true_or_false)
+                  {
+                    value = topography_values[i];
+                   // if(value > 1)
+                   //  std::cout << "value = " << value << std::endl;
+                  }
+              }
+            return value;
+            break;
+            
+         /* case PRM_UNIFORM_GIRD_INTERPOLATED:
+            return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
+                                                      lon * 180/numbers::PI));
+            break;
+          case FILE_UNIFORM_GRID_INTERPOLATED:
+            return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
+                                                      lon * 180/numbers::PI));
+            break;
+
+          case FILE_RECTANGULAR_GRID_INTERPOLATED:
+            return topography_data_rectangular.value (Point<2>(lat * 180/numbers::PI,
+                                                      lon * 180/numbers::PI));*/
+            break;
+          default:
+            return 0; // add assert?
+            break;
+          }
+          // assert?
+          return 0;
+        }
+        
+        template <int dim>
+        void
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(topo_types set_topo_type)
+        {
+          topo_type = set_topo_type;
+        } 
+        
+        template <int dim>
+        void
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_point_lists(std::vector<std::vector<std::vector<double> > > set_point_lists)
+        {
+          point_lists = set_point_lists;
+        }       
+        
+        template <int dim>
+        void
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_values(std::vector<double> set_topography_values)
+        {
+          topography_values = set_topography_values;
+        } 
+        
+        /*template <int dim>
+        Functions::InterpolatedUniformGridData<2>&
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
+        {
+          return topography_data_uniform;
+        } */
+        
+        /*template <int dim>
+        Functions::InterpolatedUniformGridData<2>&
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
+        {
+          return topography_data;
+        } */
+        
+        /*template <int dim>
+        std_cxx11::array< std::vector< double >, dim >&
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinate_values() const
+        {
+          //TODO: implement choices (function vs file)
+          topography_data_uniform = topography_data_uniform(get_coordinate_values(), 
+                                            Table<2,double>());
+        }*/
+  
+        
     /**
      * the EllipsoidalChunkGeometry class
      */
@@ -101,11 +244,53 @@ namespace aspect
       const double R_plus_d = p / std::cos(theta);
 
       Point<3> phi_theta_d;
-      phi_theta_d[0] = phi;
+      if(phi < -numbers::PI)
+        phi_theta_d[0] = phi + 2*numbers::PI;
+      else if (phi > numbers::PI)
+        phi_theta_d[0] = phi - 2*numbers::PI;
+      else
+        phi_theta_d[0] = phi;
 
       phi_theta_d[1] = theta;
       phi_theta_d[2] = R_plus_d - R_bar;
       return phi_theta_d;
+    }
+    
+    // Form topo depth to normal depth
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
+    {
+      const double d_hat = phi_theta_d_hat[2]; // 
+      if(phi_theta_d_hat[0] > numbers::PI*2 || phi_theta_d_hat[1] > numbers::PI*2)
+        std::cout << phi_theta_d_hat << std::endl;
+      else
+        std::cout << "i";
+                      
+      const double h     = topography.value(phi_theta_d_hat[0],
+                                                phi_theta_d_hat[1]);
+      //if(h>1)
+      //  std::cout << "h = " << h << std::endl;
+      const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
+      const Point<3> phi_theta_d (phi_theta_d_hat[0],
+                                  phi_theta_d_hat[1],
+                                  d);
+      return phi_theta_d;
+    }
+    
+    // from normal depth to topo depth
+    template <int dim>
+    Point<3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
+    {
+      const double d = phi_theta_d[2]; 
+      const double h = topography.value(phi_theta_d[0],
+                                            phi_theta_d[1]);
+      const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
+      const Point<3> phi_theta_d_hat (phi_theta_d[0],
+                                      phi_theta_d[1],
+                                      d_hat);
+      return phi_theta_d_hat;
     }
 
     /**
@@ -121,7 +306,7 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity);
+      return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
 
@@ -139,13 +324,14 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
       AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
-      return push_forward_ellipsoid (chart_point, semi_major_axis_a, eccentricity);
+      //std::cout << chart_point << std::endl;
+      return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
     template <>
     void
     EllipsoidalChunk<3>::create_coarse_mesh(parallel::distributed::Triangulation<3> &coarse_grid) const
-    {
+    { 
       const int dim = 3;
 
       /**
@@ -162,6 +348,13 @@ namespace aspect
                                                       0,
                                                       bottom_depth)
                                           };
+      std::cout << "p1 = " << Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
+          (corners[1][1]-corners[0][1])*numbers::PI/180,
+          0) << ", p2 = " << Point<dim>((corners[3][0]-corners[0][0])*numbers::PI/180,
+              (corners[3][1]-corners[0][1])*numbers::PI/180,
+              0) << ", p3 = " << Point<dim>(0,
+                  0,
+                  bottom_depth) << std::endl;
       const unsigned int  subdivisions[dim] = {EW_subdiv,NS_subdiv,depth_subdiv};
 
       GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
@@ -325,6 +518,20 @@ namespace aspect
                             "1",
                             Patterns::Integer(0),
                             "The number of subdivisions of the coarse (initial) mesh in depth.");
+          prm.enter_subsection("Topography");
+            {
+            prm.declare_entry("Topography type",
+                "No topography",
+                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file interpolated on uniform grid|From file interplated on rectangular grid"),
+                "Select type of topography. TODO: explain the options.");
+            prm.declare_entry("Topography parameters",
+                "",
+                Patterns::Anything(),
+                "Set the topography height, end with a |, and set the area's described by the points, separated by comma's and coordinates separated by a ':'. "
+                "Seperate each topogarphy feature by a semicolin. For example for two triangular area of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
+
+            }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -529,11 +736,76 @@ namespace aspect
           eastLongitude = corners[0][0];
           northLatitude = corners[0][1];
           southLatitude = corners[2][1];
+          prm.enter_subsection("Topography");
+          {
+            /**
+             * Determine what type of topography we have
+             */
+            std::string topography_type_string = prm.get("Topography type");
+            topo_types topo_type;
+            if(topography_type_string == "No topography")
+              topo_type = NO_TOPOGRAPHY;
+            else if(topography_type_string == "From prm exact")
+              topo_type = PRM_EXACT;
+            else if(topography_type_string == "From prm interpolated on uniform grid")
+              topo_type = PRM_UNIFORM_GIRD_INTERPOLATED;
+            else if(topography_type_string == "From file interpolated on uniform grid")
+              topo_type = FILE_UNIFORM_GRID_INTERPOLATED;
+            else if(topography_type_string == "From file interplated on rectangular grid")
+              topo_type = FILE_RECTANGULAR_GRID_INTERPOLATED;
+            else
+              {
+                std::cout << "Not found" << std::endl;
+              }
+              //TODO: assert: type not found
+            
+            manifold.topography.set_topography_type(topo_type);
+
+            if(topo_type == PRM_EXACT)
+              {
+                /**
+                 * we need to fill the point lists and topogarphy values. They 
+                 * are stored in the Topography subsection in the Topography parameter.
+                 */ 
+                  std::vector<double> topography_values;
+                  std::vector<std::vector<std::vector<double> > > point_lists;
+                  std::string temptopo = prm.get("Topography parameters");
+                  std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,';');
+                  unsigned int temp_topographies_size = temp_topographies.size();
+                  
+                  topography_values.resize(temp_topographies_size,0);
+                  point_lists.resize(temp_topographies_size);
+                  for(unsigned int i_topo = 0; i_topo < temp_topographies_size; i_topo++)
+                    {
+                      std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo],'|');
+                      //TODO: Check that size is two
+                      topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
+
+
+                      
+                      std::vector<std::string> temp_cooridnates = Utilities::split_string_list(temp_topography[1],',');
+                      unsigned int temp_coordinate_size = temp_cooridnates.size();
+                      point_lists[i_topo].resize(temp_coordinate_size,std::vector<double>(2,0));
+                      
+                      for(unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
+                        point_lists[i_topo][i_coord] = Utilities::string_to_double(Utilities::split_string_list(temp_cooridnates[i_coord],':'));
+                      //TODO: Check that there are only two coordinates.
+
+                      //std::cout << "pl.size() = " << point_lists.size()<< std::endl;
+                      //for(unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
+                      //std::cout << ", pl"<< i_coord << " = " << point_lists[i_topo][i_coord][0] << ":" << point_lists[i_topo][i_coord][1];
+                      //std::cout  << std::endl;
+                      manifold.topography.set_topography_values (topography_values);
+                      manifold.topography.set_point_lists (point_lists);
+                    }
+
+              }
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
-
 
       /**
        * Construct manifold object Pointer to an object that describes the geometry.
@@ -542,7 +814,7 @@ namespace aspect
                                        eccentricity,
                                        semi_minor_axis_b,
                                        bottom_depth,
-                                       corners);
+                                       corners); 
     }
 
     template <int dim>
