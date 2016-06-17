@@ -581,7 +581,9 @@ namespace aspect
                 "\n'From prm exact' uses the topography parameters directly to determine what elevation a certain point has. See the Topography parameters "
                    "for more information on how to define the topography function. "
                 "\n'From prm interpolated on uniform grid' uses the same function as 'From prm exact', but interpolates this information on a uniform grid "
-                   "given by the parameters .");
+                   "given by the parameters ."
+                "\n'From file uniform grid' reads in topography values defined on a uniform (in each direction) long,lat grid from file. "
+                "\n'From file rectangular grid' reads in topography values defined on a variably spaced long,lat grid from file. " );
             prm.declare_entry("Topography parameters",
                 "",
                 Patterns::Anything(),
