@@ -97,7 +97,7 @@ namespace aspect
        // point_lists({{{0}}})
        :
         topography_data_uniform (get_endpoints(),
-        		                 n_intervals(),
+        		                 get_number_of_intervals(),
                                  get_data())
         {}
         
@@ -373,7 +373,7 @@ namespace aspect
     Point<2>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<2> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
+      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points.")); //TODO: check if space point is 2 or not.
       return space_point;
 
     }
