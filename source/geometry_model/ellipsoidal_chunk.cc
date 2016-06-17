@@ -182,14 +182,14 @@ namespace aspect
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
         {
         	std_cxx11::array<std::pair<double,double>,2> endpoints;
-            endpoints[0] = std::make_pair (corners[1][0]-corners[0][0])*numbers::PI/180, (corners[1][1]-corners[0][1])*numbers::PI/180);
+            endpoints[0] = std::make_pair ((corners[1][0]-corners[0][0])*numbers::PI/180, (corners[1][1]-corners[0][1])*numbers::PI/180);
             endpoints[1] = std::make_pair ((corners[3][0]-corners[0][0])*numbers::PI/180, (corners[3][1]-corners[0][1])*numbers::PI/180);           
         	return endpoints;
         }  
         
         template <int dim>
         std_cxx11::array<unsigned int,2> 
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_intervals()
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
         {
             std_cxx11::array<unsigned int,2> interval;
             interval[0] = uniform_grid_number_data_points[0]-1;
@@ -202,15 +202,25 @@ namespace aspect
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
         {
         	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
-        	
+        	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
+        	double d_lat = corners[1][1]-corners[2][1])uniform_grid_number_data_points[1];
+        			
         	for(unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
         	{
         		for(unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
         		{
-        			
+        			for(unsigned int i = 0; i < point_lists.size(); i++)
+        			{
+        				Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+
+        				if(In2dPolygon(p1, point_lists[i]))
+        				{
+        					data[i_long][i_lat] = topography_values[i];
+        				}
+        			}
         		}
         	}
-        	uniform_grid_number_data_points = set_uniform_grid_number_data_points;
+        	
         	return
         } 
         

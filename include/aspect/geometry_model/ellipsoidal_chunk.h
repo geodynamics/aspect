@@ -80,7 +80,7 @@ namespace aspect
         void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
         
         static std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
-        static std_cxx11::array<unsigned int,2>             get_intervals ();
+        static std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
         static std::vector<double>                          get_data ();
         
       private:
