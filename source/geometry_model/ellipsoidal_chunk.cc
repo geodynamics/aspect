@@ -95,6 +95,9 @@ namespace aspect
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
        // :
        // point_lists({{{0}}})
+       // TODO: also initiate topography_data_nonuniform
+       // TODO: minimize initiation topography_data_*
+       // TODO: in constructor select course of action based on enum
        :
         topography_data_uniform (get_endpoints(),
         		                 n_intervals(),
@@ -108,6 +111,7 @@ namespace aspect
         {
           double value = 0;
 
+          // TODO: add cases
           switch(topo_type)
           {
           case NO_TOPOGRAPHY:
