@@ -77,6 +77,12 @@ namespace aspect
         std_cxx11::array< std::vector< double >, dim >& get_coordinate_values () const;
         std::vector<double>&                           get_data_values () const;
         
+        void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
+        
+        static std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
+        static std_cxx11::array<unsigned int,2>             get_intervals ();
+        static std::vector<double>                          get_data ();
+        
       private:
 
         topo_types topo_type;
@@ -84,8 +90,10 @@ namespace aspect
         std::vector<std::vector<std::vector<double> > > point_lists;
         std::vector<double> topography_values;
         
-        //Functions::InterpolatedTensorProductGridData<2> topography_data_uniform;
-        //Functions::InterpolatedUniformGridData<2> topography_data_rectangular;
+        Functions::InterpolatedUniformGridData<2> topography_data_uniform;
+        
+        std::vector<double> uniform_grid_number_data_points;
+        //Functions::InterpolatedTensorProductGridData<2> topography_data_rectangular;
 
       };
       
@@ -195,7 +203,7 @@ namespace aspect
        get_used_boundary_indicators() const;
 
        /*
-        *Set symbolic names for boudaries (mrtf)
+        *Set symbolic names for boudaries
         */
        virtual std::map<std::string,types::boundary_id>
        get_symbolic_boundary_names_map() const;
