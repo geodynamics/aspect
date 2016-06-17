@@ -321,7 +321,7 @@ namespace aspect
       return phi_theta_d;
     }
     
-    // Form topo depth to normal depth
+    // From topo depth to normal depth
     template <int dim>
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
