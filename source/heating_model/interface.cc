@@ -283,9 +283,9 @@ namespace aspect
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of heating models that "
-                          "will be used to calculate the heating terms in the energy"
+                          "will be used to calculate the heating terms in the energy "
                           "equation. The results of each of these criteria , i.e., "
-                          "the heating source terms and the latent heat terms for the"
+                          "the heating source terms and the latent heat terms for the "
                           "left hand side will be added.\n\n"
                           "The following heating models are available:\n\n"
                           +
@@ -295,7 +295,7 @@ namespace aspect
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            "Warning: This is the old formulation of specifying "
-                           "heating models and shouldn't be used. Please use 'List of"
+                           "heating models and shouldn't be used. Please use 'List of "
                            "model names' instead."
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string());
@@ -309,7 +309,7 @@ namespace aspect
                            "Whether to include shear heating into the model or not. From a "
                            "physical viewpoint, shear heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation."
+                           "do not include this term in the temperature equation.\n\n"
                            "Warning: deprecated! Add 'shear heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include adiabatic heating", "false",
@@ -317,7 +317,7 @@ namespace aspect
                            "Whether to include adiabatic heating into the model or not. From a "
                            "physical viewpoint, adiabatic heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation."
+                           "do not include this term in the temperature equation.\n\n"
                            "Warning: deprecated! Add 'adiabatic heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include latent heat", "false",
@@ -326,7 +326,7 @@ namespace aspect
                            "into the model or not. From a physical viewpoint, latent heat should "
                            "always be used but may be undesirable when comparing results with known "
                            "benchmarks that do not include this term in the temperature equation "
-                           "or when dealing with a model without phase transitions."
+                           "or when dealing with a model without phase transitions.\n\n"
                            "Warning: deprecated! Add 'latent heat' to the 'List of model "
                            "names' instead.");
       }
