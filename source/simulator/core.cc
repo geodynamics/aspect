@@ -2052,35 +2052,7 @@ namespace aspect
         setup_dofs();
 
         if (parameters.nonlinear_solver == NonlinearSolver::Binary_input)
-        {
-          AssertThrow (!parameters.free_surface_enabled,
-                       ExcMessage (std::string("Currently, we do not support free surface mesh with the \"nonlinear\" binary input scheme.")));
-
-
-          AssertThrow (parameters.binary_data_ts_number > 1,
-                       ExcMessage (std::string("Time step number must be 2 or greater so that old and old_old solution can be initialized.")));
-
-
-          std::string filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
-                                 Utilities::int_to_string(parameters.binary_data_ts_number - 2, 5) + ".mesh";
-          triangulation.load(filename.c_str());
-          LinearAlgebra::BlockVector tmp_solution (introspection.index_sets.system_partitioning, mpi_communicator);
-          parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
-          sol_trans.deserialize (tmp_solution);
-          old_old_solution = tmp_solution;
-
-          filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
-                     Utilities::int_to_string(parameters.binary_data_ts_number - 1, 5) + ".mesh";
-          triangulation.load(filename.c_str());
-          sol_trans.deserialize (tmp_solution);
-          old_solution = tmp_solution;
-
-          filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
-                     Utilities::int_to_string(parameters.binary_data_ts_number, 5) + ".mesh";
-          triangulation.load(filename.c_str());
-          sol_trans.deserialize (tmp_solution);
-          solution = tmp_solution;
-        }
+          init_load_binary_solution();
       }
 
     // start the timer for periodic checkpoints after the setup above
@@ -2104,59 +2076,32 @@ namespace aspect
         computing_timer.exit_section();
 
         if (parameters.nonlinear_solver == NonlinearSolver::Binary_input)
-        {
-          const std::string filename = parameters.binary_data_directory + "/fields-" +
-                                       Utilities::int_to_string(parameters.binary_data_ts_number, 5) + ".bin";
-          std::ifstream input_stream (filename);
-          AssertThrow(input_stream,
-                      ExcMessage(std::string("Failed to read the file, " + filename +
-                                             " for the time step number, " + Utilities::int_to_string(parameters.binary_data_ts_number) + " using Nonlinear solver mode \"Binary_input\".")));
-          Utilities::BinaryInputFields input_fields;
-          boost::archive::binary_iarchive ia(input_stream);
-          ia >> input_fields;
-          time = input_fields.time;
-          time_step = input_fields.time_step;
-          timestep_number = input_fields.timestep_number;
-          old_time_step = input_fields.old_time_step;
-          input_stream.close();
-        }
+          init_time_input();
       }
 
     // start the principal loop over time steps:
-    do {
-      start_timestep();
+    do
+      {
+        start_timestep();
 
-      // then do the core work: assemble systems and solve
-      solve_timestep();
+        // then do the core work: assemble systems and solve
+        solve_timestep();
 
-      pcout << std::endl;
+        pcout << std::endl;
 
-      // update the time step size
-      // for now the bool (convection/conduction dominated)
-      // returned by compute_time_step is unused, will be
-      // added to statistics later
-      if (parameters.nonlinear_solver != NonlinearSolver::Binary_input) {
-        old_time_step = time_step;
-        time_step = std::min(compute_time_step().first,
-                             parameters.maximum_time_step);
-        time_step = termination_manager.check_for_last_time_step(time_step);
-      }
-      else {
-        const std::string filename = parameters.binary_data_directory + "/fields-" +
-                                     Utilities::int_to_string(timestep_number+1, 5) +
-                                     ".bin";
-        std::ifstream input_stream(filename);
-        AssertThrow(input_stream,
-                    ExcMessage(std::string("Failed to read the file, " + filename +
-                                           " for the time step number, " + Utilities::int_to_string(timestep_number+1) +
-                                           " using Nonlinear solver mode \"Binary_input\".")));
-        Utilities::BinaryInputFields input_fields;
-        boost::archive::binary_iarchive ia(input_stream);
-        ia >> input_fields;
-        old_time_step = input_fields.old_time_step;
-        time_step = input_fields.time_step;
-        input_stream.close();
-      }
+        // update the time step size
+        // for now the bool (convection/conduction dominated)
+        // returned by compute_time_step is unused, will be
+        // added to statistics later
+        if (parameters.nonlinear_solver != NonlinearSolver::Binary_input)
+          {
+            old_time_step = time_step;
+            time_step = std::min(compute_time_step().first,
+                                 parameters.maximum_time_step);
+            time_step = termination_manager.check_for_last_time_step(time_step);
+          }
+        else
+          this->update_time_input();
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);

@@ -173,8 +173,6 @@ namespace aspect
     computing_timer.exit_section();
   }
 
-
-
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
@@ -318,6 +316,92 @@ namespace aspect
       }
   }
 
+  template <int dim>
+  void Simulator<dim>::init_load_binary_solution()
+  {
+    /**
+     * Catch edge cases and/or undeveloped functionality cases.
+     */
+
+    AssertThrow (!parameters.free_surface_enabled,
+                 ExcMessage (std::string("Using a free surface mesh with reading in of binary soltuion has not been tested.")));
+
+
+    AssertThrow (parameters.binary_data_ts_number > 1,
+                 ExcMessage (std::string("Time step number must be 2 or greater so that old and old_old solution can be initialized.")));
+
+    /**
+     * Load the triangulation data and initialize old_old_solution from input data at t_n - 2 time step number.
+     */
+
+    std::string filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
+                           Utilities::int_to_string(parameters.binary_data_ts_number - 2, 5) + ".mesh";
+
+    triangulation.load(filename.c_str());
+    LinearAlgebra::BlockVector tmp_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+    parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
+    sol_trans.deserialize (tmp_solution);
+    old_old_solution = tmp_solution;
+
+    /**
+     * Load the triangulation data and initialize old_old_solution from input data at t_n - 1 time step number.
+     */
+
+    filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name +
+               Utilities::int_to_string(parameters.binary_data_ts_number - 1, 5) + ".mesh";
+    triangulation.load(filename.c_str());
+    sol_trans.deserialize (tmp_solution);
+    old_solution = tmp_solution;
+
+    free(&tmp_solution);
+    free(&sol_trans);
+  }
+
+  template <int dim>
+  void Simulator<dim>::init_time_input()
+  {
+    const std::string filename = parameters.binary_data_directory + "/fields-" +
+                                 Utilities::int_to_string(parameters.binary_data_ts_number, 5) + ".bin";
+
+    std::ifstream input_stream (filename);
+    AssertThrow(input_stream,
+                ExcMessage(std::string("Failed to read the file, " + filename +
+                                       " for the time step number, " + Utilities::int_to_string(parameters.binary_data_ts_number) +
+                                       " using Nonlinear solver mode \"Binary_input\".")));
+    Utilities::BinaryInputFields input_fields;
+    boost::archive::binary_iarchive ia(input_stream);
+    ia >> input_fields;
+
+    time = input_fields.time;
+    time_step = input_fields.time_step;
+    timestep_number = input_fields.timestep_number;
+    old_time_step = input_fields.old_time_step;
+
+    input_stream.close();
+    free(&ia);
+    free(&input_fields);
+  }
+
+  template <int dim>
+  void Simulator<dim>::update_time_input()
+  {
+    const std::string filename = parameters.binary_data_directory + "/fields-" +
+                                 Utilities::int_to_string(timestep_number+1, 5) +
+                                 ".bin";
+    std::ifstream input_stream(filename);
+    AssertThrow(input_stream,
+                ExcMessage(std::string("Failed to read the file, " + filename +
+                                       " for the time step number, " + Utilities::int_to_string(timestep_number+1) +
+                                       " using Nonlinear solver mode \"Binary_input\".")));
+    Utilities::BinaryInputFields input_fields;
+    boost::archive::binary_iarchive ia(input_stream);
+    ia >> input_fields;
+    old_time_step = input_fields.old_time_step;
+    time_step = input_fields.time_step;
+    input_stream.close();
+    free(&ia);
+    free(&input_fields);
+  }
 }
 
 //why do we need this?!
