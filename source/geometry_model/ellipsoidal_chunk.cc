@@ -44,11 +44,11 @@ namespace aspect
     template <int dim>
     bool
     EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
-    { 
+    {
       /**
-       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html, 
+       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
        * and therefore requires the following copyright notice:
-       * 
+       *
        * Copyright 2000 softSurfer, 2012 Dan Sunday
        * This code may be freely used and modified for any purpose
        * providing that this copyright notice is included with it.
@@ -58,32 +58,37 @@ namespace aspect
        */
       int pointNo = pointList.size();
       int    wn = 0;    // the  winding number counter
-      int   j=pointNo-1; 
+      int   j=pointNo-1;
 
 
       // loop through all edges of the polygon
-      for (int i=0; i<pointNo; i++) 
-      {   // edge from V[i] to  V[i+1]
-          if (pointList[j][1] <= point[1]) 
-          {          // start y <= P.y
+      for (int i=0; i<pointNo; i++)
+        {
+          // edge from V[i] to  V[i+1]
+          if (pointList[j][1] <= point[1])
+            {
+              // start y <= P.y
               if (pointList[i][1]  > point[1])      // an upward crossing
                 if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                    - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
-                {  // P left of  edge
+                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
+                  {
+                    // P left of  edge
                     ++wn;            // have  a valid up intersect
-                }
-          }
-          else 
-          {                        // start y > P.y (no test needed)
+                  }
+            }
+          else
+            {
+              // start y > P.y (no test needed)
               if (pointList[i][1]  <= point[1])     // a downward crossing
                 if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                    - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
-                {  // P right of  edge
+                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
+                  {
+                    // P right of  edge
                     --wn;            // have  a valid down intersect
-                }
-          }
+                  }
+            }
           j=i;
-      }
+        }
       return (wn != 0);
     }
 
@@ -91,167 +96,193 @@ namespace aspect
      * the EllipsoidalChunkTopography class
      */
     // constructor
-        template <int dim>
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
-       // :
-       // point_lists({{{0}}})
-       // TODO: also initiate topography_data_nonuniform
-       // TODO: minimize initiation topography_data_*
-       // TODO: in constructor select course of action based on enum
-       :
-        topography_data_uniform (get_endpoints(),
-        		                 get_number_of_intervals(),
-                                 get_data())
-        {}
-        
-        template <int dim>
-        double
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::value (const double lon,
-                                                                  const double lat) const
-        {
-          double value = 0;
+    template <int dim>
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
+    // :
+    // point_lists({{{0}}})
+    // TODO: also initiate topography_data_nonuniform
+    // TODO: minimize initiation topography_data_*
+    // TODO: in constructor select course of action based on enum
+    {}
 
-          // TODO: add cases
-          switch(topo_type)
-          {
+
+    template <int dim>
+    double
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::value (const double lon,
+                                                              const double lat) const
+    {
+      double value = 0;
+
+      // TODO: add cases
+      switch (topo_type)
+        {
           case NO_TOPOGRAPHY:
             return 0;
             break;
-            
+
           case PRM_EXACT:
-            for(unsigned int i = 0; i < point_lists.size(); i++)
+            for (unsigned int i = 0; i < point_lists.size(); i++)
               {
                 Point<2> p1(lon * 180/numbers::PI,lat * 180/numbers::PI);
 
-                if(In2dPolygon(p1, point_lists[i]))
+                if (In2dPolygon(p1, point_lists[i]))
                   {
                     value = topography_values[i];
                   }
               }
             return value;
             break;
-            
-         /* case PRM_UNIFORM_GRID_INTERPOLATED:
-            return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
-                                                      lon * 180/numbers::PI));
-            break;
-          case FILE_UNIFORM_GRID:
-            return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
-                                                      lon * 180/numbers::PI));
-            break;
 
-          case FILE_NONUNIFORM_GRID:
-            return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
-                                                      lon * 180/numbers::PI));*/
+          case PRM_UNIFORM_GRID_INTERPOLATED:
+            if (topography_data != NULL)
+              return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+                     lon * 180/numbers::PI));
+            break;
+            /* case FILE_UNIFORM_GRID:
+               return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
+                                                         lon * 180/numbers::PI));
+               break;
+
+             case FILE_NONUNIFORM_GRID:
+               return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
+                                                         lon * 180/numbers::PI));*/
             break;
           default:
-        	  AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
-            return 0; 
+            AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
+            return 0;
             break;
-          }
-          Assert(false,ExcMessage ("The code should never reach this part. Please check the code or contact the developer."));
-          return 0;
         }
-        
-        template <int dim>
-        void
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(topo_types set_topo_type)
-        {
-          topo_type = set_topo_type;
-        } 
-        
-        template <int dim>
-        void
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_point_lists(std::vector<std::vector<std::vector<double> > > set_point_lists)
-        {
-          point_lists = set_point_lists;
-        }       
-        
-        template <int dim>
-        void
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_values(std::vector<double> set_topography_values)
-        {
-          topography_values = set_topography_values;
-        } 
-        
-        template <int dim>
-        void 
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_uniform_grid_number_data_points(std::vector<double>& set_uniform_grid_number_data_points)
-        {
-        	uniform_grid_number_data_points = set_uniform_grid_number_data_points;
-        }  
-        
-        template <int dim>
-        std_cxx11::array<std::pair<double,double>,2>
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
-        {
-        	std_cxx11::array<std::pair<double,double>,2> endpoints;
-            endpoints[0] = std::make_pair ((corners[1][0]-corners[0][0])*numbers::PI/180, (corners[1][1]-corners[0][1])*numbers::PI/180);
-            endpoints[1] = std::make_pair ((corners[3][0]-corners[0][0])*numbers::PI/180, (corners[3][1]-corners[0][1])*numbers::PI/180);           
-        	return endpoints;
-        }  
-        
-        template <int dim>
-        std_cxx11::array<unsigned int,2> 
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
-        {
-            std_cxx11::array<unsigned int,2> interval;
-            interval[0] = uniform_grid_number_data_points[0]-1;
-            interval[1] = uniform_grid_number_data_points[1]-1;
-            return interval;
-        }  
-        
-        template <int dim>
-        std::vector<double> 
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
-        {
-        	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
-        	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
-        	double d_lat = (corners[1][1]-corners[2][1])uniform_grid_number_data_points[1];
-        			
-        	for(unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
-        	{
-        		for(unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
-        		{
-        			for(unsigned int i = 0; i < point_lists.size(); i++)
-        			{
-        				Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+      Assert(false,ExcMessage ("The code should never reach this part. Please check the code or contact the developer."));
+      return 0;
+    }
 
-        				if(In2dPolygon(p1, point_lists[i]))
-        				{
-        					data[i_long][i_lat] = topography_values[i];
-        				}
-        			}
-        		}
-        	}
-        	
-        	return
-        } 
-        
-        /*template <int dim>
-        Functions::InterpolatedUniformGridData<2>&
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_corners(std::vector<Point<2> > set_corners)
+    {
+      corners = set_corners;
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(topo_types set_topo_type)
+    {
+      topo_type = set_topo_type;
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_point_lists(std::vector<std::vector<std::vector<double> > > set_point_lists)
+    {
+      point_lists = set_point_lists;
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_values(std::vector<double> set_topography_values)
+    {
+      topography_values = set_topography_values;
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_data (Functions::InterpolatedUniformGridData<2> *set_topography_data)
+    {
+      topography_data = static_cast<Function<2> *>(set_topography_data);
+    }
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_uniform_grid_number_data_points(std::vector<double> &set_uniform_grid_number_data_points)
+    {
+      uniform_grid_number_data_points = set_uniform_grid_number_data_points;
+    }
+
+    template <int dim>
+    topo_types
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type ()
+    {
+      return topo_type;
+    }
+
+    template <int dim>
+    Function<2> *
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data ()
+    {
+      return topography_data;
+    }
+
+    template <int dim>
+    std_cxx11::array<std::pair<double,double>,2>
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
+    {
+      std_cxx11::array<std::pair<double,double>,2> endpoints;
+      endpoints[0] = std::make_pair ((corners[1][0]-corners[0][0])*numbers::PI/180, (corners[1][1]-corners[0][1])*numbers::PI/180);
+      endpoints[1] = std::make_pair ((corners[3][0]-corners[0][0])*numbers::PI/180, (corners[3][1]-corners[0][1])*numbers::PI/180);
+      return endpoints;
+    }
+
+    template <int dim>
+    std_cxx11::array<unsigned int,2>
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
+    {
+      std_cxx11::array<unsigned int,2> interval;
+      interval[0] = uniform_grid_number_data_points[0]-1;
+      interval[1] = uniform_grid_number_data_points[1]-1;
+      return interval;
+    }
+
+    template <int dim>
+    std::vector<double>
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
+    {
+      std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
+      double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
+      double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
+
+      for (unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
         {
-          return topography_data_uniform;
-        } */
-        
-        /*template <int dim>
-        Functions::InterpolatedUniformGridData<2>&
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
-        {
-          return topography_data;
-        } */
-        
-        /*template <int dim>
-        std_cxx11::array< std::vector< double >, dim >&
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinate_values() const
-        {
-          //TODO: implement choices (function vs file)
-          topography_data_uniform = topography_data_uniform(get_coordinate_values(), 
-                                            Table<2,double>());
-        }*/
-  
-        
+          for (unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
+            {
+              for (unsigned int i = 0; i < point_lists.size(); i++)
+                {
+                  Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+
+                  if (In2dPolygon(p1, point_lists[i]))
+                    {
+                      data[i_long * uniform_grid_number_data_points[1] + i_lat] = topography_values[i];
+                    }
+                }
+            }
+        }
+
+      return data;
+    }
+
+    /*template <int dim>
+    Functions::InterpolatedUniformGridData<2>&
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
+    {
+      return topography_data_uniform;
+    } */
+
+    /*template <int dim>
+    Functions::InterpolatedUniformGridData<2>&
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data() const
+    {
+      return topography_data;
+    } */
+
+    /*template <int dim>
+    std_cxx11::array< std::vector< double >, dim >&
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinate_values() const
+    {
+      //TODO: implement choices (function vs file)
+      topography_data_uniform = topography_data_uniform(get_coordinate_values(),
+                                        Table<2,double>());
+    }*/
+
+
     /**
      * the EllipsoidalChunkGeometry class
      */
@@ -313,7 +344,7 @@ namespace aspect
       const double R_plus_d = p / std::cos(theta);
 
       Point<3> phi_theta_d;
-      if(phi < -numbers::PI)
+      if (phi < -numbers::PI)
         phi_theta_d[0] = phi + 2*numbers::PI;
       else if (phi > numbers::PI)
         phi_theta_d[0] = phi - 2*numbers::PI;
@@ -324,15 +355,15 @@ namespace aspect
       phi_theta_d[2] = R_plus_d - R_bar;
       return phi_theta_d;
     }
-    
+
     // From topo depth to normal depth
     template <int dim>
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
     {
-      const double d_hat = phi_theta_d_hat[2]; // long, lat, depth                  
+      const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       const double h     = topography.value(phi_theta_d_hat[0],
-                                                phi_theta_d_hat[1]);
+                                            phi_theta_d_hat[1]);
 
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
@@ -340,15 +371,15 @@ namespace aspect
                                   d);
       return phi_theta_d;
     }
-    
+
     // from normal depth to topo depth
     template <int dim>
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
-      const double d = phi_theta_d[2]; 
+      const double d = phi_theta_d[2];
       const double h = topography.value(phi_theta_d[0],
-                                            phi_theta_d[1]);
+                                        phi_theta_d[1]);
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
                                       phi_theta_d[1],
@@ -391,10 +422,48 @@ namespace aspect
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::initialize ()
+    {
+      switch (manifold.topography.get_topo_type())
+        {
+          case NO_TOPOGRAPHY:
+            break;
+
+          case PRM_EXACT:
+            break;
+
+          case PRM_UNIFORM_GRID_INTERPOLATED:
+            // create the uniform grid and add it to the pointer.
+            manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
+                                                     manifold.topography.get_number_of_intervals(),
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data().begin())));
+
+            // TODO: add delete in destructor?
+            break;
+          /*case FILE_UNIFORM_GRID:
+          return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
+                                                    lon * 180/numbers::PI));
+          break;
+
+          case FILE_NONUNIFORM_GRID:
+          return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
+                                                    lon * 180/numbers::PI));
+          break;*/
+          default:
+            AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(manifold.topography.get_topo_type()) + " has not been implemented."));
+            break;
+        }
+    }
+
     template <>
     void
     EllipsoidalChunk<3>::create_coarse_mesh(parallel::distributed::Triangulation<3> &coarse_grid) const
-    { 
+    {
       const int dim = 3;
 
       /**
@@ -576,29 +645,29 @@ namespace aspect
                             Patterns::Integer(0),
                             "The number of subdivisions of the coarse (initial) mesh in depth.");
           prm.enter_subsection("Topography");
-            {
+          {
             prm.declare_entry("Topography type",
-                "No topography",
-                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file uniform grid|From file nonuniform grid"),
-                "Select type of topography. "
-                "\n'No Topography' is the default option and creates no topography. "
-                "\n'From prm exact' uses the topography parameters directly to determine what elevation a certain point has. See the Topography parameters "
-                   "for more information on how to define the topography function. "
-                "\n'From prm interpolated on uniform grid' uses the same function as 'From prm exact', but interpolates this information on a uniform grid "
-                   "given by the parameters ."
-                "\n'From file uniform grid' reads in topography values defined on a uniform (in each direction) long,lat grid from file. "
-                "\n'From file nonuniform grid' reads in topography values defined on a variably spaced long,lat grid from file. " );
+                              "No topography",
+                              Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file uniform grid|From file nonuniform grid"),
+                              "Select type of topography. "
+                              "\n'No Topography' is the default option and creates no topography. "
+                              "\n'From prm exact' uses the topography parameters directly to determine what elevation a certain point has. See the Topography parameters "
+                              "for more information on how to define the topography function. "
+                              "\n'From prm interpolated on uniform grid' uses the same function as 'From prm exact', but interpolates this information on a uniform grid "
+                              "given by the parameters ."
+                              "\n'From file uniform grid' reads in topography values defined on a uniform (in each direction) long,lat grid from file. "
+                              "\n'From file nonuniform grid' reads in topography values defined on a variably spaced long,lat grid from file. " );
             prm.declare_entry("Topography parameters",
-                "",
-                Patterns::Anything(),
-                "Set the topography height, end with a |, and set the areas described by the points, separated by commas and coordinates separated by a ':'. "
-                "Seperate each topography feature by a semicolon. For example for two triangular areas of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
+                              "",
+                              Patterns::Anything(),
+                              "Set the topography height, end with a |, and set the areas described by the points, separated by commas and coordinates separated by a ':'. "
+                              "Seperate each topography feature by a semicolon. For example for two triangular areas of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
             prm.declare_entry("Uniform grid number of data points",
-                "1:1",
-                Patterns::Anything(),
-                "The number of data points in the longitude:latitude direction.");
+                              "1:1",
+                              Patterns::Anything(),
+                              "The number of data points in the longitude:latitude direction.");
 
-            }
+          }
           prm.leave_subsection();
         }
         prm.leave_subsection();
@@ -811,65 +880,70 @@ namespace aspect
              */
             std::string topography_type_string = prm.get("Topography type");
             topo_types topo_type;
-            if(topography_type_string == "No topography")
+            if (topography_type_string == "No topography")
               topo_type = NO_TOPOGRAPHY;
-            else if(topography_type_string == "From prm exact")
+            else if (topography_type_string == "From prm exact")
               topo_type = PRM_EXACT;
-            else if(topography_type_string == "From prm interpolated on uniform grid")
+            else if (topography_type_string == "From prm interpolated on uniform grid")
               topo_type = PRM_UNIFORM_GRID_INTERPOLATED;
-            else if(topography_type_string == "From file uniform grid")
+            else if (topography_type_string == "From file uniform grid")
               topo_type = FILE_UNIFORM_GRID;
-            else if(topography_type_string == "From file nonuniform grid")
+            else if (topography_type_string == "From file nonuniform grid")
               topo_type = FILE_NONUNIFORM_GRID;
             else
-              Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
+              {
+                Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
+                topo_type = NO_TOPOGRAPHY;
+              }
 
-            
+
             manifold.topography.set_topography_type(topo_type);
 
-            if(topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
+            if (topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
               {
                 /**
-                 * we need to fill the point lists and topography values. They 
+                 * we need to fill the point lists and topography values. They
                  * are stored in the Topography subsection in the Topography parameter.
-                 */ 
-                  std::vector<double> topography_values;
-                  std::vector<std::vector<std::vector<double> > > point_lists;
-                  std::string temptopo = prm.get("Topography parameters");
-                  std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,';');
-                  unsigned int temp_topographies_size = temp_topographies.size();
-                  
-                  topography_values.resize(temp_topographies_size,0);
-                  point_lists.resize(temp_topographies_size);
-                  for(unsigned int i_topo = 0; i_topo < temp_topographies_size; i_topo++)
-                    {
-                      std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo],'|');
-                      Assert(temp_topography.size() == 2,ExcMessage ("The given line '" + temp_topographies[i_topo] + "' is not correct. "
-                    		                                         "It consists of " + boost::lexical_cast<std::string>(temp_topography.size()) 
-                    		                                         + " parts separated by |, but it should only contain 2 parts: "
-                    		                                         "the height and the coordinate, separated by a |.'"));
-                      
-                      topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
-                      
-                      std::vector<std::string> temp_cooridnates = Utilities::split_string_list(temp_topography[1],',');
-                      unsigned int temp_coordinate_size = temp_cooridnates.size();
-                      point_lists[i_topo].resize(temp_coordinate_size,std::vector<double>(2,0));
-                      
-                      for(unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
-                        point_lists[i_topo][i_coord] = Utilities::string_to_double(Utilities::split_string_list(temp_cooridnates[i_coord],':'));
-                      Assert(temp_topography.size() == 2,ExcMessage ("The given coordinate '" + temp_cooridnates[i_coord] + "' is not correct. "
-                    		                                         "It consists of " + boost::lexical_cast<std::string>(temp_topography.size()) 
-                    		                                         + " parts separated by :, but it should only contain 2 parts: "
-                    		                                         "the longitude and latitude of the the coordinate, separated by a ':'."));
+                 */
+                std::vector<double> topography_values;
+                std::vector<std::vector<std::vector<double> > > point_lists;
+                std::string temptopo = prm.get("Topography parameters");
+                std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,';');
+                unsigned int temp_topographies_size = temp_topographies.size();
 
-                      manifold.topography.set_topography_values (topography_values);
-                      manifold.topography.set_point_lists (point_lists);
-                    }
-                  if(topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
+                topography_values.resize(temp_topographies_size,0);
+                point_lists.resize(temp_topographies_size);
+                for (unsigned int i_topo = 0; i_topo < temp_topographies_size; i_topo++)
                   {
-                	  std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
-                	  //TODO: Assert if size == 2;
-                	  manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
+                    std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo],'|');
+                    Assert(temp_topography.size() == 2,ExcMessage ("The given line '" + temp_topographies[i_topo] + "' is not correct. "
+                                                                   "It consists of " + boost::lexical_cast<std::string>(temp_topography.size())
+                                                                   + " parts separated by |, but it should only contain 2 parts: "
+                                                                   "the height and the coordinate, separated by a |.'"));
+
+                    topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
+
+                    std::vector<std::string> temp_coordinates = Utilities::split_string_list(temp_topography[1],',');
+                    unsigned int temp_coordinate_size = temp_coordinates.size();
+                    point_lists[i_topo].resize(temp_coordinate_size,std::vector<double>(2,0));
+
+                    for (unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
+                      {
+                        point_lists[i_topo][i_coord] = Utilities::string_to_double(Utilities::split_string_list(temp_coordinates[i_coord],':'));
+                        Assert(temp_topography.size() == 2,ExcMessage ("The given coordinate '" + temp_coordinates[i_coord] + "' is not correct. "
+                                                                       "It consists of " + boost::lexical_cast<std::string>(temp_topography.size())
+                                                                       + " parts separated by :, but it should only contain 2 parts: "
+                                                                       "the longitude and latitude of the the coordinate, separated by a ':'."));
+                      }
+
+                    manifold.topography.set_topography_values (topography_values);
+                    manifold.topography.set_point_lists (point_lists);
+                  }
+                if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
+                  {
+                    std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
+                    //TODO: Assert if size == 2;
+                    manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
                   }
 
               }
@@ -887,7 +961,7 @@ namespace aspect
                                        eccentricity,
                                        semi_minor_axis_b,
                                        bottom_depth,
-                                       corners); 
+                                       corners);
     }
 
     template <int dim>
