@@ -135,11 +135,11 @@ namespace aspect
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
             if (topography_data != NULL)
-              return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+              return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                      lon * 180/numbers::PI));
             break;
           case FILE_UNIFORM_GRID:
-            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+            return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                    lon * 180/numbers::PI));
             break;
 
