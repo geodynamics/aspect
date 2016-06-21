@@ -138,12 +138,12 @@ namespace aspect
               return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                      lon * 180/numbers::PI));
             break;
-            /* case FILE_UNIFORM_GRID:
-               return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
-                                                         lon * 180/numbers::PI));
-               break;
+          case FILE_UNIFORM_GRID:
+            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+                   lon * 180/numbers::PI));
+            break;
 
-             case FILE_NONUNIFORM_GRID:
+            /* case FILE_NONUNIFORM_GRID:
                return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
                                                          lon * 180/numbers::PI));*/
             break;
@@ -224,8 +224,12 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
     {
       std_cxx11::array<std::pair<double,double>,2> endpoints;
-      endpoints[0] = std::make_pair ((corners[1][0]-corners[0][0])*numbers::PI/180, (corners[1][1]-corners[0][1])*numbers::PI/180);
-      endpoints[1] = std::make_pair ((corners[3][0]-corners[0][0])*numbers::PI/180, (corners[3][1]-corners[0][1])*numbers::PI/180);
+      endpoints[0] = std::make_pair (corners[1][0]*numbers::PI/180, corners[0][0]*numbers::PI/180);
+      endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
+      for (unsigned int i=0; i<2; i++)
+        Assert (endpoints[i].first < endpoints[i].second,
+                ExcMessage ("The interval in each coordinate direction needs "
+                            "to have positive size"));
       return endpoints;
     }
 
@@ -233,7 +237,6 @@ namespace aspect
     std_cxx11::array<unsigned int,2>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
     {
-      Assert(uniform_grid_number_data_points[0]!=0 && uniform_grid_number_data_points[1]!=0, ExcMessage("Number of grid points not set."));
       std_cxx11::array<unsigned int,2> interval;
       interval[0] = uniform_grid_number_data_points[0]-1;
       interval[1] = uniform_grid_number_data_points[1]-1;
@@ -948,9 +951,9 @@ namespace aspect
             manifold.topography.set_topography_type(topo_type);
 
             if (topo_type != NO_TOPOGRAPHY)
-            {
-            	manifold.topography.set_corners(corners);
-            }
+              {
+                manifold.topography.set_corners(corners);
+              }
 
             if (topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
               {
@@ -993,29 +996,28 @@ namespace aspect
                     manifold.topography.set_point_lists (point_lists);
                   }
               }
-                if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID)
-                  {
-                    std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
-                    //TODO: Assert if size == 2;
-                    manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
-                    std::cout << "Nr of grid intervals " << manifold.topography.get_number_of_intervals()[0] << std::endl;
-                  }
+            if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID)
+              {
+                std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
+                //TODO: Assert if size == 2;
+                manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
+              }
 
-                if (topo_type == FILE_UNIFORM_GRID)
-                  {
-                    data_directory  = prm.get ("Data directory");
-                    {
-                      const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-                      std::string::size_type position;
-                      while (position = data_directory.find (subst_text),  position!=std::string::npos)
-                        data_directory.replace (data_directory.begin()+position,
-                                                data_directory.begin()+position+subst_text.size(),
-                                                subst_text);
-                    }
-                    topo_file_name = prm.get("Topography file name");
+            if (topo_type == FILE_UNIFORM_GRID)
+              {
+                data_directory  = prm.get ("Data directory");
+                {
+                  const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+                  std::string::size_type position;
+                  while (position = data_directory.find (subst_text),  position!=std::string::npos)
+                    data_directory.replace (data_directory.begin()+position,
+                                            data_directory.begin()+position+subst_text.size(),
+                                            subst_text);
+                }
+                topo_file_name = prm.get("Topography file name");
 
-                    manifold.topography.set_topography_file(data_directory+topo_file_name);
-                  }
+                manifold.topography.set_topography_file(data_directory+topo_file_name);
+              }
 
           }
           prm.leave_subsection();
