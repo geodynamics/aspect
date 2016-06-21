@@ -46,7 +46,7 @@ namespace aspect
                      PRM_EXACT, 
                      PRM_UNIFORM_GRID_INTERPOLATED, 
                      FILE_UNIFORM_GRID, 
-                     FILE_RECTANGULAR_GRID};
+                     FILE_NONUNIFORM_GRID};
     
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
@@ -93,7 +93,7 @@ namespace aspect
         Functions::InterpolatedUniformGridData<2> topography_data_uniform;
         
         std::vector<double> uniform_grid_number_data_points;
-        //Functions::InterpolatedTensorProductGridData<2> topography_data_rectangular;
+        //Functions::InterpolatedTensorProductGridData<2> topography_data_nonuniform;
 
       };
       

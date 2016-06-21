@@ -95,6 +95,9 @@ namespace aspect
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
        // :
        // point_lists({{{0}}})
+       // TODO: also initiate topography_data_nonuniform
+       // TODO: minimize initiation topography_data_*
+       // TODO: in constructor select course of action based on enum
        :
         topography_data_uniform (get_endpoints(),
         		                 get_number_of_intervals(),
@@ -108,6 +111,7 @@ namespace aspect
         {
           double value = 0;
 
+          // TODO: add cases
           switch(topo_type)
           {
           case NO_TOPOGRAPHY:
@@ -136,8 +140,8 @@ namespace aspect
                                                       lon * 180/numbers::PI));
             break;
 
-          case FILE_RECTANGULAR_GRID:
-            return topography_data_rectangular.value (Point<2>(lat * 180/numbers::PI,
+          case FILE_NONUNIFORM_GRID:
+            return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
                                                       lon * 180/numbers::PI));*/
             break;
           default:
@@ -575,13 +579,15 @@ namespace aspect
             {
             prm.declare_entry("Topography type",
                 "No topography",
-                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file uniform grid|From file rectangular grid"),
+                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file uniform grid|From file nonuniform grid"),
                 "Select type of topography. "
                 "\n'No Topography' is the default option and creates no topography. "
                 "\n'From prm exact' uses the topography parameters directly to determine what elevation a certain point has. See the Topography parameters "
                    "for more information on how to define the topography function. "
                 "\n'From prm interpolated on uniform grid' uses the same function as 'From prm exact', but interpolates this information on a uniform grid "
-                   "given by the parameters .");
+                   "given by the parameters ."
+                "\n'From file uniform grid' reads in topography values defined on a uniform (in each direction) long,lat grid from file. "
+                "\n'From file nonuniform grid' reads in topography values defined on a variably spaced long,lat grid from file. " );
             prm.declare_entry("Topography parameters",
                 "",
                 Patterns::Anything(),
@@ -813,8 +819,8 @@ namespace aspect
               topo_type = PRM_UNIFORM_GRID_INTERPOLATED;
             else if(topography_type_string == "From file uniform grid")
               topo_type = FILE_UNIFORM_GRID;
-            else if(topography_type_string == "From file rectangular grid")
-              topo_type = FILE_RECTANGULAR_GRID;
+            else if(topography_type_string == "From file nonuniform grid")
+              topo_type = FILE_NONUNIFORM_GRID;
             else
               Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
 
