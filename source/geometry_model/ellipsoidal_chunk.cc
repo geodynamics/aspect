@@ -202,12 +202,22 @@ namespace aspect
         }  
         
         template <int dim>
-        std::vector<double> 
+        std::vector<double>
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
         {
-        	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
+          std::vector<double > data;
+          switch(topo_type)
+          {
+          case NO_TOPOGRAPHY:
+            break;
+            
+          case PRM_EXACT:
+            break;
+
+          case PRM_UNIFORM_GRID_INTERPOLATED:
+        	data.resize(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
         	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
-        	double d_lat = (corners[1][1]-corners[2][1])uniform_grid_number_data_points[1];
+        	double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
         			
         	for(unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
         	{
@@ -224,8 +234,38 @@ namespace aspect
         			}
         		}
         	}
+              break;
+
+            case FILE_GRID_UNIFORM:
+               const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
+               data.resize(n_data_points,0);
+               // In file stream
+               // TODO: get file name from prm
+               const std::string point_file="uniform_grid.dat";
+               std::ifstream in_point(point_file.c_str(), std::ios::in);
+               // Check whether file exists, if not, throw exception
+               AssertThrow (in_point,
+                          ExcMessage (std::string("Couldn't open file ") + point_file));
+
+               double topo=0.0;
+
+               for (unsigned int i=0; i<n_data_points; i++)
+               {
+                if(!(in_point >> topo))
+                 {
+                  AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i) 
+                                               + " of file " + point_file));
+
+                 }
+                data[i]=topo;
+               }
+               break;
+            default:
+               break;
+
+          }
         	
-        	return
+        	return data;
         } 
         
         /*template <int dim>
@@ -597,7 +637,14 @@ namespace aspect
                 "1:1",
                 Patterns::Anything(),
                 "The number of data points in the longitude:latitude direction.");
-
+            // Data files
+            prm.declare_entry ("Data directory",
+                "$ASPECT_SOURCE_DIR/data/geometry_model/",
+                Patterns::DirectoryName (),
+                "The name of a directory that contains the model data. ");
+            prm.declare_entry ("Topography file name", "topo.dat",
+                Patterns::Anything (),
+                "The name of the file containing the topography values. ");
             }
           prm.leave_subsection();
         }
@@ -870,6 +917,20 @@ namespace aspect
                 	  std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
                 	  //TODO: Assert if size == 2;
                 	  manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
+                  }
+
+                  if(topo_type == FILE_UNIFORM_GRID)
+                  {
+                	  data_directory  = prm.get ("Data directory");
+                	  {
+                	   const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+                	   std::string::size_type position;
+                	   while (position = data_directory.find (subst_text),  position!=std::string::npos)
+                	   data_directory.replace (data_directory.begin()+position,
+                	                           data_directory.begin()+position+subst_text.size(),
+                	                           subst_text);
+                	  }
+                	  topo_file = prm.get("Topography file name");
                   }
 
               }
