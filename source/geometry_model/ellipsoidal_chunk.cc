@@ -182,6 +182,13 @@ namespace aspect
         }  
         
         template <int dim>
+        void
+        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_file(std::string set_topo_file_name)
+        {
+        	topo_file = set_topo_file_name;
+        }
+
+        template <int dim>
         std_cxx11::array<std::pair<double,double>,2>
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
         {
@@ -240,8 +247,6 @@ namespace aspect
                const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
                data.resize(n_data_points,0);
                // In file stream
-               // TODO: get file name from prm
-               const std::string point_file="uniform_grid.dat";
                std::ifstream in_point(point_file.c_str(), std::ios::in);
                // Check whether file exists, if not, throw exception
                AssertThrow (in_point,
@@ -930,7 +935,9 @@ namespace aspect
                 	                           data_directory.begin()+position+subst_text.size(),
                 	                           subst_text);
                 	  }
-                	  topo_file = prm.get("Topography file name");
+                	  topo_file_name = prm.get("Topography file name");
+
+                	  manifold.topography.set_topography_file(data_directory+topo_file_name);
                   }
 
               }

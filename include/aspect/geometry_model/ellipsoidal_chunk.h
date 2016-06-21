@@ -79,6 +79,8 @@ namespace aspect
         
         void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
         
+        void set_topography_file(std::string topo_file_name);
+
         static std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
         static std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
         static std::vector<double>                          get_data ();
@@ -86,6 +88,8 @@ namespace aspect
       private:
 
         topo_types topo_type;
+
+        std::string topo_file;
 
         std::vector<std::vector<std::vector<double> > > point_lists;
         std::vector<double> topography_values;
@@ -285,6 +289,9 @@ namespace aspect
        unsigned int EW_subdiv;
        unsigned int NS_subdiv;
        unsigned int depth_subdiv;
+       // Declare data file variables
+       std::string data_directory;
+       std::string topo_file_name;
 
 
 
