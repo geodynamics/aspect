@@ -233,6 +233,7 @@ namespace aspect
     std_cxx11::array<unsigned int,2>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
     {
+      Assert(uniform_grid_number_data_points[0]!=0 && uniform_grid_number_data_points[1]!=0, ExcMessage("Number of grid points not set."));
       std_cxx11::array<unsigned int,2> interval;
       interval[0] = uniform_grid_number_data_points[0]-1;
       interval[1] = uniform_grid_number_data_points[1]-1;
@@ -991,11 +992,13 @@ namespace aspect
                     manifold.topography.set_topography_values (topography_values);
                     manifold.topography.set_point_lists (point_lists);
                   }
+              }
                 if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID)
                   {
                     std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
                     //TODO: Assert if size == 2;
                     manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
+                    std::cout << "Nr of grid intervals " << manifold.topography.get_number_of_intervals()[0] << std::endl;
                   }
 
                 if (topo_type == FILE_UNIFORM_GRID)
@@ -1014,7 +1017,6 @@ namespace aspect
                     manifold.topography.set_topography_file(data_directory+topo_file_name);
                   }
 
-              }
           }
           prm.leave_subsection();
         }
