@@ -27,7 +27,7 @@
 #include <deal.II/base/function_lib.h>
 
 /**
- * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axis have
+ * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axes have
  * the same length. The ellipsoidal chunk can be non-coordinate parallel part of the ellipsoid.
  * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
  */
@@ -44,9 +44,9 @@ namespace aspect
      */
     enum topo_types {NO_TOPOGRAPHY,
                      PRM_EXACT, 
-                     PRM_UNIFORM_GIRD_INTERPOLATED, 
-                     FILE_UNIFORM_GRID_INTERPOLATED, 
-                     FILE_RECTANGULAR_GRID_INTERPOLATED};
+                     PRM_UNIFORM_GRID_INTERPOLATED, 
+                     FILE_UNIFORM_GRID, 
+                     FILE_NONUNIFORM_GRID};
     
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
@@ -93,7 +93,7 @@ namespace aspect
         Functions::InterpolatedUniformGridData<2> topography_data_uniform;
         
         std::vector<double> uniform_grid_number_data_points;
-        //Functions::InterpolatedTensorProductGridData<2> topography_data_rectangular;
+        //Functions::InterpolatedTensorProductGridData<2> topography_data_nonuniform;
 
       };
       

@@ -46,7 +46,7 @@ namespace aspect
     EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
     { 
       /**
-       * This code has been base on http://geomalgorithms.com/a03-_inclusion.html, 
+       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html, 
        * and therefore requires the following copyright notice:
        * 
        * Copyright 2000 softSurfer, 2012 Dan Sunday
@@ -95,6 +95,9 @@ namespace aspect
         EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
        // :
        // point_lists({{{0}}})
+       // TODO: also initiate topography_data_nonuniform
+       // TODO: minimize initiation topography_data_*
+       // TODO: in constructor select course of action based on enum
        :
         topography_data_uniform (get_endpoints(),
         		                 get_number_of_intervals(),
@@ -108,6 +111,7 @@ namespace aspect
         {
           double value = 0;
 
+          // TODO: add cases
           switch(topo_type)
           {
           case NO_TOPOGRAPHY:
@@ -127,21 +131,21 @@ namespace aspect
             return value;
             break;
             
-         /* case PRM_UNIFORM_GIRD_INTERPOLATED:
+         /* case PRM_UNIFORM_GRID_INTERPOLATED:
             return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
                                                       lon * 180/numbers::PI));
             break;
-          case FILE_UNIFORM_GRID_INTERPOLATED:
+          case FILE_UNIFORM_GRID:
             return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
                                                       lon * 180/numbers::PI));
             break;
 
-          case FILE_RECTANGULAR_GRID_INTERPOLATED:
-            return topography_data_rectangular.value (Point<2>(lat * 180/numbers::PI,
+          case FILE_NONUNIFORM_GRID:
+            return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
                                                       lon * 180/numbers::PI));*/
             break;
           default:
-        	  AssertThrow(false,ExcMessage ("This topogarphy function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
+        	  AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
             return 0; 
             break;
           }
@@ -203,7 +207,7 @@ namespace aspect
         {
         	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
         	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
-        	double d_lat = corners[1][1]-corners[2][1])uniform_grid_number_data_points[1];
+        	double d_lat = (corners[1][1]-corners[2][1])uniform_grid_number_data_points[1];
         			
         	for(unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
         	{
@@ -321,7 +325,7 @@ namespace aspect
       return phi_theta_d;
     }
     
-    // Form topo depth to normal depth
+    // From topo depth to normal depth
     template <int dim>
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
@@ -354,7 +358,7 @@ namespace aspect
 
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
-     * take an return 3D points, because 2D points make no sense for an ellipsoid, even with
+     * take and return 3D points, because 2D points make no sense for an ellipsoid, even with
      * a 2D triangulation. To do this correctly we need to add the spacedim to the triangulation
      * in ASPECT. What is now presented is just a temporary fix to get acces to the pull back
      * function from outside. The push forward function can't be fixed in this way, because
@@ -395,7 +399,7 @@ namespace aspect
 
       /**
        * Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
-       * other corners (respectively corner 1,2 and 4) placed relative to that point.
+       * other corners (respectively corner 1, 2 and 3) placed relative to that point.
        */
       const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
                                                       (corners[1][1]-corners[0][1])*numbers::PI/180,
@@ -575,18 +579,20 @@ namespace aspect
             {
             prm.declare_entry("Topography type",
                 "No topography",
-                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file interpolated on uniform grid|From file interplated on rectangular grid"),
+                Patterns::Selection("No topography|From prm exact|From prm interpolated on uniform grid|From file uniform grid|From file nonuniform grid"),
                 "Select type of topography. "
                 "\n'No Topography' is the default option and creates no topography. "
-                "\n'From prm exact' uses the topogarphy parameters directly to determine what elevetion a certain point has. See the Topography parameters "
+                "\n'From prm exact' uses the topography parameters directly to determine what elevation a certain point has. See the Topography parameters "
                    "for more information on how to define the topography function. "
                 "\n'From prm interpolated on uniform grid' uses the same function as 'From prm exact', but interpolates this information on a uniform grid "
-                   "given by the parameters .");
+                   "given by the parameters ."
+                "\n'From file uniform grid' reads in topography values defined on a uniform (in each direction) long,lat grid from file. "
+                "\n'From file nonuniform grid' reads in topography values defined on a variably spaced long,lat grid from file. " );
             prm.declare_entry("Topography parameters",
                 "",
                 Patterns::Anything(),
-                "Set the topography height, end with a |, and set the area's described by the points, separated by comma's and coordinates separated by a ':'. "
-                "Seperate each topogarphy feature by a semicolin. For example for two triangular area of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
+                "Set the topography height, end with a |, and set the areas described by the points, separated by commas and coordinates separated by a ':'. "
+                "Seperate each topography feature by a semicolon. For example for two triangular areas of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
             prm.declare_entry("Uniform grid number of data points",
                 "1:1",
                 Patterns::Anything(),
@@ -621,7 +627,7 @@ namespace aspect
           std::string SEcorner = prm.get("SE corner");
 
           /**
-           * make a list of what corners are present and check that there should be one or two corner missing,
+           * make a list of what corners are present and check that there should be one or two corners missing,
            * otherwise throw an exception
            */
           std::vector<bool> present(4,true);
@@ -699,31 +705,31 @@ namespace aspect
           NS_subdiv = prm.get_double("North-South subdivisions");
           depth_subdiv = prm.get_double("Depth subdivisions");
 
-          // Check whether the corners of the rectangle are really place correctly
+          // Check whether the corners of the rectangle are really placed correctly
           if (present[0] == true && present[1] == true)
             {
               AssertThrow (corners[0][0] >= corners[1][0],
-                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
+                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
             }
           if (present[0] == true && present[3] == true)
             {
               AssertThrow (corners[0][1] >= corners[3][1],
-                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
+                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
             }
           if (present[2] == true && present[3] == true)
             {
               AssertThrow (corners[2][0] <= corners[3][0],
-                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
+                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
             }
           if (present[2] == true && present[1] == true)
             {
               AssertThrow (corners[2][1] <= corners[1][1],
-                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
+                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
             }
           if (missing == 2)
             {
               AssertThrow ((present[0] == true && present[2] == true) || (present[1] == true && present[3] == true),
-                           ExcMessage ("Please provide to opposing corners."));
+                           ExcMessage ("Please provide two opposing corners."));
 
               if (present[0] == true && present[2] == true)
                 AssertThrow (corners[0][0] > corners[2][0] && corners[0][1] > corners[2][1],
@@ -783,16 +789,16 @@ namespace aspect
             }
           // Check that the calculated corners also obey the rules for the location of the corners.
           Assert (corners[0][0] >= corners[1][0],
-                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[0][1] >= corners[3][1],
-                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][0] <= corners[3][0],
-                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][1] <= corners[1][1],
-                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           westLongitude = corners[2][0];
           eastLongitude = corners[0][0];
@@ -810,21 +816,21 @@ namespace aspect
             else if(topography_type_string == "From prm exact")
               topo_type = PRM_EXACT;
             else if(topography_type_string == "From prm interpolated on uniform grid")
-              topo_type = PRM_UNIFORM_GIRD_INTERPOLATED;
-            else if(topography_type_string == "From file interpolated on uniform grid")
-              topo_type = FILE_UNIFORM_GRID_INTERPOLATED;
-            else if(topography_type_string == "From file interplated on rectangular grid")
-              topo_type = FILE_RECTANGULAR_GRID_INTERPOLATED;
+              topo_type = PRM_UNIFORM_GRID_INTERPOLATED;
+            else if(topography_type_string == "From file uniform grid")
+              topo_type = FILE_UNIFORM_GRID;
+            else if(topography_type_string == "From file nonuniform grid")
+              topo_type = FILE_NONUNIFORM_GRID;
             else
-              Assert(false,ExcMessage ("The given  topogarphy function (" + topography_type_string + ") has not been implemented."));
+              Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
 
             
             manifold.topography.set_topography_type(topo_type);
 
-            if(topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GIRD_INTERPOLATED)
+            if(topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
               {
                 /**
-                 * we need to fill the point lists and topogarphy values. They 
+                 * we need to fill the point lists and topography values. They 
                  * are stored in the Topography subsection in the Topography parameter.
                  */ 
                   std::vector<double> topography_values;
@@ -859,7 +865,7 @@ namespace aspect
                       manifold.topography.set_topography_values (topography_values);
                       manifold.topography.set_point_lists (point_lists);
                     }
-                  if(topo_type == PRM_UNIFORM_GIRD_INTERPOLATED)
+                  if(topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
                   {
                 	  std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
                 	  //TODO: Assert if size == 2;
