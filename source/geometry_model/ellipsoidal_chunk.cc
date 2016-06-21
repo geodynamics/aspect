@@ -243,18 +243,7 @@ namespace aspect
     std::vector<double>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
     {
-          std::vector<double > data;
-          switch(topo_type)
-          {
-          case NO_TOPOGRAPHY:
-            break;
-            
-          case PRM_EXACT:
-            break;
-
-          case PRM_UNIFORM_GRID_INTERPOLATED:
-          {
-        	data.resize(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
+        	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
         	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
         	double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
         			
@@ -273,39 +262,36 @@ namespace aspect
         			}
         		}
         	}
-              break;
-          }
 
-            case FILE_UNIFORM_GRID:
-            {
-               const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
-               data.resize(n_data_points,0);
-               // In file stream
-               std::ifstream in_topo(topo_file.c_str(), std::ios::in);
-               // Check whether file exists, if not, throw exception
-               AssertThrow (in_topo,
-                          ExcMessage (std::string("Couldn't open file ") + topo_file));
-
-               double topo=0.0;
-
-               for (unsigned int i=0; i<n_data_points; i++)
-               {
-                if(!(in_topo >> topo))
-                 {
-                  AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i) 
-                                               + " of file " + topo_file));
-
-                 }
-                data[i]=topo;
-               }
-               break;
-            }
-            default:
-               break;
-
-          }
-        	
       return data;
+    }
+
+    template <int dim>
+    std::vector<double>
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data_from_file ()
+    {
+   const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
+   std::vector<double> data(n_data_points,0);
+   // In file stream
+   std::ifstream in_topo(topo_file.c_str(), std::ios::in);
+   // Check whether file exists, if not, throw exception
+   AssertThrow (in_topo,
+              ExcMessage (std::string("Couldn't open file ") + topo_file));
+
+   double topo=0.0;
+
+   for (unsigned int i=0; i<n_data_points; i++)
+   {
+    if(!(in_topo >> topo))
+     {
+      AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i)
+                                   + " of file " + topo_file));
+
+     }
+    data[i]=topo;
+   }
+
+return data;
     }
 
     /*template <int dim>
@@ -494,12 +480,17 @@ namespace aspect
 
             // TODO: add delete in destructor?
             break;
-          /*case FILE_UNIFORM_GRID:
-          return topography_data_uniform.value (Point<2>(lat * 180/numbers::PI,
-                                                    lon * 180/numbers::PI));
+          case FILE_UNIFORM_GRID:
+        	// read in the uniform grid topography values and
+        	// add them to the pointer
+            manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
+                                                       manifold.topography.get_number_of_intervals(),
+                                                       Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                        manifold.topography.get_number_of_intervals()[1]+1,
+                                                                        manifold.topography.get_data_from_file().begin())));
           break;
 
-          case FILE_NONUNIFORM_GRID:
+          /*case FILE_NONUNIFORM_GRID:
           return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
                                                     lon * 180/numbers::PI));
           break;*/

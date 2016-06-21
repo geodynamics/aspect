@@ -90,6 +90,7 @@ namespace aspect
             std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
             std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
             std::vector<double>                          get_data ();
+            std::vector<double>                          get_data_from_file ();
 
           private:
 
