@@ -918,14 +918,14 @@ namespace aspect
                       
                       topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
                       
-                      std::vector<std::string> temp_cooridnates = Utilities::split_string_list(temp_topography[1],',');
-                      unsigned int temp_coordinate_size = temp_cooridnates.size();
+                      std::vector<std::string> temp_coordinates = Utilities::split_string_list(temp_topography[1],',');
+                      unsigned int temp_coordinate_size = temp_coordinates.size();
                       point_lists[i_topo].resize(temp_coordinate_size,std::vector<double>(2,0));
                       
                       for(unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
                       {
-                        point_lists[i_topo][i_coord] = Utilities::string_to_double(Utilities::split_string_list(temp_cooridnates[i_coord],':'));
-                        Assert(temp_topography.size() == 2,ExcMessage ("The given coordinate '" + temp_cooridnates[i_coord] + "' is not correct. "
+                        point_lists[i_topo][i_coord] = Utilities::string_to_double(Utilities::split_string_list(temp_coordinates[i_coord],':'));
+                        Assert(temp_topography.size() == 2,ExcMessage ("The given coordinate '" + temp_coordinates[i_coord] + "' is not correct. "
                     		                                         "It consists of " + boost::lexical_cast<std::string>(temp_topography.size()) 
                     		                                         + " parts separated by :, but it should only contain 2 parts: "
                     		                                         "the longitude and latitude of the the coordinate, separated by a ':'."));
