@@ -67,19 +67,22 @@ namespace aspect
         double value (const double lon,
                       const double lat) const;
         
+        /**
+         * The set functions
+         */
         void set_corners(std::vector<Point<2> > corners);
         void set_topography_type(topo_types topo_type);
         void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
         void set_topography_values (std::vector<double> topography_values);
         void set_topography_data (Functions::InterpolatedUniformGridData<2> * topography_data);
+        void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
         
-        //static Functions::InterpolatedTensorProductGridData<2>& get_topography_data ();
+        /**
+         * The get functions
+         */
         Functions::InterpolatedUniformGridData<2>& get_topography_data() const;
         std_cxx11::array< std::vector< double >, dim >& get_coordinate_values () const;
         std::vector<double>&                           get_data_values () const;
-        
-        void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
-        
         topo_types                                   get_topo_type ();
         Function<2>*                                 get_topography_data ();
         std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
@@ -89,16 +92,11 @@ namespace aspect
       private:
 
         topo_types topo_type;
-
         std::vector<std::vector<std::vector<double> > > point_lists;
         std::vector<double> topography_values;
-        
         Function<2>* topography_data = NULL;
-
-        //Functions::InterpolatedUniformGridData<2> topography_data_uniform;
         std::vector<Point<2> > corners;
         std::vector<double> uniform_grid_number_data_points;
-        //Functions::InterpolatedTensorProductGridData<2> topography_data_nonuniform;
 
       };
       
