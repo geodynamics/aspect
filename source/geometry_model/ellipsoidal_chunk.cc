@@ -946,6 +946,11 @@ namespace aspect
 
             manifold.topography.set_topography_type(topo_type);
 
+            if (topo_type != NO_TOPOGRAPHY)
+            {
+            	manifold.topography.set_corners(corners);
+            }
+
             if (topo_type == PRM_EXACT || topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
               {
                 /**
