@@ -67,10 +67,11 @@ namespace aspect
         double value (const double lon,
                       const double lat) const;
         
-        
+        void set_corners(std::vector<Point<2> > corners);
         void set_topography_type(topo_types topo_type);
         void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
         void set_topography_values (std::vector<double> topography_values);
+        void set_topography_data (Functions::InterpolatedUniformGridData<2> * topography_data);
         
         //static Functions::InterpolatedTensorProductGridData<2>& get_topography_data ();
         Functions::InterpolatedUniformGridData<2>& get_topography_data() const;
@@ -79,9 +80,11 @@ namespace aspect
         
         void set_uniform_grid_number_data_points(std::vector<double>& uniform_grid_number_data_points);
         
-        static std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
-        static std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
-        static std::vector<double>                          get_data ();
+        topo_types                                   get_topo_type ();
+        Function<2>*                                 get_topography_data ();
+        std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
+        std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
+        std::vector<double>                          get_data ();
         
       private:
 
@@ -90,8 +93,10 @@ namespace aspect
         std::vector<std::vector<std::vector<double> > > point_lists;
         std::vector<double> topography_values;
         
-        Functions::InterpolatedUniformGridData<2> topography_data_uniform;
-        
+        Function<2>* topography_data = NULL;
+
+        //Functions::InterpolatedUniformGridData<2> topography_data_uniform;
+        std::vector<Point<2> > corners;
         std::vector<double> uniform_grid_number_data_points;
         //Functions::InterpolatedTensorProductGridData<2> topography_data_nonuniform;
 
@@ -141,6 +146,10 @@ namespace aspect
         Point<3> pull_back_topography (const Point<3> &phi_theta_d_hat) const;
       };
 
+
+      virtual
+	  void
+	  initialize ();
 
       /**
        * Generate a coarse mesh for the geometry described by this class.
