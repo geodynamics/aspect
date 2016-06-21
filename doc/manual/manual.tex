@@ -1601,6 +1601,133 @@ the details of which may be found in \cite{KMM2010}.
 
 An example of a simple model which uses a free surface may be found in Section \ref{sec:cookbooks-freesurface}.
 
+\subsection{Calculations with melt transport}
+\label{sec:melt_transport}
+
+The original formulation of the equations in section \ref{sec:equations} describes the movement of solid mantle material. These computations also allow for taking into account how partially molten material changes the material properties and the energy balance through the release of latent heat. However, this will not consider melt extraction or any relative movement between melt and solid and there might be problems where the transport of melt is of interest. Thus, \aspect{} allows for solving additional equations describing the behavior of silicate melt percolating through and interacting with a viscously deforming host rock. This is implemented using the approach of \cite{KMK2013} and changes the Stokes system to:
+
+\begin{align}
+  \label{eq:stokes-1-melt}
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u_s)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u_s)\mathbf 1\right)
+                \right] + \nabla p_f + \nabla p_c  &=
+  \rho \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-2-melt}
+  \nabla \cdot \mathbf u_s - \nabla \cdot K_D \nabla p_f 
+  - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
+  &= 
+  - \nabla \cdot K_D \rho_f \mathbf g
+  \notag
+  \\
+  &\quad
+  + \Gamma \left( \frac{1}{\rho_f} - \frac{1}{\rho_s} \right)
+  \\
+  &\quad
+  - \frac{\phi }{\rho_f} \mathbf u_s \cdot \nabla\rho_f 
+  - \frac{1 - \phi }{\rho_s} \mathbf u_s \cdot \nabla\rho_s
+  \notag
+  \\
+  &\quad
+  - K_D \mathbf g \cdot \nabla \rho_f 
+  & \qquad
+  & \textrm{in $\Omega$},
+  \notag
+  \\
+  \label{eq:stokes-3-melt}
+  \nabla \cdot \mathbf u_s + \frac{p_c}{\xi} 
+  &=
+  0.
+\end{align}
+
+We use the indices $s$ to indicate properties of the solid and $f$ for the properties of the fluid. The equations are solved for the solid velocity $\mathbf{u_s}$, the fluid pressure $p_f$, and an additional variable, the compaction pressure $p_c$, which is related to the fluid and solid pressure through the relation $p_c = (1-\phi) (p_s-p_f)$. $K_D$ is the Darcy coefficient, which is defined as the quotient of the permeability and the fluid viscosity and $\Gamma$ is the melting rate. $\eta$ and $\xi$ are the shear and compaction viscosities and can depend on the porosity, temperature, pressure, strain rate and composition. However, there are various laws for these quantities and so this is implemented in the material model. Common formulations for the dependence on porosity are $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with $\alpha_\phi \approx 25...30$ and $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
+
+To avoid the density gradients, we can use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in solid density is dominated by the change in static pressure, which can be written as
+$\nabla p_s \approx \nabla p_\text{static} \approx \rho_s \textbf{g}$.
+This finally allows us to write
+\begin{equation*}
+\frac{1}{\rho_s} \nabla \rho_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g}
+\approx \kappa_s \rho_s \textbf{g}. 
+\end{equation*}
+For the fluid pressure, choosing a good approximation depends on the model parameters and setup (see \cite{DH2015}). 
+Hence, we make $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the forces that are expected to be dominant in the model. 
+We then can replace the second equation by
+\begin{align*}
+\nabla \cdot \mathbf u_s - \nabla \cdot K_D \nabla p_f 
+  - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
+  &= 
+  - \nabla \cdot (K_D\rho_f \mathbf g)
+  \\
+  &\quad
+  + \Gamma \left( \frac{1}{\rho_f} - \frac{1}{\rho_s} \right)
+  \notag
+  \\
+  &\quad
+  - \frac{\phi }{\rho_f} \mathbf u_s \cdot \nabla\rho_f
+  - (\mathbf u_s \cdot \mathbf g ) (1 - \phi) \kappa_s \rho_s
+  \notag
+  \\
+  &\quad
+  - K_D \mathbf g \cdot \nabla \rho_f .
+  \notag
+\end{align*}
+%
+The melt velocity is computed as
+\[
+ \mathbf u_f =  \mathbf u_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),
+\]
+but is only used for postprocessing purposes and for computing the time step length.  
+
+\note{Here, we do not use the visco-elasto-plastic rheology of the \cite{KMK2013} formulation. 
+Hence, we do not consider the elastic deformation terms that would appear on the right hand side of Equation 
+\ref{eq:stokes-1-melt} and Equation \ref{eq:stokes-3-melt} and that include the elastic and compaction stress 
+evolution parameters $\xi_\tau$ and $\xi_p$. Moreover, our viscosity parameters $\eta$ and $\xi$ only cover viscous 
+deformation instead of combining visco-elasticity and plastic failure. This would require a modification of the rheologic 
+law using effective shear and compaction viscosities $\eta_\text{eff}$ and $\xi_\text{eff}$ combining a failure criterion 
+and shear and compaction visco-elasticities.}
+
+Moreover, melt transport requires an advection equation for the porosity field $\phi$:
+\begin{align}
+  \label{eq:porosity}
+  \rho_s \frac{\partial (1 - \phi)}{\partial t} + \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf u_s \right]
+  &=
+  - \Gamma
+  & \quad
+  & \textrm{in $\Omega$},
+  i=1\ldots C
+\end{align}
+
+In order to solve this equation in the same way as the other advection equations, we replace the second term of the equation by: 
+
+\begin{equation*}
+\nabla \cdot \left[ \rho_s (1 - \phi) \mathbf u_s \right]
+= \left( 1-\phi \right) \left( \rho_s \nabla \cdot \mathbf u_s 
++ \nabla \rho_s \cdot \mathbf u_s \right)
+- \nabla \phi \cdot \rho_s \mathbf u_s 
+\end{equation*}
+Then we use the same method as for the mass conservation (described in section \ref{sec:boussinesq}) and assume the change in density is dominated by the change in static pressure, which can be written as
+$\nabla p_s \approx \nabla p_\text{static} \approx \rho_s \textbf{g}$.
+This finally allows us to write
+\begin{equation*}
+\frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u_s} 
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p \cdot \mathbf{u_s} 
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s \cdot \mathbf{u_s} 
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g} \cdot \mathbf{u_s} 
+\approx \kappa_s \rho_s \textbf{g} \cdot \mathbf{u_s} 
+\end{equation*}
+so we get
+\begin{equation*}
+\frac{\partial \phi}{\partial t} + \mathbf u_s \cdot \nabla \phi
+= \frac{\Gamma}{\rho_s}
++ (1 - \phi) (\nabla \cdot \mathbf u_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u_s} ).
+\end{equation*}
+
+More details on the implementation can be found in \cite{DH2015}. A benchmark case demonstrating the propagation of solitary waves can be found in Section \ref{sec:benchmark-solitary_wave}.
 
 \subsection{Nullspace removal}
 
@@ -7676,6 +7803,63 @@ could improve the convergence. The primary challenge in accuracy is limiting num
 of the rising blob. If the blob becomes too diffuse, its ability to lift topography is diminished.
 It would be instructive to compare the results of this benchmark using tracer particles with the 
 results using compositional fields.
+
+\subsubsection{The solitary wave benchmark}
+\label{sec:benchmark-solitary_wave}
+
+\textit{This section was contributed by Juliane Dannberg.}
+
+One of the most widely used benchmarks for codes that model the migration of melt through a compacting and dilating matrix is the propagation of solitary waves (e.g. \cite{SS11, KMK2013, Schm00}). 
+The benchmark is intended to test the accuracy of the solution of the two--phase flow equations as described in Section \ref{sec:melt_transport} and makes use of the fact that there is an analytical solution for the shape of solitary waves that travel through a partially molten rock with a constant background porosity without changing their shape and with a constant wave speed. 
+Here, we follow the setup of the benchmark as it is described in \cite{BR86}, which considers one-dimensional solitary waves:
+
+The model features a perturbation of higher porosity with the amplitude $A/\phi_0$ in a uniform low-porosity ($\phi=\phi_0$) background.  Due to its lower density, melt migrates upwards, dilating the solid matrix at its front and compacting it at its end. 
+
+Assuming constant shear and compaction viscosities and using a permeability law in form of 
+{%
+\begin{align*}
+k_\phi &= k_0 \phi^3, && \text{ implying a Darcy coefficient }
+K_D(\phi) = \frac{k_0}{\eta_f} \phi^3 , \\
+\intertext{and the non-dimensionalization }
+x &= \delta x' 
+  && \text{ with the compaction length } \delta = \sqrt{K_D(\phi_0)(\xi + \frac{4}{3}\eta)} , \\
+\phi &= \phi_0 \phi ' 
+  && \text{ with the background porosity } \phi_0 , \\
+(\mathbf u_s, \mathbf u_f) &= u_0 (\mathbf u_s, \mathbf u_f)' 
+  && \text{ with the separation flux } \phi_0 u_0 = K_D(\phi_0) \Delta\rho g ,
+\end{align*}
+}
+%
+the analytical solution for the shape of the solitary wave can be written in the implicit form as:
+\begin{align*}
+x(\phi) &= \pm (A + 0.5) 
+\left[ -2 \sqrt{A-\phi} + \frac{1}{\sqrt{A-1}} 
+\ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]
+\end{align*}
+and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A/\phi_0+1)$. 
+This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure \ref{fig:setup-solitary-wave} illustrates the model setup. 
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/solitary_wave/setup.pdf}
+  \end{center}
+  \caption{\it Setup of the solitary wave benchmark. The domain is $400$ m high and includes a low porosity
+  ($\phi = 0.001$) background with an initial perturbation ($\phi = 0.1$). The solid density is $3300\,kg/m^3$
+  and the melt density is $2500\,kg/m^3$. We apply the negative phase speed 
+  of the solitary wave $\mathbf u_s = -c \, \mathbf e_z$ as velocity boundary condition, so that the wave will 
+  stay at its original position while the background is moving.}
+  \label{fig:setup-solitary-wave}
+\end{figure}
+
+The parameter file and material model for this setup can be found in \url{benchmarks/solitary_wave/solitary_wave.prm} and \url{benchmarks/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm}
+
+The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors 
+We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
+
+And extensive discussion of the results and convergence behaviour can be found in \cite{DH2015}.
+
 
 \section{Extending \aspect}
 \label{sec:extending}

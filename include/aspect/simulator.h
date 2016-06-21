@@ -53,6 +53,7 @@
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
@@ -66,6 +67,9 @@
 namespace aspect
 {
   using namespace dealii;
+
+  template <int dim>
+  class MeltHandler;
 
   namespace internal
   {
@@ -231,8 +235,7 @@ namespace aspect
         is_temperature () const;
 
         /**
-         * Return whether this object refers to a field discretized by
-         * discontinuous finite elements.
+         * Return whether this object refers to a field discretized by discontinuous finite elements.
          */
         bool
         is_discontinuous (const Introspection<dim> &introspection) const;
@@ -703,6 +706,21 @@ namespace aspect
                                        internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
                                        internal::Assembly::CopyData::AdvectionSystem<dim> &data);
 
+
+      /**
+       * Compute the right-hand side for the fluid pressure equation of the Staokes
+       * system in case the simulation uses melt transport. This includes a term
+       * derived from Darcy's law, a term including the melting rate and a term dependent
+       * on the densities and velocities of fluid and solid.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      double compute_fluid_pressure_RHS(const internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                        MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                        MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                        const unsigned int q_point) const;
+
       /**
        * Copy the contribution to the advection system from a single cell into
        * the global matrix that stores these elements.
@@ -799,10 +817,15 @@ namespace aspect
       /**
        * Invert the action of the function above.
        *
+       * This function modifies @p vector in-place and uses a second copy with relevant
+       * dofs (@p relevant_vector) for accessing the pressure values. Both @p vector and @p relevant_vector are expected to already contain
+       * the correct pressure values.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void denormalize_pressure(LinearAlgebra::BlockVector &vector);
+      void denormalize_pressure(LinearAlgebra::BlockVector &vector,
+                                const LinearAlgebra::BlockVector &relevant_vector);
 
       /**
        * Apply the bound preserving limiter to the discontinuous galerkin solutions:
@@ -1069,6 +1092,14 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
+
+      /**
+       * Shared pointer for an instance of the MeltHandler. This way,
+       * if we do not need the machinery for doing melt stuff, we do
+       * not even allocate it.
+       */
+      std_cxx11::shared_ptr<MeltHandler<dim> > melt_handler;
+
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;
       Introspection<dim>                  introspection;

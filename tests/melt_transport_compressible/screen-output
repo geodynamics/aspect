@@ -1,0 +1,45 @@
+
+Loading shared library <./libmelt_transport_compressible.so>
+
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 8.70027e-19, 21.6796
+      Total relative nonlinear residual: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 8.70027e-19, 1.32549
+      Total relative nonlinear residual: 0.06114
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 10 iterations.
+      Nonlinear residuals: 0, 8.70027e-19, 9.18053e-05
+      Total relative nonlinear residual: 4.23464e-06
+
+
+
+   Postprocessing:
+     RMS, max velocity:                                      0.223 m/s, 0.339 m/s
+     Pressure min/avg/max:                                   0.5086 Pa, 1.575 Pa, 2.963 Pa
+     Max and min velocity along boundary parts:              0.3392 m/s, 0.1252 m/s, 0.3392 m/s, 0.1252 m/s, 0.125 m/s, 0.125 m/s, 0.3398 m/s, 0.3398 m/s
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.282473e-07, 2.787585e-05, 4.027059e-06, 1.265218e-05, 1.176215e-08, 3.128963e-03
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

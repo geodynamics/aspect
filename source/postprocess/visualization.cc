@@ -63,13 +63,29 @@ namespace aspect
             const unsigned int n_q_points = uh.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
-                computed_quantities[q][i]=uh[q][i] * ((i < dim) ? velocity_scaling_factor : 1.0);
+                {
+                  if (this->introspection().component_masks.velocities[i] ||
+                      (this->include_melt_transport()
+                       && this->introspection().variable("fluid velocity").component_mask[i]))
+                    computed_quantities[q][i]=uh[q][i] * velocity_scaling_factor;
+                  else
+                    computed_quantities[q][i]=uh[q][i];
+                }
           }
 
           virtual std::vector<std::string> get_names () const
           {
             std::vector<std::string> solution_names (dim, "velocity");
+
+            if (this->include_melt_transport())
+              {
+                solution_names.push_back ("p_f");
+                solution_names.push_back ("p_c");
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_names.push_back ("u_f");
+              }
             solution_names.push_back ("p");
+
             solution_names.push_back ("T");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               solution_names.push_back (this->introspection().name_for_compositional_index(c));
@@ -84,8 +100,15 @@ namespace aspect
             std::vector<DataComponentInterpretation::DataComponentInterpretation>
             interpretation (dim,
                             DataComponentInterpretation::component_is_part_of_vector);
-            interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-            interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+            if (this->include_melt_transport())
+              {
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                for (unsigned int i=0; i<dim; ++i)
+                  interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+              }
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
@@ -278,9 +301,6 @@ namespace aspect
       // will then also destroy the object
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
-
-
-
       data_out.add_data_vector (this->get_solution(),
                                 base_variables);
 

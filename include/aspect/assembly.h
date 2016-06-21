@@ -50,7 +50,8 @@ namespace aspect
                                 const Quadrature<dim>    &quadrature,
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
-                                const unsigned int        n_compositional_fields);
+                                const unsigned int        n_compositional_fields,
+                                const bool                add_compaction_pressure);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           virtual ~StokesPreconditioner ();
@@ -59,6 +60,8 @@ namespace aspect
 
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  phi_p;
+          std::vector<double>                  phi_p_c;
+          std::vector<Tensor<1,dim> >          grad_phi_p;
 
           std::vector<double>                  temperature_values;
           std::vector<double>                  pressure_values;
@@ -90,7 +93,8 @@ namespace aspect
                         const Quadrature<dim-1>  &face_quadrature,
                         const UpdateFlags         update_flags,
                         const UpdateFlags         face_update_flags,
-                        const unsigned int        n_compositional_fields);
+                        const unsigned int        n_compositional_fields,
+                        const bool                add_compaction_pressure);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -181,6 +185,7 @@ namespace aspect
 
           std::vector<SymmetricTensor<2,dim> > current_strain_rates;
           std::vector<std::vector<double> > current_composition_values;
+          std::vector<double>         current_velocity_divergences;
 
           /**
            * Material model inputs and outputs computed at the current

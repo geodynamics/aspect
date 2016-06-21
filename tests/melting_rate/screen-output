@@ -1,0 +1,100 @@
+
+Loading shared library <./libmelting_rate.so>
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 455.855, 1.45653e-09, 1.45653e-09, 3.6448e+13
+      Total relative nonlinear residual: 1
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 455.855, 1.45653e-09, 1.45653e-09, 0.751931
+      Total relative nonlinear residual: 2.06303e-14
+
+
+
+   Postprocessing:
+     Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
+
+*** Timestep 1:  t=117.058 years
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 9 iterations.
+   Solving peridotite system ... 8 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 2.22886e+13, 14810, 6109.22, 1.15596e+11
+      Total relative nonlinear residual: 0.0644058
+
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving peridotite system ... 6 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 3.02886e+11, 725.302, 48.0814, 3.58558e+08
+      Total relative nonlinear residual: 0.000199776
+
+
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 5 iterations.
+   Solving peridotite system ... 3 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 3.3588e+08, 1.61086, 0.0589186, 840378
+      Total relative nonlinear residual: 4.68229e-07
+
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.948e-11/0.2001/1.257e+08 // -1.463e-13/0.2001/1.257e+08
+
+*** Timestep 2:  t=200 years
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 8 iterations.
+   Solving peridotite system ... 7 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 9.81079e+11, 2123.63, 1814.83, 3.6152e+10
+      Total relative nonlinear residual: 0.0201335
+
+
+   Solving temperature system... 4 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving peridotite system ... 5 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 6.28663e+10, 156.256, 10.5419, 5.53389e+07
+      Total relative nonlinear residual: 3.0819e-05
+
+
+   Solving temperature system... 1 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving peridotite system ... 2 iterations.
+   Solving Stokes system... done.
+   Solving for u_f in 12 iterations.
+      Nonlinear residuals: 3.45812e+07, 0.167251, 0.00613062, 63396.8
+      Total relative nonlinear residual: 3.53066e-08
+
+
+
+   Postprocessing:
+     Compositions min/max/mass: -3.793e-11/0.2002/1.258e+08 // -5.002e-13/0.2002/1.258e+08
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

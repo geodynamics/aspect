@@ -370,6 +370,15 @@ namespace aspect
       std::vector<std::vector<double> > reaction_terms;
 
       /**
+       * Force vector with dim+1 components to be added to the right-hand side
+       * of the Stokes system (tested with velocity and pressure). It is set
+       * to zero by default. This variable is typically unused in realistic
+       * mantle convection problems, but is very useful for convergence
+       * studies where a manufactured solution requires computing a RHS.
+       */
+      std::vector<Vector<double> > force_vector;
+
+      /**
        * Vector of shared pointers to additional material model output
        * objects that can then be added to MaterialModelOutputs. By default,
        * no outputs are added.
@@ -1045,7 +1054,6 @@ namespace aspect
         }
       return NULL;
     }
-
 
 
     template <int dim>

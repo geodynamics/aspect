@@ -1,0 +1,471 @@
+
+Loading shared library <./libmelt_transport_compressible_iterative.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 7,401 (2,178+578+2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+2286 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 18.0037
+      Total relative nonlinear residual: 0.123457
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+225 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 9.54357
+      Total relative nonlinear residual: 0.065443
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0320484
+      Total relative nonlinear residual: 0.000219765
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0214468
+      Total relative nonlinear residual: 0.000147067
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0101257
+      Total relative nonlinear residual: 6.94348e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0185636
+      Total relative nonlinear residual: 0.000127296
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.019367
+      Total relative nonlinear residual: 0.000132805
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+77 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0354777
+      Total relative nonlinear residual: 0.000243281
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0174728
+      Total relative nonlinear residual: 0.000119816
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0181907
+      Total relative nonlinear residual: 0.000124739
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0191164
+      Total relative nonlinear residual: 0.000131087
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0183741
+      Total relative nonlinear residual: 0.000125997
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.032467
+      Total relative nonlinear residual: 0.000222636
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0219225
+      Total relative nonlinear residual: 0.000150329
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.030688
+      Total relative nonlinear residual: 0.000210436
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0299969
+      Total relative nonlinear residual: 0.000205697
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0216933
+      Total relative nonlinear residual: 0.000148757
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0322508
+      Total relative nonlinear residual: 0.000221153
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0208512
+      Total relative nonlinear residual: 0.000142983
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0345821
+      Total relative nonlinear residual: 0.00023714
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0186456
+      Total relative nonlinear residual: 0.000127858
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0643258
+      Total relative nonlinear residual: 0.000441101
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0274419
+      Total relative nonlinear residual: 0.000188177
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0204685
+      Total relative nonlinear residual: 0.000140359
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0191051
+      Total relative nonlinear residual: 0.000131009
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.035714
+      Total relative nonlinear residual: 0.000244901
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0147554
+      Total relative nonlinear residual: 0.000101182
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.018331
+      Total relative nonlinear residual: 0.000125701
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0188141
+      Total relative nonlinear residual: 0.000129014
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0332363
+      Total relative nonlinear residual: 0.000227911
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0340896
+      Total relative nonlinear residual: 0.000233762
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0315828
+      Total relative nonlinear residual: 0.000216572
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0121531
+      Total relative nonlinear residual: 8.33375e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0169138
+      Total relative nonlinear residual: 0.000115983
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0171455
+      Total relative nonlinear residual: 0.000117572
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.00981541
+      Total relative nonlinear residual: 6.73071e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0203756
+      Total relative nonlinear residual: 0.000139722
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0119867
+      Total relative nonlinear residual: 8.21965e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0186415
+      Total relative nonlinear residual: 0.00012783
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0345436
+      Total relative nonlinear residual: 0.000236875
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0342155
+      Total relative nonlinear residual: 0.000234626
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+127 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0173765
+      Total relative nonlinear residual: 0.000119155
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0184061
+      Total relative nonlinear residual: 0.000126216
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0196585
+      Total relative nonlinear residual: 0.000134804
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0315036
+      Total relative nonlinear residual: 0.000216029
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0115713
+      Total relative nonlinear residual: 7.93476e-05
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.035748
+      Total relative nonlinear residual: 0.000245134
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0205751
+      Total relative nonlinear residual: 0.00014109
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+28 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.0186783
+      Total relative nonlinear residual: 0.000128082
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+29 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.58597e-18, 0.011726
+      Total relative nonlinear residual: 8.04086e-05
+
+
+
+   Postprocessing:
+     RMS, max velocity:                                      0.223 m/s, 0.337 m/s
+     Pressure min/avg/max:                                   0.5083 Pa, 1.575 Pa, 2.961 Pa
+     Max and min velocity along boundary parts:              0.3374 m/s, 0.1259 m/s, 0.3374 m/s, 0.1259 m/s, 0.125 m/s, 0.125 m/s, 0.3398 m/s, 0.3398 m/s
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 2.064461e-06, 4.471079e-04, 6.602921e-05, 2.025887e-04, 7.525970e-07, 2.327162e-02
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

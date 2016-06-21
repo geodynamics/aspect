@@ -1,11 +1,15 @@
 # This test checks if the postprocessor 'melt fraction' works as 
 # intended. The visulaization output is then a p-T-diagramme of
-# the melt fraction of pyroxebite using the melting model of 
+# the melt fraction of pyroxenite using the melting model of 
 # Sobolev et. al, 2010 (Nature)
 # with the temperature ranging from 1000°C to 1900°C on the x axis 
 # and the pressure ranging from 0 GPa to 8 GPa on the y axis.
 
-# MPI: 2
+# For visually checking the results, the gnuplot output can be 
+# plotted in gluplot with:
+# set dgrid3d
+# set view map
+# splot "tests/output-melt_postprocessor_peridotite/solution-00000.0000.gnuplot" using 1:2:7 with points
 
 set Dimension                              = 2
 
@@ -38,6 +42,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
+  set Names of fields = pyroxenite
 end
 
 

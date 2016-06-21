@@ -52,6 +52,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      this->create_additional_material_model_outputs(out);
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -104,6 +105,7 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
             in.position = fe_values.get_quadrature_points();
+            in.cell = &cell;
 
             this->get_material_model().evaluate(in, out);
 

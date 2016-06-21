@@ -290,7 +290,8 @@ namespace aspect
       compressibilities(n_points, aspect::Utilities::signaling_nan<double>()),
       entropy_derivative_pressure(n_points, aspect::Utilities::signaling_nan<double>()),
       entropy_derivative_temperature(n_points, aspect::Utilities::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>()))
+      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>())),
+      force_vector(n_points, Vector<double>(dim+1))
     {}
 
 
@@ -629,7 +630,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    MaterialModelOutputs<dim>          &values_out)
+                    MaterialModelOutputs<dim>     &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;

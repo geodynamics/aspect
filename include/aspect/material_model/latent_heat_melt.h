@@ -122,6 +122,9 @@ namespace aspect
          * @}
          */
 
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
+
 
         /**
          * @name Functions used in dealing with run-time parameters

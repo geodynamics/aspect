@@ -4,8 +4,12 @@
 # Katz et. al, 2003 (Geochem., Geophys., Geosyst. )
 # with the temperature ranging from 1000°C to 1900°C on the x axis 
 # and the pressure ranging from 0 GPa to 8 GPa on the y axis. 
-
-# MPI: 2
+#
+# For visually checking the results, the gnuplot output can be 
+# plotted in gluplot with:
+# set dgrid3d
+# set view map
+# splot "tests/output-melt_postprocessor_peridotite/solution-00000.0000.gnuplot" using 1:2:7 with points
 
 set Dimension                              = 2
 
@@ -136,6 +140,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format = gnuplot
+    set Number of grouped files = 1
     set Time between graphical output = 0.01
     set List of output variables = melt fraction
 
