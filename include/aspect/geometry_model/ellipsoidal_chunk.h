@@ -297,9 +297,9 @@ namespace aspect
         unsigned int NS_subdiv;
         unsigned int depth_subdiv;
 
-       // Declare data file variables
-       std::string data_directory;
-       std::string topo_file_name;
+        // Declare data file variables
+        std::string data_directory;
+        std::string topo_file_name;
 
         /**
          * Construct manifold object Pointer to an object that describes the geometry.

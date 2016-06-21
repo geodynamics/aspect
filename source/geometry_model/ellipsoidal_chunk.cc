@@ -198,12 +198,12 @@ namespace aspect
       uniform_grid_number_data_points = set_uniform_grid_number_data_points;
     }
 
-        template <int dim>
-        void
-        EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_file(std::string set_topo_file_name)
-        {
-        	topo_file = set_topo_file_name;
-        }
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_file(std::string set_topo_file_name)
+    {
+      topo_file = set_topo_file_name;
+    }
 
     template <int dim>
     topo_types
@@ -243,25 +243,25 @@ namespace aspect
     std::vector<double>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
     {
-        	std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
-        	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
-        	double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
-        			
-        	for(unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
-        	{
-        		for(unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
-        		{
-        			for(unsigned int i = 0; i < point_lists.size(); i++)
-        			{
-        				Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+      std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
+      double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
+      double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
 
-        				if(In2dPolygon(p1, point_lists[i]))
-        				{
-        					data[i_long * uniform_grid_number_data_points[1] + i_lat] = topography_values[i];
-        				}
-        			}
-        		}
-        	}
+      for (unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
+        {
+          for (unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
+            {
+              for (unsigned int i = 0; i < point_lists.size(); i++)
+                {
+                  Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+
+                  if (In2dPolygon(p1, point_lists[i]))
+                    {
+                      data[i_long * uniform_grid_number_data_points[1] + i_lat] = topography_values[i];
+                    }
+                }
+            }
+        }
 
       return data;
     }
@@ -270,28 +270,28 @@ namespace aspect
     std::vector<double>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data_from_file ()
     {
-   const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
-   std::vector<double> data(n_data_points,0);
-   // In file stream
-   std::ifstream in_topo(topo_file.c_str(), std::ios::in);
-   // Check whether file exists, if not, throw exception
-   AssertThrow (in_topo,
-              ExcMessage (std::string("Couldn't open file ") + topo_file));
+      const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
+      std::vector<double> data(n_data_points,0);
+      // In file stream
+      std::ifstream in_topo(topo_file.c_str(), std::ios::in);
+      // Check whether file exists, if not, throw exception
+      AssertThrow (in_topo,
+                   ExcMessage (std::string("Couldn't open file ") + topo_file));
 
-   double topo=0.0;
+      double topo=0.0;
 
-   for (unsigned int i=0; i<n_data_points; i++)
-   {
-    if(!(in_topo >> topo))
-     {
-      AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i)
-                                   + " of file " + topo_file));
+      for (unsigned int i=0; i<n_data_points; i++)
+        {
+          if (!(in_topo >> topo))
+            {
+              AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i)
+                                            + " of file " + topo_file));
 
-     }
-    data[i]=topo;
-   }
+            }
+          data[i]=topo;
+        }
 
-return data;
+      return data;
     }
 
     /*template <int dim>
@@ -481,14 +481,14 @@ return data;
             // TODO: add delete in destructor?
             break;
           case FILE_UNIFORM_GRID:
-        	// read in the uniform grid topography values and
-        	// add them to the pointer
+            // read in the uniform grid topography values and
+            // add them to the pointer
             manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
-                                                       manifold.topography.get_number_of_intervals(),
-                                                       Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                        manifold.topography.get_number_of_intervals()[1]+1,
-                                                                        manifold.topography.get_data_from_file().begin())));
-          break;
+                                                     manifold.topography.get_number_of_intervals(),
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data_from_file().begin())));
+            break;
 
           /*case FILE_NONUNIFORM_GRID:
           return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
@@ -703,17 +703,17 @@ return data;
                               "Set the topography height, end with a |, and set the areas described by the points, separated by commas and coordinates separated by a ':'. "
                               "Seperate each topography feature by a semicolon. For example for two triangular areas of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
             prm.declare_entry("Uniform grid number of data points",
-                "1:1",
-                Patterns::Anything(),
-                "The number of data points in the longitude:latitude direction.");
+                              "1:1",
+                              Patterns::Anything(),
+                              "The number of data points in the longitude:latitude direction.");
             // Data files
             prm.declare_entry ("Data directory",
-                "$ASPECT_SOURCE_DIR/data/geometry_model/",
-                Patterns::DirectoryName (),
-                "The name of a directory that contains the model data. ");
+                               "$ASPECT_SOURCE_DIR/data/geometry_model/",
+                               Patterns::DirectoryName (),
+                               "The name of a directory that contains the model data. ");
             prm.declare_entry ("Topography file name", "topo.dat",
-                Patterns::Anything (),
-                "The name of the file containing the topography values. ");
+                               Patterns::Anything (),
+                               "The name of the file containing the topography values. ");
           }
           prm.leave_subsection();
         }
@@ -993,20 +993,20 @@ return data;
                     manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
                   }
 
-                  if(topo_type == FILE_UNIFORM_GRID)
+                if (topo_type == FILE_UNIFORM_GRID)
                   {
-                	  data_directory  = prm.get ("Data directory");
-                	  {
-                	   const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-                	   std::string::size_type position;
-                	   while (position = data_directory.find (subst_text),  position!=std::string::npos)
-                	   data_directory.replace (data_directory.begin()+position,
-                	                           data_directory.begin()+position+subst_text.size(),
-                	                           subst_text);
-                	  }
-                	  topo_file_name = prm.get("Topography file name");
+                    data_directory  = prm.get ("Data directory");
+                    {
+                      const std::string      subst_text = "$ASPECT_SOURCE_DIR";
+                      std::string::size_type position;
+                      while (position = data_directory.find (subst_text),  position!=std::string::npos)
+                        data_directory.replace (data_directory.begin()+position,
+                                                data_directory.begin()+position+subst_text.size(),
+                                                subst_text);
+                    }
+                    topo_file_name = prm.get("Topography file name");
 
-                	  manifold.topography.set_topography_file(data_directory+topo_file_name);
+                    manifold.topography.set_topography_file(data_directory+topo_file_name);
                   }
 
               }
