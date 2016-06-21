@@ -243,7 +243,6 @@ namespace aspect
     std::vector<double>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
     {
->>>>>>> 3bd58e0a4af322c7ee987e318c76c41bb60ec9ec
           std::vector<double > data;
           switch(topo_type)
           {
@@ -254,6 +253,7 @@ namespace aspect
             break;
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
+          {
         	data.resize(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
         	double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
         	double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
@@ -268,35 +268,38 @@ namespace aspect
 
         				if(In2dPolygon(p1, point_lists[i]))
         				{
-        					data[i_long][i_lat] = topography_values[i];
+        					data[i_long * uniform_grid_number_data_points[1] + i_lat] = topography_values[i];
         				}
         			}
         		}
         	}
               break;
+          }
 
-            case FILE_GRID_UNIFORM:
+            case FILE_UNIFORM_GRID:
+            {
                const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
                data.resize(n_data_points,0);
                // In file stream
-               std::ifstream in_point(point_file.c_str(), std::ios::in);
+               std::ifstream in_topo(topo_file.c_str(), std::ios::in);
                // Check whether file exists, if not, throw exception
-               AssertThrow (in_point,
-                          ExcMessage (std::string("Couldn't open file ") + point_file));
+               AssertThrow (in_topo,
+                          ExcMessage (std::string("Couldn't open file ") + topo_file));
 
                double topo=0.0;
 
                for (unsigned int i=0; i<n_data_points; i++)
                {
-                if(!(in_point >> topo))
+                if(!(in_topo >> topo))
                  {
                   AssertThrow(false, ExcMessage("Could not read point " + dealii::Utilities::int_to_string(i) 
-                                               + " of file " + point_file));
+                                               + " of file " + topo_file));
 
                  }
                 data[i]=topo;
                }
                break;
+            }
             default:
                break;
 
@@ -992,7 +995,7 @@ namespace aspect
                     manifold.topography.set_topography_values (topography_values);
                     manifold.topography.set_point_lists (point_lists);
                   }
-                if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
+                if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID)
                   {
                     std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
                     //TODO: Assert if size == 2;
