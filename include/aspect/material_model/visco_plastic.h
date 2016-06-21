@@ -159,7 +159,7 @@ namespace aspect
         {
           diffusion,
           dislocation,
-          composite,
+          composite
         } viscous_flow_law;
 
 
