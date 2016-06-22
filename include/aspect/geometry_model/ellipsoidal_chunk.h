@@ -78,8 +78,7 @@ namespace aspect
             void set_topography_type(topo_types topo_type);
             void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
             void set_topography_values (std::vector<double> topography_values);
-            void set_uniform_topography_data (Functions::InterpolatedUniformGridData<2> *topography_data);
-            void set_nonuniform_topography_data (Functions::InterpolatedTensorProductGridData<2> *topography_data);
+            void set_topography_data (Function<2> *topography_data);
             void set_grid_number_data_points(std::vector<double> &grid_number_data_points);
             void set_topography_file(std::string topo_file_name);
 

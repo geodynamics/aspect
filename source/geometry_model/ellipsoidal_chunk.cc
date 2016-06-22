@@ -180,19 +180,14 @@ namespace aspect
       topography_values = set_topography_values;
     }
 
-    template <int dim>
-    void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_uniform_topography_data (Functions::InterpolatedUniformGridData<2> *set_topography_data)
-    {
-      topography_data = static_cast<Function<2> *>(set_topography_data);
-    }
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_nonuniform_topography_data (Functions::InterpolatedTensorProductGridData<2> *set_topography_data)
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_data (Function<2> *set_topography_data)
     {
-      topography_data = static_cast<Function<2> *>(set_topography_data);
+      topography_data = set_topography_data;
     }
+
 
     template <int dim>
     void
@@ -516,7 +511,7 @@ namespace aspect
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
             // create the uniform grid and add it to the pointer.
-            manifold.topography.set_uniform_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
+            manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
                                                              manifold.topography.get_number_of_intervals(),
                                                              Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
                                                                               manifold.topography.get_number_of_intervals()[1]+1,
@@ -528,7 +523,7 @@ namespace aspect
             // read in the uniform grid topography values and
             // add them to the pointer
             manifold.topography.get_data_from_file();
-            manifold.topography.set_uniform_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
+            manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
                                                              manifold.topography.get_number_of_intervals(),
                                                              Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
                                                                               manifold.topography.get_number_of_intervals()[1]+1,
@@ -540,7 +535,7 @@ namespace aspect
             // read in the nonuniform grid coordinates and topography values and
             // add them to the pointer
             manifold.topography.get_data_from_file();
-            manifold.topography.set_nonuniform_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
+            manifold.topography.set_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
                                                                 Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
                                                                                  manifold.topography.get_number_of_intervals()[1]+1,
                                                                                  manifold.topography.get_data().begin())));
