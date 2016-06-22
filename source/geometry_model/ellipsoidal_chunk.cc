@@ -217,12 +217,16 @@ namespace aspect
       std_cxx11::array<std::pair<double,double>,2> endpoints;
       // Minimal and maximal longitude
       endpoints[0] = std::make_pair (corners[1][0]*numbers::PI/180, corners[0][0]*numbers::PI/180);
-      // Minimal and maximal of latitude
+      // Minimal and maximal latitude
       endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
+
+#ifdef DEBUG
       for (unsigned int i=0; i<2; i++)
         Assert (endpoints[i].first < endpoints[i].second,
                 ExcMessage ("The interval in each coordinate direction needs "
                             "to have positive size"));
+#endif
+
       return endpoints;
     }
 
@@ -243,7 +247,7 @@ namespace aspect
       if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
         {
           // TODO: use grid_data for this?
-    	  // Fill grid based on polygons from prm
+          // Fill grid based on polygons from prm
           std::vector<double> data(grid_number_data_points[0] * grid_number_data_points[1],0);
           double d_long = (corners[3][0]-corners[2][0])/grid_number_data_points[0];
           double d_lat = (corners[1][1]-corners[2][1])/grid_number_data_points[1];
@@ -267,7 +271,7 @@ namespace aspect
         }
       else if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
         {
-    	  // Return the data from file
+          // Return the data from file
           return grid_data;
         }
       else
@@ -303,7 +307,7 @@ namespace aspect
       // TODO: format of nonuniform grid file might change
       if (topo_type == FILE_NONUNIFORM_GRID)
         {
-    	  // First longitude coordinates
+          // First longitude coordinates
           for (unsigned int i=0; i<grid_number_data_points[0]; i++)
             {
               if (!(in_topo >> topo))
@@ -312,7 +316,7 @@ namespace aspect
                                                 + " of file " + topo_file));
                 }
               if (i >= 1)
-              AssertThrow(topo > lon_points[i-1], ExcMessage("Longitude grid coordinates must be strictly ascending."));
+                AssertThrow(topo > lon_points[i-1], ExcMessage("Longitude grid coordinates must be strictly ascending."));
               lon_points.push_back(topo);
             }
           // Then latitude coordinates
@@ -324,7 +328,7 @@ namespace aspect
                                                 + " of file " + topo_file));
                 }
               if (i >= 1)
-              AssertThrow(topo > lat_points[i-1], ExcMessage("Latitude grid coordinates must be strictly ascending."));
+                AssertThrow(topo > lat_points[i-1], ExcMessage("Latitude grid coordinates must be strictly ascending."));
               lat_points.push_back(topo);
             }
 
@@ -512,10 +516,10 @@ namespace aspect
           case PRM_UNIFORM_GRID_INTERPOLATED:
             // create the uniform grid and add it to the pointer.
             manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
-                                                             manifold.topography.get_number_of_intervals(),
-                                                             Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                              manifold.topography.get_number_of_intervals()[1]+1,
-                                                                              manifold.topography.get_data().begin())));
+                                                     manifold.topography.get_number_of_intervals(),
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data().begin())));
 
             // TODO: add delete in destructor?
             break;
@@ -524,10 +528,10 @@ namespace aspect
             // add them to the pointer
             manifold.topography.get_data_from_file();
             manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
-                                                             manifold.topography.get_number_of_intervals(),
-                                                             Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                              manifold.topography.get_number_of_intervals()[1]+1,
-                                                                              manifold.topography.get_data().begin())));
+                                                     manifold.topography.get_number_of_intervals(),
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data().begin())));
             break;
 
           case FILE_NONUNIFORM_GRID:
@@ -536,9 +540,9 @@ namespace aspect
             // add them to the pointer
             manifold.topography.get_data_from_file();
             manifold.topography.set_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
-                                                                Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                                 manifold.topography.get_number_of_intervals()[1]+1,
-                                                                                 manifold.topography.get_data().begin())));
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data().begin())));
           }
           break;
 
@@ -761,7 +765,10 @@ namespace aspect
                                "The name of a directory that contains the model data. ");
             prm.declare_entry ("Topography file name", "topo.dat",
                                Patterns::Anything (),
-                               "The name of the file containing the topography values. ");
+                               "The name of the file containing the topography values. In case a uniform grid is used, the file should only contain "
+                               "a list of topography values for the long,lat coordinates (first longitude ascends, then latitude). A nonuniform grid "
+                               "allows for variable spacing in each coordinate direction, but requires the coordinates to be specified in the file "
+                               "as well. In this case, first list the longitude coordinates, then the latitude coordinates and lastly the topography values. ");
           }
           prm.leave_subsection();
         }
