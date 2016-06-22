@@ -315,6 +315,8 @@ namespace aspect
                   AssertThrow(false, ExcMessage("Could not read longitude point " + dealii::Utilities::int_to_string(i)
                                                 + " of file " + topo_file));
                 }
+              if (i >= 1)
+              AssertThrow(topo > lon_points[i-1], ExcMessage("Longitude grid coordinates must be strictly ascending."));
               lon_points.push_back(topo);
             }
           for (unsigned int i=0; i<grid_number_data_points[1]; i++)
@@ -324,6 +326,8 @@ namespace aspect
                   AssertThrow(false, ExcMessage("Could not read latitude point " + dealii::Utilities::int_to_string(i)
                                                 + " of file " + topo_file));
                 }
+              if (i >= 1)
+              AssertThrow(topo > lat_points[i-1], ExcMessage("Latitude grid coordinates must be strictly ascending."));
               lat_points.push_back(topo);
             }
 
