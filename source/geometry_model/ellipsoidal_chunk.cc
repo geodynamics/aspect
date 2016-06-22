@@ -215,13 +215,6 @@ namespace aspect
       return topo_type;
     }
 
-//    template <int dim>
-//    Function<2> *
-//    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data ()
-//    {
-//      return topography_data;
-//    }
-
     template <int dim>
     std_cxx11::array<std::pair<double,double>,2>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
