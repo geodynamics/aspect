@@ -77,6 +77,7 @@ namespace aspect
             void set_topography_values (std::vector<double> topography_values);
             void set_topography_data (Functions::InterpolatedUniformGridData<2> *topography_data);
             void set_uniform_grid_number_data_points(std::vector<double> &uniform_grid_number_data_points);
+            void set_topography_file(std::string topo_file_name);
 
             /**
              * The get functions
@@ -89,10 +90,12 @@ namespace aspect
             std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
             std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
             std::vector<double>                          get_data ();
+            std::vector<double>                          get_data_from_file ();
 
           private:
 
             topo_types topo_type;
+            std::string topo_file;
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
             Function<2> *topography_data = NULL;
@@ -294,7 +297,9 @@ namespace aspect
         unsigned int NS_subdiv;
         unsigned int depth_subdiv;
 
-
+        // Declare data file variables
+        std::string data_directory;
+        std::string topo_file_name;
 
         /**
          * Construct manifold object Pointer to an object that describes the geometry.
