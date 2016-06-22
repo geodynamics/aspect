@@ -89,11 +89,11 @@ namespace aspect
       // We want the right-hand side of the momentum equation to be (- Ra T gravity) and
       // density * cp to be 1
       for (unsigned int q=0; q < in.position.size(); ++q)
-          {
-            out.densities[q] = - out.thermal_expansion_coefficients[q] * (in.temperature[q]);
-            if (std::abs(out.densities[q]) > 0.0)
-              out.specific_heat[q] /= out.densities[q];
-          }
+        {
+          out.densities[q] = - out.thermal_expansion_coefficients[q] * (in.temperature[q]);
+          if (std::abs(out.densities[q]) > 0.0)
+            out.specific_heat[q] /= out.densities[q];
+        }
     }
 
     template <int dim>
@@ -124,15 +124,15 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-      prm.enter_subsection("Inner core");
-      {
-        prm.enter_subsection("Phase change resistance function");
+        prm.enter_subsection("Inner core");
         {
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          prm.enter_subsection("Phase change resistance function");
+          {
+            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection();
-      }
-      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -146,26 +146,26 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-      prm.enter_subsection("Inner core");
-      {
-        prm.enter_subsection("Phase change resistance function");
-        try
-          {
-            resistance_to_phase_change.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Phase boundary model.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'"
-                      << "More information about the cause of the parse error \n"
-                      << "is shown below.\n";
-            throw;
-          }
+        prm.enter_subsection("Inner core");
+        {
+          prm.enter_subsection("Phase change resistance function");
+          try
+            {
+              resistance_to_phase_change.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Phase boundary model.Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+          prm.leave_subsection();
+        }
         prm.leave_subsection();
-      }
-      prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -316,74 +316,75 @@ namespace aspect
    * The function value of $\mathcal{P}$ is taken from the inner core
    * material model.
    */
-    template <int dim>
-    class PhaseBoundaryAssembler :
-      public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
-            public SimulatorAccess<dim>
-    {
+  template <int dim>
+  class PhaseBoundaryAssembler :
+    public aspect::internal::Assembly::Assemblers::AssemblerBase<dim>,
+    public SimulatorAccess<dim>
+  {
 
-      public:
+    public:
 
-        virtual
-        void
-        phase_change_boundary_conditions (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                          const unsigned int                                    face_no,
-                                          internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                          internal::Assembly::CopyData::StokesSystem<dim>      &data) const
-        {
-          const Introspection<dim> &introspection = this->introspection();
+      virtual
+      void
+      phase_change_boundary_conditions (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                        const unsigned int                                    face_no,
+                                        internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const
+      {
+        const Introspection<dim> &introspection = this->introspection();
 
-          //assemble force terms for the matrix
-          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-          if (this->get_traction_boundary_conditions()
-              .find (cell->face(face_no)->boundary_id())
-              !=
-              this->get_traction_boundary_conditions().end())
-            {
-              scratch.face_finite_element_values.reinit (cell, face_no);
+        //assemble force terms for the matrix for all boundary faces
+        const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+        if (cell->face(face_no)->at_boundary())
+          {
+            scratch.face_finite_element_values.reinit (cell, face_no);
 
-              for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
-                {
-                  const Tensor<1,dim> traction = dynamic_cast<const MaterialModel::InnerCore<dim>&>
-                       (this->get_material_model()).resistance_to_phase_change.value(scratch.material_model_inputs.position[q]) * scratch.face_finite_element_values.normal_vector(q);
+            for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
+              {
+                const double P = dynamic_cast<const MaterialModel::InnerCore<dim>&>
+                                 (this->get_material_model()).resistance_to_phase_change.value(scratch.material_model_inputs.position[q]);
 
-                  // boundary term: P*u*n*v*n*JxW(q);
-                  for (unsigned int i=0; i<dofs_per_cell; ++i)
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
-                  data.local_matrix(i,j) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
-                                            traction *
-                                            scratch.face_finite_element_values[introspection.extractors.velocities].value(j,q) *
-                                            scratch.face_finite_element_values.normal_vector(q) *
-                                            scratch.face_finite_element_values.JxW(q);
-                }
-            }
-        }
+                // boundary term: P*u*n*v*n*JxW(q)
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    data.local_matrix(i,j) += P *
+                                              scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                                              scratch.face_finite_element_values.normal_vector(q) *
+                                              scratch.face_finite_element_values[introspection.extractors.velocities].value(j,q) *
+                                              scratch.face_finite_element_values.normal_vector(q) *
+                                              scratch.face_finite_element_values.JxW(q);
+              }
+          }
+      }
 
-    };
+  };
 
-    template <int dim>
-    void set_assemblers_phase_boundary(const SimulatorAccess<dim> &,
-                                       internal::Assembly::AssemblerLists<dim> &assemblers,
-                                       std::vector<dealii::std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
-    {
-      std::cout << "* set_assemblers()" << std::endl;
+  template <int dim>
+  void set_assemblers_phase_boundary(const SimulatorAccess<dim> &simulator_access,
+                                     internal::Assembly::AssemblerLists<dim> &assemblers,
+                                     std::vector<dealii::std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &assembler_objects)
+  {
+    std::cout << "* set_assemblers()" << std::endl;
 
-      PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
-      assembler_objects.push_back(std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >(phase_boundary_assembler));
+    AssertThrow (dynamic_cast<const MaterialModel::InnerCore<dim>*> (&simulator_access.get_material_model()) != 0,
+                 ExcMessage ("The phase boundary assembler can only be used with the material model 'inner core'!"));
 
-      // add the terms for phase change boundary conditions
-      assemblers.local_assemble_stokes_system_on_boundary_face
-      .connect (std_cxx11::bind(&PhaseBoundaryAssembler<dim>::phase_change_boundary_conditions,
-                                std_cxx11::cref (*phase_boundary_assembler),
-                                std_cxx11::_1,
-                                std_cxx11::_2,
-                                // discard pressure_scaling,
-                                // discard rebuild_stokes_matrix,
-                                std_cxx11::_5,
-                                std_cxx11::_6));
+    PhaseBoundaryAssembler<dim> *phase_boundary_assembler = new PhaseBoundaryAssembler<dim>();
+    assembler_objects.push_back(std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >(phase_boundary_assembler));
+
+    // add the terms for phase change boundary conditions
+    assemblers.local_assemble_stokes_system_on_boundary_face
+    .connect (std_cxx11::bind(&PhaseBoundaryAssembler<dim>::phase_change_boundary_conditions,
+                              std_cxx11::cref (*phase_boundary_assembler),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              // discard pressure_scaling,
+                              // discard rebuild_stokes_matrix,
+                              std_cxx11::_5,
+                              std_cxx11::_6));
 
 
-    }
+  }
 
 }
 

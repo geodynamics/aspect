@@ -6256,8 +6256,8 @@ linearly from the boundary to zero at the center of the inner core.
 The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
 are chosen in a way that the equations are non-dimensional.
 
-The required heating model and changes to the material model are also implemented in the shared library. 
-In their non-dimensional form, the equations are
+The required heating model and changes to the material model are implemented in a shared library
+(\texttt{inner\_core.cc}). In their non-dimensional form, the equations are
 
 \begin{align}
   \label{eq:inner-core-1}
@@ -6291,9 +6291,14 @@ of a surface integral:
 $$\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,$$
 with the normal vector $\mathbf n$.
 
-This phase change term is added to the matrix in the \texttt{inner\_core.cc} plugin by using a signal that adds 
-a new assembler for the boundary faces of the Stokes system:
-\lstinputlisting[language=c++]{cookbooks/inner_core_convection/inner_core_convection_assembler.cc}
+This phase change term is added to the matrix in the \texttt{inner\_core.cc} plugin by using a signal that 
+connects the function \verb!set_assemblers_phase_boundary!, which is only called once at the beginning of 
+the model run. It creates the new assembler \texttt{PhaseBoundaryAssembler} for the boundary faces of the Stokes 
+system and adds it to the list of assemblers executed in every time step. 
+The assembler contains the function \verb!phase_change_boundary_conditions! that loops over all faces at the model 
+boundary, queries the value of $\mathcal{P}$ from the material model, and adds the surface integral given above
+to the matrix.
+\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{cookbooks/inner_core_convection/inner_core_convection_assembler.cc}
 Instructions for how to compile and run models with a shared library are given in Section~\ref{sec:benchmark-run}.
 
 Analysing Equations~\eqref{eq:inner-core-1}-\eqref{eq:inner-core-3} reveals that two parameters determine 
@@ -6328,8 +6333,23 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
 
 
 In addition, \cite{Deguen2013} give scaling laws for the velocities in each regime derived from linear stability 
-analysis, and show how numerical results compare to them. 
-
+analysis, and show how numerical results compare to them. In the regimes of low $\mathcal{P}$, translation will start 
+at a critical ratio of Rayleigh number and phase change number $\frac{Ra}{\mathcal{P}}=\frac{175}{2}$ with steady-state 
+translation velocities being zero below this threshold and tending to $v_0=\frac{175}{2}\sqrt{\frac{6}{5}\frac{Ra}{\mathcal{P}}}$ 
+going towards higher values of $\frac{Ra}{\mathcal{P}}$.
+In the same way, translation velocities will decrease from $v_0$ with increasing $\mathcal{P}$, with translation transitioning
+to plume convection at $\mathcal{P}\sim29$. 
+Both trends are shown in Figure~TODO and can be compared to Figure~8 and 9 in \cite{Deguen2013}.
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_Ra_P.pdf}
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_Ra_P.pdf}
+    \caption{Translation rate, normalized to the low $\mathcal{P}$ limit estimate given in \cite{Deguen2013}, 
+    as a function of $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$ (left) and as a function of $\mathcal{P}$ 
+    for $Ra=10^5$ (right).}
+    \label{fig:inner-core-regimes}
+\end{figure}
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}

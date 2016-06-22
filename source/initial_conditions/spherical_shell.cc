@@ -62,8 +62,8 @@ namespace aspect
         R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
              (this->get_geometry_model()).outer_radius();
       else if (dynamic_cast<const GeometryModel::Sphere<dim>*>
-          (&this->get_geometry_model())
-           != 0)
+               (&this->get_geometry_model())
+               != 0)
         R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
              (this->get_geometry_model()).radius();
       else
