@@ -139,8 +139,8 @@ namespace aspect
             break;
 
           case FILE_NONUNIFORM_GRID:
-              return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                     lon * 180/numbers::PI));
+            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+                   lon * 180/numbers::PI));
             break;
 
           default:
@@ -245,42 +245,42 @@ namespace aspect
     std::vector<double>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data () const
     {
-    	if(topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
-			{
-
-
-      std::vector<double> data(grid_number_data_points[0] * grid_number_data_points[1],0);
-      double d_long = (corners[3][0]-corners[2][0])/grid_number_data_points[0];
-      double d_lat = (corners[1][1]-corners[2][1])/grid_number_data_points[1];
-
-      for (unsigned int i_long = 0; i_long < grid_number_data_points[0]; i_long++)
+      if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
         {
-          for (unsigned int i_lat = 0; i_lat < grid_number_data_points[1]; i_lat++)
-            {
-              for (unsigned int i = 0; i < point_lists.size(); i++)
-                {
-                  Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
 
-                  if (In2dPolygon(p1, point_lists[i]))
+
+          std::vector<double> data(grid_number_data_points[0] * grid_number_data_points[1],0);
+          double d_long = (corners[3][0]-corners[2][0])/grid_number_data_points[0];
+          double d_lat = (corners[1][1]-corners[2][1])/grid_number_data_points[1];
+
+          for (unsigned int i_long = 0; i_long < grid_number_data_points[0]; i_long++)
+            {
+              for (unsigned int i_lat = 0; i_lat < grid_number_data_points[1]; i_lat++)
+                {
+                  for (unsigned int i = 0; i < point_lists.size(); i++)
                     {
-                      data[i_long * grid_number_data_points[1] + i_lat] = topography_values[i];
+                      Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+
+                      if (In2dPolygon(p1, point_lists[i]))
+                        {
+                          data[i_long * grid_number_data_points[1] + i_lat] = topography_values[i];
+                        }
                     }
                 }
             }
+          return data;
         }
-      return data;
-			}
-    	else if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
-    	{
-				return grid_data;
+      else if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
+        {
+          return grid_data;
 
-    	}
-    	else
-    	{
-    		AssertThrow(false,ExcNotImplemented());
+        }
+      else
+        {
+          AssertThrow(false,ExcNotImplemented());
 
-    	}
-		return std::vector<double>();
+        }
+      return std::vector<double>();
 
 
 
@@ -290,7 +290,7 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data_from_file ()
     {
-    	unsigned int n_data_points = grid_number_data_points[0] * grid_number_data_points[1];
+      unsigned int n_data_points = grid_number_data_points[0] * grid_number_data_points[1];
 
       grid_data.resize(n_data_points,0);
       std::vector<double> lon_points;
@@ -307,29 +307,29 @@ namespace aspect
       // Read in coordinates of nonuniform grid
       // TODO: format of nonuniform grid file might change
       if (topo_type == FILE_NONUNIFORM_GRID)
-      {
-    	  for (unsigned int i=0; i<grid_number_data_points[0]; i++)
-    	  {
-    		 if (!(in_topo >> topo))
-    		 {
-                 AssertThrow(false, ExcMessage("Could not read longitude point " + dealii::Utilities::int_to_string(i)
-                                               + " of file " + topo_file));
-    		 }
-    		 lon_points.push_back(topo);
-    	  }
-    	  for (unsigned int i=0; i<grid_number_data_points[1]; i++)
-    	  {
-    		 if (!(in_topo >> topo))
-    		 {
-                 AssertThrow(false, ExcMessage("Could not read latitude point " + dealii::Utilities::int_to_string(i)
-                                               + " of file " + topo_file));
-    		 }
-    		 lat_points.push_back(topo);
-    	  }
+        {
+          for (unsigned int i=0; i<grid_number_data_points[0]; i++)
+            {
+              if (!(in_topo >> topo))
+                {
+                  AssertThrow(false, ExcMessage("Could not read longitude point " + dealii::Utilities::int_to_string(i)
+                                                + " of file " + topo_file));
+                }
+              lon_points.push_back(topo);
+            }
+          for (unsigned int i=0; i<grid_number_data_points[1]; i++)
+            {
+              if (!(in_topo >> topo))
+                {
+                  AssertThrow(false, ExcMessage("Could not read latitude point " + dealii::Utilities::int_to_string(i)
+                                                + " of file " + topo_file));
+                }
+              lat_points.push_back(topo);
+            }
 
-    	  nonuniform_grid_coordinates[0]=lon_points;
-    	  nonuniform_grid_coordinates[1]=lat_points;
-      }
+          nonuniform_grid_coordinates[0]=lon_points;
+          nonuniform_grid_coordinates[1]=lat_points;
+        }
 
 
       // Read in topography values of uniform or nonuniform grid
@@ -351,8 +351,8 @@ namespace aspect
     std_cxx11::array< std::vector< double >, 2 >
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinates() const
     {
-    	Assert (topo_type == FILE_NONUNIFORM_GRID, ExcMessage("Nonuniform grid not selected, so no need for its coordinates. "));
-     return nonuniform_grid_coordinates;
+      Assert (topo_type == FILE_NONUNIFORM_GRID, ExcMessage("Nonuniform grid not selected, so no need for its coordinates. "));
+      return nonuniform_grid_coordinates;
     }
 
 
@@ -511,33 +511,33 @@ namespace aspect
           case PRM_UNIFORM_GRID_INTERPOLATED:
             // create the uniform grid and add it to the pointer.
             manifold.topography.set_uniform_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
-                                                     manifold.topography.get_number_of_intervals(),
-                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                      manifold.topography.get_number_of_intervals()[1]+1,
-                                                                      manifold.topography.get_data().begin())));
+                                                             manifold.topography.get_number_of_intervals(),
+                                                             Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                              manifold.topography.get_number_of_intervals()[1]+1,
+                                                                              manifold.topography.get_data().begin())));
 
             // TODO: add delete in destructor?
             break;
           case FILE_UNIFORM_GRID:
             // read in the uniform grid topography values and
             // add them to the pointer
-        	manifold.topography.get_data_from_file();
+            manifold.topography.get_data_from_file();
             manifold.topography.set_uniform_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
-                                                     manifold.topography.get_number_of_intervals(),
-                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-                                                                      manifold.topography.get_number_of_intervals()[1]+1,
-                                                                      manifold.topography.get_data().begin())));
+                                                             manifold.topography.get_number_of_intervals(),
+                                                             Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                              manifold.topography.get_number_of_intervals()[1]+1,
+                                                                              manifold.topography.get_data().begin())));
             break;
 
           case FILE_NONUNIFORM_GRID:
           {
-              // read in the nonuniform grid coordinates and topography values and
-              // add them to the pointer
-        	  manifold.topography.get_data_from_file();
-              manifold.topography.set_nonuniform_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
-            		  Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
-            		                        manifold.topography.get_number_of_intervals()[1]+1,
-            		                        manifold.topography.get_data().begin())));
+            // read in the nonuniform grid coordinates and topography values and
+            // add them to the pointer
+            manifold.topography.get_data_from_file();
+            manifold.topography.set_nonuniform_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
+                                                                Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                                 manifold.topography.get_number_of_intervals()[1]+1,
+                                                                                 manifold.topography.get_data().begin())));
           }
           break;
 
