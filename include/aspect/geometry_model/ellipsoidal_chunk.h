@@ -77,8 +77,7 @@ namespace aspect
             void set_topography_values (std::vector<double> topography_values);
             void set_uniform_topography_data (Functions::InterpolatedUniformGridData<2> *topography_data);
             void set_nonuniform_topography_data (Functions::InterpolatedTensorProductGridData<2> *topography_data);
-            void set_uniform_grid_number_data_points(std::vector<double> &uniform_grid_number_data_points);
-            void set_nonuniform_grid_number_data_points(std::vector<double> &nonuniform_grid_number_data_points);
+            void set_grid_number_data_points(std::vector<double> &grid_number_data_points);
             void set_topography_file(std::string topo_file_name);
 
             /**
@@ -104,8 +103,7 @@ namespace aspect
             std::vector<double> topography_values;
             Function<2> *topography_data = NULL;
             std::vector<Point<2> > corners;
-            std::vector<double> uniform_grid_number_data_points;
-            std::vector<double> nonuniform_grid_number_data_points;
+            std::vector<double> grid_number_data_points;
             std::vector<double> grid_data;
             std_cxx11::array< std::vector< double >, 2 > nonuniform_grid_coordinates;
 
