@@ -1055,7 +1055,7 @@ namespace aspect
 
             if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
               {
-                data_directory  = prm.get ("Data directory");
+                std::string data_directory  = prm.get ("Data directory");
                 {
                   const std::string      subst_text = "$ASPECT_SOURCE_DIR";
                   std::string::size_type position;
@@ -1064,7 +1064,7 @@ namespace aspect
                                             data_directory.begin()+position+subst_text.size(),
                                             subst_text);
                 }
-                topo_file_name = prm.get("Topography file name");
+                const std::string topo_file_name = prm.get("Topography file name");
 
                 manifold.topography.set_topography_file(data_directory+topo_file_name);
               }
