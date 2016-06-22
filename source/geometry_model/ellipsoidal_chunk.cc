@@ -31,8 +31,9 @@
 
 
 /**
- * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
+ * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel and
+ * can have an initial topography on it.
+ * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps, Wolfgang Bangerth and Anne Glerum
  */
 
 namespace aspect
