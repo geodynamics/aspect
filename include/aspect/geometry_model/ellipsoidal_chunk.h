@@ -65,6 +65,9 @@ namespace aspect
           public:
             EllipsoidalChunkTopography ();
 
+            /**
+             * Retrieve topography value at point lon,lat
+             */
             double value (const double lon,
                           const double lat) const;
 
@@ -75,22 +78,19 @@ namespace aspect
             void set_topography_type(topo_types topo_type);
             void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
             void set_topography_values (std::vector<double> topography_values);
-            void set_topography_data (Functions::InterpolatedUniformGridData<2> *topography_data);
-            void set_uniform_grid_number_data_points(std::vector<double> &uniform_grid_number_data_points);
+            void set_topography_data (Function<2> *topography_data);
+            void set_grid_number_data_points(std::vector<double> &grid_number_data_points);
             void set_topography_file(std::string topo_file_name);
 
             /**
              * The get functions
              */
-            Functions::InterpolatedUniformGridData<2> &get_topography_data() const;
-            std_cxx11::array< std::vector< double >, dim > &get_coordinate_values () const;
-            std::vector<double>                           &get_data_values () const;
-            topo_types                                   get_topo_type ();
-            Function<2>                                 *get_topography_data ();
-            std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
-            std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
-            std::vector<double>                          get_data ();
-            std::vector<double>                          get_data_from_file ();
+            topo_types                                   get_topo_type () const;
+            std_cxx11::array<std::pair<double,double>,2> get_endpoints () const;
+            std_cxx11::array<unsigned int,2>             get_number_of_intervals () const;
+            std::vector<double>                          get_data () const;
+            std_cxx11::array< std::vector< double >, 2 > get_coordinates () const;
+            void                                         get_data_from_file ();
 
           private:
 
@@ -98,9 +98,15 @@ namespace aspect
             std::string topo_file;
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
+            // Gridded topography data
             Function<2> *topography_data = NULL;
             std::vector<Point<2> > corners;
-            std::vector<double> uniform_grid_number_data_points;
+            // Number of points in each coordinate direction
+            std::vector<double> grid_number_data_points;
+            // Topography values from file
+            std::vector<double> grid_data;
+            // Grid point coordinate values from file
+            std_cxx11::array< std::vector< double >, 2 > nonuniform_grid_coordinates;
 
         };
 
@@ -296,10 +302,6 @@ namespace aspect
         unsigned int EW_subdiv;
         unsigned int NS_subdiv;
         unsigned int depth_subdiv;
-
-        // Declare data file variables
-        std::string data_directory;
-        std::string topo_file_name;
 
         /**
          * Construct manifold object Pointer to an object that describes the geometry.

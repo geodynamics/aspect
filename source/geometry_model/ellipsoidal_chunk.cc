@@ -108,7 +108,6 @@ namespace aspect
     {
       double value = 0;
 
-      // TODO: add cases
       switch (topo_type)
         {
           case NO_TOPOGRAPHY:
@@ -139,9 +138,9 @@ namespace aspect
                    lon * 180/numbers::PI));
             break;
 
-            /* case FILE_NONUNIFORM_GRID:
-               return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
-                                                         lon * 180/numbers::PI));*/
+          case FILE_NONUNIFORM_GRID:
+            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
+                   lon * 180/numbers::PI));
             break;
 
           default:
@@ -181,18 +180,20 @@ namespace aspect
       topography_values = set_topography_values;
     }
 
-    template <int dim>
-    void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_data (Functions::InterpolatedUniformGridData<2> *set_topography_data)
-    {
-      topography_data = static_cast<Function<2> *>(set_topography_data);
-    }
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_uniform_grid_number_data_points(std::vector<double> &set_uniform_grid_number_data_points)
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_data (Function<2> *set_topography_data)
     {
-      uniform_grid_number_data_points = set_uniform_grid_number_data_points;
+      topography_data = set_topography_data;
+    }
+
+
+    template <int dim>
+    void
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_grid_number_data_points(std::vector<double> &set_grid_number_data_points)
+    {
+      grid_number_data_points = set_grid_number_data_points;
     }
 
     template <int dim>
@@ -204,77 +205,96 @@ namespace aspect
 
     template <int dim>
     topo_types
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type ()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type () const
     {
       return topo_type;
     }
 
     template <int dim>
-    Function<2> *
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topography_data ()
-    {
-      return topography_data;
-    }
-
-    template <int dim>
     std_cxx11::array<std::pair<double,double>,2>
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints () const
     {
       std_cxx11::array<std::pair<double,double>,2> endpoints;
-      // Beginning and end of longitude
+      // Minimal and maximal longitude
       endpoints[0] = std::make_pair (corners[1][0]*numbers::PI/180, corners[0][0]*numbers::PI/180);
-      // Beginning and end of latitude
+      // Minimal and maximal latitude
       endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
+
+#ifdef DEBUG
       for (unsigned int i=0; i<2; i++)
         Assert (endpoints[i].first < endpoints[i].second,
                 ExcMessage ("The interval in each coordinate direction needs "
                             "to have positive size"));
+#endif
+
       return endpoints;
     }
 
     template <int dim>
     std_cxx11::array<unsigned int,2>
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals() const
     {
       std_cxx11::array<unsigned int,2> interval;
-      interval[0] = uniform_grid_number_data_points[0]-1;
-      interval[1] = uniform_grid_number_data_points[1]-1;
+      interval[0] = grid_number_data_points[0]-1;
+      interval[1] = grid_number_data_points[1]-1;
       return interval;
     }
 
     template <int dim>
     std::vector<double>
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data ()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data () const
     {
-      std::vector<double> data(uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1],0);
-      double d_long = (corners[3][0]-corners[2][0])/uniform_grid_number_data_points[0];
-      double d_lat = (corners[1][1]-corners[2][1])/uniform_grid_number_data_points[1];
-
-      for (unsigned int i_long = 0; i_long < uniform_grid_number_data_points[0]; i_long++)
+      if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
         {
-          for (unsigned int i_lat = 0; i_lat < uniform_grid_number_data_points[1]; i_lat++)
-            {
-              for (unsigned int i = 0; i < point_lists.size(); i++)
-                {
-                  Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+          // TODO: use grid_data for this?
+          // Fill grid based on polygons from prm
+          std::vector<double> data(grid_number_data_points[0] * grid_number_data_points[1],0);
+          double d_long = (corners[3][0]-corners[2][0])/grid_number_data_points[0];
+          double d_lat = (corners[1][1]-corners[2][1])/grid_number_data_points[1];
 
-                  if (In2dPolygon(p1, point_lists[i]))
+          for (unsigned int i_long = 0; i_long < grid_number_data_points[0]; i_long++)
+            {
+              for (unsigned int i_lat = 0; i_lat < grid_number_data_points[1]; i_lat++)
+                {
+                  for (unsigned int i = 0; i < point_lists.size(); i++)
                     {
-                      data[i_long * uniform_grid_number_data_points[1] + i_lat] = topography_values[i];
+                      Point<2> p1((i_long * d_long + corners[2][0]) * 180/numbers::PI,(i_lat * d_lat + corners[2][1]) * 180/numbers::PI);
+
+                      if (In2dPolygon(p1, point_lists[i]))
+                        {
+                          data[i_long * grid_number_data_points[1] + i_lat] = topography_values[i];
+                        }
                     }
                 }
             }
+          return data;
         }
+      else if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
+        {
+          // Return the data from file
+          return grid_data;
+        }
+      else
+        {
+          AssertThrow(false,ExcNotImplemented());
 
-      return data;
+        }
+      return std::vector<double>();
+
+
+
     }
 
     template <int dim>
-    std::vector<double>
+    void
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_data_from_file ()
     {
-      const unsigned int n_data_points = uniform_grid_number_data_points[0] * uniform_grid_number_data_points[1];
-      std::vector<double> data(n_data_points,0);
+      unsigned int n_data_points = grid_number_data_points[0] * grid_number_data_points[1];
+
+      grid_data.resize(n_data_points,0);
+      std::vector<double> lon_points;
+      std::vector<double> lat_points;
+
       // In file stream
       std::ifstream in_topo(topo_file.c_str(), std::ios::in);
       // Check whether file exists, if not, throw exception
@@ -283,6 +303,41 @@ namespace aspect
 
       double topo=0.0;
 
+      // Read in coordinates of nonuniform grid
+      // TODO: format of nonuniform grid file might change
+      if (topo_type == FILE_NONUNIFORM_GRID)
+        {
+          // First longitude coordinates
+          for (unsigned int i=0; i<grid_number_data_points[0]; i++)
+            {
+              if (!(in_topo >> topo))
+                {
+                  AssertThrow(false, ExcMessage("Could not read longitude point " + dealii::Utilities::int_to_string(i)
+                                                + " of file " + topo_file));
+                }
+              if (i >= 1)
+                AssertThrow(topo > lon_points[i-1], ExcMessage("Longitude grid coordinates must be strictly ascending."));
+              lon_points.push_back(topo);
+            }
+          // Then latitude coordinates
+          for (unsigned int i=0; i<grid_number_data_points[1]; i++)
+            {
+              if (!(in_topo >> topo))
+                {
+                  AssertThrow(false, ExcMessage("Could not read latitude point " + dealii::Utilities::int_to_string(i)
+                                                + " of file " + topo_file));
+                }
+              if (i >= 1)
+                AssertThrow(topo > lat_points[i-1], ExcMessage("Latitude grid coordinates must be strictly ascending."));
+              lat_points.push_back(topo);
+            }
+
+          nonuniform_grid_coordinates[0]=lon_points;
+          nonuniform_grid_coordinates[1]=lat_points;
+        }
+
+
+      // Read in topography values of uniform or nonuniform grid
       for (unsigned int i=0; i<n_data_points; i++)
         {
           if (!(in_topo >> topo))
@@ -291,21 +346,19 @@ namespace aspect
                                             + " of file " + topo_file));
 
             }
-          data[i]=topo;
+          grid_data[i]=topo;
         }
 
-      return data;
     }
 
 
-    /*template <int dim>
-    std_cxx11::array< std::vector< double >, dim >&
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinate_values() const
+    template <int dim>
+    std_cxx11::array< std::vector< double >, 2 >
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_coordinates() const
     {
-      //TODO: implement choices (function vs file)
-      topography_data_uniform = topography_data_uniform(get_coordinate_values(),
-                                        Table<2,double>());
-    }*/
+      Assert (topo_type == FILE_NONUNIFORM_GRID, ExcMessage("Nonuniform grid not selected, so no need for its coordinates. "));
+      return nonuniform_grid_coordinates;
+    }
 
 
     /**
@@ -473,17 +526,26 @@ namespace aspect
           case FILE_UNIFORM_GRID:
             // read in the uniform grid topography values and
             // add them to the pointer
+            manifold.topography.get_data_from_file();
             manifold.topography.set_topography_data (new Functions::InterpolatedUniformGridData<2> (manifold.topography.get_endpoints(),
                                                      manifold.topography.get_number_of_intervals(),
                                                      Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
                                                                       manifold.topography.get_number_of_intervals()[1]+1,
-                                                                      manifold.topography.get_data_from_file().begin())));
+                                                                      manifold.topography.get_data().begin())));
             break;
 
-          /*case FILE_NONUNIFORM_GRID:
-          return topography_data_nonuniform.value (Point<2>(lat * 180/numbers::PI,
-                                                    lon * 180/numbers::PI));
-          break;*/
+          case FILE_NONUNIFORM_GRID:
+          {
+            // read in the nonuniform grid coordinates and topography values and
+            // add them to the pointer
+            manifold.topography.get_data_from_file();
+            manifold.topography.set_topography_data (new Functions::InterpolatedTensorProductGridData<2> (manifold.topography.get_coordinates(),
+                                                     Table<2,double> (manifold.topography.get_number_of_intervals()[0]+1,
+                                                                      manifold.topography.get_number_of_intervals()[1]+1,
+                                                                      manifold.topography.get_data().begin())));
+          }
+          break;
+
           default:
             AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(manifold.topography.get_topo_type()) + " has not been implemented."));
             break;
@@ -692,10 +754,10 @@ namespace aspect
                               Patterns::Anything(),
                               "Set the topography height, end with a |, and set the areas described by the points, separated by commas and coordinates separated by a ':'. "
                               "Seperate each topography feature by a semicolon. For example for two triangular areas of 100 and -100 meters high set: '100|0:0,5:5,0:10;-100|10:10,10:15,20:15'.");
-            prm.declare_entry("Uniform grid number of data points",
+            prm.declare_entry("Grid number of data points",
                               "1:1",
                               Patterns::Anything(),
-                              "The number of data points in the longitude:latitude direction.");
+                              "The number of data points of the uniform or nonuniform grid in the longitude:latitude direction.");
             // Data files
             prm.declare_entry ("Data directory",
                                "$ASPECT_SOURCE_DIR/data/geometry_model/",
@@ -703,7 +765,10 @@ namespace aspect
                                "The name of a directory that contains the model data. ");
             prm.declare_entry ("Topography file name", "topo.dat",
                                Patterns::Anything (),
-                               "The name of the file containing the topography values. ");
+                               "The name of the file containing the topography values. In case a uniform grid is used, the file should only contain "
+                               "a list of topography values for the long,lat coordinates (first longitude ascends, then latitude). A nonuniform grid "
+                               "allows for variable spacing in each coordinate direction, but requires the coordinates to be specified in the file "
+                               "as well. In this case, first list the longitude coordinates, then the latitude coordinates and lastly the topography values. ");
           }
           prm.leave_subsection();
         }
@@ -910,6 +975,7 @@ namespace aspect
           eastLongitude = corners[0][0];
           northLatitude = corners[0][1];
           southLatitude = corners[2][1];
+
           prm.enter_subsection("Topography");
           {
             /**
@@ -932,7 +998,6 @@ namespace aspect
                 Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
                 topo_type = NO_TOPOGRAPHY;
               }
-
 
             manifold.topography.set_topography_type(topo_type);
 
@@ -982,16 +1047,17 @@ namespace aspect
                     manifold.topography.set_point_lists (point_lists);
                   }
               }
-            if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID)
+
+            if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
               {
-                std::vector<double> uniform_grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Uniform grid number of data points"),':'));
-                AssertThrow(uniform_grid_number_data_points.size() == 2, ExcMessage("The number of grid points needs to be specified for the longitude and latitude directions. "));
-                manifold.topography.set_uniform_grid_number_data_points(uniform_grid_number_data_points);
+                std::vector<double> grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Grid number of data points"),':'));
+                AssertThrow(grid_number_data_points.size() == 2, ExcMessage("The number of grid points needs to be specified for the longitude and latitude directions. "));
+                manifold.topography.set_grid_number_data_points(grid_number_data_points);
               }
 
-            if (topo_type == FILE_UNIFORM_GRID)
+            if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
               {
-                data_directory  = prm.get ("Data directory");
+                std::string data_directory  = prm.get ("Data directory");
                 {
                   const std::string      subst_text = "$ASPECT_SOURCE_DIR";
                   std::string::size_type position;
@@ -1000,7 +1066,7 @@ namespace aspect
                                             data_directory.begin()+position+subst_text.size(),
                                             subst_text);
                 }
-                topo_file_name = prm.get("Topography file name");
+                const std::string topo_file_name = prm.get("Topography file name");
 
                 manifold.topography.set_topography_file(data_directory+topo_file_name);
               }
@@ -1139,6 +1205,8 @@ namespace aspect
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
                                    "file by longitude:latitude. It is also possible to define additional subdivisions of the "
                                    "mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, "
-                                   "north; 4, inner; 5, outer. ")
+                                   "north; 4, inner; 5, outer. "
+                                   "Additionally, one can add topography to the ellipsoidal chunk, either directly from "
+                                   "the input file, or by reading in a data file. ")
   }
 }
