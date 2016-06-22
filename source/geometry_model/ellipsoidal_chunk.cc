@@ -220,9 +220,9 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
     {
       std_cxx11::array<std::pair<double,double>,2> endpoints;
-      // Beginning and end of longitude
+      // Minimal and maximal longitude
       endpoints[0] = std::make_pair (corners[1][0]*numbers::PI/180, corners[0][0]*numbers::PI/180);
-      // Beginning and end of latitude
+      // Minimal and maximal of latitude
       endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
       for (unsigned int i=0; i<2; i++)
         Assert (endpoints[i].first < endpoints[i].second,
@@ -247,8 +247,8 @@ namespace aspect
     {
       if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED)
         {
-
-
+          // TODO: use grid_data for this?
+    	  // Fill grid based on polygons from prm
           std::vector<double> data(grid_number_data_points[0] * grid_number_data_points[1],0);
           double d_long = (corners[3][0]-corners[2][0])/grid_number_data_points[0];
           double d_lat = (corners[1][1]-corners[2][1])/grid_number_data_points[1];
@@ -272,8 +272,8 @@ namespace aspect
         }
       else if (topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
         {
+    	  // Return the data from file
           return grid_data;
-
         }
       else
         {
@@ -308,6 +308,7 @@ namespace aspect
       // TODO: format of nonuniform grid file might change
       if (topo_type == FILE_NONUNIFORM_GRID)
         {
+    	  // First longitude coordinates
           for (unsigned int i=0; i<grid_number_data_points[0]; i++)
             {
               if (!(in_topo >> topo))
@@ -319,6 +320,7 @@ namespace aspect
               AssertThrow(topo > lon_points[i-1], ExcMessage("Longitude grid coordinates must be strictly ascending."));
               lon_points.push_back(topo);
             }
+          // Then latitude coordinates
           for (unsigned int i=0; i<grid_number_data_points[1]; i++)
             {
               if (!(in_topo >> topo))
@@ -756,7 +758,7 @@ namespace aspect
             prm.declare_entry("Grid number of data points",
                               "1:1",
                               Patterns::Anything(),
-                              "The number of data points in the longitude:latitude direction.");
+                              "The number of data points of the uniform or nonuniform grid in the longitude:latitude direction.");
             // Data files
             prm.declare_entry ("Data directory",
                                "$ASPECT_SOURCE_DIR/data/geometry_model/",
@@ -971,6 +973,7 @@ namespace aspect
           eastLongitude = corners[0][0];
           northLatitude = corners[0][1];
           southLatitude = corners[2][1];
+
           prm.enter_subsection("Topography");
           {
             /**
@@ -993,7 +996,6 @@ namespace aspect
                 Assert(false,ExcMessage ("The given topography function (" + topography_type_string + ") has not been implemented."));
                 topo_type = NO_TOPOGRAPHY;
               }
-
 
             manifold.topography.set_topography_type(topo_type);
 
@@ -1043,6 +1045,7 @@ namespace aspect
                     manifold.topography.set_point_lists (point_lists);
                   }
               }
+
             if (topo_type == PRM_UNIFORM_GRID_INTERPOLATED || topo_type == FILE_UNIFORM_GRID || topo_type == FILE_NONUNIFORM_GRID)
               {
                 std::vector<double> grid_number_data_points = Utilities::string_to_double(Utilities::split_string_list(prm.get("Grid number of data points"),':'));
@@ -1200,6 +1203,8 @@ namespace aspect
                                    "parallel ellipsoidal chunk will be created. The points are defined in the input "
                                    "file by longitude:latitude. It is also possible to define additional subdivisions of the "
                                    "mesh in each direction. Faces of the model are defined as 0, west; 1,east; 2, south; 3, "
-                                   "north; 4, inner; 5, outer. ")
+                                   "north; 4, inner; 5, outer. "
+                                   "Additionally, one can add topography to the ellipsoidal chunk, either directly from "
+                                   "the input file, or by reading in a data file. ")
   }
 }
