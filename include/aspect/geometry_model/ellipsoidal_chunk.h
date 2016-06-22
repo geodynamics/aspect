@@ -86,9 +86,9 @@ namespace aspect
             /**
              * The get functions
              */
-            topo_types                                   get_topo_type ();
-            std_cxx11::array<std::pair<double,double>,2> get_endpoints ();
-            std_cxx11::array<unsigned int,2>             get_number_of_intervals ();
+            topo_types                                   get_topo_type () const;
+            std_cxx11::array<std::pair<double,double>,2> get_endpoints () const;
+            std_cxx11::array<unsigned int,2>             get_number_of_intervals () const;
             std::vector<double>                          get_data () const;
             std_cxx11::array< std::vector< double >, 2 > get_coordinates () const;
             void                                         get_data_from_file ();
@@ -99,6 +99,7 @@ namespace aspect
             std::string topo_file;
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
+            // Gridded topography data
             Function<2> *topography_data = NULL;
             std::vector<Point<2> > corners;
             // Number of points in each coordinate direction

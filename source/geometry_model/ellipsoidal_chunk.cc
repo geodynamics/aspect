@@ -210,14 +210,14 @@ namespace aspect
 
     template <int dim>
     topo_types
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type ()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type () const
     {
       return topo_type;
     }
 
     template <int dim>
     std_cxx11::array<std::pair<double,double>,2>
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints ()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_endpoints () const
     {
       std_cxx11::array<std::pair<double,double>,2> endpoints;
       // Minimal and maximal longitude
@@ -233,7 +233,7 @@ namespace aspect
 
     template <int dim>
     std_cxx11::array<unsigned int,2>
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals()
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_number_of_intervals() const
     {
       std_cxx11::array<unsigned int,2> interval;
       interval[0] = grid_number_data_points[0]-1;
