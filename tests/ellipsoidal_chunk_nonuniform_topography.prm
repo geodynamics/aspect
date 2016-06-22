@@ -1,0 +1,94 @@
+# A simple setup for adding topography to a 3d ellipsoidal chunk. See the
+# manual for more information.
+
+############### Global parameters
+# We use a 3d setup. Since we are only interested
+# the shape of the grid, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+
+############### Parameters describing the model
+# We create a coordinate parallel ellipsoidal chunk with
+# a small eccentricity. Note that latitude and longitude
+# are geodetic coordinates.
+
+subsection Geometry model
+  set Model name = ellipsoidal chunk
+    subsection Ellipsoidal chunk
+        set NE corner = 30:30
+        set SW corner = 0:0
+        set Depth = 300000
+        set Eccentricity = 0.01
+        set East-West subdivisions = 1
+        set North-South subdivisions = 1
+        set Depth subdivisions = 1
+        ############### Parameters describing the topography
+        # We read topography values, specified on a grid that
+        # is not equally spaced in all directions, from file.
+        # There are 4 points in the longitudinal direction
+        # and 3 in the latitudinal direction.
+        subsection Topography
+            set Topography type = From file nonuniform grid
+            set Grid number of data points = 4:3
+            # File in directory data/geometry_model
+            set Data directory = /home/glerum/aspect/090915/mf_aspect/aspect/data/geometry_model/
+            set Topography file name = nonuniform_topo.dat
+        end 
+   end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer,north,south,east,west
+  set Fixed temperature boundary indicators   = inner, outer,north,south,east,west
+  set Include shear heating                   = false
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1.473e3
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+############### Parameters describing the discretization
+subsection Mesh refinement
+  set Initial global refinement          = 2
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+end
+
+############### Parameters describing what to do with the solution
+subsection Postprocess
+  set List of postprocessors = visualization, basic statistics
+
+  subsection Visualization
+    set List of output variables          = density
+    set Output format                     = gnuplot
+  end
+end
