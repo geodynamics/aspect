@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/viscous_dissipation_statistics.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>

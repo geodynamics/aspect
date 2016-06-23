@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/boundary_densities.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

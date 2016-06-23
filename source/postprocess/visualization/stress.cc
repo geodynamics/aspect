@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/stress.h>
-#include <aspect/simulator_access.h>
 
 
 

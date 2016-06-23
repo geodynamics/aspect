@@ -19,7 +19,6 @@
 */
 
 #include <aspect/postprocess/visualization/compositional_vector.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {

@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/nonadiabatic_temperature.h>
-#include <aspect/simulator_access.h>
 
 
 

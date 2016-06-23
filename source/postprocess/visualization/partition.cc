@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/partition.h>
-#include <aspect/simulator_access.h>
 
 
 

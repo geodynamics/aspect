@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/pressure_statistics.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

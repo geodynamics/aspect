@@ -21,7 +21,6 @@
 
 #include <aspect/postprocess/velocity_statistics.h>
 #include <aspect/material_model/simple.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>

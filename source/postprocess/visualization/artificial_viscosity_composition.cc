@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/artificial_viscosity_composition.h>
-#include <aspect/simulator_access.h>
 
 
 namespace aspect
