@@ -113,6 +113,7 @@ namespace aspect
 
         /**
          * Like get_adiabatic_temperature_profile() but for the pressure.
+         * @param values
          */
         virtual
         void get_adiabatic_pressure_profile(std::vector<double> &values) const;
