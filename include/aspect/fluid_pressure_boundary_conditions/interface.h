@@ -62,11 +62,13 @@ namespace aspect
 
 
         /**
-         * Compute the gradient of the fluid pressure
-         * for each quadrature point.
+         * Compute the component of the gradient of the fluid pressure
+         * in the direction normal to a boundary for a list of quadrature
+         * points.
          *
          * The return value can typically contain @p material_model_outputs.fluid_densities[q]
-         * or @p material_model_outputs.densities[q], multiplied by the gravity vector.
+         * or @p material_model_outputs.densities[q], multiplied by the gravity vector
+         * and dotted with the normal.
          * If the solid density is used, fluid is only flowing in or out due to differences in
          * dynamic pressure, if the fluid density is used, melt flows in with the same velocity
          * as inflowing solid material.
@@ -76,6 +78,7 @@ namespace aspect
          * are requesting the fluid pressure gradients.
          * @param material_model_inputs The material property inputs.
          * @param material_model_inputs The material property outputs.
+         * @param normal_vectors A normal vector for each point.
          * @param fluid_pressure_gradient_outputs Result to be filled.
          */
         virtual
@@ -83,7 +86,8 @@ namespace aspect
           const types::boundary_id boundary_indicator,
           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-          std::vector<Tensor<1,dim> > &fluid_pressure_gradient_outputs
+          const std::vector<Tensor<1,dim> > &normal_vectors,
+          std::vector<double> &fluid_pressure_gradient_outputs
         ) const = 0;
 
         /**

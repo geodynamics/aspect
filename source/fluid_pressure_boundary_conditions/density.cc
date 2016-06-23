@@ -34,10 +34,11 @@ namespace aspect
     void
     Density<dim>::
     fluid_pressure_gradient (
-      const types::boundary_id boundary_indicator,
+      const types::boundary_id /*boundary_indicator*/,
       const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
       const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-      std::vector<Tensor<1,dim> > &fluid_pressure_gradient_outputs
+      const std::vector<Tensor<1,dim> > &normal_vectors,
+      std::vector<double> &fluid_pressure_gradient_outputs
     ) const
     {
       const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
@@ -50,13 +51,13 @@ namespace aspect
             {
               case DensityFormulation::solid_density:
               {
-                fluid_pressure_gradient_outputs[q] = material_model_outputs.densities[q] * gravity;
+                fluid_pressure_gradient_outputs[q] = (material_model_outputs.densities[q] * gravity) * normal_vectors[q];
                 break;
               }
 
               case DensityFormulation::fluid_density:
               {
-                fluid_pressure_gradient_outputs[q] = melt_outputs->fluid_densities[q] * gravity;
+                fluid_pressure_gradient_outputs[q] = (melt_outputs->fluid_densities[q] * gravity) * normal_vectors[q];
                 break;
               }
 

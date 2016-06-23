@@ -254,7 +254,8 @@ namespace aspect
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        std::vector<Tensor<1,dim> > &output
+        const std::vector<Tensor<1,dim> > &normal_vectors,
+        std::vector<double> &output
       ) const
       {
         for (unsigned int q=0; q<output.size(); ++q)
@@ -271,7 +272,7 @@ namespace aspect
             const double y = material_model_inputs.position[q][1];
             Tensor<1,dim> gravity;
             gravity[dim-1] = 1.0;
-            output[q] = (E * std::exp(y) - rho_f_0 * C) * gravity;
+            output[q] = (E * std::exp(y) - rho_f_0 * C) * gravity * normal_vectors[q];
           }
       }
 

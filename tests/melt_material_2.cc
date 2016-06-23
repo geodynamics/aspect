@@ -78,7 +78,8 @@ namespace aspect
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        std::vector<Tensor<1,dim> > &output
+        const std::vector<Tensor<1,dim> > &normal_vectors,
+        std::vector<double> &output
       ) const
       {
         for (unsigned int q=0; q<output.size(); ++q)
@@ -86,7 +87,7 @@ namespace aspect
             Tensor<1,dim> gradient;
             gradient[0] = 0.0;
             gradient[1] = 0.0;
-            output[q] = gradient;
+            output[q] = gradient * normal_vectors[q];
           }
       }
   };

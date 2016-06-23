@@ -318,7 +318,8 @@ namespace aspect
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        std::vector<Tensor<1,dim> > &output
+        const std::vector<Tensor<1,dim> > &normal_vectors,
+        std::vector<double> &output
       ) const
       {
         for (unsigned int q=0; q<output.size(); ++q)
@@ -328,7 +329,7 @@ namespace aspect
             Tensor<1,dim> gradient;
             gradient[0] = 0.4000000000e1 * x * exp(0.1e1 - 0.2000000000e2 * x * x - 0.2000000000e2 * z * z) * exp(z) / (-0.9900000000e0 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1))) + 0.2000000000e0 * (0.1e0 + 0.1e0 * exp(0.1e1 - 0.2000000000e2 * x * x - 0.2000000000e2 * z * z)) * exp(z) * pow(-0.9900000000e0 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (-0.400e2 * x - 0.8000e2 * z) * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
             gradient[1] = 0.4000000000e1 * z * exp(0.1e1 - 0.2000000000e2 * x * x - 0.2000000000e2 * z * z) * exp(z) / (-0.9900000000e0 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1))) - (0.1e0 + 0.1e0 * exp(0.1e1 - 0.2000000000e2 * x * x - 0.2000000000e2 * z * z)) * exp(z) / (-0.9900000000e0 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1))) + 0.2000000000e0 * (0.1e0 + 0.1e0 * exp(0.1e1 - 0.2000000000e2 * x * x - 0.2000000000e2 * z * z)) * exp(z) * pow(-0.9900000000e0 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (-0.8000e2 * x - 0.160000e3 * z) * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1)) - 0.1e1;
-            output[q] = gradient;
+            output[q] = gradient * normal_vectors[q];
           }
       }
 

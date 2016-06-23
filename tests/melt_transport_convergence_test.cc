@@ -220,7 +220,8 @@ namespace aspect
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        std::vector<Tensor<1,dim> > &output
+        const std::vector<Tensor<1,dim> > &normal_vectors,
+        std::vector<double> &output
       ) const
       {
         for (unsigned int q=0; q<output.size(); ++q)
@@ -230,7 +231,7 @@ namespace aspect
             Tensor<1,dim> gradient;
             gradient[0] = 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1));
             gradient[1] = 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * exp(0.1e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1))) * pow(-0.9e0 - 0.5e-1 * atan(pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * exp(0.5000000000e-1 * z);
-            output[q] = gradient;
+            output[q] = gradient * normal_vectors[q];
           }
       }
 

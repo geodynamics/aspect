@@ -297,11 +297,13 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
-      std::vector<Tensor<1,dim> > grad_p_f(n_face_q_points);
-      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(cell->face(face_no)->boundary_id(),
-          scratch.face_material_model_inputs,
-          scratch.face_material_model_outputs,
-          grad_p_f);
+      std::vector<double> grad_p_f(n_face_q_points);
+      this->get_melt_handler().fluid_pressure_boundary_conditions->fluid_pressure_gradient(
+        cell->face(face_no)->boundary_id(),
+        scratch.face_material_model_inputs,
+        scratch.face_material_model_outputs,
+        scratch.face_finite_element_values.get_all_normal_vectors(),
+        grad_p_f);
 
       for (unsigned int q=0; q<n_face_q_points; ++q)
         {
@@ -325,7 +327,7 @@ namespace aspect
                                     * pressure_scaling * K_D *
                                     (density_f
                                      * (scratch.face_finite_element_values.normal_vector(q) * gravity)
-                                     - (scratch.face_finite_element_values.normal_vector(q) * grad_p_f[q]))
+                                     - grad_p_f[q])
                                     * scratch.face_finite_element_values.JxW(q));
             }
         }
