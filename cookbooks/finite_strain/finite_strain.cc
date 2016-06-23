@@ -68,18 +68,18 @@ namespace aspect
               const Tensor<2,dim> rotation = (velocity_gradients[q] - symmetrize(velocity_gradients[q])) * this->get_timestep()
                                              + unit_symmetric_tensor<dim>();
 
-              Tensor<2,dim> accumulated_strain;
-              for (unsigned int i=0; i<Tensor<2,dim>::n_independent_components; ++i)
-                accumulated_strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+              SymmetricTensor<2,dim> accumulated_strain;
+              for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
+                accumulated_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
 
               // the new strain is the rotated old strain plus the
               // strain of the current time step
-              const Tensor<2,dim> rotated_strain = rotation * accumulated_strain * transpose(rotation) + in.strain_rate[q] * this->get_timestep();
+              const SymmetricTensor<2,dim> rotated_strain = symmetrize(rotation * Tensor<2,dim>(accumulated_strain) * transpose(rotation)) + in.strain_rate[q] * this->get_timestep();
 
-              for (unsigned int c=0; c<Tensor<2,dim>::n_independent_components; ++c)
+              for (unsigned int c=0; c<SymmetricTensor<2,dim>::n_independent_components; ++c)
                 {
                   out.reaction_terms[q][c] = - in.composition[q][c]
-                                             + rotated_strain[Tensor<2,dim>::unrolled_to_component_indices(c)];
+                                             + rotated_strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(c)];
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace aspect
     {
       Simple<dim>::parse_parameters (prm);
 
-      AssertThrow(this->n_compositional_fields() >= (Tensor<2,dim>::n_independent_components),
+      AssertThrow(this->n_compositional_fields() >= (SymmetricTensor<2,dim>::n_independent_components),
                   ExcMessage("There must be at least as many compositional fields as independent components in the full "
                              "strain rate tensor."));
     }
