@@ -397,7 +397,20 @@ $c_i$ that we call \textit{compositional fields}:
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
-\textit{strain rate}).
+\textit{strain rate}).%
+\footnote{There is no consensus in the sciences on the notation used
+  for strain and strain rate. The symbols $\varepsilon$,
+  $\dot\varepsilon$,  $\varepsilon(\mathbf u)$, and
+  $\dot\varepsilon(\mathbf u)$, can all be found. In this manual, and
+  in the code, we will consistently use $\varepsilon$ as an
+  \textit{operator}, i.e., the symbol is not used on its own but only
+  as applied to a field. In other words, if $\mathbf u$ is the
+  velocity field, then $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla
+  \mathbf u + \nabla\mathbf u^T)$ will denote the strain rate. On the
+  other hand, if $\mathbf d$ is the
+  displacement field, then $\varepsilon(\mathbf d) = \frac{1}{2}(\nabla
+  \mathbf d + \nabla\mathbf d^T)$ will denote the strain.}
+
 
 In this set of equations, \eqref{eq:stokes-1} and \eqref{eq:stokes-2}
 represent the compressible Stokes equations in which $\mathbf u=\mathbf
