@@ -51,6 +51,13 @@
  * <br>
  * (Rene Gassmoeller, 2016/03/18)
  *
+ * <li> Changed/new: The system by which linear systems are assembled has been
+ * rewritten into a collection of functions that each implement certain
+ * subsets of terms. This makes it far more flexible to combine different models,
+ * different formulations, etc.
+ * <br>
+ * (Wolfgang Bangerth, Timo Heister, Rene Gassmoeller, Juliane Dannberg, 2016/01/15-2016/03/08)
+ *
  * <li> Improved: The Introspection class has now a new base class
  * FEVariableCollection that allows flexible modification of the finite
  * element variables involved in a computation, even inside a plugin.
@@ -392,7 +399,7 @@
  * <br>
  * (Jacqueline Austermann, 2015/05/28)
  *
- * <li> Changed: The heating models have a new straucture now:
+ * <li> Changed: The heating models have a new structure now:
  * Instead of the implementation in the assembly, there is a heating
  * plugin for each model now that can be used both in the assembly
  * and the postprocessors, and a new heating model manager that
