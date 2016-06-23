@@ -2269,6 +2269,8 @@ namespace aspect
                                 std_cxx11::cref (*complete_equation_assembler),
                               std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
+    if (material_model->is_compressible()
+        && parameters.formulation_mass != Parameters<dim>::FormulationType::incompressible)
     if (parameters.include_melt_transport)
       assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt,
@@ -2456,7 +2458,8 @@ namespace aspect
                                                scratch.material_model_outputs);
 
 
-    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
+        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         scratch.mass_densities.resize(n_q_points);

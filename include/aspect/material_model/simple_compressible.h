@@ -45,6 +45,10 @@ namespace aspect
     {
       public:
 
+        virtual void
+        density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
+                               std::vector<double> &densities) const;
+
         /**
         * Evaluate material properties.
         */
