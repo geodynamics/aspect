@@ -24,6 +24,7 @@
 #include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
@@ -339,8 +340,8 @@ namespace aspect
     HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
                                              const unsigned int)
       :
-      heating_source_terms(n_points,aspect::Utilities::signaling_nan<double>()),
-      lhs_latent_heat_terms(n_points,aspect::Utilities::signaling_nan<double>())
+      heating_source_terms(n_points,numbers::signaling_nan<double>()),
+      lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
     {
     }
 
