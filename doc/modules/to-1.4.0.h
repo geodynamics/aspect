@@ -51,6 +51,13 @@
  * <br>
  * (Rene Gassmoeller, 2016/03/18)
  *
+ * <li> Changed/new: The system by which linear systems are assembled has been
+ * rewritten into a collection of functions that each implement certain
+ * subsets of terms. This makes it far more flexible to combine different models,
+ * different formulations, etc.
+ * <br>
+ * (Wolfgang Bangerth, Timo Heister, Rene Gassmoeller, Juliane Dannberg, 2016/01/15-2016/03/08)
+ *
  * <li> Improved: The Introspection class has now a new base class
  * FEVariableCollection that allows flexible modification of the finite
  * element variables involved in a computation, even inside a plugin.
