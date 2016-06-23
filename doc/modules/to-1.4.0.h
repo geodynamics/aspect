@@ -392,7 +392,7 @@
  * <br>
  * (Jacqueline Austermann, 2015/05/28)
  *
- * <li> Changed: The heating models have a new straucture now:
+ * <li> Changed: The heating models have a new structure now:
  * Instead of the implementation in the assembly, there is a heating
  * plugin for each model now that can be used both in the assembly
  * and the postprocessors, and a new heating model manager that
