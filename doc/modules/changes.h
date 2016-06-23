@@ -4,12 +4,13 @@
  * <p> This is the list of changes made after the release of Aspect version
  * 1.4.0. All entries are signed with the names of the author. </p>
  *
- * <li> New: This is a new optional feature for the discontinuous temperature
+ * <li> New: There is a new optional feature for the discontinuous temperature
  * and compositional solutions. After solving the advection equation, 
  * a "bound preserving limiter" working as a correction procedure is applied
  * to the discontinuous advection fields. The limiter will stabilize the 
  * discontinuous advection solutions and keep it in the range of user defined 
- * global maximum/minimum values. 
+ * global maximum/minimum values. Whether or not the limiter is used is
+ * determined by an entry to the parameter file.
  * <br>
  * (Ying He, 2016/06/02)
  *
@@ -35,6 +36,11 @@
  * conditions).
  * <br>
  * (Juliane Dannberg, 2016/05/19)
+ *
+ * <li> New: There is now a visualization plugin to visualize the maximum
+ * horizontal component of the compressive stress.
+ * <br> 
+ * (Wolfgang Bangerth, D. Sarah Stamps, 2016/05/12)
  *
  * <li> New: There is a new visualization postprocessor "artificial viscosity
  * composition" to visualize the artificial viscosity of a compositional
