@@ -124,8 +124,7 @@ namespace aspect
                                         "function is defined in the parameters in section "
                                         "``Tracers|Function''. The format of these "
                                         "functions follows the syntax understood by the "
-                                        "muparser library, see Section~\\ref{sec:muparser-format}."
-                                        "\n\n")
+                                        "muparser library, see Section~\\ref{sec:muparser-format}.")
     }
   }
 }
