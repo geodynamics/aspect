@@ -11,6 +11,6 @@
 # 11: Schur complement iterations in Stokes preconditioner
 # 12: Time step size (seconds)
 # 13: Minimal melt fraction
-# 14: Total melt fraction
+# 14: Total melt volume
 # 15: Maximal melt fraction
 0 0.000000000000e+00 4096 37507 16641 16641 0 0 32 18 3 2.200171137824e-10 0.00000000e+00 2.29044643e+01 1.00000000e+00 
