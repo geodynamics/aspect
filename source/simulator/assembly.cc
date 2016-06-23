@@ -2230,8 +2230,9 @@ namespace aspect
     aspect::Assemblers::CompleteEquations<dim> *complete_equation_assembler
       = new aspect::Assemblers::CompleteEquations<dim>();
 
-    aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler
-      = new aspect::Assemblers::MeltEquations<dim>();
+    aspect::Assemblers::MeltEquations<dim> *melt_equation_assembler = NULL;
+    if (parameters.include_melt_transport)
+      melt_equation_assembler = new aspect::Assemblers::MeltEquations<dim>();
 
     if (parameters.include_melt_transport)
       assemblers->local_assemble_stokes_preconditioner
@@ -2271,10 +2272,13 @@ namespace aspect
                                 std_cxx11::_3,
                                 std_cxx11::_4,
                                 std_cxx11::_5));
+
     assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (complete_equation_assembler));
-    assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
-                                 (melt_equation_assembler));
+
+    if (parameters.include_melt_transport)
+      assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
+                                   (melt_equation_assembler));
 
     // add the boundary integral for melt migration
     if (parameters.include_melt_transport)

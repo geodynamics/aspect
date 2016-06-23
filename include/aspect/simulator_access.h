@@ -553,8 +553,8 @@ namespace aspect
       get_lateral_averaging () const;
 
       /**
-       * Return a pointer to the object that describes the
-       * constraints for the time step we are solving at the moment.
+       * Return a pointer to the object that describes the DoF
+       * constraints for the time step we are currently solving.
        */
       const ConstraintMatrix &
       get_current_constraints() const;

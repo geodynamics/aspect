@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/melt.h>
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 
 #include <deal.II/numerics/data_out.h>
@@ -108,7 +109,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
-        create_melt_material_outputs(out);
+        MeltHandler<dim>::create_material_model_outputs(out);
 
         in.position = evaluation_points;
         in.strain_rate.resize(0); // we do not need the viscosity

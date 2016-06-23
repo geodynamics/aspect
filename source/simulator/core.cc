@@ -87,11 +87,12 @@ namespace aspect
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
                                                                SimulatorSignals<dim> &signals,
-                                                               MeltHandler<dim>      &melt_handler)
+                                                               std_cxx11::shared_ptr<MeltHandler<dim> > &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
-      melt_handler.edit_finite_element_variables (parameters, variables);
+      if (melt_handler)
+        melt_handler->edit_finite_element_variables (parameters, variables);
 
       signals.edit_finite_element_variables(variables);
       return variables;
@@ -126,7 +127,7 @@ namespace aspect
     post_signal_creation(
       std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                        std_cxx11::ref(signals))),
-    introspection (construct_variables<dim>(parameters, signals, *melt_handler), parameters),
+    introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),

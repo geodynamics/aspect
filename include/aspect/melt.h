@@ -109,14 +109,6 @@ namespace aspect
 
   }
 
-  /**
-   * Create an additional material model output object that contains
-   * the additional output variables needed in simulation with melt transport,
-   * and attaches a pointer to it to the corresponding vector in the
-   * MaterialModel::MaterialModelOutputs structure.
-   */
-  template <int dim>
-  void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
 
   namespace Assemblers
@@ -268,6 +260,14 @@ namespace aspect
        * the introspection object is created.
        */
       void parse_parameters (ParameterHandler &prm);
+
+      /**
+       * Create an additional material model output object that contains
+       * the additional output variables needed in simulation with melt transport,
+       * and attaches a pointer to it to the corresponding vector in the
+       * MaterialModel::MaterialModelOutputs structure.
+       */
+      static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
       /**
        * Add the additional variables we need in simulations with melt

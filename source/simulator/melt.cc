@@ -58,25 +58,13 @@ namespace aspect
     }
   }
 
-  template <int dim>
-  void create_melt_material_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
-  {
-    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != NULL)
-      return;
-
-    const unsigned int n_points = output.viscosities.size();
-    const unsigned int n_comp = output.reaction_terms[0].size();
-    output.additional_outputs.push_back(std::make_shared<MaterialModel::MeltOutputs<dim> > (n_points, n_comp));
-  }
-
-
   namespace Assemblers
   {
     template <int dim>
     void
     MeltEquations<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
-      create_melt_material_outputs(outputs);
+      MeltHandler<dim>::create_material_model_outputs(outputs);
     }
 
 
@@ -830,7 +818,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
-      create_melt_material_outputs(out);
+      create_material_model_outputs(out);
 
       typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
                                                      endc = this->get_dof_handler().end();
@@ -1082,6 +1070,20 @@ namespace aspect
     fluid_pressure_boundary_conditions.reset(FluidPressureBoundaryConditions::create_fluid_pressure_boundary<dim>(prm));
     fluid_pressure_boundary_conditions->parse_parameters (prm);
   }
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
+  {
+    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != NULL)
+      return;
+
+    const unsigned int n_points = output.viscosities.size();
+    const unsigned int n_comp = output.reaction_terms[0].size();
+    output.additional_outputs.push_back(std::make_shared<MaterialModel::MeltOutputs<dim> > (n_points, n_comp));
+  }
 }
 
 
@@ -1092,9 +1094,6 @@ namespace aspect
 {
 
 #define INSTANTIATE(dim) \
-  \
-  template \
-  void create_melt_material_outputs<dim>(MaterialModel::MaterialModelOutputs<dim> &output); \
   \
   template \
   class \
