@@ -25,6 +25,7 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
@@ -74,7 +75,7 @@ namespace aspect
                              "with three arguments or a function 'boundary_temperature' with two arguments. "
                              "The function with three arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
-      return Utilities::signaling_nan<double>();
+      return numbers::signaling_nan<double>();
     }
 
 
