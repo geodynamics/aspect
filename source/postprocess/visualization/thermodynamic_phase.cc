@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/thermodynamic_phase.h>
-#include <aspect/simulator_access.h>
 
 
 

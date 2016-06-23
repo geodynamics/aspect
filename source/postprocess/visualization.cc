@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <deal.II/dofs/dof_tools.h>

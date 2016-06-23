@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/friction_heating.h>
-#include <aspect/simulator_access.h>
 
 
 

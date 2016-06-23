@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/error_indicator.h>
-#include <aspect/simulator_access.h>
 
 
 namespace aspect

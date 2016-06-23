@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/thermal_expansivity.h>
-#include <aspect/simulator_access.h>
 
 
 

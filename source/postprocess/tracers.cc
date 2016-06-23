@@ -20,7 +20,6 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/tracers.h>
-#include <aspect/simulator_access.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>

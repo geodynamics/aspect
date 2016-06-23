@@ -19,7 +19,6 @@
 */
 
 
-#include <aspect/simulator_access.h>
 #include <aspect/postprocess/mass_flux_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>

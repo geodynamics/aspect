@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/vertical_heat_flux.h>
-#include <aspect/simulator_access.h>
 
 
 

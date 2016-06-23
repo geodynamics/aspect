@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/heating.h>
-#include <aspect/simulator_access.h>
 #include <deal.II/base/utilities.h>
 
 #include <algorithm>
