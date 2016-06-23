@@ -76,8 +76,7 @@ namespace aspect
                                         "property is given as the initial composition "
                                         "at the particle's initial position. The tracer "
                                         "gets as many properties as there are "
-                                        "compositional fields."
-                                        "\n\n")
+                                        "compositional fields.")
     }
   }
 }

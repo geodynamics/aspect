@@ -77,8 +77,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(Position,
                                         "position",
                                         "Implementation of a plugin in which the tracer "
-                                        "property is defined as the current position. "
-                                        "\n\n")
+                                        "property is defined as the current position.")
     }
   }
 }
