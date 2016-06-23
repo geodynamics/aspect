@@ -1567,6 +1567,187 @@ from previous time steps).
 
 
 
+\newpage
+\subsection{Approximations}
+
+
+given density:
+\[
+ \rho(depth, p, T, \dots) = A(depth) + B(p-p_{ref}) + C(T-T_{ref}) + \dots
+\]
+with an adiabat $p_{ref}$ and $T_{ref}$ as a function of depth
+
+introduce density approximation $\hat{\rho}=\rho(depth, p_{ref}, T_{ref})$ by default computed using reference temperature and pressure but can be overwritten
+
+{\bf Formulation:}
+\begin{itemize}
+ \item 
+
+ALA: $\hat{\rho} = \rho(z)$, $T_{ref}=T(z)$, radiogenic heating, shear heating;
+mass density = implicit adiabatic, buoyancy = full, temperature = adiabatic; adiabatic heating = simplified!
+
+\item
+``TALA'': like ALA, except buoyancy approximation = adiabatic pressure
+
+\item
+``EBA'': $\rho=1$, $T_{ref}=0$, still with radiogenic heating, shear heating;
+mass density = incompressible, temperature = adiabatic, buoyancy = adiabatic pressure;
+material.compressible=false
+
+\item
+``BA'': EBA, but turn off shear heating and adiabatic heating (?). do we need to switch to material.compressible=false
+
+\item
+``current'': full/full/full
+
+\item
+``better?''
+
+\end{itemize}
+
+\subsubsection{Stress tensor approximation}
+
+The stress tensor in the conservation of momentum (diffusion) is either
+\[
+ \nabla \cdot \tau = 
+ \nabla \cdot \left[
+ 2\eta \left(\varepsilon(\mathbf u)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+                                  \right]
+\]
+or
+\[
+  \nabla \cdot \tau =  \nabla \cdot \left[
+ 2\eta \varepsilon(\mathbf u) \right]
+\]
+
+Currently controlled bys material\_model.is\_compressible. Deprecate and move this into the ``approximation'' section?
+This parameter also currently controls the mass density choice. Anything else?
+
+\subsubsection{Mass density approximation}
+
+simplify $\nabla \cdot (\rho u) =0$ in one of the following ways:
+
+\begin{itemize}
+ \item 
+``fuller?'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
+ - \alpha \rho  \textbf{g} \cdot \textbf{u} 
+\]
+
+\item
+``full'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\]
+
+\item
+``adiabatic``:
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \hat{\rho} \textbf{g} \cdot \textbf{u}
+\]
+
+\item
+``implicit adiabatic``:
+\[
+ \nabla \cdot \textbf{u} + \frac{1}{\rho} \frac{\partial \rho}{\partial p} \hat{\rho} \textbf{g} \cdot \textbf{u} = 0
+\]
+
+\item
+``incompressible``:
+\[
+ \nabla \cdot \textbf{u} = 0
+\]
+\end{itemize}
+
+question: what if $\rho$ is a function of depth and we could give the exact $\nabla \rho$?
+
+''full`` is probably inconsistent because it doesn't use the reference density
+
+\subsubsection{Buoyancy density approximation}
+
+we write the RHS of conservation of momentum 
+$
+ \rho g
+$
+as
+\begin{itemize}
+ \item 
+''full``: $\rho g$
+
+\item
+''adiabatic``: $\hat{\rho} g$
+
+\item
+''adiabatic pressure``: $\rho(depth, p_{ref}, T) g$
+
+\end{itemize}
+
+
+\subsubsection{Temperature density approximation}
+
+temperature equation:
+\begin{align*}
+\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla\cdot k\nabla T
+  &=
+  \rho H
+  \notag
+  \\
+  &\quad
+  +
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  \\
+  &\quad
+  +\alpha T \left( \mathbf u \cdot \nabla p \right)
+  \notag
+%   \\
+%   &\quad
+%   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
+\end{align*}
+
+\begin{itemize}
+ \item 
+``full``: use full density
+
+\item
+``adiabatic``: use density approximation in all terms
+\end{itemize}
+
+Note: simplified adiabatic heating allows different way of handling gravity 
+
+
+\subsection{Questions}
+
+\begin{itemize}
+ \item 
+how do people solve $\nabla \cdot (\rho u)=0$ with $\rho=\rho(z)$?
+
+\item
+Should we allow very simple setups (pick all constants as 1)? Then we would need things like prefactors for shear heating. Otherwise picking constants like viscosity are somewhat more
+complicated...
+
+\item
+The current material.is\_compressbile setting is needed for BA/EBA to get the simplified diffusion operator. Should this be a separate setting?
+
+\item
+Model $\rho(z)$ using a linear adiabatic pressure and setting compressibilty to $\nabla \rho$ or should we introduce the depth derivative explicitly?
+
+\item
+Can we improve things further and include additional terms?
+
+\item thermal expansion coefficient is sometimes $\beta$ and sometimes $\alpha$ in the manual
+
+\item for WB: eqn (22) needs reference density and simplified adiabatic heating
+\end{itemize}
+
+
+\newpage
+
 \subsection{Free surface calculations}
 \label{sec:freesurface}
 
