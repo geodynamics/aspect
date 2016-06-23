@@ -645,12 +645,10 @@ namespace aspect
     const unsigned int block_p = (parameters.include_melt_transport) ?
                                  introspection.variable("fluid pressure").block_index
                                  : introspection.block_indices.pressure;
-    const unsigned int block_p_c = (parameters.include_melt_transport) ?
-                                   introspection.variable("compaction pressure").block_index
-                                   : -1;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
-    Assert(!parameters.include_melt_transport || block_p_c == 1, ExcNotImplemented());
+    Assert(!parameters.include_melt_transport
+           || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
     const internal::StokesBlock stokes_block(system_matrix);
 
