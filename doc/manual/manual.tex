@@ -4191,7 +4191,7 @@ ends up, as well as the material that started in the top 20\%. For the moment,
 let us assume that there is no material between the materials at the bottom, the
 top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
-parameter file in \url{cookbooks/compositional-passive.prm}:
+parameter file in \url{cookbooks/composition-passive.prm}:
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-passive/passive.part.prm.out}
 
@@ -4228,7 +4228,7 @@ the domain we are interested in.}
     field is larger than 0.5 (in blue, indicating material from the top
     of the domain. The results were obtained with two more global
     refinement steps compared to the
-    \url{cookbooks/compositional-passive.prm} input file.}
+    \url{cookbooks/composition-passive.prm} input file.}
   \label{fig:compositional-passive}
 \end{figure}
 
@@ -4290,7 +4290,7 @@ While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in
 the computations shown in this section (using two additional global mesh
 refinements over the settings in the parameter file
-\url{cookbooks/compositional-passive.prm}), Fig.~\ref{fig:compositional-passive-mass}
+\url{cookbooks/composition-passive.prm}), Fig.~\ref{fig:compositional-passive-mass}
 shows the maximal and minimal values of the first compositional fields over time,
 along with the mass $m_1(t)$ (these are all tabulated in columns of the
 statistics file, see Sections~\ref{sec:running-overview} and \ref{sec:viz-stat}). While
@@ -4341,7 +4341,7 @@ exerted by whatever is driving the velocity at the top.}
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
-\url{cookbooks/compositional-active.prm}:
+\url{cookbooks/composition-active.prm}:
 
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active/active.part.prm.out}
