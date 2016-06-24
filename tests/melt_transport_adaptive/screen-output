@@ -5,7 +5,7 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,401 (2,178+578+2,178+289+1,089+1,089)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 7,401 (2,178+578+2,178+289+1,089+1,089)
       Total relative nonlinear residual: 0.996992
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -34,7 +34,7 @@ Number of active cells: 307 (on 6 levels)
 Number of degrees of freedom: 9,414 (2,774+728+2,774+364+1,387+1,387)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
@@ -43,7 +43,7 @@ Number of degrees of freedom: 9,414 (2,774+728+2,774+364+1,387+1,387)
       Total relative nonlinear residual: 0.996543
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -63,7 +63,7 @@ Number of active cells: 448 (on 6 levels)
 Number of degrees of freedom: 13,239 (3,906+1,014+3,906+507+1,953+1,953)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
@@ -72,7 +72,7 @@ Number of degrees of freedom: 13,239 (3,906+1,014+3,906+507+1,953+1,953)
       Total relative nonlinear residual: 0.994442
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.

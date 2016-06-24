@@ -5,7 +5,7 @@ Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
       Total relative nonlinear residual: 1
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.

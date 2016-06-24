@@ -6,8 +6,8 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving peridotite system ... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+9 iterations.
       Nonlinear residuals: 1.42313e+06, 0, 0, 2.94296e+13
@@ -15,8 +15,8 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
 
 
    Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
-   Solving peridotite system ... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Nonlinear residuals: 1.42313e+06, 0, 0, 10690.8

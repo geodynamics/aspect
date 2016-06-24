@@ -5,7 +5,7 @@ Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
       Total relative nonlinear residual: 1
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
       Total relative nonlinear residual: 0.0488436
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
       Total relative nonlinear residual: 0.000254543
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
      Error porosity_L2:                         1.164557e-04
 
 *** Timestep 1:  t=0.0142045 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.
@@ -61,7 +61,7 @@ Number of degrees of freedom: 28,617 (10,628+8,450+1,089+4,225+4,225)
      Error porosity_L2:                         1.280999e-04
 
 *** Timestep 2:  t=0.025 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.
    Solving for u_f in 13 iterations.

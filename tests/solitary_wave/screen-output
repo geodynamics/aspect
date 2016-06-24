@@ -6,7 +6,7 @@ Number of active cells: 2,560 (on 4 levels)
 Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
 
 *** Timestep 0:  t=0 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
@@ -15,7 +15,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
       Total relative nonlinear residual: 0.999786
 
 
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
      Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 1.710566e-15
 
 *** Timestep 1:  t=3738.96 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 27 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+9 iterations.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
      Errors e_f, e_p, e_c, delta: 9.179852e-04, 2.204448e-02, 1.421077e-02, 8.802844e-03
 
 *** Timestep 2:  t=7477.92 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+5 iterations.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
      Errors e_f, e_p, e_c, delta: 1.831665e-03, 2.243161e-02, 1.421017e-02, 1.760495e-02
 
 *** Timestep 3:  t=10000 years
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving porosity system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
