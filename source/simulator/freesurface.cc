@@ -33,15 +33,6 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
-/*
- * In some instances, using the Mac .dmg package to install deal.II, compilation
- * fails at the linker stage with an 'ld: symbol(s) not found for architecture x86_64'
- * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
- * really understood, but the extra include makes it work for now.
- */
-DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <deal.II/numerics/vector_tools.templates.h>
-DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 using namespace dealii;
 
