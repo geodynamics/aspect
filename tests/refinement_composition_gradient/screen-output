@@ -1,0 +1,87 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Alice system ... 0 iterations.
+   Solving Bob system ... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00000
+     Temperature min/avg/max:   0.1 K, 0.1773 K, 0.5 K
+     Compositions min/max/mass: 0.1/1/0.1692 // 1/1.999/1.156
+
+Number of active cells: 304 (on 6 levels)
+Number of degrees of freedom: 7,251 (2,758+356+1,379+1,379+1,379)
+
+*** Timestep 1:  t=0.0220971 seconds
+   Solving temperature system... 16 iterations.
+   Solving Alice system ... 11 iterations.
+   Solving Bob system ... 14 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00001
+     Temperature min/avg/max:   0.06231 K, 0.1773 K, 0.5517 K
+     Compositions min/max/mass: 0.06707/1.053/0.1693 // 1/1.991/1.156
+
+*** Timestep 2:  t=0.039687 seconds
+   Solving temperature system... 15 iterations.
+   Solving Alice system ... 12 iterations.
+   Solving Bob system ... 14 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00002
+     Temperature min/avg/max:   0.07412 K, 0.1773 K, 0.5412 K
+     Compositions min/max/mass: 0.04847/1.056/0.1693 // 1/1.981/1.156
+
+Number of active cells: 481 (on 6 levels)
+Number of degrees of freedom: 10,979 (4,178+534+2,089+2,089+2,089)
+
+*** Timestep 3:  t=0.057277 seconds
+   Solving temperature system... 15 iterations.
+   Solving Alice system ... 13 iterations.
+   Solving Bob system ... 17 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00003
+     Temperature min/avg/max:   0.07604 K, 0.1773 K, 0.5348 K
+     Compositions min/max/mass: 0.03834/1.055/0.1694 // 1/1.984/1.156
+
+Number of active cells: 895 (on 7 levels)
+Number of degrees of freedom: 20,526 (7,814+991+3,907+3,907+3,907)
+
+*** Timestep 4:  t=0.0726343 seconds
+   Solving temperature system... 26 iterations.
+   Solving Alice system ... 18 iterations.
+   Solving Bob system ... 29 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00004
+     Temperature min/avg/max:   0.07967 K, 0.1773 K, 0.5291 K
+     Compositions min/max/mass: 0.0369/1.052/0.1695 // 1/1.986/1.156
+
+*** Timestep 5:  t=0.08 seconds
+   Solving temperature system... 14 iterations.
+   Solving Alice system ... 10 iterations.
+   Solving Bob system ... 14 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_gradient/solution-00005
+     Temperature min/avg/max:   0.08169 K, 0.1773 K, 0.5275 K
+     Compositions min/max/mass: 0.03986/1.049/0.1696 // 1/1.986/1.156
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

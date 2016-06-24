@@ -22,6 +22,8 @@
 #define __aspect__particle_property_interface_h
 
 #include <aspect/particle/particle.h>
+#include <aspect/particle/interpolator/interface.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
 
@@ -56,6 +58,31 @@ namespace aspect
          * properties are used while solving the model problem.
          */
         update_time_step
+      };
+
+      /**
+       * This enum controls how to initialize the properties of particles that
+       * have been added later than the initial particle creation, e.g. to
+       * improve the load balance or to prevent empty cells.
+       */
+      enum InitializationModeForLateParticles
+      {
+        /**
+         * Initialize the particle as if it were created at the beginning of
+         * the model at its current position with the current solution.
+         */
+        initialize,
+        /**
+         * Use the interpolated properties of the surrounding particles as
+         * calculated by the selected interpolator.
+         */
+        interpolate,
+        /**
+         * Initialize the particle properties to zero. If the property is
+         * updated over time its update function is called as usual, if not
+         * the property will remain zero throughout the model run.
+         */
+        initialize_to_zero
       };
 
       /**
@@ -160,6 +187,25 @@ namespace aspect
           need_update () const;
 
           /**
+           * Returns an enum, which determines how this particle property is
+           * initialized for particles that are created later than the initial
+           * particle generation, e.g. to balance the particle load or prevent
+           * empty cells. The default implementation returns
+           * initialize_to_zero, which signals that particle properties should
+           * be set to zero.
+           * See the documentation of InitializationModeForLateParticles for a
+           * list of possible values and examples for their use. Every
+           * plugin that implements this function should return the value
+           * appropriate for its purpose, unless it does not need any
+           * initialization, which is the default. This function is never
+           * called if no particles are generated later than the initial
+           * particle generation call.
+           */
+          virtual
+          InitializationModeForLateParticles
+          late_initialization_mode () const;
+
+          /**
            * Set up the information about the names and number of components
            * this property requires. Derived classes need to implement this
            * function.
@@ -242,6 +288,19 @@ namespace aspect
           initialize_one_particle (Particle<dim> &particle,
                                    const Vector<double> &solution,
                                    const std::vector<Tensor<1,dim> > &gradients) const;
+
+          /**
+           * Initialization function for particle properties. This function is
+           * called once for each of the particles of a particle
+           * collection that were created later than the initial particle
+           * generation.
+           */
+          void
+          initialize_late_particle (Particle<dim> &particle,
+                                    const std::multimap<types::LevelInd, Particle<dim> > &particles,
+                                    const Interpolator::Interface<dim> &interpolator,
+                                    const Vector<double> &solution,
+                                    const std::vector<Tensor<1,dim> > &gradients) const;
 
           /**
            * Update function for particle properties. This function is

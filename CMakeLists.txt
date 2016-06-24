@@ -1,4 +1,4 @@
-# Copyright (C) 2013, 2014 by the authors of the ASPECT code.
+# Copyright (C) 2013 - 2016 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -29,7 +29,7 @@ INCLUDE_DIRECTORIES(include)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
 
-FIND_PACKAGE(deal.II 8.2 QUIET
+FIND_PACKAGE(deal.II 8.4.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
@@ -132,8 +132,17 @@ ENDIF()
 
 
 ADD_CUSTOM_TARGET(generate_reference_output
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh 
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+
+# Provide "indent" target for indenting all headers and source files
+ADD_CUSTOM_TARGET(indent
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND ./doc/indent
+  COMMENT "Indenting all source files..."
+  )
+
 
 # Depending on whether we link statically or allow for shared libs,
 # we can or can not load plugins via external shared libs. Pass this

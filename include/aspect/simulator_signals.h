@@ -33,6 +33,21 @@
 
 namespace aspect
 {
+  namespace internal
+  {
+    namespace Assembly
+    {
+      namespace Assemblers
+      {
+        template <int dim>
+        class AssemblerBase;
+      }
+
+      template <int dim>
+      struct AssemblerLists;
+    }
+  }
+
   /**
    * A class that collects the definition of signals that can be triggered
    * at different points in a computation. A signal is in essence an event
@@ -55,6 +70,19 @@ namespace aspect
   template <int dim>
   struct SimulatorSignals
   {
+    /**
+     * A signal that is called before the list of finite element variables is
+     * used to construct the Introspection class.
+     *
+     * The functions (slots) that can attach to this signal need to
+     * take one argument: A std::vector of VariableDeclaration<dim>
+     * representing the collection of finite element variables,
+     * that can be modified and will be used to construct the
+     * final finite element system later.
+     */
+    boost::signals2::signal<void (std::vector<VariableDeclaration<dim> > &)>
+    edit_finite_element_variables;
+
     /**
      * A signal that is called at the end of setting up the
      * constraints for the current time step. This allows to add
@@ -150,6 +178,16 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   const bool,
                                   const std::vector<double> &)> post_stokes_solver;
+
+
+    /**
+      * A signal that is fired at the end of the set_assemblers() function that allows
+      * modification of the assembly objects active in this simulation.
+      */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  aspect::internal::Assembly::AssemblerLists<dim> &,
+                                  std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &)>
+    set_assemblers;
   };
 
 
@@ -170,13 +208,14 @@ namespace aspect
       void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector);
 
       /**
-       * Two functions that are called by the Simulator object and that go through
-       * the lists created by the previous pair of functions and call each of the
-       * user-provided connector functions to let them register their slots
-       * with the corresponding signals.
+       * A function that is called by the Simulator object and that goes
+       * through the list (with the corresponding dimension) created by the
+       * previous pair of functions and call each of the user-provided
+       * connector functions to let them register their slots with the
+       * corresponding signals.
        */
-      void call_connector_functions (aspect::SimulatorSignals<2> &signals);
-      void call_connector_functions (aspect::SimulatorSignals<3> &signals);
+      template <int dim>
+      void call_connector_functions (aspect::SimulatorSignals<dim> &signals);
     }
   }
 

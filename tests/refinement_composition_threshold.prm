@@ -1,0 +1,20 @@
+# Test MeshRefinement::CompositionThreshold
+
+include $ASPECT_SOURCE_DIR/tests/refinement_composition_gradient.prm
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.4
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Strategy = composition threshold
+  set Additional refinement times              = 0.04,0.06
+
+  subsection Composition threshold
+    set Compositional field thresholds = 0.5, 1.5
+  end
+end
+
+set End time                               = 0.07
+

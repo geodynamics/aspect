@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -116,7 +116,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Boundary temperature model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         min_temperature = prm.get_double ("Minimal temperature");

@@ -81,8 +81,7 @@ namespace aspect
                                         "property is defined as the current pressure and "
                                         "temperature at this position. This can be used "
                                         "to generate pressure-temperature paths of "
-                                        "material points over time."
-                                        "\n\n")
+                                        "material points over time.")
     }
   }
 }

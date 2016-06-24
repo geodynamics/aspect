@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/boundary_indicator.h>
-#include <aspect/simulator_access.h>
 
 
 
@@ -62,11 +61,7 @@ namespace aspect
                       if (cell->face(f)->at_boundary())
                         {
                           boundary_id
-#if DEAL_II_VERSION_GTE(8,3,0)
                             = cell->face(f)->boundary_id();
-#else
-                            = cell->face(f)->boundary_indicator();
-#endif
                           break;
                         }
                     }

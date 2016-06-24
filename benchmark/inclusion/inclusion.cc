@@ -513,13 +513,19 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
+      unsigned int n = this->get_solution().block(this->introspection().block_indices.velocities).size();
+
+      if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
+        n += this->get_solution().block(this->introspection().block_indices.pressure).size();
+
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_u.l1_norm()
+      os << n << "; "
+         << std::scientific  << cellwise_errors_u.l1_norm()
          << ", " << cellwise_errors_p.l1_norm()
          << ", " << cellwise_errors_ul2.l2_norm()
          << ", " << cellwise_errors_pl2.l2_norm();
 
-      return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
+      return std::make_pair("DoFs; Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
 
   }

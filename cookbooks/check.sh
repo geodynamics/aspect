@@ -29,6 +29,8 @@ run_all_prms ()
     echo "Running '$prm' at `pwd` with '$BUILD' ..."
     cp $prm $prm.tmp
     echo "set End time=0" >> $prm.tmp
+    echo "set Max nonlinear iterations = 5" >> $prm.tmp
+
     $BUILD/aspect $prm.tmp >/dev/null || { rm -f $prm.tmp; return 2; }
     rm -f $prm.tmp
     done
@@ -55,6 +57,12 @@ echo "Checking cookbooks using $BUILD/aspect ..."
 (cd free-surface-with-crust/plugin && make_lib && cd .. && run_all_prms ) || { echo "FAILED"; exit 1; }
 
 (cd future && run_all_prms ) || { echo "FAILED"; exit 1; } 
+
+(cd finite_strain; make_lib && run_all_prms ) || { echo "FAILED"; exit 1; }
+
+(cd sinker-with-averaging; run_all_prms ) || { echo "FAILED"; exit 1; }
+
+
 
 echo "all good! :-)"
 exit 0

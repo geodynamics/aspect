@@ -19,7 +19,6 @@
 */
 
 
-#include <aspect/simulator_access.h>
 #include <aspect/postprocess/mass_flux_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -139,11 +138,7 @@ namespace aspect
                   }
 
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(f)->boundary_id();
-#else
-                  = cell->face(f)->boundary_indicator();
-#endif
                 local_boundary_fluxes[boundary_indicator] += local_normal_flux * in_years;
               }
 
@@ -162,7 +157,7 @@ namespace aspect
           local_values.push_back (local_boundary_fluxes[*p]);
 
         // then collect contributions from all processors
-        std::vector<double> global_values;
+        std::vector<double> global_values (local_values.size());
         Utilities::MPI::sum (local_values, this->get_mpi_communicator(), global_values);
 
         // and now take them apart into the global map again

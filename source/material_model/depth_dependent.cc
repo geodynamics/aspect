@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,8 +18,11 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <deal.II/base/std_cxx11/array.h>
 #include <aspect/material_model/depth_dependent.h>
+#include <aspect/utilities.h>
+
+#include <deal.II/base/std_cxx11/array.h>
+
 #include <utility>
 #include <limits>
 
@@ -31,12 +34,12 @@ namespace aspect
   {
     template <int dim>
     void
-    DepthDependent<dim>::read_viscosity_file(const std::string &filename)
+    DepthDependent<dim>::read_viscosity_file(const std::string &filename,
+                                             const MPI_Comm &comm)
     {
       /* This method is used for the Table method of depth dependent viscosity */
-      std::ifstream in(filename.c_str(), std::ios::in);
-      AssertThrow (in,
-                   ExcMessage (std::string("Could not open file <") + filename + ">."));
+      // Read data from disk and distribute among processes
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
       double min_depth=std::numeric_limits<double>::max();
       double max_depth=-std::numeric_limits<double>::max();
@@ -129,7 +132,7 @@ namespace aspect
     DepthDependent<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                   typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      base_model -> evaluate(in,out);
+      base_model->evaluate(in,out);
       if (in.strain_rate.size())
         {
           // Scale the base model viscosity value by the depth dependent prefactor
@@ -248,17 +251,14 @@ namespace aspect
 
           if (viscosity_source == File)
             {
-              std::string datadirectory                = prm.get ("Data directory");
+              std::string datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                                       "$ASPECT_SOURCE_DIR",
+                                                                       ASPECT_SOURCE_DIR);
+
               const std::string radial_viscosity_file_name   = prm.get ("Viscosity depth file");
 
-              const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-              std::string::size_type position;
-              while (position = datadirectory.find (subst_text),  position!=std::string::npos)
-                datadirectory.replace (datadirectory.begin()+position,
-                                       datadirectory.begin()+position+subst_text.size(),
-                                       ASPECT_SOURCE_DIR);
               /* If using the File method for depth-dependence, initialize the lookup table */
-              read_viscosity_file(datadirectory+radial_viscosity_file_name);
+              read_viscosity_file(datadirectory+radial_viscosity_file_name,this->get_mpi_communicator());
             }
 
           prm.enter_subsection("Viscosity depth function");

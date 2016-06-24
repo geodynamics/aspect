@@ -215,13 +215,7 @@ namespace aspect
              coarse_grid.begin_active(); cell != coarse_grid.end(); ++cell)
         for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
           if (cell->face(f)->at_boundary())
-            {
-#if DEAL_II_VERSION_GTE(8,3,0)
-              cell->face(f)->set_boundary_id(f);
-#else
-              cell->face(f)->set_boundary_indicator(f);
-#endif
-            }
+            cell->face(f)->set_boundary_id(f);
     }
 
     template <int dim>
@@ -632,11 +626,12 @@ namespace aspect
 
       // Choose a point on the center axis of the domain
       Point<dim> p =
-        (manifold.push_forward(Point<3>(southLatitude,
-                                        eastLongitude,
+        (manifold.push_forward(Point<3>(southLatitude * numbers::PI/180,
+                                        eastLongitude * numbers::PI/180,
                                         -bottom_depth))
-         + manifold.push_forward(Point<3>(northLatitude, eastLongitude, 0)))
-        / 2;
+         + manifold.push_forward(Point<3>(northLatitude * numbers::PI/180,
+                                          westLongitude * numbers::PI/180
+                                          , 0))) / 2;
       p /= p.norm();
       p *= get_radius(p) - depth;
       return p;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
@@ -75,7 +76,7 @@ namespace aspect
                              "with four arguments or a function 'boundary_composition' with three arguments. "
                              "The function with four arguments is deprecated and will "
                              "be removed in a later version of ASPECT."));
-      return Utilities::signaling_nan<double>();
+      return numbers::signaling_nan<double>();
     }
 
     template <int dim>

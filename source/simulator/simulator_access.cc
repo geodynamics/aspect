@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -85,9 +85,17 @@ namespace aspect
 
 
   template <int dim>
-  MPI_Comm SimulatorAccess<dim>::get_mpi_communicator () const
+  MPI_Comm
+  SimulatorAccess<dim>::get_mpi_communicator () const
   {
     return simulator->mpi_communicator;
+  }
+
+  template <int dim>
+  TimerOutput &
+  SimulatorAccess<dim>::get_computing_timer () const
+  {
+    return simulator->computing_timer;
   }
 
   template <int dim>
@@ -171,6 +179,14 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  SimulatorAccess<dim>::get_pre_refinement_step () const
+  {
+    return simulator->pre_refinement_step;
+  }
+
+
+  template <int dim>
+  unsigned int
   SimulatorAccess<dim>::n_compositional_fields () const
   {
     return simulator->parameters.n_compositional_fields;
@@ -241,6 +257,13 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_current_linearization_point () const
+  {
+    return simulator->current_linearization_point;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_solution () const
   {
     return simulator->solution;
@@ -284,12 +307,28 @@ namespace aspect
   const FiniteElement<dim> &
   SimulatorAccess<dim>::get_fe () const
   {
-    Assert (simulator->dof_handler.n_locally_owned_dofs() != 0,
+    Assert (simulator->dof_handler.n_dofs() > 0,
             ExcMessage("You are trying to access the FiniteElement before the DOFs have been "
                        "initialized. This may happen when accessing the Simulator from a plugin "
                        "that gets executed early in some cases (like material models) or from "
                        "an early point in the core code."));
     return simulator->dof_handler.get_fe();
+  }
+
+
+  template <int dim>
+  void
+  SimulatorAccess<dim>::compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
+                                                             const FEValuesBase<dim,dim>                                 &input_finite_element_values,
+                                                             const typename DoFHandler<dim>::active_cell_iterator        &cell,
+                                                             const bool                                                   compute_strainrate,
+                                                             MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
+  {
+    simulator->compute_material_model_input_values(input_solution,
+                                                   input_finite_element_values,
+                                                   cell,
+                                                   compute_strainrate,
+                                                   material_model_inputs);
   }
 
 
@@ -325,9 +364,27 @@ namespace aspect
   const BoundaryTemperature::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_temperature () const
   {
-    Assert (simulator->boundary_temperature.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    AssertThrow (simulator->boundary_temperature.get() != 0,
+                 ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_temperature.get();
+  }
+
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::has_boundary_composition () const
+  {
+    return (simulator->boundary_composition.get() != 0);
+  }
+
+
+  template <int dim>
+  const BoundaryComposition::Interface<dim> &
+  SimulatorAccess<dim>::get_boundary_composition () const
+  {
+    AssertThrow (simulator->boundary_composition.get() != 0,
+                 ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->boundary_composition.get();
   }
 
 

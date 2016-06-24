@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,13 +21,14 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -526,9 +527,9 @@ namespace aspect
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be run at the end "
-                         "of each of ths initial adaptive refinement cycles at the "
-                         "of the simulation start.");
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the initial adaptive refinement cycles that are run at "
+                         "the start of the simulation.");
     }
     prm.leave_subsection();
 
@@ -598,6 +599,18 @@ namespace aspect
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
                          "of the different choices, see \\cite {KHB12} .");
+      prm.declare_entry ("Use discontinuous temperature discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a temperature discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the temperature "
+                         "field via the interior-penalty discontinuous Galerkin method.");
+      prm.declare_entry ("Use discontinuous composition discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a composition discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the composition "
+                         "field via the discontinuous Galerkin method.");
 
       prm.enter_subsection ("Stabilization parameters");
       {
@@ -637,6 +650,54 @@ namespace aspect
                            "different value than described there: It can be chosen as stated there for "
                            "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
                            "cells that are not squares or cubes.) Units: None.");
+        prm.declare_entry ("Discontinuous penalty", "10",
+                           Patterns::Double (0),
+                           "The value used to penalize discontinuities in the discontinuous Galerkin "
+                           "method. This is used only for the temperature field, and not for the composition "
+                           "field, as pure advection does not use the interior penalty method. This "
+                           "is largely empirically decided -- it must be large enough to ensure "
+                           "the bilinear form is coercive, but not so large as to penalize "
+                           "discontinuity at all costs.");
+        prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after computing "
+                           "the discontinous temperature solution. Currently we apply this only to the "
+                           "temperature solution if the 'Global temperature maximum' and "
+                           "'Global temperature minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "'Global temperature maximum' and 'Global temperature minimum'.");
+        prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after having "
+                           "the discontinous composition solution. Currently we apply this only to the "
+                           "compositional solution if the 'Global composition maximum' and "
+                           "'Global composition minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "Global composition maximum' and 'Global composition minimum'.");
+        prm.declare_entry ("Global temperature maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The maximum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global temperature minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The minimum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global composition maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The maximum global composition values that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition maximum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
+        prm.declare_entry ("Global composition minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The minimum global composition value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition minimum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
       }
       prm.leave_subsection ();
     }
@@ -764,14 +825,9 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
-        // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-        AssertThrow (error==0,
+        AssertThrow (error == 0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
@@ -911,13 +967,33 @@ namespace aspect
       composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
-
+      use_discontinuous_temperature_discretization
+        = prm.get_bool("Use discontinuous temperature discretization");
+      use_discontinuous_composition_discretization
+        = prm.get_bool("Use discontinuous composition discretization");
       prm.enter_subsection ("Stabilization parameters");
       {
         use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
         stabilization_alpha                 = prm.get_integer ("alpha");
         stabilization_c_R                   = prm.get_double ("cR");
         stabilization_beta                  = prm.get_double ("beta");
+        discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
+        use_limiter_for_discontinuous_temperature_solution
+          = prm.get_bool("Use limiter for discontinuous temperature solution");
+        use_limiter_for_discontinuous_composition_solution
+          = prm.get_bool("Use limiter for discontinuous composition solution");
+        if (use_limiter_for_discontinuous_temperature_solution
+            || use_limiter_for_discontinuous_composition_solution)
+          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
+                       ExcMessage ("The bound preserving limiter currently is "
+                                   "only implemented for the scheme using IMPES nonlinear solver. "
+                                   "Please deactivate the limiter or change the solver scheme."));
+        global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
+        global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
+        global_composition_max_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition maximum")));
+        global_composition_min_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition minimum")));
       }
       prm.leave_subsection ();
 
@@ -976,6 +1052,16 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
+      // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
+      if (use_limiter_for_discontinuous_temperature_solution
+          || use_limiter_for_discontinuous_composition_solution)
+        AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
+                      && global_composition_min_preset.size() == (n_compositional_fields)),
+                     ExcMessage ("The number of multiple 'Global composition maximum' values "
+                                 "and the number of multiple 'Global composition minimum' values "
+                                 "have to be the same as the total number of compositional fields"));
     }
     prm.leave_subsection ();
 

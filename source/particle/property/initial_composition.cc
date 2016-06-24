@@ -38,6 +38,13 @@ namespace aspect
       }
 
       template <int dim>
+      InitializationModeForLateParticles
+      InitialComposition<dim>::late_initialization_mode () const
+      {
+        return interpolate;
+      }
+
+      template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       InitialComposition<dim>::get_property_information() const
       {
@@ -69,8 +76,7 @@ namespace aspect
                                         "property is given as the initial composition "
                                         "at the particle's initial position. The tracer "
                                         "gets as many properties as there are "
-                                        "compositional fields."
-                                        "\n\n")
+                                        "compositional fields.")
     }
   }
 }

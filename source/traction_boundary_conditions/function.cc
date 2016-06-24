@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,8 +37,9 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     Function<dim>::
-    traction (const Point<dim> &p,
-              const Tensor<1,dim> &) const
+    boundary_traction (const types::boundary_id,
+                       const Point<dim> &p,
+                       const Tensor<1,dim> &) const
     {
       Tensor<1,dim> traction;
       for (unsigned int d=0; d<dim; ++d)
@@ -93,7 +94,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Boundary traction model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         prm.leave_subsection();

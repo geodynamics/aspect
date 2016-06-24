@@ -1,0 +1,84 @@
+# This test was created by Tahiry Rajaonarison and D. Sarah Stamps
+# for the adiabatic boundary initial conditions plugin. 
+
+set Dimension                              = 3
+
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver tolerance             = 1e-4
+set Linear solver tolerance                = 1e-4
+set Max nonlinear iterations               = 6 
+set Temperature solver tolerance           = 1e-4
+set Number of cheap Stokes solver steps    = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Geometry model
+  set Model name = ellipsoidal chunk
+  
+  subsection Ellipsoidal chunk
+   set  NE corner = 131:-28
+   set  NW corner = 109:-28
+   set  SW corner = 109:-41
+   set  SE corner =  
+  end
+end   
+
+## The input ascii data file is formatted as 3 columns of 'latitude', 'longitude', and 'depth',
+# where 'depth' is in kilometers and represents that depth of an initial temperature of 1673.15 K.
+# The latitudinal and longitudinal bounds of the ascii input data file needs to be at least 1 degree
+# wider than the bounds you use to define the ellipsoid chunk geometry model. 
+   
+subsection Initial conditions
+  set Model name = adiabatic boundary
+  subsection Adiabatic boundary
+    set Isotherm depth filename = adiabatic_boundary.txt
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Spherical constant
+    set Inner temperature = 4273 # default: 6000
+    set Outer temperature = 273.15 # default: 0
+  end
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   =
+  set Zero velocity boundary indicators       =  
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1,2,3,4,5 
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+
+subsection Material model  
+  set Model name                 = simple 	
+  subsection Simple model
+    set Viscosity                = 1e22
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end 
+   

@@ -123,7 +123,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.4.0-pre %VERSION-INFO%
+1.5.0-pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -290,8 +290,7 @@ this software:
 \end{lstlisting}
 You can refer to the website by citing the following:
 \begin{lstlisting}[frame=single,language=tex]
-
-      @MANUAL{aspectweb,
+@Manual{aspectweb,
         title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
         year   = {2014},
@@ -356,12 +355,12 @@ $c_i$ that we call \textit{compositional fields}:
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p &=
   \rho \mathbf g
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:stokes-2}
   \nabla \cdot (\rho \mathbf u) &= 0
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature}
@@ -384,7 +383,7 @@ $c_i$ that we call \textit{compositional fields}:
   \\
   &\quad
   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
-  & \quad
+  &
   & \textrm{in $\Omega$},
   \notag
   \\
@@ -392,13 +391,26 @@ $c_i$ that we call \textit{compositional fields}:
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
   q_i
-  & \quad
+  &
   & \textrm{in $\Omega$},
   i=1\ldots C
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
-\textit{strain rate}).
+\textit{strain rate}).%
+\footnote{There is no consensus in the sciences on the notation used
+  for strain and strain rate. The symbols $\varepsilon$,
+  $\dot\varepsilon$,  $\varepsilon(\mathbf u)$, and
+  $\dot\varepsilon(\mathbf u)$, can all be found. In this manual, and
+  in the code, we will consistently use $\varepsilon$ as an
+  \textit{operator}, i.e., the symbol is not used on its own but only
+  as applied to a field. In other words, if $\mathbf u$ is the
+  velocity field, then $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla
+  \mathbf u + \nabla\mathbf u^T)$ will denote the strain rate. On the
+  other hand, if $\mathbf d$ is the
+  displacement field, then $\varepsilon(\mathbf d) = \frac{1}{2}(\nabla
+  \mathbf d + \nabla\mathbf d^T)$ will denote the strain.}
+
 
 In this set of equations, \eqref{eq:stokes-1} and \eqref{eq:stokes-2}
 represent the compressible Stokes equations in which $\mathbf u=\mathbf
@@ -512,7 +524,7 @@ essentially as tracer quantities that only keep track of where material came
 from.
 
 These equations are
-augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
+augmented by boundary conditions that can either be of Dirichlet, Neumann, or
 tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
@@ -532,8 +544,9 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
   \mathbf n \cdot k\nabla T &= 0
    & \qquad &\textrm{on $\Gamma_{N,T}$}.
   \\
-  c_i &= 0
-   & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
+  \label{eq:gamma-in-composition}
+  c_i &= c_{i,\text{prescribed}}
+   & \qquad &\textrm{on $\Gamma_{\text{in}}=\{\mathbf x: \mathbf
    u\cdot\mathbf n<0\}$}.
 \end{align}
 Here, the boundary conditions for velocity and temperature are subdivided into
@@ -560,14 +573,20 @@ tangential component undetermined.
 of the shell that constitutes the domain the Earth mantle occupies is
 simulated).
 \end{itemize}
- We require that one of these boundary conditions hold at each
+We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
 $\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
   u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
   u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be
-posed for the compositional fields at those parts of the boundary where flow is either
-tangential to the boundary or points outward.
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. 
+
+Boundary conditions have to be imposed for the compositional fields only
+at those parts of the boundary where flow points inward, see equation
+\eqref{eq:gamma-in-composition}, but not where it is either tangential
+to the boundary or points outward. The difference in treatment between
+temperature and compositional boundary conditions is due to the fact
+that the temperature equation contains a (possibly small) diffusion
+component, whereas the compositional equations do not.
 
 
 \subsubsection{Comments on the final set of equations}
@@ -801,13 +820,13 @@ physical units. On the other hand, there are also downsides:
   often vastly different.%
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
-  With the length scale of the mantle $L=3\cdot 10^6\;m$, viscosity
-  $\eta=10^{24} \; kg/m/s$, density $\rho=3\cdot 10^3 \; kg/m^3$ and a typical
-  velocity of $U=0.1\;m/year=3\cdot 10^{-9}\; m/s$, we get that the friction
+  With the length scale of the mantle $L=3\cdot 10^6\;\text{m}$, viscosity
+  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=3\cdot 10^3 \; \text{kg}/\text{m}^3$ and a typical
+  velocity of $U=0.1\;\text{m}/\text{year}=3\cdot 10^{-9}\; \text{m}/\text{s}$, we get that the friction
   term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx 3\cdot 10^2 \;
-  kg/m/s^3$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
+  \text{kg}/\text{m}^2/\text{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
   continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx 3\cdot
-  10^{-12} \; kg/s/m^3$. In other words, their \textit{numerical values} are 14
+  10^{-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
   orders of magnitude apart.}
   Of course, these values can not be compared: they have different physical
   units, and the ratios between these values depends on whether we choose to
@@ -1076,14 +1095,17 @@ a vector $\mathfrak c$.
 
 Compositional fields were originally intended to track what their name
 suggest, namely the chemical composition of the convecting medium. In this
-interpretation, they composition is a quantity that is simply advected along
+interpretation, the composition is a quantity that is simply advected along
 passively, i.e., it would satisfy the equation
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
   = 0.
 \end{align*}
-However, these compositional fields participate in determining the values of
-the various coefficients as discussed in Section~\ref{sec:coefficients}.
+However, the compositional fields may also participate in determining the values of
+the various coefficients as discussed in
+Section~\ref{sec:coefficients}, and in this sense the equation above
+describes a composition that is \textit{passively advected}, but an
+\textit{active participant} in the equations.
 
 That said, over time compositional fields have shown to be a much more useful
 tool than originally intended. For example, they can be used to track where
@@ -1094,13 +1116,30 @@ and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
   = \mathfrak q,
 \end{align*}
 then one can also model interaction between species -- for example to simulate
-phase changes where one compositional field indicating a particular phase
+phase changes where one compositional field, indicating a particular phase,
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
-which is defined as $\triangle t \cdot \mathfrak q$.
+several phases combine to other phases. Another example of using a
+right hand side -- quite outside what the original term
+\textit{compositional field} was supposed to indicate -- is to track
+the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
 
-Modeling reactions between different compositional fields often involves
-finding an equilibrium state between state between different fields because
+In actual practice, one finds that it is often useful to allow
+$\mathfrak q$ to be a function that has both a smooth (say,
+continuous) in time component, and one that is singular in time (i.e.,
+contains Dirac delta, or ``impulse'' functions). Typical time
+integrators require the evaluation of the right hand side at specific
+points in time, but this would preclude the use of delta
+functions. Consequently, the integrators in \aspect{} only require
+material models to provide an \textit{integrated} value
+$\int_t^{t+\Delta t} \mathfrak q(\tau) \;
+\text{d}\tau$ through the {\tt reaction\_term} output
+variable. Implementations often approximate this as $\triangle t \cdot
+\mathfrak q(t)$, or similar formulas.
+
+A second application for only providing integrated right hand sides
+comes from the fact that
+modeling reactions between different compositional fields often involves
+finding an equilibrium state between different fields because
 chemical reactions happen on a much faster time scale than transport. In other
 words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 \begin{align*}
@@ -1109,9 +1148,12 @@ words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 Consequently, the material model methods that deal with source terms for the
 compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
 to the previous value of the compositional fields so that the sum of the
-previous values and the increment equals $\mathfrak c^\ast$. This is opposed
-to the usual approach of evaluating the right hand side term $\mathfrak q$,
-which corresponds to a \textit{rate}, instead of an increment.
+previous values and the increment equals $\mathfrak c^\ast$. This
+corresponds to an \textit{impulse change} in the compositions at every
+time step, as opposed
+to the usual approach of evaluating the right hand side term
+$\mathfrak q$ as a continuous function in time,
+which corresponds to a \textit{rate}.
 
 On the other hand, there are other uses of compositional fields that do not
 actually have anything to do with quantities that can be considered related to
@@ -1176,7 +1218,7 @@ and the shear heating term in equation \eqref{eq:temperature} to
 where $C = C_{ijkl}$ is defined by the material model. For physical reasons, $C$ needs
 to be a symmetric rank-4 tensor: i.e., when multiplied by a symmetric (strain rate)
 tensor of rank 2 it needs to return another symmetric tensor of rank 2. In mathematical
-terms this, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
+terms, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
 also require that $C$ is positive definite: i.e., for any $\varepsilon \neq 0$, the
 scalar $\varepsilon : (C \varepsilon)$ must be positive.
 
@@ -1733,7 +1775,7 @@ prerequisites:
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 8.2 or later.
+  The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
   This version can be downloaded and installed from
   \url{https://www.dealii.org/download.html}.
 
@@ -1855,10 +1897,9 @@ CMake is a cross-platform, open-source build system that can be downloaded from 
 \end{verbatim}
 
 \item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
-%Current latest deal.ii version is 8.2.1.
 {\footnotesize
 \begin{verbatim}
-open  https://github.com/dealii/dealii/releases/download/v8.2.1/dealii-8.2.1-parallel-bundle.dmg
+open  https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.dmg
 \end{verbatim}
 }
 Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
@@ -1892,7 +1933,7 @@ This should display something like:
 
 {\footnotesize
 \begin{verbatim}
-Project  aspect  set up with  deal.II-8.2.1  found at /Applications/deal.II.app/Contents/Resources
+Project  aspect  set up with  deal.II-8.4.1  found at /Applications/deal.II.app/Contents/Resources
 \end{verbatim}}
 
 \item Run make:
@@ -2203,8 +2244,8 @@ The purpose of these files is as follows:
   files that start with a hash mark), it is simple to plot these columns as time
   series. Alternatively, the data can be imported into a spreadsheet and
   plotted there.
-\note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
-  in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
+\note{As noted in Section~\ref{sec:non-dimensional}, \aspect{} can be
+  thought of as using the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
   the quantities in the output file are therefore also in MKS units.}
 
   A simple way to plot the contents of this file is shown in Section~\ref{sec:viz-stat}.
@@ -4770,7 +4811,7 @@ equations~\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.%
   elliptic operator $-\nabla \cdot 2 \eta \varepsilon(\cdot)$. For highly
   heterogeneous models, such as the one discussed in the current section, this
   may require a lot of Conjugate Gradient iterations. For example, for 8
-  global refinement steps, the 30+188 outer iterations without averaging whosn
+  global refinement steps, the 30+188 outer iterations without averaging shown
   in Table~\ref{tab:sinker-with-averaging-iteration-counts} require a total of
   22,096 inner CG iterations for the elliptic block (and a total of 837 for the
   aproximate Schur complement). Using harmonic averaging, the 30+26 outer
@@ -5022,6 +5063,102 @@ it is possible to produce many interesting flow fields such as the ones visualiz
     \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
     \label{fig:prescribed-velocity}
 \end{figure}
+
+\subsubsection{Artificial viscosity smoothing}
+\label{sec:artificial-viscosity-smoothing}
+\textit{This section was contributed by Ryan Grove}
+
+Standard finite element discretizations of advection-diffusion equations introduce unphysical oscillations around steep gradients. Therefore, stabilization must be added to the discrete formulation to obtain correct solutions. In ASPECT, we use the Entropy Viscosity scheme developed by Guermond et al.~in the paper \cite{guer11}. In this scheme, an artificial viscosity is calculated on every cell and used to try to combat these oscillations that cause unwanted overshoot and undershoot.  More information about how \aspect{} does this is located at \url{https://dealii.org/developer/doxygen/deal.II/step_31.html}.  
+
+Instead of just looking at an individual cell's artificial viscosity, improvements in the minimizing of the oscillations can be made by smoothing.  Smoothing is the act of finding the maximum artificial viscosity taken over a cell $T$ and the neighboring cells across the faces of $T$, i.e.,
+\begin{equation*}
+\bar{v_h}(T) = \max_{K \in N(T)} v_h(K)
+\end{equation*}
+where $N(T)$ is the set containing $T$ and the neighbors across the faces of $T$.
+
+This feature can be turned on by setting the \hyperref[parameters:Discretization/Stabilization parameters/Use artificial viscosity smoothing]{Use artificial viscosity smoothing} flag inside the \hyperref[parameters:Discretization/Stabilization_20parameters]{Stabilization} subsection inside the \hyperref[parameters:Discretization]{Discretization} subsection in your parameter file.
+
+To show how this can be used in practice, let us consider the simple convection in a quarter of a 2d annulus cookbook in Section \ref{sec:shell-simple-2d}, a radial compositional field was added to help show the advantages of using the artificial viscosity smoothing feature.
+  
+By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d.prm, \end{verbatim} 
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.part.prm.out}
+it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
+Figure \ref{fig:smoothing}.
+
+\begin{figure}
+    \centering
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/with_smoothing.png}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/without_smoothing.png}}
+    \caption{Artificial viscosity smoothing: Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section \ref{sec:artificial-viscosity-smoothing}.}
+    \label{fig:smoothing}
+\end{figure}
+
+
+
+\subsubsection{Tracking finite strain}
+\label{sec:finite-strain}
+\textit{This section was contributed by Juliane Dannberg}
+
+\note{In this section, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+$\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
+and $\mathbf u$ the velocity. We denote the strain tensor by $e$, where 
+$e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
+with the displacement $\mathbf d$ the difference between a point's
+position at time $t$ and at time zero.}
+
+In many geophysical settings, material properties, and in particular the rheology, do not only depend
+on the current temperature, pressure and strain rate, but also on the history of the system. 
+This can be incorporated in \aspect{} models by tracking history variables through compositional fields. 
+In this cookbook, we will show how to do this by tracking the strain that accumulates over time at every 
+(Lagrangian) point in the model.
+
+Here, we use a material model plugin that defines the compositional fields as the components of the strain 
+tensor $e_{ij}$, and modifies the right-hand side of 
+the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
+\verb!out.reaction_terms! variable:
+\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+
+Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
+as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
+component of the velocity field, plus the strain increment $\varepsilon(\mathbf u^n) \Delta t^n$ 
+accumulated over the current time step.
+Hence, the right-hand side term of the advection equation for the accumulated strain consists of two parts:
+The first one, $R e^{n-1} R^T$, rotates $e^{n-1}$, the accumulated strain from all the previous time steps;
+and the second part adds the strain of the current time step. 
+
+The full plugin can be found in \url{cookbooks/finite_strain/finite_strain.cc} and can be compiled 
+with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory. 
+It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
+model. As it is derived from the ``simple'' material model, all input parameters for the material
+properties are read in from the subsection \texttt{Simple model}. 
+\lstinputlisting[language=prmfile]{cookbooks/finite_strain/finite_strain_part.prm.out}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{cookbooks/finite_strain/finite_strain.pdf}
+    \caption{Accumulated finite strain in an example convection model, as described in Section 
+             \ref{sec:finite-strain}.}
+    \label{fig:finite_strain}
+\end{figure}
+
+We will demonstrate its use at the example of a 2D Cartesian convection model (Figure \ref{fig:finite_strain}):
+Heating from the bottom leads to the the ascent of plumes from the bottom boundary layer, and the
+associated deformation is visible in the components of the accumulated finite strain. 
+Material moves to the sides at the top of the plume head, so that it is shortened in vertical 
+direction (blue areas in the $yy$ component) and stretched in horizontal direction (red areas in 
+the $xx$ component). The sides of the plume head show the opposite effect. Shear occurs mostly at the 
+edges of the plume head and in the plume tail (blue and red areas in the $xy$ component). 
+
+The example used here shows how history variables can be integrated up over the model evolution. 
+While we do not use these variables actively in the computation so far (in our example, there is no 
+influence of the accumulated strain on the rheology or any other material property), it would be trivial 
+to extend this material model in a way that material properties depend on the integrated strain: 
+Because the values of the compositional fields are part of what the material model gets as inputs, 
+they can easily be used for computing material model outputs such as the viscosity.  
+
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
@@ -5665,7 +5802,7 @@ The next input parameters describe the scaling from the shear wave velocity
 perturbation to the final temperature field. The shear wave velocity perturbation 
 $\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
 constant that is specified in the initial condition section of the input parameter 
-file as `vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+file as `Vs to density scaling'. Here we choose a constant scaling of 0.2. This 
 perturbation is further translated into a temperature difference $\Delta T$ by 
 multiplying it by the negative inverse of thermal expansion, which is also 
 specified in this section of the parameter file as `Thermal expansion coefficient 
@@ -5678,7 +5815,7 @@ their shear wave perturbation would not contribute buoyancy variations. We there
 additional option to zero out temperature perturbations within a certain depth. 
 In this example we set this parameter `Remove temperature heterogeneity down to specified 
 depth' to 200km. The chemical variation within the mantle 
-might require a more sophisticated `vs to density' scaling that varies for 
+might require a more sophisticated `Vs to density' scaling that varies for 
 example with depth or as a function of the perturbation itself, which is not captured
 in this model. The described procedure 
 provides an absolute temperature for every point, which will only be adjusted 
@@ -5986,6 +6123,7 @@ can be reproduced with the following parameters.
 \end{figure}
 
 \subsubsection{Crustal deformation}
+\label{sec:cookbooks-crustal-deformation}
 
 \textit{This section was contributed by Cedric Thieulot, and makes use of the Drucker-Prager 
 material model written by Anne Glerum and the free surface plugin by Ian Rose.}

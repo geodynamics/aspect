@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.4.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libno_adiabatic_heating_03.so>
 
@@ -12,26 +5,26 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26 iterations.
+   Solving Stokes system... 26+0 iterations.
    Residual after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21 iterations.
+   Solving Stokes system... 21+0 iterations.
    Residual after nonlinear iteration 2: 0.0245986
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15 iterations.
+   Solving Stokes system... 15+0 iterations.
    Residual after nonlinear iteration 3: 0.00133812
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11 iterations.
+   Solving Stokes system... 11+0 iterations.
    Residual after nonlinear iteration 4: 4.59626e-05
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5 iterations.
-   Residual after nonlinear iteration 5: 2.11507e-06
+   Solving Stokes system... 5+0 iterations.
+   Residual after nonlinear iteration 5: 2.11502e-06
 
    Postprocessing:
 
@@ -49,13 +42,13 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
-     Writing depth average    output-no_adiabatic_heating_03/depth_average.gnuplot
+     Writing depth average:   output-no_adiabatic_heating_03/depth_average.gnuplot
 
 *** Timestep 1:  t=0.0284091 seconds
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
-   Residual after nonlinear iteration 1: 2.20615e-07
+   Solving Stokes system... 2+0 iterations.
+   Residual after nonlinear iteration 1: 2.20604e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.003202 K, 0.003462 K
@@ -64,8 +57,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 2:  t=0.0568181 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2 iterations.
-   Residual after nonlinear iteration 1: 2.09917e-07
+   Solving Stokes system... 2+0 iterations.
+   Residual after nonlinear iteration 1: 2.09902e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.006333 K, 0.006918 K
@@ -74,8 +67,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 3:  t=0.0852272 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3 iterations.
-   Residual after nonlinear iteration 1: 2.12537e-07
+   Solving Stokes system... 3+0 iterations.
+   Residual after nonlinear iteration 1: 2.12359e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.009376 K, 0.01037 K
@@ -84,8 +77,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 4:  t=0.1 seconds
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1 iterations.
-   Residual after nonlinear iteration 1: 1.12544e-07
+   Solving Stokes system... 1+0 iterations.
+   Residual after nonlinear iteration 1: 1.12424e-07
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.01093 K, 0.01215 K

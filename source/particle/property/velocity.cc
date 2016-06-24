@@ -78,8 +78,7 @@ namespace aspect
                                         "velocity",
                                         "Implementation of a plugin in which the tracer "
                                         "property is defined as the recent velocity at "
-                                        "this position."
-                                        "\n\n")
+                                        "this position.")
     }
   }
 }

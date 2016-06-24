@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,6 +38,7 @@ namespace aspect
           // return a constant value
           heating_model_outputs.heating_source_terms[q] = radiogenic_heating_rate
                                                           * material_model_outputs.densities[q];
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
 

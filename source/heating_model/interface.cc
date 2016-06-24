@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,9 +20,11 @@
 
 
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 #include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
@@ -51,8 +53,7 @@ namespace aspect
 
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     void
     Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -71,7 +72,7 @@ namespace aspect
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
-#pragma GCC diagnostic pop
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>
@@ -228,8 +229,14 @@ namespace aspect
                             const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                             HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      // the heating outputs are initialized with zeros, so there is no heating if they are not set
-      // in the individual plugins
+      // Initialize all outputs to zero, because heating_model_outputs is
+      // often reused in loops over all cells
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          heating_model_outputs.heating_source_terms[q] = 0.0;
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
+
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
                                                                    this->n_compositional_fields());
 
@@ -277,9 +284,9 @@ namespace aspect
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma separated list of heating models that "
-                          "will be used to calculate the heating terms in the energy"
+                          "will be used to calculate the heating terms in the energy "
                           "equation. The results of each of these criteria , i.e., "
-                          "the heating source terms and the latent heat terms for the"
+                          "the heating source terms and the latent heat terms for the "
                           "left hand side will be added.\n\n"
                           "The following heating models are available:\n\n"
                           +
@@ -289,7 +296,7 @@ namespace aspect
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
                            "Warning: This is the old formulation of specifying "
-                           "heating models and shouldn't be used. Please use 'List of"
+                           "heating models and shouldn't be used. Please use 'List of "
                            "model names' instead."
                            +
                            std_cxx11::get<dim>(registered_plugins).get_description_string());
@@ -303,7 +310,7 @@ namespace aspect
                            "Whether to include shear heating into the model or not. From a "
                            "physical viewpoint, shear heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation."
+                           "do not include this term in the temperature equation.\n\n"
                            "Warning: deprecated! Add 'shear heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include adiabatic heating", "false",
@@ -311,7 +318,7 @@ namespace aspect
                            "Whether to include adiabatic heating into the model or not. From a "
                            "physical viewpoint, adiabatic heating should always be used but may "
                            "be undesirable when comparing results with known benchmarks that "
-                           "do not include this term in the temperature equation."
+                           "do not include this term in the temperature equation.\n\n"
                            "Warning: deprecated! Add 'adiabatic heating' to the 'List of model "
                            "names' instead.");
         prm.declare_entry ("Include latent heat", "false",
@@ -320,7 +327,7 @@ namespace aspect
                            "into the model or not. From a physical viewpoint, latent heat should "
                            "always be used but may be undesirable when comparing results with known "
                            "benchmarks that do not include this term in the temperature equation "
-                           "or when dealing with a model without phase transitions."
+                           "or when dealing with a model without phase transitions.\n\n"
                            "Warning: deprecated! Add 'latent heat' to the 'List of model "
                            "names' instead.");
       }
@@ -333,8 +340,8 @@ namespace aspect
     HeatingModelOutputs::HeatingModelOutputs(const unsigned int n_points,
                                              const unsigned int)
       :
-      heating_source_terms(n_points),
-      lhs_latent_heat_terms(n_points)
+      heating_source_terms(n_points,numbers::signaling_nan<double>()),
+      lhs_latent_heat_terms(n_points,numbers::signaling_nan<double>())
     {
     }
 

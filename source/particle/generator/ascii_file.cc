@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/generator/ascii_file.h>
+#include <aspect/utilities.h>
 
 
 namespace aspect
@@ -32,13 +33,9 @@ namespace aspect
       AsciiFile<dim>::generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
         const std::string filename = data_directory+data_filename;
-        std::ifstream in(filename.c_str(), std::ios::in);
-        AssertThrow (in,
-                     ExcMessage (std::string("Could not open data file <"
-                                             +
-                                             filename
-                                             +
-                                             ">.")));
+
+        // Read data from disk and distribute among processes
+        std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
 
         // Skip header lines
         while (in.peek() == '#')
@@ -113,19 +110,9 @@ namespace aspect
             {
               prm.enter_subsection("Ascii file");
               {
-                // Get the path to the data files. If it contains a reference
-                // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
-                // as a #define
-                data_directory        = prm.get ("Data directory");
-                {
-                  const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-                  std::string::size_type position;
-                  while (position = data_directory.find (subst_text),  position!=std::string::npos)
-                    data_directory.replace (data_directory.begin()+position,
-                                            data_directory.begin()+position+subst_text.size(),
-                                            ASPECT_SOURCE_DIR);
-                }
-
+                data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                              "$ASPECT_SOURCE_DIR",
+                                                              ASPECT_SOURCE_DIR);
                 data_filename    = prm.get ("Data file name");
               }
               prm.leave_subsection();
@@ -154,7 +141,7 @@ namespace aspect
                                          "specified in an Ascii data file. The file format is "
                                          "a simple text file, with as many columns as spatial "
                                          "dimensions and as many lines as tracers to be generated. "
-                                         "Initial comment lines starting with `\\#' will be discarded."
+                                         "Initial comment lines starting with `#' will be discarded."
                                          "All of the values that define this generator are read "
                                          "from a section ``Particle generator/Ascii file'' in the "
                                          "input file, see "

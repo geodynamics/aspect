@@ -1,4 +1,4 @@
-# Copyright (C) 2014 by the authors of the ASPECT code.
+# Copyright (C) 2014 - 2015 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -22,7 +22,7 @@
 # compiled into a run-time loadable plugin for Aspect.
 
 
-FIND_PACKAGE(deal.II 8.2 REQUIRED HINTS @DEAL_II_PATH@)
+FIND_PACKAGE(deal.II 8.4.0 REQUIRED HINTS @DEAL_II_PATH@)
 SET(ASPECT_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
 SET(ASPECT_DIR "@CMAKE_BINARY_DIR@")
 SET(ASPECT_USE_PETSC "@ASPECT_USE_PETSC@")

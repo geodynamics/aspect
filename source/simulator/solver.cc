@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -324,8 +324,8 @@ namespace aspect
       // apply the top right block
       {
         stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); //B^T
-        utmp*=-1.0;
-        utmp.add(src.block(0));
+        utmp *= -1.0;
+        utmp += src.block(0);
       }
 
       // now either solve with the top left block (if do_solve_A==true)
@@ -376,14 +376,45 @@ namespace aspect
     double advection_solver_tolerance = -1;
     unsigned int block_idx = advection_field.block_index(introspection);
 
+    std::string field_name = (advection_field.is_temperature()
+                              ?
+                              "temperature"
+                              :
+                              introspection.name_for_compositional_index(advection_field.compositional_variable) + " composition");
+
+    // check if matrix and/or RHS are zero
+    // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
+    if (system_rhs.block(block_idx).l2_norm() <= std::numeric_limits<double>::min())
+      {
+        pcout << "   Skipping " + field_name + " solve because RHS is zero." << std::endl;
+        solution.block(block_idx) = 0;
+        std::string statistics_output = (advection_field.is_temperature()
+                                         ?
+                                         "Iterations for temperature solver"
+                                         :
+                                         "Iterations for composition solver " +
+                                         Utilities::int_to_string(advection_field.compositional_variable+1));
+        statistics.add_value(statistics_output, 0);
+        return 0;
+      }
+
+    AssertThrow(system_matrix.block(block_idx,
+                                    block_idx).linfty_norm() > std::numeric_limits<double>::min(),
+                ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
+                            "but the right-hand side is nonzero."));
+
     if (advection_field.is_temperature())
       {
+        build_advection_preconditioner(advection_field,
+                                       T_preconditioner);
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
         advection_solver_tolerance = parameters.temperature_solver_tolerance;
       }
     else
       {
+        build_advection_preconditioner(advection_field,
+                                       C_preconditioner);
         computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving "
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
@@ -789,11 +820,8 @@ namespace aspect
 
     // print the number of iterations to screen and record it in the
     // statistics file
-    if (solver_control_expensive.last_step() == 0)
-      pcout << solver_control_cheap.last_step()  << " iterations.";
-    else
-      pcout << solver_control_cheap.last_step() << '+'
-            << solver_control_expensive.last_step() << " iterations.";
+    pcout << solver_control_cheap.last_step() << '+'
+          << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
 
     statistics.add_value("Iterations for Stokes solver",
