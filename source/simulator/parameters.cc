@@ -527,9 +527,9 @@ namespace aspect
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be run at the end "
-                         "of each of ths initial adaptive refinement cycles at the "
-                         "of the simulation start.");
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the initial adaptive refinement cycles that are run at "
+                         "the start of the simulation.");
     }
     prm.leave_subsection();
 
