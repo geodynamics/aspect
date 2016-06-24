@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,12 +21,14 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <stdlib.h>
-
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -68,20 +70,21 @@ namespace aspect
                        "library.");
 
     prm.declare_entry ("Resume computation", "false",
-                       Patterns::Bool (),
+                       Patterns::Selection ("true|false|auto"),
                        "A flag indicating whether the computation should be resumed from "
-                       "a previously saved state (if true) or start from scratch (if false).");
-
-#ifndef DEAL_II_WITH_ZLIB
-    AssertThrow (resume_computation == false,
-                 ExcMessage ("You need to have deal.II configured with the 'libz' "
-                             "option if you want to resume a computation from a checkpoint, but deal.II "
-                             "did not detect its presence when you called 'cmake'."));
-#endif
+                       "a previously saved state (if true) or start from scratch (if false). "
+                       "If auto is selected, models will be resumed if there is an existing "
+                       "checkpoint file, otherwise started from scratch.");
 
     prm.declare_entry ("Max nonlinear iterations", "10",
                        Patterns::Integer (0),
                        "The maximal number of nonlinear iterations to be performed.");
+
+    prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+                       Patterns::Integer (0),
+                       "The maximal number of nonlinear iterations to be performed in the pre-refinement "
+                       "steps. This does not include the last refinement step before moving to timestep 1. "
+                       "When this parameter has a larger value than max nonlinear iterations, the latter is used.");
 
     prm.declare_entry ("Start time", "0",
                        Patterns::Double (),
@@ -124,6 +127,7 @@ namespace aspect
                        "here, one can choose the time step as large as one wants (in particular, "
                        "one can choose $c>1$) though a CFL number significantly larger than "
                        "one will yield rather diffusive solutions. Units: None.");
+
     prm.declare_entry ("Maximum time step",
                        /* boost::lexical_cast<std::string>(std::numeric_limits<double>::max() /
                                                            year_in_seconds) = */ "5.69e+300",
@@ -255,6 +259,20 @@ namespace aspect
                        "if you make it larger, they do. For most cases, the default "
                        "value should be sufficient. In fact, a tolerance of 1e-4 "
                        "might be accurate enough.");
+
+    prm.declare_entry ("Linear solver A block tolerance", "1e-2",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the A block "
+                       "of the Stokes system is computed. This approximate A is used in the "
+                       "preconditioning used in the GMRES solver.");
+
+    prm.declare_entry ("Linear solver S block tolerance", "1e-6",
+                       Patterns::Double(0,1),
+                       "A relative tolerance up to which the approximate inverse of the S block "
+                       "(Schur complement matrix, $S = BA^{-1}B^{T}$) of the Stokes system is computed. "
+                       "This approximate inverse of the S block is used in the preconditioning "
+                       "used in the GMRES solver.");
+
     prm.declare_entry ("Number of cheap Stokes solver steps", "30",
                        Patterns::Integer(0),
                        "As explained in the ASPECT paper (Kronbichler, Heister, and Bangerth, "
@@ -291,25 +309,6 @@ namespace aspect
     // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
-      prm.declare_entry ("Include shear heating", "true",
-                         Patterns::Bool (),
-                         "Whether to include shear heating into the model or not. From a "
-                         "physical viewpoint, shear heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include adiabatic heating", "false",
-                         Patterns::Bool (),
-                         "Whether to include adiabatic heating into the model or not. From a "
-                         "physical viewpoint, adiabatic heating should always be used but may "
-                         "be undesirable when comparing results with known benchmarks that "
-                         "do not include this term in the temperature equation.");
-      prm.declare_entry ("Include latent heat", "false",
-                         Patterns::Bool (),
-                         "Whether to include the generation of latent heat at phase transitions "
-                         "into the model or not. From a physical viewpoint, latent heat should "
-                         "always be used but may be undesirable when comparing results with known "
-                         "benchmarks that do not include this term in the temperature equation "
-                         "or when dealing with a model without phase transitions.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -320,7 +319,7 @@ namespace aspect
                          "(insulating) boundary conditions."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -343,7 +342,7 @@ namespace aspect
                          "(insulating) boundary conditions."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -362,7 +361,7 @@ namespace aspect
                          "on which the velocity is zero."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -377,7 +376,7 @@ namespace aspect
                          "be tangential)."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -390,7 +389,7 @@ namespace aspect
                          "free surface computations."
                          "\n\n"
                          "The names of the boundaries listed here can either by "
-                         "numeric numbers (in which case they correspond to the numerical "
+                         "numbers (in which case they correspond to the numerical "
                          "boundary indicators assigned by the geometry object), or they "
                          "can correspond to any of the symbolic names the geometry object "
                          "may have provided for each part of the boundary. You may want "
@@ -429,7 +428,27 @@ namespace aspect
                          "\n\n"
                          "Note that when ``Use years in output instead of seconds'' is set "
                          "to true, velocity should be given in m/yr. ");
-
+      prm.declare_entry ("Prescribed traction boundary indicators", "",
+                         Patterns::Map (Patterns::Anything(),
+                                        Patterns::Selection(TractionBoundaryConditions::get_names<dim>())),
+                         "A comma separated list denoting those boundaries "
+                         "on which a traction force is prescribed, i.e., where "
+                         "known external forces act, resulting in an unknown velocity. This is "
+                         "often used to model ``open'' boundaries where we only know the pressure. "
+                         "This pressure then produces a force that is normal to the boundary and "
+                         "proportional to the pressure."
+                         "\n\n"
+                         "The format of valid entries for this parameter is that of a map "
+                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
+                         "each key must be a valid boundary indicator (which is either an "
+                         "integer or the symbolic name the geometry model in use may have "
+                         "provided for this part of the boundary) "
+                         "and each value must be one of the currently implemented boundary "
+                         "traction models. ``selector'' is an optional string given as a subset "
+                         "of the letters 'xyz' that allows you to apply the boundary conditions "
+                         "only to the components listed. As an example, '1 y: function' applies "
+                         "the type 'function' to the y component on boundary 1. Without a selector "
+                         "it will affect all components of the traction.");
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
                                                      "net translation|linear momentum|"
@@ -492,7 +511,8 @@ namespace aspect
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
                          "and that can not be exceeded by coarsening. "
-                         "Should be higher than the 'Initial global refinement' parameter.");
+                         "Should not be higher than the 'Initial global refinement' "
+                         "parameter.");
       prm.declare_entry ("Additional refinement times", "",
                          Patterns::List (Patterns::Double(0)),
                          "A list of times so that if the end time of a time step "
@@ -507,9 +527,9 @@ namespace aspect
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be run at the end "
-                         "of each of ths initial adaptive refinement cycles at the "
-                         "of the simulation start.");
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the initial adaptive refinement cycles that are run at "
+                         "the start of the simulation.");
     }
     prm.leave_subsection();
 
@@ -579,9 +599,28 @@ namespace aspect
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
                          "of the different choices, see \\cite {KHB12} .");
+      prm.declare_entry ("Use discontinuous temperature discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a temperature discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the temperature "
+                         "field via the interior-penalty discontinuous Galerkin method.");
+      prm.declare_entry ("Use discontinuous composition discretization", "false",
+                         Patterns::Bool (),
+                         "Whether to use a composition discretization that is discontinuous "
+                         "as opposed to continuous. This then requires the assembly of face terms "
+                         "between cells, and weak imposition of boundary terms for the composition "
+                         "field via the discontinuous Galerkin method.");
 
       prm.enter_subsection ("Stabilization parameters");
       {
+        prm.declare_entry ("Use artificial viscosity smoothing", "false",
+                           Patterns::Bool (),
+                           "If set to false, the artificial viscosity of a cell is computed and"
+                           "is computed on every cell separately as discussed in \\cite{KHB12}. "
+                           "If set to true, the maximum of the artificial viscosity in "
+                           "the cell as well as the neighbors of the cell is computed and used "
+                           "instead.");
         prm.declare_entry ("alpha", "2",
                            Patterns::Integer (1, 2),
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
@@ -611,6 +650,54 @@ namespace aspect
                            "different value than described there: It can be chosen as stated there for "
                            "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
                            "cells that are not squares or cubes.) Units: None.");
+        prm.declare_entry ("Discontinuous penalty", "10",
+                           Patterns::Double (0),
+                           "The value used to penalize discontinuities in the discontinuous Galerkin "
+                           "method. This is used only for the temperature field, and not for the composition "
+                           "field, as pure advection does not use the interior penalty method. This "
+                           "is largely empirically decided -- it must be large enough to ensure "
+                           "the bilinear form is coercive, but not so large as to penalize "
+                           "discontinuity at all costs.");
+        prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after computing "
+                           "the discontinous temperature solution. Currently we apply this only to the "
+                           "temperature solution if the 'Global temperature maximum' and "
+                           "'Global temperature minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "'Global temperature maximum' and 'Global temperature minimum'.");
+        prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after having "
+                           "the discontinous composition solution. Currently we apply this only to the "
+                           "compositional solution if the 'Global composition maximum' and "
+                           "'Global composition minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "Global composition maximum' and 'Global composition minimum'.");
+        prm.declare_entry ("Global temperature maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The maximum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global temperature minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The minimum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global composition maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The maximum global composition values that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition maximum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
+        prm.declare_entry ("Global composition minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The minimum global composition value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition minimum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
       }
       prm.leave_subsection ();
     }
@@ -651,19 +738,27 @@ namespace aspect
                          "for velocity/pressure, temperature, and compositions in each "
                          "time step, as well as their corresponding preconditioners."
                          "\n\n"
+                         "Possible choices: " + MaterialModel::MaterialAveraging::
+                         get_averaging_operation_names()
+                         +
+                         "\n\n"
                          "The process of averaging, and where it may be used, is "
                          "discussed in more detail in "
-                         "Section~\\ref{sec:sinker-with-averaging}.");
+                         "Section~\\ref{sec:sinker-with-averaging}."
+                         "\n\n"
+                         "More averaging schemes are available in the averaging material "
+                         "model. This material model is a ``compositing material model'' "
+                         "which can be used in combination with other material models.");
     }
     prm.leave_subsection ();
 
-    //Also declare the parameters that the FreeSurfaceHandler needs
+    // also declare the parameters that the FreeSurfaceHandler needs
     Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
 
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
-    SimulatorSignals<dim>::declare_additional_parameters (prm);
+    SimulatorSignals<dim>::declare_additional_parameters (dim, prm);
   }
 
 
@@ -680,7 +775,6 @@ namespace aspect
     AssertThrow (prm.get_integer("Dimension") == dim,
                  ExcInternalError());
 
-    resume_computation      = prm.get_bool ("Resume computation");
     CFL_number              = prm.get_double ("CFL number");
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
@@ -689,7 +783,6 @@ namespace aspect
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
-
 
     if (prm.get ("Nonlinear solver scheme") == "IMPES")
       nonlinear_solver = NonlinearSolver::IMPES;
@@ -707,6 +800,8 @@ namespace aspect
     nonlinear_tolerance = prm.get_double("Nonlinear solver tolerance");
 
     max_nonlinear_iterations = prm.get_integer ("Max nonlinear iterations");
+    max_nonlinear_iterations_in_prerefinement = prm.get_integer ("Max nonlinear iterations in pre-refinement");
+
     start_time              = prm.get_double ("Start time");
     if (convert_to_years == true)
       start_time *= year_in_seconds;
@@ -730,36 +825,52 @@ namespace aspect
                   << "-----------------------------------------------------------------------------\n\n"
                   << std::endl;
 
-        // create the directory. we could call the 'mkdir()' function directly, but
-        // this can only create a single level of directories. if someone has specified
-        // a nested subdirectory as output directory, and if multiple parts of the path
-        // do not exist, this would fail. working around this is easiest by just calling
-        // 'mkdir -p' from the command line
-        const int error = system ((std::string("mkdir -p '") + output_directory + "'").c_str());
+        const int error = Utilities::mkdirp(output_directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-        AssertThrow (error==0,
+        AssertThrow (error == 0,
                      ExcMessage (std::string("Can't create the output directory at <") + output_directory + ">"));
       }
 
-    surface_pressure              = prm.get_double ("Surface pressure");
-    adiabatic_surface_temperature = prm.get_double ("Adiabatic surface temperature");
-    pressure_normalization        = prm.get("Pressure normalization");
+    if (prm.get ("Resume computation") == "true")
+      resume_computation = true;
+    else if (prm.get ("Resume computation") == "false")
+      resume_computation = false;
+    else if (prm.get ("Resume computation") == "auto")
+      {
+        std::fstream check_file((output_directory+"restart.mesh").c_str());
+        resume_computation = check_file.is_open();
+        check_file.close();
+      }
+    else
+      AssertThrow (false, ExcMessage ("Resume computation parameter must be either 'true', 'false', or 'auto'."));
+#ifndef DEAL_II_WITH_ZLIB
+    AssertThrow (resume_computation == false,
+                 ExcMessage ("You need to have deal.II configured with the 'libz' "
+                             "option if you want to resume a computation from a checkpoint, but deal.II "
+                             "did not detect its presence when you called 'cmake'."));
+#endif
 
-    use_direct_stokes_solver      = prm.get_bool("Use direct solver for Stokes system");
-    linear_stokes_solver_tolerance= prm.get_double ("Linear solver tolerance");
-    n_cheap_stokes_solver_steps   = prm.get_integer ("Number of cheap Stokes solver steps");
-    temperature_solver_tolerance  = prm.get_double ("Temperature solver tolerance");
-    composition_solver_tolerance  = prm.get_double ("Composition solver tolerance");
+    surface_pressure                = prm.get_double ("Surface pressure");
+    adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
+    pressure_normalization          = prm.get("Pressure normalization");
+
+    use_direct_stokes_solver        = prm.get_bool("Use direct solver for Stokes system");
+    linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
+    linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
+    linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
+    n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
+    temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
+    composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
 
     prm.enter_subsection ("Mesh refinement");
     {
-      initial_global_refinement   = prm.get_integer ("Initial global refinement");
-      initial_adaptive_refinement = prm.get_integer ("Initial adaptive refinement");
+      initial_global_refinement    = prm.get_integer ("Initial global refinement");
+      initial_adaptive_refinement  = prm.get_integer ("Initial adaptive refinement");
 
-      adaptive_refinement_interval= prm.get_integer ("Time steps between mesh refinement");
-      refinement_fraction         = prm.get_double ("Refinement fraction");
-      coarsening_fraction         = prm.get_double ("Coarsening fraction");
-      min_grid_level              = prm.get_integer ("Minimum refinement level");
+      adaptive_refinement_interval = prm.get_integer ("Time steps between mesh refinement");
+      refinement_fraction          = prm.get_double ("Refinement fraction");
+      coarsening_fraction          = prm.get_double ("Coarsening fraction");
+      min_grid_level               = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
                   ExcMessage("Refinement/coarsening fractions must be positive."));
@@ -786,10 +897,6 @@ namespace aspect
 
     prm.enter_subsection ("Model settings");
     {
-      include_shear_heating = prm.get_bool ("Include shear heating");
-      include_adiabatic_heating = prm.get_bool ("Include adiabatic heating");
-      include_latent_heat = prm.get_bool ("Include latent heat");
-
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -860,12 +967,33 @@ namespace aspect
       composition_degree     = prm.get_integer ("Composition polynomial degree");
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
-
+      use_discontinuous_temperature_discretization
+        = prm.get_bool("Use discontinuous temperature discretization");
+      use_discontinuous_composition_discretization
+        = prm.get_bool("Use discontinuous composition discretization");
       prm.enter_subsection ("Stabilization parameters");
       {
-        stabilization_alpha = prm.get_integer ("alpha");
-        stabilization_c_R   = prm.get_double ("cR");
-        stabilization_beta  = prm.get_double ("beta");
+        use_artificial_viscosity_smoothing  = prm.get_bool ("Use artificial viscosity smoothing");
+        stabilization_alpha                 = prm.get_integer ("alpha");
+        stabilization_c_R                   = prm.get_double ("cR");
+        stabilization_beta                  = prm.get_double ("beta");
+        discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
+        use_limiter_for_discontinuous_temperature_solution
+          = prm.get_bool("Use limiter for discontinuous temperature solution");
+        use_limiter_for_discontinuous_composition_solution
+          = prm.get_bool("Use limiter for discontinuous composition solution");
+        if (use_limiter_for_discontinuous_temperature_solution
+            || use_limiter_for_discontinuous_composition_solution)
+          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
+                       ExcMessage ("The bound preserving limiter currently is "
+                                   "only implemented for the scheme using IMPES nonlinear solver. "
+                                   "Please deactivate the limiter or change the solver scheme."));
+        global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
+        global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
+        global_composition_max_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition maximum")));
+        global_composition_min_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition minimum")));
       }
       prm.leave_subsection ();
 
@@ -924,6 +1052,16 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
+      // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
+      if (use_limiter_for_discontinuous_temperature_solution
+          || use_limiter_for_discontinuous_composition_solution)
+        AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
+                      && global_composition_min_preset.size() == (n_compositional_fields)),
+                     ExcMessage ("The number of multiple 'Global composition maximum' values "
+                                 "and the number of multiple 'Global composition minimum' values "
+                                 "have to be the same as the total number of compositional fields"));
     }
     prm.leave_subsection ();
 
@@ -1065,7 +1203,7 @@ namespace aspect
 
           // now for the rest. since we don't know whether there is a
           // component selector, start reading at the end and subtracting
-          // letters x, y and zs
+          // letters x, y and z
           std::string key_and_comp = split_parts[0];
           std::string comp;
           while ((key_and_comp.size()>0) &&
@@ -1105,7 +1243,7 @@ namespace aspect
             }
 
           // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't see it yet
+          // make sure we haven't seen it yet
           types::boundary_id boundary_id;
           try
             {
@@ -1129,6 +1267,96 @@ namespace aspect
           prescribed_velocity_boundary_indicators[boundary_id] =
             std::pair<std::string,std::string>(comp,value);
         }
+
+      const std::vector<std::string> x_prescribed_traction_boundary_indicators
+        = Utilities::split_string_list
+          (prm.get ("Prescribed traction boundary indicators"));
+      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
+           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+        {
+          // each entry has the format (white space is optional):
+          // <id> [x][y][z] : <value (might have spaces)>
+          //
+          // first tease apart the two halves
+          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          AssertThrow (split_parts.size() == 2,
+                       ExcMessage ("The format for prescribed traction boundary indicators "
+                                   "requires that each entry has the form `"
+                                   "<id> [x][y][z] : <value>', but there does not "
+                                   "appear to be a colon in the entry <"
+                                   + *p
+                                   + ">."));
+
+          // the easy part: get the value
+          const std::string value = split_parts[1];
+
+          // now for the rest. since we don't know whether there is a
+          // component selector, start reading at the end and subtracting
+          // letters x, y and z
+          std::string key_and_comp = split_parts[0];
+          std::string comp;
+          while ((key_and_comp.size()>0) &&
+                 ((key_and_comp[key_and_comp.size()-1] == 'x')
+                  ||
+                  (key_and_comp[key_and_comp.size()-1] == 'y')
+                  ||
+                  ((key_and_comp[key_and_comp.size()-1] == 'z') && (dim==3))))
+            {
+              comp += key_and_comp[key_and_comp.size()-1];
+              key_and_comp.erase (--key_and_comp.end());
+            }
+
+          // we've stopped reading component selectors now. there are three
+          // possibilities:
+          // - no characters are left. this means that key_and_comp only
+          //   consisted of a single word that only consisted of 'x', 'y'
+          //   and 'z's. then this would have been a mistake to classify
+          //   as a component selector, and we better undo it
+          // - the last character of key_and_comp is not a whitespace. this
+          //   means that the last word in key_and_comp ended in an 'x', 'y'
+          //   or 'z', but this was not meant to be a component selector.
+          //   in that case, put these characters back.
+          // - otherwise, we split successfully. eat spaces that may be at
+          //   the end of key_and_comp to get key
+          if (key_and_comp.size() == 0)
+            key_and_comp.swap (comp);
+          else if (key_and_comp[key_and_comp.size()-1] != ' ')
+            {
+              key_and_comp += comp;
+              comp = "";
+            }
+          else
+            {
+              while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
+                key_and_comp.erase (--key_and_comp.end());
+            }
+
+          // finally, try to translate the key into a boundary_id. then
+          // make sure we haven't seen it yet
+          types::boundary_id boundary_id;
+          try
+            {
+              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
+            }
+          catch (const std::string &error)
+            {
+              AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Prescribed "
+                                              "traction indicators>, there was an error. Specifically, "
+                                              "the conversion function complained as follows: "
+                                              + error));
+            }
+
+          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
+                       == prescribed_traction_boundary_indicators.end(),
+                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                   "> appears more than once in the list of indicators "
+                                   "for nonzero traction boundaries."));
+
+          // finally, put it into the list
+          prescribed_traction_boundary_indicators[boundary_id] =
+            std::pair<std::string,std::string>(comp,value);
+        }
+
     }
     prm.leave_subsection ();
   }
@@ -1143,7 +1371,7 @@ namespace aspect
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);
     MaterialModel::declare_parameters<dim> (prm);
-    HeatingModel::declare_parameters<dim> (prm);
+    HeatingModel::Manager<dim>::declare_parameters (prm);
     GeometryModel::declare_parameters <dim>(prm);
     GravityModel::declare_parameters<dim> (prm);
     InitialConditions::declare_parameters<dim> (prm);
@@ -1153,6 +1381,7 @@ namespace aspect
     BoundaryComposition::declare_parameters<dim> (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     VelocityBoundaryConditions::declare_parameters<dim> (prm);
+    TractionBoundaryConditions::declare_parameters<dim> (prm);
   }
 }
 

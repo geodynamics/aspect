@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
@@ -12,7 +5,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1000 K, 1000 K
@@ -20,7 +13,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 1:  t=1000 seconds
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1001 K, 1001 K
@@ -29,18 +22,6 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      12.1s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         2 |      4.18s |        35% |
-| Assemble temperature system     |         2 |      1.63s |        14% |
-| Build Stokes preconditioner     |         2 |      2.98s |        25% |
-| Build temperature preconditioner|         2 |    0.0214s |      0.18% |
-| Solve Stokes system             |         2 |     0.267s |       2.2% |
-| Solve temperature system        |         2 |   0.00896s |     0.074% |
-| Initialization                  |         2 |     0.742s |       6.2% |
-| Postprocessing                  |         2 |    0.0935s |      0.78% |
-| Setup dof systems               |         1 |     0.773s |       6.4% |
 +---------------------------------+-----------+------------+------------+
 

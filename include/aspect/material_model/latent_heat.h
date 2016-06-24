@@ -46,96 +46,20 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class LatentHeat : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class LatentHeat : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
+         * Evaluate material properties.
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
-
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
-
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
-
-        virtual double entropy_derivative (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position,
-                                           const NonlinearDependence::Dependence dependence) const;
-        /**
-         * @}
-         */
+        virtual void evaluate(const MaterialModelInputs<dim> &in,
+                              MaterialModelOutputs<dim> &out) const;
 
         /**
          * @name Qualitative properties one can ask a material model
          * @{
          */
-
-        /**
-         * Return true if the viscosity() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identifies by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         */
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the specific_heat() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identifies by the
-         * argument.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -191,6 +115,7 @@ namespace aspect
          */
 
       private:
+        bool use_depth;
         double reference_rho;
         double reference_T;
         double eta;
@@ -230,11 +155,13 @@ namespace aspect
                                    const double pressure,
                                    const int phase) const;
 
-        // list of depth, width and Clapeyron slopes for the different phase
-        // transitions
+        // list of depth (or pressure), width and Clapeyron slopes
+        // for the different phase transitions
         std::vector<double> transition_depths;
+        std::vector<double> transition_pressures;
         std::vector<double> transition_temperatures;
         std::vector<double> transition_widths;
+        std::vector<double> transition_pressure_widths;
         std::vector<double> transition_slopes;
         std::vector<double> density_jumps;
         std::vector<int> transition_phases;

@@ -1,0 +1,9 @@
+# This file will be installed into the build directory and causes ctest to
+# print the information below after running the tests (only if the minimal
+# test configuration is active)
+
+SET(RUN_ALL_TESTS @ASPECT_RUN_ALL_TESTS@)
+
+IF(NOT RUN_ALL_TESTS)
+  SET(CTEST_CUSTOM_POST_TEST "./print_test_info.sh")
+ENDIF()

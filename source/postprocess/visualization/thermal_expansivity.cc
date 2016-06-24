@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/thermal_expansivity.h>
-#include <aspect/simulator_access.h>
 
 
 
@@ -35,7 +34,7 @@ namespace aspect
       ThermalExpansivity ()
         :
         DataPostprocessorScalar<dim> ("thermal_expansivity",
-                                      update_values | update_q_points)
+                                      update_values | update_q_points | update_gradients)
       {}
 
 
@@ -44,7 +43,7 @@ namespace aspect
       void
       ThermalExpansivity<dim>::
       compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
@@ -67,8 +66,11 @@ namespace aspect
             //in.strain_rate[q] =
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-            for (unsigned int i = 0; i < dim; ++i)
-              in.velocity[q][i]=uh[q][this->introspection().component_indices.velocities[i]];
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                in.velocity[q][d]=uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+              }
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];

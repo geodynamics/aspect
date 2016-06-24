@@ -12,24 +12,14 @@ namespace aspect
     class CompressibilityIteratedStokes : public MaterialModel::Simple<dim>
     {
       public:
+
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double density (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const Point<dim>             &position) const;
-
-        virtual double compressibility (const double                  temperature,
-                                        const double                  pressure,
-                                        const std::vector<double>    &compositional_fields,
-                                        const Point<dim>             &position) const;
-
-      /**
-        * Return true if the compressibility() function returns something that
-        * is not zero.
-        */
+          * Return true if the compressibility() function returns something that
+          * is not zero.
+          */
         virtual bool
         is_compressible () const;
     };
@@ -43,26 +33,17 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     CompressibilityIteratedStokes<dim>::
-    density (const double temperature,
-             const double pressure,
-             const std::vector<double> &composition,
-             const Point<dim> &position) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      return 10.0/11.0*exp(pressure/100.0);
-    }
-
-    template <int dim>
-    double
-    CompressibilityIteratedStokes<dim>::
-    compressibility (const double ,
-                     const double pressure,
-                     const std::vector<double> &,
-                     const Point<dim> &) const
-    {
-      // compressibility = 1/rho drho/dp
-      return  0.01;
+      Simple<dim>::evaluate(in, out);
+      for (unsigned int i=0; i < in.position.size(); ++i)
+        {
+          out.densities[i] = 10.0/11.0*exp(in.pressure[i]/100.0);
+          out.compressibilities[i] = 0.01;
+        }
     }
 
     template <int dim>
@@ -83,6 +64,6 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(CompressibilityIteratedStokes,
                                    "compressibility iterated stokes",
                                    "A simple material model that is like the "
-				   "'Simple' model, but has a non-zero compressibility.")
+                                   "'Simple' model, but has a non-zero compressibility.")
   }
 }

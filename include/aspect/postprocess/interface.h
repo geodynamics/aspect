@@ -128,6 +128,29 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * A function that is used to indicate to the postprocessor manager which
+         * other postprocessor(s) the current one depends upon. The returned
+         * list contains the names (as strings, as you would write them in
+         * the input file) of the postprocessors it requires. The manager
+         * will ensure that these postprocessors are indeed used, even if
+         * they were not explicitly listed in the input file, and are indeed
+         * run <i>before</i> this postprocessor everytime they are executed.
+         *
+         * The default implementation of this function returns an empty list.
+         *
+         * @note This mechanism is intended to support postprocessors that
+         * do not want to recompute information that other postprocessors
+         * already compute (or could compute, if they were run -- which
+         * we can ensure using the current function). To do so, a postprocessor
+         * of course needs to be able to access these other postprocessors.
+         * This can be done by deriving your postprocessor from
+         * SimulatorAccess, and then using the SimulatorAccess::find_postprocessor()
+         * function.
+         */
+        virtual
+        std::list<std::string>
+        required_other_postprocessors () const;
 
         /**
          * Save the state of this object to the argument given to this
@@ -280,7 +303,7 @@ namespace aspect
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std_cxx11::shared_ptr<Interface<dim> > > postprocessors;
+        std::vector<std_cxx11::shared_ptr<Interface<dim> > > postprocessors;
     };
 
 
@@ -294,7 +317,7 @@ namespace aspect
       // let all the postprocessors save their data in a map and then
       // serialize that
       std::map<std::string,std::string> saved_text;
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->save (saved_text);
@@ -315,7 +338,7 @@ namespace aspect
       std::map<std::string,std::string> saved_text;
       ar &saved_text;
 
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         (*p)->load (saved_text);
@@ -334,7 +357,7 @@ namespace aspect
     PostprocessorType *
     Manager<dim>::find_postprocessor () const
     {
-      for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+      for (typename std::vector<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
            p = postprocessors.begin();
            p != postprocessors.end(); ++p)
         if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( (*p).get()) )

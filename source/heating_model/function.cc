@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,16 +33,21 @@ namespace aspect
     {}
 
 
-
     template <int dim>
-    double
+    void
     Function<dim>::
-    specific_heating_rate (const double,
-                           const double,
-                           const std::vector<double> &,
-                           const Point<dim> &p) const
+    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      return heating_model_function.value(p);
+      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+        {
+          // return a constant value
+          const Point<dim> position = material_model_inputs.position[q];
+          heating_model_outputs.heating_source_terms[q] = heating_model_function.value(position)
+                                                          * material_model_outputs.densities[q];
+          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+        }
     }
 
 
@@ -92,7 +97,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Heating model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         {

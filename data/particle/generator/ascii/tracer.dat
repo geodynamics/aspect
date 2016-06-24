@@ -1,0 +1,7 @@
+# This is testdata for the Ascii file tracer generator
+# The last line is outside of the test domain and tests
+# that plugins simply ignore points outside of the domain
+# Columns: x_coordinate y_coordinate
+0.5 0.5
+0.2 0.7
+-0.5 -1.3

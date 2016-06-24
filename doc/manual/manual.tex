@@ -45,7 +45,7 @@
 % files in the aspect tree without having to specify the
 % location relative to the directory where the pdf actually
 % resides
-\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,baseurl=../]{hyperref}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue,baseurl=../]{hyperref}
 
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
@@ -121,11 +121,9 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 %USER MANUAL%
 \color{dark_grey}
 \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
-% FILL: manual version
-% e.g. 1.0
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.4.pre %VERSION-INFO%
+1.5.0-pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -139,19 +137,24 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 Wolfgang Bangerth\\Timo Heister\\
 \large
     with contributions by:\\
-    Jacky Austermann,
+    Jacqueline Austermann,
     Markus B{\"u}rg,
     Juliane Dannberg,
-    William Durkin,
-    Ren{\'e} Ga{\ss}m{\"o}ller, \\
+    William Durkin, \\
+    Grant Euen,
+    Ren{\'e} Ga{\ss}m{\"o}ller,
     Thomas Geenen,
     Anne Glerum,
     Ryan Grove,
-    Eric Heien,
+    Eric Heien, \\
+    Scott King,
     Martin Kronbichler,
-    Elvira Mulyukova, \\
-    Jonathan Perry-Houts,
+    Shangxin Liu,
+    Elvira Mulyukova,
+    Jonathan Perry-Houts, \\
+    Tahiry Rajaonarison,
     Ian Rose,
+    D.~Sarah Stamps,
     Cedric Thieulot,
     Iris van Zelst,
     Siqi Zhang \\
@@ -278,32 +281,31 @@ to some part using \aspect{}, you cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
-  author = 	 {M. Kronbichler and T. Heister and W. Bangerth},
-  title = 	 {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},
-  journal = 	 {Geophysics Journal International},
-  year = 	 2012,
-  volume = 	 191,
-  pages = 	 {12--29}}
+  author =       {M. Kronbichler and T. Heister and W. Bangerth},
+  title =        {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},
+  journal =      {Geophysics Journal International},
+  year =         2012,
+  volume =       191,
+  pages =        {12--29}}
 \end{lstlisting}
 You can refer to the website by citing the following:
 \begin{lstlisting}[frame=single,language=tex]
-
-      @MANUAL{aspectweb,
-        title = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
+@Manual{aspectweb,
+        title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
-        year = {2014},
-        note = {\texttt{https://aspect.dealii.org/}},
-        url = {https://aspect.dealii.org/}
+        year   = {2014},
+        note   = {\texttt{https://aspect.dealii.org/}},
+        url    = {https://aspect.dealii.org/}
       }
 \end{lstlisting}
 The manual's proper reference is this:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectmanual,
         title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
-          ConvecTion},
+                        ConvecTion},
         author =       {W. Bangerth and T. Heister and others},
         organization = {Computational Infrastructure for Geodynamics},
-        year = 	 2014
+        year =         2014
       }
 \end{lstlisting}
 
@@ -320,6 +322,17 @@ via The California Institute of Technology). In addition, the libraries upon
 which \aspect{} builds heavily have been supported through many other grants
 that are equally gratefully acknowledged.
 
+Please acknowledge CIG as follows:
+{\parindent0pt
+  \begin{center}
+    \shadowbox{
+      \begin{minipage}[c]{0.9\linewidth}
+ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG)
+which is supported by the National Science Foundation award NSF-094946.
+      \end{minipage}
+    }
+  \end{center}
+}
 
 \section{Equations, models, coefficients}
 \label{sec:models}
@@ -342,12 +355,12 @@ $c_i$ that we call \textit{compositional fields}:
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p &=
   \rho \mathbf g
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:stokes-2}
   \nabla \cdot (\rho \mathbf u) &= 0
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature}
@@ -370,7 +383,7 @@ $c_i$ that we call \textit{compositional fields}:
   \\
   &\quad
   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
-  & \quad
+  &
   & \textrm{in $\Omega$},
   \notag
   \\
@@ -378,13 +391,26 @@ $c_i$ that we call \textit{compositional fields}:
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
   q_i
-  & \quad
+  &
   & \textrm{in $\Omega$},
   i=1\ldots C
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
-\textit{strain rate}).
+\textit{strain rate}).%
+\footnote{There is no consensus in the sciences on the notation used
+  for strain and strain rate. The symbols $\varepsilon$,
+  $\dot\varepsilon$,  $\varepsilon(\mathbf u)$, and
+  $\dot\varepsilon(\mathbf u)$, can all be found. In this manual, and
+  in the code, we will consistently use $\varepsilon$ as an
+  \textit{operator}, i.e., the symbol is not used on its own but only
+  as applied to a field. In other words, if $\mathbf u$ is the
+  velocity field, then $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla
+  \mathbf u + \nabla\mathbf u^T)$ will denote the strain rate. On the
+  other hand, if $\mathbf d$ is the
+  displacement field, then $\varepsilon(\mathbf d) = \frac{1}{2}(\nabla
+  \mathbf d + \nabla\mathbf d^T)$ will denote the strain.}
+
 
 In this set of equations, \eqref{eq:stokes-1} and \eqref{eq:stokes-2}
 represent the compressible Stokes equations in which $\mathbf u=\mathbf
@@ -498,12 +524,19 @@ essentially as tracer quantities that only keep track of where material came
 from.
 
 These equations are
-augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
+augmented by boundary conditions that can either be of Dirichlet, Neumann, or
 tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
   \\
-  \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf u}$},
+  \mathbf u &= \mathbf u_\text{prescribed} & \qquad &\textrm{on
+  $\Gamma_{\text{prescribed},\mathbf u}$},
+  \\
+  \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf
+  u}$},
+  \\
+  (2\eta \varepsilon(\mathbf u) -p I)\mathbf n  &= \mathbf t & \qquad
+  &\textrm{on $\Gamma_{\text{traction},\mathbf u}$},
   \\
   T &= T_{\text{prescribed}}
    & \qquad &\textrm{on $\Gamma_{D,T}$},
@@ -511,26 +544,50 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
   \mathbf n \cdot k\nabla T &= 0
    & \qquad &\textrm{on $\Gamma_{N,T}$}.
   \\
-  c_i &= 0
-   & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
+  \label{eq:gamma-in-composition}
+  c_i &= c_{i,\text{prescribed}}
+   & \qquad &\textrm{on $\Gamma_{\text{in}}=\{\mathbf x: \mathbf
    u\cdot\mathbf n<0\}$}.
 \end{align}
-Here,
-$\Gamma_{0,\mathbf u}$ corresponds to parts of the boundary on which the
-velocity is fixed to be zero,
-$\Gamma_{\parallel,\mathbf u}$ to parts of the boundary on which the
-velocity may be nonzero but must be parallel to the boundary,
-$\Gamma_{D,T}$ to places where the temperature is prescribed (for example at
-the inner and outer boundaries of the earth mantle), and finally
-$\Gamma_{N,T}$ to places where the temperature is unknown but the heat flux
-across the boundary is zero (for example on symmetry surfaces if only a part
+Here, the boundary conditions for velocity and temperature are subdivided into
+disjoint parts:
+\begin{itemize}
+  \item $\Gamma_{0,\mathbf u}$ corresponds to parts of the boundary on
+which the velocity is fixed to be zero.
+  \item $\Gamma_{\text{prescribed},\mathbf u}$ corresponds to parts of the
+  boundary on which the velocity is prescribed to some value (which could also
+  be zero). It is possible to restrict prescribing the velocity to only certain
+  components of the velocity vector.
+  \item $\Gamma_{\parallel,\mathbf u}$ corresponds to parts of the boundary on
+  which the velocity may be nonzero but must be parallel to the boundary, with the
+tangential component undetermined.
+  \item $\Gamma_{\text{traction},\mathbf u}$ corresponds to parts of the
+  boundary on which the traction is prescribed to some surface force density (a
+  common application being $\mathbf t=-p\mathbf n$ if one
+  just wants to prescribe a pressure component). It is possible to restrict
+  prescribing the traction to only certain vector components.
+  \item $\Gamma_{D,T}$ corresponds to places where the temperature is prescribed
+  (for example at the inner and outer boundaries of the earth mantle).
+  \item $\Gamma_{N,T}$ corresponds to places where the temperature is unknown
+  but the heat flux across the boundary is zero (for example on symmetry surfaces if only a part
 of the shell that constitutes the domain the Earth mantle occupies is
-simulated). We require that one of these boundary conditions hold at each
+simulated).
+\end{itemize}
+We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
-$\Gamma_{0,\mathbf u}\cup\Gamma_{\parallel,\mathbf u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be posed
-for the compositional fields at those parts of the boundary where flow is either
-tangential to the boundary or points outward.
+$\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
+  u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
+  u}=\Gamma$ and
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. 
+
+Boundary conditions have to be imposed for the compositional fields only
+at those parts of the boundary where flow points inward, see equation
+\eqref{eq:gamma-in-composition}, but not where it is either tangential
+to the boundary or points outward. The difference in treatment between
+temperature and compositional boundary conditions is due to the fact
+that the temperature equation contains a (possibly small) diffusion
+component, whereas the compositional equations do not.
+
 
 \subsubsection{Comments on the final set of equations}
 \aspect{} solves these equations in essentially the form stated. In
@@ -763,13 +820,13 @@ physical units. On the other hand, there are also downsides:
   often vastly different.%
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
-  With the length scale of the mantle $L=3\cdot 10^6\;m$, viscosity
-  $\eta=10^{24} \; kg/m/s$, density $\rho=3\cdot 10^3 \; kg/m^3$ and a typical
-  velocity of $U=0.1\;m/year=3\cdot 10^{-9}\; m/s$, we get that the friction
+  With the length scale of the mantle $L=3\cdot 10^6\;\text{m}$, viscosity
+  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=3\cdot 10^3 \; \text{kg}/\text{m}^3$ and a typical
+  velocity of $U=0.1\;\text{m}/\text{year}=3\cdot 10^{-9}\; \text{m}/\text{s}$, we get that the friction
   term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx 3\cdot 10^2 \;
-  kg/m/s^3$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
+  \text{kg}/\text{m}^2/\text{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
   continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx 3\cdot
-  10^{-12} \; kg/s/m^3$. In other words, their \textit{numerical values} are 14
+  10^{-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
   orders of magnitude apart.}
   Of course, these values can not be compared: they have different physical
   units, and the ratios between these values depends on whether we choose to
@@ -1038,14 +1095,17 @@ a vector $\mathfrak c$.
 
 Compositional fields were originally intended to track what their name
 suggest, namely the chemical composition of the convecting medium. In this
-interpretation, they composition is a quantity that is simply advected along
+interpretation, the composition is a quantity that is simply advected along
 passively, i.e., it would satisfy the equation
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
   = 0.
 \end{align*}
-However, these compositional fields participate in determining the values of
-the various coefficients as discussed in Section~\ref{sec:coefficients}.
+However, the compositional fields may also participate in determining the values of
+the various coefficients as discussed in
+Section~\ref{sec:coefficients}, and in this sense the equation above
+describes a composition that is \textit{passively advected}, but an
+\textit{active participant} in the equations.
 
 That said, over time compositional fields have shown to be a much more useful
 tool than originally intended. For example, they can be used to track where
@@ -1056,13 +1116,30 @@ and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
   = \mathfrak q,
 \end{align*}
 then one can also model interaction between species -- for example to simulate
-phase changes where one compositional field indicating a particular phase
+phase changes where one compositional field, indicating a particular phase,
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
-which is defined as $\triangle t \cdot \mathfrak q$.
+several phases combine to other phases. Another example of using a
+right hand side -- quite outside what the original term
+\textit{compositional field} was supposed to indicate -- is to track
+the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
 
-Modeling reactions between different compositional fields often involves
-finding an equilibrium state between state between different fields because
+In actual practice, one finds that it is often useful to allow
+$\mathfrak q$ to be a function that has both a smooth (say,
+continuous) in time component, and one that is singular in time (i.e.,
+contains Dirac delta, or ``impulse'' functions). Typical time
+integrators require the evaluation of the right hand side at specific
+points in time, but this would preclude the use of delta
+functions. Consequently, the integrators in \aspect{} only require
+material models to provide an \textit{integrated} value
+$\int_t^{t+\Delta t} \mathfrak q(\tau) \;
+\text{d}\tau$ through the {\tt reaction\_term} output
+variable. Implementations often approximate this as $\triangle t \cdot
+\mathfrak q(t)$, or similar formulas.
+
+A second application for only providing integrated right hand sides
+comes from the fact that
+modeling reactions between different compositional fields often involves
+finding an equilibrium state between different fields because
 chemical reactions happen on a much faster time scale than transport. In other
 words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 \begin{align*}
@@ -1071,9 +1148,12 @@ words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 Consequently, the material model methods that deal with source terms for the
 compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
 to the previous value of the compositional fields so that the sum of the
-previous values and the increment equals $\mathfrak c^\ast$. This is opposed
-to the usual approach of evaluating the right hand side term $\mathfrak q$,
-which corresponds to a \textit{rate}, instead of an increment.
+previous values and the increment equals $\mathfrak c^\ast$. This
+corresponds to an \textit{impulse change} in the compositions at every
+time step, as opposed
+to the usual approach of evaluating the right hand side term
+$\mathfrak q$ as a continuous function in time,
+which corresponds to a \textit{rate}.
 
 On the other hand, there are other uses of compositional fields that do not
 actually have anything to do with quantities that can be considered related to
@@ -1101,6 +1181,54 @@ times the time step.  In other words, if you compute a reaction rate inside the 
 Compositional fields have proven to be surprisingly versatile tools to model
 all sorts of components of models that go beyond the simple Stokes plus
 temperature set of equations. Play with them!
+
+
+\subsection{Constitutive laws}
+
+Equation \eqref{eq:stokes-1} describes buoyancy-driven flow in an isotropic
+fluid where strain rate is related to stress by a scalar (possibly spatially variable)
+multiplier, $\eta$. For some material models it is useful to generalize this
+relationship to anisotropic materials, or other exotic constitutive laws.
+For these cases \aspect{} can optionally include a generalized, fourth-order
+tensor field as a material model state variable which changes equation
+\eqref{eq:stokes-1} to
+\begin{align}
+  \label{eq:stokes-1-anisotropic}
+  -\nabla \cdot \left[2\eta \left(C \varepsilon(\mathbf u)
+                                  - \frac{1}{3}(tr(C \varepsilon(\mathbf u)))\mathbf 1\right)
+                \right] + \nabla p &=
+  \rho \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$}
+\end{align}
+and the shear heating term in equation \eqref{eq:temperature} to
+\begin{align}
+  \label {eq:temperature-anisotropic}
+  \dots
+  \notag
+  \\
+  + 2 \eta
+  \left(C \varepsilon(\mathbf u) - \frac{1}{3}(tr(C \varepsilon(\mathbf u)))\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  \\
+  \dots
+  \notag
+\end{align}
+where $C = C_{ijkl}$ is defined by the material model. For physical reasons, $C$ needs
+to be a symmetric rank-4 tensor: i.e., when multiplied by a symmetric (strain rate)
+tensor of rank 2 it needs to return another symmetric tensor of rank 2. In mathematical
+terms, this means that $C_{ijkl}=C_{jikl}=C_{ijlk}=C_{jilk}$. Energy considerations
+also require that $C$ is positive definite: i.e., for any $\varepsilon \neq 0$, the
+scalar $\varepsilon : (C \varepsilon)$ must be positive.
+
+This functionality can be optionally invoked by any material model that chooses to
+define a $C$ field, and falls back to the default case ($C=\mathbb I$) if no such
+field is defined. It should be noted that $\eta$ still appears in equations
+\eqref{eq:stokes-1-anisotropic} and \eqref{eq:temperature-anisotropic}. $C$ is
+therefore intended to be thought of as a ``director'' tensor rather than a
+replacement for the viscosity field, although in practice either interpretation
+is okay.
 
 
 \subsection{Numerical methods}
@@ -1647,7 +1775,7 @@ prerequisites:
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 8.2 or later.
+  The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
   This version can be downloaded and installed from
   \url{https://www.dealii.org/download.html}.
 
@@ -1697,16 +1825,17 @@ The development version of \aspect{} can be downloaded by executing the command
  git clone https://github.com/geodynamics/aspect.git
 \end{verbatim}
 If {\tt{\$DEAL\_II\_DIR}} points to your \dealii{} installation, you can configure
-aspect with
+\aspect{} by running
 \begin{verbatim}
  cmake .
 \end{verbatim}
+in the {\tt{aspect}} directory created by the {\tt{git clone}} command above.
 If you did not set {\tt{\$DEAL\_II\_DIR}} you have to supply cmake with the location:
 \begin{verbatim}
  cmake -DDEAL_II_DIR=/u/username/deal-installed/ .
 \end{verbatim}
 
-An alternative would be to configure aspect as an out-of-source build. Similar to
+An alternative would be to configure \aspect{} as an out-of-source build. Similar to
 the configuration of \dealii{}, you would need to create a build directory and
 specify an install directory using -DCMAKE\_INSTALL\_PREFIX. The
 instructions in the following sections assume an in-source build, so you need
@@ -1747,7 +1876,7 @@ point for exploring the documentation.
 \begin{verbatim}
  -DDEAL_II_STATIC_EXECUTABLE=ON
 \end{verbatim}
-\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to aspects build procedure. You should see the following cmake output from \aspect{}:
+\item \textit{\aspect{}:} If everything above is set up correctly, there is no need for any configuration change to \aspect{}'s build procedure. You should see the following cmake output from \aspect{}:
 \begin{verbatim}
 -- Creating a statically linked executable
 -- Disabling dynamic loading of plugins from the input file
@@ -1755,6 +1884,115 @@ point for exploring the documentation.
 \end{enumerate}
 
 The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
+
+\subsection{Installing and running \aspect{} on Mac OS X}
+OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9) and Yosemite (10.10) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
+
+\begin{enumerate}
+\item Install Cmake.
+
+CMake is a cross-platform, open-source build system that can be downloaded from \url{http://www.cmake.org}.  After installation of CMake.app, the terminal command for cmake will be
+\begin{verbatim}
+/Applications/CMake.app/Contents/bin/cmake
+\end{verbatim}
+
+\item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
+{\footnotesize
+\begin{verbatim}
+open  https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.dmg
+\end{verbatim}
+}
+Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
+ To start the \dealii{} app, double click the icon in the Applications folder or use the open command:
+{\footnotesize \begin{verbatim}
+open /Applications/deal.II.app
+\end{verbatim}}
+\dealii{} app opens a terminal window and displays a \dealii{} message.   \dealii{}.app will install all required libraries for \aspect{} (p4est, parMeTiS, and Trilinos) and will include the environment variables needed to use these libraries.
+
+\item Download  the  \aspect{} source from the git repository.
+
+{\footnotesize \begin{verbatim}
+cd $HOME/src
+git clone https://github.com/geodynamics/aspect.git
+\end{verbatim}}
+
+
+Note: you {\bf MUST} \underline{build} and \underline{run} \aspect{} in the terminal window started by \dealii{}.
+
+\item Build \aspect{}
+
+\begin{enumerate}
+\item Go to the  directory where you wish to install \aspect{}  and run the following commands:
+
+{\footnotesize
+\begin{verbatim}
+cmake .
+\end{verbatim}}
+
+This should display something like:
+
+{\footnotesize
+\begin{verbatim}
+Project  aspect  set up with  deal.II-8.4.1  found at /Applications/deal.II.app/Contents/Resources
+\end{verbatim}}
+
+\item Run make:
+
+{\footnotesize
+\begin{verbatim}
+bash-3.2$ make
+Scanning dependencies of target aspect
+[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/initial_profile.cc.o
+[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/interface.cc.o
+...
+Linking CXX executable aspect
+[100%] Built target aspect
+bash-3.2$ ls -l aspect
+-rwxr-xr-x  1 <name>  staff  19131292 May  7 15:02 aspect
+\end{verbatim}
+}
+There may be  warnings from the compiler, but if the \aspect{} target is created then it was successful.
+
+\item By default,  \aspect{}  compiles the debug version of the code.
+To compile the optimized version:
+{\footnotesize\begin{verbatim}
+make release 
+\end{verbatim}}
+
+\item Run make test
+
+{\footnotesize
+\begin{verbatim}
+make test
+\end{verbatim}}
+
+
+\end {enumerate}
+
+
+
+\item Run \aspect{}.
+
+A reminder: you {\bf must} run  \aspect{}  on the terminal window which is opened by \dealii{}.app.
+
+To start \aspect{} using MPI for parallelization, from the directory where you installed \aspect{}:
+{\footnotesize
+\begin{verbatim}
+mpirun -np <# of processes> ./aspect <parameter file>
+\end{verbatim}}
+
+To check quickly whether you are running  \aspect{} on the  \dealii{}.app terminal, check the location of the \verb|mpirun| command:
+{\footnotesize
+\begin{verbatim}
+bash-3.2$ which mpirun
+/Applications/deal.II.app/Contents/Resources/opt/openmpi-1.6.5/bin/mpirun
+\end{verbatim}}
+
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Running \aspect}
 \label{sec:running}
@@ -2006,8 +2244,8 @@ The purpose of these files is as follows:
   files that start with a hash mark), it is simple to plot these columns as time
   series. Alternatively, the data can be imported into a spreadsheet and
   plotted there.
-\note{As noted in Section~\ref{sec:equations}, \aspect{} can be thought to compute
-  in the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
+\note{As noted in Section~\ref{sec:non-dimensional}, \aspect{} can be
+  thought of as using the meter-kilogram-second (MKS, or SI) system. Unless otherwise noted,
   the quantities in the output file are therefore also in MKS units.}
 
   A simple way to plot the contents of this file is shown in Section~\ref{sec:viz-stat}.
@@ -2464,11 +2702,11 @@ into the given file. The result is a graphics file similar to the one
 shown in Fig.~\ref{fig:convection-box-stats} on page \pageref{fig:convection-box-stats}.
 
 \note{After setting output to a file, \textit{all} following plot commands will
-	want to write to this file. Thus, if you want to create more plots after
-	the one just created, you need to reset output back to the screen. On Linux,
-	this is done using the command \texttt{set terminal X11}. You can then
-	continue experimenting with plots and when you have the next plot ready,
-	switch back to output to a file.}
+  want to write to this file. Thus, if you want to create more plots after
+  the one just created, you need to reset output back to the screen. On Linux,
+  this is done using the command \texttt{set terminal X11}. You can then
+  continue experimenting with plots and when you have the next plot ready,
+  switch back to output to a file.}
 
 What makes \texttt{Gnuplot} so useful is that it doesn't just allow entering
 all these commands at the prompt. Rather, one can write them all into a file,
@@ -2674,6 +2912,38 @@ start with a small value and then increase the tolerance until you come to a
 point where the output quantities start to change significantly. This is the
 point where you will want to stop.
 
+\subsubsection{Adjusting solver preconditioner tolerances} To solve the Stokes 
+equations it is necessary to lower the condition number of the
+Stokes matrix by preconditioning  it. In \aspect{} a right preconditioner $Y^{-1} = 
+\begin{pmatrix}
+\widetilde{A^{-1}} & -\widetilde{A^{-1}}B^{T}\widetilde{S^{-1}} \\
+0 & \widetilde{S^{-1}}
+\end{pmatrix}$ is used to precondition the system, where $\widetilde{A^{-1}}$ is 
+the approximate inverse of the A block and $\widetilde{S^{-1}}$ is the approximate 
+inverse of the Schur complement matrix. Matrix $\widetilde{A^{-1}}$ and 
+$\widetilde{S^{-1}}$ are calculated through a CG solve, which requires a tolerance 
+to be set. In comparison with the solver tolerances of the previous section, these 
+parameters are relatively safe to use, since they only change the preconditioner, 
+but can speed up or slow down solving the Stokes system considerably. 
+
+In practice $\widetilde{A^{-1}}$ takes by far the most time to compute, but is 
+also very important in conditioning the system. The accuracy of the computation 
+of $\widetilde{A^{-1}}$ is controlled by the parameter \texttt{Linear solver A 
+block tolerance} which has a default value of $1e-2$. Setting this tolerance 
+to a less strict value will result in more outer iterations, since the 
+preconditioner is not as good, but the amount of time to compute 
+$\widetilde{A^{-1}}$ can drop significantly resulting in a reduced total solve 
+time. The cookbook crustal deformation (Section 
+\ref{sec:cookbooks-crustal-deformation}) for example can be computed much faster 
+by setting the \texttt{Linear solver A block tolerance} to $5e-1$. The 
+calculation of $\widetilde{S^{-1}}$ is usually much faster and the 
+conditioning of the system is less sensitive to the parameter \texttt{Linear 
+solver S block tolerance}, but for some problems it might be worth it to 
+investigate.
+\index[prmindex]{Linear solver A block tolerance}
+\index[prmindexfull]{Linear solver A block tolerance}
+\index[prmindex]{Linear solver S block tolerance}
+\index[prmindexfull]{Linear solver S block tolerance}
 
 \subsubsection{Using lower order elements for the temperature/compositional discretization}
 The default settings of \aspect{} use quadratic finite elements for the
@@ -4216,8 +4486,8 @@ way to go aside, \aspect{} supports using tracers.
 In order to advect tracer particles along with the flow field, one just needs to
 add the \texttt{tracers} postprocessor to the list of postprocessors and specify
 a few parameters. We do so in the
-\url{cookbooks/compositional-passive-tracers.prm} input file, which is otherwise
-just a minor variation of the \url{cookbooks/compositional-passive.prm} case
+\url{cookbooks/composition-passive-tracers.prm} input file, which is otherwise
+just a minor variation of the \url{cookbooks/composition-passive.prm} case
 discussed in the previous Section~\ref{sec:cookbooks-composition}. In
 particular, the postprocess section now looks like this:
 
@@ -4254,6 +4524,23 @@ animation of time steps. There, the different colors of adjacent particles come
 in handy because they allow the eye to follow the motion of a single particle.
 This makes it rather intuitive to understand a flow field, but it can of course
 not be reproduced in a static medium such as this manual.
+
+\paragraph{Using tracer properties}
+
+The particles in the above example only fulfil the purpose of visualizing the convection pattern. A more meaningful use for particles is to attach properties to them, which may be set at the beginning of the model run, or updated during the model runtime. These properties can then be used for many applications, e.g. tracking an initial property (like the position), evaluating a property at a defined particle path (like the pressure-temperature evolution of a certain piece of rock), or by integrating a quantity along a particle parth (like the integrated strain a certain domain has experienced).  We illustrate these properties in the cookbook \url{cookbooks/composition-passive-tracers-properties.prm}, in which we added the following lines to the \texttt{Tracers} subsection.
+
+\lstinputlisting[language=prmfile]{cookbooks/composition-passive-tracers/tracer-properties.part.prm.out}
+
+These commands add the tracer properties \texttt{function}, \texttt{pT path}, \texttt{initial position} and \texttt{initial composition}, which can be used for various purposes. A full list of particle properties can be found in Section~\ref{parameters:Postprocess/Tracers}. New tracer properties can be added as plugins as described in Section~\ref{sec:write-plugin}. The here selected properties allow us in this example:
+
+\begin{itemize}
+\item To compare the final position of a particle with its initial position and therefore determine, how far certain domains travelled during the model runtime.
+\item To compare the final composition of a particle with its initial composition and therefore determine, which regions underwent the reaction described in Section~\ref{sec:cookbooks-composition}, and where the material that underwent this reaction got transported to.
+\item Note that the \texttt{function} property of the particles follows the same function as the compositional initial composition of field number one. Therefore, this property should behave identical to the compositional field, except for the reaction term of the compositional field. This allows to compare the error in tracer position to the numerical diffusion of the compositional field.
+\item If one selects a tracer of a particular id, an output of the pressure and temperature at its current position generated by the \texttt{pT path} property over time allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere to crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g. in a subduction zone).
+\end{itemize}
+
+\note{\aspect{}'s tracer implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand tracers per process can slow down a model significantly. Moreover, models with an highly adaptive mesh and many tracers do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of tracers. Therefore processes that compute the solution for coarse-grid regions have to process many more tracers than other processes. Additionally, the checkpoint/restart functionality for tracers is only implemented in models with a constant number of processes before and after the checkpoint and when the selected tracer properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
 
 
 \subsubsection{Using a free surface}
@@ -4361,10 +4648,10 @@ In particular, what is necessary is an evaluation function that looks like this:
         { 
           const double z = in.position[i][1];
 
-	  if (z>jump_height)
-	    out.viscosities[i] = eta_U;
-	  else
-	    out.viscosities[i] = eta_L;
+          if (z>jump_height)
+            out.viscosities[i] = eta_U;
+          else
+            out.viscosities[i] = eta_L;
                      
           out.densities[i] = reference_rho*(1.0-thermal_alpha*(in.temperature[i]-reference_T));
           out.thermal_expansion_coefficients[i] = thermal_alpha;
@@ -4524,7 +4811,7 @@ equations~\eqref{eq:stokes-1}--\eqref{eq:stokes-2}.%
   elliptic operator $-\nabla \cdot 2 \eta \varepsilon(\cdot)$. For highly
   heterogeneous models, such as the one discussed in the current section, this
   may require a lot of Conjugate Gradient iterations. For example, for 8
-  global refinement steps, the 30+188 outer iterations without averaging whosn
+  global refinement steps, the 30+188 outer iterations without averaging shown
   in Table~\ref{tab:sinker-with-averaging-iteration-counts} require a total of
   22,096 inner CG iterations for the elliptic block (and a total of 837 for the
   aproximate Schur complement). Using harmonic averaging, the 30+26 outer
@@ -4732,6 +5019,147 @@ that the true pressure is in fact discontinuous along the edge of the circle.
 \end{table}
 
 
+\subsubsection{Prescribed internal velocity constraints}
+\label{sec:prescribed-velocities}
+\textit{This section was contributed by Jonathan Perry-Houts}
+
+In cases where it is desirable to investigate the behavior of one part of the model
+domain but the controlling physics of another part is difficult to capture,
+such as corner flow in subduction zones, it may be useful to force the desired
+behavior in some parts of the model domain and solve for the resulting flow
+everywhere else. This is possible through the use of \aspect{}'s ``signal'' mechanism,
+as documented in Section~\ref{sec:extending-signals}.
+
+Internally, \aspect{} adds ``constraints'' to the finite element system for boundary
+conditions and hanging nodes. These are places in the finite element system where
+certain solution variables are required to match some prescribed value. Although it
+is somewhat mathematically inadmissible to prescribe constraints on nodes inside
+the model domain, $\Omega$, it is nevertheless possible so long as the prescribed
+velocity field fits in to the finite element's solution space, and satisfies the
+other constraints (i.e., is divergence free).
+
+Using \aspect{}'s signals mechanism, we write a shared library which provides a
+``slot'' that listens for the signal which is triggered after the regular model
+constraints are set, but before they are ``distributed.''
+
+As an example of this functionality, below is a plugin which allows the user to prescribe
+internal velocities with functions in a parameter file:
+\lstinputlisting[language=c++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
+
+The above plugin can be compiled with \texttt{cmake . \&\& make} in the
+\url{cookbooks/prescribed_velocity} directory. It can be loaded in a parameter file
+as an ``Additional shared library.'' By setting parameters like those shown below,
+it is possible to produce many interesting flow fields such as the ones visualized in
+(Figure \ref{fig:prescribed-velocity}).
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity/minimal.prm.out}
+
+\begin{figure}
+    \centering
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/corner_flow}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/prescribed_velocity/circle}}
+    \caption{Examples of flows with prescribed internal velocities, as described in Section \ref{sec:prescribed-velocities}.}
+    \label{fig:prescribed-velocity}
+\end{figure}
+
+\subsubsection{Artificial viscosity smoothing}
+\label{sec:artificial-viscosity-smoothing}
+\textit{This section was contributed by Ryan Grove}
+
+Standard finite element discretizations of advection-diffusion equations introduce unphysical oscillations around steep gradients. Therefore, stabilization must be added to the discrete formulation to obtain correct solutions. In ASPECT, we use the Entropy Viscosity scheme developed by Guermond et al.~in the paper \cite{guer11}. In this scheme, an artificial viscosity is calculated on every cell and used to try to combat these oscillations that cause unwanted overshoot and undershoot.  More information about how \aspect{} does this is located at \url{https://dealii.org/developer/doxygen/deal.II/step_31.html}.  
+
+Instead of just looking at an individual cell's artificial viscosity, improvements in the minimizing of the oscillations can be made by smoothing.  Smoothing is the act of finding the maximum artificial viscosity taken over a cell $T$ and the neighboring cells across the faces of $T$, i.e.,
+\begin{equation*}
+\bar{v_h}(T) = \max_{K \in N(T)} v_h(K)
+\end{equation*}
+where $N(T)$ is the set containing $T$ and the neighbors across the faces of $T$.
+
+This feature can be turned on by setting the \hyperref[parameters:Discretization/Stabilization parameters/Use artificial viscosity smoothing]{Use artificial viscosity smoothing} flag inside the \hyperref[parameters:Discretization/Stabilization_20parameters]{Stabilization} subsection inside the \hyperref[parameters:Discretization]{Discretization} subsection in your parameter file.
+
+To show how this can be used in practice, let us consider the simple convection in a quarter of a 2d annulus cookbook in Section \ref{sec:shell-simple-2d}, a radial compositional field was added to help show the advantages of using the artificial viscosity smoothing feature.
+  
+By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d.prm, \end{verbatim} 
+\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.part.prm.out}
+it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
+Figure \ref{fig:smoothing}.
+
+\begin{figure}
+    \centering
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/with_smoothing.png}}
+  ~
+  \subfigure[]{
+    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/without_smoothing.png}}
+    \caption{Artificial viscosity smoothing: Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section \ref{sec:artificial-viscosity-smoothing}.}
+    \label{fig:smoothing}
+\end{figure}
+
+
+
+\subsubsection{Tracking finite strain}
+\label{sec:finite-strain}
+\textit{This section was contributed by Juliane Dannberg}
+
+\note{In this section, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+$\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
+and $\mathbf u$ the velocity. We denote the strain tensor by $e$, where 
+$e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
+with the displacement $\mathbf d$ the difference between a point's
+position at time $t$ and at time zero.}
+
+In many geophysical settings, material properties, and in particular the rheology, do not only depend
+on the current temperature, pressure and strain rate, but also on the history of the system. 
+This can be incorporated in \aspect{} models by tracking history variables through compositional fields. 
+In this cookbook, we will show how to do this by tracking the strain that accumulates over time at every 
+(Lagrangian) point in the model.
+
+Here, we use a material model plugin that defines the compositional fields as the components of the strain 
+tensor $e_{ij}$, and modifies the right-hand side of 
+the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
+\verb!out.reaction_terms! variable:
+\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+
+Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
+as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
+component of the velocity field, plus the strain increment $\varepsilon(\mathbf u^n) \Delta t^n$ 
+accumulated over the current time step.
+Hence, the right-hand side term of the advection equation for the accumulated strain consists of two parts:
+The first one, $R e^{n-1} R^T$, rotates $e^{n-1}$, the accumulated strain from all the previous time steps;
+and the second part adds the strain of the current time step. 
+
+The full plugin can be found in \url{cookbooks/finite_strain/finite_strain.cc} and can be compiled 
+with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory. 
+It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
+model. As it is derived from the ``simple'' material model, all input parameters for the material
+properties are read in from the subsection \texttt{Simple model}. 
+\lstinputlisting[language=prmfile]{cookbooks/finite_strain/finite_strain_part.prm.out}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{cookbooks/finite_strain/finite_strain.pdf}
+    \caption{Accumulated finite strain in an example convection model, as described in Section 
+             \ref{sec:finite-strain}.}
+    \label{fig:finite_strain}
+\end{figure}
+
+We will demonstrate its use at the example of a 2D Cartesian convection model (Figure \ref{fig:finite_strain}):
+Heating from the bottom leads to the the ascent of plumes from the bottom boundary layer, and the
+associated deformation is visible in the components of the accumulated finite strain. 
+Material moves to the sides at the top of the plume head, so that it is shortened in vertical 
+direction (blue areas in the $yy$ component) and stretched in horizontal direction (red areas in 
+the $xx$ component). The sides of the plume head show the opposite effect. Shear occurs mostly at the 
+edges of the plume head and in the plume tail (blue and red areas in the $xy$ component). 
+
+The example used here shows how history variables can be integrated up over the model evolution. 
+While we do not use these variables actively in the computation so far (in our example, there is no 
+influence of the accumulated strain on the rheology or any other material property), it would be trivial 
+to extend this material model in a way that material properties depend on the integrated strain: 
+Because the values of the compositional fields are part of what the material model gets as inputs, 
+they can easily be used for computing material model outputs such as the viscosity.  
+
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
@@ -4745,61 +5173,61 @@ and that were outlined in Section~\ref{sec:cookbooks-overview}, and address them
 one by one:
 \begin{itemize}
   \item \textit{What internal forces act on the medium (the equation)?}
-  	This may in fact be the most difficult to answer part of it all. The real
-  	material in Earth's mantle is certainly no Newtonian fluid where the stress
-  	is a linear function of the strain with a proportionality constant (the
-  	viscosity) $\eta$ that only depends on the temperature. Rather, the
-  	real viscosity almost surely also depends on the pressure and the strain
-  	rate. Because the issue is complicated and the exact material model not
-  	entirely clear, for the next few subsections we will therefore ignore the
-  	issue and start with just using the ``simple'' material model where the
-  	viscosity is constant and most other coefficients depend at most on the
-  	temperature.
+    This may in fact be the most difficult to answer part of it all. The real
+    material in Earth's mantle is certainly no Newtonian fluid where the stress
+    is a linear function of the strain with a proportionality constant (the
+    viscosity) $\eta$ that only depends on the temperature. Rather, the
+    real viscosity almost surely also depends on the pressure and the strain
+    rate. Because the issue is complicated and the exact material model not
+    entirely clear, for the next few subsections we will therefore ignore the
+    issue and start with just using the ``simple'' material model where the
+    viscosity is constant and most other coefficients depend at most on the
+    temperature.
 
   \item \textit{What external forces do we have (the right hand side)}
-  	There are of course other issues: for example, should the model include terms
-  	that describe shear heating? Should it be compressible? Adiabatic heating due
-  	to compression? Most of the terms that pertain to these questions appear on
-  	the right hand sides of the equations, though some (such as the
-  	compressibility) also affect the differential operators on the left. Either
-  	way, for the moment, let us just go with the simplest models and come back to
-  	the more advanced questions in later examples.
+    There are of course other issues: for example, should the model include terms
+    that describe shear heating? Should it be compressible? Adiabatic heating due
+    to compression? Most of the terms that pertain to these questions appear on
+    the right hand sides of the equations, though some (such as the
+    compressibility) also affect the differential operators on the left. Either
+    way, for the moment, let us just go with the simplest models and come back to
+    the more advanced questions in later examples.
 
-  	One right hand side that will certainly be there is that due to gravitational
-  	acceleration. To first order, within the mantle gravity points radially
-  	inward and has a roughly constant magnitude. In reality, of course, the
-  	strength and direction of gravity depends on the distribution and density of
-  	materials in Earth -- and, consequently, on the solution of the model at
-  	every time step. We will discuss some of the associated issues in the
-  	examples below.
+    One right hand side that will certainly be there is that due to gravitational
+    acceleration. To first order, within the mantle gravity points radially
+    inward and has a roughly constant magnitude. In reality, of course, the
+    strength and direction of gravity depends on the distribution and density of
+    materials in Earth -- and, consequently, on the solution of the model at
+    every time step. We will discuss some of the associated issues in the
+    examples below.
 
   \item \textit{What is the domain (geometry)?}
-  	This question is easier to answer. To first order, the domains we want to
-  	simulate are spherical shells, and to second order ellipsoid shells that can
-  	be obtained by considering the isopotential surface of the gravity field of
-  	a homogenous, rotating fluid.
-  	A more accurate description is of course the geoid for which several
-  	parameterizations are available. A complication arises if we ask whether we
-  	want to include the mostly rigid crust in the domain and simply assume that
-  	it is part of the convecting mantle, albeit a rather viscous part due to its
-  	low temperature and the low pressure there, or whether we want to truncate
-  	the computation at the asthenosphere.
+    This question is easier to answer. To first order, the domains we want to
+    simulate are spherical shells, and to second order ellipsoid shells that can
+    be obtained by considering the isopotential surface of the gravity field of
+    a homogenous, rotating fluid.
+    A more accurate description is of course the geoid for which several
+    parameterizations are available. A complication arises if we ask whether we
+    want to include the mostly rigid crust in the domain and simply assume that
+    it is part of the convecting mantle, albeit a rather viscous part due to its
+    low temperature and the low pressure there, or whether we want to truncate
+    the computation at the asthenosphere.
 
   \item \textit{What happens at the boundary for each variable involved
-  (boundary conditions)?}
-  	The mantle has two boundaries: at the bottom where it contacts the outer core
-  	and at the top where it either touches the air or, depending on the outcome
-  	of the discussion of the previous question, where it contacts the
-  	lithospheric crust. At the bottom, a very good approximation of what is
-  	happening is certainly to assume that the velocity field is tangential
-  	(i.e., horizontal) and without friction forces due to the very low viscosity
-  	of the liquid metal in the outer core. Similarly, we can assume that the
-  	outer core is well mixed and at a constant temperature. At the top boundary,
-  	the situation is slightly more complex because in reality the boundary is not
-  	fixed but also allows vertical movement. If we ignore this, we can assume
-  	free tangential flow at the surface or, if we want, prescribe the tangential
-  	velocity as inferred from plate motion models. \aspect{} has a plugin that
-  	allows to query this kind of information from the \texttt{GPlates} program.
+      (boundary conditions)?}
+    The mantle has two boundaries: at the bottom where it contacts the outer core
+    and at the top where it either touches the air or, depending on the outcome
+    of the discussion of the previous question, where it contacts the
+    lithospheric crust. At the bottom, a very good approximation of what is
+    happening is certainly to assume that the velocity field is tangential
+    (i.e., horizontal) and without friction forces due to the very low viscosity
+    of the liquid metal in the outer core. Similarly, we can assume that the
+    outer core is well mixed and at a constant temperature. At the top boundary,
+    the situation is slightly more complex because in reality the boundary is not
+    fixed but also allows vertical movement. If we ignore this, we can assume
+    free tangential flow at the surface or, if we want, prescribe the tangential
+    velocity as inferred from plate motion models. \aspect{} has a plugin that
+    allows to query this kind of information from the \texttt{GPlates} program.
 
   \item \textit{How did it look at the beginning (initial conditions)?}
     This is of course a trick question. Convection in the mantle of earth-like
@@ -4968,7 +5396,7 @@ to be significantly less vigorous than in the simulation here. Indeed, using
 the values in the input file shown above, we can compute the Rayleigh number for
 the current case to be%
 \footnote{Note that the density in 2d has units $\text{kg}\,\text{m}^{-2}$}
-$$
+\begin{equation*}
   \textrm{Ra}
   =
   \frac{g\; \beta \; \Delta T \; \rho \; L^3}{\alpha\eta}
@@ -4977,7 +5405,7 @@ $$
   \text{K} \; 3300 \text{kg}\,\text{m}^{-2} \; (2.86 \cdot 10^6
   \text{m})^3}{10^{22}
   \text{kg}\,\text{m}^{-1}\,\text{s}^{-1}}.
-$$
+\end{equation*}
 
 Second, the initial temperature profile we chose is not realistic -- in fact, it
 is a completely instable one: there is hot material underlying cold one, and
@@ -5303,6 +5731,131 @@ with a more elaborate material model we should be able to get even closer to
 reality.
 
 
+\subsubsection{3D convection with an Earth-like initial condition}
+\label{sec:cookbooks-S20RTS}
+\textit{This section was contributed by Jacqueline Austermann}
+
+For any model run with \aspect{} we have to choose an initial condition for the 
+temperature field. If we want to model convection in the Earth's mantle we want 
+to choose an initial temperature distribution that captures the Earth's buoyancy 
+structure. In this cookbook we present how to use temperature perturbations 
+based on the shear wave velocity model S20RTS \cite{S20RTS} to 
+initialize a mantle convection calculation.
+
+\paragraph{The input shear wave model.}
+
+The current version of \aspect{} can read in the shear wave velocity models 
+S20RTS \cite{S20RTS} and S40RTS \cite{S40RTS}, which are located 
+in \texttt{data/initial-conditions/S40RTS/}. Those models provide 
+spherical harmonic coefficients up do degree 20 and 40, respectively, for 21 
+depth layers. The interpolation with depth is done through a cubic spline 
+interpolation. The input files \texttt{S20RTS.sph} and \texttt{S40RTS.sph} were
+downloaded from \url{http://www.earth.lsa.umich.edu/~jritsema/Research.html} 
+and have the following format (this example is S20RTS): 
+
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.input.sph}
+
+The first number in the first line denotes the maximum degree. This is followed in 
+the next line by the spherical harmonic coefficients from the surface down to the 
+CMB. The coefficients are arranged in the following way:\\
+
+\noindent $a_{00}$ \\
+$a_{10}$ $a_{11}$ $b_{11}$ \\
+$a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$ \\
+... \\
+
+$a_{yz}$ is the cosine coefficient of degree $y$ and order $z$ and $b_{yz}$ is 
+the sine coefficient of degree $y$ and order $z$. The depth layers are specified 
+in the file \texttt{Spline\_knots.txt} by a normalized depth value ranging from the CMB (3480km, 
+normalized to -1) to the moho (6346km, normalized to 1). This is the original
+format provided on the homepage. 
+
+Any other perturbation model in this same format can also be used, one only
+has to specify the different filename in the parameter file (see next section).
+For models with different depth layers one has to adjust the \texttt{Spline\_knots.txt} 
+file as well as the number of depth layers, which is hard coded in the current 
+code. A further note of caution when switching to a different input model 
+concerns the normalization of the spherical harmonics, which might differ.  
+After reading in the shear wave velocity perturbation one has several options
+to scale this into temperature differences, which are then used to initialize 
+the temperature field. 
+
+\paragraph{Setting up the \aspect{} model.}
+
+For this cookbook we will use the parameter file provided in 
+\url{cookbooks/S20RTS.prm}, which uses a 3d spherical shell 
+geometry similar to section \ref{sec:shell-simple-3d}. This plugin is only sensible 
+for a 3D spherical shell with Earth-like dimensions. 
+
+The relevant section in the input file is as follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/S20RTS.part.prm.out}
+
+For this initial condition model we need to first specify the data directory in which 
+the input files are located as well as the initial condition file (S20RTS.sph or 
+S40RTS.sph) and the file that contains the normalized depth layers (Spline knots depth file name). 
+We next have the option to remove the degree 0 perturbation from the shear 
+wave model. This might be the case if we want to make sure that the depth 
+average temperature follows the background (adiabatic or constant) temperature.  
+
+The next input parameters describe the scaling from the shear wave velocity 
+perturbation to the final temperature field. The shear wave velocity perturbation 
+$\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
+constant that is specified in the initial condition section of the input parameter 
+file as `Vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+perturbation is further translated into a temperature difference $\Delta T$ by 
+multiplying it by the negative inverse of thermal expansion, which is also 
+specified in this section of the parameter file as `Thermal expansion coefficient 
+in initial temperature scaling'. This temperature difference is then added to the 
+background temperature, which is the adiabatic temperature for a compressible 
+model or the reference temperature (as specified in this section of the parameter file) for an 
+incompressible model. Features in the upper mantle such as cratons might 
+be chemically buoyant and therefore isostatically compensated, in which case 
+their shear wave perturbation would not contribute buoyancy variations. We therefore included an 
+additional option to zero out temperature perturbations within a certain depth. 
+In this example we set this parameter `Remove temperature heterogeneity down to specified 
+depth' to 200km. The chemical variation within the mantle 
+might require a more sophisticated `Vs to density' scaling that varies for 
+example with depth or as a function of the perturbation itself, which is not captured
+in this model. The described procedure 
+provides an absolute temperature for every point, which will only be adjusted 
+at the boundaries if indicated in the Boundary temperature model. 
+
+\paragraph{Visualizing 3D models.}
+
+In this cookbook we calculate the instantaneous solution to examine the flow 
+field. Figure \ref{fig:ic-1} shows the density field for a resolution of 2 global refinement 
+steps (bottom right) as used in the cookbook, as well as 4 global refinement 
+steps (other panels in this figure). The top panels show the density variation 
+that has been obtained from scaling S20RTS and removing perturbations in 
+the upper 200km. One can see the two large low shear wave velocity perturbations 
+underneath Africa and the Pacific that lead to upwelling if they are assumed to 
+be buoyant (as is done in this case). One can also see the subducting slabs 
+underneath South America and the Philippine region that lead to local downwelling. 
+This flow produces dynamic topography on the surface, which is shown 
+in the bottom row (4 refinement steps on the left, 2 refinement steps on the right). 
+One can see that subduction zones are visible as depressed topography 
+due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
+ridges are elevated due to (deep and) shallow upward flow. 
+This model uses a highly simplified material model that is incompressible and 
+isoviscous and does therefore not represent real mantle flow. More realistic 
+material properties, density scaling as well as boundary conditions will affect the magnitude 
+and pattern shown here. 
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/full_mantle.png}
+  \hfill
+  \caption{\it The top panels show the density distribution as prescribed from the shear
+  wave velocity model S20RTS and the resulting flow for a global refinement of 4. This
+  model assumes a constant scaling between shear wave and density perturbations 
+  and zeros out perturbations in the upper 200km.
+  The bottom figures show the great circle (blue line) along which the top slices
+  are evaluated. They also show the resulting dynamic topography for a global refinement of 4 (left)
+  and 2 (right, cookbook). }
+  \label{fig:ic-1}
+\end{figure}
+
+
 \marginpar{Use cookbooks/periodic-box.prm}
 \marginpar{Finish the GPlates section}
 
@@ -5327,7 +5880,7 @@ the \texttt{data/velocity-boundary-conditions/gplates/} directory of
 your \aspect{} installation.
 For a new model setup however, a user eventually needs to create her own data
 files, and so we will briefly discuss the process of acquiring a usable plate
-reconstruction and transferring it into a format usable by ASPECT.
+reconstruction and transferring it into a format usable by \aspect{}.
 Both the necessary software and data are provided by the GPlates project.
 GPlates is an open-source software for interactive visualization of plate
 tectonics. It is developed by the EarthByte Project in the School of Geosciences
@@ -5516,7 +6069,7 @@ a period of no-slip boundary conditions before starting the use of the GPlates p
 This is a comfort implementation, which could also be achieved by using the checkpointing
 possibility described in section~\ref{sec:checkpoint-restart}. 
 
-\subsubsection{Reproducing Rheology of Morency and Doin, 2004}
+\subsubsection{Reproducing rheology of Morency and Doin, 2004}
 \label{sec:cookbooks-morency-doin}
 \textit{This section was contributed by Jonathan Perry-Houts}
 
@@ -5524,29 +6077,40 @@ Modeling interactions between the upper mantle and the lithosphere can be diffic
 of the dynamic range of temperatures and pressures involved. Many simple material models
 will assign very high viscosities at low temperature thermal boundary layers. The
 pseudo-brittle rheology described in \cite{MD04} was developed to limit the strength of
-lithosphere at low temperature. The effective rheology can be described as the harmonic mean
+lithosphere at low temperature. The effective viscosity can be described as the harmonic mean
 of two non-Newtonian rheologies:
-\[v_{eff} = \left(\frac{1}{v_{eff}^v}+\frac{1}{v_{eff}^p}\right)^{-1}\]
+\[v_\text{eff} = \left(\frac{1}{v_\text{eff}^v}+\frac{1}{v_\text{eff}^p}\right)^{-1}\]
 where
-\[v_{eff}^v = B \left(\frac{\dot{\varepsilon}}{\dot{\varepsilon}_{ref}}\right)^{-1+1/n_v}
-    exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right)
-    \text{ and  }
-    v_{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\varepsilon}^{-1+1/n_p}}
-    {\dot{\varepsilon}_{ref}^{1/n_p}} \right), \]
-where $v_{eff}$ is the effective viscosity, $B$ is a scaling constant, $\dot{\varepsilon}$ is
-related to the second invariant of the strain rate tensor, $\dot{\varepsilon}_{ref}$ is a
-reference strain rate, $n_v$ and $n_p$ are stress exponents, $E_a$ is the activation energy,
-$V_a$ is the activation volume, $\rho_m$ is the mantle density, $R$ is the gas constant, $T$
-is temperature, $\tau_0$ is the cohesive strength of rocks at the surface, $\gamma$ is a
-coefficient of yield stress increase with depth, and $z$ is depth.
+\begin{align*}
+  v_\text{eff}^v = B \left(\frac{\dot{\epsilon}}{\dot{\epsilon}_{ref}}\right)^{-1+1/n_v}
+  \exp\left(\frac{E_a +V_a \rho_m g z}{n_v R T}\right),
+  \\
+  v_\text{eff}^p = (\tau_0 + \gamma \rho_m g z) \left( \frac{\dot{\epsilon}^{-1+1/n_p}}
+  {\dot{\epsilon}_{ref}^{1/n_p}} \right),
+\end{align*}
+where $B$ is a scaling constant; $\dot{\epsilon}$ is defined as the quadratic sum of the
+second invariant of the strain rate tensor and a minimum strain rate, $\dot{\epsilon}_0$;
+$\dot{\epsilon}_{ref}$ is a reference strain rate; $n_v$, and $n_p$ are stress exponents;
+$E_a$ is the activation energy; $V_a$ is the activation volume; $\rho_m$ is the mantle density;
+$R$ is the gas constant; $T$ is temperature; $\tau_0$ is the cohesive strength of rocks at
+the surface; $\gamma$ is a coefficient of yield stress increase with depth; and $z$ is depth.
 
 By limiting the strength of the lithosphere at low temperature, this rheology allows one to
 more realistically model processes like lithospheric delamination and foundering in the
 presence of weak crustal layers. A similar model setup to the one described in \cite{MD04}
-can be reproduced with the following parameters. (Note: the viscosity profile in Figure 1
-of \cite{MD04} appears to be wrong. The published parameters do not reproduce those
-viscosities; I don't know why. The values used here get close. See Fig.~\ref{fig:md-1} for
-the approximate reproduction of that figure).
+can be reproduced with the following parameters.
+
+\note{\cite{MD04} defines the second invariant of the strain rate in a nonstandard way.
+    The formulation in the paper is given as $\epsilon_{II} = \sqrt{\frac{1}{2}
+    (\epsilon_{11}^2 + \epsilon_{12}^2)}$, where $\epsilon$ is the strain rate tensor.
+    For consistency, that is also the formulation implemented in \aspect{}. Because of this
+    irregularity it is inadvisable to use this material model for purposes beyond
+    reproducing published results.}
+
+\note{The viscosity profile in Figure 1 of \cite{MD04} appears to be wrong. The published
+    parameters do not reproduce those viscosities; it is unclear why. The values used here
+    get very close. See Figure \ref{fig:md-1} for an approximate reproduction of the
+    original figure.}
 
 \lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.prm.out}
 
@@ -5557,6 +6121,147 @@ the approximate reproduction of that figure).
   the low activation energy of the crustal component.}
   \label{fig:md-1}
 \end{figure}
+
+\subsubsection{Crustal deformation}
+\label{sec:cookbooks-crustal-deformation}
+
+\textit{This section was contributed by Cedric Thieulot, and makes use of the Drucker-Prager 
+material model written by Anne Glerum and the free surface plugin by Ian Rose.}
+
+This is a simple example of an upper-crust undergoing compression or extension.
+It is characterized by a single layer of visco-plastic material subjected to basal 
+kinematical boundary conditions. In compression, this setup is somewhat analogous 
+to \cite{will99}, and in extension to \cite{alht11}.
+
+Brittle failure is approximated by adapting the viscosity to limit the stress 
+that is generated during deformation. 
+This ``cap'' on the stress level is parameterized in this experiment by the pressure-dependent 
+Drucker Prager yield criterion  and we therefore make use of the Drucker-Prager 
+material model (see Section \ref{parameters:Material_20model}) in the 
+{\tt cookbooks/crustal\_model\_2D.prm}.
+
+The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$. 
+The plasticity parameters are specified as follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part1.prm}
+
+The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of friction 
+(see Drucker-Prager material model in Section \ref{parameters:Material_20model}),
+and the effective viscosity is then computed as follows:
+\[
+\mu_\text{eff} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
+\mu_\text{min}} + \frac{1}{\mu_\text{max}}  \right)^{-1}
+\]
+where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
+The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
+
+During the first iteration of the first timestep, the strain rate is zero, so
+we avoid dividing by zero by setting the strain rate to {\tt Reference strain rate}.
+
+
+The top boundary is a free surface while the left, right and bottom boundaries are subjected 
+to the following boundary conditions:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part2.prm}
+
+Note that compressive boundary conditions are simply achieved by reversing  
+the sign of the imposed velocity.
+
+The free surface will be advected up and down according to the solution of the Stokes solve.
+We have a choice whether to advect the free surface in the direction of the surface normal
+or in the direction of the local vertical (i.e., in the direction of gravity).
+For small deformations, these directions are almost the same, but in this example the deformations 
+are quite large. We have found that when the deformation is large, advecting the surface vertically 
+results in a better behaved mesh, so we set the following in the free surface subsection:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part3.prm}
+
+We also make use of the strain rate-based mesh refinement plugin:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_2D_part4.prm}
+
+Setting 
+{\tt   set Initial adaptive refinement        = 4}
+yields a series of meshes as shown in Fig. (\ref{fig:meshes}), all produced during the 
+first timestep. As expected, we see that the location of the highest mesh refinement
+corresponds to the location of a set of conjugated shear bands.
+
+If we now set this parameter to 1 and allow the simulation to evolve
+for 500kyr, a central graben or plateau (depending on the nature
+of the boundary conditions) develops and deepens/thickens over time, nicely showcasing 
+the unique capabilities of the code to handle free surface large deformation, localised
+strain rates through visco-plasticity and adaptive mesh refinement as
+shown in Fig. (\ref{fig:extcompr}).
+
+\begin{figure}
+   \centering
+   \includegraphics[width=0.7\textwidth]{cookbooks/crustal_deformation/grids}
+   \caption{\it Mesh evolution during the first timestep (refinement is based on strain rate).}
+   \label{fig:meshes}
+\end{figure}
+
+ 
+
+Deformation localizes at the basal velocity discontinuity and plastic shear bands
+form at an angle of approximately $53^\circ$ to the bottom in extension and 
+$35^\circ$ in compression, both of which correspond to the reported Arthur angle \cite{kaus10,buit12}. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/both}
+  \caption{\it Finite element mesh, velocity, viscosity and strain rate fields
+  in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.}
+  \label{fig:extcompr}
+\end{figure}
+
+
+
+\paragraph{Extension to 3D} We can easily modify the previous 
+input file to produce {\tt crustal\_model\_3D.prm}
+which implements a similar setup, with the additional constraint that the position 
+of the velocity discontinuity varies with the $y$-coordinate, 
+as shown in Fig. (\ref{fig:bottombc}). 
+The domain is now 
+$128\times96\times16$km and the boundary conditions are implemented as
+follows:
+
+\lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/crustal_model_3D_part1.prm}
+
+The presence of 
+an offset between the two velocity discontinuity zones leads to a transform 
+fault which connects them. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{cookbooks/crustal_deformation/bottombc2}
+  \caption{\it Basal velocity boundary conditions and corresponding 
+  strain rate field for the 3D model.} 
+  \label{fig:bottombc}
+\end{figure}
+
+The Finite Element mesh, the velocity, viscosity and strain rate fields are shown 
+in Fig. (\ref{fig:ext3D}) at the end of the first time steps. The reader is encouraged
+to run this setup in time to look at how the two grabens interact as a function 
+of their initial offset \cite{alht11,alht12,alhf13}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{cookbooks/crustal_deformation/all3D.png}
+\caption{\it Finite element mesh, velocity, viscosity and strain rate fields at
+the end of the first time step after one level of strain rate-based adaptive mesh refinement.} 
+\label{fig:ext3D}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}
@@ -5638,13 +6343,13 @@ the current directory.
 \label{sec:benchmark-van-keken}
 
 \textit{This section is a co-production of Cedric Thieulot, Juliane Dannberg,
-Timo Heister and Wolfgang Bangerth.}
+Timo Heister and Wolfgang Bangerth with an extension to this benchmark provided by the Virginia Tech Dept. of Geosciences class Geodynamics and ASPECT co-taught by Scott King and D.~Sarah Stamps.}
 
 One of the most widely used benchmarks for mantle convection codes is the
-isoviscous Rayleight-Taylor case (``case 1a'') published by van Keken \textit{et
+isoviscous Rayleigh-Taylor case (``case 1a'') published by van Keken \textit{et
 al.} in \cite{KKSCND97}.
 The benchmark considers a 2d situation where a lighter fluid underlies a heavier
-one with a non-horizontal interface between the two of them. The instable
+one with a non-horizontal interface between the two of them. This unstable
 layering causes the lighter fluid to start rising at the point where the
 interface is highest. Fig.~\ref{fig:vk-1} shows a time series of images to
 illustrate this.
@@ -5795,11 +6500,78 @@ This has to do with the fact that they depend on the exact size of the smoothing
 parameter (the division by 0.02 in the formula for the smoothed initial
 condition). However, for more exact results, one can choose
 this half width parameter proportional to the mesh size and thereby get more
-accurate results. Since the point of the section was to demonstrate the reason
-for the lack of convergence, but we leave this as an experiment to the reader.
+accurate results. The point of the section was to demonstrate the reason
+for the lack of convergence.
 
+In this section we extend the van Keken cookbook following up the work previously completed by Cedric Thieulot, Juliane Dannberg,
+Timo Heister and Wolfgang Bangerth.  \textit{This section contributed by Grant Euen, Tahiry Rajaonarison, and Shangxin Liu as part of the Geodynamics and ASPECT class at Virginia Tech.}  
 
+As already mentioned above, using a half width parameter proportional to the mesh size allows for more accurate results.  We test the effect of the half width size of the smoothed discontinuity by changing the division by 0.02, the smoothing parameter, in the formula for the smoothed initial conditions into values proportional to the mesh size.  We use 7 global refinements because the root mean square velocity converges at greater resolution while keeping average runtime around 5 to 25 minutes.  These runtimes were produced by the BlueRidge cluster of the Advanced Research Computing (ARC) program at Virginia Tech.  BlueRidge is a 408-node Cray CS-300 cluster; each node outfitted with two octa-core Intel Sandy Bridge CPUs and 64 GB of memory.  A chart of average runtimes for 5 through 10 global refinements on one node can be seen in Table~\ref{tab:runtime-table}.  For 7 global refinements (128$\times$128 mesh size), the size of the mesh is 0.0078 corresponding to a half width parameter of 0.0039.  The smooth model allows for much better convergence of the secondary plumes, although they are still more scattered than the primary plumes.
 
+\begin{table}[htb]
+        \center
+        \begin{tabular}{|c|ccccc|}
+                \hline
+                Global & \multicolumn{4}{|c|}{Number of Processors} \\
+                Refinements & 4 & 8 & 12 & 16
+                \\ \hline
+                5 & 28.1 seconds & 19.8 seconds & 19.6 seconds & 17.1 seconds \\
+                6 & 3.07 minutes & 1.95 minutes & 1.49 minutes & 1.21 minutes \\
+                7 & 23.33 minutes & 13.92 minutes & 9.87 minutes & 7.33 minutes \\
+                8 & 3.08 hours & 1.83 hours & 1.30 hours & 56.33 minutes \\
+                9 & 1.03 days & 15.39 hours & 10.44 hours & 7.53 hours \\
+                10 & More than 6 days & More than 6 days & 3.39 days & 2.56 days \\ \hline
+        \end{tabular}
+        \caption{\it Average runtimes for the van Keken Benchmark with smoothed initial conditions.  These times are for the entire computation, a final time step number of 2000.  All of these tests were run using ASPECT version 1.3 in release mode, and used different numbers of processors on one node on the BlueRidge cluster of ARC at Virginia Tech.}
+        \label{tab:runtime-table}
+\end{table}
+
+This convergence is due to changing the smoothing parameter, which controls how much of the problem is smoothed over.  As the parameter is increased, the smoothed boundary grows and vice versa.  As the smoothed boundary shrinks it becomes sharper until the original discontinuous behavior is revealed.  As it grows, the two layers eventually become one large, transitioning layer rather than two distinct layers separated by a boundary.  These effects can be seen in Fig.~\ref{fig:vk-5}.  The overall effect is that the secondary rise is at different times based on these conditions.  In general, as the smoothing parameter is decreased, the smoothed boundary shrinks and the plumes rise more quickly.  As it is increased, the boundary grows and the plumes rise more slowly.  This trend can be used to force a more accurate convergence from the secondary plumes.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/van-keken/smoothing-parameter.png}
+        \caption{\it Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time $t=0$ using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624.}
+        \label{fig:vk-5}
+\end{figure}
+
+The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}) shows that the first peak converges as the smoothed interface decreases. There is a good agreement for the first peak for all smoothing parameters.  As the width of the discontinuity increases, the second peak rises both later and more slowly.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/smoothing-parameter-velocity.png}
+        \caption{\it Van Keken benchmark with smoothed initial conditions for the compositional field using 7 global refinements for different smoothing parameters.  Number of the time step is shown on the $x$-axis, while root mean square velocity is shown on the $y$-axis.}
+        \label{fig:vk-6}
+\end{figure}
+
+Now let us further add a two-layer viscosity model to the domain. This is done to recreate the two nonisoviscous Rayleigh-Taylor instability cases (``cases 1b and 1c'') published in van Keken \textit{et al.} in \cite{KKSCND97}.  Let's assume the viscosity value of the upper heavier layer is $\eta_{t}$ and the viscosity value of the lower lighter layer is $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$ Pa~s, we set the viscosity proportion $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper, heavier layer is still 1$\times10^{2}$ Pa~s, but the viscosity of the lower, lighter layer is now either 10 or 1 Pa~s, respectively. The viscosity profiles of the discontinuous and smooth models are shown in Fig.~\ref{fig:vk-7}.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.7\textwidth]{cookbooks/benchmarks/van-keken/contrast_viscosity.png}
+        \caption{\it Van Keken benchmark using layers of different viscosities. The left image is the discontinuous case, while right is the smooth.  Both are shown at t=0.}
+        \label{fig:vk-7}
+\end{figure}
+
+For both benchmark cases, discontinuous and smooth, and both viscosity proportions, 0.1 and 0.01, the results are shown at the end time step number, 2000, in Fig.~\ref{fig:vk-8}.  This was generated using the original input parameter file, running the cases with 8 global refinement steps, and also adding the two-layer viscosity model.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{cookbooks/benchmarks/van-keken/2viscosities-final.png}
+        \caption{\it Van Keken benchmark two-layer viscosity model at final time step number, 2000. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are $\frac{\eta_{t}}{\eta_{b}}=0.1$, and the lower are $\frac{\eta_{t}}{\eta_{b}}=0.01$.}
+        \label{fig:vk-8}
+\end{figure}
+
+Compared to the results of the constant viscosity throughout the domain, the plumes rise faster when adding the two-layer viscosity model. Also, the larger the viscosity difference is, the earlier the plumes appear and the faster their ascent. To further reveal the effect of the two-layer viscosity model, we also plot the evolution of the fluids' average velocity over time, as shown in Fig.~\ref{fig:vk-9}.
+
+\begin{figure}
+        \centering
+        \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/van-keken/2viscosities-velocity.png}
+        \caption{\it Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models.}
+        \label{fig:vk-9}
+\end{figure}
+
+We can observe that when the two-layer viscosity model is added, there is only one apparent peak for each case. The first peaks of the 0.01 viscosity contrast tests appear earlier and are larger in magnitude than those of 0.1 viscosity contrast tests.  There are no secondary plumes and the whole system tends to reach stability after around 500 time steps.
 
 \subsubsection{The SolCx Stokes benchmark}
 \label{sec:benchmark-solcx}
@@ -6151,7 +6923,7 @@ error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in Table~\ref{tab:burstedde-table} and can be deduced from equations \eqref{eq:burstedde-velocity} and
 \eqref{eq:burstedde-pressure}.
-Figure \ref{figure} shows that the analytical solution is indeed retrieved by the model.
+Figure~\ref{fig:burstedde-benchmark} shows that the analytical solution is indeed retrieved by the model.
 
 \begin{table}[h!]
 \caption{Analytical solutions \label{tab:burstedde-table}}
@@ -6166,7 +6938,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
 
 \begin{figure}[t!]
   \centering
-  \subfigure[b]{
+  \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/viscosity.png}}%
   ~ 
   \subfigure[]{
@@ -6177,7 +6949,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
   ~
   \subfigure[]{
     \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/burstedde/velocity_z.png}}
-  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{figure}
+  \caption{Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained with a resolution of $16\times 16$ elements, with $\beta = 10$.}\label{fig:burstedde-benchmark}
 \end{figure}
 
 The convergence of the numerical error of this benchmark has been analysed by
@@ -6529,7 +7301,7 @@ where $f$ is the ratio $\frac{r_{\min}}{r_{\max}}$.
 
 We can put this in terms of heat flux
 \begin{equation*}
-	q_r = -k\frac{\partial T}{\partial r}
+  q_r = -k\frac{\partial T}{\partial r}
 \end{equation*}
 through the inner and outer surfaces,
 where $q_r$ is heat flux in the radial direction. Let $Q$ be the total heat that flows throug a surface,
@@ -6775,8 +7547,148 @@ of results are listed in Table~\ref{tab:davies-et-al-results}.%
   \caption{\it Davies et al. benchmarks: Numerical results for some of the output quantities required by the benchmarks and the various cases considered.}
   \label{tab:davies-et-al-results}
 \end{table}
- 
 
+
+\subsubsection{The Crameri et al.~benchmarks}
+\label{sec:benchmark-crameri}
+
+\textit{This section was contributed by Ian Rose.}
+
+This section follows the two free surface benchmarks described by Crameri et al. \cite{CSG12}.  
+
+\paragraph{ Case 1: Relaxation of topography }
+\label{sec:benchmark-crameri-case-1}
+
+The first benchmark involves a high viscosity lid sitting on top of a lower viscosity 
+mantle. There is an initial sinusoidal topography which is then allowed to relax.
+This benchmark has a semi-analytical solution (which is exact for infinitesimally small
+topography). Details for the benchmark setup are in Figure~\ref{fig:crameri-benchmark-initial-topography}.
+
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/initial_topography}
+  \end{center}
+  \caption{\it Setup for the topography relaxation benchmark. The box is $2800$ km wide and $700$ km high, with 
+    a $100$ km lid on top. The lid has a viscosity of $10^{23} \, {Pa\,s}$, while the mantle has a viscosity of $10^{21} \, {Pa\,s}$.  The sides are 
+    free slip, the bottom is no slip, and the top is a free surface.  Both the lid and the mantle have 
+    a density of $3300 \,{kg/m^3}$, and gravity is $10 \, {m/s^2}$. There is a $7 \, {km}$ 
+    sinusoidal initial topography on the free surface.}
+  \label{fig:crameri-benchmark-initial-topography}
+\end{figure}
+
+The complete parameter file for this benchmark can be found in 
+\url{benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm}, 
+the  most relevant parts of which are excerpted here: 
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_1.prm}
+In particular, this benchmark uses a custom geometry model to set the initial geometry. 
+This geometry model, called ``\texttt{ReboundBox}'', is based on the \texttt{Box} geometry model. 
+It generates a domain in using the same parameters as \texttt{Box}, but then displaces all 
+the nodes vertically with a sinusoidal perturbation, where the magnitude and order of that 
+perturbation are specified in the \texttt{ReboundBox} subsection.
+
+
+The characteristic timescales of topography relaxation are significantly smaller than those of 
+mantle convection. Taking timesteps larger than this relaxation timescale tends to cause sloshing
+instabilities, which are described further in Section~\ref{sec:freesurface}. Some sort of stabilization 
+is required to take large timesteps. In this benchmark, however, we are interested in the relaxation 
+timescale, so we are free to take very small timesteps (in this case, 0.01 times the CFL 
+number).  As can be seen in Figure~\ref{fig:crameri-benchmark-relaxation-topography}, the results of all the 
+codes which are included in this comparison are basically indistinguishable.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_1_comparison}
+  \end{center}
+  \caption{\it Results for the topography relaxation benchmark, showing maximum topography 
+   versus time. Over about $100$ ka the topography completely disappears. The results of four 
+   free surface codes, as well as the semi-analytic solution, are nearly identical.}
+  \label{fig:crameri-benchmark-relaxation-topography}
+\end{figure}
+
+\paragraph{ Case 2: Dynamic topography }
+\label{sec:benchmark-crameri-case-2}
+
+Case two is more complicated. Unlike the case one, it occurs over mantle convection 
+timescales.  In this benchmark there is the same high viscosity lid over a lower 
+viscosity mantle. However, now there is a blob of buoyant material rising in the 
+center of the domain, causing dynamic topography at the surface. The details for the setup
+are in the caption of Figure~\ref{fig:crameri-benchmark-rising-blob}.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/rising_blob}
+  \end{center}
+  \caption{\it Setup for the dynamic topography benchmark. Again, the domain is $2800$ km 
+  wide and $700$ km high.  A $100$ km thick lid with viscosity $10^{23}$ overlies a mantle
+  with viscosity $10^{21}$.  Both the lid and the mantle have a density of $3300\,kg/m^3$.
+  A blob with diameter $100$ km lies $300$ km from the bottom of the domain.  The blob has 
+  a density of $3200 kg/m^3$ and a viscosity of $10^{20}$ Pa s.}
+  \label{fig:crameri-benchmark-rising-blob}
+\end{figure}
+
+Case two requires higher resolution and longer time integrations than case one. The benchmark
+is over 20 million years and builds dynamic topography of $\sim 800$ meters.  
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{cookbooks/benchmarks/crameri/crameri_2_comparison}
+  \end{center}
+  \caption{\it Evolution of topography for the dynamic topography benchmark. The maximum topography
+   is shown as a function of time, for \aspect{} as well as for several other codes participating in
+   the benchmark. This benchmark shows considerably more scatter between the codes.}
+  \label{fig:crameri-2-comparison}
+\end{figure}
+
+Again, we excerpt the most relevant parts of the parameter file for this benchmark, with the 
+full thing available in \url{benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm}.
+Here we use the ``Multicomponent'' material model, which allows us to easily set up a number 
+of compositional fields with different material properties. The first compositional field 
+corresponds to background mantle, the second corresponds to the rising blob, and the third 
+corresponds to the viscous lid.
+
+
+Furthermore, the results of this benchmark are sensitive to the mesh refenement and timestepping 
+parameters. Here we have nine refinement levels, and refine according to density and the 
+compositional fields.
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/crameri/crameri_benchmark_2.prm}
+
+Unlike the first benchmark, for case two there is no (semi) analytical solution to compare against.
+Furthermore, the time integration for this benchmark is much longer, allowing for errors to 
+accumulate. As such, there is considerably more scatter between the participating codes.  \aspect{}
+does, however, fall within the range of the other results, and the curve is somewhat less wiggly.
+The results for maximum topography versus time are shown in~\ref{fig:crameri-2-comparison}
+
+The precise values for topography at a given time are quite dependent on the resolution and
+timestepping parameters. Following \cite{CSG12} we investigate the convergence of the maximum 
+topography at 3 Ma as a function of CFL number and mesh resolution.  The results are shown in 
+figure~\ref{fig:crameri-benchmark-convergence}. 
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=1.0\textwidth]{cookbooks/benchmarks/crameri/crameri_2_convergence}
+  \end{center}
+  \caption{\it Convergence for case two.  Left: Logarithm of the error with decreasing CFL number. 
+As the CFL number decreases, the error gets smaller. However, once it reaches a value of $\sim0.1$, there
+stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh 
+resolution. As the resolution increases, so does the accuracy.}
+  \label{fig:crameri-benchmark-convergence}
+\end{figure}
+
+We find that at 3 Ma \aspect{}  converges to a maximum topography of $\sim$396 meters. 
+This is slightly different from what MILAMIN\_VEP reported as its convergent value in \cite{CSG12},
+but still well within the range of variation of the codes. Additionally, we note that \aspect{}
+is able to achieve good results with relatively less mesh resolution due to the ability 
+to adaptively refine in the regions of interest (namely, the blob and the high viscosity lid).
+
+Accuracy improves roughly linearly with decreasing CFL number, though stops improving at CFL $\sim 0.1$.
+Accuracy also improves with increasing mesh resolution, though its convergence order does not seem 
+to be excellent.  It is possible that other mesh refinement parameters than we tried in this benchmark 
+could improve the convergence. The primary challenge in accuracy is limiting numerical diffusion 
+of the rising blob. If the blob becomes too diffuse, its ability to lift topography is diminished.
+It would be instructive to compare the results of this benchmark using tracer particles with the 
+results using compositional fields.
 
 \section{Extending \aspect}
 \label{sec:extending}
@@ -7090,11 +8002,11 @@ function of the following kind (a nonsensical but instructive example; see
 Section~\ref{sec:postprocessors} for more details on what postprocessors do
 and how they are implemented):%
 \footnote{For complicated, technical reasons, in the code below we need to
-	access elements of the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class using the notation
-	\texttt{this->get\_solution()}, etc. This is due to the fact that both the
-	current class and the base class are templates. A long description of
-	why it is necessary to use \texttt{this->} can be found in the \dealii{}
-	Frequently Asked Questions.}
+  access elements of the \href{doc/doxygen/classaspect_1_1SimulatorAccess.html}{SimulatorAccess} class using the notation
+  \texttt{this->get\_solution()}, etc. This is due to the fact that both the
+  current class and the base class are templates. A long description of
+  why it is necessary to use \texttt{this->} can be found in the \dealii{}
+  Frequently Asked Questions.}
 \begin{lstlisting}[frame=single,language=C++]
     template <int dim>
     std::pair<std::string,std::string>
@@ -7221,18 +8133,7 @@ do:
     is a hassle, and a much easier way is in fact to set up a mini-CMake project
     for this. To this end, simply copy the file \url{doc/plugin-CMakeLists.txt}
     to the directory where you have your plugin source files and rename it to
-    \texttt{CMakeLists.txt}. In essence, this file just has the following
-    content:
-    \begin{lstlisting}[frame=single]
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
-
-FIND_PACKAGE(Aspect REQUIRED HINTS ${ASPECT_DIR} ../ $ENV{ASPECT_DIR})
-DEAL_II_INITIALIZE_CACHED_VARIABLES()
-
-PROJECT(my_plugin)
-ADD_LIBRARY(my_plugin SHARED source_1.cc source_2.cc)
-ASPECT_SETUP_PLUGIN(my_plugin)
-    \end{lstlisting}
+    \texttt{CMakeLists.txt}.
   \end{itemize}
   You can then just run the commands
     \begin{verbatim}
@@ -7305,23 +8206,6 @@ Specifically, your new class needs to implement the following interface:
         // Physical parameters used in the basic equations
         virtual void evaluate(const MaterialModelInputs &in, MaterialModelOutputs &out) const=0;
 
-
-        // Qualitative properties one can ask a material model
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const = 0;
-
         virtual bool is_compressible () const = 0;
 
 
@@ -7390,13 +8274,6 @@ temperature, pressure, position, compositional fields and, in the case of the vi
 rate (all handed in by MaterialModelInputs). Implementations of evaluate() may of course choose to ignore
 dependencies on any of these arguments.
 
-The block ``qualitative properties'' in the interface description above describes
-the nonlinear dependence of the various coefficients on pressure, temperature,
-or strain rate, and the next block then provides the numerical values of these
-dependencies. This information will be used in future versions of \aspect{} to
-implement a fully nonlinear solution scheme based on, for example, a Newton
-iteration.
-
 The remaining functions are used in postprocessing as well as
 handling run-time parameters. The exact meaning of these member functions is
 documented in the
@@ -7422,6 +8299,18 @@ initialize() is called once during the initialization of \aspect{} and
 can be used to allocate memory, initialize state, or read information from
 an external file. The function update() is called at the beginning of
 every time step.
+
+Additionally, every material model has a member variable ``model\textunderscore dependence'',
+declared in the Interface class, which can be accessed from the plugin as
+``this$\rightarrow$model\textunderscore dependence''. This structure describes the
+nonlinear dependence of the various coefficients on pressure, temperature, composition
+or strain rate. This information will be used in future versions of \aspect{} to
+implement a fully nonlinear solution scheme based on, for example, a Newton
+iteration. The initialization of this variable is optional, but only plugins
+that declare correct dependencies can benefit from these solver types. All
+packaged material models declare their dependencies in the 
+parse\textunderscore parameters() function and can be used as a
+starting point for implementations of new material models.
 
 Older versions of \aspect{} used to have individual functions like viscosity()
 instead of the evaluate() function discussed above. They are now a deprecated
@@ -7617,8 +8506,8 @@ explained using an example:
       ... create the coarse mesh ...
 
       coarse_grid.signals.post_refinement.connect
-	(std_cxx1x::bind (&set_boundary_indicators<dim>,
-			  std_cxx1x::ref(coarse_grid)));
+        (std_cxx1x::bind (&set_boundary_indicators<dim>,
+                          std_cxx1x::ref(coarse_grid)));
 
     }
 \end{lstlisting}
@@ -7657,9 +8546,9 @@ function of the \texttt{MyGeometry} class, then the following will work:
       ... create the coarse mesh ...
 
       coarse_grid.signals.post_refinement.connect
-	(std_cxx1x::bind (&MyGeometry<dim>::set_boundary_indicators,
-			  std_cxx1x::cref(*this),
-			  std_cxx1x::ref(coarse_grid)));
+        (std_cxx1x::bind (&MyGeometry<dim>::set_boundary_indicators,
+                          std_cxx1x::cref(*this),
+                          std_cxx1x::ref(coarse_grid)));
     }
 \end{lstlisting}
 Here, like any other member function, \texttt{set\_boundary\_indicators}
@@ -8459,8 +9348,12 @@ respective signals.
 In the first case, code that registers slots with global signals would look like
 this:
 \begin{lstlisting}[frame=single,language=c++]
-// A function that will be called at the time when parameters are declared
-void declare_parameters(ParameterHandler &prm)
+// A function that will be called at the time when parameters are declared.
+// It receives the dimension in which ASPECT will be run as the first argument,
+// and the ParameterHandler object that holds the runtime parameter
+// declarations as second argument.
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
 {
   prm.declare_entry("My parameter", ...);
 }
@@ -8550,7 +9443,7 @@ void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
 {
   simulator_access.get_statistics_object()
     .add_value ("number of constraints",
-		        current_constraints.n_constraints());
+                current_constraints.n_constraints());
 }
 \end{lstlisting}
 This will produce, for every time step (because this is how often the signal is
@@ -8558,7 +9451,7 @@ called) an entry in a new column in the statistics file that records the number
 of constraints. On the other hand, it is equally possible to also modify the
 constraints object at this point. An application would be if you wanted to run a
 simulation where you prescribe the velocity in a part of the domain, e.g., for a
-subducting slab.
+subducting slab (see Section \ref{sec:prescribed-velocities}).
 
 Signals exist for various waypoints in a simulation and you can consequently
 monitor and change what is happening inside a simulation by connecting your own
@@ -8783,6 +9676,7 @@ resources:
 % print the list of references. make sure the page number in the index is
 % correct by putting the \addcontentsline inside the command that prints the
 % title of the page, see http://www.dfki.de/~loeckelt/latexbib.html
+
 \let\myRefname\refname
 \renewcommand\refname{%
   \addcontentsline{toc}{section}{\numberline{}References}

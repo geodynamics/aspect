@@ -1,0 +1,6 @@
+    set List of tracer properties = function, initial composition, initial position, pT path
+
+    subsection Function
+      set Variable names      = x,y
+      set Function expression = if(y<0.2, 1, 0)
+    end

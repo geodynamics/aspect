@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Loading shared library <./libinclusion_adaptive.so>
 
@@ -12,9 +5,9 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23 iterations.
+   Solving Stokes system... 23+0 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00000
@@ -24,9 +17,9 @@ Number of active cells: 76 (on 5 levels)
 Number of degrees of freedom: 1,156 (706+97+353)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 27+0 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00001
@@ -36,9 +29,9 @@ Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 1,520 (930+125+465)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28 iterations.
+   Solving Stokes system... 28+0 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00002
@@ -48,9 +41,9 @@ Number of active cells: 172 (on 6 levels)
 Number of degrees of freedom: 2,664 (1,634+213+817)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00003
@@ -60,9 +53,9 @@ Number of active cells: 268 (on 7 levels)
 Number of degrees of freedom: 4,172 (2,562+329+1,281)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+13 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00004
@@ -72,9 +65,9 @@ Number of active cells: 430 (on 8 levels)
 Number of degrees of freedom: 6,772 (4,162+529+2,081)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+11 iterations.
+      Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution-00005

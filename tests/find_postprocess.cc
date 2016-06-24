@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,7 +23,6 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/postprocess/pressure_statistics.h>
-#include <aspect/simulator_access.h>
 #include <aspect/simulator.h>
 
 #include <utility>
@@ -35,27 +34,27 @@ namespace aspect
   namespace BoundaryTemperature
   {
     template <int dim>
-    class Box2 : public Box<dim>, public aspect::SimulatorAccess<dim>
+    class Box2 : public Box<dim>
     {
-        public:
+      public:
         virtual void update();
     };
     template <int dim>
     void Box2<dim>::update()
     {
 
-        const Postprocess::HeatFluxStatistics<dim> * heat_flux_postprocess=
+      const Postprocess::HeatFluxStatistics<dim> *heat_flux_postprocess=
         this->template find_postprocessor<const Postprocess::HeatFluxStatistics<dim> >();
-        const Postprocess::PressureStatistics<dim> * pressure_postprocess=
-            this->template find_postprocessor<const Postprocess::PressureStatistics<dim> >();
-        if(pressure_postprocess==NULL)
-	  std::cout << "PressureStatistics is not found!" << std::endl;
-        else
-	  std::cout << "PressureStatistics is found!" << std::endl;
-        if(heat_flux_postprocess==NULL)
-	  std::cout << "HeatFluxStatistics is not found!" << std::endl;
-        else
-	  std::cout << "HeatFluxStatistics is found!" << std::endl;         
+      const Postprocess::PressureStatistics<dim> *pressure_postprocess=
+        this->template find_postprocessor<const Postprocess::PressureStatistics<dim> >();
+      if (pressure_postprocess==NULL)
+        std::cout << "PressureStatistics is not found!" << std::endl;
+      else
+        std::cout << "PressureStatistics is found!" << std::endl;
+      if (heat_flux_postprocess==NULL)
+        std::cout << "HeatFluxStatistics is not found!" << std::endl;
+      else
+        std::cout << "HeatFluxStatistics is found!" << std::endl;
     }
   }
 }
@@ -71,4 +70,4 @@ namespace aspect
                                                "all the sides of a box. For test")
   }
 }
-  
+

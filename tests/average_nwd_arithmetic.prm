@@ -1,0 +1,104 @@
+# Variations of the cookbook/sinker-with-averaging/sinker-with-averaging.prm
+# file for the different kinds of averaging operations
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+
+set Linear solver tolerance                = 1e-7
+set Pressure normalization                 = volume
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1.0000
+    set Y extent  = 1.0000
+  end
+end
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = averaging
+
+  subsection Averaging
+    set Base model = simple
+    set Averaging operation =  nwd arithmetic average
+    set Bell shape limit = 0.75
+  end
+
+  subsection Simple model
+    set Reference density             = 1
+    set Viscosity                     = 1
+    set Thermal expansion coefficient = 0
+    set Composition viscosity prefactor = 1e6
+    set Density differential for compositional field 1 = 10
+  end
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if( (sqrt((x-0.5)^2+(y-0.5)^2)>0.22) , 0 , 1 )
+  end
+end
+
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial global refinement          = 4
+  set Initial adaptive refinement        = 0
+end
+
+
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = pressure statistics
+  subsection Visualization
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+end

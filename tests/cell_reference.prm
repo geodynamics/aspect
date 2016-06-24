@@ -1,4 +1,4 @@
-# This is a copy of simpler-box.prm test,
+# This is a copy of simpler_box.prm test,
 # with a slightly modified material model that outputs the
 # cell level and index to check that the cell reference is working
 

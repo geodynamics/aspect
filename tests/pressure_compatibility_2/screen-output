@@ -1,0 +1,31 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       6.6e-05 m/s, 0.000142 m/s
+     Pressure min/avg/max:    -0.002229 Pa, 0.5 Pa, 0.998 Pa
+     Temperature min/avg/max: 0 K, 0.8632 K, 2 K
+
+*** Timestep 1:  t=400 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       6.67e-05 m/s, 0.000141 m/s
+     Pressure min/avg/max:    -0.007575 Pa, 0.5 Pa, 0.9937 Pa
+     Temperature min/avg/max: 0 K, 0.8639 K, 2 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

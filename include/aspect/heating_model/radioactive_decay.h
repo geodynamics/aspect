@@ -23,8 +23,8 @@
 #ifndef __aspect__heating_model_radioactive_decay_h
 #define __aspect__heating_model_radioactive_decay_h
 
-#include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -53,11 +53,10 @@ namespace aspect
          * decay.
          */
         virtual
-        double
-        specific_heating_rate (const double,
-                               const double,
-                               const std::vector<double> &composition,
-                               const Point<dim> &position) const;
+        void
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**
          * Declare the parameters this class takes through input files.

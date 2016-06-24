@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,7 +23,6 @@
 #include <aspect/postprocess/spherical_velocity_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>

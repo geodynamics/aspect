@@ -1,37 +1,30 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27 iterations.
+   Solving Stokes system... 27+0 iterations.
 
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28 iterations.
+   Solving Stokes system... 28+0 iterations.
 
-Number of active cells: 176 (on 5 levels)
-Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
+Number of active cells: 155 (on 5 levels)
+Number of degrees of freedom: 9,767 (5,682+297+1,894+1,894)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+1 iterations.
+   Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
 
@@ -48,29 +41,12 @@ Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
      reference_thermal_diffusivity:                 1.13939e-06
 
      Writing graphical output: output-stokes/solution-00000
-     RMS, max velocity:        6.86e-11 m/s, 1.05e-09 m/s
+     RMS, max velocity:        7.2e-11 m/s, 1.09e-09 m/s
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      27.6s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         3 |      15.3s |        55% |
-| Assemble composition system     |         3 |      1.41s |       5.1% |
-| Assemble temperature system     |         3 |      1.36s |       4.9% |
-| Build Stokes preconditioner     |         3 |      6.74s |        24% |
-| Build composition preconditioner|         3 |    0.0399s |      0.14% |
-| Build temperature preconditioner|         3 |    0.0563s |       0.2% |
-| Solve Stokes system             |         3 |      0.35s |       1.3% |
-| Solve composition system        |         3 |    0.0047s |     0.017% |
-| Solve temperature system        |         3 |   0.00472s |     0.017% |
-| Initialization                  |         4 |     0.259s |      0.94% |
-| Postprocessing                  |         1 |    0.0721s |      0.26% |
-| Refine mesh structure, part 1   |         2 |     0.515s |       1.9% |
-| Refine mesh structure, part 2   |         2 |    0.0243s |     0.088% |
-| Setup dof systems               |         3 |       1.3s |       4.7% |
 +---------------------------------+-----------+------------+------------+
 

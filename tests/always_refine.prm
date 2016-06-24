@@ -26,6 +26,9 @@ subsection Model settings
   set Prescribed velocity boundary indicators = 3: function
 end
 
+subsection Heating model
+  set List of model names = shear heating
+end
 
 subsection Boundary temperature model
   set Model name = box

@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/shear_stress.h>
-#include <aspect/simulator_access.h>
 
 
 
@@ -63,6 +62,11 @@ namespace aspect
 
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                in.velocity[q][d]=uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+              }
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
@@ -137,7 +141,7 @@ namespace aspect
       UpdateFlags
       ShearStress<dim>::get_needed_update_flags () const
       {
-        return update_gradients;
+        return update_gradients | update_values | update_q_points;
       }
 
     }

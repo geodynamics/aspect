@@ -79,7 +79,7 @@ namespace aspect
         /**
          * A function object representing the compositional fields.
          */
-        std::auto_ptr<Functions::ParsedFunction<dim> > function;
+        std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
     };
   }
 }

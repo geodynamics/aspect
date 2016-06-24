@@ -1,0 +1,21 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.183 m/s, 0.249 m/s
+     Pressure min/avg/max:               -2 Pa, 3.4e-16 Pa, 2 Pa
+     Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

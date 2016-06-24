@@ -20,10 +20,19 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
+
+#include <string>
+
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+#include <fenv.h>
+#endif
+#endif
 
 #if ASPECT_USE_SHARED_LIBS==1
 #  include <dlfcn.h>
@@ -77,6 +86,11 @@ get_last_value_of_parameter(const std::string &parameters,
       // we'd expect an equals size here
       if ((line.size() < 1) || (line[0] != '='))
         continue;
+
+      // remove comment
+      std::string::size_type pos = line.find('#');
+      if (pos != std::string::npos)
+        line.erase (pos);
 
       // trim the equals sign at the beginning and possibly following spaces
       // as well as spaces at the end
@@ -375,6 +389,13 @@ int main (int argc, char *argv[])
   // as deemed useful by TBB
   Utilities::MPI::MPI_InitFinalize mpi_initialization(argc, argv, /*n_threads =*/ 1);
 
+#ifdef DEBUG
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+  // enable floating point exceptions
+  feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
+#endif
+
   try
     {
       deallog.depth_console(0);
@@ -454,6 +475,12 @@ int main (int argc, char *argv[])
               delete[] p;
             }
         }
+
+      // Replace $ASPECT_SOURCE_DIR in the input so that include statements
+      // like "include $ASPECT_SOURCE_DIR/tests/bla.prm" work.
+      input_as_string = Utilities::replace_in_string(input_as_string,
+                                                     "$ASPECT_SOURCE_DIR",
+                                                     ASPECT_SOURCE_DIR);
 
 
       // try to determine the dimension we want to work in. the default

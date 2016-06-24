@@ -32,7 +32,7 @@ Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
      RMS, max velocity:                  9e+07 m/s, 2.21e+08 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
      Heat fluxes through boundary parts: 6.751e-18 W, 2.123e-17 W, 3.273e-18 W, 6.354e-18 W
-     Writing depth average               output-adiabatic_conditions/depth_average.gnuplot
+     Writing depth average:              output-adiabatic_conditions/depth_average.gnuplot
 
 Termination requested by criterion: end time
 

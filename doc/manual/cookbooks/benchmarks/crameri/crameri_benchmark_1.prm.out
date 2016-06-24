@@ -1,0 +1,17 @@
+set %%\hyperref[parameters:CFL number]{CFL number}%                             = 0.01%% \index[prmindex]{CFL number} \index[prmindexfull]{CFL number} %
+
+set %%\hyperref[parameters:Additional shared libraries]{Additional shared libraries}% = ./libcrameri_benchmark_1.so%% \index[prmindex]{Additional shared libraries} \index[prmindexfull]{Additional shared libraries} %
+
+subsection %%\hyperref[parameters:Geometry_20model]{Geometry model}%
+  set %%\hyperref[parameters:Geometry model/Model name]{Model name}% = rebound box%% \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+  subsection %%\hyperref[parameters:Geometry_20model/Rebound_20Box]{Rebound Box}%
+    set %%\hyperref[parameters:Geometry model/Rebound Box/Order]{Order}% = 1%% \index[prmindex]{Order} \index[prmindexfull]{Geometry model!Rebound Box!Order} %
+    set %%\hyperref[parameters:Geometry model/Rebound Box/Amplitude]{Amplitude}% = 7.e3%% \index[prmindex]{Amplitude} \index[prmindexfull]{Geometry model!Rebound Box!Amplitude} %
+  end
+  subsection %%\hyperref[parameters:Geometry_20model/Box]{Box}%
+    set %%\hyperref[parameters:Geometry model/Box/X extent]{X extent}% = 28.e5 %% \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set %%\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}% = 7.e5%% \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set %%\hyperref[parameters:Geometry model/Box/X repetitions]{X repetitions}% = 300%% \index[prmindex]{X repetitions} \index[prmindexfull]{Geometry model!Box!X repetitions} %
+    set %%\hyperref[parameters:Geometry model/Box/Y repetitions]{Y repetitions}% = 75%% \index[prmindex]{Y repetitions} \index[prmindexfull]{Geometry model!Box!Y repetitions} %
+  end
+end

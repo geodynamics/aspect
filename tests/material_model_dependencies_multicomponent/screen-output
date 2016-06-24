@@ -1,0 +1,29 @@
+
+Loading shared library <./libmaterial_model_dependencies_multicomponent.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+      Nonlinear Stokes residual: 0.0180776
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Nonlinear Stokes residual: 1.03522e-09
+
+   Postprocessing:
+viscosity depends on composition
+density depends on temperature composition
+compressibility depends on
+specific_heat depends on composition
+thermal_conductivity depends on composition
+model is incompressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

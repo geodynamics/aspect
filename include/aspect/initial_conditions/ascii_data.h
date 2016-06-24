@@ -55,6 +55,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataInitial<dim>::initialize;
+
         /**
          * Return the boundary temperature as a function of position. For the
          * current class, this function returns value from the text files.

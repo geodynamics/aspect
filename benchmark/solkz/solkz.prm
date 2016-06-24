@@ -13,6 +13,7 @@ set End time                               = 0
 set Output directory                       = output
 
 set Pressure normalization                 = volume
+set Nonlinear solver scheme                = Stokes only
 
 
 ############### Parameters describing the model
@@ -71,7 +72,7 @@ subsection Mesh refinement
 end
 
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = SolKzPostprocessor, visualization

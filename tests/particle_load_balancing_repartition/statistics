@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Time step size (seconds)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal value for composition C_1
+# 16: Maximal value for composition C_1
+# 17: Global mass for composition C_1
+# 18: Visualization file name
+# 19: Number of advected particles
+0 0.0000e+00 16 187 81 81 0  0 20 21 60 1.0000e+02 1.33396569e-04 3.28761650e-04  0.00000000e+00 1.00000000e+00 2.09224301e-01 output-particle_load_balancing_repartition/solution-00000 100 
+1 1.0000e+02 10 132 57 57 0 13 19 20 60 2.1869e+02 1.58825547e-04 3.75865734e-04 -1.12649262e-01 1.04250627e+00 1.96568044e-01 output-particle_load_balancing_repartition/solution-00001 100 

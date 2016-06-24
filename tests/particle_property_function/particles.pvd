@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+#This file was generated 
+-->
+<VTKFile type="Collection" version="0.1" ByteOrder="LittleEndian">
+  <Collection>
+    <DataSet timestep="0" group="" part="0" file="particles-00000.pvtu"/>
+    <DataSet timestep="70" group="" part="0" file="particles-00001.pvtu"/>
+  </Collection>
+</VTKFile>

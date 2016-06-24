@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,7 +20,6 @@
 
 
 #include <aspect/boundary_temperature/initial_temperature.h>
-#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -32,11 +31,10 @@ namespace aspect
     template <int dim>
     double
     InitialTemperature<dim>::
-    temperature (const GeometryModel::Interface<dim> &,
-                 const types::boundary_id             ,
-                 const Point<dim>                    &location) const
+    boundary_temperature (const types::boundary_id,
+                          const Point<dim> &position) const
     {
-      return this->get_initial_conditions().initial_temperature(location);
+      return this->get_initial_conditions().initial_temperature(position);
     }
 
 

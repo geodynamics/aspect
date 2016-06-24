@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,12 +72,10 @@ namespace aspect
 
         virtual Tensor<1,dim> value (const Point<dim> &p) const
         {
-          Tensor<1,dim> vel;
           if ( dim == 2)
-            cross_product(vel, p);
+            return cross_product_2d(p);
           else
-            cross_product(vel, axis, p);
-          return vel;
+            return cross_product_3d(axis, p);
         }
     };
 
@@ -112,57 +110,6 @@ namespace aspect
           return translation;
         }
     };
-
-    /**
-     * Perform an MPI sum of the entries of a tensor.
-     */
-    template <int rank, int dim, typename Number>
-    inline
-    Tensor<rank,dim,Number>
-    sum (const Tensor<rank,dim,Number> &local,
-         const MPI_Comm &mpi_communicator)
-    {
-      const unsigned int n_entries = Tensor<rank,dim,Number>::n_independent_components;
-      Number entries[ Tensor<rank,dim,Number>::n_independent_components ];
-
-      for (unsigned int i=0; i< n_entries; ++i)
-        entries[i] = local[ local.unrolled_to_component_indices(i) ];
-
-      Number global_entries[ Tensor<rank,dim,Number>::n_independent_components ];
-      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
-
-      Tensor<rank,dim,Number> global;
-      for (unsigned int i=0; i< n_entries; ++i)
-        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
-
-      return global;
-    }
-
-    /**
-     * Perform an MPI sum of the entries of a symmetric tensor.
-     */
-    template <int rank, int dim, typename Number>
-    inline
-    SymmetricTensor<rank,dim,Number>
-    sum (const SymmetricTensor<rank,dim,Number> &local,
-         const MPI_Comm &mpi_communicator)
-    {
-      const unsigned int n_entries = SymmetricTensor<rank,dim,Number>::n_independent_components;
-      Number entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
-
-      for (unsigned int i=0; i< n_entries; ++i)
-        entries[i] = local[ local.unrolled_to_component_indices(i) ];
-
-      Number global_entries[ SymmetricTensor<rank,dim,Number>::n_independent_components ];
-      dealii::Utilities::MPI::sum( entries, mpi_communicator, global_entries );
-
-      SymmetricTensor<rank,dim,Number> global;
-      for (unsigned int i=0; i< n_entries; ++i)
-        global[ global.unrolled_to_component_indices(i) ] = global_entries[i];
-
-      return global;
-    }
-
   }
 
 
@@ -223,13 +170,6 @@ namespace aspect
 
           }
 
-#ifdef DEBUG
-      Assert(n_left_to_find == 0, ExcMessage("Error, couldn't find a velocity DoF to constrain."));
-
-      for (unsigned int d=0; d<dim; ++d)
-        Assert(vel_idx[d] != numbers::invalid_dof_index,
-               ExcMessage("Error, couldn't find a velocity DoF to constrain."));
-#endif
     }
 
 
@@ -244,9 +184,23 @@ namespace aspect
     for (unsigned int d=0; d<dim; ++d)
       if (parameters.nullspace_removal & flags[d])
         {
-          // Make a reduction to find the smallest index (processors with a larger candidate
-          // just happened to not be able to store that index)
-          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(vel_idx[d], mpi_communicator);
+          // Make a reduction to find the smallest index (processors that
+          // found a larger candidate just happened to not be able to store
+          // that index with the minimum value). Note that it is possible that
+          // some processors might not be able to find a potential DoF, for
+          // example because they don't own any DoFs. On those processors we
+          // will use dof_handler.n_dofs() when building the minimum (larger
+          // than any valid DoF index).
+          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(
+                                                       (vel_idx[d] != numbers::invalid_dof_index)
+                                                       ?
+                                                       vel_idx[d]
+                                                       :
+                                                       dof_handler.n_dofs(),
+                                                       mpi_communicator);
+
+          Assert(global_idx < dof_handler.n_dofs(),
+                 ExcMessage("Error, couldn't find a velocity DoF to constrain."));
 
           // Finally set this DoF to zero (if we care about it):
           if (constraints.can_store_line(global_idx))
@@ -298,7 +252,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     Tensor<1,dim> local_momentum;
     double local_mass = 0.0;
@@ -328,6 +282,8 @@ namespace aspect
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              in.velocity = velocities;
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -354,11 +310,7 @@ namespace aspect
 
     //Calculate the total mass and velocity correction
     const double mass = Utilities::MPI::sum( local_mass, mpi_communicator);
-#if DEAL_II_VERSION_GTE(8,3,0)
     Tensor<1,dim> velocity_correction = Utilities::MPI::sum(local_momentum, mpi_communicator)/mass;
-#else
-    Tensor<1,dim> velocity_correction = internal::sum(local_momentum, mpi_communicator)/mass;
-#endif
 
     //We may only want to remove the nullspace for a single component, so zero out
     //the velocity correction if it is not selected by the NullspaceRemoval flag
@@ -409,7 +361,7 @@ namespace aspect
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(mapping, finite_element, quadrature,
-                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values));
+                     UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     typename DoFHandler<dim>::active_cell_iterator cell;
 
@@ -445,7 +397,7 @@ namespace aspect
             {
               fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
               fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
-
+              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
@@ -471,8 +423,7 @@ namespace aspect
               if (dim == 2)
                 {
                   // Get the velocity perpendicular to the position vector
-                  Tensor<1,dim> r_perp;
-                  cross_product(r_perp, r_vec);
+                  Tensor<1,dim> r_perp = cross_product_2d(r_vec);
 
                   // calculate a signed scalar angular momentum
                   local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * fe.JxW(k);
@@ -482,8 +433,7 @@ namespace aspect
               else
                 {
                   //calculate angular momentum vector
-                  Tensor<1,dim> r_cross_v;
-                  cross_product( r_cross_v, r_vec, in.velocity[k]);
+                  Tensor<1,dim> r_cross_v = cross_product_3d(r_vec, in.velocity[k]);
                   for (unsigned int i=0; i<dim; ++i)
                     local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
 
@@ -515,19 +465,11 @@ namespace aspect
       }
     else
       {
-#if DEAL_II_VERSION_GTE(8,3,0)
         //sum up the local contributions to moment of inertia
         const SymmetricTensor<2,dim> moment_of_inertia = Utilities::MPI::sum( local_moment_of_inertia,
                                                                               mpi_communicator );
         //sum up the local contributions to angular momentum
         const Tensor<1,dim> angular_momentum = Utilities::MPI::sum( local_angular_momentum, mpi_communicator );
-#else
-        //sum up the local contributions to moment of inertia
-        const SymmetricTensor<2,dim> moment_of_inertia = internal::sum( local_moment_of_inertia,
-                                                                        mpi_communicator );
-        //sum up the local contributions to angular momentum
-        const Tensor<1,dim> angular_momentum = internal::sum( local_angular_momentum, mpi_communicator );
-#endif
 
         //Solve for the rotation vector that cancels the net momentum
         SymmetricTensor<2,dim> inverse_moment ( invert( Tensor<2,dim>(moment_of_inertia) ) );

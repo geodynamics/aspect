@@ -618,45 +618,6 @@ namespace aspect
          */
 
         /**
-         * Return true if the viscosity() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identifies by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         */
-        virtual bool
-        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the specific_heat() function returns something
-         * that may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identifies by the
-         * argument.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
          * Return whether the model is compressible or not.
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
@@ -687,6 +648,9 @@ namespace aspect
         /**
          * @}
          */
+
+        void
+        parse_parameters (ParameterHandler &prm);
     };
 
 
@@ -805,55 +769,26 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    bool
-    SolKzMaterial<dim>::
-    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    SolKzMaterial<dim>::
-    density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SolKzMaterial<dim>::
-    compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SolKzMaterial<dim>::
-    specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SolKzMaterial<dim>::
-    thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
-
     template <int dim>
     bool
     SolKzMaterial<dim>::
     is_compressible () const
     {
       return false;
+    }
+
+
+    template <int dim>
+    void
+    SolKzMaterial<dim>::
+    parse_parameters (ParameterHandler &prm)
+    {
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility= MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
 

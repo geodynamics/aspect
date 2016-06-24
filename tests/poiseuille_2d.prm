@@ -1,0 +1,83 @@
+# A simple Poiseuille flow example in which we prescribe the velocity to
+# be (z*(z-1),0)^T and see what pressure we get. We switch off gravity
+# so the pressure is purely the dynamic pressure. It is only determined
+# up to a constant, and with a viscosity of eta=1, should be between
+# +2 at the left inlet and -2 at the right outlet.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators = 0: function, 1: function
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 2, 3
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = z*(1-z);0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics
+end
+

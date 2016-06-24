@@ -1,0 +1,131 @@
+# Evaluate the nonlinear dependencies of the material model used here
+
+subsection Material model
+  set Model name = latent heat
+  subsection Latent heat
+
+    # The change of density across the phase transition. Together with the
+    # Clapeyron slope, this is what determines the entropy change.
+    set Phase transition density jumps                 = 115.6
+    set Corresponding phase for density jump           = 0
+
+    # If the temperature is equal to the phase transition temperature, the 
+    # phase transition will occur at the phase transition depth. However, 
+    # if the temperature deviates from this value, the Clapeyron slope 
+    # determines how much the pressure (and depth) of the phase boundary
+    # changes. Here, the phase transition will be in the middle of the box
+    # for T=T1. 
+    set Phase transition depths                        = 500000
+    set Phase transition temperatures                  = 1000
+    set Phase transition Clapeyron slopes              = 1e7
+
+    # We set the width of the phase transition to 5 km. You may want to 
+    # change this parameter to see how latent heating depends on the width
+    # of the phase transition. 
+    set Phase transition widths                        = 5000
+
+    set Reference density                              = 3400
+    set Reference specific heat                        = 1000
+    set Reference temperature                          = 1000
+    set Thermal conductivity                           = 2.38
+
+    # We set the thermal expansion amd the compressibility to zero, so that 
+    # all temperature (and density) changes are caused by advection, diffusion 
+    # and latent heating. 
+    set Thermal expansion coefficient                  = 0.0
+    set Compressibility                                = 0.0
+
+    # Viscosity is constant. 
+    set Thermal viscosity exponent                     = 0.0
+    set Viscosity                                      = 8.44e21
+    set Viscosity prefactors                           = 1.0, 1.0
+    set Composition viscosity prefactor                = 1.0
+  end
+end
+subsection Postprocess
+  set List of postprocessors = material model dependencies
+end
+
+
+#############################
+# Otherwise use the setup of SolCX
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = Stokes only
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1000000
+    set Y extent = 1000000
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 2                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false # default: true
+
+
+  set Fixed temperature boundary indicators   = 0, 1
+
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+
+  set Zero velocity boundary indicators       =
+end
+
+
+

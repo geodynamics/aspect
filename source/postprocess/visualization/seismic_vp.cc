@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/seismic_vp.h>
-#include <aspect/simulator_access.h>
 
 
 

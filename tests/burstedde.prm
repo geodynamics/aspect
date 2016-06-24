@@ -17,6 +17,8 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
+set Nonlinear solver scheme                = Stokes only
+
 set Output directory                       = output
 
 set Pressure normalization                 = volume
@@ -92,7 +94,7 @@ subsection Mesh refinement
 end
 
 
-############### Parameters describing the what to do with the solution
+############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. 
 

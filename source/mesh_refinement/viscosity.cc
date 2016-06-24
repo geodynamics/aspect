@@ -53,7 +53,7 @@ namespace aspect
                                                   this->get_mpi_communicator());
 
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
-      std::vector<unsigned int> local_dof_indices (this->get_fe().dofs_per_cell);
+      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
@@ -85,6 +85,9 @@ namespace aspect
                 in.strain_rate);
             fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                                                                                         in.velocity);
+            fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                                                                                         in.pressure_gradient);
+
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
                   prelim_composition_values[c]);

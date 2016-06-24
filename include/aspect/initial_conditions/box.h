@@ -23,7 +23,7 @@
 #define __aspect__initial_conditions_box_h
 
 #include <aspect/initial_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -68,7 +68,7 @@ namespace aspect
     /**
      * A field that describes a fractal initial temperature field
      *
-     * @ingroup InitialCOnditionsModels
+     * @ingroup InitialConditionsModels
      */
     template <int dim>
     class MandelBox : public Interface<dim>, public SimulatorAccess<dim>

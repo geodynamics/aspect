@@ -45,172 +45,133 @@ namespace aspect
   namespace MaterialModel
   {
 
-  template <int dim>
-  class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
-  {
-    public:
+    template <int dim>
+    class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
+    {
+      public:
 
-      TanGurnis();
+        TanGurnis();
 
-      /**
-       * @name Physical parameters used in the basic equations
-       * @{
-       */
-      virtual double viscosity (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const SymmetricTensor<2,dim> &strain_rate,
-                                const Point<dim>             &position) const;
+        /**
+         * @name Physical parameters used in the basic equations
+         * @{
+         */
+        virtual double viscosity (const double                  temperature,
+                                  const double                  pressure,
+                                  const std::vector<double>    &compositional_fields,
+                                  const SymmetricTensor<2,dim> &strain_rate,
+                                  const Point<dim>             &position) const;
 
-      virtual double density (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
+        virtual double density (const double temperature,
+                                const double pressure,
+                                const std::vector<double> &compositional_fields,
+                                const Point<dim> &position) const;
 
-      virtual double compressibility (const double temperature,
+        virtual double compressibility (const double temperature,
+                                        const double pressure,
+                                        const std::vector<double> &compositional_fields,
+                                        const Point<dim> &position) const;
+
+        virtual double specific_heat (const double temperature,
                                       const double pressure,
                                       const std::vector<double> &compositional_fields,
                                       const Point<dim> &position) const;
 
-      virtual double specific_heat (const double temperature,
-                                    const double pressure,
-                                    const std::vector<double> &compositional_fields,
-                                    const Point<dim> &position) const;
+        virtual double thermal_expansion_coefficient (const double      temperature,
+                                                      const double      pressure,
+                                                      const std::vector<double> &compositional_fields,
+                                                      const Point<dim> &position) const;
 
-      virtual double thermal_expansion_coefficient (const double      temperature,
-                                                    const double      pressure,
-                                                    const std::vector<double> &compositional_fields,
-                                                    const Point<dim> &position) const;
+        virtual double thermal_conductivity (const double temperature,
+                                             const double pressure,
+                                             const std::vector<double> &compositional_fields,
+                                             const Point<dim> &position) const;
+        /**
+         * @}
+         */
 
-      virtual double thermal_conductivity (const double temperature,
-                                           const double pressure,
-                                           const std::vector<double> &compositional_fields,
-                                           const Point<dim> &position) const;
-      /**
-       * @}
-       */
+        /**
+         * @name Qualitative properties one can ask a material model
+         * @{
+         */
 
-      /**
-       * @name Qualitative properties one can ask a material model
-       * @{
-       */
+        /**
+         * Return whether the model is compressible or not.  Incompressibility
+         * does not necessarily imply that the density is constant; rather, it
+         * may still depend on temperature or pressure. In the current
+         * context, compressibility means whether we should solve the contuity
+         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         */
+        virtual bool is_compressible () const;
+        /**
+         * @}
+         */
 
-      /**
-       * Return true if the viscosity() function returns something that may
-       * depend on the variable identifies by the argument.
-       */
-      virtual bool
-      viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_viscosity () const;
 
-      /**
-       * Return true if the density() function returns something that may
-       * depend on the variable identifies by the argument.
-       */
-      virtual bool
-      density_depends_on (const NonlinearDependence::Dependence dependence) const;
+        virtual double reference_density () const;
 
-      /**
-       * Return true if the compressibility() function returns something
-       * that may depend on the variable identifies by the argument.
-       *
-       * This function must return false for all possible arguments if the
-       * is_compressible() function returns false.
-       */
-      virtual bool
-      compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-      /**
-       * Return true if the specific_heat() function returns something that
-       * may depend on the variable identifies by the argument.
-       */
-      virtual bool
-      specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-      /**
-       * Return true if the thermal_conductivity() function returns
-       * something that may depend on the variable identifies by the
-       * argument.
-       */
-      virtual bool
-      thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-      /**
-       * Return whether the model is compressible or not.  Incompressibility
-       * does not necessarily imply that the density is constant; rather, it
-       * may still depend on temperature or pressure. In the current
-       * context, compressibility means whether we should solve the contuity
-       * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-       * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-       */
-      virtual bool is_compressible () const;
-      /**
-       * @}
-       */
-
-      /**
-       * @name Reference quantities
-       * @{
-       */
-      virtual double reference_viscosity () const;
-
-      virtual double reference_density () const;
-
-      virtual double reference_thermal_expansion_coefficient () const;
+        virtual double reference_thermal_expansion_coefficient () const;
 
 //TODO: should we make this a virtual function as well? where is it used?
-      double reference_thermal_diffusivity () const;
+        double reference_thermal_diffusivity () const;
 
-      double reference_cp () const;
+        double reference_cp () const;
 
-      double parameter_a() const;
-      double parameter_wavenumber() const;
-      double parameter_Di() const;
-      double parameter_gamma() const;
+        double parameter_a() const;
+        double parameter_wavenumber() const;
+        double parameter_Di() const;
+        double parameter_gamma() const;
 
-      /**
-       * @}
-       */
+        /**
+         * @}
+         */
 
 
-      /**
-       * @name Functions used in dealing with run-time parameters
-       * @{
-       */
-      /**
-       * Declare the parameters this class takes through input files.
-       */
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
 
-      /**
-       * Read the parameters this class declares from the parameter file.
-       */
-      virtual
-      void
-      parse_parameters (ParameterHandler &prm);
-      /**
-       * @}
-       */
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+        /**
+         * @}
+         */
 
-    private:
+      private:
 
-      double a;
-      double wavenumber;
-      double Di;
-      double gamma;
+        double a;
+        double wavenumber;
+        double Di;
+        double gamma;
 
-      double reference_rho;
-      double reference_T;
-      double eta;
-      double thermal_alpha;
-      double reference_specific_heat;
+        double reference_rho;
+        double reference_T;
+        double eta;
+        double thermal_alpha;
+        double reference_specific_heat;
 
-      /**
-       * The thermal conductivity.
-       */
-      double k_value;
-  };
+        /**
+         * The thermal conductivity.
+         */
+        double k_value;
+    };
 
     template <int dim>
     TanGurnis<dim>::TanGurnis()
@@ -355,57 +316,8 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      return Di/gamma / density(temperature, pressure, compositional_fields, pos);
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      return false;
+      double d = density(temperature, pressure, compositional_fields, pos);
+      return (d==0) ? 1.0 : (Di/gamma / d);
     }
 
 
@@ -532,6 +444,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
   }
 
@@ -543,27 +462,18 @@ namespace aspect
    * @ingroup BoundaryTemperatures
    */
   template <int dim>
-  class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
+  class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>, public SimulatorAccess<dim>
   {
     public:
       /**
-       * Return the temperature that is to hold at a particular location on
-       * the boundary of the domain. This function returns constant
-       * temperatures at the left and right boundaries.
+       * This plugin prescribes the setup of the Tan Gurnis Benchmark at all
+       * boundaries.
        *
-       * @param geometry_model The geometry model that describes the domain.
-       * This may be used to determine whether the boundary temperature
-       * model is implemented for this geometry.
-       * @param boundary_indicator The boundary indicator of the part of the
-       * boundary of the domain on which the point is located at which we
-       * are requesting the temperature.
-       * @param location The location of the point at which we ask for the
-       * temperature.
+       * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
        */
       virtual
-      double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const types::boundary_id             boundary_indicator,
-                          const Point<dim>                    &location) const;
+      double boundary_temperature (const types::boundary_id boundary_indicator,
+                                   const Point<dim> &position) const;
 
       /**
        * Return the minimal the temperature on that part of the boundary on
@@ -589,20 +499,19 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  temperature (const GeometryModel::Interface<dim> &geometry_model,
-               const types::boundary_id             boundary_indicator,
-               const Point<dim>                    &location) const
+  boundary_temperature (const types::boundary_id boundary_indicator,
+                        const Point<dim> &position) const
   {
     // verify that the geometry is in fact a box since only
     // for this geometry do we know for sure what boundary indicators it
     // uses and what they mean
-    Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
+    Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
             != 0,
             ExcMessage ("This boundary model is only implemented if the geometry is "
                         "in fact a box."));
 
     double wavenumber=1;
-    return sin(numbers::PI*location(dim-1))*cos(numbers::PI*wavenumber*location(0));
+    return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
   }
 
 
@@ -712,22 +621,22 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-    ASPECT_REGISTER_POSTPROCESSOR(TanGurnisPostprocessor,
-                                  "Tan Gurnis error",
-                                  "A postprocessor that compares the solution of the benchmarks from "
-                                  "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
-                                  "by outputing data that is compared using a matlab script.")
+  ASPECT_REGISTER_POSTPROCESSOR(TanGurnisPostprocessor,
+                                "Tan Gurnis error",
+                                "A postprocessor that compares the solution of the benchmarks from "
+                                "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
+                                "by outputing data that is compared using a matlab script.")
 
-     namespace MaterialModel
-      {
-        ASPECT_REGISTER_MATERIAL_MODEL(TanGurnis,
-                                       "Tan Gurnis",
-                                       "A simple compressible material model based on a benchmark"
-                                       " from the paper of Tan/Gurnis (2007). This does not use the"
-                                       " temperature equation, but has a hardcoded temperature.")
-      }
+  namespace MaterialModel
+  {
+    ASPECT_REGISTER_MATERIAL_MODEL(TanGurnis,
+                                   "Tan Gurnis",
+                                   "A simple compressible material model based on a benchmark"
+                                   " from the paper of Tan/Gurnis (2007). This does not use the"
+                                   " temperature equation, but has a hardcoded temperature.")
+  }
 
-    ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(TanGurnisBoundary,
-                                               "Tan Gurnis",
-                                               "A model for the Tan/Gurnis benchmark.")
+  ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(TanGurnisBoundary,
+                                             "Tan Gurnis",
+                                             "A model for the Tan/Gurnis benchmark.")
 }

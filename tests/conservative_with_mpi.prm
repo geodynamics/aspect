@@ -24,7 +24,7 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = true
 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = Stokes only
 
 
 subsection Boundary temperature model

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012, 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2014, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,13 +23,13 @@
 #define __aspect__global_h
 
 #ifdef ASPECT_USE_PETSC
-#include <deal.II/lac/petsc_block_vector.h>
-#include <deal.II/lac/petsc_block_sparse_matrix.h>
-#include <deal.II/lac/petsc_precondition.h>
+#  include <deal.II/lac/petsc_parallel_block_vector.h>
+#  include <deal.II/lac/petsc_parallel_block_sparse_matrix.h>
+#  include <deal.II/lac/petsc_precondition.h>
 #else
-#include <deal.II/lac/trilinos_block_vector.h>
-#include <deal.II/lac/trilinos_block_sparse_matrix.h>
-#include <deal.II/lac/trilinos_precondition.h>
+#  include <deal.II/lac/trilinos_block_vector.h>
+#  include <deal.II/lac/trilinos_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_precondition.h>
 #endif
 
 #include <deal.II/lac/generic_linear_algebra.h>
@@ -275,8 +275,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::BlockCompressedSimpleSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::BlockDynamicSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::DynamicSparsityPattern DynamicSparsityPattern;
 #else
     /**
      * Typedef for the vector type used.
@@ -327,8 +331,12 @@ namespace aspect
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockCompressedSparsityPattern;
+    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockDynamicSparsityPattern;
 
+    /**
+     * Typedef for the compressed sparsity pattern type.
+     */
+    typedef dealii::TrilinosWrappers::SparsityPattern DynamicSparsityPattern;
 #endif
   }
 }
@@ -341,7 +349,7 @@ void print_aspect_header(Stream &stream)
 
   stream << "-----------------------------------------------------------------------------\n"
          << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
-         << "--     . version 1.4.pre\n" //VERSION-INFO. Do not edit by hand.
+         << "--     . version 1.5.0-pre\n" //VERSION-INFO. Do not edit by hand.
 #ifdef DEBUG
          << "--     . running in DEBUG mode\n"
 #else
@@ -349,11 +357,7 @@ void print_aspect_header(Stream &stream)
 #endif
          << "--     . running with " << n_tasks << " MPI process" << (n_tasks == 1 ? "\n" : "es\n");
   const int n_threads =
-#if DEAL_II_VERSION_GTE(8,3,0)
     dealii::MultithreadInfo::n_threads();
-#else
-    dealii::multithread_info.n_threads();
-#endif
   if (n_threads>1)
     stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 #ifdef ASPECT_USE_PETSC

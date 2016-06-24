@@ -1,0 +1,167 @@
+# Based on the sol_c\
+x_2.prm test input, split\
+ every input file after 20
+# characters with a \
+backslash. In some cases,\
+ split it more than once.
+# The output should \
+still be the same.
+
+
+set Dimension = 2
+
+set CFL number      \
+                       = \
+1.0
+set End time        \
+                       = \
+0
+
+
+set Resume computati\
+on                     = \
+false
+set Start time      \
+                       = \
+0
+set Adiabatic surfac\
+e temperature          = \
+0
+set Surface pressure\
+                       = \
+0
+set Use years in out\
+put instead of seconds = \
+false  # default: true
+set Nonlinear solver\
+ scheme                = \
+Stokes only
+
+subsection Boundary \
+temperature model
+  set Model name = b\
+ox
+end
+
+
+subsection Discretiz\
+ation
+  set Stokes velocit\
+y polynomial degree      \
+ = 2
+  set Temperature po\
+lynomial degree          \
+ = 2
+  set Use locally co\
+nservative discretization\
+ = false
+  subsection Stabili\
+zation parameters
+    set alpha = 2
+    set beta  = 0.07\
+8
+    set cR    = 0.5 \
+  # default: 0.11
+  end
+end
+
+
+subsection Geometry \
+model
+  set Model name = b\
+ox
+
+  subsection Box
+    set X extent = 1\
+
+    set Y extent = 1\
+
+    set Z extent = 1\
+
+  end
+end
+
+
+subsection Gravity m\
+odel
+  set Model name = v\
+ertical
+end
+
+
+subsection Initial c\
+onditions
+  set Model name = p\
+erturbed box
+end
+
+
+subsection Material \
+model
+  set Model name = S\
+olCxMaterial
+end
+
+
+subsection Mesh refi\
+nement
+  set Initial adapti\
+ve refinement        = 0 \
+                      # default: 2
+  set Initial global\
+ refinement          = 2 \
+                      # default: 2
+
+  set Strategy      \
+                     = de\
+nsity, temperature
+end
+
+
+subsection Model set\
+tings
+  set Include adiaba\
+tic heating              \
+ = false
+  set Include shear \
+heating                  \
+ = false # default: true
+
+  set Fixed temperat\
+ure boundary indicators  \
+ = 0, 1
+  set Prescribed vel\
+ocity boundary indicators\
+ =
+  set Tangential vel\
+ocity boundary indicators\
+ = 0,1,2,3
+  set Zero velocity \
+boundary indicators      \
+ =
+end
+
+
+subsection Postproce\
+ss
+  set List of postpr\
+ocessors = SolCxPostprocessor
+  subsection Depth a\
+verage
+    set Time between\
+ graphical output = 1e8
+  end
+
+  subsection Visuali\
+zation
+    set Number of gr\
+ouped files       = 0
+    set Output forma\
+t                 = gnupl\
+ot
+    set Time between\
+ graphical output = 0   #\
+ default: 1e8
+  end
+end
+

@@ -13,7 +13,7 @@ set Use years in output instead of seconds = false
 set Output directory = radiogenic_heating
 
 subsection Heating model
-  set Model name = constant heating
+  set List of model names = constant heating
 
   subsection Constant heating
     set Radiogenic heating rate = 1
@@ -109,6 +109,10 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = temperature statistics, internal heating statistics
+  set List of postprocessors = temperature statistics, heating statistics
+  subsection Visualization
+    set List of output variables = heating
+    set Time between graphical output = 0
+  end
 
 end

@@ -1,0 +1,35 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+8 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    1
+     Reference gravity (m/s^2):                     1
+     Reference thermal expansion (1/K):             2e-05
+     Temperature contrast across model domain (K):  1
+     Model domain depth (m):                        1
+     Reference thermal diffusivity (m^2/s):         8e-10
+     Reference viscosity (Pas):                     1
+     Ra number:                                     25000
+     k_value:                                       1e-06
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 8e-10
+
+     Writing graphical output:           output-box_first_time_step/solution-00000
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.668e-07 W, 8.017e-05 W, 2.402e-07 W, 2.402e-07 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

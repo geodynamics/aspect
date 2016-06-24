@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/latent_heat_melt.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -264,7 +263,7 @@ namespace aspect
           else if (dependence == NonlinearDependence::pressure)
             melt_fraction_derivative = melt_fraction_derivative_pressure;
           else
-            AssertThrow(false, ExcMessage("not implemented"));
+            AssertThrow(false, ExcMessage("Error in calculating melt fraction derivative: not implemented"));
 
           entropy_gradient += melt_fraction_derivative * peridotite_melting_entropy_change * peridotite_fraction;
         }
@@ -291,7 +290,7 @@ namespace aspect
               else if (dependence == NonlinearDependence::pressure)
                 melt_fraction_derivative = (dT_melting_dp)/(2*E2 * sqrt(discriminant));
               else
-                AssertThrow(false, ExcMessage("not implemented"));
+                AssertThrow(false, ExcMessage("Error in calculating melt fraction derivative: not implemented"));
             }
 
           entropy_gradient += melt_fraction_derivative * pyroxenite_melting_entropy_change * compositional_fields[0];
@@ -387,59 +386,6 @@ namespace aspect
 
     }
 
-
-    template <int dim>
-    bool
-    LatentHeatMelt<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
-    bool
-    LatentHeatMelt<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeatMelt<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeatMelt<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    LatentHeatMelt<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
 
 
     template <int dim>
@@ -707,6 +653,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
     }
   }
 }

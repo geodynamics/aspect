@@ -56,6 +56,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataInitial<dim>::initialize;
+
         /**
          * Return the initial composition as a function of position. For the
          * current class, this function returns value from the text files.

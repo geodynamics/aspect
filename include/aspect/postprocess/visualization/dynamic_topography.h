@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_visualization_viscosity_h
-#define __aspect__postprocess_visualization_viscosity_h
+#ifndef __aspect__postprocess_visualization_dynamic_topography_h
+#define __aspect__postprocess_visualization_dynamic_topography_h
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>

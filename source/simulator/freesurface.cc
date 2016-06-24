@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/assembly.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -32,21 +33,40 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
+/*
+ * In some instances, using the Mac .dmg package to install deal.II, compilation
+ * fails at the linker stage with an 'ld: symbol(s) not found for architecture x86_64'
+ * error associated to VectorTools::compute_no_normal_flux_constraints. This is not
+ * really understood, but the extra include makes it work for now.
+ */
+DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+#include <deal.II/numerics/vector_tools.templates.h>
+DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 using namespace dealii;
 
 
 namespace aspect
 {
-
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler( Simulator<dim> &simulator,
+  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler (Simulator<dim> &simulator,
                                                           ParameterHandler &prm)
     : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
       free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
       free_surface_dof_handler (sim.triangulation)
   {
     parse_parameters(prm);
+
+    assembler_connection =
+      sim.assemblers->local_assemble_stokes_system
+      .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
+                                std_cxx11::ref(*this),
+                                std_cxx11::_1,
+                                // discard pressure_scaling,
+                                // discard rebuild_stokes_matrix,
+                                // discard scratch object,
+                                std_cxx11::_5));
+
   }
 
   template <int dim>
@@ -65,6 +85,36 @@ namespace aspect
                         "the free surface is stabilized with this term, "
                         "where zero is no stabilization, and one is fully "
                         "implicit.");
+      prm.declare_entry("Surface velocity projection", "normal",
+                        Patterns::Selection("normal|vertical"),
+                        "After each time step the free surface must be "
+                        "advected in the direction of the velocity field. "
+                        "Mass conservation requires that the mesh velocity "
+                        "is in the normal direction of the surface. However, "
+                        "for steep topography or large curvature, advection "
+                        "in the normal direction can become ill-conditioned, "
+                        "and instabilities in the mesh can form. Projection "
+                        "of the mesh velocity onto the local vertical direction "
+                        "can preserve the mesh quality better, but at the "
+                        "cost of slightly poorer mass conservation of the "
+                        "domain.");
+      prm.declare_entry ("Additional tangential mesh velocity boundary indicators", "",
+                         Patterns::List (Patterns::Anything()),
+                         "A comma separated list of names denoting those boundaries "
+                         "where there the mesh is allowed to move tangential to the "
+                         "boundary. All tangential mesh movements along "
+                         "those boundaries that have tangential material velocity "
+                         "boundary conditions are allowed by default, this parameters "
+                         "allows to generate mesh movements along other boundaries that are "
+                         "open, or have prescribed material velocities or tractions."
+                         "\n\n"
+                         "The names of the boundaries listed here can either be "
+                         "numbers (in which case they correspond to the numerical "
+                         "boundary indicators assigned by the geometry object), or they "
+                         "can correspond to any of the symbolic names the geometry object "
+                         "may have provided for each part of the boundary. You may want "
+                         "to compare this with the documentation of the geometry model you "
+                         "use in your model.");
     }
     prm.leave_subsection ();
   }
@@ -75,6 +125,34 @@ namespace aspect
     prm.enter_subsection ("Free surface");
     {
       free_surface_theta = prm.get_double("Free surface stabilization theta");
+      std::string advection_dir = prm.get("Surface velocity projection");
+
+      if ( advection_dir == "normal")
+        advection_direction = SurfaceAdvection::normal;
+      else if ( advection_dir == "vertical")
+        advection_direction = SurfaceAdvection::vertical;
+      else
+        AssertThrow(false, ExcMessage("The surface velocity projection must be ``normal'' or ``vertical''."));
+
+
+      // Create the list of tangential mesh movement boundary indicators
+      try
+        {
+          const std::vector<types::boundary_id> x_additional_tangential_mesh_boundary_indicators
+            = sim.geometry_model->translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                           (prm.get ("Additional tangential mesh velocity boundary indicators")));
+
+          tangential_mesh_boundary_indicators = sim.parameters.tangential_velocity_boundary_indicators;
+          tangential_mesh_boundary_indicators.insert(x_additional_tangential_mesh_boundary_indicators.begin(),
+                                                     x_additional_tangential_mesh_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Free surface/Additional tangential "
+                                          "mesh velocity boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
     }
     prm.leave_subsection ();
   }
@@ -150,17 +228,35 @@ namespace aspect
       VectorTools::interpolate_boundary_values (free_surface_dof_handler, *p,
                                                 ZeroFunction<dim>(dim), mesh_displacement_constraints);
 
-    //Zero out the displacement for the prescribed velocity
+    // Zero out the displacement for the prescribed velocity boundaries
+    // if the boundary is not in the set of tangential mesh boundaries
     for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_velocity_boundary_indicators.begin();
          p != sim.parameters.prescribed_velocity_boundary_indicators.end(); ++p)
-      VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
-                                                ZeroFunction<dim>(dim), mesh_displacement_constraints);
+      {
+        if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
+          {
+            VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+                                                      ZeroFunction<dim>(dim), mesh_displacement_constraints);
+          }
+      }
 
-    //make the tangential boundary indicators no displacement normal to the boundary
+    // Zero out the displacement for the traction boundaries
+    // if the boundary is not in the set of tangential mesh boundaries
+    for (std::map<types::boundary_id, std::pair<std::string, std::string> >::const_iterator p = sim.parameters.prescribed_traction_boundary_indicators.begin();
+         p != sim.parameters.prescribed_traction_boundary_indicators.end(); ++p)
+      {
+        if (tangential_mesh_boundary_indicators.find(p->first) == tangential_mesh_boundary_indicators.end())
+          {
+            VectorTools::interpolate_boundary_values (free_surface_dof_handler, p->first,
+                                                      ZeroFunction<dim>(dim), mesh_displacement_constraints);
+          }
+      }
+
+    // Make the no flux boundary constraints for boundaries with tangential mesh boundaries
     VectorTools::compute_no_normal_flux_constraints (free_surface_dof_handler,
                                                      /* first_vector_component= */
                                                      0,
-                                                     sim.parameters.tangential_velocity_boundary_indicators,
+                                                     tangential_mesh_boundary_indicators,
                                                      mesh_displacement_constraints, sim.mapping);
 
     //make the periodic boundary indicators no displacement normal to the boundary
@@ -176,12 +272,12 @@ namespace aspect
                                                      periodic_boundaries,
                                                      mesh_displacement_constraints, sim.mapping);
 
-    //For the free surface indicators we constrain the displacement to be v.n
-    LinearAlgebra::Vector boundary_normal_velocity;
-    boundary_normal_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-    project_normal_velocity_onto_boundary( boundary_normal_velocity );
+    // For the free surface indicators we constrain the displacement to be v.n
+    LinearAlgebra::Vector boundary_velocity;
+    boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
+    project_velocity_onto_boundary( boundary_velocity );
 
-    //now insert the relevant part of the solution into the mesh constraints
+    // now insert the relevant part of the solution into the mesh constraints
     IndexSet constrained_dofs;
     DoFTools::extract_boundary_dofs(free_surface_dof_handler, ComponentMask(dim, true),
                                     constrained_dofs, sim.parameters.free_surface_boundary_indicators);
@@ -192,7 +288,7 @@ namespace aspect
           if (mesh_displacement_constraints.is_constrained(index)==false)
             {
               mesh_displacement_constraints.add_line(index);
-              mesh_displacement_constraints.set_inhomogeneity(index, boundary_normal_velocity[index]);
+              mesh_displacement_constraints.set_inhomogeneity(index, boundary_velocity[index]);
             }
       }
 
@@ -201,20 +297,21 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::project_normal_velocity_onto_boundary(LinearAlgebra::Vector &output)
+  void Simulator<dim>::FreeSurfaceHandler::project_velocity_onto_boundary(LinearAlgebra::Vector &output)
   {
     // TODO: should we use the extrapolated solution?
 
     //stuff for iterating over the mesh
     QGauss<dim-1> face_quadrature(free_surface_fe.degree+1);
-    UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors | update_JxW_values);
+    UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
+                                           | update_normal_vectors | update_JxW_values);
     FEFaceValues<dim> fs_fe_face_values (sim.mapping, free_surface_fe, face_quadrature, update_flags);
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, face_quadrature, update_flags);
     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points,
                        dofs_per_cell = fs_fe_face_values.dofs_per_cell;
 
     //stuff for assembling system
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
@@ -236,10 +333,12 @@ namespace aspect
     //set up the matrix
     LinearAlgebra::SparseMatrix mass_matrix;
 #ifdef ASPECT_USE_PETSC
-    CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 
 #else
-    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
+    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
+                                          mesh_locally_owned,
+                                          mesh_locally_relevant,
                                           sim.mpi_communicator);
 #endif
     DoFTools::make_sparsity_pattern (free_surface_dof_handler, sp, mass_matrix_constraints, false,
@@ -275,11 +374,7 @@ namespace aspect
           if (cell->face(face_no)->at_boundary())
             {
               const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                 = cell->face(face_no)->boundary_id();
-#else
-                = cell->face(face_no)->boundary_indicator();
-#endif
               if (sim.parameters.free_surface_boundary_indicators.find(boundary_indicator)
                   == sim.parameters.free_surface_boundary_indicators.end())
                 continue;
@@ -292,20 +387,30 @@ namespace aspect
               cell_vector = 0;
               cell_matrix = 0;
               for (unsigned int point=0; point<n_face_q_points; ++point)
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  {
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
-                      {
-                        cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
-                                             fs_fe_face_values[extract_vel].value(i,point) ) *
-                                            fs_fe_face_values.JxW(point);
-                      }
+                {
+                  //Select the direction onto which to project the velocity solution
+                  Tensor<1,dim> direction;
+                  if ( advection_direction == SurfaceAdvection::normal ) //project onto normal vector
+                    direction = fs_fe_face_values.normal_vector(point);
+                  else if ( advection_direction == SurfaceAdvection::vertical ) //project onto local gravity
+                    direction = sim.gravity_model->gravity_vector( fs_fe_face_values.quadrature_point(point) );
+                  else AssertThrow(false, ExcInternalError());
+                  direction *= ( direction.norm() > 0.0 ? 1./direction.norm() : 0.0 );
 
-                    cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) *
-                                       fs_fe_face_values.normal_vector(point) ) *
-                                      (velocity_values[point]*fs_fe_face_values.normal_vector(point)) *
-                                      fs_fe_face_values.JxW(point);
-                  }
+                  for (unsigned int i=0; i<dofs_per_cell; ++i)
+                    {
+                      for (unsigned int j=0; j<dofs_per_cell; ++j)
+                        {
+                          cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
+                                               fs_fe_face_values[extract_vel].value(i,point) ) *
+                                              fs_fe_face_values.JxW(point);
+                        }
+
+                      cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) * direction)
+                                        * (velocity_values[point] * direction)
+                                        * fs_fe_face_values.JxW(point);
+                    }
+                }
 
               mass_matrix_constraints.distribute_local_to_global (cell_matrix, cell_vector,
                                                                   cell_dof_indices, mass_matrix, rhs, false);
@@ -339,12 +444,44 @@ namespace aspect
                        dofs_per_face = sim.finite_element.dofs_per_face,
                        n_q_points    = fe_values.n_quadrature_points;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     std::vector<unsigned int> face_dof_indices (dofs_per_face);
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-    mesh_matrix = 0;
+    mesh_matrix.clear ();
+
+    // We are just solving a Laplacian in each spatial direction, so
+    // the degrees of freedom for different dimensions do not couple.
+    Table<2,DoFTools::Coupling> coupling (dim, dim);
+    coupling.fill(DoFTools::none);
+
+    for (unsigned int c=0; c<dim; ++c)
+      coupling[c][c] = DoFTools::always;
+
+#ifdef ASPECT_USE_PETSC
+    LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
+#else
+    TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
+                                          mesh_locally_owned,
+                                          mesh_locally_relevant,
+                                          sim.mpi_communicator);
+#endif
+    DoFTools::make_sparsity_pattern (free_surface_dof_handler,
+                                     coupling, sp,
+                                     mesh_displacement_constraints, false,
+                                     Utilities::MPI::
+                                     this_mpi_process(sim.mpi_communicator));
+#ifdef ASPECT_USE_PETSC
+    SparsityTools::distribute_sparsity_pattern(sp,
+                                               free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
+                                               sim.mpi_communicator, mesh_locally_relevant);
+    sp.compress();
+    mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
+#else
+    sp.compress();
+    mesh_matrix.reinit (sp);
+#endif
 
     //carry out the solution
     FEValuesExtractors::Vector extract_vel(0);
@@ -438,7 +575,7 @@ namespace aspect
     const unsigned int n_q_points = fe_values.n_quadrature_points,
                        dofs_per_cell = fe_values.dofs_per_cell;
 
-    std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
     FEValuesExtractors::Vector extract_vel(0);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
@@ -513,7 +650,7 @@ namespace aspect
           = free_surface_fe.base_element(0).get_unit_support_points();
         FEValues<dim> mesh_points (sim.mapping, free_surface_fe,
                                    mesh_support_points, update_quadrature_points);
-        std::vector<unsigned int> cell_dof_indices (free_surface_fe.dofs_per_cell);
+        std::vector<types::global_dof_index> cell_dof_indices (free_surface_fe.dofs_per_cell);
 
         typename DoFHandler<dim>::active_cell_iterator cell = free_surface_dof_handler.begin_active(),
                                                        endc = free_surface_dof_handler.end();
@@ -539,44 +676,6 @@ namespace aspect
     make_constraints();
 
     // matrix
-    {
-      mesh_matrix.clear ();
-
-      Table<2,DoFTools::Coupling> coupling (dim, dim);
-      coupling.fill(DoFTools::none);
-
-      for (unsigned int c=0; c<dim; ++c)
-        coupling[c][c] = DoFTools::always;
-
-#ifdef ASPECT_USE_PETSC
-      CompressedSimpleSparsityPattern sp(mesh_locally_relevant);
-
-#else
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,mesh_locally_owned,
-                                            sim.mpi_communicator);
-#endif
-
-      DoFTools::make_sparsity_pattern (free_surface_dof_handler,
-                                       coupling, sp,
-                                       mesh_displacement_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(sim.mpi_communicator));
-
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 free_surface_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 sim.mpi_communicator, mesh_locally_relevant);
-
-      sp.compress();
-
-      mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
-#else
-      sp.compress();
-
-      mesh_matrix.reinit (sp);
-#endif
-
-    }
 
 
   }
@@ -604,9 +703,10 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::apply_stabilization(
-    const typename DoFHandler<dim>::active_cell_iterator &cell,
-    FullMatrix<double> &local_matrix)
+  void
+  Simulator<dim>::FreeSurfaceHandler::
+  apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                       internal::Assembly::CopyData::StokesSystem<dim>      &data)
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -617,7 +717,11 @@ namespace aspect
     FEFaceValues<dim> fe_face_values (sim.mapping, sim.finite_element, quadrature, update_flags);
     const unsigned int n_face_q_points = fe_face_values.n_quadrature_points;
 
-    const FEValuesExtractors::Vector velocities (0);
+    MaterialModel::MaterialModelInputs<dim> in(n_face_q_points,
+                                               sim.parameters.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_face_q_points,
+                                                 sim.parameters.n_compositional_fields);
+    std::vector<std::vector<double> > composition_values (sim.parameters.n_compositional_fields,std::vector<double> (n_face_q_points));
 
     //only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
@@ -625,19 +729,35 @@ namespace aspect
         if (cell->face(face_no)->at_boundary())
           {
             const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
               = cell->face(face_no)->boundary_id();
-#else
-              = cell->face(face_no)->boundary_indicator();
-#endif
+
             if (sim.parameters.free_surface_boundary_indicators.find(boundary_indicator)
                 == sim.parameters.free_surface_boundary_indicators.end())
               continue;
 
             fe_face_values.reinit(cell, face_no);
-
-            //come up with the density contrast across the free surface
             std::vector<Point<dim> > quad_points = fe_face_values.get_quadrature_points();
+
+            //Evaluate the density at the surface quadrature points
+            fe_face_values[sim.introspection.extractors.temperature]
+            .get_function_values (sim.solution, in.temperature);
+            fe_face_values[sim.introspection.extractors.pressure]
+            .get_function_values (sim.solution, in.pressure);
+
+            in.position = quad_points;
+            in.strain_rate.resize(0);  //no need for viscosity
+
+            for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
+              fe_face_values[sim.introspection.extractors.compositional_fields[c]]
+              .get_function_values(sim.solution,
+                                   composition_values[c]);
+            for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+              {
+                for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
+                  in.composition[i][c] = composition_values[c][i];
+              }
+
+            sim.material_model->evaluate(in, out);
 
             for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
               for (unsigned int i=0; i< fe_face_values.dofs_per_cell; ++i)
@@ -649,13 +769,12 @@ namespace aspect
                     double g_norm = gravity.norm();
 
                     //construct the relevant vectors
-                    const Tensor<1,dim> v =     fe_face_values[velocities].value(j, q_point);
+                    const Tensor<1,dim> v =     fe_face_values[sim.introspection.extractors.velocities].value(j, q_point);
                     const Tensor<1,dim> n_hat = fe_face_values.normal_vector(q_point);
-                    const Tensor<1,dim> w =     fe_face_values[velocities].value(i, q_point);
+                    const Tensor<1,dim> w =     fe_face_values[sim.introspection.extractors.velocities].value(i, q_point);
                     const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
-                    //TODO we should use the actual density, not the reference density here.
-                    double pressure_perturbation = std::abs(sim.material_model->reference_density())*
+                    double pressure_perturbation = out.densities[q_point]*
                                                    sim.time_step*free_surface_theta*g_norm;
 
                     //The fictive stabilization stress is (w.g)*(v.n)
@@ -663,7 +782,7 @@ namespace aspect
                                                 (w*g_hat) * (v*n_hat)
                                                 *fe_face_values.JxW(q_point);
 
-                    local_matrix(i,j) += stress_value;
+                    data.local_matrix(i,j) += stress_value;
                   }
           }
 

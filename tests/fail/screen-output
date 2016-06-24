@@ -1,0 +1,21 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+
+----------------------------------------------------
+Exception on processing: 
+
+--------------------------------------------------------
+An error occurred in file <main.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    (dim >= 2) && (dim <= 3)
+The name and call sequence of the exception was:
+    ExcMessage ("ASPECT can only be run in 2d and 3d but a " "different space dimension is given in the parameter file.")
+Additional Information: 
+ASPECT can only be run in 2d and 3d but a different space dimension is given in the parameter file.
+--------------------------------------------------------
+
+Aborting!
+----------------------------------------------------

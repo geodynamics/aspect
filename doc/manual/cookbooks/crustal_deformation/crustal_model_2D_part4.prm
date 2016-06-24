@@ -1,0 +1,10 @@
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
+  set Refinement fraction                = 0.95
+  set Strategy                           = strain rate 
+  set Coarsening fraction                = 0.05
+  set Time steps between mesh refinement = 1
+  set Run postprocessors on initial refinement = true
+end
+

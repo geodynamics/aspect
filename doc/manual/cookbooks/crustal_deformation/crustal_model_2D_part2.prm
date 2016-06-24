@@ -1,0 +1,7 @@
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = cm=0.01, year=1 
+    set Function expression =  if (x<40e3 , 1*cm/year, -1*cm/year) ; 0 
+  end
+end

@@ -1,0 +1,53 @@
+
+Loading shared library <./libmaterial_model_dependencies_steinberger.so>
+
+Number of active cells: 48 (on 3 levels)
+Number of degrees of freedom: 740 (450+65+225)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+80 iterations.
+      Nonlinear Stokes residual: 5.10347e+15
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+79 iterations.
+      Nonlinear Stokes residual: 8.27533e+13
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+39 iterations.
+      Nonlinear Stokes residual: 1.26805e+14
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+27 iterations.
+      Nonlinear Stokes residual: 4.39125e+11
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+14 iterations.
+      Nonlinear Stokes residual: 8.20759e+09
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Nonlinear Stokes residual: 5.42426e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.53223e+07
+
+   Postprocessing:
+viscosity depends on temperature
+density depends on pressure temperature composition
+compressibility depends on pressure temperature composition
+specific_heat depends on pressure temperature composition
+thermal_conductivity depends on
+model is compressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

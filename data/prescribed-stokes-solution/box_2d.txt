@@ -1,0 +1,8 @@
+# Test data for ascii data initial conditions.
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
+# POINTS: 2 2
+# Columns: x y vx vy
+0	0 0 100.0
+0.5	0 0 0.0
+0	0.5 0 100.0
+0.5	0.5 0 0.0

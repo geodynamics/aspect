@@ -11,24 +11,14 @@ namespace aspect
     class Compressibility : public MaterialModel::Simple<dim>
     {
       public:
+
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double density (const double                  temperature,
-                                const double                  pressure,
-                                const std::vector<double>    &compositional_fields,
-                                const Point<dim>             &position) const;
-
-        virtual double compressibility (const double                  temperature,
-                                        const double                  pressure,
-                                        const std::vector<double>    &compositional_fields,
-                                        const Point<dim>             &position) const;
-
-      /**
-        * Return true if the compressibility() function returns something that
-        * is not zero.
-        */
+          * Return true if the compressibility() function returns something that
+          * is not zero.
+          */
         virtual bool
         is_compressible () const;
     };
@@ -42,26 +32,18 @@ namespace aspect
   {
 
     template <int dim>
-    double
+    void
     Compressibility<dim>::
-    density (const double temperature,
-             const double pressure,
-             const std::vector<double> &composition,
-             const Point<dim> &position) const
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      return 1.0 + pressure;
-    }
-
-    template <int dim>
-    double
-    Compressibility<dim>::
-    compressibility (const double ,
-                     const double pressure,
-                     const std::vector<double> &,
-                     const Point<dim> &) const
-    {
-      // compressibility = 1/rho drho/dp
-      return 1.0 / (1. + pressure);
+      Simple<dim>::evaluate(in, out);
+      for (unsigned int i=0; i < in.position.size(); ++i)
+        {
+          const double pressure = in.pressure[i];
+          out.densities[i] = 1.0 + pressure;
+          out.compressibilities[i] = 1.0 / (1. + pressure);
+        }
     }
 
     template <int dim>
@@ -82,7 +64,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(Compressibility,
                                    "compressibility",
                                    "A simple material model that is like the "
-				   "'Simple' model, but has a non-zero compressibility.")
+                                   "'Simple' model, but has a non-zero compressibility.")
   }
 }
 
@@ -128,10 +110,10 @@ namespace aspect
       const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(2).degree+1);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
-				    this->get_fe(),
-				    quadrature_formula,
-				    update_gradients      | update_values |
-				    update_q_points       | update_JxW_values);
+                                        this->get_fe(),
+                                        quadrature_formula,
+                                        update_gradients      | update_values |
+                                        update_q_points       | update_JxW_values);
 
       std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
       std::vector<Tensor<1,dim> > velocity_values(quadrature_formula.size());
@@ -140,8 +122,8 @@ namespace aspect
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
 
       // compute the integral of the viscosity. since we're on a unit box,
       // this also is the average value
@@ -149,42 +131,42 @@ namespace aspect
       double top_flux_integral = 0;
       for (; cell!=endc; ++cell)
         if (cell->is_locally_owned())
-      	  for (unsigned int f=0;f<2*dim;++f)
-      	    if (cell->at_boundary(f)
-      		&&
-      		((cell->face(f)->boundary_indicator() == 2)
-      		 ||
-      		 (cell->face(f)->boundary_indicator() == 3)))
-	  {
-	    fe_face_values.reinit (cell,f);
-	    fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-											 in.temperature);
-	    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-										      in.pressure);
-	    fe_face_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-										      in.strain_rate);
-	    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-	      fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-												      composition_values[c]);
-        fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                    velocity_values);
+          for (unsigned int f=0; f<2*dim; ++f)
+            if (cell->at_boundary(f)
+                &&
+                ((cell->face(f)->boundary_indicator() == 2)
+                 ||
+                 (cell->face(f)->boundary_indicator() == 3)))
+              {
+                fe_face_values.reinit (cell,f);
+                fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
+                    in.temperature);
+                fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                               in.pressure);
+                fe_face_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+                    in.strain_rate);
+                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
+                      composition_values[c]);
+                fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                    velocity_values);
 
-	    in.position = fe_face_values.get_quadrature_points();
-	    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-	      {
-		for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-		  in.composition[i][c] = composition_values[c][i];
-	      }
+                in.position = fe_face_values.get_quadrature_points();
+                for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
+                  {
+                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      in.composition[i][c] = composition_values[c][i];
+                  }
 
-	    this->get_material_model().evaluate(in, out);
+                this->get_material_model().evaluate(in, out);
 
-	    if(cell->face(f)->boundary_indicator() == 2)
-	      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-	    	bottom_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
-	    if(cell->face(f)->boundary_indicator() == 3)
-	      for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-	    	top_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
-	  }
+                if (cell->face(f)->boundary_indicator() == 2)
+                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    bottom_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
+                if (cell->face(f)->boundary_indicator() == 3)
+                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    top_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
+              }
 
       std::ostringstream screen_text1;
       std::ostringstream screen_text2;

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011, 2012, 2013 by the authors of the ASPECT code.
+ Copyright (C) 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -21,119 +21,156 @@
 #ifndef __aspect__particle_particle_h
 #define __aspect__particle_particle_h
 
-#include <aspect/postprocess/interface.h>
-#include <aspect/simulator_access.h>
+#include <aspect/global.h>
+
+#include <deal.II/base/point.h>
+#include <deal.II/base/types.h>
+
+#include <boost/serialization/vector.hpp>
 
 namespace aspect
 {
   namespace Particle
   {
+    using namespace dealii;
     /**
-     * Typedef of cell level/index pair
+     * A namespace for all type definitions related to particles.
      */
-    typedef std::pair<int, int> LevelInd;
-
-    class MPIDataInfo
+    namespace types
     {
-      public:
-        std::string     name;
-        unsigned int    n_elements;
+      using namespace dealii::types;
 
-        MPIDataInfo(std::string name,
-                    unsigned int num_elems)
-          :
-          name(name),
-          n_elements(num_elems) {};
-    };
+      /**
+       * Typedef of cell level/index pair. TODO: replace this by the
+       * active_cell_index from deal.II 8.3 onwards.
+       */
+      typedef std::pair<int, int> LevelInd;
+
+      /* Type definitions */
+
+#ifdef DEAL_II_WITH_64BIT_INDICES
+      /**
+       * The type used for indices of tracers. While in
+       * sequential computations the 4 billion indices of 32-bit unsigned integers
+       * is plenty, parallel computations using hundreds of processes can overflow
+       * this number and we need a bigger index space. We here utilize the same
+       * build variable that controls the dof indices of deal.II because the number
+       * of degrees of freedom and the number of tracers are typically on the same
+       * order of magnitude.
+       *
+       * The data type always indicates an unsigned integer type.
+       */
+      typedef unsigned long long int particle_index;
+
+      /**
+       * An identifier that denotes the MPI type associated with
+       * types::global_dof_index.
+       */
+#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED_LONG_LONG
+#else
+      /**
+       * The type used for indices of tracers. While in
+       * sequential computations the 4 billion indices of 32-bit unsigned integers
+       * is plenty, parallel computations using hundreds of processes can overflow
+       * this number and we need a bigger index space. We here utilize the same
+       * build variable that controls the dof indices of deal.II because the number
+       * of degrees of freedom and the number of tracers are typically on the same
+       * order of magnitude.
+       *
+       * The data type always indicates an unsigned integer type.
+       */
+      typedef unsigned int particle_index;
+
+      /**
+       * An identifier that denotes the MPI type associated with
+       * types::global_dof_index.
+       */
+#  define ASPECT_TRACER_INDEX_MPI_TYPE MPI_UNSIGNED
+#endif
+    }
 
     /**
      * Base class of particles - represents a particle with position,
-     * velocity, and an ID number. This class can be extended to include data
-     * related to a particle. An example of this is shown in the DataParticle
-     * class.
+     * an ID number and a variable number of properties. This class
+     * can be extended to include data related to a particle by the property
+     * manager.
+     *
+     * @ingroup Particle
+     *
      */
     template <int dim>
-    class BaseParticle
+    class Particle
     {
-      private:
-        /**
-         * Current particle location
-         */
-        Point<dim>      location;
-
-        /**
-         * Current particle velocity
-         */
-        Point<dim>      velocity;
-
-        /**
-         * Globally unique ID of particle
-         */
-        double          id;
-
-        /**
-         * Whether this particle is in the local subdomain or not
-         */
-        bool            is_local;
-
-        /**
-         * Whether to check the velocity of this particle This is used for
-         * integration schemes which require multiple integration steps for
-         * some particles, but not for others
-         */
-        bool            check_vel;
-
       public:
         /**
-         * Empty constructor for BaseParticle, creates a particle at the
-         * origin with zero velocity.
+         * Empty constructor for Particle, creates a particle at the
+         * origin.
          */
-        BaseParticle ();
+        Particle ();
 
         /**
-         * Constructor for BaseParticle, creates a particle with the specified
-         * ID at the specified location with zero velocity. Note that Aspect
-         * does not check for duplicate particle IDs so the user must be sure
-         * the IDs are unique over all processes.
+         * Constructor for Particle, creates a particle with the specified
+         * ID at the specified location. Note that Aspect
+         * does not check for duplicate particle IDs so the generator must
+         * make sure the IDs are unique over all processes.
          *
          * @param[in] new_loc Initial location of particle.
          * @param[in] new_id Globally unique ID number of particle.
          */
-        BaseParticle (const Point<dim> &new_loc,
-                      const double &new_id);
+        Particle (const Point<dim> &new_loc,
+                  const types::particle_index &new_id);
 
         /**
-         * Destructor for BaseParticle
+         * Constructor for Particle, creates a particle from a data vector.
+         * This constructor is usually called after sending a particle to a
+         * different process.
+         *
+         * @param[in,out] begin_data A pointer to a memory location from which
+         * to read the information that completely describes a particle.
+         * This class then de-serializes its data from this memory location,
+         * using @p data_size as the length of the memory block from which to
+         * read the data. @p begin_data is advanced by @p data_size bytes in
+         * this constructor.
+
+         * @param[in] data_size Size in bytes of the begin_data array
+         * that will be read in by this particle.
+         */
+        Particle (const void *&begin_data,
+                  const unsigned int data_size);
+
+        /**
+         * Destructor for Particle
          */
         virtual
-        ~BaseParticle ();
+        ~Particle ();
 
         /**
-         * Get the number of doubles required to represent this particle for
-         * communication.
-         *
-         * @return Number of doubles required to represent this particle
-         */
-        static unsigned int
-        data_len ();
+          * Resize the properties member variable to hold the number of doubles
+          * required to represent this particle's properties. This function
+          * is called by the PropertyManager class to prepare this particle
+          * for the initialization of its properties.
+          *
+          * @param [in] n_components Number of additional property components
+          * that this particle holds.
+          */
+        void
+        set_n_property_components (const unsigned int n_components);
 
         /**
-         * Read the particle data from the specified vector of doubles.
+         * Write particle data into a data array. The array is expected
+         * to be large enough to take the data, and the void pointer should
+         * point to the first element in which the data should be written. This
+         * function is meant for serializing all particle properties and
+         * afterwards de-serializing the properties by calling the appropriate
+         * constructor Particle(void *&data, const unsigned int data_size);
          *
-         * @param [in] data The vector of double data to read from.
-         * @param [in] pos The position in the data vector to start reading
-         * from.
-         * @return The position in the vector of the next unread double.
+         * @param [in,out] data The memory location to write particle data
+         * into. This pointer points to the begin of the memory, in which the
+         * data will be written and it will be advanced by the serialized size
+         * of this particle.
          */
-        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos);
-
-        /**
-         * Write particle data to a vector of doubles.
-         *
-         * @param [in,out] data The vector of doubles to write integrator data
-         * into.
-         */
-        virtual void write_data(std::vector<double> &data) const;
+        void
+        write_data(void *&data) const;
 
         /**
          * Set the location of this particle. Note that this does not check
@@ -149,208 +186,75 @@ namespace aspect
          *
          * @return The location of this particle.
          */
-        Point<dim>
+        const Point<dim> &
         get_location () const;
-
-        /**
-         * Set the velocity of this particle.
-         *
-         * @param [in] new_vel The new velocity for this particle.
-         */
-        void
-        set_velocity (Point<dim> new_vel);
-
-        /**
-         * Get the velocity of this particle.
-         *
-         * @return The velocity of this particle.
-         */
-        Point<dim>
-        get_velocity () const;
 
         /**
          * Get the ID number of this particle.
          *
          * @return The id of this particle.
          */
-        double
+        types::particle_index
         get_id () const;
 
         /**
-         * Check whether the particle is marked as being local to this
-         * subdomain. Note that this function does not actually perform the
-         * check for locality.
+         * Set the properties of this particle.
          *
-         * @return Whether the particle is marked as local.
-         */
-        bool
-        local () const;
-
-        /**
-         * Mark the particle as being local of not. Note that this function
-         * does not perform the check for locality.
-         *
-         * @param[in] new_local Whether to mark the particle as local.
+         * @param [in] new_properties The new properties for this particle.
          */
         void
-        set_local (bool new_local);
+        set_properties (const std::vector<double> &new_properties);
 
         /**
-         * Whether to check the particle velocity at its current location.
-         * This is used for integrators where the particle velocity may not
-         * need to be checked every step.
+         * Get write-access to properties of this particle.
          *
-         * @return Whether to check the particle velocity
+         * @return The properties of this particle.
          */
-        bool
-        vel_check () const;
+        std::vector<double> &
+        get_properties ();
 
         /**
-         * Mark whether to check the particle velocity.
+         * Get the properties of this particle.
          *
-         * @param[in] new_vel_check Whether to check the particle velocity.
+         * @return The properties of this particle.
          */
-        void
-        set_vel_check (bool new_vel_check);
+        const std::vector<double> &
+        get_properties () const;
 
         /**
-         * Add the MPI data description for this particle type to the vector.
-         *
-         * @param[in,out] data_info Vector to which MPI data description is
-         * appended.
+         * Serialize the contents of this class.
          */
-        static void
-        add_mpi_types (std::vector<MPIDataInfo> &data_info);
-    };
-
-    /**
-     * DataParticle provides an example of how to extend the BaseParticle
-     * class to include related particle data. This allows users to attach
-     * scalars/vectors/tensors/etc to particles and ensure they are
-     * transmitted correctly over MPI and written to output files.
-     */
-    template <int dim, int data_dim>
-    class DataParticle : public BaseParticle<dim>
-    {
-      private:
-        double      val[data_dim];
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
 
       private:
-        DataParticle()
-        {
-          for (unsigned int i=0; i<data_dim; ++i) val[i] = 0;
-        };
-
-        DataParticle(const Point<dim> &new_loc, const double &new_id) : BaseParticle<dim>(new_loc, new_id)
-        {
-          for (unsigned int i=0; i<data_dim; ++i) val[i] = 0;
-        };
-
-        static unsigned int data_len()
-        {
-          return BaseParticle<dim>::data_len() + data_dim;
-        };
-
-        virtual unsigned int read_data(const std::vector<double> &data, const unsigned int &pos)
-        {
-          unsigned int  p;
-
-          // Read the parent data first
-          p = BaseParticle<dim>::read_data(data, pos);
-
-          // Then read the DataParticle data
-          for (unsigned i=0; i<data_dim; ++i)
-            {
-              val[i] = data.at(p++);
-            }
-
-          return p;
-        };
-
-
-        virtual void write_data(std::vector<double> &data) const
-        {
-          // Write the parent data first
-          BaseParticle<dim>::write_data(data);
-
-          // Then write the DataParticle data
-          for (unsigned i=0; i<data_dim; ++i)
-            {
-              data.push_back(val[i]);
-            }
-        };
+        /**
+         * Current particle location
+         */
+        Point<dim>             location;
 
         /**
-         * Returns a vector from the first dim components of val
-         *
-         * @return vector representation of first dim components of the
-         * particle data
+         * Globally unique ID of particle
          */
-        Point<dim>
-        get_vector () const;
+        types::particle_index  id;
 
         /**
-         * Sets the first dim components of val to the specified vector value
-         *
-         * @param [in] new_vec Vector to set the DataParticle data to
+         * The vector of all tracer properties
          */
-        void set_vector(Point<dim> new_vec)
-        {
-          AssertThrow(data_dim>=dim, std::out_of_range("set_vector"));
-          for (unsigned int i=0; i<dim; ++i)
-            val[i] = new_vec(i);
-        }
-
-        /**
-         * Return a reference to an element of the DataParticle data
-         *
-         * @param [in] ind Index of the data array
-         * @return Reference to double value at the requested index
-         */
-        double &operator[](const unsigned int &ind)
-        {
-          AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
-          return val[ind];
-        }
-
-        /**
-         * Return the value of an element of the DataParticle data
-         *
-         * @param [in] ind Index of the data array
-         * @return Value at the requested index
-         */
-        double operator[](const unsigned int &ind) const
-        {
-          AssertThrow(data_dim>ind, std::out_of_range("DataParticle[]"));
-          return val[ind];
-        }
-
-        /**
-         * Set up the MPI data type information for the DataParticle type
-         *
-         * @param [in,out] data_info Vector to append MPIDataInfo objects to
-         */
-        static void add_mpi_types(std::vector<MPIDataInfo> &data_info)
-        {
-          // Set up the parent types first
-          BaseParticle<dim>::add_mpi_types(data_info);
-
-          // Then add our own
-          data_info.push_back(MPIDataInfo("data", data_dim));
-        };
+        std::vector<double>    properties;
     };
 
-    // A particle with associated values, such as scalars, vectors or tensors
-    template <int dim, int data_dim>
-    inline Point<dim>
-    DataParticle<dim,data_dim>::get_vector () const
+    /* -------------------------- inline and template functions ---------------------- */
+
+    template <int dim>
+    template <class Archive>
+    void Particle<dim>::serialize (Archive &ar, const unsigned int)
     {
-      AssertThrow(data_dim >= dim, std::out_of_range ("get_vector"));
-      Point < dim > p;
-      for (unsigned int i = 0; i < dim; ++i)
-        p (i) = val[i];
+      ar &location
+      & id
+      & properties
+      ;
     }
-
   }
 }
 

@@ -19,7 +19,7 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false  # default: true
 
-set Nonlinear solver scheme                = IMPES
+set Nonlinear solver scheme                = Stokes only
 
 
 subsection Boundary temperature model
@@ -107,6 +107,7 @@ subsection Postprocess
   end
 
   subsection Tracers
+    set Number of tracers = 10
     set Time between data output = 1
     set Data output format = vtu
   end

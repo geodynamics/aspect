@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,11 +37,12 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     Function<dim>::
-    boundary_velocity (const Point<dim> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
       for (unsigned int d=0; d<dim; ++d)
-        velocity[d] = boundary_velocity_function.value(p,d);
+        velocity[d] = boundary_velocity_function.value(position,d);
 
       // Aspect always wants things in MKS system. however, as described
       // in the documentation of this class, we interpret the formulas
@@ -103,7 +104,9 @@ namespace aspect
             std::cerr << "ERROR: FunctionParser failed to parse\n"
                       << "\t'Boundary velocity model.Function'\n"
                       << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'";
+                      << "\t'" << prm.get("Function expression") << "'"
+                      << "More information about the cause of the parse error \n"
+                      << "is shown below.\n";
             throw;
           }
         prm.leave_subsection();
@@ -130,7 +133,7 @@ namespace aspect
                                                  "\n\n"
                                                  "The formula you describe in the mentioned "
                                                  "section is a semicolon separated list of velocities "
-                                                 "for each of the $d$ component of the velocity vector. "
+                                                 "for each of the $d$ components of the velocity vector. "
                                                  "These $d$ formulas are interpreted as having units "
                                                  "m/s, unless the global input parameter ``Use "
                                                  "years in output instead of seconds'' is set, in "

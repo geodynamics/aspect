@@ -27,6 +27,7 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 
+
 namespace aspect
 {
   using namespace dealii;
@@ -165,6 +166,7 @@ namespace aspect
     double                         start_time;
     double                         CFL_number;
     double                         maximum_time_step;
+    bool                           use_artificial_viscosity_smoothing;
     bool                           use_conduction_timestep;
     bool                           convert_to_years;
     std::string                    output_directory;
@@ -173,7 +175,10 @@ namespace aspect
     unsigned int                   timing_output_frequency;
     bool                           use_direct_stokes_solver;
     double                         linear_stokes_solver_tolerance;
+    double                         linear_solver_A_block_tolerance;
+    double                         linear_solver_S_block_tolerance;
     unsigned int                   max_nonlinear_iterations;
+    unsigned int                   max_nonlinear_iterations_in_prerefinement;
     unsigned int                   n_cheap_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
@@ -186,9 +191,6 @@ namespace aspect
      * @name Parameters that have to do with terms in the model
      * @{
      */
-    bool                           include_shear_heating;
-    bool                           include_adiabatic_heating;
-    bool                           include_latent_heat;
     bool                           include_melt_transport;
     double                         melt_transport_threshold;
     double                         radiogenic_heating_rate;
@@ -196,13 +198,23 @@ namespace aspect
     std::set<types::boundary_id> fixed_composition_boundary_indicators;
     std::set<types::boundary_id> zero_velocity_boundary_indicators;
     std::set<types::boundary_id> tangential_velocity_boundary_indicators;
+
     /**
-     * map from boundary id to a pair "components", "velocity boundary type",
+     * Map from boundary id to a pair "components", "velocity boundary type",
      * where components is of the format "[x][y][z]" and the velocity type is
      * mapped to one of the plugins of velocity boundary conditions (e.g.
      * "function")
      */
     std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_velocity_boundary_indicators;
+
+    /**
+     * Map from boundary id to a pair "components", "traction boundary type",
+     * where components is of the format "[x][y][z]" and the traction type is
+     * mapped to one of the plugins of traction boundary conditions (e.g.
+     * "function")
+     */
+    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
+
     /**
      * Selection of operations to perform to remove nullspace from velocity
      * field.
@@ -236,6 +248,13 @@ namespace aspect
     unsigned int                   stabilization_alpha;
     double                         stabilization_c_R;
     double                         stabilization_beta;
+    double                         discontinuous_penalty;
+    bool                           use_limiter_for_discontinuous_temperature_solution;
+    bool                           use_limiter_for_discontinuous_composition_solution;
+    double                         global_temperature_max_preset;
+    double                         global_temperature_min_preset;
+    std::vector<double>            global_composition_max_preset;
+    std::vector<double>            global_composition_min_preset;
     /**
      * @}
      */
@@ -256,6 +275,8 @@ namespace aspect
      */
     unsigned int                   stokes_velocity_degree;
     bool                           use_locally_conservative_discretization;
+    bool                           use_discontinuous_temperature_discretization;
+    bool                           use_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;

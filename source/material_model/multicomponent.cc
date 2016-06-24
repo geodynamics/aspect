@@ -21,7 +21,6 @@
 
 #include <aspect/material_model/multicomponent.h>
 #include <aspect/simulator.h>
-#include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
 
@@ -29,9 +28,25 @@ using namespace dealii;
 
 namespace aspect
 {
+  namespace
+  {
+    std::vector<double>
+    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
+    {
+      std::vector<double> parameter_list;
+      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
+      if (parameter_list.size() == 1)
+        parameter_list.resize(n_fields, parameter_list[0]);
+
+      AssertThrow(parameter_list.size() == n_fields,
+                  ExcMessage("Length of "+parameter+" list must be either one, or n_compositional_fields+1"));
+
+      return parameter_list;
+    }
+  }
+
   namespace MaterialModel
   {
-
     template <int dim>
     const std::vector<double>
     Multicomponent<dim>::
@@ -64,40 +79,35 @@ namespace aspect
       return volume_fractions;
     }
 
-
-
     template <int dim>
     double
     Multicomponent<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &composition,
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &) const
+    average_value ( const std::vector<double> &volume_fractions,
+                    const std::vector<double> &parameter_values,
+                    const enum AveragingScheme &average_type) const
     {
-      double visc = 0.0;
-      std::vector<double> volume_fractions = compute_volume_fractions(composition);
+      double averaged_parameter = 0.0;
 
-      switch (viscosity_averaging)
+      switch (average_type)
         {
           case arithmetic:
           {
             for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              visc += volume_fractions[i]*viscosities[i];
+              averaged_parameter += volume_fractions[i]*parameter_values[i];
             break;
           }
           case harmonic:
           {
             for (unsigned int i=0; i< volume_fractions.size(); ++i)
-              visc += volume_fractions[i]/(viscosities[i]);
-            visc = 1.0/visc;
+              averaged_parameter += volume_fractions[i]/(parameter_values[i]);
+            averaged_parameter = 1.0/averaged_parameter;
             break;
           }
           case geometric:
           {
             for (unsigned int i=0; i < volume_fractions.size(); ++i)
-              visc += volume_fractions[i]*std::log(viscosities[i]);
-            visc = std::exp(visc);
+              averaged_parameter += volume_fractions[i]*std::log(parameter_values[i]);
+            averaged_parameter = std::exp(averaged_parameter);
             break;
           }
           case maximum_composition:
@@ -105,7 +115,7 @@ namespace aspect
             const unsigned int i = (unsigned int)(std::max_element( volume_fractions.begin(),
                                                                     volume_fractions.end() )
                                                   - volume_fractions.begin());
-            visc = viscosities[i];
+            averaged_parameter = parameter_values[i];
             break;
           }
           default:
@@ -114,9 +124,62 @@ namespace aspect
             break;
           }
         }
-      return visc;
+      return averaged_parameter;
     }
 
+
+    template <int dim>
+    void
+    Multicomponent<dim>::
+    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+             MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      for (unsigned int i=0; i < in.temperature.size(); ++i)
+        {
+          const double temperature = in.temperature[i];
+          const std::vector<double> composition = in.composition[i];
+          const std::vector<double> volume_fractions = compute_volume_fractions(composition);
+
+          out.viscosities[i] = average_value ( volume_fractions, viscosities, viscosity_averaging);
+          out.specific_heat[i] = average_value ( volume_fractions, specific_heats, arithmetic);
+
+
+          // Arithmetic averaging of thermal conductivities
+          // This may not be strictly the most reasonable thing, but for most Earth materials we hope
+          // that they do not vary so much that it is a big problem.
+          out.thermal_conductivities[i] = average_value ( volume_fractions, thermal_conductivities, arithmetic);
+
+          double density = 0.0;
+          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+            {
+              // not strictly correct if thermal expansivities are different, since we are interpreting
+              // these compositions as volume fractions, but the error introduced should not be too bad.
+              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
+              density += volume_fractions[j] * densities[j] * temperature_factor;
+            }
+          out.densities[i] = density;
+
+
+          out.thermal_expansion_coefficients[i] = average_value ( volume_fractions, thermal_expansivities, arithmetic);
+
+
+          // Compressibility at the given positions.
+          // The compressibility is given as
+          // $\frac 1\rho \frac{\partial\rho}{\partial p}$.
+          // (here we use an incompressible medium)
+          out.compressibilities[i] = 0.0;
+          // Pressure derivative of entropy at the given positions.
+          out.entropy_derivative_pressure[i] = 0.0;
+          // Temperature derivative of entropy at the given positions.
+          out.entropy_derivative_temperature[i] = 0.0;
+          // Change in composition due to chemical reactions at the
+          // given positions. The term reaction_terms[i][c] is the
+          // change in compositional field c at point i.
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
+
+        }
+    }
 
     template <int dim>
     double
@@ -145,48 +208,9 @@ namespace aspect
     template <int dim>
     double
     Multicomponent<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &composition,
-                   const Point<dim> &) const
-    {
-      double cp = 0.0;
-
-      //Arithmetic averaging of specific heats
-      std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for (unsigned int i=0; i< volume_fractions.size(); ++i)
-        cp += volume_fractions[i]*specific_heats[i];
-
-      return cp;
-    }
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
     reference_cp () const
     {
       return specific_heats[0]; //background
-    }
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &composition,
-                          const Point<dim> &) const
-    {
-      double k = 0.0;
-
-      //Arithmetic averaging of thermal conductivities
-      //This may not be strictly the most reasonable thing,
-      //but for most Earth materials we hope that they do
-      //not vary so much that it is a big problem.
-      std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for (unsigned int i=0; i< volume_fractions.size(); ++i)
-        k += volume_fractions[i]*thermal_conductivities[i];
-
-      return k;
     }
 
     template <int dim>
@@ -198,124 +222,12 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Multicomponent<dim>::
-    density (const double temperature,
-             const double,
-             const std::vector<double> &composition,
-             const Point<dim> &) const
-    {
-      double rho = 0.0;
-
-      //Arithmetic averaging of densities
-      std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for (unsigned int i=0; i< volume_fractions.size(); ++i)
-        {
-          //not strictly correct if thermal expansivities are different, since we are interpreting
-          //these compositions as volume fractions, but the error introduced should not be too bad.
-          const double temperature_factor= (1.0 - thermal_expansivities[i] * (temperature - reference_T));
-          rho += volume_fractions[i]*densities[i]*temperature_factor;
-        }
-
-      return rho;
-    }
-
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &composition,
-                                   const Point<dim> &) const
-    {
-      double alpha = 0.0;
-
-      //Arithmetic averaging of thermal expansivities
-      std::vector<double> volume_fractions = compute_volume_fractions(composition);
-      for (unsigned int i=0; i< volume_fractions.size(); ++i)
-        alpha += volume_fractions[i]*thermal_expansivities[i];
-
-      return alpha;
-    }
-
-
-    template <int dim>
-    double
-    Multicomponent<dim>::
-    compressibility (const double,
-                     const double,
-                     const std::vector<double> &, /*composition*/
-                     const Point<dim> &) const
-    {
-      return 0.0; //incompressible
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::temperature) != NonlinearDependence::none))
-        return true;
-      else if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    Multicomponent<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if (((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none))
-        return true;
-      else
-        return false;
-    }
-
-
-    template <int dim>
     bool
     Multicomponent<dim>::
     is_compressible () const
     {
       return false;
     }
-
-
 
     template <int dim>
     void
@@ -365,27 +277,27 @@ namespace aspect
       prm.leave_subsection();
     }
 
-
-
     template <int dim>
     void
     Multicomponent<dim>::parse_parameters (ParameterHandler &prm)
     {
       //not pretty, but we need to get the number of compositional fields before
       //simulatoraccess has been initialized here...
-      unsigned int n_fields;
+      unsigned int n_foreground_fields;
       prm.enter_subsection ("Compositional fields");
       {
-        n_fields = prm.get_integer ("Number of fields");
+        n_foreground_fields = prm.get_integer ("Number of fields");
       }
       prm.leave_subsection();
-      n_fields++; //increment for background
+
+      const unsigned int n_fields= n_foreground_fields + 1;
+
 
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Multicomponent");
         {
-          reference_T                = prm.get_double ("Reference temperature");
+          reference_T = prm.get_double ("Reference temperature");
 
           if (prm.get ("Viscosity averaging scheme") == "harmonic")
             viscosity_averaging = harmonic;
@@ -398,56 +310,24 @@ namespace aspect
           else
             AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
 
-          std::vector<double> x_values;
+          // Parse multicomponent properties
+          densities=get_vector_double("Densities", n_fields, prm);
+          viscosities=get_vector_double("Viscosities", n_fields, prm);
+          thermal_conductivities=get_vector_double("Thermal conductivities", n_fields, prm);
+          thermal_expansivities=get_vector_double("Thermal expansivities", n_fields, prm);
+          specific_heats=get_vector_double("Specific heats", n_fields, prm);
 
-          //Parse densities
-          x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Densities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
-                      ExcMessage("Length of density list must be either one, or n_compositional_fields+1"));
-          if (x_values.size() == 1)
-            densities.assign( n_fields , x_values[0]);
-          else
-            densities = x_values;
-
-          //Parse viscosities
-          x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Viscosities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
-                      ExcMessage("Length of viscosity list must be either one, or n_compositional_fields+1"));
-          if (x_values.size() == 1)
-            viscosities.assign( n_fields , x_values[0]);
-          else
-            viscosities = x_values;
-
-          //Parse thermal conductivities
-          x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal conductivities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
-                      ExcMessage("Length of thermal conductivity list must be either one, or n_compositional_fields+1"));
-          if (x_values.size() == 1)
-            thermal_conductivities.assign( n_fields , x_values[0]);
-          else
-            thermal_conductivities = x_values;
-
-          //Parse thermal expansivities
-          x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Thermal expansivities")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
-                      ExcMessage("Length of thermal expansivity list must be either one, or n_compositional_fields+1"));
-          if (x_values.size() == 1)
-            thermal_expansivities.assign( n_fields , x_values[0]);
-          else
-            thermal_expansivities = x_values;
-
-          //Parse specific heats
-          x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Specific heats")));
-          AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
-                      ExcMessage("Length of specific heat list must be either one, or n_compositional_fields+1"));
-          if (x_values.size() == 1)
-            specific_heats.assign( n_fields , x_values[0]);
-          else
-            specific_heats = x_values;
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::compositional_fields;
+      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::compositional_fields;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::compositional_fields;
     }
   }
 }

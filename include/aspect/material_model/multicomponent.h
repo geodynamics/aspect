@@ -24,6 +24,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -60,66 +61,22 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Multicomponent : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class Multicomponent : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
+         * Function to compute the material properties in @p out given the
+         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
+         * 0, then the viscosity does not need to be computed.
          */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
-
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
-
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
-        /**
-         * @}
-         */
+        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                              MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         /**
          * @name Qualitative properties one can ask a material model
          * @{
          */
-
-        virtual bool
-        viscosity_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        density_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        compressibility_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const;
-
-        virtual bool
-        thermal_conductivity_depends_on (const NonlinearDependence::Dependence dependence) const;
 
         /**
          * This model is not compressible, so this returns false.
@@ -188,18 +145,26 @@ namespace aspect
         double reference_T;
 
         /**
-         * Enumeration for selecting which viscosity averaging scheme to use.
-         * Select between harmonic, arithmetic, geometric, and
-         * maximum_composition.  The max composition scheme simply uses the
-         * viscosity of whichever field has the highes volume fraction.
-         */
-        enum
+        * Enumeration for selecting which averaging scheme to use.
+        * Select between harmonic, arithmetic, geometric, and
+        * maximum_composition.  The max composition scheme simply uses the
+        * parameter of whichever field has the highest volume fraction.
+        */
+        enum AveragingScheme
         {
           harmonic,
           arithmetic,
           geometric,
           maximum_composition
-        } viscosity_averaging;
+        };
+
+
+        AveragingScheme viscosity_averaging;
+
+        double average_value (const std::vector<double> &composition,
+                              const std::vector<double> &parameter_values,
+                              const enum AveragingScheme &average_type) const;
+
 
         /**
          * Vector for field densities, read from parameter file .

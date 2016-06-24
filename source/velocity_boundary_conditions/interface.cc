@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -49,6 +49,38 @@ namespace aspect
     Interface<dim>::update ()
     {}
 
+
+
+    template <int dim>
+    Tensor<1,dim>
+    Interface<dim>::boundary_velocity (const Point<dim> &) const
+    {
+      /**
+       * We can only get here if the new-style boundary_velocity function (with
+       * two arguments) calls it. This means that the derived class did not override
+       * the new-style boundary_velocity function, and because we are here, it also
+       * did not override this old-style boundary_velocity function (with one argument).
+       */
+      Assert (false, ExcMessage ("A derived class needs to override either the "
+                                 "boundary_velocity(position) (deprecated) or "
+                                 "boundary_velocity(types::boundary_id,position) "
+                                 "function."));
+
+      return Tensor<1,dim>();
+    }
+
+
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+    template <int dim>
+    Tensor<1,dim>
+    Interface<dim>::boundary_velocity (const types::boundary_id ,
+                                       const Point<dim> &position) const
+    {
+      // Call the old-style function without the boundary id to maintain backwards
+      // compatibility. Normally the derived class should override this function.
+      return this->boundary_velocity(position);
+    }
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>

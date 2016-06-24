@@ -1,5 +1,4 @@
-# Test for relaxin topography of the free surface after an 
-# initial sinusoidal perturbation
+#Test for free surface topography due to a rising blob
 
 set Dimension = 2
 set CFL number                             = 0.5

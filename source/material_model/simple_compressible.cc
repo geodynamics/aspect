@@ -19,7 +19,6 @@
 */
 
 #include <aspect/material_model/simple_compressible.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -102,54 +101,6 @@ namespace aspect
     template <int dim>
     bool
     SimpleCompressible<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      // compare this with the implementation of the density() function
-      // to see the dependencies
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return (thermal_alpha != 0);
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return (reference_compressibility != 0);
-      else
-        return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    SimpleCompressible<dim>::
     is_compressible () const
     {
       return (reference_compressibility != 0);
@@ -213,6 +164,18 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::none;
+
+      if (thermal_alpha != 0)
+        this->model_dependence.density |= NonlinearDependence::temperature;
+      if (reference_compressibility != 0)
+        this->model_dependence.density |= NonlinearDependence::pressure;
     }
   }
 }

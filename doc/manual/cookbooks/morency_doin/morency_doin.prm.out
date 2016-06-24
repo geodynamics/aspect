@@ -1,3 +1,22 @@
+set %%\hyperref[parameters:Dimension]{Dimension}% = 2%% \index[prmindex]{Dimension} \index[prmindexfull]{Dimension} %
+set %%\hyperref[parameters:Maximum time step]{Maximum time step}% = 1e4%% \index[prmindex]{Maximum time step} \index[prmindexfull]{Maximum time step} %
+set %%\hyperref[parameters:Nonlinear solver scheme]{Nonlinear solver scheme}% = iterated IMPES%% \index[prmindex]{Nonlinear solver scheme} \index[prmindexfull]{Nonlinear solver scheme} %
+
+subsection %%\hyperref[parameters:Geometry_20model]{Geometry model}%
+  set %%\hyperref[parameters:Geometry model/Model name]{Model name}% = box%% \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+
+  subsection %%\hyperref[parameters:Geometry_20model/Box]{Box}%
+    set %%\hyperref[parameters:Geometry model/Box/X extent]{X extent}%      = 3000e3%% \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set %%\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}%      = 750e3%% \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set %%\hyperref[parameters:Geometry model/Box/X repetitions]{X repetitions}% = 4%% \index[prmindex]{X repetitions} \index[prmindexfull]{Geometry model!Box!X repetitions} %
+  end
+end
+
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = top, bottom%% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = top, bottom, left, right%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+end
+
 subsection %%\hyperref[parameters:Compositional_20fields]{Compositional fields}%
   set %%\hyperref[parameters:Compositional fields/Number of fields]{Number of fields}% = 2%% \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
   set %%\hyperref[parameters:Compositional fields/Names of fields]{Names of fields}%  = upper_crust, lower_crust%% \index[prmindex]{Names of fields} \index[prmindexfull]{Compositional fields!Names of fields} %
@@ -5,38 +24,81 @@ end
 
 subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
   set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+
   subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Function]{Function}%
     set %%\hyperref[parameters:Compositional initial conditions/Function/Variable names]{Variable names}% = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Compositional initial conditions!Function!Variable names} %
-    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = if(y>=725e3,1,0);if((y<=725e3&y>700e3),1,0)%% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
+    set %%\hyperref[parameters:Compositional initial conditions/Function/Function expression]{Function expression}% = if(y>=725e3,1,0);if((y<725e3&y>700e3),1,0)%% \index[prmindex]{Function expression} \index[prmindexfull]{Compositional initial conditions!Function!Function expression} %
   end
 end
 
 subsection %%\hyperref[parameters:Initial_20conditions]{Initial conditions}%
   set %%\hyperref[parameters:Initial conditions/Model name]{Model name}% = function%% \index[prmindex]{Model name} \index[prmindexfull]{Initial conditions!Model name} %
+
   subsection %%\hyperref[parameters:Initial_20conditions/Function]{Function}%
     set %%\hyperref[parameters:Initial conditions/Function/Variable names]{Variable names}% = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Initial conditions!Function!Variable names} %
-    set %%\hyperref[parameters:Initial conditions/Function/Function constants]{Function constants}% = h=750e3, w=3000e3%% \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
+    set %%\hyperref[parameters:Initial conditions/Function/Function constants]{Function constants}% = h=750e3, w=3000e3, mantleT=1350 # deg C%% \index[prmindex]{Function constants} \index[prmindexfull]{Initial conditions!Function!Function constants} %
     set %%\hyperref[parameters:Initial conditions/Function/Function expression]{Function expression}% = \%% \index[prmindex]{Function expression} \index[prmindexfull]{Initial conditions!Function!Function expression} %
-      if( y < 100e3, (100e3-y)/100e3*100+1635, if(y>650e3, (h-y)/(100e3)*1342+293, 1635))
+      if( y < 100e3, \
+        (100e3-y)/100e3*(1600-mantleT)+mantleT+293, \
+        if(y>650e3, \
+          (h-y)/(100e3)*mantleT+293, \
+          mantleT+293))
   end
 end
 
 subsection %%\hyperref[parameters:Material_20model]{Material model}%
-  set %%\hyperref[parameters:Material model/Model name]{Model name}% = morency doin%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
-  subsection %%\hyperref[parameters:Material_20model/Morency]{Morency}%
-    set %%\hyperref[parameters:Material model/Morency/Densities]{Densities}% = 3300,2700,2700%% \index[prmindex]{Densities} \index[prmindexfull]{Material model!Morency!Densities} %
-    set %%\hyperref[parameters:Material model/Morency/Activation energies]{Activation energies}% = 500,320,320%% \index[prmindex]{Activation energies} \index[prmindexfull]{Material model!Morency!Activation energies} %
-    set %%\hyperref[parameters:Material model/Morency/Coefficient of yield stress increase with depth]{Coefficient of yield stress increase with depth}% = 0.25%% \index[prmindex]{Coefficient of yield stress increase with depth} \index[prmindexfull]{Material model!Morency!Coefficient of yield stress increase with depth} %
-    set %%\hyperref[parameters:Material model/Morency/Thermal expansivities]{Thermal expansivities}% = 2e-5%% \index[prmindex]{Thermal expansivities} \index[prmindexfull]{Material model!Morency!Thermal expansivities} %
-    set %%\hyperref[parameters:Material model/Morency/Stress exponents for viscous rheology]{Stress exponents for viscous rheology}% = 3%% \index[prmindex]{Stress exponents for viscous rheology} \index[prmindexfull]{Material model!Morency!Stress exponents for viscous rheology} %
-    set %%\hyperref[parameters:Material model/Morency/Stress exponents for plastic rheology]{Stress exponents for plastic rheology}% = 30%% \index[prmindex]{Stress exponents for plastic rheology} \index[prmindexfull]{Material model!Morency!Stress exponents for plastic rheology} %
-    set %%\hyperref[parameters:Material model/Morency/Thermal diffusivity]{Thermal diffusivity}% = 0.8e-6%% \index[prmindex]{Thermal diffusivity} \index[prmindexfull]{Material model!Morency!Thermal diffusivity} %
-    set %%\hyperref[parameters:Material model/Morency/Heat capacity]{Heat capacity}% = 1.25e3%% \index[prmindex]{Heat capacity} \index[prmindexfull]{Material model!Morency!Heat capacity} %
-    set %%\hyperref[parameters:Material model/Morency/Activation volume]{Activation volume}% = 6.4e-6%% \index[prmindex]{Activation volume} \index[prmindexfull]{Material model!Morency!Activation volume} %
-    set %%\hyperref[parameters:Material model/Morency/Reference strain rate]{Reference strain rate}% = 6.4e-16%% \index[prmindex]{Reference strain rate} \index[prmindexfull]{Material model!Morency!Reference strain rate} %
-    set %%\hyperref[parameters:Material model/Morency/Preexponential constant for viscous rheology law]{Preexponential constant for viscous rheology law}% = 7e11 ## Value used in paper is 1.24e14%% \index[prmindex]{Preexponential constant for viscous rheology law} \index[prmindexfull]{Material model!Morency!Preexponential constant for viscous rheology law} %
-    set %%\hyperref[parameters:Material model/Morency/Cohesive strength of rocks at the surface]{Cohesive strength of rocks at the surface}% = 117%% \index[prmindex]{Cohesive strength of rocks at the surface} \index[prmindexfull]{Material model!Morency!Cohesive strength of rocks at the surface} %
-    set %%\hyperref[parameters:Material model/Morency/Reference temperature]{Reference temperature}% = 293%% \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Morency!Reference temperature} %
-    set %%\hyperref[parameters:Material model/Morency/Minimum strain rate]{Minimum strain rate}% = 5e-19                             ## Value used in paper is 1.4e-20%% \index[prmindex]{Minimum strain rate} \index[prmindexfull]{Material model!Morency!Minimum strain rate} %
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = Morency and Doin%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+  subsection %%\hyperref[parameters:Material_20model/Morency_20and_20Doin]{Morency and Doin}%
+    set %%\hyperref[parameters:Material model/Morency and Doin/Densities]{Densities}% = 3300,2920,2920%% \index[prmindex]{Densities} \index[prmindexfull]{Material model!Morency and Doin!Densities} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Activation energies]{Activation energies}% = 500,320,320%% \index[prmindex]{Activation energies} \index[prmindexfull]{Material model!Morency and Doin!Activation energies} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Coefficient of yield stress increase with depth]{Coefficient of yield stress increase with depth}% = 0.25%% \index[prmindex]{Coefficient of yield stress increase with depth} \index[prmindexfull]{Material model!Morency and Doin!Coefficient of yield stress increase with depth} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Thermal expansivities]{Thermal expansivities}% = 3.5e-5%% \index[prmindex]{Thermal expansivities} \index[prmindexfull]{Material model!Morency and Doin!Thermal expansivities} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Stress exponents for viscous rheology]{Stress exponents for viscous rheology}% = 3%% \index[prmindex]{Stress exponents for viscous rheology} \index[prmindexfull]{Material model!Morency and Doin!Stress exponents for viscous rheology} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Stress exponents for plastic rheology]{Stress exponents for plastic rheology}% = 30%% \index[prmindex]{Stress exponents for plastic rheology} \index[prmindexfull]{Material model!Morency and Doin!Stress exponents for plastic rheology} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Thermal diffusivity]{Thermal diffusivity}% = 0.8e-6%% \index[prmindex]{Thermal diffusivity} \index[prmindexfull]{Material model!Morency and Doin!Thermal diffusivity} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Heat capacity]{Heat capacity}% = 1.25e3%% \index[prmindex]{Heat capacity} \index[prmindexfull]{Material model!Morency and Doin!Heat capacity} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Activation volume]{Activation volume}% = 6.4e-6%% \index[prmindex]{Activation volume} \index[prmindexfull]{Material model!Morency and Doin!Activation volume} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Reference strain rate]{Reference strain rate}% = 6.4e-16%% \index[prmindex]{Reference strain rate} \index[prmindexfull]{Material model!Morency and Doin!Reference strain rate} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Preexponential constant for viscous rheology law]{Preexponential constant for viscous rheology law}% = 7e11 ## Value used in paper is 1.24e14%% \index[prmindex]{Preexponential constant for viscous rheology law} \index[prmindexfull]{Material model!Morency and Doin!Preexponential constant for viscous rheology law} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Cohesive strength of rocks at the surface]{Cohesive strength of rocks at the surface}% = 117%% \index[prmindex]{Cohesive strength of rocks at the surface} \index[prmindexfull]{Material model!Morency and Doin!Cohesive strength of rocks at the surface} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Reference temperature]{Reference temperature}% = 293%% \index[prmindex]{Reference temperature} \index[prmindexfull]{Material model!Morency and Doin!Reference temperature} %
+    set %%\hyperref[parameters:Material model/Morency and Doin/Minimum strain rate]{Minimum strain rate}% = 5e-19                             ## Value used in paper is 1.4e-20%% \index[prmindex]{Minimum strain rate} \index[prmindexfull]{Material model!Morency and Doin!Minimum strain rate} %
   end
+end
+
+subsection %%\hyperref[parameters:Boundary_20temperature_20model]{Boundary temperature model}%
+  set %%\hyperref[parameters:Boundary temperature model/Model name]{Model name}% = initial temperature%% \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Boundary_20composition_20model]{Boundary composition model}%
+  set %%\hyperref[parameters:Boundary composition model/Model name]{Model name}% = initial composition%% \index[prmindex]{Model name} \index[prmindexfull]{Boundary composition model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%
+  set %%\hyperref[parameters:Gravity model/Model name]{Model name}% = vertical%% \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Mesh_20refinement]{Mesh refinement}%
+  set %%\hyperref[parameters:Mesh refinement/Initial global refinement]{Initial global refinement}%                 = 5%% \index[prmindex]{Initial global refinement} \index[prmindexfull]{Mesh refinement!Initial global refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Initial adaptive refinement]{Initial adaptive refinement}%               = 3%% \index[prmindex]{Initial adaptive refinement} \index[prmindexfull]{Mesh refinement!Initial adaptive refinement} %
+  set %%\hyperref[parameters:Mesh refinement/Strategy]{Strategy}%                                  = minimum refinement function%% \index[prmindex]{Strategy} \index[prmindexfull]{Mesh refinement!Strategy} %
+  subsection %%\hyperref[parameters:Mesh_20refinement/Minimum_20refinement_20function]{Minimum refinement function}%
+    set %%\hyperref[parameters:Mesh refinement/Minimum refinement function/Variable names]{Variable names}% = d,ignored%% \index[prmindex]{Variable names} \index[prmindexfull]{Mesh refinement!Minimum refinement function!Variable names} %
+    set %%\hyperref[parameters:Mesh refinement/Minimum refinement function/Function expression]{Function expression}% = if(d<100e3,8,5)%% \index[prmindex]{Function expression} \index[prmindexfull]{Mesh refinement!Minimum refinement function!Function expression} %
+  end
+end
+
+subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
+  set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = depth average%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+
+  subsection %%\hyperref[parameters:Postprocess/Depth_20average]{Depth average}%
+    set %%\hyperref[parameters:Postprocess/Depth average/Number of zones]{Number of zones}% = 500%% \index[prmindex]{Number of zones} \index[prmindexfull]{Postprocess!Depth average!Number of zones} %
+    set %%\hyperref[parameters:Postprocess/Depth average/Output format]{Output format}% = gnuplot%% \index[prmindex]{Output format} \index[prmindexfull]{Postprocess!Depth average!Output format} %
+  end
+end
+
+subsection %%\hyperref[parameters:Termination_20criteria]{Termination criteria}%
+  set %%\hyperref[parameters:Termination criteria/Termination criteria]{Termination criteria}% = end step%% \index[prmindex]{Termination criteria} \index[prmindexfull]{Termination criteria!Termination criteria} %
+  set %%\hyperref[parameters:Termination criteria/End step]{End step}% = 0%% \index[prmindex]{End step} \index[prmindexfull]{Termination criteria!End step} %
 end

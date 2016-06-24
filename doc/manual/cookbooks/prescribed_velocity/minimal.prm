@@ -1,0 +1,21 @@
+# Load the signal library.
+set Additional shared libraries = ./libprescribed_velocity.so
+
+## Turn prescribed velocities on
+set Prescribe internal velocities = true
+
+subsection Prescribed velocities
+  subsection Indicator function
+    set Variable names = x,y,t
+    # Return where to prescribe u_x; u_y; u_z
+    # (last one only used if dimension = 3)
+    # 1 if velocity should be prescribed, 0 otherwise
+    set Function expression = if((x-.5)^2+(y-.5)^2<.125,1,0); \
+                                if((x-.5)^2+(y-.5)^2<.125,1,0)
+  end
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function expression = 1;-1
+  end
+end

@@ -1,0 +1,118 @@
+# This is a test for the correct behaviour of 
+# the shear heating in the compressible case.
+# The velocity is prescribed using the prescribed 
+# Stokes solution plugin so that the strain rate is 
+# [0 0.5 0.5 2./3.], which means that we can calculate
+# the solution for the shear heating (2 eta eps:eps),
+# which should be 2.111111.   
+
+set CFL number                             = 1
+set End time                               = 0
+set Adiabatic surface temperature          = 0.5
+set Use years in output instead of seconds = false
+set Linear solver tolerance                = 1e-7
+set Pressure normalization                 = no
+set Nonlinear solver scheme                = Advection only
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y
+    set Function expression = 0.0;x+y
+  end
+
+  subsection Pressure function
+    set Variable names = x,y
+    set Function expression = 0.0
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = box
+  subsection Box
+    set Top temperature = 0
+    set Bottom temperature = 2
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 0.01
+  end
+end
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density = 1
+    set Reference specific heat = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity = 1
+    set Thermal conductivity = 1e-7
+    set Reference compressibility = 1e-6
+  end
+
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 3
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+end
+
+subsection Heating model
+  set List of model names = shear heating
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0;0.01
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics,  heating statistics
+
+  subsection Visualization
+    set List of output variables = heating, viscosity, strain rate
+    set Time between graphical output = 0
+  end
+
+
+end

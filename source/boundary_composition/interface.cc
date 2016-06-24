@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,7 +22,10 @@
 #include <aspect/global.h>
 #include <aspect/boundary_composition/interface.h>
 
+#include <aspect/utilities.h>
+
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 
 #include <list>
@@ -45,6 +48,36 @@ namespace aspect
     void
     Interface<dim>::initialize ()
     {}
+
+    template <int dim>
+    double
+    Interface<dim>::composition (const GeometryModel::Interface<dim> &/*geometry_model*/,
+                                 const types::boundary_id             boundary_indicator,
+                                 const Point<dim>                    &position,
+                                 const unsigned int                   compositional_field) const
+    {
+      /**
+       * Call the new-style function without the geometry model
+       * to maintain backwards compatibility. After removal of this deprecated
+       * function the new function will be called directly by Simulator.
+       */
+
+      return boundary_composition(boundary_indicator,position,compositional_field);
+    }
+
+    template <int dim>
+    double
+    Interface<dim>::boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                                          const Point<dim>        &/*position*/,
+                                          const unsigned int       /*compositional_field*/) const
+    {
+      AssertThrow(false,
+                  ExcMessage("The boundary composition plugin has to implement a function called 'composition' "
+                             "with four arguments or a function 'boundary_composition' with three arguments. "
+                             "The function with four arguments is deprecated and will "
+                             "be removed in a later version of ASPECT."));
+      return numbers::signaling_nan<double>();
+    }
 
     template <int dim>
     void
@@ -104,7 +137,7 @@ namespace aspect
       // the empty string) then the value we get here is the empty string. If
       // we don't catch this case here, we end up with awkward downstream
       // errors because the value obviously does not conform to the Pattern.
-      AssertThrow(model_name != "",
+      AssertThrow(model_name != "unspecified",
                   ExcMessage("You need to select a boundary model for the composition "
                              "('set Model name' in 'subsection Boundary composition model')."));
 
@@ -123,19 +156,11 @@ namespace aspect
       {
         const std::string pattern_of_names
           = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-        try
-          {
-            prm.declare_entry ("Model name", "",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               +
-                               std_cxx11::get<dim>(registered_plugins).get_description_string());
-          }
-        catch (const ParameterHandler::ExcValueDoesNotMatchPattern &)
-          {
-            // ignore the fact that the default value for this parameter
-            // does not match the pattern
-          }
+        prm.declare_entry ("Model name", "unspecified",
+                           Patterns::Selection (pattern_of_names+"|unspecified"),
+                           "Select one of the following models:\n\n"
+                           +
+                           std_cxx11::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection ();
 

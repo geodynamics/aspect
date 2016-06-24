@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,22 +19,24 @@
 */
 
 
-//#define _USE_MATH_DEFINES
-#include <cmath>
 #include <aspect/initial_conditions/solidus.h>
+#include <aspect/utilities.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/boundary_temperature/interface.h>
+
 #include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <cmath>
 
 namespace aspect
 {
   namespace InitialConditions
   {
-    void MeltingCurve::read(const std::string &filename)
+    void MeltingCurve::read(const std::string &filename,
+                            const MPI_Comm &comm)
     {
       data_filename=filename;
-      std::ifstream in(data_filename.c_str(), std::ios::in);
-      AssertThrow (in, ExcMessage (std::string("Can't read file <") + filename + ">"));
+      // Read data from disk and distribute among processes
+      std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
       std::string dummy;
 
@@ -278,23 +280,10 @@ namespace aspect
           }
           prm.leave_subsection();
           prm.enter_subsection("Data");
-          {
-            // Get the path to the data files. If it contains a reference
-            // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
-            // as a #define
-            solidus_filename = prm.get ("Solidus filename");
-            {
-              const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-              std::string::size_type position;
-              while (position = solidus_filename.find (subst_text),  position!=std::string::npos)
-                solidus_filename.replace (solidus_filename.begin()+position,
-                                          solidus_filename.begin()+position+subst_text.size(),
-                                          ASPECT_SOURCE_DIR);
-            }
-
-            // then actually read the file
-            solidus_curve.read(solidus_filename);
-          }
+          solidus_filename = Utilities::replace_in_string(prm.get ("Solidus filename"),
+                                                          "$ASPECT_SOURCE_DIR",
+                                                          ASPECT_SOURCE_DIR);
+          solidus_curve.read(solidus_filename,this->get_mpi_communicator());
           prm.leave_subsection();
         }
         prm.leave_subsection();

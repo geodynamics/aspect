@@ -1,0 +1,17 @@
+set CFL number                             = 0.01
+
+set Additional shared libraries = ./libcrameri_benchmark_1.so
+
+subsection Geometry model
+  set Model name = rebound box
+  subsection Rebound Box
+    set Order = 1
+    set Amplitude = 7.e3
+  end
+  subsection Box
+    set X extent = 28.e5 
+    set Y extent = 7.e5
+    set X repetitions = 300
+    set Y repetitions = 75
+  end
+end

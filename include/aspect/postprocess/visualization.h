@@ -137,6 +137,24 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * A function that is used to indicate to the postprocessor manager which
+           * other postprocessor(s) the current one depends upon. The returned
+           * list contains the names (as strings, as you would write them in
+           * the input file) of the postprocessors it requires. The manager
+           * will ensure that these postprocessors are indeed used, even if
+           * they were not explicitly listed in the input file, and are indeed
+           * run <i>before</i> this postprocessor everytime they are executed.
+           *
+           * The postprocessors you can nominate here are of the general
+           * postprocessor class, not visualization postprocessors.
+           *
+           * The default implementation of this function returns an empty list.
+           */
+          virtual
+          std::list<std::string>
+          required_other_postprocessors () const;
+
 
           /**
            * Save the state of this object to the argument given to this
@@ -281,6 +299,17 @@ namespace aspect
                                               VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
 
         /**
+         * A function that is used to indicate to the postprocessor manager which
+         * other postprocessor(s) the current one depends upon.
+         *
+         * For the current class, we simply loop over all of the visualization
+         * postprocessors and collect what they want.
+         */
+        virtual
+        std::list<std::string>
+        required_other_postprocessors () const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -356,6 +385,15 @@ namespace aspect
         unsigned int group_files;
 
         /**
+         * On large clusters it can be advantageous to first write the
+         * output to a temporary file on a local file system and later
+         * move this file to a network file system. If this variable is
+         * set to a non-empty string it will be interpreted as a temporary
+         * storage location.
+         */
+        std::string temporary_output_location;
+
+        /**
          * deal.II offers the possibility to linearly interpolate output
          * fields of higher order elements to a finer resolution. This
          * somewhat compensates the fact that most visualization software only
@@ -366,6 +404,14 @@ namespace aspect
          * the velocity finite element (usually 2).
          */
         bool interpolate_output;
+
+        /**
+         * For free surface computations Aspect uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, so the mesh
+         * has its own velocity field.  This may be written as an output field
+         * by setting output_mesh_velocity to true.
+         */
+        bool output_mesh_velocity;
 
         /**
          * Set the time output was supposed to be written. In the simplest
@@ -395,8 +441,16 @@ namespace aspect
         std::string last_mesh_file_name;
 
         /**
+         * File operations can potentially take a long time, blocking the
+         * progress of the rest of the model run. Setting this variable to
+         * 'true' moves this process into a background thread, while the
+         * rest of the model continues.
+         */
+        bool write_in_background_thread;
+
+        /**
          * Handle to a thread that is used to write data in the background.
-         * The background_writer() function runs on this background thread.
+         * The writer() function runs on this background thread.
          */
         Threads::Thread<void> background_thread;
 
@@ -408,8 +462,9 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void background_writer (const std::string *filename,
-                                const std::string *file_contents);
+        void writer (const std::string filename,
+                     const std::string temporary_filename,
+                     const std::string *file_contents);
 
         /**
          * Write the various master record files. The master files are used by

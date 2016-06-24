@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,8 +20,9 @@
 
 
 #include <aspect/material_model/steinberger.h>
-#include <aspect/simulator_access.h>
-#include <deal.II/base/parameter_handler.h>
+#include <aspect/utilities.h>
+#include <aspect/lateral_averaging.h>
+
 #include <deal.II/base/table.h>
 #include <fstream>
 #include <iostream>
@@ -41,7 +42,8 @@ namespace aspect
       {
         public:
           MaterialLookup(const std::string &filename,
-                         const bool interpol)
+                         const bool interpol,
+                         const MPI_Comm &comm)
           {
 
             /* Initializing variables */
@@ -54,9 +56,8 @@ namespace aspect
             numpress=0;
 
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             getline(in, temp); // eat first line
             getline(in, temp); // eat next line
@@ -234,8 +235,8 @@ namespace aspect
             const double np = get_np(pressure);
             const unsigned int inp = static_cast<unsigned int>(np);
 
-            Assert(inT<values.n_rows(), ExcMessage("not in range"));
-            Assert(inp<values.n_cols(), ExcMessage("not in range"));
+            Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
+            Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
 
             if (!interpol)
               return values[inT][inp];
@@ -266,8 +267,8 @@ namespace aspect
           {
             temperature=std::max(min_temp, temperature);
             temperature=std::min(temperature, max_temp-delta_temp);
-            Assert(temperature>=min_temp, ExcMessage("not in range"));
-            Assert(temperature<=max_temp, ExcMessage("not in range"));
+            Assert(temperature>=min_temp, ExcMessage("ASPECT found a temperature less than min_T."));
+            Assert(temperature<=max_temp, ExcMessage("ASPECT found a temperature greater than max_T."));
             return (temperature-min_temp)/delta_temp;
           }
 
@@ -275,8 +276,8 @@ namespace aspect
           {
             pressure=std::max(min_press, pressure);
             pressure=std::min(pressure, max_press-delta_press);
-            Assert(pressure>=min_press, ExcMessage("not in range"));
-            Assert(pressure<=max_press, ExcMessage("not in range"));
+            Assert(pressure>=min_press, ExcMessage("ASPECT found a pressure less than min_p."));
+            Assert(pressure<=max_press, ExcMessage("ASPECT found a pressure greater than max_p."));
             return (pressure-min_press)/delta_press;
           }
 
@@ -303,12 +304,12 @@ namespace aspect
       class LateralViscosityLookup
       {
         public:
-          LateralViscosityLookup(const std::string &filename)
+          LateralViscosityLookup(const std::string &filename,
+                                 const MPI_Comm &comm)
           {
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             getline(in, temp); // eat first line
 
@@ -338,10 +339,10 @@ namespace aspect
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("not in range"));
-            Assert(depth<=max_depth, ExcMessage("not in range"));
+            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
             const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("not in range"));
+            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
             return values[idx];
           }
 
@@ -361,12 +362,12 @@ namespace aspect
       class RadialViscosityLookup
       {
         public:
-          RadialViscosityLookup(const std::string &filename)
+          RadialViscosityLookup(const std::string &filename,
+                                const MPI_Comm &comm)
           {
             std::string temp;
-            std::ifstream in(filename.c_str(), std::ios::in);
-            AssertThrow (in,
-                         ExcMessage (std::string("Couldn't open file <") + filename));
+            // Read data from disk and distribute among processes
+            std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
             min_depth=1e20;
             max_depth=-1;
@@ -394,10 +395,10 @@ namespace aspect
             depth=std::max(min_depth, depth);
             depth=std::min(depth, max_depth);
 
-            Assert(depth>=min_depth, ExcMessage("not in range"));
-            Assert(depth<=max_depth, ExcMessage("not in range"));
+            Assert(depth>=min_depth, ExcMessage("ASPECT found a depth less than min_depth."));
+            Assert(depth<=max_depth, ExcMessage("ASPECT found a depth greater than max_depth."));
             const unsigned int idx = static_cast<unsigned int>((depth-min_depth)/delta_depth);
-            Assert(idx<values.size(), ExcMessage("not in range"));
+            Assert(idx<values.size(), ExcMessage("Attempting to look up a depth with an index that would be out of range. (depth-min_depth)/delta_depth too large."));
             return values[idx];
           }
 
@@ -420,9 +421,9 @@ namespace aspect
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
         material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
-                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation)));
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name));
+                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation,this->get_mpi_communicator())));
+      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name,this->get_mpi_communicator()));
+      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name,this->get_mpi_communicator()));
       avg_temp.resize(lateral_viscosity_lookup->get_nslices());
     }
 
@@ -434,7 +435,7 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_depth_average_temperature(avg_temp);
+        this->get_lateral_averaging().get_temperature_averages(avg_temp);
     }
 
 
@@ -769,80 +770,6 @@ namespace aspect
     template <int dim>
     bool
     Steinberger<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    density_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence dependence) const
-    {
-      if ((dependence & NonlinearDependence::temperature) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::pressure) != NonlinearDependence::none)
-        return true;
-      else if ((dependence & NonlinearDependence::compositional_fields) != NonlinearDependence::none)
-        return true;
-      else
-        return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-
-    template <int dim>
-    bool
-    Steinberger<dim>::
     is_compressible () const
     {
       return compressible;
@@ -976,15 +903,9 @@ namespace aspect
       {
         prm.enter_subsection("Steinberger model");
         {
-          datadirectory        = prm.get ("Data directory");
-          {
-            const std::string      subst_text = "$ASPECT_SOURCE_DIR";
-            std::string::size_type position;
-            while (position = datadirectory.find (subst_text),  position!=std::string::npos)
-              datadirectory.replace (datadirectory.begin()+position,
-                                     datadirectory.begin()+position+subst_text.size(),
-                                     ASPECT_SOURCE_DIR);
-          }
+          datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                       "$ASPECT_SOURCE_DIR",
+                                                       ASPECT_SOURCE_DIR);
           material_file_names  = Utilities::split_string_list
                                  (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
@@ -1001,6 +922,13 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
+        // Declare dependencies on solution variables
+        this->model_dependence.viscosity = NonlinearDependence::temperature;
+        this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.compressibility = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.specific_heat = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+        this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       }
     }
   }

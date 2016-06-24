@@ -1,0 +1,102 @@
+# An extension of the 2d shell simple cookbook that is used to show the
+# benefits of using the artificial viscosity smoothing feature. See the
+# manual for more information.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 1.5e16
+set Output directory                       = output
+
+subsection Discretization
+  set Temperature polynomial degree = 2
+
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(sqrt(x*x+y*y)<4000000,1,0)
+  end
+end
+
+subsection Material model 
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5  
+    set Viscosity                     = 1e22  
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Model settings
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer, left, right
+  set Prescribed velocity boundary indicators =
+
+  set Fixed temperature boundary indicators   = inner, outer
+
+  set Include shear heating                   = true
+end
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4273
+    set Outer temperature = 973
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = spherical hexagonal perturbation
+end
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 6
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+  end
+
+  subsection Depth average
+    set Time between graphical output = 115
+  end
+end
+

@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Loading shared library <./libanisotropic_viscosity.so>
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+15 iterations.
+      Nonlinear Stokes residual: 21.6582
+
+   Postprocessing:
+     Heating rate (average/total):  4.71 W/kg, 6.193 W
+     Total viscous dissipation:     47.3 W
+     RMS, max velocity:             1.22 m/s, 2.05 m/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      1.42s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |    0.0947s |       6.7% |
+| Build Stokes preconditioner     |         1 |      0.05s |       3.5% |
+| Solve Stokes system             |         1 |      1.12s |        79% |
+| Initialization                  |         2 |    0.0871s |       6.2% |
+| Postprocessing                  |         1 |     0.017s |       1.2% |
+| Setup dof systems               |         1 |    0.0358s |       2.5% |
++---------------------------------+-----------+------------+------------+
+

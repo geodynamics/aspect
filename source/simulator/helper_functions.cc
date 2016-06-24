@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,6 +96,18 @@ namespace aspect
     return (field_type == temperature_field);
   }
 
+  template <int dim>
+  bool
+  Simulator<dim>::AdvectionField::is_discontinuous(const Introspection<dim> &introspection) const
+  {
+    if (field_type == temperature_field)
+      return introspection.use_discontinuous_temperature_discretization;
+    else if (field_type == compositional_field)
+      return introspection.use_discontinuous_composition_discretization;
+
+    Assert (false, ExcInternalError());
+    return false;
+  }
 
   template <int dim>
   unsigned int
@@ -206,12 +218,16 @@ namespace aspect
 
     if (parameters.convert_to_years == true)
       {
+        statistics.set_precision("Time (years)", 12);
         statistics.set_scientific("Time (years)", true);
+        statistics.set_precision("Time step size (years)", 12);
         statistics.set_scientific("Time step size (years)", true);
       }
     else
       {
+        statistics.set_precision("Time (seconds)", 12);
         statistics.set_scientific("Time (seconds)", true);
+        statistics.set_precision("Time step size (seconds)", 12);
         statistics.set_scientific("Time step size (seconds)", true);
       }
 
@@ -280,19 +296,21 @@ namespace aspect
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
+
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values |
+                             update_gradients |
+                             (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
+
     const unsigned int n_q_points = quadrature_formula.size();
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values | (parameters.use_conduction_timestep ? update_quadrature_points : update_default));
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-    std::vector<double> pressure_values(n_q_points), temperature_values(n_q_points);
     std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-    std::vector<double> composition_values_at_q_point (parameters.n_compositional_fields);
-
-    double new_time_step;
-    bool convection_dominant;
 
     double max_local_speed_over_meshsize = 0;
-    double min_local_conduction_timestep = std::numeric_limits<double>::max(), min_conduction_timestep;
+    double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = dof_handler.begin_active(),
@@ -314,72 +332,82 @@ namespace aspect
                                                    cell->minimum_vertex_distance());
           if (parameters.use_conduction_timestep)
             {
+              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
+              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
+
+              in.strain_rate.resize(0); // we do not need the viscosity
+              in.position = fe_values.get_quadrature_points();
+              in.cell = &cell;
+
               fe_values[introspection.extractors.pressure].get_function_values (solution,
-                                                                                pressure_values);
+                                                                                in.pressure);
               fe_values[introspection.extractors.temperature].get_function_values (solution,
-                                                                                   temperature_values);
+                                                                                   in.temperature);
+              fe_values[introspection.extractors.pressure].get_function_gradients (solution,
+                                                                                   in.pressure_gradient);
+
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 fe_values[introspection.extractors.compositional_fields[c]].get_function_values (solution,
                     composition_values[c]);
 
-              MaterialModel::MaterialModelInputs<dim> in(n_q_points, parameters.n_compositional_fields);
-              MaterialModel::MaterialModelOutputs<dim> out(n_q_points, parameters.n_compositional_fields);
-
-              in.strain_rate.resize(0);// we are not reading the viscosity
-
-              for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
                 {
-                  for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-                    composition_values_at_q_point[k] = composition_values[k][q];
-
-                  in.position[q] = fe_values.quadrature_point(q);
-                  in.temperature[q] = temperature_values[q];
-                  in.pressure[q] = pressure_values[q];
-                  in.velocity[q] = velocity_values[q];
                   for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    in.composition[q][c] = composition_values_at_q_point[c];
+                    in.composition[q][c] = composition_values[c][q];
+
+                  in.velocity[q] = velocity_values[q];
                 }
-              in.cell = &cell;
 
               material_model->evaluate(in, out);
 
-              // In the future we may want to evaluate thermal diffusivity at
-              // each point in the mesh, but for now we just use the reference value
+              // Evaluate thermal diffusivity at each quadrature point and
+              // calculate the corresponding conduction timestep, if applicable
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
-                  double k = out.thermal_conductivities[q];
-                  double rho = out.densities[q];
-                  double c_p = out.specific_heat[q];
+                  const double k = out.thermal_conductivities[q];
+                  const double rho = out.densities[q];
+                  const double c_p = out.specific_heat[q];
 
-                  double thermal_diffusivity = k/(rho*c_p);
+                  Assert(rho * c_p > 0,
+                         ExcMessage ("The product of density and c_P needs to be a "
+                                     "non-negative quantity."));
 
-                  min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                           parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
-                                                           / thermal_diffusivity);
+                  const double thermal_diffusivity = k/(rho*c_p);
+
+                  if (thermal_diffusivity > 0)
+                    {
+                      min_local_conduction_timestep = std::min(min_local_conduction_timestep,
+                                                               parameters.CFL_number*pow(cell->minimum_vertex_distance(),2)
+                                                               / thermal_diffusivity);
+                    }
                 }
             }
         }
 
     const double max_global_speed_over_meshsize
       = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
-    if (parameters.use_conduction_timestep)
-      MPI_Allreduce (&min_local_conduction_timestep, &min_conduction_timestep, 1, MPI_DOUBLE, MPI_MIN, mpi_communicator);
-    else
-      min_conduction_timestep = std::numeric_limits<double>::max();
 
-    // if the velocity is zero, then it is somewhat arbitrary what time step
-    // we should choose. in that case, do as if the velocity was one
-    if (max_global_speed_over_meshsize == 0 && !parameters.use_conduction_timestep)
+    double min_convection_timestep = std::numeric_limits<double>::max();
+    double min_conduction_timestep = std::numeric_limits<double>::max();
+
+    if (max_global_speed_over_meshsize != 0.0)
+      min_convection_timestep = parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize);
+
+    if (parameters.use_conduction_timestep)
+      min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
+
+    double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
+    bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
+
+    if (new_time_step == std::numeric_limits<double>::max())
       {
+        // If the velocity is zero and we either do not compute the conduction
+        // timestep or do not have any conduction, then it is somewhat
+        // arbitrary what time step we should choose. In that case, do as if
+        // the velocity was one
         new_time_step = (parameters.CFL_number /
                          (parameters.temperature_degree * 1));
         convection_dominant = false;
-      }
-    else
-      {
-        new_time_step = std::min(min_conduction_timestep,
-                                 (parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize)));
-        convection_dominant = (new_time_step < min_conduction_timestep);
       }
 
     return std::make_pair(new_time_step, convection_dominant);
@@ -490,7 +518,7 @@ namespace aspect
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
     const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     FEValues<dim> mesh_points (mapping, finite_element, mesh_support_points, update_quadrature_points);
-    std::vector<unsigned int> cell_dof_indices (finite_element.dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
                                                    endc = dof_handler.end();
@@ -804,65 +832,17 @@ namespace aspect
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
 
-    // In the following we integrate the normal velocity over every surface
-    // of the model. This integral is part of the correction term that needs
-    // to be added to the pressure right hand side. To calculate the normal
-    // velocity we need the positions and normals of every quadrature point on
-    // the surface.
+    // In the following we integrate the right hand side. This integral is the
+    // correction term that needs to be added to the pressure right hand side.
+    // (so that the integral of right hand side is set to zero).
 
-    const QGauss<dim-1> quadrature_formula (parameters.stokes_velocity_degree+1);
-    FEFaceValues<dim> fe_face_values (mapping,
-                                      finite_element,
-                                      quadrature_formula,
-                                      update_normal_vectors |
-                                      update_q_points |
-                                      update_JxW_values);
-
-    double local_normal_velocity_integral = 0;
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    // for every surface face that is part of a geometry boundary with
-    // prescribed velocity and that is owned by this processor,
-    // integrate the normal velocity magnitude.
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->face(f)->at_boundary())
-            {
-              const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
-                = cell->face(f)->boundary_id();
-#else
-                = cell->face(f)->boundary_indicator();
-#endif
-
-              if (parameters.prescribed_velocity_boundary_indicators.find(boundary_indicator)==
-                  parameters.prescribed_velocity_boundary_indicators.end())
-                continue;
-
-              fe_face_values.reinit (cell, f);
-
-              // for each of the quadrature points, evaluate the
-              // normal velocity by calling the boundary conditions and add
-              // it to the integral
-              for (unsigned int q=0; q<quadrature_formula.size(); ++q)
-                {
-                  const Tensor<1,dim> velocity =
-                    velocity_boundary_conditions.find(boundary_indicator)->second->boundary_velocity(fe_face_values.quadrature_point(q));
-
-                  const double normal_velocity = velocity * fe_face_values.normal_vector(q);
-                  local_normal_velocity_integral += normal_velocity * fe_face_values.JxW(q);
-                }
-            }
-
-    const double global_normal_velocity_integral =
-      Utilities::MPI::sum (local_normal_velocity_integral,mpi_communicator);
+    // We do not have to integrate over the normal velocity at the
+    // boundaries with a prescribed velocity because the constraints
+    // are already distributed to the right hand side in
+    // current_constraints.distribute.
 
     const double mean       = vector.block(introspection.block_indices.pressure).mean_value();
-    const double correction = (global_normal_velocity_integral - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
+    const double correction = ( - mean * vector.block(introspection.block_indices.pressure).size()) / global_volume;
 
     vector.block(introspection.block_indices.pressure).add(correction, pressure_shape_function_integrals.block(introspection.block_indices.pressure));
   }
@@ -918,329 +898,6 @@ namespace aspect
       }
   }
 
-
-  template <int dim>
-  template<class FUNCTOR>
-  void Simulator<dim>::compute_depth_average(std::vector<double> &values,
-                                             FUNCTOR &fctr) const
-  {
-    Assert (values.size() > 0,
-            ExcMessage ("To call this function, you need to request a positive "
-                        "number of depth slices."));
-    const unsigned int num_slices = values.size();
-    std::vector<double> volume(num_slices);
-
-    // this yields 10^dim quadrature points evenly distributed in the interior of the cell.
-    // We avoid points on the faces, as they would be counted more than once.
-    const QIterated<dim> quadrature_formula (QMidpoint<1>(),
-                                             10);
-    const unsigned int n_q_points = quadrature_formula.size();
-    const double max_depth = geometry_model->maximal_depth();
-
-    FEValues<dim> fe_values (mapping,
-                             finite_element,
-                             quadrature_formula,
-                             update_values | update_gradients | update_quadrature_points);
-
-    std::vector<std::vector<double> > composition_values (parameters.n_compositional_fields,std::vector<double> (n_q_points));
-
-    std::vector<double> output_values(quadrature_formula.size());
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = dof_handler.begin_active(),
-    endc = dof_handler.end();
-
-    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                               parameters.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                 parameters.n_compositional_fields);
-
-    fctr.setup(quadrature_formula.size());
-
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          if (fctr.need_material_properties())
-            {
-              fe_values[introspection.extractors.pressure].get_function_values (this->solution,
-                                                                                in.pressure);
-              fe_values[introspection.extractors.temperature].get_function_values (this->solution,
-                                                                                   in.temperature);
-              fe_values[introspection.extractors.velocities].get_function_values (this->solution,
-                                                                                  in.velocity);
-              fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (this->solution,
-                  in.strain_rate);
-              for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                fe_values[introspection.extractors.compositional_fields[c]].get_function_values(this->solution,
-                                                                                                composition_values[c]);
-
-              for (unsigned int i=0; i<n_q_points; ++i)
-                {
-                  in.position[i] = fe_values.quadrature_point(i);
-                  for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
-              in.cell = &cell;
-
-              material_model->evaluate(in, out);
-            }
-
-          fctr(in, out, fe_values, this->solution, output_values);
-
-          for (unsigned int q = 0; q < n_q_points; ++q)
-            {
-              const double depth = geometry_model->depth(fe_values.quadrature_point(q));
-              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
-              Assert(idx<num_slices, ExcInternalError());
-
-              values[idx] += output_values[q] * fe_values.JxW(q);
-              volume[idx] += fe_values.JxW(q);
-            }
-        }
-
-    std::vector<double> values_all(num_slices);
-    std::vector<double> volume_all(num_slices);
-    Utilities::MPI::sum(volume, mpi_communicator, volume_all);
-    Utilities::MPI::sum(values, mpi_communicator, values_all);
-
-    for (unsigned int i=0; i<num_slices; ++i)
-      values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageField
-    {
-      public:
-        FunctorDepthAverageField(const FEValuesExtractors::Scalar &field)
-          : field_(field) {}
-
-        bool need_material_properties() const
-        {
-          return false;
-        }
-
-        void setup(const unsigned int)
-        {
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, output);
-        }
-
-        const FEValuesExtractors::Scalar field_;
-    };
-  }
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field,
-                                                   std::vector<double> &values) const
-  {
-    const FEValuesExtractors::Scalar field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
-
-    FunctorDepthAverageField<dim> f(field);
-    compute_depth_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageViscosity
-    {
-      public:
-        bool need_material_properties() const
-        {
-          return true;
-        }
-
-        void setup(const unsigned int)
-        {}
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
-        {
-          output = out.viscosities;
-        }
-    };
-  }
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const
-  {
-    FunctorDepthAverageViscosity<dim> f;
-    compute_depth_average(values, f);
-  }
-
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageVelocityMagnitude
-    {
-      public:
-        FunctorDepthAverageVelocityMagnitude(const FEValuesExtractors::Vector &field)
-          : field_(field) {}
-
-        bool need_material_properties() const
-        {
-          return false;
-        }
-
-        void setup(const unsigned int q_points)
-        {
-          velocity_values.resize(q_points);
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, velocity_values);
-          for (unsigned int q=0; q<output.size(); ++q)
-            output[q] = velocity_values[q] * velocity_values[q];
-        }
-
-        std::vector<Tensor<1,dim> > velocity_values;
-        const FEValuesExtractors::Vector field_;
-    };
-  }
-
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const
-  {
-    FunctorDepthAverageVelocityMagnitude<dim> f(introspection.extractors.velocities);
-
-    compute_depth_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageSinkingVelocity
-    {
-      public:
-        FunctorDepthAverageSinkingVelocity(const FEValuesExtractors::Vector &field, GravityModel::Interface<dim> *gravity)
-          : field_(field), gravity_(gravity) {}
-
-        bool need_material_properties() const
-        {
-          return false;
-        }
-
-        void setup(const unsigned int q_points)
-        {
-          velocity_values.resize(q_points);
-        }
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output)
-        {
-          fe_values[field_].get_function_values (solution, velocity_values);
-          for (unsigned int q=0; q<output.size(); ++q)
-            {
-              Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
-              output[q] = std::fabs(std::min(-1e-16,g*velocity_values[q]/g.norm()))*year_in_seconds;
-            }
-        }
-
-        std::vector<Tensor<1,dim> > velocity_values;
-        const FEValuesExtractors::Vector field_;
-        GravityModel::Interface<dim> *gravity_;
-    };
-  }
-
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const
-  {
-    FunctorDepthAverageSinkingVelocity<dim> f(introspection.extractors.velocities,
-                                              this->gravity_model.get());
-
-    compute_depth_average(values, f);
-  }
-
-  namespace
-  {
-    template <int dim>
-    class FunctorDepthAverageVsVp
-    {
-      public:
-        FunctorDepthAverageVsVp(const MaterialModel::Interface<dim> *mm, bool vs)
-          : material_model(mm), vs_(vs)
-        {}
-
-        bool need_material_properties() const
-        {
-          return true;
-        }
-
-        void setup(const unsigned int)
-        {}
-
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output)
-        {
-          if (vs_)
-            for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vs(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
-          else
-            for (unsigned int q=0; q<output.size(); ++q)
-              output[q] = material_model->seismic_Vp(
-                            in.temperature[q], in.pressure[q], in.composition[q],
-                            in.position[q]);
-        }
-
-        const MaterialModel::Interface<dim> *material_model;
-        bool vs_;
-    };
-
-  }
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const
-  {
-    FunctorDepthAverageVsVp<dim> f(this->material_model.get(), true /* Vs */);
-
-    compute_depth_average(values, f);
-  }
-
-  template <int dim>
-  void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const
-  {
-    FunctorDepthAverageVsVp<dim> f(this->material_model.get(), false /* Vp */);
-
-    compute_depth_average(values, f);
-  }
-
-
-
   template <int dim>
   bool
   Simulator<dim>::stokes_matrix_depends_on_solution() const
@@ -1249,11 +906,161 @@ namespace aspect
     // left hand side of the Stokes equation is the viscosity. note
     // that our implementation of compressible materials makes sure
     // that the density does not appear on the lhs.
-    return (material_model->viscosity_depends_on (MaterialModel::NonlinearDependence::any_variable)
-            == true);
+
+    return (material_model->get_model_dependence().viscosity != MaterialModel::NonlinearDependence::none);
+  }
+
+  template <int dim>
+  void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
+  {
+    AssertThrow (dim == 2,
+                 ExcMessage ("The bound preserving limiter is currently only implemented for 2-dimensional problem."));
+    const QGauss<1> quadrature_formula_1 (advection_field.is_temperature() ?
+                                          parameters.temperature_degree+1 :
+                                          parameters.composition_degree+1);
+    const QGaussLobatto<1> quadrature_formula_2 (advection_field.is_temperature() ?
+                                                 parameters.temperature_degree+1 :
+                                                 parameters.composition_degree+1);
+    /*
+     * TODO: currently it only works for 2 dimensional problem. Will add the 3D special selected quadrature points and weight later.
+     * Construct the quadrature points and weights:
+     * 1--Gauss points; 2-- Gauss-Lobatto points; we require that Guass-Lobatto points (2) appear  in only one direction.
+     * in 2D: the combinations are 21, 12
+     * in 3D: the combinations are 211, 121, 112
+     */
+
+    /* 2D construction
+     * Construct the quadrature points and weights:
+     * x direction uses Gauss points and y direction uses Gauss Lobatto points
+     */
+    const QAnisotropic<dim> quadrature_formula_12 (quadrature_formula_1, quadrature_formula_2);
+    //Construct the quadrature points and weights:
+    //x direction uses Gauss-Lobatto points and y direction uses Gauss points
+    const QAnisotropic<dim> quadrature_formula_21 (quadrature_formula_2, quadrature_formula_1);
+
+    const unsigned int n_q_points_12 = quadrature_formula_12.size();
+    const unsigned int n_q_points_21 = quadrature_formula_21.size();
+
+    FEValues<dim> fe_values_12 (mapping,
+                                finite_element,
+                                quadrature_formula_12,
+                                update_values   |
+                                update_quadrature_points |
+                                update_JxW_values);
+    std::vector<double> values_12 (n_q_points_12);
+
+    FEValues<dim> fe_values_21 (mapping,
+                                finite_element,
+                                quadrature_formula_21,
+                                update_values   |
+                                update_quadrature_points |
+                                update_JxW_values);
+    std::vector<double> values_21 (n_q_points_21);
+
+    const FEValuesExtractors::Scalar field
+      = (advection_field.is_temperature()
+         ?
+         introspection.extractors.temperature
+         :
+         introspection.extractors.compositional_fields[advection_field.compositional_variable]
+        );
+
+
+    const double max_solution_exact_global = (advection_field.is_temperature()
+                                              ?
+                                              parameters.global_temperature_max_preset
+                                              :
+                                              parameters.global_composition_max_preset[advection_field.compositional_variable]
+                                             );
+    const double min_solution_exact_global = (advection_field.is_temperature()
+                                              ?
+                                              parameters.global_temperature_min_preset
+                                              :
+                                              parameters.global_composition_min_preset[advection_field.compositional_variable]
+                                             );
+
+    LinearAlgebra::BlockVector distributed_solution (introspection.index_sets.system_partitioning,
+                                                     mpi_communicator);
+    const unsigned int block_idx = advection_field.block_index(introspection);
+    distributed_solution.block(block_idx) = solution.block(block_idx);
+
+    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+    for (; cell != endc; ++cell)
+      {
+        if (cell->is_locally_owned())
+          {
+            cell->get_dof_indices (local_dof_indices);
+            fe_values_12.reinit (cell);
+            fe_values_21.reinit (cell);
+
+            fe_values_12[field].get_function_values(solution, values_12);
+            fe_values_21[field].get_function_values(solution, values_21);
+
+            //Find the local max and local min
+            const double min_solution_local = std::min (*std::min_element (values_12.begin(), values_12.end()),
+                                                        *std::min_element (values_21.begin(), values_21.end()));
+            const double max_solution_local = std::max (*std::max_element (values_12.begin(), values_12.end()),
+                                                        *std::max_element (values_21.begin(), values_21.end()));
+            //Find the trouble cell
+            if (min_solution_local < min_solution_exact_global
+                || max_solution_local > max_solution_exact_global)
+              {
+                //Compute the cell area and cell solution average
+                double local_area = 0;
+                double local_solution_average = 0;
+                for (unsigned int q = 0; q < n_q_points_12; ++q)
+                  {
+                    local_area += fe_values_12.JxW(q);
+                    local_solution_average += values_12[q]*fe_values_12.JxW(q);
+                  }
+                local_solution_average /= local_area;
+                /*
+                 * Define theta: a scaling constant used to correct the old solution by the formula
+                 *   new_value = theta * (old_value-old_solution_cell_average)+old_solution_cell_average
+                 * where theta \in [0,1] defined as below.
+                 * After the correction, the new solution does not exceed the user-given
+                 * exact global maximum/minimum values. Meanwhile, the new solution's cell average
+                 * equals to the old solution's cell average.
+                 */
+                double theta = std::min<double>
+                               (1, abs((max_solution_exact_global-local_solution_average)
+                                       /(max_solution_local-local_solution_average)));
+                theta = std::min<double>
+                        (theta, abs((min_solution_exact_global-local_solution_average)
+                                    /(min_solution_local-local_solution_average)));
+                /* Modify the advection degrees of freedom of the numerical solution.
+                 * note that we are using DG elements, so every DoF on a locally owned cell is locally owned;
+                 * this means that we do not need to check whether the 'distributed_solution' vector actually
+                 *  stores the element we read from/write to here.
+                 */
+                for (unsigned int j = 0;
+                     j < finite_element.base_element(advection_field.base_element(introspection)).dofs_per_cell;
+                     ++j)
+                  {
+                    const unsigned int support_point_index = finite_element.component_to_system_index(
+                                                               (advection_field.is_temperature()
+                                                                ?
+                                                                introspection.component_indices.temperature
+                                                                :
+                                                                introspection.component_indices.compositional_fields[advection_field.compositional_variable]
+                                                               ),
+                                                               /*dof index within component=*/ j);
+                    const double solution_value = solution(local_dof_indices[support_point_index]);
+                    const double limited_solution_value = theta * (solution_value-local_solution_average) + local_solution_average;
+                    distributed_solution(local_dof_indices[support_point_index]) = limited_solution_value;
+                  }
+              }
+          }
+      }
+    distributed_solution.compress(VectorOperation::insert);
+    // now get back to the original vector
+    solution.block(block_idx) = distributed_solution.block(block_idx);
   }
 }
-
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
@@ -1265,17 +1072,12 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::compute_depth_average_field(const AdvectionField &advection_field, std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_viscosity(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_velocity_magnitude(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_sinking_velocity(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_Vs(std::vector<double> &values) const; \
-  template void Simulator<dim>::compute_depth_average_Vp(std::vector<double> &values) const; \
   template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
-  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);
+  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
+  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

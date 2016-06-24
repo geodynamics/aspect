@@ -1,0 +1,39 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.000119 m/year, 0.000189 m/year
+     Temperature min/avg/max: 1500 K, 1600 K, 1700 K
+
+*** Timestep 1:  t=1.3162e+08 years
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.000117 m/year, 0.000185 m/year
+     Temperature min/avg/max: 1501 K, 1600 K, 1699 K
+
+*** Timestep 2:  t=2e+08 years
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.000116 m/year, 0.000182 m/year
+     Temperature min/avg/max: 1502 K, 1600 K, 1698 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

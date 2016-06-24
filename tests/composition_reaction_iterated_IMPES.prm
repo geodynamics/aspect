@@ -1,5 +1,5 @@
 #########################################################
-# This is a variation of the composition-reaction test,
+# This is a variation of the composition_reaction test,
 # with the exception that we use a reaction term that
 # requires the iterated IMPES solver scheme to reach the 
 # correct reaction rate, which is one for the second 
@@ -43,6 +43,10 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
   set Tangential velocity boundary indicators = 0, 1, 2
   set Prescribed velocity boundary indicators = 3: function
+end
+
+subsection Heating model
+  set List of model names = shear heating
 end
 
 

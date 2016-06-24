@@ -1,0 +1,20 @@
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+9 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-octagonal_initial_temperature_rotated/solution-00000
+     Temperature min/avg/max:  0 K, 0.4444 K, 1 K
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

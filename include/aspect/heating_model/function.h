@@ -22,8 +22,8 @@
 #ifndef __aspect__heating_model_function_h
 #define __aspect__heating_model_function_h
 
-#include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/heating_model/interface.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -53,11 +53,10 @@ namespace aspect
          * object.
          */
         virtual
-        double
-        specific_heating_rate (const double,
-                               const double,
-                               const std::vector<double> &,
-                               const Point<dim> &) const;
+        void
+        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
 
         /**
          * A function that is called at the beginning of each time step to

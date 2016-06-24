@@ -1,0 +1,7 @@
+subsection %%\hyperref[parameters:Boundary_20velocity_20model]{Boundary velocity model}%
+  subsection %%\hyperref[parameters:Boundary_20velocity_20model/Function]{Function}%
+    set %%\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%      = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
+    set %%\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%  = cm=0.01, year=1 %% \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
+    set %%\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}% =  if (x<40e3 , 1*cm/year, -1*cm/year) ; 0 %% \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+  end
+end

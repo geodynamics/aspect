@@ -24,7 +24,7 @@
 #define __aspect__initial_conditions_solidus_h
 
 #include <aspect/initial_conditions/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -42,7 +42,8 @@ namespace aspect
         /**
          * Read the data file into the class.
          */
-        void read(const std::string &filename);
+        void read(const std::string &filename,
+                  const MPI_Comm &comm);
 
         /**
          * Get the melting temperature.

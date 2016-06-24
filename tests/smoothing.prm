@@ -1,0 +1,113 @@
+# Smoothing
+# Here we prescribe a circular Stokes flow and test if EV with smoothing works while it rotates
+
+# set CFL number = 0.1 
+set Dimension                              = 2
+
+set Use years in output instead of seconds = false
+set End time                               = .5
+set Output directory                       = output
+
+set Linear solver tolerance                = 1e-7
+set Temperature solver tolerance           = 1e-10
+
+
+subsection Prescribed Stokes solution  
+  set Model name = circle
+end
+set Nonlinear solver scheme                = Advection only
+
+subsection Discretization
+  set Temperature polynomial degree = 2
+
+  subsection Stabilization parameters
+    set Use artificial viscosity smoothing = true
+  end
+end
+
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 2
+    set Box origin X coordinate = -1
+    set Box origin Y coordinate = -1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = 
+    set Function expression =  if((sqrt((x-0)^2+(y-0.5)^2)<0.3)&(abs(x)>=0.05|y>=0.7),1,if(sqrt((x-0)^2+(y+0.5)^2)<0.3,1-sqrt((x-0)^2+(y+0.5)^2)/0.3,if(sqrt((x+0.5)^2+(y+0)^2)<0.3,1.0/4.0*(1+cos(pi*min(sqrt((x+0.5)^2+(y+0)^2)/0.3,1))),0)))
+  end
+end
+
+
+subsection Boundary temperature model
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = top, bottom, left, right
+
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0  # = Ra / Thermal expansion coefficient
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-5
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = .1
+  end
+end

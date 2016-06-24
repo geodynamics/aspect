@@ -1,0 +1,38 @@
+
+
+   Loading Ascii data initial file ASPECT_DIR/data/prescribed-stokes-solution/box_2d.txt.
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  40.8 m/s, 88.7 m/s
+     Temperature min/avg/max:            -2.954e-17 K, 0.08333 K, 1 K
+     Heat fluxes through boundary parts: 4.99e-17 W, -7.469e-19 W, -6 W, -4.619e-17 W
+
+*** Timestep 1:  t=0.0025 seconds
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  40.8 m/s, 88.7 m/s
+     Temperature min/avg/max:            -0.01746 K, 0.1543 K, 1 K
+     Heat fluxes through boundary parts: -0.2538 W, -0.1126 W, -4.441 W, 0.04543 W
+
+*** Timestep 2:  t=0.005 seconds
+   Solving temperature system... 7 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  40.8 m/s, 88.7 m/s
+     Temperature min/avg/max:            -0.03235 K, 0.2263 K, 1 K
+     Heat fluxes through boundary parts: -0.3839 W, -0.3172 W, -3.388 W, 0.1008 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

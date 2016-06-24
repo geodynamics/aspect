@@ -1,0 +1,32 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            8.06e-11 m/s, 1.52e-10 m/s
+     Compositions min/max/mass:    1/1/1
+     Number of advected particles: 30
+
+*** Timestep 1:  t=10 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system... 10+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            8.06e-11 m/s, 1.52e-10 m/s
+     Compositions min/max/mass:    1/1/1
+     Number of advected particles: 30
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Number of advected particles
+# 12: Particle file name
+0 0.0000e+00 16 187 81 0 20 21 63 1.2500e-01 10 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particle-00000 
+1 1.2500e-01 16 187 81 0  0  0  0 1.2500e-01  9                                                                                                                         "" 
+2 2.5000e-01 16 187 81 0  0  0  0 1.2500e-01  8                                                                                                                         "" 
+3 3.7500e-01 16 187 81 0  0  0  0 1.2500e-01  6                                                                                                                         "" 
+4 5.0000e-01 16 187 81 0  0  0  0 1.2500e-01  6                                                                                                                         "" 
+5 6.2500e-01 16 187 81 0  0  0  0 1.2500e-01  5                                                                                                                         "" 
+6 7.5000e-01 16 187 81 0  0  0  0 1.2500e-01  4                                                                                                                         "" 
+7 8.7500e-01 16 187 81 0  0  0  0 1.2500e-01  3                                                                                                                         "" 
+8 1.0000e+00 16 187 81 0  0  0  0 1.2500e-01  3 output-particle_property_integrated_strain_pure_shear/output-particle_property_integrated_strain_pure_shear/particle-00001 

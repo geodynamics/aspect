@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,7 +20,6 @@
 
 
 #include <aspect/material_model/simpler.h>
-#include <deal.II/base/parameter_handler.h>
 
 using namespace dealii;
 
@@ -28,48 +27,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
-    bool
-    Simpler<dim>::
-    viscosity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    density_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    compressibility_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    specific_heat_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    Simpler<dim>::
-    thermal_conductivity_depends_on (const NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
     template <int dim>
     bool
     Simpler<dim>::
@@ -108,6 +65,9 @@ namespace aspect
           out.specific_heat[i] = reference_specific_heat;
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = 0.0;
+
+          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.0;
         }
 
     }
@@ -170,6 +130,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.density = NonlinearDependence::temperature;
+      this->model_dependence.compressibility = NonlinearDependence::none;
+      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::none;
     }
   }
 }

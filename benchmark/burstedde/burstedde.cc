@@ -119,7 +119,8 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const Point<dim> &position) const;
+        boundary_velocity (const types::boundary_id ,
+                           const Point<dim> &position) const;
 
       private:
         const double beta;
@@ -136,7 +137,8 @@ namespace aspect
     template <>
     Tensor<1,2>
     BursteddeBoundary<2>::
-    boundary_velocity (const Point<2> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<2> &p) const
     {
       Assert (false, ExcNotImplemented());
       return Tensor<1,2>();
@@ -147,7 +149,8 @@ namespace aspect
     template <>
     Tensor<1,3>
     BursteddeBoundary<3>::
-    boundary_velocity (const Point<3> &p) const
+    boundary_velocity (const types::boundary_id ,
+                       const Point<3> &p) const
     {
       return AnalyticSolutions::burstedde_velocity (p, beta);
     }
@@ -208,45 +211,6 @@ namespace aspect
          * @name Qualitative properties one can ask a material model
          * @{
          */
-
-        /**
-         * Return true if the viscosity() function returns something that
-         * may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the density() function returns something that may
-         * depend on the variable identifies by the argument.
-         */
-        virtual bool
-        density_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the compressibility() function returns something
-         * that may depend on the variable identifies by the argument.
-         *
-         * This function must return false for all possible arguments if the
-         * is_compressible() function returns false.
-         */
-        virtual bool
-        compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the specific_heat() function returns something
-         * that may depend on the variable identifies by the argument.
-         */
-        virtual bool
-        specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
-
-        /**
-         * Return true if the thermal_conductivity() function returns
-         * something that may depend on the variable identifies by the
-         * argument.
-         */
-        virtual bool
-        thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const;
 
         /**
          * Return whether the model is compressible or not.
@@ -416,48 +380,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    viscosity_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    density_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    compressibility_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    specific_heat_depends_on (const MaterialModel::NonlinearDependence::Dependence) const
-    {
-      return false;
-    }
-
-    template <int dim>
-    bool
-    BursteddeMaterial<dim>::
-    thermal_conductivity_depends_on (const MaterialModel::NonlinearDependence::Dependence dependence) const
-    {
-      return false;
-    }
-
     template <int dim>
     bool
     BursteddeMaterial<dim>::
@@ -494,6 +416,13 @@ namespace aspect
         beta = prm.get_double ("Viscosity parameter");
       }
       prm.leave_subsection();
+
+      // Declare dependencies on solution variables
+      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,8 @@
 
 #include <aspect/boundary_temperature/spherical_constant.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 
 #include <utility>
 #include <limits>
@@ -35,29 +37,29 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    temperature (const GeometryModel::Interface<dim> &geometry_model,
-                 const types::boundary_id             boundary_indicator,
-                 const Point<dim> &) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &) const
     {
-      (void)geometry_model;
+      // verify that the geometry is a spherical shell, a chunk, or an
+      // ellipsoidal chunk since only for geometries based on spherical shells
+      // do we know which boundary indicators are used and what they mean
+      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
+      Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
+              ExcMessage ("This boundary model is only implemented if the geometry "
+                          "is a spherical shell, ellipsoidal chunk or chunk."));
 
-      // verify that the geometry is in fact a spherical shell since only
-      // for this geometry do we know for sure what boundary indicators it
-      // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&geometry_model)
-              != 0,
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "in fact a spherical shell."));
+      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
-      switch (boundary_indicator)
+      if (boundary_name == "inner")
+        return inner_temperature;
+      else if (boundary_name =="outer")
+        return outer_temperature;
+      else
         {
-          case 0:
-            return inner_temperature;
-          case 1:
-            return outer_temperature;
-          default:
-            Assert (false, ExcMessage ("Unknown boundary indicator."));
-            return std::numeric_limits<double>::quiet_NaN();
+          Assert (false, ExcMessage ("Unknown boundary indicator. The given boundary should be ``inner'' or ``outer''."));
+          return std::numeric_limits<double>::quiet_NaN();
         }
     }
 
@@ -129,7 +131,8 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(SphericalConstant,
                                                "spherical constant",
                                                "A model in which the temperature is chosen constant on "
-                                               "the inner and outer boundaries of a spherical shell. "
+                                               "the inner and outer boundaries of a spherical shell, ellipsoidal "
+                                               "chunk or chunk. "
                                                "Parameters are read from subsection 'Spherical constant'.")
   }
 }

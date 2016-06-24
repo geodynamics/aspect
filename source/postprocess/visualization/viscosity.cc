@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/viscosity.h>
-#include <aspect/simulator_access.h>
 
 
 
@@ -71,8 +70,11 @@ namespace aspect
 
             in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
             in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
-            for (unsigned int i = 0; i < dim; ++i)
-              in.velocity[q][i]=uh[q][this->introspection().component_indices.velocities[i]];
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                in.velocity[q][d]=uh[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+              }
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];

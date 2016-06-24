@@ -1,0 +1,103 @@
+# A testcase for the "stress" visualization postprocessor. It solves the
+# equations on a box with Dirichlet boundary conditions equal to
+# (z,0), which then is also the velocity everywhere. This yields
+# a constant strain rate [[0,1/2],[1/2,0]]
+#
+# the stress is then simply this tensor times 2*eta plus the pressure and we set
+# eta=42 below. compared to the visualization_shear_stress test, the test
+# also includes a nonzero gravity so that we get a nonconstant pressure
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = IMPES
+
+
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+# temperature field doesn't matter. set it to zero
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = x
+  end
+end
+
+
+# choose a gravity to ensure that there is a pressure
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 42
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1, 2, 3
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators = 0: function, 1: function, 2: function, 3: function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names = x,z
+    set Function expression = z;0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = stress
+  end
+end
+

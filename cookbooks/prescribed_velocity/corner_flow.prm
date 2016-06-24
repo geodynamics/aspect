@@ -1,0 +1,57 @@
+## First we set up a unit length box model with uniform everything.
+set Dimension   = 2
+set End time    = 0
+
+# Load the signal library.
+set Additional shared libraries = ./libprescribed_velocity.so
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Initial conditions
+  set Model name = function
+end
+
+subsection Model settings
+  set Zero velocity boundary indicators = top
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 7
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+end
+
+## Turn prescribed velocities on
+set Prescribe internal velocities = true
+
+subsection Prescribed velocities
+  subsection Indicator function
+    set Variable names = x,y,t
+    # Return where to prescribe u_x; u_y; u_z
+    # (last one only used if dimension = 3)
+    # 1 if velocity should be prescribed, 0 otherwise
+    set Function expression = if(((x>.1)&(x<.9))&(abs(x-(1-y))<.01),1,0); \
+                                if(((x>.1)&(x<.9))&(abs(x-(1-y))<.01),1,0)
+  end
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function expression = 1;-1
+  end
+end

@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.4.pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+*** Resuming from snapshot!
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (9,539+4,225)
+
+*** Timestep 5:  t=5.61937e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00005
+     Temperature min/avg/max:  1.004 K, 1.041 K, 1.093 K
+     RMS, max velocity:        5.03e-09 m/s, 1.22e-08 m/s
+
+*** Timestep 6:  t=6.90034e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00006
+     Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
+     RMS, max velocity:        4.84e-09 m/s, 1.16e-08 m/s
+
+*** Timestep 7:  t=8.2418e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00007
+     Temperature min/avg/max:  1.006 K, 1.041 K, 1.089 K
+     RMS, max velocity:        4.64e-09 m/s, 1.11e-08 m/s
+
+*** Timestep 8:  t=9.64864e+06 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00008
+     Temperature min/avg/max:  1.007 K, 1.041 K, 1.088 K
+     RMS, max velocity:        4.45e-09 m/s, 1.06e-08 m/s
+
+*** Timestep 9:  t=1.11265e+07 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00009
+     Temperature min/avg/max:  1.008 K, 1.041 K, 1.086 K
+     RMS, max velocity:        4.25e-09 m/s, 1e-08 m/s
+
+*** Snapshot created!
+
+*** Timestep 10:  t=1.26816e+07 seconds
+   Solving temperature system... 20 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00010
+     Temperature min/avg/max:  1.009 K, 1.041 K, 1.084 K
+     RMS, max velocity:        4.05e-09 m/s, 9.53e-09 m/s
+
+Number of active cells: 982 (on 6 levels)
+Number of degrees of freedom: 13,282 (9,204+4,078)
+
+*** Timestep 11:  t=1.4e+07 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system... done.
+
+   Postprocessing:
+     Writing depth average     output1.tmp/depth_average.gnuplot
+     Writing graphical output: output1.tmp/solution-00011
+     Temperature min/avg/max:  1.01 K, 1.041 K, 1.083 K
+     RMS, max velocity:        3.89e-09 m/s, 9.12e-09 m/s
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      13.5s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         7 |      2.07s |        15% |
+| Assemble temperature system     |         7 |      1.55s |        11% |
+| Build temperature preconditioner|         7 |    0.0313s |      0.23% |
+| Solve Stokes system             |         7 |      1.31s |       9.7% |
+| Solve temperature system        |         7 |    0.0567s |      0.42% |
+| Create snapshot                 |         1 |    0.0523s |      0.39% |
+| Initialization                  |         1 |    0.0282s |      0.21% |
+| Postprocessing                  |         7 |      6.79s |        50% |
+| Refine mesh structure, part 1   |         1 |     0.679s |         5% |
+| Refine mesh structure, part 2   |         1 |   0.00844s |     0.062% |
+| Setup dof systems               |         2 |     0.797s |       5.9% |
++---------------------------------+-----------+------------+------------+
+

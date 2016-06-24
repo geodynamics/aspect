@@ -1,0 +1,3 @@
+subsection Free surface
+  set Surface velocity projection = vertical
+end

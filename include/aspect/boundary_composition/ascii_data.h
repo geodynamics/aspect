@@ -56,6 +56,9 @@ namespace aspect
         void
         initialize ();
 
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
+
         /**
          * A function that is called at the beginning of each time step. For
          * the current plugin, this function loads the next data files if
@@ -68,13 +71,13 @@ namespace aspect
         /**
          * Return the boundary composition as a function of position. For the
          * current class, this function returns value from the text files.
+         *
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         double
-        composition (const GeometryModel::Interface<dim> &geometry_model,
-                     const types::boundary_id             boundary_indicator,
-                     const Point<dim>                    &position,
-                     const unsigned int                   compositional_field) const;
-
+        boundary_composition (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position,
+                              const unsigned int compositional_field) const;
 
         /**
          * Declare the parameters this class takes through input files.

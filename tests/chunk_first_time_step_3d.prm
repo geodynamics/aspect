@@ -1,0 +1,79 @@
+# An input script to test the chunk geometry model
+# Designed to check the mesh set-up in 3D
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = IMPES
+
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = -20
+    set Chunk maximum longitude = 20
+    set Longitude repetitions = 1
+    set Chunk minimum latitude = -10
+    set Chunk maximum latitude = 10
+    set Latitude repetitions = 1
+    set Chunk inner radius = 3000000
+    set Chunk outer radius = 6000000
+    set Radius repetitions = 1
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = inner, outer
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = outer
+  set Zero velocity boundary indicators       = inner, west, east
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics,  temperature statistics
+end
+

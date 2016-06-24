@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,8 +20,6 @@
 
 
 #include <aspect/boundary_composition/initial_composition.h>
-#include <aspect/simulator_access.h>
-
 
 namespace aspect
 {
@@ -32,12 +30,11 @@ namespace aspect
     template <int dim>
     double
     InitialComposition<dim>::
-    composition (const GeometryModel::Interface<dim> &,
-                 const types::boundary_id             ,
-                 const Point<dim>                    &location,
-                 const unsigned int                   compositional_field) const
+    boundary_composition (const types::boundary_id /*boundary_indicator*/,
+                          const Point<dim> &position,
+                          const unsigned int compositional_field) const
     {
-      return this->get_compositional_initial_conditions().initial_composition(location, compositional_field);
+      return this->get_compositional_initial_conditions().initial_composition(position, compositional_field);
     }
 
 

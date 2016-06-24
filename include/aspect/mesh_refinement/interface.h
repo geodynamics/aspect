@@ -89,6 +89,19 @@ namespace aspect
         virtual void initialize ();
 
         /**
+         * A function that is called once at the beginning of each timestep.
+         * The default implementation of the function does nothing, but
+         * derived classes that need more elaborate setups for a given time
+         * step may overload the function.
+         *
+         * The point of this function is to allow refinement plugins to do an
+         * initialization once during each time step.
+         */
+        virtual
+        void
+        update ();
+
+        /**
          * Execute this mesh refinement criterion. The default implementation
          * sets all the error indicators to zero.
          *
@@ -164,6 +177,16 @@ namespace aspect
          */
         virtual ~Manager ();
 
+        /*
+         * Update all of the mesh refinement objects that have been requested
+         * in the input file. Individual mesh refinement objects may choose to
+         * implement an update function to modify object variables once per
+         * time step.
+         */
+        virtual
+        void
+        update ();
+
         /**
          * Execute all of the mesh refinement objects that have been requested
          * in the input file. The error indicators are then each individually
@@ -203,7 +226,7 @@ namespace aspect
          * A function that is used to register mesh refinement objects in such
          * a way that the Manager can deal with all of them without having to
          * know them by name. This allows the files in which individual
-         * plugins are implement to register these plugins, rather than also
+         * plugins are implemented to register these plugins, rather than also
          * having to modify the Manager class by adding the new mesh
          * refinement class.
          *

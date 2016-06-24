@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/heat_flux_statistics.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -94,6 +93,8 @@ namespace aspect
                                                                                                in.pressure);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                     in.velocity);
+                fe_face_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
+                    in.pressure_gradient);
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                       composition_values[c]);
@@ -132,11 +133,7 @@ namespace aspect
                   }
 
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(f)->boundary_id();
-#else
-                  = cell->face(f)->boundary_indicator();
-#endif
                 local_boundary_fluxes[boundary_indicator] += local_normal_flux;
               }
 
@@ -155,7 +152,7 @@ namespace aspect
           local_values.push_back (local_boundary_fluxes[*p]);
 
         // then collect contributions from all processors
-        std::vector<double> global_values;
+        std::vector<double> global_values (local_values.size());
         Utilities::MPI::sum (local_values, this->get_mpi_communicator(), global_values);
 
         // and now take them apart into the global map again

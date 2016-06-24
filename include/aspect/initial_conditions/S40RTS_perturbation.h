@@ -33,9 +33,11 @@ namespace aspect
 
     namespace internal
     {
-
-      class SphericalHarmonicsLookup;
-      class SplineDepthsLookup;
+      namespace S40RTS
+      {
+        class SphericalHarmonicsLookup;
+        class SplineDepthsLookup;
+      }
     }
 
     /**
@@ -98,22 +100,37 @@ namespace aspect
 
         /**
          * The parameters below describe the perturbation of shear wave
-         * velocity into a temperatures perturbation The first parameter is
+         * velocity into a temperatures perturbation. The first parameter is
          * constant so far but could be made depth dependent as constraint by
          * e.g. Forte, A.M. & Woodward, R.L., 1997. Seismic-geodynamic
          * constraints on three- dimensional structure, vertical flow, and
          * heat transfer in the mantle, J. Geophys. Res. 102 (B8),
          * 17,981-17,994.
+         * The last parameter is a depth down to which heterogeneities are
+         * zeroed out.
          */
         double vs_to_density;
         double thermal_alpha;
+        double no_perturbation_depth;
 
         /**
-         * This parameter allows to set the degree 0 component of the shear
-         * wave velocity perturbation to zero, which guarantees that average
+         * This parameter allows to remove the degree 0 component of the shear
+         * wave velocity perturbation, which guarantees that average
          * temperature at a certain depth is the background temperature.
          */
         bool zero_out_degree_0;
+
+        /**
+         * This parameter allows to use a lower maximum order when reading
+         * the spherical harmonic data file.
+         */
+        bool lower_max_order;
+
+        /**
+         * The maximum order the users specify, which is only valid when
+         * "lower_max_order" is set to true.
+         */
+        int max_order;
 
         /**
          * This parameter gives the reference temperature, which will be
@@ -126,13 +143,13 @@ namespace aspect
          * Pointer to an object that reads and processes the spherical
          * harmonics coefficients
          */
-        std_cxx11::shared_ptr<internal::SphericalHarmonicsLookup> spherical_harmonics_lookup;
+        std_cxx11::shared_ptr<internal::S40RTS::SphericalHarmonicsLookup> spherical_harmonics_lookup;
 
         /**
          * Pointer to an object that reads and processes the depths for the
          * spline knot points.
          */
-        std_cxx11::shared_ptr<internal::SplineDepthsLookup> spline_depths_lookup;
+        std_cxx11::shared_ptr<internal::S40RTS::SplineDepthsLookup> spline_depths_lookup;
 
     };
 

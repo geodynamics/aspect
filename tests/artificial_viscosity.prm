@@ -1,0 +1,146 @@
+# This is a test for the artificial viscosity. 
+# In particaluar, it checks that the results for
+# temperature and compositional fields are the same.
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 0.1
+set Nonlinear solver scheme                = IMPES
+set Temperature solver tolerance           = 1e-8
+set Composition solver tolerance           = 1e-8
+
+set Dimension                              = 2
+set End time                               = 0.005
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = false
+set Number of cheap Stokes solver steps    = 0
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.078
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# we apply simple shear here, so that the top and bottom boundaries 
+# move with the same speed u0, but in opposite directions
+subsection Boundary velocity model
+  subsection Function
+    set Function constants = u0=0.01,ymid=0.5
+    set Function expression = 1.0;0
+  end
+end
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set X periodic = true
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical # default: 
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 0.0 # default: 30
+  end
+
+end
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Thermal conductivity          = 0.0
+  end
+
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 5                    # default: 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 
+
+  set Include shear heating                   = false
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = composition statistics, temperature statistics, visualization
+
+  subsection Visualization
+
+    set List of output variables      = artificial viscosity, artificial viscosity composition
+
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0.004
+
+    subsection Artificial viscosity composition
+      set Name of compositional field = porosity
+    end
+
+  end
+
+end
+
+
+

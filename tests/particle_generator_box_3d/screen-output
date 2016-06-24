@@ -1,0 +1,32 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,770 (2,187+125+729+729)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000133 m/s, 0.000329 m/s
+     Compositions min/max/mass: 0/1/0.2092
+     Writing particle output:   output-particle_generator_box_3d/particle-00000
+
+*** Timestep 1:  t=10 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 11 iterations.
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000135 m/s, 0.000332 m/s
+     Compositions min/max/mass: -0.01188/1.004/0.2077
+     Writing particle output:   output-particle_generator_box_3d/particle-00001
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

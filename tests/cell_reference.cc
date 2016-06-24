@@ -11,11 +11,12 @@ namespace aspect
 
     template <int dim>
     class CellMaterial :
-        public aspect::MaterialModel::Simpler<dim>, aspect::SimulatorAccess<dim>
+      public aspect::MaterialModel::Simpler<dim>, aspect::SimulatorAccess<dim>
     {
       public:
         void
-        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           Simpler<dim>::evaluate(in,out);
 

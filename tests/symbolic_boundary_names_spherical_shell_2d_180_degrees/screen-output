@@ -1,0 +1,22 @@
+
+Number of active cells: 384 (on 4 levels)
+Number of degrees of freedom: 5,388 (3,298+441+1,649)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+10 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-symbolic_boundary_names_spherical_shell_2d_180_degrees/solution-00000
+     RMS, max velocity:                  5.22e+09 m/s, 9.07e+09 m/s
+     Temperature min/avg/max:            0 K, 2709 K, 6000 K
+     Heat fluxes through boundary parts: -0.02303 W, 0.04167 W, 0.0007001 W, -0.0007387 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

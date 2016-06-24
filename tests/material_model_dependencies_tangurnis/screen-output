@@ -1,0 +1,44 @@
+
+Loading shared library <./libmaterial_model_dependencies_tangurnis.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Nonlinear Stokes residual: 0.0863665
+   Solving Stokes system... 10+0 iterations.
+      Nonlinear Stokes residual: 0.160777
+   Solving Stokes system... 7+0 iterations.
+      Nonlinear Stokes residual: 0.00387072
+   Solving Stokes system... 6+0 iterations.
+      Nonlinear Stokes residual: 0.000311007
+   Solving Stokes system... 4+0 iterations.
+      Nonlinear Stokes residual: 1.11422e-05
+   Solving Stokes system... 3+0 iterations.
+      Nonlinear Stokes residual: 8.65502e-07
+   Solving Stokes system... 2+0 iterations.
+      Nonlinear Stokes residual: 3.04244e-08
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 1.57379e-08
+
+   Postprocessing:
+viscosity depends on
+density depends on
+compressibility depends on
+specific_heat depends on
+thermal_conductivity depends on
+model is compressible
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

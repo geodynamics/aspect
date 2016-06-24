@@ -1,0 +1,76 @@
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = IMPES
+
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+end
+
+
+
+subsection Gravity model
+  set Model name = radial earth-like
+end
+
+
+subsection Geometry model
+  set Model name = chunk
+  subsection Chunk
+    set Chunk inner radius = 0.75
+    set Chunk maximum longitude = 10
+    set Chunk maximum latitude = 10
+    set Radius repetitions = 2
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1000
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Strategy = temperature
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 0, 1
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = depth
+    set Output format = gnuplot
+  end
+end
+

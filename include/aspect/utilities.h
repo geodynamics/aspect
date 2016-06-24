@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014, 2015 by the authors of the ASPECT code.
+  Copyright (C) 2014, 2015, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,6 +45,19 @@ namespace aspect
   namespace Utilities
   {
     using namespace dealii;
+    using namespace dealii::Utilities;
+
+
+    /**
+     * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
+     * given by the @p dofs_per_block structure.
+     *
+     * The numbers of dofs per block need to add up to the size of the index space described
+     * by @p whole_set.
+     */
+    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
+                         const IndexSet &whole_set,
+                         std::vector<IndexSet> &partitioned);
 
     /**
      * Returns spherical coordinates of a cartesian point. The returned array
@@ -66,12 +79,94 @@ namespace aspect
     cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
+     * Given a vector @p v in @p dim dimensional space, return a set
+     * of (dim-1) vectors that are orthogonal to @p v and to each
+     * other. The lengths of these vectors equals that of the original
+     * vector @p v to ensure a well-conditioned basis.
+     */
+    template <int dim>
+    std_cxx11::array<Tensor<1,dim>,dim-1>
+    orthogonal_vectors (const Tensor<1,dim> &v);
+
+    /**
      * Checks whether a file named filename exists.
      *
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
 
+    /**
+     * Reads the content of the ascii file @p filename on process 0 and
+     * distributes the content by MPI_Bcast to all processes. The function
+     * returns the content of the file on all processes.
+     *
+     * @param [in] filename The name of the ascii file to load.
+     * @param [in] comm The MPI communicator in which the content is
+     * distributed.
+     * @return A string which contains the data in @p filename.
+     */
+    std::string
+    read_and_distribute_file_content(const std::string &filename,
+                                     const MPI_Comm &comm);
+
+    /**
+     * Creates a path as if created by the shell command "mkdir -p", therefore
+     * generating directories from the highest to the lowest level if they are
+     * not already existing.
+     *
+     * @param pathname String that contains the path to create. '/' is used as
+     * directory separator.
+     * @param mode Permissions (mode bits) of the created directories. See the
+     * documentation of the chmod() command for more information.
+     * @return The function returns the error value of the last mkdir call
+     * inside. It returns zero on success. See the man page of mkdir() for
+     * more information.
+     */
+    int
+    mkdirp(std::string pathname, const mode_t mode = 0755);
+
+    /**
+     * A namespace defining the cubic spline interpolation that can be used
+     * between different spherical layers in the mantle.
+     */
+    namespace tk
+    {
+      /**
+       * Class for cubic spline interpolation
+       */
+      class spline
+      {
+        public:
+          /**
+           * Initialize the spline.
+           *
+           * @param x X coordinates of interpolation points.
+           * @param y Values in the interpolation points.
+           * @param cubic_spline Whether to construct a cubic spline or just do linear interpolation
+           */
+          void set_points(const std::vector<double> &x,
+                          const std::vector<double> &y,
+                          bool cubic_spline = true);
+          /**
+           * Evaluate spline at point @p x.
+           */
+          double operator() (double x) const;
+
+        private:
+          /**
+           * x coordinates of points
+           */
+          std::vector<double> m_x;
+
+          /**
+           * interpolation parameters
+           * \[
+           * f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
+           * \]
+           */
+          std::vector<double> m_a, m_b, m_c, m_y;
+      };
+    }
 
     /**
      * Extract the compositional values at a single quadrature point with
@@ -99,6 +194,7 @@ namespace aspect
     }
 
 
+
     /**
      * AsciiDataLookup reads in files containing input data in ascii format.
      * Note the required format of the input data: The first lines may contain
@@ -124,7 +220,8 @@ namespace aspect
          * changes over model runtime.
          */
         void
-        load_file(const std::string &filename);
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according

@@ -33,6 +33,21 @@
 
 namespace aspect
 {
+  namespace internal
+  {
+    namespace Assembly
+    {
+      namespace Assemblers
+      {
+        template <int dim>
+        class AssemblerBase;
+      }
+
+      template <int dim>
+      struct AssemblerLists;
+    }
+  }
+
   /**
    * A class that collects the definition of signals that can be triggered
    * at different points in a computation. A signal is in essence an event
@@ -56,6 +71,19 @@ namespace aspect
   struct SimulatorSignals
   {
     /**
+     * A signal that is called before the list of finite element variables is
+     * used to construct the Introspection class.
+     *
+     * The functions (slots) that can attach to this signal need to
+     * take one argument: A std::vector of VariableDeclaration<dim>
+     * representing the collection of finite element variables,
+     * that can be modified and will be used to construct the
+     * final finite element system later.
+     */
+    boost::signals2::signal<void (std::vector<VariableDeclaration<dim> > &)>
+    edit_finite_element_variables;
+
+    /**
      * A signal that is called at the end of setting up the
      * constraints for the current time step. This allows to add
      * more constraints on degrees of freedom, for example to fix
@@ -70,13 +98,62 @@ namespace aspect
                                   ConstraintMatrix &)>  post_constraints_creation;
 
     /**
+    * A signal that is called at the start of setup_dofs().
+    * This allows for editing of the parameters struct on the fly
+    * (such as changing boundary conditions) to give Aspect different behavior
+    * in mid-run than it otherwise would have.
+
+    * The functions that connect to this signal must take two arguments,
+    * a SimulatorAccess object that describes the simulator, and an object
+    * of type aspect::Parameters<dim>, which is the current parameters
+    * object that the simulator is working with.
+    */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  Parameters<dim> &parameters)>  edit_parameters_pre_setup_dofs;
+
+    /**
+    * A signal that is called before every mesh_refinement.
+    * This signal allows for registering functions that store data
+    * that is related to mesh cells and needs to be transferred with the cells
+    * during the repartitioning.
+
+    * The functions that connect to this signal must take a list of pairs of
+    * a size and a callback function that has the signature of the
+    * parallel::distributed::Triangulation::register_attach_data function.
+    * The intention of the function should be to add another pair, describing
+    * the amount of space per cell that needs to be send and a function
+    * that is called for every cell by the Triangulation.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_refinement_store_user_data;
+
+    /**
+    * A signal that is called after every mesh_refinement.
+    * This signal allows for registering functions that load data
+    * that is related to mesh cells and was transferred with the cells
+    * during the repartitioning.
+
+    * The functions that connect to this signal must take a list of callback
+    * functions that have the signature of the
+    * parallel::distributed::Triangulation::register_attach_data function.
+    * The intention of the function should be to add another function,
+    * that is called for every cell by the Triangulation.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_refinement_load_user_data;
+
+    /**
      * A signal that is called at the beginning of the program. It
      * gives user extensions the ability to declare additional
      * parameters via the provided argument. User extensions connected to
      * this signal will likely also want to connect to the
      * parse_additional_parameters signal.
+     *
+     * The first argument to functions that connect to this signal
+     * denotes the dimension in which ASPECT will be run. Functions
+     * connected to this signal can declare additional runtime
+     * parameters in the second argument.
      */
-    static boost::signals2::signal<void (ParameterHandler &)>  declare_additional_parameters;
+    static boost::signals2::signal<void (const unsigned int aspect_dim,
+                                         ParameterHandler &prm)>  declare_additional_parameters;
 
     /**
      * A signal that is called at the beginning of the program, after reading
@@ -90,6 +167,27 @@ namespace aspect
      */
     static boost::signals2::signal<void (const Parameters<dim> &,
                                          ParameterHandler &)>  parse_additional_parameters;
+
+    /**
+      * A signal that is fired when the iterative Stokes solver is
+      * done. Parameters are a reference to the SimulatorAccess, a bool
+      * indicating success or failure, and a vector with linear residuals in
+      * each solver step. If the solver switches from the cheap to the expensive
+      * solver, a -1.0 is inserted.
+      */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  const bool,
+                                  const std::vector<double> &)> post_stokes_solver;
+
+
+    /**
+      * A signal that is fired at the end of the set_assemblers() function that allows
+      * modification of the assembly objects active in this simulation.
+      */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  aspect::internal::Assembly::AssemblerLists<dim> &,
+                                  std::vector<std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> > > &)>
+    set_assemblers;
   };
 
 
@@ -110,13 +208,14 @@ namespace aspect
       void register_connector_function_3d (const std_cxx11::function<void (aspect::SimulatorSignals<3> &)> &connector);
 
       /**
-       * Two functions that are called by the Simulator object and that go through
-       * the lists created by the previous pair of functions and call each of the
-       * user-provided connector functions to let them register their slots
-       * with the corresponding signals.
+       * A function that is called by the Simulator object and that goes
+       * through the list (with the corresponding dimension) created by the
+       * previous pair of functions and call each of the user-provided
+       * connector functions to let them register their slots with the
+       * corresponding signals.
        */
-      void call_connector_functions (aspect::SimulatorSignals<2> &signals);
-      void call_connector_functions (aspect::SimulatorSignals<3> &signals);
+      template <int dim>
+      void call_connector_functions (aspect::SimulatorSignals<dim> &signals);
     }
   }
 
