@@ -6,6 +6,15 @@
  *
  * <ol>
  *
+ * <li> New: There is now the option to model melt transport (two-phase 
+ * flow). This core of the implementations includes additional 
+ * variables in the solution vector, a new assembler with an additional 
+ * equation that will be solved and a modified advection equation for the 
+ * porosity field, a new preconditioner for models with melt transport, and 
+ * additional melt outputs for the material model.
+ * <br>
+ * (Juliane Dannberg, Timo Heister, 2016/06/24)
+ *
  * <li> New: Particles can now carry the integrated strain they have
  * experienced over the course of the model. They store all components
  * of the symmetric strain tensor, which can be converted into the 

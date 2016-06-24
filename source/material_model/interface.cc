@@ -631,7 +631,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    MaterialModelOutputs<dim>          &values_out)
+                    MaterialModelOutputs<dim>     &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;

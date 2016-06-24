@@ -1,0 +1,153 @@
+# test if the melt material properties visulaization output works
+# (for bpth scalar and tensor output variables)
+# 
+subsection Discretization
+  # The polynomial degree to use for the composition variable(s). Units:
+  # None.
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+
+  # The polynomial degree to use for the temperature variable. Units: None.
+  set Temperature polynomial degree           = 2
+end
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 1.0
+set Composition solver tolerance           = 1e-12
+set Nonlinear solver scheme                = iterated IMPES
+set Max nonlinear iterations               = 50
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = false
+set Use direct solver for Stokes system    = true
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Boundary fluid pressure model
+ set Plugin name = PressureBdry
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773 # default: 6000
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273  # default: 0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Function expression = 0;-exp(y)
+    set Variable names      = x,y
+  end
+
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0.1*exp(y);-0.3/4.0*exp(y)
+    set Variable names      = x,y
+  end
+end  
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 0
+    set Variable names      = x,y
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 1.0 - 0.3 * exp(y)
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+
+  set Model name = compressible melt material
+  
+
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 6                    # default: 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3        # default: 
+  set Fixed composition boundary indicators   = 0,1,2,3   
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       =           # default: 
+
+  set Include melt transport                  = true
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set List of output variables      = melt material properties
+    set Output format                 = gnuplot
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density gradient
+    end
+  end
+end
+
+
+

@@ -22,6 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -309,6 +310,16 @@ namespace aspect
     // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
+      prm.declare_entry ("Include melt transport", "false",
+                         Patterns::Bool (),
+                         "Whether to include the transport of melt into the model or not. If this "
+                         "is set to true, two additional pressures (the fluid pressure and the "
+                         "compaction pressure) will be added to the finite element. "
+                         "Including melt transport in the simulation also requires that there is "
+                         "one compositional field that has the name 'porosity'. This field will "
+                         "be used for computing the additional pressures and the melt velocity, "
+                         "and has a different advection equation than other compositional fields, "
+                         "as it is effectively advected with the melt velocity.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -897,6 +908,8 @@ namespace aspect
 
     prm.enter_subsection ("Model settings");
     {
+      include_melt_transport = prm.get_bool ("Include melt transport");
+
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -1008,12 +1021,33 @@ namespace aspect
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
                                "element of degree zero for the pressure, which does not exist."))
+
+      if (include_melt_transport)
+        {
+          // The additional terms in the temperature systems have not been ported
+          // to the DG formulation:
+          AssertThrow(!use_discontinuous_temperature_discretization
+                      && !use_discontinuous_composition_discretization,
+                      ExcMessage ("Using discontinuous elements for temperature "
+                                  "or composition in models with melt transport is currently not implemented."));
+          // We can not have a DG p_f. While it would be possible to use a
+          // discontinuous p_c, this is not tested, so we disable it for now.
+          AssertThrow(!use_locally_conservative_discretization,
+                      ExcMessage ("Discontinuous elements for the pressure "
+                                  "in models with melt transport are not supported"));
+        }
     }
     prm.leave_subsection ();
 
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      if (include_melt_transport && (n_compositional_fields == 0))
+        {
+          AssertThrow (false,
+                       ExcMessage ("If melt transport is included in the model, "
+                                   "there has to be at least one compositional field."));
+        }
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
@@ -1044,6 +1078,17 @@ namespace aspect
       if (names_of_compositional_fields.size() == 0)
         for (unsigned int i=0; i<n_compositional_fields; ++i)
           names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
+      // if we want to solve the melt transport equations, check that one of the fields
+      // has the name porosity
+      if (include_melt_transport && std::find(names_of_compositional_fields.begin(),
+                                              names_of_compositional_fields.end(), "porosity")
+          == names_of_compositional_fields.end())
+        {
+          AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
+                                          "there has to be at least one compositional field "
+                                          "with the name 'porosity'."));
+        }
 
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
@@ -1367,6 +1412,7 @@ namespace aspect
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters<dim>::declare_parameters (prm);
+    MeltHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

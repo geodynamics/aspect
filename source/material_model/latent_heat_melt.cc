@@ -37,7 +37,12 @@ namespace aspect
                const Point<dim> &) const
     {
       const double delta_temp = temperature-reference_T;
-      double temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+      const double T_dependence = (thermal_viscosity_exponent == 0.0
+                                   ?
+                                   0.0
+                                   :
+                                   thermal_viscosity_exponent*delta_temp/reference_T);
+      double temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e2),1e-2);
 
       if (std::isnan(temperature_dependence))
         temperature_dependence = 1.0;
@@ -297,6 +302,21 @@ namespace aspect
         }
 
       return entropy_gradient;
+    }
+
+
+    template <int dim>
+    void
+    LatentHeatMelt<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        melt_fractions[q] = melt_fraction(in.temperature[q],
+                                          std::max(0.0, in.pressure[q]),
+                                          in.composition[q],
+                                          in.position[q]);
+      return;
     }
 
     template <int dim>
