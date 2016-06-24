@@ -1421,8 +1421,11 @@ $\bar p$:
   & \qquad
   & \textrm{in $\Omega$}.
 \end{align}
+\marginpar{Timo: need to figure out how to solve \eqref{eq:stokes-ALA-2}, need $\nabla \rho$! }
+
 For the temperature equation we arrive at the following:
 \marginpar{Scott: This does not match (18) in \cite{KLKLZTTK10}}
+
 \begin{multline}
   \label{eq:temperature-decomposed}
   \bar\rho C_p \left(\frac{\partial T'}{\partial t} + \mathbf u\cdot\nabla
@@ -1436,6 +1439,23 @@ For the temperature equation we arrive at the following:
   :
   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   +\alpha T' \left( \mathbf u \cdot \nabla p \right)
+  \quad
+  \textrm{in $\Omega$}.
+\end{multline}
+Timo: this is not quite correct, you need reference density and simplified adiabatic heating to get:
+\begin{multline}
+  \label{eq:temperature-decomposed2}
+  \bar\rho C_p \left(\frac{\partial T'}{\partial t} + \mathbf u\cdot\nabla
+  T'\right) - \nabla\cdot k\nabla T'
+  \\
+  =
+  \bar\rho H
+  +
+  2\eta
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  :
+  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
+  +\alpha \bar\rho T' (\mathbf u \cdot \mathbf g)
   \quad
   \textrm{in $\Omega$}.
 \end{multline}
