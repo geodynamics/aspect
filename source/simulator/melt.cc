@@ -1084,7 +1084,9 @@ namespace aspect
 
     const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
-    output.additional_outputs.push_back(std::make_shared<MaterialModel::MeltOutputs<dim> > (n_points, n_comp));
+    output.additional_outputs.push_back(
+      std_cxx11::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim> >
+      (new MaterialModel::MeltOutputs<dim> (n_points, n_comp)));
   }
 }
 
