@@ -1,5 +1,6 @@
 # A simple setup for convection the inner core. See the
-# manual for more information. Changing the Rayleigh number Ra 
+# manual, Section Cookbooks/Geophysical setups/Inner core convection 
+# for more information. Changing the Rayleigh number Ra 
 # and the resistance to phase change P will change the mode
 # of inner core convection between translation, plume convection
 # or no convection.
@@ -94,10 +95,10 @@ subsection Initial conditions
 end
 
 # The gravity has its maximum value at the boundary of inner and
-# outer core, and decreses approximately linearly to zero towards
+# outer core, and decreases approximately linearly to zero towards
 # the center of the core. 
 # The Rayleigh number used in the model is given by the magnitude
-# of the gravity
+# of the gravity at the inner core/outer core boundary.
 subsection Gravity model
   set Model name = radial linear
 

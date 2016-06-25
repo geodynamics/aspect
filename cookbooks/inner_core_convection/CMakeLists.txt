@@ -6,5 +6,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "inner_core_convection")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED inner_core_convection.cc)
+ADD_LIBRARY(${TARGET} SHARED inner_core_assembly.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

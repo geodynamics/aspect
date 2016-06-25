@@ -50,7 +50,7 @@ namespace aspect
                || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
               ExcMessage ("This boundary model is only implemented if the geometry "
-                          "is a spherical shell, ellipsoidal chunk or chunk."));
+                          "is a spherical shell, sphere, ellipsoidal chunk or chunk."));
 
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 

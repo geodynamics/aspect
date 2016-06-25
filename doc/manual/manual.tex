@@ -6244,20 +6244,22 @@ the end of the first time step after one level of strain rate-based adaptive mes
 \subsubsection{Inner core convection}
 \label{sec:cookbooks-inner-core-convection}
 
-\textit{This section was contributed by Juliane Dannberg, and the model setup was insipired 
+\textit{This section was contributed by Juliane Dannberg, and the model setup was inspired 
 by discussions with John Rudge.}
 
-This is an example for convection in the inner core of the Earth. It uses a spherical geometry 
-and is characterized by a single material with temperature dependent density, that makes it
+This is an example of convection in the inner core of the Earth. It uses a spherical geometry 
+and is characterized by a single material with temperature dependent density that makes it
 unstably stratified as temperature increases towards the center of the core. 
 The boundary conditions combine normal stress and normal velocity, and take into account the
 rate of phase change (melting/freezing) at the inner-outer core boundary. Gravity decreases 
 linearly from the boundary to zero at the center of the inner core. 
 The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
-are chosen in a way that the equations are non-dimensional.
+are chosen in a way so that the equations are non-dimensional.
 
 The required heating model and changes to the material model are implemented in a shared library
-(\texttt{inner\_core.cc}). In their non-dimensional form, the equations are
+(\url{cookbooks/inner_core_convection/inner_core_convection.cc}). 
+
+In their non-dimensional form, the equations are
 
 \begin{align}
   \label{eq:inner-core-1}
@@ -6279,7 +6281,7 @@ where $Ra$ is the Rayleigh number.
 The mechanical boundary conditions for the inner core are
 tangential stress-free and continuity of the normal stress at the
 inner-outer core boundary. For the non-dimensional equations, that
-means that we can define a 'phase change number' $\mathcal{P}$ so that the
+means that we can define a ``phase change number'' $\mathcal{P}$ so that the
 normal stress at the boundary is $-\mathcal{P} u_r$ with the radial velocity
 $u_r$. This number characterizes the resistance to phase change at
 the boundary, with $\mathcal{P}\rightarrow\infty$ corresponding to infinitely slow
@@ -6288,20 +6290,24 @@ instantaneous melting/freezing (or a zero normal stress, corresponding to an ope
 
 In the weak form, this results in boundary conditions of the form
 of a surface integral:
-$$\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,$$
+\begin{equation*}
+\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,
+\end{equation*}
 with the normal vector $\mathbf n$.
 
-This phase change term is added to the matrix in the \texttt{inner\_core.cc} plugin by using a signal that 
+This phase change term is added to the matrix in the 
+\url{cookbooks/inner_core_convection/inner_core_assembly.cc} plugin by using a signal 
+(as described in Section~\ref{sec:extending-signals}). The signal 
 connects the function \verb!set_assemblers_phase_boundary!, which is only called once at the beginning of 
 the model run. It creates the new assembler \texttt{PhaseBoundaryAssembler} for the boundary faces of the Stokes 
 system and adds it to the list of assemblers executed in every time step. 
 The assembler contains the function \verb!phase_change_boundary_conditions! that loops over all faces at the model 
 boundary, queries the value of $\mathcal{P}$ from the material model, and adds the surface integral given above
-to the matrix.
-\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{cookbooks/inner_core_convection/inner_core_convection_assembler.cc}
+to the matrix:
+\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
 Instructions for how to compile and run models with a shared library are given in Section~\ref{sec:benchmark-run}.
 
-Analysing Equations~\eqref{eq:inner-core-1}-\eqref{eq:inner-core-3} reveals that two parameters determine 
+Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3} reveals that two parameters determine 
 the dynamics of convection in the inner core: the Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. 
 For low Rayleigh numbers below a critical value ($\sim1000$, but also slightly depending on $\mathcal{P}$), 
 there is no convection and thermal diffusion dominates the heat transport. 
@@ -6321,15 +6327,15 @@ is uniform, pointing from the freezing to the melting side.
     \label{fig:inner-core-regimes}
 \end{figure}
 
-Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows to switch between the different regimes.
-The Rayleigh number can be changed by adjusting the magnitude of the gravity.
+Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows switching between the different regimes.
+The Rayleigh number can be changed by adjusting the magnitude of the gravity:
 \lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.2.prm}
 The phase change number is implemented as part of the material model, and as a function that can depend on the 
-spatial coordinates and/or on time. 
+spatial coordinates and/or on time: 
 \lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.1.prm}
 
 Figure~\ref{fig:inner-core-regimes} shows examples of the three regimes with $Ra=3000, \mathcal{P}=1000$ (plume convection), 
-$Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection) (values).
+$Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
 
 In addition, \cite{Deguen2013} give scaling laws for the velocities in each regime derived from linear stability 
@@ -6339,20 +6345,22 @@ translation velocities being zero below this threshold and tending to $v_0=\frac
 going towards higher values of $\frac{Ra}{\mathcal{P}}$.
 In the same way, translation velocities will decrease from $v_0$ with increasing $\mathcal{P}$, with translation transitioning
 to plume convection at $\mathcal{P}\sim29$. 
-Both trends are shown in Figure~TODO and can be compared to Figure~8 and 9 in \cite{Deguen2013}.
+Both trends are shown in Figure~\ref{fig:inner-core-trends} and can be compared to Figure~8 and 9 in \cite{Deguen2013}.
  
 \begin{figure}
     \centering
     \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_Ra_P.pdf}
+    \hfill
     \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_P.pdf}
-    \caption{Translation rate (approximated by the root mean square velocity), normalized to the low $\mathcal{P}$ 
+    \caption{Translation rate (approximated by the average of the velocity component in the direction of translation), 
+    normalized to the low $\mathcal{P}$ 
     limit estimate given in \cite{Deguen2013}, as a function of $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$ 
     (left) and as a function of $\mathcal{P}$ for $Ra=10^5$ (right).
     The dashed gray line gives the translation velocity predicted in the limit of low $\mathcal{P}$. Disagreement 
-    for larger values of $\mathcal{P}$ indicate that higher order terms (not included in the low $\mathcal{P}$
+    for larger values of $\mathcal{P}$ indicates that higher order terms (not included in the low $\mathcal{P}$
     approximation) become important. Additionally, differences between the analytical and numerical model might 
-    be the result of limited resolution.}
-    \label{fig:inner-core-regimes}
+    be the result of limited resolution (only 12 elements in radial direction).}
+    \label{fig:inner-core-trends}
 \end{figure}
 
 \subsection{Benchmarks}
