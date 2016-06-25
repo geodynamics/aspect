@@ -263,7 +263,7 @@ namespace aspect
     const unsigned int n_q_points = quadrature_formula.size();
 
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula, update_values);
+    FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula, update_values);
     std::vector<Tensor<1,dim> > velocity_values(n_q_points);
 
     double max_local_velocity = 0;
@@ -298,7 +298,7 @@ namespace aspect
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
 
-    FEValues<dim> fe_values (mapping,
+    FEValues<dim> fe_values (*mapping,
                              finite_element,
                              quadrature_formula,
                              update_values |
@@ -454,7 +454,7 @@ namespace aspect
          introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
 
-    FEValues<dim> fe_values (mapping, finite_element, quadrature_formula,
+    FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula,
                              update_values);
     std::vector<double> old_field_values(n_q_points);
     std::vector<double> old_old_field_values(n_q_points);
@@ -536,7 +536,7 @@ namespace aspect
 
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
     const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
-    FEValues<dim> mesh_points (mapping, finite_element, mesh_support_points, update_quadrature_points);
+    FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
@@ -583,7 +583,7 @@ namespace aspect
         QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
-        FEFaceValues<dim> fe_face_values (mapping, finite_element,  quadrature,
+        FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
                                           update_JxW_values | update_values);
 
         std::vector<double> pressure_values(n_q_points);
@@ -621,7 +621,7 @@ namespace aspect
         const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
-        FEValues<dim> fe_values (mapping, finite_element,  quadrature,
+        FEValues<dim> fe_values (*mapping, finite_element,  quadrature,
                                  update_JxW_values | update_values);
 
         std::vector<double> pressure_values(n_q_points);
@@ -1101,7 +1101,7 @@ namespace aspect
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
     // fe values for points evalution
-    FEValues<dim> fe_values (mapping,
+    FEValues<dim> fe_values (*mapping,
                              finite_element,
                              quadrature_formula,
                              update_values   |
@@ -1109,7 +1109,7 @@ namespace aspect
     std::vector<double> values (n_q_points);
     // fe values for numerical integration, with a number of quadrature points
     // that is equal to 1/dim times the number of total points above
-    FEValues<dim> fe_values_0 (mapping,
+    FEValues<dim> fe_values_0 (*mapping,
                                finite_element,
                                quadrature_formula_0,
                                update_values   |

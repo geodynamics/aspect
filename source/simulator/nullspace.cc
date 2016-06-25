@@ -251,7 +251,7 @@ namespace aspect
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
-    FEValues<dim> fe(mapping, finite_element, quadrature,
+    FEValues<dim> fe(*mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     Tensor<1,dim> local_momentum;
@@ -360,7 +360,7 @@ namespace aspect
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
-    FEValues<dim> fe(mapping, finite_element, quadrature,
+    FEValues<dim> fe(*mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
 
     typename DoFHandler<dim>::active_cell_iterator cell;

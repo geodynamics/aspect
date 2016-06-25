@@ -666,7 +666,7 @@ namespace aspect
     internal::Assembly::Scratch::
     AdvectionSystem<dim> scratch (finite_element,
                                   finite_element.base_element(advection_field.base_element(introspection)),
-                                  mapping,
+                                  *mapping,
                                   QGauss<dim>((advection_field.is_temperature()
                                                ?
                                                parameters.temperature_degree
@@ -2489,7 +2489,7 @@ namespace aspect
                           std_cxx11::_1),
          internal::Assembly::Scratch::
          StokesPreconditioner<dim> (finite_element, quadrature_formula,
-                                    mapping,
+                                    *mapping,
                                     cell_update_flags,
                                     parameters.n_compositional_fields,
                                     parameters.include_melt_transport),
@@ -2740,7 +2740,7 @@ namespace aspect
                           this,
                           std_cxx11::_1),
          internal::Assembly::Scratch::
-         StokesSystem<dim> (finite_element, mapping, quadrature_formula,
+         StokesSystem<dim> (finite_element, *mapping, quadrature_formula,
                             face_quadrature_formula,
                             cell_update_flags,
                             face_update_flags,
@@ -3073,7 +3073,7 @@ namespace aspect
          internal::Assembly::Scratch::
          AdvectionSystem<dim> (finite_element,
                                finite_element.base_element(advection_field.base_element(introspection)),
-                               mapping,
+                               *mapping,
                                QGauss<dim>(advection_quadrature_degree),
                                /* Only generate a valid face quadrature if necessary.
                                 * Otherwise, generate invalid face quadrature rule.

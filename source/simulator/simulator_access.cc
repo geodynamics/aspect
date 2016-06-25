@@ -155,7 +155,7 @@ namespace aspect
   const Mapping<dim> &
   SimulatorAccess<dim>::get_mapping () const
   {
-    return simulator->mapping;
+    return *(simulator->mapping);
   }
 
 

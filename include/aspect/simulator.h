@@ -36,7 +36,7 @@
 #include <deal.II/dofs/dof_handler.h>
 
 #include <deal.II/fe/fe_system.h>
-#include <deal.II/fe/mapping_q.h>
+#include <deal.II/fe/mapping.h>
 #include <deal.II/base/tensor_function.h>
 
 #include <aspect/global.h>
@@ -1202,7 +1202,15 @@ namespace aspect
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
 
-      const MappingQ<dim>                                       mapping;
+      /**
+       * Pointer to the Mapping object used by the finite elements when
+       * going from the reference cell to the cell in the computational
+       * domain. We use a pointer since different mapping objects may
+       * be useful. In particular, when the mesh is deformable we use
+       * a MappingQ1Eulerian object to describe the mesh deformation,
+       * swapping it in for the original MappingQ object.
+       */
+      std_cxx11::unique_ptr<Mapping<dim> >                      mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -1314,15 +1322,6 @@ namespace aspect
           void setup_dofs();
 
           /**
-           * Loop over all the mesh vertices and move them so that they are in
-           * the positions determined by the free surface implementation.
-           * Called in execute(), and also called after redistributing mesh so
-           * that the other processes know what has happened to that part of
-           * the mesh.
-           */
-          void displace_mesh();
-
-          /**
            * Apply stabilization to a cell of the system matrix.  The
            * stabilization is only added to cells on a free surface.  The
            * scheme is based on that of Kaus et. al., 2010.  Called during
@@ -1340,6 +1339,8 @@ namespace aspect
            * description for producing a nice starting mesh with the initial
            * refinements (that is to say, before timestepping).  This detaches
            * manifolds from cells, and is called after the initial refinements
+           * redistribution of the system.
+           * redistribution of the system.
            * of the domain.
            */
           void detach_manifolds();
@@ -1375,36 +1376,32 @@ namespace aspect
           void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
 
           /**
-           * Actually solve the elliptic problem for the mesh velocitiy.  Just
-           * solves a vector Laplacian equation.
+           * Solve vector Laplacian equation for internal mesh displacements.
            */
-          void solve_elliptic_problem ();
+          void compute_mesh_displacements ();
 
           /**
-           * From the mesh velocity called in
-           * FreeSurfaceHandler::solve_elliptic_problem() we calculate the
-           * mesh displacement with mesh_velocity*time_step.  This function
-           * also interpolates the mesh velocity onto the finite element space
-           * of the Stokes velocity system so that it can be used for ALE
-           * corrections.
+           * Calculate the velocity of the mesh for ALE corrections.
            */
-          void calculate_mesh_displacement ();
+          void interpolate_mesh_velocity ();
 
           /**
            * Reference to the Simulator object to which a FreeSurfaceHandler
-           * instance belongs
+           * instance belongs.
            */
           Simulator<dim> &sim;
 
           /**
-           * Finite element for the free surface implementation.  Should be Q1
-           */
-          const FESystem<dim>                                       free_surface_fe;
+          * Finite element for the free surface implementation, which is
+            used for tracking mesh deformation.
+          */
+          const FESystem<dim> free_surface_fe;
 
           /**
-           * DoFHanlder for the free surface implementation
+           * DoFHanlder for the free surface implementation.
            */
-          DoFHandler<dim>                                           free_surface_dof_handler;
+          DoFHandler<dim> free_surface_dof_handler;
+
 
           /**
            * Stabilization parameter for the free surface.  Should be between
@@ -1414,25 +1411,25 @@ namespace aspect
           double free_surface_theta;
 
           /**
-           * BlockVector which stores the mesh velocity interpolated onto the
-           * Stokes velocity finite element space.  This is used for ALE
-           * corrections.
+           * BlockVector which stores the mesh velocity.
+           * This is used for ALE corrections.
            */
           LinearAlgebra::BlockVector mesh_velocity;
 
           /**
-           * Vector for storing the positions of the mesh vertices.  This
-           * vector is updated by
-           * FreeSurfaceHandler::calculate_mesh_displacement(), and is quite
-           * important for making sure the mesh stays the same shape upon
-           * redistribution of the system.
+           * Vector for storing the positions of the mesh vertices. This
+           * is used for calculating the mapping from the reference cell to
+           * the position of the cell in the deformed mesh. This must be
+           * redistributed upon mesh refinement.
            */
-          LinearAlgebra::Vector mesh_vertices;
+          LinearAlgebra::Vector mesh_displacements;
 
           /**
-           * The solution of FreeSurfaceHandler::solve_elliptic_problem().
+           * Vector for storing the mesh velocity in the free surface finite
+           * element space, which is, in general, not the same finite element
+           * space as the Stokes system.
            */
-          LinearAlgebra::Vector mesh_vertex_velocity;
+          LinearAlgebra::Vector fs_mesh_velocity;
 
           /**
            * The matrix for solving the elliptic problem for moving the
@@ -1457,8 +1454,8 @@ namespace aspect
           ConstraintMatrix mesh_displacement_constraints;
 
           /**
-           * Storage for the mesh vertex constraints to keep hanging nodes
-           * well-behaved
+           * Storage for the mesh vertex constraints for keeping the mesh conforming
+           * upon redistribution.
            */
           ConstraintMatrix mesh_vertex_constraints;
 
