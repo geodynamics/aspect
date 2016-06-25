@@ -383,6 +383,24 @@ namespace aspect
     return simulator->boundary_traction;
   }
 
+   template <int dim>
+   const std::set<types::boundary_id >
+   SimulatorAccess<dim>::get_traction_boundary_indicators () const
+   {
+     std::map< types::boundary_id, std::pair<std::string, std::string> > map_indicators
+       = simulator->parameters.prescribed_traction_boundary_indicators;
+     std::map< types::boundary_id, std::pair<std::string, std::string> >::iterator it;
+     std::map< types::boundary_id, std::pair<std::string, std::string> >::iterator begin = map_indicators.begin();
+     std::map< types::boundary_id, std::pair<std::string, std::string> >::iterator end = map_indicators.end();
+ 
+     std::set<types::boundary_id> indicators;
+ 
+     for (it = begin; it != end; ++it)
+       {
+         indicators.insert(it->first);
+       }
+     return indicators;
+   }
 
 
   template <int dim>
