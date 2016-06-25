@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Iterations for temperature solver
+# 7: Iterations for Stokes solver
+# 8: Velocity iterations in Stokes preconditioner
+# 9: Schur complement iterations in Stokes preconditioner
+# 10: Time step size (seconds)
+# 11: Visualization file name
+0 0.000000000000e+00 256 2467 1089  0 34 25 5 1.000000000000e-02 output-heat_flux_map_vis/solution-00000 
+1 1.000000000000e-02 256 2467 1089 38 35 31 6 4.191705298444e-03 output-heat_flux_map_vis/solution-00001 
