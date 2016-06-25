@@ -167,6 +167,17 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+
+        /**
+         * Allow the heating model to attach additional material model outputs.
+         * The default implementation of this function does not add any
+         * outputs. Consequently, derived classes do not have to overload
+         * this function if they do not need any additional outputs.
+         */
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
     };
 
 

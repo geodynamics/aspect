@@ -1,0 +1,143 @@
+# This test is used to check if the adiabatic heating
+# of melt is calculated correctly.
+# The material is upwelling with a constant velocity
+# and without conduction of heat, so that the steady state 
+# of the model is an adiabatic temperature profile, and
+# the temperature should not change over time. 
+#
+# The testcase is very similar to the adiabatic_heating
+# test, but melt transport and the adiabatic heat of melt
+# heating model are enabled. There is 100% melt in the model, 
+# and melt has a different density than the solid (so that 
+# melt an solid velocities are different). However, the melt
+# should still upwell adiabatically, so temperature should
+# not change. 
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+set Nonlinear solver scheme                = iterated IMPES
+set Linear solver tolerance                = 1e-12
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is.
+set Use years in output instead of seconds = false
+set End time                               = 2.5e13
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1723.15   # 1450°C adiabat
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 9177
+    set Y extent = 183540      # maximum pressure 6 GPa
+    set Y repetitions = 20
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial conditions
+  set Model name = adiabatic
+  subsection Adiabatic
+    subsection Function
+      set Function expression       = 1.0;0.0
+    end
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 1.0; 0.0
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;1e-10
+  end
+end
+
+subsection Model settings
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = 3:function
+  set Tangential velocity boundary indicators = 0,1
+  set Fixed temperature boundary indicators   = 2
+    set Fixed composition boundary indicators   = 2
+
+  set Include melt transport                  = true
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, adiabatic heating of melt
+end
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = fluid density
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = melt global
+
+  subsection Melt global
+    set Reference solid density  = 3300
+    set Reference melt density   = 3000
+    set Reference specific heat  = 1000
+    set Reference temperature    = 1600 
+    set Thermal conductivity     = 0.0
+    set Surface solidus          = 10000.0
+    set Include melting and freezing = false
+    set Reference permeability   = 1.2345679e-10
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heating statistics
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+    set List of output variables = viscosity, density, nonadiabatic temperature
+  end
+end
+

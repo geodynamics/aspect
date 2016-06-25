@@ -103,6 +103,14 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
                 in.strain_rate);
             in.position = fe_values.get_quadrature_points();
+            in.cell = &cell;
+
+            for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+                 heating_model = heating_model_objects.begin();
+                 heating_model != heating_model_objects.end(); ++heating_model)
+              {
+                (*heating_model)->create_additional_material_model_outputs(out);
+              }
 
             this->get_material_model().evaluate(in, out);
 
