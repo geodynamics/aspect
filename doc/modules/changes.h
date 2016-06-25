@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: There is now a postprocessor that outputs statistics about
+ * the number of particles per cell in the model domain. It outputs
+ * global maximum, minimum and average number of particles per cell.
+ * <br>
+ * (Rene Gassmoeller, 2016/06/24)
+ *
  * <li> New: There is now the option to model melt transport (two-phase 
  * flow). This core of the implementations includes additional 
  * variables in the solution vector, a new assembler with an additional 
