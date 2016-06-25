@@ -8,23 +8,23 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+13 iterations.
 
-Number of active cells: 1,126 (on 8 levels)
-Number of degrees of freedom: 20,149 (9,466+1,217+4,733+4,733)
-
-*** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
-   Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+12 iterations.
-
-Number of active cells: 502 (on 9 levels)
-Number of degrees of freedom: 9,663 (4,538+587+2,269+2,269)
+Number of active cells: 4,132 (on 8 levels)
+Number of degrees of freedom: 71,673 (33,698+4,277+16,849+16,849)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+13 iterations.
+
+Number of active cells: 4,222 (on 9 levels)
+Number of degrees of freedom: 73,493 (34,554+4,385+17,277+17,277)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
      Writing dynamic topography: output-dynamic_topography2/dynamic_topography.00000
