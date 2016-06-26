@@ -28,8 +28,8 @@
 
 /**
  * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axes have
- * the same length. The ellipsoidal chunk can be non-coordinate parallel part of the ellipsoid.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
+ * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
+ * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps, Wolfgang Bangerth and Anne Glerum
  */
 
 namespace aspect
@@ -220,7 +220,7 @@ namespace aspect
         get_used_boundary_indicators() const;
 
         /*
-         *Set symbolic names for boudaries
+         *Set symbolic names for boundaries
          */
         virtual std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map() const;

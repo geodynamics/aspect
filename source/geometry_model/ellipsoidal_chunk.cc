@@ -30,10 +30,6 @@
 
 
 
-/**
- * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
- */
 
 namespace aspect
 {
