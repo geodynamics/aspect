@@ -986,10 +986,10 @@ namespace aspect
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
     /*
-     * first setup the quadrature points which are used to find the maximum and minimum solution values at those points.
-     * To construct those special quadrature points:
-     * use combination of 1) one dimentional Gauss points; 2) one dimentional Gauss-Lobatto points;
-     * we require that the Guass-Lobatto points (2) appear  in only one direction.
+     * First setup the quadrature points which are used to find the maximum and minimum solution values at those points.
+     * A quadrature formula that combines all quadrature points constructed as all tensor products of
+     * 1) one dimentional Gauss points; 2) one dimentional Gauss-Lobatto points.
+     * We require that the Gauss-Lobatto points (2) appear in only one direction.
      * Therefore, possible combination
      * in 2D: the combinations are 21, 12
      * in 3D: the combinations are 211, 121, 112
@@ -1005,33 +1005,31 @@ namespace aspect
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
     const unsigned int n_q_points   = dim * n_q_points_2 *std::pow(n_q_points_1, dim-1) ;
 
-    std::vector< Point <dim> > points_values (n_q_points);
+    std::vector< Point <dim> > quadrature_points (n_q_points);
 
     switch (dim)
       {
         case 2:
         {
-          //make quadrature points combination 12
+          //append quadrature points combination 12
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
-              const Point <1>  x = quadrature_formula_1.point(i);
+              const double  x = quadrature_formula_1.point(i)(0);
               for ( unsigned int j=0; j < n_q_points_2 ; j++)
                 {
-                  const Point <1>  y = quadrature_formula_2.point(j);
-                  points_values[i * n_q_points_2+j](0) = x(0);
-                  points_values[i * n_q_points_2+j](1) = y(0);
+                  const double  y = quadrature_formula_2.point(j)(0);
+                  quadrature_points[i * n_q_points_2+j] = Point<dim>(x,y);
                 }
             }
           const unsigned int n_q_points_12 = n_q_points_1 * n_q_points_2;
-          //make quadrature points combination 21
+          //append quadrature points combination 21
           for ( unsigned int i=0; i < n_q_points_2 ; i++)
             {
-              const Point <1>  x = quadrature_formula_2.point(i);
+              const double  x = quadrature_formula_2.point(i)(0);
               for ( unsigned int j=0; j < n_q_points_1 ; j++)
                 {
-                  const Point <1>  y = quadrature_formula_1.point(j);
-                  points_values[n_q_points_12 + i * n_q_points_1+j ](0) = x(0);
-                  points_values[n_q_points_12 + i * n_q_points_1+j ](1) = y(0);
+                  const double  y = quadrature_formula_1.point(j)(0);
+                  quadrature_points[n_q_points_12 + i * n_q_points_1+j ] = Point<dim>(x,y);
                 }
             }
           break;
@@ -1039,57 +1037,51 @@ namespace aspect
 
         case 3:
         {
-          //make quadrature points combination 121
+          //append quadrature points combination 121
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
-              const Point <1>  x = quadrature_formula_1.point(i);
+              const double  x = quadrature_formula_1.point(i)(0);
               for ( unsigned int j=0; j < n_q_points_2 ; j++)
                 {
-                  const Point <1>  y = quadrature_formula_2.point(j);
+                  const double  y = quadrature_formula_2.point(j)(0);
                   for ( unsigned int k=0; k < n_q_points_1 ; k++)
                     {
                       const unsigned int k_index = i * n_q_points_2 * n_q_points_1 + j * n_q_points_2 + k;
-                      const Point <1>  z = quadrature_formula_1.point(k);
-                      points_values[k_index](0) = x(0);
-                      points_values[k_index](1) = y(0);
-                      points_values[k_index](2) = z(0);
+                      const double  z = quadrature_formula_1.point(k)(0);
+                      quadrature_points[k_index] = Point<dim>(x,y,z);
                     }
                 }
             }
           const unsigned int n_q_points_121 = n_q_points_1 * n_q_points_2 * n_q_points_1;
-          //make quadrature points combination 112
+          //append quadrature points combination 112
           for ( unsigned int i=0; i < n_q_points_1 ; i++)
             {
-              const Point <1>  x = quadrature_formula_1.point(i);
+              const double  x = quadrature_formula_1.point(i)(0);
               for ( unsigned int j=0; j < n_q_points_1 ; j++)
                 {
-                  const Point <1>  y = quadrature_formula_1.point(j);
+                  const double y = quadrature_formula_1.point(j)(0);
                   for ( unsigned int k=0; k < n_q_points_2 ; k++)
                     {
                       const unsigned int k_index =
                         n_q_points_121 + i * n_q_points_1 * n_q_points_2 + j * n_q_points_2 + k;
-                      const Point <1>  z = quadrature_formula_2.point(k);
-                      points_values[k_index](0) = x(0);
-                      points_values[k_index](1) = y(0);
-                      points_values[k_index](2) = z(0);
+                      const double  z = quadrature_formula_2.point(k)(0);
+                      quadrature_points[k_index] = Point<dim>(x,y,z);
                     }
                 }
             }
-          //make quadrature points combination 211
+          //append quadrature points combination 211
           for ( unsigned int i=0; i < n_q_points_2 ; i++)
             {
-              const Point <1>  x = quadrature_formula_2.point(i);
+              const double  x = quadrature_formula_2.point(i)(0);
               for ( unsigned int j=0; j < n_q_points_1 ; j++)
                 {
-                  const Point <1>  y = quadrature_formula_1.point(j);
+                  const double  y = quadrature_formula_1.point(j)(0);
                   for ( unsigned int k=0; k < n_q_points_1 ; k++)
                     {
                       const unsigned int k_index =
                         2 * n_q_points_121 + i * n_q_points_2 * n_q_points_1 + j * n_q_points_1 + k;
-                      const Point <1>  z = quadrature_formula_1.point(k);
-                      points_values  [k_index](0) = x(0);
-                      points_values  [k_index](1) = y(0);
-                      points_values  [k_index](2) = z(0);
+                      const double  z = quadrature_formula_1.point(k)(0);
+                      quadrature_points[k_index] = Point<dim>(x,y,z);
                     }
                 }
             }
@@ -1099,7 +1091,7 @@ namespace aspect
         default:
           Assert (false, ExcNotImplemented());
       }
-    Quadrature<dim> quadrature_formula(points_values);
+    Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
     const QGauss<dim> quadrature_formula_0 (advection_field.is_temperature() ?
@@ -1115,7 +1107,8 @@ namespace aspect
                              update_values   |
                              update_quadrature_points);
     std::vector<double> values (n_q_points);
-    // fe values for numerical integration, which points is 1/dim of the total points above
+    // fe values for numerical integration, with a number of quadrature points
+    // that is equal to 1/dim times the number of total points above
     FEValues<dim> fe_values_0 (mapping,
                                finite_element,
                                quadrature_formula_0,
