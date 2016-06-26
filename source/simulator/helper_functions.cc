@@ -985,49 +985,144 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
-    AssertThrow (dim == 2,
-                 ExcMessage ("The bound preserving limiter is currently only implemented for 2-dimensional problem."));
+    /*
+     * first setup the quadrature points which are used to find the maximum and minimum solution values at those points.
+     * To construct those special quadrature points:
+     * use combination of 1) one dimentional Gauss points; 2) one dimentional Gauss-Lobatto points;
+     * we require that the Guass-Lobatto points (2) appear  in only one direction.
+     * Therefore, possible combination
+     * in 2D: the combinations are 21, 12
+     * in 3D: the combinations are 211, 121, 112
+     */
     const QGauss<1> quadrature_formula_1 (advection_field.is_temperature() ?
                                           parameters.temperature_degree+1 :
                                           parameters.composition_degree+1);
     const QGaussLobatto<1> quadrature_formula_2 (advection_field.is_temperature() ?
                                                  parameters.temperature_degree+1 :
                                                  parameters.composition_degree+1);
-    /*
-     * TODO: currently it only works for 2 dimensional problem. Will add the 3D special selected quadrature points and weight later.
-     * Construct the quadrature points and weights:
-     * 1--Gauss points; 2-- Gauss-Lobatto points; we require that Guass-Lobatto points (2) appear  in only one direction.
-     * in 2D: the combinations are 21, 12
-     * in 3D: the combinations are 211, 121, 112
-     */
 
-    /* 2D construction
-     * Construct the quadrature points and weights:
-     * x direction uses Gauss points and y direction uses Gauss Lobatto points
-     */
-    const QAnisotropic<dim> quadrature_formula_12 (quadrature_formula_1, quadrature_formula_2);
-    //Construct the quadrature points and weights:
-    //x direction uses Gauss-Lobatto points and y direction uses Gauss points
-    const QAnisotropic<dim> quadrature_formula_21 (quadrature_formula_2, quadrature_formula_1);
+    const unsigned int n_q_points_1 = quadrature_formula_1.size();
+    const unsigned int n_q_points_2 = quadrature_formula_2.size();
+    const unsigned int n_q_points   = dim * n_q_points_2 *std::pow(n_q_points_1, dim-1) ;
 
-    const unsigned int n_q_points_12 = quadrature_formula_12.size();
-    const unsigned int n_q_points_21 = quadrature_formula_21.size();
+    std::vector< Point <dim> > points_values (n_q_points);
 
-    FEValues<dim> fe_values_12 (mapping,
-                                finite_element,
-                                quadrature_formula_12,
-                                update_values   |
-                                update_quadrature_points |
-                                update_JxW_values);
-    std::vector<double> values_12 (n_q_points_12);
+    switch (dim)
+      {
+        case 2:
+        {
+          //make quadrature points combination 12
+          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+            {
+              const Point <1>  x = quadrature_formula_1.point(i);
+              for ( unsigned int j=0; j < n_q_points_2 ; j++)
+                {
+                  const Point <1>  y = quadrature_formula_2.point(j);
+                  points_values[i * n_q_points_2+j](0) = x(0);
+                  points_values[i * n_q_points_2+j](1) = y(0);
+                }
+            }
+          const unsigned int n_q_points_12 = n_q_points_1 * n_q_points_2;
+          //make quadrature points combination 21
+          for ( unsigned int i=0; i < n_q_points_2 ; i++)
+            {
+              const Point <1>  x = quadrature_formula_2.point(i);
+              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+                {
+                  const Point <1>  y = quadrature_formula_1.point(j);
+                  points_values[n_q_points_12 + i * n_q_points_1+j ](0) = x(0);
+                  points_values[n_q_points_12 + i * n_q_points_1+j ](1) = y(0);
+                }
+            }
+          break;
+        }
 
-    FEValues<dim> fe_values_21 (mapping,
-                                finite_element,
-                                quadrature_formula_21,
-                                update_values   |
-                                update_quadrature_points |
-                                update_JxW_values);
-    std::vector<double> values_21 (n_q_points_21);
+        case 3:
+        {
+          //make quadrature points combination 121
+          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+            {
+              const Point <1>  x = quadrature_formula_1.point(i);
+              for ( unsigned int j=0; j < n_q_points_2 ; j++)
+                {
+                  const Point <1>  y = quadrature_formula_2.point(j);
+                  for ( unsigned int k=0; k < n_q_points_1 ; k++)
+                    {
+                      const unsigned int k_index = i * n_q_points_2 * n_q_points_1 + j * n_q_points_2 + k;
+                      const Point <1>  z = quadrature_formula_1.point(k);
+                      points_values[k_index](0) = x(0);
+                      points_values[k_index](1) = y(0);
+                      points_values[k_index](2) = z(0);
+                    }
+                }
+            }
+          const unsigned int n_q_points_121 = n_q_points_1 * n_q_points_2 * n_q_points_1;
+          //make quadrature points combination 112
+          for ( unsigned int i=0; i < n_q_points_1 ; i++)
+            {
+              const Point <1>  x = quadrature_formula_1.point(i);
+              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+                {
+                  const Point <1>  y = quadrature_formula_1.point(j);
+                  for ( unsigned int k=0; k < n_q_points_2 ; k++)
+                    {
+                      const unsigned int k_index =
+                        n_q_points_121 + i * n_q_points_1 * n_q_points_2 + j * n_q_points_2 + k;
+                      const Point <1>  z = quadrature_formula_2.point(k);
+                      points_values[k_index](0) = x(0);
+                      points_values[k_index](1) = y(0);
+                      points_values[k_index](2) = z(0);
+                    }
+                }
+            }
+          //make quadrature points combination 211
+          for ( unsigned int i=0; i < n_q_points_2 ; i++)
+            {
+              const Point <1>  x = quadrature_formula_2.point(i);
+              for ( unsigned int j=0; j < n_q_points_1 ; j++)
+                {
+                  const Point <1>  y = quadrature_formula_1.point(j);
+                  for ( unsigned int k=0; k < n_q_points_1 ; k++)
+                    {
+                      const unsigned int k_index =
+                        2 * n_q_points_121 + i * n_q_points_2 * n_q_points_1 + j * n_q_points_1 + k;
+                      const Point <1>  z = quadrature_formula_1.point(k);
+                      points_values  [k_index](0) = x(0);
+                      points_values  [k_index](1) = y(0);
+                      points_values  [k_index](2) = z(0);
+                    }
+                }
+            }
+          break;
+        }
+
+        default:
+          Assert (false, ExcNotImplemented());
+      }
+    Quadrature<dim> quadrature_formula(points_values);
+
+    // Quadrature rules only used for the numerical integration for better accuracy
+    const QGauss<dim> quadrature_formula_0 (advection_field.is_temperature() ?
+                                            parameters.temperature_degree+1 :
+                                            parameters.composition_degree+1);
+
+    const unsigned int n_q_points_0 = quadrature_formula_0.size();
+
+    // fe values for points evalution
+    FEValues<dim> fe_values (mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values   |
+                             update_quadrature_points);
+    std::vector<double> values (n_q_points);
+    // fe values for numerical integration, which points is 1/dim of the total points above
+    FEValues<dim> fe_values_0 (mapping,
+                               finite_element,
+                               quadrature_formula_0,
+                               update_values   |
+                               update_quadrature_points |
+                               update_JxW_values);
+    std::vector<double> values_0 (n_q_points_0);
 
     const FEValuesExtractors::Scalar field
       = (advection_field.is_temperature()
@@ -1036,7 +1131,6 @@ namespace aspect
          :
          introspection.extractors.compositional_fields[advection_field.compositional_variable]
         );
-
 
     const double max_solution_exact_global = (advection_field.is_temperature()
                                               ?
@@ -1066,17 +1160,16 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices (local_dof_indices);
-            fe_values_12.reinit (cell);
-            fe_values_21.reinit (cell);
-
-            fe_values_12[field].get_function_values(solution, values_12);
-            fe_values_21[field].get_function_values(solution, values_21);
+            //used to find the maximum, minimum
+            fe_values.reinit (cell);
+            fe_values[field].get_function_values(solution, values);
+            //used for the numerical integration
+            fe_values_0.reinit (cell);
+            fe_values_0[field].get_function_values(solution, values_0);
 
             //Find the local max and local min
-            const double min_solution_local = std::min (*std::min_element (values_12.begin(), values_12.end()),
-                                                        *std::min_element (values_21.begin(), values_21.end()));
-            const double max_solution_local = std::max (*std::max_element (values_12.begin(), values_12.end()),
-                                                        *std::max_element (values_21.begin(), values_21.end()));
+            const double min_solution_local = *std::min_element (values.begin(), values.end());
+            const double max_solution_local = *std::max_element (values.begin(), values.end());
             //Find the trouble cell
             if (min_solution_local < min_solution_exact_global
                 || max_solution_local > max_solution_exact_global)
@@ -1084,10 +1177,10 @@ namespace aspect
                 //Compute the cell area and cell solution average
                 double local_area = 0;
                 double local_solution_average = 0;
-                for (unsigned int q = 0; q < n_q_points_12; ++q)
+                for (unsigned int q = 0; q < n_q_points_0; ++q)
                   {
-                    local_area += fe_values_12.JxW(q);
-                    local_solution_average += values_12[q]*fe_values_12.JxW(q);
+                    local_area += fe_values_0.JxW(q);
+                    local_solution_average += values_0[q]*fe_values_0.JxW(q);
                   }
                 local_solution_average /= local_area;
                 /*
