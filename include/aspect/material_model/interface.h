@@ -621,7 +621,7 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const = 0;
+        virtual bool is_compressible () const = 0; // TODO: remove
         /**
          * @}
          */
