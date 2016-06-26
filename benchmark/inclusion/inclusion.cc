@@ -477,11 +477,6 @@ namespace aspect
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      double u_l1;
-      double p_l1;
-      double u_l2;
-      double p_l2;
-
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           dim+2);
       ComponentSelectFunction<dim> comp_p(dim, dim+2);
@@ -520,10 +515,10 @@ namespace aspect
       if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
         n_stokes_dofs  += this->introspection().system_dofs_per_block[this->introspection().block_indices.pressure];
 
-      u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
-      p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
-      u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
-      p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+      double u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      double p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
 
       std::ostringstream os;
       os << n_stokes_dofs << "; "

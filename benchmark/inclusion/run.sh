@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Number of processors to run on
 NP=1
 
 # averaging scheme:
