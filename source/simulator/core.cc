@@ -1507,18 +1507,40 @@ namespace aspect
     mesh_refinement_manager.tag_additional_cells ();
 
 
-    // limit maximum refinement level
-    if (triangulation.n_levels() > max_grid_level)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active(max_grid_level);
-           cell != triangulation.end(); ++cell)
-        cell->clear_refine_flag ();
+    // clear refinement flags if parameter.refinement_fraction=0.0
+    if (parameters.refinement_fraction==0.0)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active();
+             cell != triangulation.end(); ++cell)
+          cell->clear_refine_flag ();
+      }
+    else
+      {
+        // limit maximum refinement level
+        if (triangulation.n_levels() > max_grid_level)
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active(max_grid_level);
+               cell != triangulation.end(); ++cell)
+            cell->clear_refine_flag ();
+      }
 
-    // limit minimum refinement level
-    for (typename Triangulation<dim>::active_cell_iterator
-         cell = triangulation.begin_active(0);
-         cell != triangulation.end_active(parameters.min_grid_level); ++cell)
-      cell->clear_coarsen_flag ();
+    // clear coarsening flags if parameter.coarsening_fraction=0.0
+    if (parameters.coarsening_fraction==0.0)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active();
+             cell != triangulation.end(); ++cell)
+          cell->clear_coarsen_flag ();
+      }
+    else
+      {
+        // limit minimum refinement level
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active(0);
+             cell != triangulation.end_active(parameters.min_grid_level); ++cell)
+          cell->clear_coarsen_flag ();
+      }
 
     std::vector<const LinearAlgebra::BlockVector *> x_system (2);
     x_system[0] = &solution;
