@@ -588,10 +588,10 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
-      p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
-      u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));
-      p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));
+      u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),MPI_COMM_WORLD);
+      p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),MPI_COMM_WORLD);
+      u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),MPI_COMM_WORLD));
+      p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),MPI_COMM_WORLD));
 
       std::ostringstream os;
 

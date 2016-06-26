@@ -193,19 +193,19 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_u_f);
 
-    double u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),this->get_mpi_communicator()));
-    double p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),this->get_mpi_communicator()));
-    double p_f_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),this->get_mpi_communicator()));
-    double p_c_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),this->get_mpi_communicator()));
-    double pore_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
-    double u_f_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),this->get_mpi_communicator()));
+    double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_u.norm_sqr(),this->get_mpi_communicator()));
+    double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_p.norm_sqr(),this->get_mpi_communicator()));
+    double p_f_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_p_f.norm_sqr(),this->get_mpi_communicator()));
+    double p_c_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_p_c.norm_sqr(),this->get_mpi_communicator()));
+    double poro_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
+    double u_f_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_u_f.norm_sqr(),this->get_mpi_communicator()));
 
     std::ostringstream os;
     os << std::scientific << u_l2
        << ", " << p_l2
        << ", " << p_f_l2
        << ", " << p_c_l2
-       << ", " << pore_l2
+       << ", " << poro_l2
        << ", " << u_f_l2;
 
     return std::make_pair("Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2:", os.str());

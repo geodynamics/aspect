@@ -134,10 +134,10 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_porosity);
 
-    double pore_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
+    double poro_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
 
     std::ostringstream os;
-    os << std::scientific << pore_l2;
+    os << std::scientific << poro_l2;
     return std::make_pair("Error porosity_L2:", os.str());
   }
 
