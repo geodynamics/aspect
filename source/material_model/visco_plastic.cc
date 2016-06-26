@@ -217,36 +217,36 @@ namespace aspect
 
 
 
-         // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-          double viscosity_yield;
+          // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
+          double viscosity_drucker_prager;
           if ( viscous_stress >= yield_strength  )
             {
-              viscosity_yield = yield_strength / (2.0 * ref_strain_rate);
-              viscosity_yield = viscosity_yield *
-                                std::pow((std::sqrt(edot_ii)/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
+              viscosity_drucker_prager = yield_strength / (2.0 * edot_ii);
             }
           else
             {
-              viscosity_yield = viscosity_pre_yield;
+              viscosity_drucker_prager = viscosity_pre_yield;
             }
 
 
           // Stress limiter rheology
-          double viscosity_limiter = yield_strength / (2.0 * ref_strain_rate);
-          viscosity_limiter = viscosity_limiter *
-                              std::pow((std::sqrt(edot_ii)/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0); 
+          double viscosity_limiter;
+          viscosity_limiter = yield_strength / (2.0 * ref_strain_rate) *
+                              std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
 
           // Select if yield viscosity is based on drucker prager or stress limiter rheology
+          double viscosity_yield;
           switch (yield_type)
             {
               case stress_limiter:
               {
+                //viscosity_yield = std::min(viscosity_limiter, viscosity_pre_yield);
                 viscosity_yield = viscosity_limiter;
                 break;
               }
               case drucker_prager:
               {
-                viscosity_yield = viscosity_yield;
+                viscosity_yield = viscosity_drucker_prager;
                 break;
               }
               default:
@@ -562,9 +562,9 @@ namespace aspect
             viscous_flow_law = dislocation;
           else
             AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
-      
-         // Rheological parameters
-         if (prm.get ("Yield mechanism") == "drucker")
+
+          // Rheological parameters
+          if (prm.get ("Yield mechanism") == "drucker")
             yield_mechanism = drucker_prager;
           else if (prm.get ("Yield mechanism") == "limiter")
             yield_mechanism = stress_limiter;
@@ -637,6 +637,8 @@ namespace aspect
                                    "dislocation ($\\v_{disl}$, $n>1$, $m=0$) or composite "
                                    "$\\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. "
                                    "\n\n "
+                                   "Viscosity is limited through one of two different 'yielding' mechanism "
+                                   "\n"
                                    "Plasticity limits viscous stress through a Drucker Prager "
                                    "yield criterion, where the yield stress in 3D is  "
                                    "$\\sigma_y = \\frac{6*C*\\cos(\\phi) + 2*P*\\sin(\\phi)} "
@@ -651,7 +653,26 @@ namespace aspect
                                    "the yield stress, the viscosity is rescaled back to the yield "
                                    "surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models "
-                                   "See, for example, Thieulot, C. (2011), PEPI 188, 47-68. "
+                                   "See, for example, Thieulot, C. (2011), PEPI 188, p. 47-68. "
+                                   "\n"
+                                   "Viscous stress may also be limited by a non-linear stress limiter "
+                                   "that has a form similar to the peierls creep mechanism. "
+                                   "This stress limiter assigns an effective viscosity "
+                                   "$\\sigma_eff = \\frac{\\tau_y}{2*\\varepsilon_y} "
+                                   "{\\frac{\\varepsilon_ii}{\\varepislon_y}}^{\\frac{1}{n_y}-1}$ "
+                                   "Above $tau_y$ is a yield stress, $varepsilon_y$ is the "
+                                   "reference strain rate, $\\varepsilon_ii$ is the strain rate "
+                                   "and $n_y$ is the stress limiter exponent.  The yield stress, "
+                                   "$\\tau_y$, is defined through the Drucker Prager yield criterion "
+                                   "formulation.  This method of limiting viscous stress has been used "
+                                   "in various forms within the geodynamic literature, including "
+                                   "Christensen (1992), JGR, 97(B2), p. 2015-2036; "
+                                   "Cizkova and Bina (2013), EPSL, 379, p. 95-103; "
+                                   "Cizkova and Bina (2015), EPSL, 430, p. 408-415. "
+                                   "When $n_y$ is 1, it essentially becomes a linear viscosity model,"
+                                   "and in the limit $n_y\rightarrow \infty$ it converges to the "
+                                   "standard viscosity rescaling method (concretely, values $n_y>20$"
+                                   "are large enough)."
                                    "\n\n "
                                    "Compositional fields can each be assigned individual values of"
                                    "thermal diffusivity, heat capacity, density, thermal "
