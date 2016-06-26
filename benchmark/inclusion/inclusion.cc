@@ -455,9 +455,6 @@ namespace aspect
     std::pair<std::string,std::string>
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
       if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
