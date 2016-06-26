@@ -286,7 +286,8 @@ namespace aspect
         }
 
       // return if graphical output is not requested at this time
-      if (this->get_time() < last_output_time + output_interval)
+      if ((this->get_time() < last_output_time + output_interval)
+          && (this->get_timestep_number() != 0))
         return std::pair<std::string,std::string>();
 
 

@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> Changed: The visualization postprocessor now writes every initial
+ * refinement stage if 'Run postprocessors on initial refinement' is
+ * set to true.
+ * <br>
+ * (Rene Gassmoeller, 2016/06/25)
+ *
  * <li> New: There is now a postprocessor that outputs statistics about
  * the number of particles per cell in the model domain. It outputs
  * global maximum, minimum and average number of particles per cell.
