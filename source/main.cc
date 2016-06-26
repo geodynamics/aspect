@@ -29,9 +29,9 @@
 #include <string>
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <fenv.h>
-#endif
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
+#    include <fenv.h>
+#  endif
 #endif
 
 #if ASPECT_USE_SHARED_LIBS==1
