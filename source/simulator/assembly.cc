@@ -24,6 +24,7 @@
 #include <aspect/assembly.h>
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
+#include <aspect/freesurface.h>
 
 
 #include <deal.II/base/quadrature_lib.h>

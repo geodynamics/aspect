@@ -24,6 +24,7 @@
 #include <aspect/assembly.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/freesurface.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -496,7 +497,7 @@ namespace aspect
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
 
         //Allocate the FreeSurfaceHandler object
-        free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
+        free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
       }
 
     //The mapping is given by a degree four MappingQ for the case
@@ -635,12 +636,6 @@ namespace aspect
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
     output_statistics_thread.join();
-
-    //If the free surface has swapped the mapping for
-    //a MappingQ1Eulerian, then we need to destroy
-    //the mapping before the Vector it is pointing to
-    //is destroyed.
-    mapping.reset();
   }
 
 

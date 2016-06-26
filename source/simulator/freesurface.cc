@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/freesurface.h>
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 
@@ -41,8 +42,8 @@ using namespace dealii;
 namespace aspect
 {
   template <int dim>
-  Simulator<dim>::FreeSurfaceHandler::FreeSurfaceHandler (Simulator<dim> &simulator,
-                                                          ParameterHandler &prm)
+  FreeSurfaceHandler<dim>::FreeSurfaceHandler (Simulator<dim> &simulator,
+                                               ParameterHandler &prm)
     : sim(simulator),  //reference to the simulator that owns the FreeSurfaceHandler
       free_surface_fe (FE_Q<dim>(1),dim), //Q1 elements which describe the mesh geometry
       free_surface_dof_handler (sim.triangulation)
@@ -51,7 +52,7 @@ namespace aspect
 
     assembler_connection =
       sim.assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&Simulator<dim>::FreeSurfaceHandler::apply_stabilization,
+      .connect (std_cxx11::bind(&FreeSurfaceHandler<dim>::apply_stabilization,
                                 std_cxx11::ref(*this),
                                 std_cxx11::_1,
                                 // discard pressure_scaling,
@@ -62,7 +63,17 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::declare_parameters(ParameterHandler &prm)
+  FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
+  {
+    //Free the Simulator's mapping object, otherwise
+    //when the FreeSurfaceHandler get's destroyed,
+    //the mapping's reference the the mesh displacement
+    //vector will be invalid.
+    sim.mapping.reset();
+  }
+
+  template <int dim>
+  void FreeSurfaceHandler<dim>::declare_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Free surface");
     {
@@ -112,7 +123,7 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::parse_parameters(ParameterHandler &prm)
+  void FreeSurfaceHandler<dim>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Free surface");
     {
@@ -152,7 +163,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::execute()
+  void FreeSurfaceHandler<dim>::execute()
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -180,7 +191,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::make_constraints()
+  void FreeSurfaceHandler<dim>::make_constraints()
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -274,7 +285,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::project_velocity_onto_boundary(LinearAlgebra::Vector &output)
+  void FreeSurfaceHandler<dim>::project_velocity_onto_boundary(LinearAlgebra::Vector &output)
   {
     // TODO: should we use the extrapolated solution?
 
@@ -410,7 +421,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::compute_mesh_displacements()
+  void FreeSurfaceHandler<dim>::compute_mesh_displacements()
   {
     QGauss<dim> quadrature(free_surface_fe.degree + 1);
     UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
@@ -532,7 +543,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::interpolate_mesh_velocity()
+  void FreeSurfaceHandler<dim>::interpolate_mesh_velocity()
   {
     //Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
     LinearAlgebra::BlockVector distributed_mesh_velocity;
@@ -581,7 +592,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::FreeSurfaceHandler::setup_dofs()
+  void FreeSurfaceHandler<dim>::setup_dofs()
   {
     if (!sim.parameters.free_surface_enabled)
       return;
@@ -636,7 +647,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::FreeSurfaceHandler::
+  FreeSurfaceHandler<dim>::
   apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
                        internal::Assembly::CopyData::StokesSystem<dim>      &data)
   {
@@ -722,7 +733,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::FreeSurfaceHandler::detach_manifolds()
+  FreeSurfaceHandler<dim>::detach_manifolds()
   {
     //remove manifold ids for all cells
     for (typename Triangulation<dim>::active_cell_iterator
@@ -742,7 +753,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class Simulator<dim>::FreeSurfaceHandler;
+  template class FreeSurfaceHandler<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

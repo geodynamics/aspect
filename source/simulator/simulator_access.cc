@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/freesurface.h>
 
 namespace aspect
 {

@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/freesurface.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
