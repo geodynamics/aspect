@@ -2146,7 +2146,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        computing_timer.enter_section ("Initialization");
+        computing_timer.enter_section ("Setup initial conditions");
 
         time                      = parameters.start_time;
         timestep_number           = 0;
