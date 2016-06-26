@@ -398,7 +398,7 @@ namespace aspect
                                        "Research: Solid Earth 119.4 (2014): 3006-3034. "
                                        "The scaling between the shear wave perturbation and the "
                                        "temperature perturbation can be set by the user with the "
-                                       "'vs to density scaling' parameter and the 'Thermal "
+                                       "'Vs to density scaling' parameter and the 'Thermal "
                                        "expansion coefficient in initial temperature scaling' "
                                        "parameter. The scaling is as follows: $\\delta ln \\rho "
                                        "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta, "
