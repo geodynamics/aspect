@@ -477,6 +477,11 @@ namespace aspect
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
+      double u_l1;
+      double p_l1;
+      double u_l2;
+      double p_l2;
+
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
                                           dim+2);
       ComponentSelectFunction<dim> comp_p(dim, dim+2);
@@ -510,17 +515,22 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      unsigned int n = this->get_solution().block(this->introspection().block_indices.velocities).size();
-
+      // Compute stokes unknowns, do not include temperature
+      unsigned int n_stokes_dofs = this->introspection().system_dofs_per_block[this->introspection().block_indices.velocities];
       if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
-        n += this->get_solution().block(this->introspection().block_indices.pressure).size();
+        n_stokes_dofs  += this->introspection().system_dofs_per_block[this->introspection().block_indices.pressure];
+
+      u_l1 =  Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      p_l1 =  Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      u_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      p_l2 =  std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
 
       std::ostringstream os;
-      os << n << "; "
-         << std::scientific  << cellwise_errors_u.l1_norm()
-         << ", " << cellwise_errors_p.l1_norm()
-         << ", " << cellwise_errors_ul2.l2_norm()
-         << ", " << cellwise_errors_pl2.l2_norm();
+      os << n_stokes_dofs << "; "
+         << std::scientific << u_l1
+         << ", " << p_l1
+         << ", " << u_l2
+         << ", " << p_l2;
 
       return std::make_pair("DoFs; Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
