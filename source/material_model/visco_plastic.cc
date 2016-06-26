@@ -132,8 +132,8 @@ namespace aspect
                                       const double &pressure,
                                       const double &temperature,
                                       const SymmetricTensor<2,dim> &strain_rate,
-                                      const enum viscosity_scheme &viscous_type,
-                                      const enum yield_scheme &yield_type) const
+                                      const ViscosityScheme &viscous_type,
+                                      const YieldScheme &yield_type) const
     {
       // This function calculates viscosities assuming that all the compositional fields
       // experience the same strain rate (isostrain).
