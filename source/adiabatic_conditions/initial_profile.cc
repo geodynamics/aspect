@@ -110,10 +110,11 @@ namespace aspect
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=
               -std::numeric_limits<double>::epsilon() * pressures.size(),
-              ExcInternalError());
+              ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
+                         + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
       Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
-              ExcInternalError());
+              ExcMessage("Adiabatic InitialProfile encountered a negative temperature."));
 
       initialized = true;
     }
