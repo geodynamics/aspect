@@ -427,7 +427,7 @@ namespace aspect
                              "to select a specific flow law for each assigned composition ");
           prm.declare_entry ("Yield mechanism", "drucker",
                              Patterns::Selection("drucker|limiter"),
-                             "Select what type of yield mechanism to use between drucker prager "
+                             "Select what type of yield mechanism to use between Drucker Prager "
                              "and stress limiter options.");
 
           // Diffusion creep parameters
@@ -499,7 +499,8 @@ namespace aspect
           // Stress limiter parameters
           prm.declare_entry ("Stress limiter exponents", "1.0",
                              Patterns::List(Patterns::Double(0)),
-                             "List of stress limiter exponents, $n_lim$, for background material and compositional fields, "
+                             "List of stress limiter exponents, $n_\\text{lim}$, "
+                             "for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "The default value of 1 ensures the entire stress limiter term is set to 1 "
                              "and does not affect the viscosity. Units: none.");
@@ -569,7 +570,7 @@ namespace aspect
           else if (prm.get ("Yield mechanism") == "limiter")
             yield_mechanism = stress_limiter;
           else
-            AssertThrow(false, ExcMessage("Not a valid yield mechanism"));
+            AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
 
           // Rheological parameters
           // Diffusion creep parameters (Stress exponents often but not always 1)
@@ -654,23 +655,23 @@ namespace aspect
                                    "surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models "
                                    "See, for example, Thieulot, C. (2011), PEPI 188, p. 47-68. "
-                                   "\n"
+                                   "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
-                                   "that has a form similar to the peierls creep mechanism. "
+                                   "that has a form similar to the Peierls creep mechanism. "
                                    "This stress limiter assigns an effective viscosity "
                                    "$\\sigma_eff = \\frac{\\tau_y}{2*\\varepsilon_y} "
                                    "{\\frac{\\varepsilon_ii}{\\varepislon_y}}^{\\frac{1}{n_y}-1}$ "
-                                   "Above $tau_y$ is a yield stress, $varepsilon_y$ is the "
-                                   "reference strain rate, $\\varepsilon_ii$ is the strain rate "
+                                   "Above $\\tau_y$ is a yield stress, $\\varepsilon_y$ is the "
+                                   "reference strain rate, $\\varepsilon_{ii}$ is the strain rate "
                                    "and $n_y$ is the stress limiter exponent.  The yield stress, "
                                    "$\\tau_y$, is defined through the Drucker Prager yield criterion "
                                    "formulation.  This method of limiting viscous stress has been used "
                                    "in various forms within the geodynamic literature, including "
-                                   "Christensen (1992), JGR, 97(B2), p. 2015-2036; "
-                                   "Cizkova and Bina (2013), EPSL, 379, p. 95-103; "
-                                   "Cizkova and Bina (2015), EPSL, 430, p. 408-415. "
+                                   "Christensen (1992), JGR, 97(B2), pp. 2015-2036; "
+                                   "Cizkova and Bina (2013), EPSL, 379, pp. 95-103; "
+                                   "Cizkova and Bina (2015), EPSL, 430, pp. 408-415. "
                                    "When $n_y$ is 1, it essentially becomes a linear viscosity model,"
-                                   "and in the limit $n_y\rightarrow \infty$ it converges to the "
+                                   "and in the limit $n_y\rightarrow \\infty$ it converges to the "
                                    "standard viscosity rescaling method (concretely, values $n_y>20$"
                                    "are large enough)."
                                    "\n\n "
