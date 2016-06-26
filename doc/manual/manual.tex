@@ -32,8 +32,15 @@
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single}
-%\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
+\lstset{
+  language=C++,
+  basicstyle=\small\ttfamily,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\hspace{5em}\ensuremath{\color{red}\hookrightarrow\space}}
+}
 \lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
                             morecomment=[l]{\#},escapeinside={\%\%}{\%},}
 \lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
