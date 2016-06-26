@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,7 @@ namespace aspect
      * Define a type to know what type of topography we
      * are using
      */
-    enum topo_types {NO_TOPOGRAPHY,
+    enum TopoTypes {NO_TOPOGRAPHY,
                      PRM_EXACT,
                      PRM_UNIFORM_GRID_INTERPOLATED,
                      FILE_UNIFORM_GRID,
@@ -75,7 +75,7 @@ namespace aspect
              * The set functions
              */
             void set_corners(std::vector<Point<2> > corners);
-            void set_topography_type(topo_types topo_type);
+            void set_topography_type(TopoTypes topo_type);
             void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
             void set_topography_values (std::vector<double> topography_values);
             void set_topography_data (Function<2> *topography_data);
@@ -85,7 +85,7 @@ namespace aspect
             /**
              * The get functions
              */
-            topo_types                                   get_topo_type () const;
+            TopoTypes                                   get_topo_type () const;
             std_cxx11::array<std::pair<double,double>,2> get_endpoints () const;
             std_cxx11::array<unsigned int,2>             get_number_of_intervals () const;
             std::vector<double>                          get_data () const;
@@ -94,7 +94,7 @@ namespace aspect
 
           private:
 
-            topo_types topo_type;
+            TopoTypes topo_type;
             std::string topo_file;
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
