@@ -236,17 +236,14 @@ namespace aspect
                   const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
                   const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
 
-                  // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   if (degree_l == 0)
                     prefact = (zero_out_degree_0
                                ?
                                0.
                                :
                                1.);
-                  else if (order_m == 0)
-                    prefact = 1.;
                   else
-                    prefact = sqrt(2.);
+                    prefact = 1.;
 
                   spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
 
