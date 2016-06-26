@@ -452,7 +452,7 @@ namespace aspect
           // Plasticity parameters
           prm.declare_entry ("Angles of internal friction", "0",
                              Patterns::List(Patterns::Double(0)),
-                             "List of angles of internal friction, \\phi, for background material and compositional fields, "
+                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
