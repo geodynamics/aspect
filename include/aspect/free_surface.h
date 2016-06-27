@@ -70,21 +70,6 @@ namespace aspect
                                 internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
       /**
-       * If a geometry model uses manifolds for the refinement behavior
-       * it can produce nonsensical meshes on refinement when using a
-       * free surface, since the free surface may deform the mesh to the
-       * point where the manifold is no longer a good description of the
-       * domain.  However, it can still be useful to have the manifold
-       * description for producing a nice starting mesh with the initial
-       * refinements (that is to say, before timestepping).  This detaches
-       * manifolds from cells, and is called after the initial refinements
-       * redistribution of the system.
-       * redistribution of the system.
-       * of the domain.
-       */
-      void detach_manifolds();
-
-      /**
        * Declare parameters for the free surface handling.
        */
       static

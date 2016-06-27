@@ -263,8 +263,6 @@ namespace aspect
 
         freesurface_trans.deserialize (fs_system);
         free_surface->mesh_displacements = distributed_mesh_displacements;
-
-        free_surface->detach_manifolds();
       }
 
     // read zlib compressed resume.z
