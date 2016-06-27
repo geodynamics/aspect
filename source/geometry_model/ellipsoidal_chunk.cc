@@ -30,11 +30,6 @@
 
 
 
-/**
- * This geometry model implements an (3d) ellipsoidal_chunk geometry which can be non-coordinate parallel and
- * can have an initial topography on it.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps, Wolfgang Bangerth and Anne Glerum
- */
 
 namespace aspect
 {
@@ -42,55 +37,59 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
-    bool
-    EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+//    template <int dim>
+    namespace
     {
-      /**
-       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
-       * and therefore requires the following copyright notice:
-       *
-       * Copyright 2000 softSurfer, 2012 Dan Sunday
-       * This code may be freely used and modified for any purpose
-       * providing that this copyright notice is included with it.
-       * SoftSurfer makes no warranty for this code, and cannot be held
-       * liable for any real or imagined damage resulting from its use.
-       * Users of this code must verify correctness for their application.
-       */
-      int pointNo = pointList.size();
-      int    wn = 0;    // the  winding number counter
-      int   j=pointNo-1;
+      bool
+      //EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+      In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+      {
+        /**
+         * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
+         * and therefore requires the following copyright notice:
+         *
+         * Copyright 2000 softSurfer, 2012 Dan Sunday
+         * This code may be freely used and modified for any purpose
+         * providing that this copyright notice is included with it.
+         * SoftSurfer makes no warranty for this code, and cannot be held
+         * liable for any real or imagined damage resulting from its use.
+         * Users of this code must verify correctness for their application.
+         */
+        int pointNo = pointList.size();
+        int    wn = 0;    // the  winding number counter
+        int   j=pointNo-1;
 
 
-      // loop through all edges of the polygon
-      for (int i=0; i<pointNo; i++)
-        {
-          // edge from V[i] to  V[i+1]
-          if (pointList[j][1] <= point[1])
-            {
-              // start y <= P.y
-              if (pointList[i][1]  > point[1])      // an upward crossing
-                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
-                  {
-                    // P left of  edge
-                    ++wn;            // have  a valid up intersect
-                  }
-            }
-          else
-            {
-              // start y > P.y (no test needed)
-              if (pointList[i][1]  <= point[1])     // a downward crossing
-                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
-                  {
-                    // P right of  edge
-                    --wn;            // have  a valid down intersect
-                  }
-            }
-          j=i;
-        }
-      return (wn != 0);
+        // loop through all edges of the polygon
+        for (int i=0; i<pointNo; i++)
+          {
+            // edge from V[i] to  V[i+1]
+            if (pointList[j][1] <= point[1])
+              {
+                // start y <= P.y
+                if (pointList[i][1]  > point[1])      // an upward crossing
+                  if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                        - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
+                    {
+                      // P left of  edge
+                      ++wn;            // have  a valid up intersect
+                    }
+              }
+            else
+              {
+                // start y > P.y (no test needed)
+                if (pointList[i][1]  <= point[1])     // a downward crossing
+                  if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                        - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
+                    {
+                      // P right of  edge
+                      --wn;            // have  a valid down intersect
+                    }
+              }
+            j=i;
+          }
+        return (wn != 0);
+      }
     }
 
     /**
@@ -99,6 +98,8 @@ namespace aspect
     // constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
+      :
+      topography_data(NULL)
     {}
 
 
@@ -113,7 +114,6 @@ namespace aspect
         {
           case NO_TOPOGRAPHY:
             return 0;
-            break;
 
           case PRM_EXACT:
             for (unsigned int i = 0; i < point_lists.size(); i++)
@@ -126,27 +126,19 @@ namespace aspect
                   }
               }
             return value;
-            break;
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
-            if (topography_data != NULL)
-              return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                     lon * 180/numbers::PI));
-            break;
+            AssertThrow (topography_data != NULL, ExcMessage("No topography is set for prm unifomr grid interpolated."));
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           case FILE_UNIFORM_GRID:
-            return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                   lon * 180/numbers::PI));
-            break;
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           case FILE_NONUNIFORM_GRID:
-            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                   lon * 180/numbers::PI));
-            break;
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           default:
             AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
-            return 0;
             break;
         }
       Assert(false,ExcMessage ("The code should never reach this part. Please check the code or contact the developer."));
@@ -162,7 +154,7 @@ namespace aspect
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(topo_types set_topo_type)
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(typename EllipsoidalChunk<dim>::TopoTypes set_topo_type)
     {
       topo_type = set_topo_type;
     }
@@ -205,7 +197,7 @@ namespace aspect
     }
 
     template <int dim>
-    topo_types
+    typename EllipsoidalChunk<dim>::TopoTypes
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type () const
     {
       return topo_type;
@@ -221,12 +213,10 @@ namespace aspect
       // Minimal and maximal latitude
       endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
 
-#ifdef DEBUG
       for (unsigned int i=0; i<2; i++)
         Assert (endpoints[i].first < endpoints[i].second,
                 ExcMessage ("The interval in each coordinate direction needs "
                             "to have positive size"));
-#endif
 
       return endpoints;
     }
@@ -983,7 +973,7 @@ namespace aspect
              * Determine what type of topography we have
              */
             std::string topography_type_string = prm.get("Topography type");
-            topo_types topo_type;
+            EllipsoidalChunk<dim>::TopoTypes topo_type;
             if (topography_type_string == "No topography")
               topo_type = NO_TOPOGRAPHY;
             else if (topography_type_string == "From prm exact")

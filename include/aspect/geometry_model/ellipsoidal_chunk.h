@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,7 +28,7 @@
 
 /**
  * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axes have
- * the same length. The ellipsoidal chunk can be non-coordinate parallel part of the ellipsoid.
+ * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
  * The ellipsoid can have an initial topography on it.
  * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps, Wolfgang Bangerth and Anne Glerum
  */
@@ -39,16 +39,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    /**
-     * Define a type to know what type of topography we
-     * are using
-     */
-    enum topo_types {NO_TOPOGRAPHY,
-                     PRM_EXACT,
-                     PRM_UNIFORM_GRID_INTERPOLATED,
-                     FILE_UNIFORM_GRID,
-                     FILE_NONUNIFORM_GRID
-                    };
 
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
@@ -57,7 +47,16 @@ namespace aspect
     class EllipsoidalChunk : public Interface<dim>
     {
       public:
-        static bool In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList);
+        /**
+         * Define a type to know what type of topography we
+         * are using
+         */
+        enum TopoTypes {NO_TOPOGRAPHY,
+                        PRM_EXACT,
+                        PRM_UNIFORM_GRID_INTERPOLATED,
+                        FILE_UNIFORM_GRID,
+                        FILE_NONUNIFORM_GRID
+                       };
         /**
          * A class which describes the topography
          */
@@ -76,7 +75,7 @@ namespace aspect
              * The set functions
              */
             void set_corners(std::vector<Point<2> > corners);
-            void set_topography_type(topo_types topo_type);
+            void set_topography_type(TopoTypes topo_type);
             void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
             void set_topography_values (std::vector<double> topography_values);
             void set_topography_data (Function<2> *topography_data);
@@ -86,7 +85,7 @@ namespace aspect
             /**
              * The get functions
              */
-            topo_types                                   get_topo_type () const;
+            TopoTypes                                   get_topo_type () const;
             std_cxx11::array<std::pair<double,double>,2> get_endpoints () const;
             std_cxx11::array<unsigned int,2>             get_number_of_intervals () const;
             std::vector<double>                          get_data () const;
@@ -95,12 +94,12 @@ namespace aspect
 
           private:
 
-            topo_types topo_type;
+            TopoTypes topo_type;
             std::string topo_file;
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
             // Gridded topography data
-            Function<2> *topography_data = NULL;
+            Function<2> *topography_data;
             std::vector<Point<2> > corners;
             // Number of points in each coordinate direction
             std::vector<double> grid_number_data_points;
@@ -221,7 +220,7 @@ namespace aspect
         get_used_boundary_indicators() const;
 
         /*
-         *Set symbolic names for boudaries
+         *Set symbolic names for boundaries
          */
         virtual std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map() const;
