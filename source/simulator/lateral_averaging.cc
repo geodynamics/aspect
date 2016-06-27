@@ -20,7 +20,6 @@
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/signaling_nan.h>
 
 #include <aspect/lateral_averaging.h>
 #include <aspect/material_model/interface.h>
@@ -131,7 +130,7 @@ namespace aspect
             // Output nan if no quadrature points in depth block
             this->get_pcout() << "\tWarning: No quadrature points found in depth block " << i
                               << ". Averages are likely underresolved." << std::endl;
-            values[i] = numbers::signaling_nan<double>();
+            values[i] = std::numeric_limits<double>::quiet_NaN();
           }
       }
   }
