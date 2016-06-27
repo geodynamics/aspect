@@ -108,7 +108,6 @@ namespace aspect
         {
           case NO_TOPOGRAPHY:
             return 0;
-            break;
 
           case PRM_EXACT:
             for (unsigned int i = 0; i < point_lists.size(); i++)
@@ -121,27 +120,22 @@ namespace aspect
                   }
               }
             return value;
-            break;
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
-            if (topography_data != NULL)
+            AssertThrow (topography_data != NULL, ExcMessage("No topography is set for prm unifomr grid interpolated."));
               return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                      lon * 180/numbers::PI));
-            break;
 
           case FILE_UNIFORM_GRID:
             return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                    lon * 180/numbers::PI));
-            break;
 
           case FILE_NONUNIFORM_GRID:
             return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
                    lon * 180/numbers::PI));
-            break;
 
           default:
             AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
-            return 0;
             break;
         }
       Assert(false,ExcMessage ("The code should never reach this part. Please check the code or contact the developer."));
@@ -216,12 +210,10 @@ namespace aspect
       // Minimal and maximal latitude
       endpoints[1] = std::make_pair (corners[3][1]*numbers::PI/180, corners[0][1]*numbers::PI/180);
 
-#ifdef DEBUG
       for (unsigned int i=0; i<2; i++)
         Assert (endpoints[i].first < endpoints[i].second,
                 ExcMessage ("The interval in each coordinate direction needs "
                             "to have positive size"));
-#endif
 
       return endpoints;
     }
