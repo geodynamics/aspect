@@ -132,7 +132,7 @@ namespace aspect
 
       /**
       * Finite element for the free surface implementation, which is
-      used for tracking mesh deformation.
+      * used for tracking mesh deformation.
       */
       const FESystem<dim> free_surface_fe;
 
@@ -166,15 +166,12 @@ namespace aspect
       /**
        * Vector for storing the mesh velocity in the free surface finite
        * element space, which is, in general, not the same finite element
-       * space as the Stokes system.
+       * space as the Stokes system. This is used for interpolating
+       * the mesh velocity in the free surface finite element space onto
+       * the velocity in the Stokes finite element space, which is then
+       * used for making the ALE correction in the advection equations.
        */
       LinearAlgebra::Vector fs_mesh_velocity;
-
-      /**
-       * The matrix for solving the elliptic problem for moving the
-       * internal vertices.
-       */
-      LinearAlgebra::SparseMatrix mesh_matrix;
 
       /**
        * IndexSet for the locally owned DoFs for the mesh system

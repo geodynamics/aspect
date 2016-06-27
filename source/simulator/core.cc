@@ -183,6 +183,13 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
+    //The mapping is given by a degree four MappingQ for the case
+    //of a curved mesh, and a degree one MappingQ for a rectangular mesh.
+    //If a free surface is enabled, this is swapped out for a MappingQ1Eulerian,
+    //which allows for mesh deformation.
+    mapping( new MappingQ<dim>( geometry_model->has_curved_elements() ? 4 : 1,
+                                geometry_model->has_curved_elements() ? true : false ) ),
+
     // define the finite element
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),
 
@@ -499,13 +506,6 @@ namespace aspect
         //Allocate the FreeSurfaceHandler object
         free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
       }
-
-    //The mapping is given by a degree four MappingQ for the case
-    //of a curved mesh, and a degree one MappingQ for a rectangular mesh.
-    //If a free surface is enabled, this is swapped out for a MappingQ1Eulerian,
-    //which allows for mesh deformation.
-    mapping.reset( new MappingQ<dim>( geometry_model->has_curved_elements() ? 4 : 1,
-                                      geometry_model->has_curved_elements() ? true : false ) );
 
     // Initialize the melt handler
     if (parameters.include_melt_transport)

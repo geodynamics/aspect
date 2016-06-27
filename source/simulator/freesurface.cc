@@ -66,8 +66,8 @@ namespace aspect
   FreeSurfaceHandler<dim>::~FreeSurfaceHandler ()
   {
     //Free the Simulator's mapping object, otherwise
-    //when the FreeSurfaceHandler get's destroyed,
-    //the mapping's reference the the mesh displacement
+    //when the FreeSurfaceHandler gets destroyed,
+    //the mapping's reference to the mesh displacement
     //vector will be invalid.
     sim.mapping.reset();
   }
@@ -436,8 +436,6 @@ namespace aspect
     Vector<double> cell_vector (dofs_per_cell);
     FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
-    mesh_matrix.clear ();
-
     // We are just solving a Laplacian in each spatial direction, so
     // the degrees of freedom for different dimensions do not couple.
     Table<2,DoFTools::Coupling> coupling (dim, dim);
@@ -446,6 +444,7 @@ namespace aspect
     for (unsigned int c=0; c<dim; ++c)
       coupling[c][c] = DoFTools::always;
 
+    LinearAlgebra::SparseMatrix mesh_matrix;
 #ifdef ASPECT_USE_PETSC
     LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
 #else
