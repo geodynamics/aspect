@@ -24,7 +24,6 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/boundary_temperature/interface.h>
 
-#include <boost/lexical_cast.hpp>
 #include <cmath>
 
 namespace aspect
