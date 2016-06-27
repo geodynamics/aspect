@@ -6,6 +6,13 @@
  *
  * <ol>
  *
+ * <li> Changed: The free surface implementation now represents mesh
+ * deformation using a vector of displacements for the mesh vertices,
+ * using a MappingQ1Eulerian to transform from the reference cell to
+ * the physical cell.
+ * <br>
+ * (Ian Rose, 2016/06/26)
+ *
  * <li> Changed: The visualization postprocessor now writes every initial
  * refinement stage if 'Run postprocessors on initial refinement' is
  * set to true.

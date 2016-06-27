@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/freesurface.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -764,7 +765,7 @@ namespace aspect
     prm.leave_subsection ();
 
     // also declare the parameters that the FreeSurfaceHandler needs
-    Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
+    FreeSurfaceHandler<dim>::declare_parameters (prm);
 
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed

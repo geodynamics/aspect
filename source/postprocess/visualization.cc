@@ -414,7 +414,7 @@ namespace aspect
                                   DataOut<dim>::no_curved_cells);
         }
       else
-        data_out.build_patches();
+        data_out.build_patches(this->get_mapping()); //Giving the mapping ensures that the case with mesh deformation works correctly.
 
       // Now prepare everything for writing the output and choose output format
       std::string solution_file_prefix = "solution-" + Utilities::int_to_string (output_file_number, 5);

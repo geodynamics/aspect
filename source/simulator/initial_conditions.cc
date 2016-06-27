@@ -84,7 +84,7 @@ namespace aspect
                 ExcInternalError());
 
         // create an FEValues object with just the temperature/composition element
-        FEValues<dim> fe_values (mapping, finite_element,
+        FEValues<dim> fe_values (*mapping, finite_element,
                                  support_points,
                                  update_quadrature_points);
 
@@ -224,14 +224,13 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-
         const unsigned int pressure_comp =
           parameters.include_melt_transport ?
           introspection.variable("fluid pressure").first_component_index
           :
           introspection.component_indices.pressure;
 
-        VectorTools::interpolate (mapping, dof_handler,
+        VectorTools::interpolate (*mapping, dof_handler,
                                   VectorFunctionFromScalarFunctionObject<dim> (std_cxx11::bind (&AdiabaticConditions::Interface<dim>::pressure,
                                                                                std_cxx11::cref (*adiabatic_conditions),
                                                                                std_cxx11::_1),
@@ -263,7 +262,7 @@ namespace aspect
                                                update_quadrature_points |
                                                update_JxW_values);
 
-        FEValues<dim> fe_values (mapping, finite_element, quadrature, update_flags);
+        FEValues<dim> fe_values (*mapping, finite_element, quadrature, update_flags);
 
         const unsigned int
         dofs_per_cell = fe_values.dofs_per_cell,

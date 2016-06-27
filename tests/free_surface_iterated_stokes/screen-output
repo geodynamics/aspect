@@ -25,7 +25,7 @@ Number of free surface degrees of freedom: 1466
    Residual after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 5.97036e-08
+   Residual after nonlinear iteration 2: 5.97035e-08
 
    Postprocessing:
 
@@ -52,7 +52,7 @@ Number of free surface degrees of freedom: 1466
    Residual after nonlinear iteration 1: 1.49063
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 8.78597e-08
+   Residual after nonlinear iteration 2: 8.78595e-08
 
    Postprocessing:
      Topography min/max: -78.72 m, 175.3 m, 
@@ -66,53 +66,53 @@ Number of free surface degrees of freedom: 1466
    Residual after nonlinear iteration 1: 1.60276
 
    Solving Stokes system... 0+1 iterations.
-   Residual after nonlinear iteration 2: 8.04424e-08
+   Residual after nonlinear iteration 2: 8.04425e-08
 
    Postprocessing:
      Topography min/max: -106.6 m, 83.69 m, 
      RMS, max velocity:  0.000689 m/year, 0.00219 m/year
 
-*** Timestep 3:  t=513715 years
+*** Timestep 3:  t=513787 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
-   Residual after nonlinear iteration 1: 0.470983
+   Residual after nonlinear iteration 1: 0.470828
 
    Solving Stokes system... 0+1 iterations.
-   Residual after nonlinear iteration 2: 4.82474e-08
+   Residual after nonlinear iteration 2: 4.82789e-08
 
    Postprocessing:
-     Topography min/max: -12.74 m, 41.25 m, 
-     RMS, max velocity:  0.000457 m/year, 0.00177 m/year
+     Topography min/max: -12.79 m, 41.33 m, 
+     RMS, max velocity:  0.000456 m/year, 0.00177 m/year
 
-*** Timestep 4:  t=694216 years
+*** Timestep 4:  t=694325 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+13 iterations.
-   Residual after nonlinear iteration 1: 0.364171
+   Residual after nonlinear iteration 1: 0.364006
 
    Solving Stokes system... 0+2 iterations.
-   Residual after nonlinear iteration 2: 7.53869e-08
+   Residual after nonlinear iteration 2: 7.54723e-08
 
    Postprocessing:
-     Topography min/max: -18.7 m, 58.47 m, 
+     Topography min/max: -18.67 m, 58.42 m, 
      RMS, max velocity:  0.000439 m/year, 0.00169 m/year
 
-*** Timestep 5:  t=884097 years
+*** Timestep 5:  t=884182 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
-   Residual after nonlinear iteration 1: 0.160717
+   Residual after nonlinear iteration 1: 0.159617
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 3.06755e-08
+   Residual after nonlinear iteration 2: 3.05077e-08
 
    Postprocessing:
-     Topography min/max: -14.39 m, 48.9 m, 
-     RMS, max velocity:  0.000444 m/year, 0.0017 m/year
+     Topography min/max: -14.4 m, 48.93 m, 
+     RMS, max velocity:  0.000444 m/year, 0.00169 m/year
 
 
 
@@ -120,71 +120,71 @@ Number of free surface degrees of freedom: 1466
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
-*** Timestep 6:  t=1.07294e+06 years
+*** Timestep 6:  t=1.07304e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+13 iterations.
-   Residual after nonlinear iteration 1: 0.105241
+   Residual after nonlinear iteration 1: 0.10418
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 6.67661e-08
+   Residual after nonlinear iteration 2: 6.62821e-08
 
    Postprocessing:
-     Topography min/max: -16.57 m, 53.62 m, 
+     Topography min/max: -16.56 m, 53.6 m, 
      RMS, max velocity:  0.000437 m/year, 0.00165 m/year
 
-*** Timestep 7:  t=1.26649e+06 years
+*** Timestep 7:  t=1.26658e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-   Residual after nonlinear iteration 1: 0.0478512
+   Residual after nonlinear iteration 1: 0.0473456
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 8.96602e-08
+   Residual after nonlinear iteration 2: 8.8979e-08
 
    Postprocessing:
-     Topography min/max: -15.59 m, 51.6 m, 
+     Topography min/max: -15.59 m, 51.61 m, 
      RMS, max velocity:  0.000436 m/year, 0.00163 m/year
 
-*** Timestep 8:  t=1.46194e+06 years
+*** Timestep 8:  t=1.46204e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-   Residual after nonlinear iteration 1: 0.0270556
+   Residual after nonlinear iteration 1: 0.0267511
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 3.92717e-08
+   Residual after nonlinear iteration 2: 3.89629e-08
 
    Postprocessing:
-     Topography min/max: -16.14 m, 52.84 m, 
+     Topography min/max: -16.14 m, 52.83 m, 
      RMS, max velocity:  0.000432 m/year, 0.0016 m/year
 
-*** Timestep 9:  t=1.66082e+06 years
+*** Timestep 9:  t=1.66092e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-   Residual after nonlinear iteration 1: 0.014394
+   Residual after nonlinear iteration 1: 0.0142383
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 2.25672e-08
+   Residual after nonlinear iteration 2: 2.29327e-08
 
    Postprocessing:
      Topography min/max: -15.92 m, 52.4 m, 
      RMS, max velocity:  0.00043 m/year, 0.00158 m/year
 
-*** Timestep 10:  t=1.8624e+06 years
+*** Timestep 10:  t=1.8625e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-   Residual after nonlinear iteration 1: 0.0087553
+   Residual after nonlinear iteration 1: 0.00867112
 
    Solving Stokes system... 0+0 iterations.
-   Residual after nonlinear iteration 2: 6.34931e-08
+   Residual after nonlinear iteration 2: 6.26255e-08
 
    Postprocessing:
      Topography min/max: -16.1 m, 52.83 m, 

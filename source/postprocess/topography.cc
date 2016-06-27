@@ -18,7 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
 #include <aspect/postprocess/topography.h>
 
 #include <aspect/geometry_model/box.h>
@@ -26,6 +25,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+
+#include <deal.II/fe/fe_values.h>
 
 #include <cmath>
 #include <limits>
@@ -71,6 +72,10 @@ namespace aspect
                                         "Consider using a box, a spherical shell, or a sphere.") );
         }
 
+      //Get a quadrature rule that exists only on the corners
+      QTrapez<dim-1> face_corners;
+      FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
+
       //get maximum surface topography
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active(),
                                                                                endc = this->get_triangulation().end();
@@ -87,9 +92,12 @@ namespace aspect
                 if ( cell->face(face_no)->boundary_id() != relevant_boundary)
                   continue;
 
-                for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_face;  ++v)
+                face_vals.reinit( cell, face_no);
+
+                for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                   {
-                    Point<dim> vertex = cell->face(face_no)->vertex(v);
+                    Point<dim> vertex = face_vals.quadrature_point(corner);
+
                     double topography = (vertical_gravity ? vertex[dim-1] : vertex.norm()) - reference_height;
                     if ( topography > local_max_height)
                       local_max_height = topography;
