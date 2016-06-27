@@ -1509,9 +1509,18 @@ set of equations at once, iterating out nonlinearities as necessary, but
 instead in each time step solves first the Stokes system with the previous
 time step's temperature, and then uses the so-computed velocity to solve the
 temperature equation. These kind of time stepping schemes are often referred
-to as \textit{IMPES} methods (they originate in the porous media flow
+to as \textit{operator splitting} methods. A particular operator
+splitting method, used in
+earlier \aspect{} versions, solves first the Stokes equations and then
+uses a semi-explicit time stepping method for the temperature equation
+where diffusion is handled implicitly and advection explicitly;
+this algorithm is often called \textit{IMPES} (it originated in the
+porous media flow 
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
-\textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
+\textit{E}xplicit \textit{S}aturation) and is explained in more detail
+in \cite{KHB12}. However, since then the algorithm in \aspect{} has
+been rewritten to use an implicit time stepping algorithm also for the
+temperature equation because this allows to use larger time steps.
 
 
 
