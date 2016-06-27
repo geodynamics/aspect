@@ -51,13 +51,17 @@ namespace aspect
 {
   using namespace dealii;
 
-  // forward declaration
+  // forward declarations:
   template <int dim> class Simulator;
   template <int dim> struct SimulatorSignals;
   template <int dim> class LateralAveraging;
   namespace HeatingModel
   {
     template <int dim> class Manager;
+  }
+  namespace AdiabaticConditions
+  {
+    template <int dim> class Interface;
   }
   template <int dim> class MeltHandler;
 

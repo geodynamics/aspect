@@ -24,7 +24,6 @@
 
 
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/simulator_access.h>
 #include <deal.II/base/point.h>
 
 
@@ -44,7 +43,7 @@ namespace aspect
      * vertical in box-shaped models.
      */
     template <int dim>
-    class InitialProfile : public Interface<dim>, public SimulatorAccess<dim>
+    class InitialProfile : public Interface<dim>
     {
       public:
         /**
@@ -83,16 +82,6 @@ namespace aspect
          * Return the adiabatic temperature at a given point of the domain.
          */
         virtual double temperature (const Point<dim> &p) const;
-
-        /**
-         * Return the adiabatic temperature profile as a vector of values
-         * corresponding to increasing depth.
-         *
-         * @param values The output vector of depth averaged values. The
-         * function takes the pre-existing size of this vector as the number
-         * of depth slices.
-         */
-        virtual void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
