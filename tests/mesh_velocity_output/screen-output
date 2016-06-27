@@ -48,7 +48,7 @@ Number of free surface degrees of freedom: 142
      RMS, max velocity:        0.000782 m/year, 0.00234 m/year
      Writing graphical output: output-mesh_velocity_output/solution-00001
 
-*** Timestep 2:  t=6.85356e+06 years
+*** Timestep 2:  t=6.85344e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...

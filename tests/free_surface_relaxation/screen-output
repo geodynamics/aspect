@@ -38,7 +38,7 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.495e+04 m, 1.495e+04 m, 
      RMS, max velocity:  0.062 m/year, 0.2 m/year
 
-*** Timestep 2:  t=491.632 years
+*** Timestep 2:  t=491.282 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -48,7 +48,7 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.491e+04 m, 1.49e+04 m, 
      RMS, max velocity:  0.0618 m/year, 0.199 m/year
 
-*** Timestep 3:  t=739.215 years
+*** Timestep 3:  t=738.163 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -58,7 +58,7 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.486e+04 m, 1.485e+04 m, 
      RMS, max velocity:  0.0616 m/year, 0.198 m/year
 
-*** Timestep 4:  t=987.856 years
+*** Timestep 4:  t=985.743 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -68,7 +68,7 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.481e+04 m, 1.48e+04 m, 
      RMS, max velocity:  0.0614 m/year, 0.198 m/year
 
-*** Timestep 5:  t=1237.56 years
+*** Timestep 5:  t=1234.03 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -84,7 +84,7 @@ Number of free surface degrees of freedom: 2142
 +---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
-*** Timestep 6:  t=1488.34 years
+*** Timestep 6:  t=1483.02 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -94,27 +94,27 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.472e+04 m, 1.47e+04 m, 
      RMS, max velocity:  0.061 m/year, 0.196 m/year
 
-*** Timestep 7:  t=1740.21 years
+*** Timestep 7:  t=1732.73 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
-     Topography min/max: -1.467e+04 m, 1.465e+04 m, 
+     Topography min/max: -1.467e+04 m, 1.466e+04 m, 
      RMS, max velocity:  0.0608 m/year, 0.196 m/year
 
-*** Timestep 8:  t=1993.17 years
+*** Timestep 8:  t=1983.15 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
 
    Postprocessing:
-     Topography min/max: -1.462e+04 m, 1.46e+04 m, 
+     Topography min/max: -1.463e+04 m, 1.461e+04 m, 
      RMS, max velocity:  0.0606 m/year, 0.195 m/year
 
-*** Timestep 9:  t=2247.23 years
+*** Timestep 9:  t=2234.3 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -124,7 +124,7 @@ Number of free surface degrees of freedom: 2142
      Topography min/max: -1.458e+04 m, 1.456e+04 m, 
      RMS, max velocity:  0.0604 m/year, 0.194 m/year
 
-*** Timestep 10:  t=2502.4 years
+*** Timestep 10:  t=2486.17 years
    Solving mesh velocity system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
