@@ -1098,7 +1098,8 @@ namespace aspect
         {
           Point<dim> internal_position = position;
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
                 ::aspect::Utilities::spherical_coordinates(position);
