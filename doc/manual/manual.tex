@@ -1511,7 +1511,8 @@ temperature equation. These kind of time stepping schemes are often referred
 to as \textit{operator splitting} methods. A particular operator
 splitting method, used in
 earlier \aspect{} versions, solves first the Stokes equations and then
-uses an explicit time stepping method for the temperature equation;
+uses a semi-explicit time stepping method for the temperature equation
+where diffusion is handled implicitly and advection explicitly;
 this algorithm is often called \textit{IMPES} (it originated in the
 porous media flow 
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
