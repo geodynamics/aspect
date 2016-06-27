@@ -56,7 +56,10 @@ namespace aspect
     class EllipsoidalChunk : public Interface<dim>
     {
       public:
-        static bool In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList);
+         /**
+          * Function to determine if a point lies in a 2D polygon
+          */ 
+        //static bool In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList);
         /**
          * A class which describes the topography
          */
@@ -99,7 +102,7 @@ namespace aspect
             std::vector<std::vector<std::vector<double> > > point_lists;
             std::vector<double> topography_values;
             // Gridded topography data
-            Function<2> *topography_data = NULL;
+            Function<2> *topography_data;
             std::vector<Point<2> > corners;
             // Number of points in each coordinate direction
             std::vector<double> grid_number_data_points;

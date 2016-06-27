@@ -37,9 +37,11 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+//    template <int dim>
+    namespace {
     bool
-    EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+    //EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+    In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
     {
       /**
        * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
@@ -87,6 +89,7 @@ namespace aspect
         }
       return (wn != 0);
     }
+    }
 
     /**
      * the EllipsoidalChunkTopography class
@@ -94,6 +97,8 @@ namespace aspect
     // constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
+    :
+    topography_data(NULL)
     {}
 
 
@@ -123,16 +128,13 @@ namespace aspect
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
             AssertThrow (topography_data != NULL, ExcMessage("No topography is set for prm unifomr grid interpolated."));
-              return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                     lon * 180/numbers::PI));
+              return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           case FILE_UNIFORM_GRID:
-            return static_cast<Functions::InterpolatedUniformGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                   lon * 180/numbers::PI));
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           case FILE_NONUNIFORM_GRID:
-            return static_cast<Functions::InterpolatedTensorProductGridData<2>*>(topography_data)->value (Point<2>(lat * 180/numbers::PI,
-                   lon * 180/numbers::PI));
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           default:
             AssertThrow(false,ExcMessage ("This topography function for enum with value " + boost::lexical_cast<std::string>(topo_type) + " has not been implemented."));
