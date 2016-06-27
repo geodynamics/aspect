@@ -20,7 +20,6 @@
 
 
 #include <aspect/global.h>
-#include <aspect/simulator_access.h>
 #include <aspect/adiabatic_conditions/initial_profile.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/box.h>

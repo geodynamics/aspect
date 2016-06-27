@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,8 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/adiabat.h>
-#include <aspect/simulator_access.h>
-
 
 
 namespace aspect
@@ -103,7 +101,11 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Adiabat,
                                                   "adiabat",
-                                                  "A visualization output object that generates adiabatic temperature and pressure as produced by AdiabaticConditions.")
+                                                  "A visualization output "
+                                                  "object that generates "
+                                                  "adiabatic temperature and "
+                                                  "pressure as produced by "
+                                                  "AdiabaticConditions.")
     }
   }
 }

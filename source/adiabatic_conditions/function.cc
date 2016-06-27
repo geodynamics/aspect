@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,11 +21,6 @@
 
 #include <aspect/global.h>
 #include <aspect/adiabatic_conditions/function.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/box.h>
-
-#include <deal.II/base/std_cxx11/bind.h>
-
 
 namespace aspect
 {
@@ -49,10 +44,6 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
-    void
-    Function<dim>::update()
-    {}
 
 
     template <int dim>
