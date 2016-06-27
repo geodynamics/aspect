@@ -78,7 +78,9 @@ namespace aspect
                                    "degree >= 0."));
               // use a spherical harmonic function as lateral perturbation
               std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
-              lateral_perturbation = sph_harm_vals.first;
+              //For historical reasons, this initial conditions module used an unnormalized real spherical harmonic.
+              //Here we denormalize the return value of real_spherical_harmonic to keep the original behavior.
+              lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
             }
         }
       else if (const GeometryModel::Chunk<dim> *
