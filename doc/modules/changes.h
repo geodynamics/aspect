@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> Changed: The previously-deprecated functions 'composition' and
+ * 'temperature' have now been removed. Their replacements are
+ * 'boundary_composition' and 'boundary_temperature'.
+ * <br>
+ * (Sam Cox, 2016/06/27)
+ *
  * <li> Changed: The free surface implementation now represents mesh
  * deformation using a vector of displacements for the mesh vertices,
  * using a MappingQ1Eulerian to transform from the reference cell to
