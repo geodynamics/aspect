@@ -48,10 +48,6 @@ namespace aspect
     {
       public:
         /**
-         * Function to determine if a point lies in a 2D polygon
-         */
-        //static bool In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList);
-        /**
          * Define a type to know what type of topography we
          * are using
          */
