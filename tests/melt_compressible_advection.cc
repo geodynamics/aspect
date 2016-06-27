@@ -119,9 +119,6 @@ namespace aspect
   std::pair<std::string,std::string>
   CompressibleMeltPostprocessor<dim>::execute (TableHandler &statistics)
   {
-    AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                ExcNotImplemented());
-
     RefFunction<dim> ref_func;
     const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 
@@ -137,8 +134,10 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_porosity);
 
+    const double poro_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_porosity.norm_sqr(),this->get_mpi_communicator()));
+
     std::ostringstream os;
-    os << std::scientific << cellwise_errors_porosity.l2_norm();
+    os << std::scientific << poro_l2;
     return std::make_pair("Error porosity_L2:", os.str());
   }
 
