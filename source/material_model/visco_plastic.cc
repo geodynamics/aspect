@@ -654,7 +654,7 @@ namespace aspect
                                    "the yield stress, the viscosity is rescaled back to the yield "
                                    "surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models "
-                                   "See, for example, Thieulot, C. (2011), PEPI 188, p. 47-68. "
+                                   "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
                                    "that has a form similar to the Peierls creep mechanism. "
