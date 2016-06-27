@@ -67,30 +67,6 @@ namespace aspect
          * Return the temperature that is to hold at a particular position on
          * the boundary of the domain.
          *
-         * @param geometry_model The geometry model that describes the domain.
-         * This may be used to determine whether the boundary temperature
-         * model is implemented for this geometry.
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the temperature.
-         * @param position The position of the point at which we ask for the
-         * temperature.
-         * @return Boundary temperature at position @p position.
-         *
-         * @deprecated Use <code>boundary_temperature(const types::boundary_id
-         * boundary_indicator,const Point<dim> &position) const</code> instead.
-         * The reference to the geometry model can be reached by deriving
-         * plugins from aspect::SimulatorAccess<dim>.
-         */
-        virtual
-        double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                            const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &position) const DEAL_II_DEPRECATED;
-
-        /**
-         * Return the temperature that is to hold at a particular position on
-         * the boundary of the domain.
-         *
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we
          * are requesting the temperature.

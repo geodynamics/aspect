@@ -909,9 +909,8 @@ namespace aspect
                     ExcInternalError());
             VectorTools::interpolate_boundary_values (dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::boundary_temperature,
                                                           std_cxx11::cref(*boundary_temperature),
-                                                          std_cxx11::cref(*geometry_model),
                                                           *p,
                                                           std_cxx11::_1),
                                                           introspection.component_masks.temperature.first_selected_component(),
@@ -941,9 +940,8 @@ namespace aspect
                       ExcInternalError());
               VectorTools::interpolate_boundary_values (dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::boundary_composition,
                                                             std_cxx11::cref(*boundary_composition),
-                                                            std_cxx11::cref(*geometry_model),
                                                             *p,
                                                             std_cxx11::_1,
                                                             c),
