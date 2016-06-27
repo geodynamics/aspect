@@ -38,57 +38,58 @@ namespace aspect
     using namespace dealii;
 
 //    template <int dim>
-    namespace {
-    bool
-    //EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
-    In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+    namespace
     {
-      /**
-       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
-       * and therefore requires the following copyright notice:
-       *
-       * Copyright 2000 softSurfer, 2012 Dan Sunday
-       * This code may be freely used and modified for any purpose
-       * providing that this copyright notice is included with it.
-       * SoftSurfer makes no warranty for this code, and cannot be held
-       * liable for any real or imagined damage resulting from its use.
-       * Users of this code must verify correctness for their application.
-       */
-      int pointNo = pointList.size();
-      int    wn = 0;    // the  winding number counter
-      int   j=pointNo-1;
+      bool
+      //EllipsoidalChunk<dim>::In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+      In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList)
+      {
+        /**
+         * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
+         * and therefore requires the following copyright notice:
+         *
+         * Copyright 2000 softSurfer, 2012 Dan Sunday
+         * This code may be freely used and modified for any purpose
+         * providing that this copyright notice is included with it.
+         * SoftSurfer makes no warranty for this code, and cannot be held
+         * liable for any real or imagined damage resulting from its use.
+         * Users of this code must verify correctness for their application.
+         */
+        int pointNo = pointList.size();
+        int    wn = 0;    // the  winding number counter
+        int   j=pointNo-1;
 
 
-      // loop through all edges of the polygon
-      for (int i=0; i<pointNo; i++)
-        {
-          // edge from V[i] to  V[i+1]
-          if (pointList[j][1] <= point[1])
-            {
-              // start y <= P.y
-              if (pointList[i][1]  > point[1])      // an upward crossing
-                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
-                  {
-                    // P left of  edge
-                    ++wn;            // have  a valid up intersect
-                  }
-            }
-          else
-            {
-              // start y > P.y (no test needed)
-              if (pointList[i][1]  <= point[1])     // a downward crossing
-                if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
-                      - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
-                  {
-                    // P right of  edge
-                    --wn;            // have  a valid down intersect
-                  }
-            }
-          j=i;
-        }
-      return (wn != 0);
-    }
+        // loop through all edges of the polygon
+        for (int i=0; i<pointNo; i++)
+          {
+            // edge from V[i] to  V[i+1]
+            if (pointList[j][1] <= point[1])
+              {
+                // start y <= P.y
+                if (pointList[i][1]  > point[1])      // an upward crossing
+                  if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                        - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) > 0)
+                    {
+                      // P left of  edge
+                      ++wn;            // have  a valid up intersect
+                    }
+              }
+            else
+              {
+                // start y > P.y (no test needed)
+                if (pointList[i][1]  <= point[1])     // a downward crossing
+                  if (( (pointList[i][0] - pointList[j][0]) * (point[1] - pointList[j][1])
+                        - (point[0] -  pointList[j][0]) * (pointList[i][1] - pointList[j][1]) ) < 0)
+                    {
+                      // P right of  edge
+                      --wn;            // have  a valid down intersect
+                    }
+              }
+            j=i;
+          }
+        return (wn != 0);
+      }
     }
 
     /**
@@ -97,8 +98,8 @@ namespace aspect
     // constructor
     template <int dim>
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::EllipsoidalChunkTopography()
-    :
-    topography_data(NULL)
+      :
+      topography_data(NULL)
     {}
 
 
@@ -128,7 +129,7 @@ namespace aspect
 
           case PRM_UNIFORM_GRID_INTERPOLATED:
             AssertThrow (topography_data != NULL, ExcMessage("No topography is set for prm unifomr grid interpolated."));
-              return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
+            return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
 
           case FILE_UNIFORM_GRID:
             return topography_data->value (Point<2>(lat * 180/numbers::PI,lon * 180/numbers::PI));
