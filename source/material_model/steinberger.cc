@@ -435,7 +435,12 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_lateral_averaging().get_temperature_averages(avg_temp);
+        {
+          this->get_lateral_averaging().get_temperature_averages(avg_temp);
+          for (unsigned int i = 0; i < avg_temp.size(); ++i)
+            Assert(numbers::is_nan(avg_temp[i]),
+                   ExcMessage("Too many depth bands in lateral average for current refinement"));
+        }
     }
 
 
