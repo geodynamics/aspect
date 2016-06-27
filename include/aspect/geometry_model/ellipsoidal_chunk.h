@@ -38,16 +38,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    /**
-     * Define a type to know what type of topography we
-     * are using
-     */
-    enum TopoTypes {NO_TOPOGRAPHY,
-                     PRM_EXACT,
-                     PRM_UNIFORM_GRID_INTERPOLATED,
-                     FILE_UNIFORM_GRID,
-                     FILE_NONUNIFORM_GRID
-                    };
 
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
@@ -60,6 +50,16 @@ namespace aspect
           * Function to determine if a point lies in a 2D polygon
           */ 
         //static bool In2dPolygon(dealii::Point<2> &point,const std::vector<std::vector<double> > &pointList);
+    /**
+     * Define a type to know what type of topography we
+     * are using
+     */
+    enum TopoTypes {NO_TOPOGRAPHY,
+                     PRM_EXACT,
+                     PRM_UNIFORM_GRID_INTERPOLATED,
+                     FILE_UNIFORM_GRID,
+                     FILE_NONUNIFORM_GRID
+                    };
         /**
          * A class which describes the topography
          */

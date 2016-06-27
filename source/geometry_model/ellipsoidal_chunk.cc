@@ -153,7 +153,7 @@ namespace aspect
 
     template <int dim>
     void
-    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(TopoTypes set_topo_type)
+    EllipsoidalChunk<dim>::EllipsoidalChunkTopography::set_topography_type(typename EllipsoidalChunk<dim>::TopoTypes set_topo_type)
     {
       topo_type = set_topo_type;
     }
@@ -196,7 +196,7 @@ namespace aspect
     }
 
     template <int dim>
-    TopoTypes
+    typename EllipsoidalChunk<dim>::TopoTypes
     EllipsoidalChunk<dim>::EllipsoidalChunkTopography::get_topo_type () const
     {
       return topo_type;
@@ -972,7 +972,7 @@ namespace aspect
              * Determine what type of topography we have
              */
             std::string topography_type_string = prm.get("Topography type");
-            TopoTypes topo_type;
+            EllipsoidalChunk<dim>::TopoTypes topo_type;
             if (topography_type_string == "No topography")
               topo_type = NO_TOPOGRAPHY;
             else if (topography_type_string == "From prm exact")
