@@ -181,7 +181,7 @@ namespace aspect
     }
 
 
-    //Evaluate the sine and cosine terms of a real spherical harmonic.
+    //Evaluate the cosine and sine terms of a real spherical harmonic.
     //This is a fully normalized harmonic, that is to say, inner products
     //of these functions should integrate to a kronecker delta over
     //the surface of a sphere.

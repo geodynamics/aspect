@@ -25,18 +25,11 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/utilities.h>
 
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
   namespace InitialConditions
   {
-    // NOTE: this module uses the Boost spherical harmonics package which is not designed
-    // for very high order (> 100) spherical harmonics computation. If you use harmonic
-    // perturbations of a high order be sure to confirm the accuracy first.
-    // For more information, see:
-    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
-    //
     template <int dim>
     double
     HarmonicPerturbation<dim>::
@@ -84,7 +77,8 @@ namespace aspect
                        ExcMessage ("Spherical harmonics can only be computed for "
                                    "degree >= 0."));
               // use a spherical harmonic function as lateral perturbation
-              lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
+              std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
+              lateral_perturbation = sph_harm_vals.first;
             }
         }
       else if (const GeometryModel::Chunk<dim> *
