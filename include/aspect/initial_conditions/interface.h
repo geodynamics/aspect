@@ -117,6 +117,7 @@ namespace aspect
                                        void (*declare_parameters_function) (ParameterHandler &),
                                        Interface<dim> *(*factory_function) ());
 
+
     /**
      * A function that given the name of a model returns a pointer to an
      * object that describes it. Ownership of the pointer is transferred to
@@ -130,6 +131,32 @@ namespace aspect
     template <int dim>
     Interface<dim> *
     create_initial_conditions (ParameterHandler &prm);
+
+
+    /**
+     * A function that given the name of a model returns a pointer to an
+     * object that describes it. Ownership of the pointer is transferred to
+     * the caller.
+     *
+     * The initial conditions object returned is not yet initialized and has not
+     * read its runtime parameters yet.
+     *
+     * @ingroup InitialConditionsModels
+     */
+    template <int dim>
+    Interface<dim> *
+    create_initial_conditions (const std::string &model_name);
+
+
+    /**
+     * Return a string that consists of the names of initial conditions that can
+     * be selected. These names are separated by a vertical line '|' so
+     * that the string can be an input to the deal.II classes
+     * Patterns::Selection or Patterns::MultipleSelection.
+     */
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ();
 
 
     /**
