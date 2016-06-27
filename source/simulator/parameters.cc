@@ -936,6 +936,49 @@ namespace aspect
           formulation_mass = FormulationType::full;
           formulation_temperature = FormulationType::full;
         }
+      else if (formulation == "BA")
+        {
+          formulation_buoyancy = FormulationType::adiabatic;
+          formulation_mass = FormulationType::incompressible;
+          formulation_temperature = FormulationType::adiabatic;
+
+          // Assert AdiabaticConditions = ConstantTemperature
+          // Assert shear/adiabatic heating plugins are off
+          // is_compressible= false
+        }
+      else if (formulation == "EBA")
+        {
+          formulation_temperature = FormulationType::adiabatic;
+          formulation_mass = FormulationType::incompressible;
+          formulation_buoyancy = FormulationType::adiabatic;
+
+          // Assert shear/adiabatic heating plugins are on
+          // adiabatic.simple = true
+          // Assert AdiabaticConditions = InitialProfile
+          // is_compressible= false
+
+        }
+      else if (formulation == "TALA")
+        {
+          formulation_temperature = FormulationType::adiabatic;
+          formulation_mass = FormulationType::adiabatic; // or maybe implicit_adiabatic?
+          // like ALA except:
+          formulation_buoyancy = FormulationType::adiabatic_pressure;
+          // Assert shear/adiabatic heating plugins are on
+          // adiabatic.simple = true
+          // is_compressible= true
+          // Assert AdiabaticConditions = InitialProfile
+        }
+      else if (formulation == "ALA")
+        {
+          formulation_temperature = FormulationType::adiabatic;
+          formulation_mass = FormulationType::adiabatic; // or maybe implicit_adiabatic?
+          formulation_buoyancy = FormulationType::full;
+          // Assert shear/adiabatic heating plugins are on
+          // adiabatic.simple = true
+          // is_compressible= true
+          // Assert AdiabaticConditions = InitialProfile
+        }
       else if (formulation == "custom")
         {
           formulation_buoyancy = FormulationType::parse(prm.get("Buoyancy density approximation"));
