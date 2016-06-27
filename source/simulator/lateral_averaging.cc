@@ -120,7 +120,19 @@ namespace aspect
     Utilities::MPI::sum(values, this->get_mpi_communicator(), values_all);
 
     for (unsigned int i=0; i<num_slices; ++i)
-      values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
+      {
+        if (volume_all[i] > 0.0)
+          {
+            values[i] = values_all[i] / (static_cast<double>(volume_all[i])+1e-20);
+          }
+        else
+          {
+            // Output nan if no quadrature points in depth block
+            this->get_pcout() << "\tWarning: No quadrature points found in depth block " << i
+                              << ". Average is likely underresolved." << std::endl;
+            values[i] = numbers::signaling_nan<double>();
+          }
+      }
   }
 
   namespace
