@@ -26,68 +26,12 @@
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/tria_boundary_lib.h>
-#include <deal.II/grid/manifold_lib.h>
 
 
 namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward(const Point<dim> &input_vertex) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
-          {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
-            output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
-            break;
-          }
-          case 3:
-          {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
-            output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
-            output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back(const Point<dim> &v) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
-          {
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            output_vertex[0] = v.norm();
-            break;
-          }
-          case 3:
-          {
-            const double radius=v.norm();
-            output_vertex[0] = radius;
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            output_vertex[2] = std::asin(v[2]/radius);
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
-
     template <int dim>
     void
     Chunk<dim>::
@@ -102,7 +46,7 @@ namespace aspect
 
 
       // Transform box into spherical chunk
-      GridTools::transform (std_cxx11::bind(&ChunkGeometry::push_forward,
+      GridTools::transform (std_cxx11::bind(&SphericalManifold<dim>::push_forward,
                                             std_cxx11::cref(manifold),
                                             std_cxx11::_1),
                             coarse_grid);
@@ -120,6 +64,8 @@ namespace aspect
                                                                     std_cxx11::ref(coarse_grid)));
 
     }
+
+
 
     template <int dim>
     std::set<types::boundary_id>
@@ -176,6 +122,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::
@@ -190,12 +137,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::depth(const Point<dim> &position) const
     {
       return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
     }
+
 
 
     template <int dim>
@@ -216,12 +165,15 @@ namespace aspect
       return manifold.push_forward(p);
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::west_longitude () const
     {
       return point1[1];
     }
+
 
 
     template <int dim>
@@ -231,12 +183,16 @@ namespace aspect
       return point2[1];
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::longitude_range () const
     {
       return point2[1] - point1[1];
     }
+
+
 
     template <int dim>
     double
@@ -247,6 +203,7 @@ namespace aspect
       else
         return 0;
     }
+
 
 
     template <int dim>
@@ -260,6 +217,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::latitude_range () const
@@ -271,12 +229,15 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::maximal_depth() const
     {
       return point2[0]-point1[0];
     }
+
+
 
     template <int dim>
     double
@@ -285,6 +246,8 @@ namespace aspect
       return point1[0];
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::outer_radius () const
@@ -292,12 +255,16 @@ namespace aspect
       return point2[0];
     }
 
+
+
     template <int dim>
     bool
     Chunk<dim>::has_curved_elements() const
     {
       return true;
     }
+
+
 
     template <int dim>
     void
@@ -307,6 +274,8 @@ namespace aspect
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
         cell->set_all_manifold_ids (15);
     }
+
+
 
     template <int dim>
     void
