@@ -86,6 +86,14 @@ namespace aspect
            * generated.
            */
           Point<dim> P_max;
+
+          /**
+           * The number of particles in each direction.
+           */
+
+          /**
+           * The delta x and y.
+           */
       };
 
     }

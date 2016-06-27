@@ -53,45 +53,206 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
-        types::particle_index particle_index = 0;
+//        n_particles_per_direction[0] = 181;
+//        n_particles_per_direction[1] = 32;
+//        spacing[0] = 5.65625/181.0;
+//        spacing[1] = 1.0/32.0;
 
-        for (unsigned int i = 0; i < n_particles_per_direction[0]; ++i)
+        // std::vector<Point<dim>> particle_positions;
+        typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
+                endc = this->get_dof_handler().end();
+
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
           {
-            for (unsigned int j = 0; j < n_particles_per_direction[1]; ++j)
+            double local_x_min, local_y_min;
+            double local_x_max, local_y_max;
+
+            local_x_min = cell->vertex(0)[0], local_y_min = cell->vertex(0)[1];
+            local_x_max = cell->vertex(0)[0], local_y_max = cell->vertex(0)[1];
+
+            for (int i=1; i < GeometryInfo<dim>::vertices_per_cell; i++)
+            {
+              if (cell->vertex(i)[0] < local_x_min)
+                local_x_min = cell->vertex(i)[0];
+              if (cell->vertex(i)[1] < local_y_min)
+                local_y_min = cell->vertex(i)[1];
+              if (cell->vertex(i)[0] > local_x_max)
+                local_x_max = cell->vertex(i)[0];
+              if (cell->vertex(i)[1] > local_y_max)
+                local_y_max = cell->vertex(i)[1];
+            }
+
+            /*                y_max
+             *             -----------
+             *            |           |
+             *            |           |
+             *  x_min     |           |   x_max
+             *            |           |
+             *            |           |
+             *             ___________
+             *
+             *                y_min
+             */
+
+            // Are any of the particles that need to be generated within the cell domain?
+            if ( (local_x_max <= P_min[0]) || (local_x_min >= P_max[0]) ||
+                    (local_y_max <= P_min[1]) || (local_y_min >= P_max[1]))
+              continue;
+
+            std::vector<int> x_indices;
+
+//            for ( int i = 0; i < n_particles_per_direction[0]; i++)
+//            {
+//              double p_x = P_min[0] + spacing[0]*i;
+//              if ( local_x_min < p_x && p_x < local_x_max )
+//              {
+//                x_indices.push_back(i);
+//              }
+//            }
+
+            int max_index = (int) std::ceil((local_x_max - P_min[0])/spacing[0]);
+            if ((max_index > n_particles_per_direction[0]) || (P_min[0] + (n_particles_per_direction[0]-1)*spacing[0] == local_x_max))
+              max_index = n_particles_per_direction[0];
+
+            for ( int i = (int) std::ceil((local_x_min - P_min[0])/spacing[0]); i < max_index; i++ )
+            {
+              double p_x = P_min[0] + spacing[0]*i;
+              if ( local_x_min <= p_x && p_x <= local_x_max )
               {
-                if (dim == 2)
-                  {
-                    const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]);
-
-                    // Try to add the particle. If it is not in this domain, do not
-                    // worry about it and move on to next point.
-                    try
-                      {
-                        particles.insert(this->generate_particle(particle_position,particle_index));
-                      }
-                    catch (ExcParticlePointNotInDomain &)
-                      {}
-                    particle_index++;
-                  }
-                else if (dim == 3)
-                  for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
-                    {
-                      const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
-
-                      // Try to add the particle. If it is not in this domain, do not
-                      // worry about it and move on to next point.
-                      try
-                        {
-                          particles.insert(this->generate_particle(particle_position,particle_index));
-                        }
-                      catch (ExcParticlePointNotInDomain &)
-                        {}
-                      particle_index++;
-                    }
-                else
-                  ExcNotImplemented();
+                x_indices.push_back(i);
               }
+            }
+
+            std::vector<int> y_indices;
+//            for ( int i = 0; i < n_particles_per_direction[1]; i++)
+//            {
+//              double p_y = P_min[1] + spacing[1]*i;
+//              if ( local_y_min <= p_y && p_y <= local_y_max )
+//              {
+//                y_indices.push_back(i);
+//              }
+//            }
+
+            max_index = (int) std::ceil((local_y_max - P_min[1])/spacing[1]);
+            if ((max_index > n_particles_per_direction[1]) || (P_min[1] + (n_particles_per_direction[1]-1)*spacing[1] == local_y_max))
+              max_index = n_particles_per_direction[1];
+
+            for ( int i = (int) std::ceil((local_y_min - P_min[1])/spacing[1]); i < max_index; i++)
+            {
+              double p_y = P_min[1] + spacing[1]*i;
+              if ( local_y_min <= p_y && p_y <= local_y_max )
+              {
+                y_indices.push_back(i);
+              }
+            }
+
+            if (x_indices.size() == 0 || y_indices.size() == 0)
+              continue;
+
+            //May need a special case for cells at the boundary
+
+            //Special case where local_x_min > P_min[0]
+//            for (int i = std::abs(local_x_min - P_min[0])/spacing[0]; i < std::abs(P_max[0] - local_x_max)/spacing[0]; i++)
+//            {
+//              for (int j = std::abs(local_y_min - P_min[1])/spacing[1]; j < std::abs(P_max[1] - local_y_max)/spacing[1]; j++)
+//              {
+
+            for (int i = 0; i < x_indices.size(); i++)
+            {
+              for (int j = 0; j < y_indices.size(); j++)
+              {
+                Point<dim> position(P_min[0] + x_indices[i]*spacing[0], P_min[1] + y_indices[j]*spacing[1]);
+                if ( position[0] == local_x_min)
+                {
+                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const types::LevelInd p_cell(cell->level(), cell->index());
+                  particles.insert(std::make_pair(p_cell,particle));
+                }
+                else if ( position[0] == local_x_max)
+                {
+                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const types::LevelInd p_cell(cell->level(), cell->index());
+                  particles.insert(std::make_pair(p_cell,particle));
+                }
+                else if ( position[1] == local_y_min)
+                {
+                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const types::LevelInd p_cell(cell->level(), cell->index());
+                  particles.insert(std::make_pair(p_cell,particle));
+                }
+                else if ( position[1] == local_y_max)
+                {
+                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const types::LevelInd p_cell(cell->level(), cell->index());
+                  particles.insert(std::make_pair(p_cell,particle));
+                }
+                else
+                {
+                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const types::LevelInd p_cell(cell->level(), cell->index());
+                  particles.insert(std::make_pair(p_cell,particle));
+                }
+              }
+            }
+
+//            int lower_x_limit = (int) std::ceil(local_x_min/spacing[0]);
+//            int upper_x_limit = (int) std::floor(local_x_max/spacing[0]);
+//            int left_y_limit = (int) std::ceil(local_y_min/spacing[1]);
+//            int right_y_limit = (int) std::floor(local_y_max/spacing[1]);
+//
+//            for (int j = left_y_limit; j < right_y_limit; j++)
+//            {
+//              for (int i = lower_x_limit; i < upper_x_limit; i++)
+//              {
+//                Point<dim> position(i*spacing[0], j*spacing[1]);
+//                const Particle<dim> particle(position, (i-1) * (int) (P_diff[1]/spacing[1]) + (j-1));
+//                const types::LevelInd p_cell(cell->level(), cell->index());
+//                particles.insert(std::make_pair(p_cell,particle));
+//              }
+//            }
           }
+
+
+//        types::particle_index particle_index = 0;
+//
+//        for (unsigned int i = 0; i < n_particles_per_direction[0]; ++i)
+//          {
+//            for (unsigned int j = 0; j < n_particles_per_direction[1]; ++j)
+//              {
+//                if (dim == 2)
+//                  {
+//                    const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]);
+//
+//                    // Try to add the particle. If it is not in this domain, do not
+//                    // worry about it and move on to next point.
+//                    try
+//                      {
+//                        particles.insert(this->generate_particle(particle_position,particle_index));
+//                      }
+//                    catch (ExcParticlePointNotInDomain &)
+//                      {}
+//                    particle_index++;
+//                  }
+//                else if (dim == 3)
+//                  for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
+//                    {
+//                      const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
+//
+//                      // Try to add the particle. If it is not in this domain, do not
+//                      // worry about it and move on to next point.
+//                      try
+//                        {
+//                          particles.insert(this->generate_particle(particle_position,particle_index));
+//                        }
+//                      catch (ExcParticlePointNotInDomain &)
+//                        {}
+//                      particle_index++;
+//                    }
+//                else
+//                  ExcNotImplemented();
+//              }
+//          }
       }
 
 
