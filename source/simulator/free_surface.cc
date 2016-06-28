@@ -729,22 +729,6 @@ namespace aspect
           }
 
   }
-
-  template <int dim>
-  void
-  FreeSurfaceHandler<dim>::detach_manifolds()
-  {
-    //remove manifold ids for all cells
-    for (typename Triangulation<dim>::active_cell_iterator
-         cell = sim.triangulation.begin_active();
-         cell != sim.triangulation.end(); ++cell)
-      cell->set_all_manifold_ids (numbers::invalid_manifold_id);
-
-    //also remove boundary description for the free surface indicators
-    std::set<types::boundary_id>::iterator id = sim.parameters.free_surface_boundary_indicators.begin();
-    for (; id != sim.parameters.free_surface_boundary_indicators.end(); ++id)
-      sim.triangulation.set_boundary( *id );
-  }
 }
 
 
