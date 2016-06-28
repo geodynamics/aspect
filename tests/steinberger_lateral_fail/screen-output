@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 2,724 (1,666+225+833)
@@ -7,7 +5,6 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 *** Timestep 0:  t=0 years
 	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
 
---------------------------------------------------------
 An error occurred in file <steinberger.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
@@ -16,7 +13,25 @@ The name and call sequence of the exception was:
     ExcMessage("Too many depth bands in lateral average for current refinement")
 Additional Information: 
 Too many depth bands in lateral average for current refinement
---------------------------------------------------------
 
-Aborting!
-----------------------------------------------------
+Stacktrace:
+#0  /home/bob/build-clang/aspect: aspect::MaterialModel::Steinberger<2>::update()
+#1  /home/bob/build-clang/aspect: aspect::Simulator<2>::start_timestep()
+#2  /home/bob/build-clang/aspect: aspect::Simulator<2>::run()
+#3  /home/bob/build-clang/aspect: main
+
+[a51e66f83aff:19340] *** Process received signal ***
+[a51e66f83aff:19340] Signal: Aborted (6)
+[a51e66f83aff:19340] Signal code:  (-6)
+[a51e66f83aff:19340] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x36d40) [0x7ff127e60d40]
+[a51e66f83aff:19340] [ 1] /lib/x86_64-linux-gnu/libc.so.6(gsignal+0x39) [0x7ff127e60cc9]
+[a51e66f83aff:19340] [ 2] /lib/x86_64-linux-gnu/libc.so.6(abort+0x148) [0x7ff127e640d8]
+[a51e66f83aff:19340] [ 3] /home/bob/deal.II/installed-v8.4.1-clang/lib/libdeal_II.g.so.8.4.1(_ZN6dealii18deal_II_exceptions9internals5abortERKNS_13ExceptionBaseEb+0x60) [0x7ff1487c0c10]
+[a51e66f83aff:19340] [ 4] /home/bob/build-clang/aspect(_ZN6dealii18deal_II_exceptions9internals11issue_errorINS_18StandardExceptions10ExcMessageEEEvNS1_17ExceptionHandlingEPKciS7_S7_S7_T_+0x8e) [0xfaebee]
+[a51e66f83aff:19340] [ 5] /home/bob/build-clang/aspect(_ZN6aspect13MaterialModel11SteinbergerILi2EE6updateEv+0x143) [0x1019333]
+[a51e66f83aff:19340] [ 6] /home/bob/build-clang/aspect(_ZN6aspect9SimulatorILi2EE14start_timestepEv+0x7d2) [0x112b152]
+[a51e66f83aff:19340] [ 7] /home/bob/build-clang/aspect(_ZN6aspect9SimulatorILi2EE3runEv+0x427) [0x1128a57]
+[a51e66f83aff:19340] [ 8] /home/bob/build-clang/aspect(main+0x91a) [0x168353a]
+[a51e66f83aff:19340] [ 9] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf5) [0x7ff127e4bec5]
+[a51e66f83aff:19340] [10] /home/bob/build-clang/aspect() [0xfa2e00]
+[a51e66f83aff:19340] *** End of error message ***
