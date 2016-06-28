@@ -136,7 +136,7 @@ namespace aspect
     if (print_under_res_warning)
       {
         this->get_pcout() << "\tWarning: No quadrature points found in at least one depth block."
-                          << "Averages are likely underresolved." << std::endl;
+                          << " Averages are likely underresolved." << std::endl;
       }
   }
 
