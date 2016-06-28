@@ -214,9 +214,22 @@ FOREACH(_test ${_tests})
         SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh")
         SET(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.sh)
     ELSE()
-        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default.sh")
+        SET(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default")
     ENDIF()
 
+    # If a .prm contains the keyword "EXPECT FAILURE", make sure aspect fails
+    # with a non-zero return value. Otherwise make sure aspect terminates
+    # without errors. The logic for this is in tests/cmake/run_test.sh,
+    # because we can not do this in ADD_CUSTOM_COMMAND directly.
+    FILE(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm _input_lines REGEX "EXPECT FAILURE")
+    IF("${_input_lines}" STREQUAL "")
+      SET(EXPECT "0")
+    ELSE()
+      SET(EXPECT "1")
+      IF (NOT "${_mpi_count}" STREQUAL "1")
+        MESSAGE(FATAL_ERROR "Invalid setup in test '${_test}.prm': Tests with 'EXPECT FAILURE' are only supported if they use a single MPI rank.")
+      ENDIF()
+    ENDIF()
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND
@@ -225,8 +238,7 @@ FOREACH(_test ${_tests})
 	      rm -f \$i \;
 	    fi \;
 	  done
-	COMMAND aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
-		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
@@ -241,7 +253,7 @@ FOREACH(_test ${_tests})
 	      rm -f \$i \;
 	    fi \;
 	  done
-	COMMAND mpirun -np ${_mpi_count} ${CMAKE_CURRENT_BINARY_DIR}/../aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
+	COMMAND mpirun -np ${_mpi_count} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
 		> ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
 	COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND ${PERL_EXECUTABLE} -pi

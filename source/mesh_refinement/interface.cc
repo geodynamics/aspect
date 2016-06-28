@@ -20,7 +20,6 @@
 
 
 #include <aspect/mesh_refinement/interface.h>
-#include <aspect/simulator_access.h>
 
 #include <typeinfo>
 

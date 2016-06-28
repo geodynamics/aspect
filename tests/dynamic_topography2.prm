@@ -91,7 +91,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 2
-  set Initial global refinement          = 6
+  set Initial global refinement          = 5
   set Refinement fraction                = 0.5
   set Coarsening fraction                = 0.00
   set Strategy                           = thermal energy density

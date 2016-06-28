@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/viscosity_ratio.h>
-#include <aspect/simulator_access.h>
 
 
 

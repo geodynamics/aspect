@@ -8,8 +8,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 
-set Output directory                       = output
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = Stokes only
 
@@ -73,7 +71,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 13
-  set Initial global refinement                = 3
+  set Initial global refinement                = 4
 
   set Strategy = velocity#viscosity
   set Run postprocessors on initial refinement = true

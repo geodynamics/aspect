@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/point_values.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <deal.II/numerics/vector_tools.h>
 

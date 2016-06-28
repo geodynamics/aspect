@@ -455,9 +455,6 @@ namespace aspect
     std::pair<std::string,std::string>
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
       if (dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
@@ -513,13 +510,24 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
-      std::ostringstream os;
-      os << std::scientific << cellwise_errors_u.l1_norm()
-         << ", " << cellwise_errors_p.l1_norm()
-         << ", " << cellwise_errors_ul2.l2_norm()
-         << ", " << cellwise_errors_pl2.l2_norm();
+      // Compute stokes unknowns, do not include temperature
+      unsigned int n_stokes_dofs = this->introspection().system_dofs_per_block[this->introspection().block_indices.velocities];
+      if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
+        n_stokes_dofs  += this->introspection().system_dofs_per_block[this->introspection().block_indices.pressure];
 
-      return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
+      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+
+      std::ostringstream os;
+      os << n_stokes_dofs << "; "
+         << std::scientific << u_l1
+         << ", " << p_l1
+         << ", " << u_l2
+         << ", " << p_l2;
+
+      return std::make_pair("DoFs; Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }
 
   }

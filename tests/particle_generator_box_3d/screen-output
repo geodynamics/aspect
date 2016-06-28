@@ -3,7 +3,7 @@ Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+2 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
      Writing particle output:   output-particle_generator_box_3d/particle-00000
 
 *** Timestep 1:  t=10 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Solving Stokes system... 26+0 iterations.
 

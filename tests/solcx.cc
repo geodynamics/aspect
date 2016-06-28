@@ -2747,9 +2747,6 @@ namespace aspect
     std::pair<std::string,std::string>
     SolCxPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
-                  ExcNotImplemented());
-
       std_cxx1x::shared_ptr<Function<dim> > ref_func;
       if (dynamic_cast<const SolCxMaterial<dim> *>(&this->get_material_model()) != NULL)
         {
@@ -2806,11 +2803,16 @@ namespace aspect
                                          VectorTools::L2_norm,
                                          &comp_p);
 
+      const double u_l1 = Utilities::MPI::sum(cellwise_errors_u.l1_norm(),this->get_mpi_communicator());
+      const double p_l1 = Utilities::MPI::sum(cellwise_errors_p.l1_norm(),this->get_mpi_communicator());
+      const double u_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_ul2.norm_sqr(),this->get_mpi_communicator()));
+      const double p_l2 = std::sqrt(Utilities::MPI::sum(cellwise_errors_pl2.norm_sqr(),this->get_mpi_communicator()));
+
       std::ostringstream os;
-      os << std::scientific << cellwise_errors_u.l1_norm()
-         << ", " << cellwise_errors_p.l1_norm()
-         << ", " << cellwise_errors_ul2.l2_norm()
-         << ", " << cellwise_errors_pl2.l2_norm();
+      os << std::scientific << u_l1
+         << ", " << p_l1
+         << ", " << u_l2
+         << ", " << p_l2;
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }

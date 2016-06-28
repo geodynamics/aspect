@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/freesurface.h>
 
 namespace aspect
 {
@@ -155,7 +156,7 @@ namespace aspect
   const Mapping<dim> &
   SimulatorAccess<dim>::get_mapping () const
   {
-    return simulator->mapping;
+    return *(simulator->mapping);
   }
 
 
@@ -208,6 +209,13 @@ namespace aspect
   {
     const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
     return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
+  }
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::include_melt_transport () const
+  {
+    return simulator->parameters.include_melt_transport;
   }
 
   template <int dim>
@@ -317,6 +325,16 @@ namespace aspect
 
 
   template <int dim>
+  const MaterialModel::Interface<dim> &
+  SimulatorAccess<dim>::get_material_model () const
+  {
+    Assert (simulator->material_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->material_model.get();
+  }
+
+
+  template <int dim>
   void
   SimulatorAccess<dim>::compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
                                                              const FEValuesBase<dim,dim>                                 &input_finite_element_values,
@@ -333,14 +351,11 @@ namespace aspect
 
 
   template <int dim>
-  const MaterialModel::Interface<dim> &
-  SimulatorAccess<dim>::get_material_model () const
+  void
+  SimulatorAccess<dim>::create_additional_material_model_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
   {
-    Assert (simulator->material_model.get() != 0,
-            ExcMessage("You can not call this function if no such model is actually available."));
-    return *simulator->material_model.get();
+    simulator->create_additional_material_model_outputs(out);
   }
-
 
 
   template <int dim>
@@ -476,6 +491,15 @@ namespace aspect
   }
 
   template <int dim>
+  const MeltHandler<dim> &
+  SimulatorAccess<dim>::get_melt_handler () const
+  {
+    Assert (simulator->melt_handler.get() != 0,
+            ExcMessage("You can not call this function if melt transport is not enabled."));
+    return *(simulator->melt_handler);
+  }
+
+  template <int dim>
   void
   SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
                                                            const unsigned int                      q,
@@ -498,6 +522,13 @@ namespace aspect
   SimulatorAccess<dim>::get_lateral_averaging() const
   {
     return simulator->lateral_averaging;
+  }
+
+  template <int dim>
+  const ConstraintMatrix &
+  SimulatorAccess<dim>::get_current_constraints() const
+  {
+    return simulator->current_constraints;
   }
 
 }

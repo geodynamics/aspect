@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/depth_average.h>
-#include <aspect/simulator_access.h>
 #include <aspect/lateral_averaging.h>
 #include <aspect/global.h>
 

@@ -1,0 +1,67 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Alice system ... 0 iterations.
+   Solving Bob system ... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_threshold/solution-00000
+     Temperature min/avg/max:   0.1 K, 0.1773 K, 0.5 K
+     Compositions min/max/mass: 0.1/1/0.1692 // 1/1.999/1.156
+
+*** Timestep 1:  t=0.0220971 seconds
+   Solving temperature system... 14 iterations.
+   Solving Alice system ... 11 iterations.
+   Solving Bob system ... 14 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_threshold/solution-00001
+     Temperature min/avg/max:   0.07517 K, 0.1773 K, 0.5337 K
+     Compositions min/max/mass: 0.06713/1.053/0.1693 // 1/1.99/1.156
+
+Number of active cells: 463 (on 6 levels)
+Number of degrees of freedom: 10,599 (4,030+524+2,015+2,015+2,015)
+
+*** Timestep 2:  t=0.0441942 seconds
+   Solving temperature system... 18 iterations.
+   Solving Alice system ... 15 iterations.
+   Solving Bob system ... 21 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_threshold/solution-00002
+     Temperature min/avg/max:   0.07118 K, 0.1773 K, 0.5413 K
+     Compositions min/max/mass: 0.0349/1.087/0.1693 // 1/1.988/1.156
+
+Number of active cells: 1,213 (on 7 levels)
+Number of degrees of freedom: 27,211 (10,356+1,321+5,178+5,178+5,178)
+
+*** Timestep 3:  t=0.0617841 seconds
+   Solving temperature system... 38 iterations.
+   Solving Alice system ... 27 iterations.
+   Solving Bob system ... 45 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_threshold/solution-00003
+     Temperature min/avg/max:   0.07074 K, 0.1773 K, 0.5316 K
+     Compositions min/max/mass: 0.04309/1.082/0.1694 // 1/1.987/1.156
+
+*** Timestep 4:  t=0.07 seconds
+   Solving temperature system... 15 iterations.
+   Solving Alice system ... 11 iterations.
+   Solving Bob system ... 16 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-refinement_composition_threshold/solution-00004
+     Temperature min/avg/max:   0.07269 K, 0.1773 K, 0.5264 K
+     Compositions min/max/mass: 0.03914/1.079/0.1695 // 1/1.988/1.156
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

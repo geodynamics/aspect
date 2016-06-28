@@ -24,6 +24,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/melt.h>
 
 namespace aspect
 {
@@ -39,7 +40,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class LatentHeatMelt : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>
+    class LatentHeatMelt : public MaterialModel::InterfaceCompatibility<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
         /**
@@ -121,6 +122,9 @@ namespace aspect
         /**
          * @}
          */
+
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
 
 
         /**

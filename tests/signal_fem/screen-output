@@ -14,8 +14,8 @@ Number of degrees of freedom: 334 (50+9+25+200+25+25)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving A system ... 0 iterations.
-   Solving B system ... 0 iterations.
+   Skipping A composition solve because RHS is zero.
+   Skipping B composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
 

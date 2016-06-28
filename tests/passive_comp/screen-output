@@ -3,10 +3,10 @@ Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
 *** Timestep 0:  t=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+13 iterations.
+   Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
 
@@ -32,7 +32,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00001
@@ -58,7 +58,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution-00003

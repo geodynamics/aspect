@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/melt.h>
 
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/constraint_matrix.h>
@@ -33,6 +34,7 @@
 
 #include <deal.II/lac/pointer_matrix.h>
 
+#include <deal.II/fe/fe_values.h>
 
 namespace aspect
 {
@@ -324,8 +326,8 @@ namespace aspect
       // apply the top right block
       {
         stokes_matrix.block(0,1).vmult(utmp, dst.block(1)); //B^T
-        utmp*=-1.0;
-        utmp.add(src.block(0));
+        utmp *= -1.0;
+        utmp += src.block(0);
       }
 
       // now either solve with the top left block (if do_solve_A==true)
@@ -376,14 +378,45 @@ namespace aspect
     double advection_solver_tolerance = -1;
     unsigned int block_idx = advection_field.block_index(introspection);
 
+    std::string field_name = (advection_field.is_temperature()
+                              ?
+                              "temperature"
+                              :
+                              introspection.name_for_compositional_index(advection_field.compositional_variable) + " composition");
+
+    // check if matrix and/or RHS are zero
+    // note: to avoid a warning, we compare against numeric_limits<double>::min() instead of 0 here
+    if (system_rhs.block(block_idx).l2_norm() <= std::numeric_limits<double>::min())
+      {
+        pcout << "   Skipping " + field_name + " solve because RHS is zero." << std::endl;
+        solution.block(block_idx) = 0;
+        std::string statistics_output = (advection_field.is_temperature()
+                                         ?
+                                         "Iterations for temperature solver"
+                                         :
+                                         "Iterations for composition solver " +
+                                         Utilities::int_to_string(advection_field.compositional_variable+1));
+        statistics.add_value(statistics_output, 0);
+        return 0;
+      }
+
+    AssertThrow(system_matrix.block(block_idx,
+                                    block_idx).linfty_norm() > std::numeric_limits<double>::min(),
+                ExcMessage ("The " + field_name + " equation can not be solved, because the matrix is zero, "
+                            "but the right-hand side is nonzero."));
+
     if (advection_field.is_temperature())
       {
+        build_advection_preconditioner(advection_field,
+                                       T_preconditioner);
         computing_timer.enter_section ("   Solve temperature system");
         pcout << "   Solving temperature system... " << std::flush;
         advection_solver_tolerance = parameters.temperature_solver_tolerance;
       }
     else
       {
+        build_advection_preconditioner(advection_field,
+                                       C_preconditioner);
         computing_timer.enter_section ("   Solve composition system");
         pcout << "   Solving "
               << introspection.name_for_compositional_index(advection_field.compositional_variable)
@@ -499,9 +532,15 @@ namespace aspect
         // We hardcode the blocks down below, so make sure block 0 is indeed
         // the block containing velocity and pressure:
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-        Assert(introspection.block_indices.pressure == 0, ExcNotImplemented());
+        Assert(introspection.block_indices.pressure == 0
+               ||
+               (parameters.include_melt_transport
+                && introspection.variable("fluid pressure").block_index == 0
+                && introspection.variable("compaction pressure").block_index == 0)
+               , ExcNotImplemented());
 
         LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+        solution.block(0) = current_linearization_point.block(0);
 
         // While we don't need to set up the initial guess for the direct solver
         // (it will be ignored by the solver anyway), we need this if we are
@@ -509,15 +548,18 @@ namespace aspect
         // nonlinear residual (see initial_residual below).
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        solution.block(0) = current_linearization_point.block(0);
-        denormalize_pressure (solution);
         distributed_stokes_solution.block(0) = solution.block(0);
+        denormalize_pressure (distributed_stokes_solution, solution);
         current_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
-        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
+        IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                    introspection.index_sets.locally_owned_melt_pressure_dofs
+                                    : introspection.index_sets.locally_owned_pressure_dofs;
+
+        for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
           {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+            types::global_dof_index idx = pressure_idxset.nth_index_in_set(i);
 
             distributed_stokes_solution(idx) /= pressure_scaling;
           }
@@ -563,13 +605,18 @@ namespace aspect
         current_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units:
-        for (unsigned int i=0; i< introspection.index_sets.locally_owned_pressure_dofs.n_elements(); ++i)
-          {
-            types::global_dof_index idx = introspection.index_sets.locally_owned_pressure_dofs.nth_index_in_set(i);
+        {
+          IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                      introspection.index_sets.locally_owned_melt_pressure_dofs
+                                      : introspection.index_sets.locally_owned_pressure_dofs;
 
-            distributed_stokes_solution(idx) *= pressure_scaling;
-          }
-        distributed_stokes_solution.compress(VectorOperation::insert);
+          for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
+            {
+              types::global_dof_index idx = pressure_idxset.nth_index_in_set(i);
+              distributed_stokes_solution(idx) *= pressure_scaling;
+            }
+          distributed_stokes_solution.compress(VectorOperation::insert);
+        }
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components
@@ -581,6 +628,10 @@ namespace aspect
 
         pcout << "done." << std::endl;
 
+        // convert melt pressures:
+        if (parameters.include_melt_transport)
+          melt_handler->compute_melt_variables(solution);
+
         computing_timer.exit_section();
 
         return initial_residual;
@@ -591,9 +642,13 @@ namespace aspect
     // pressure = 1). For example the remap vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
     const unsigned int block_vel = introspection.block_indices.velocities;
-    const unsigned int block_p = introspection.block_indices.pressure;
+    const unsigned int block_p = (parameters.include_melt_transport) ?
+                                 introspection.variable("fluid pressure").block_index
+                                 : introspection.block_indices.pressure;
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
+    Assert(!parameters.include_melt_transport
+           || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
     const internal::StokesBlock stokes_block(system_matrix);
 
@@ -608,10 +663,10 @@ namespace aspect
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
     remap.block (block_vel) = current_linearization_point.block (block_vel);
-    remap.block (block_p) = current_linearization_point.block (block_p);
 
-    // before solving we scale the initial solution to the right dimensions
-    denormalize_pressure (remap);
+    remap.block (block_p) = current_linearization_point.block (block_p);
+    denormalize_pressure (remap, current_linearization_point);
+
     current_constraints.set_zero (remap);
     remap.block (block_p) /= pressure_scaling;
 
@@ -636,6 +691,7 @@ namespace aspect
                                                                  remap.block(1),
                                                                  system_rhs.block(0));
     const double residual_p = system_rhs.block(1).l2_norm();
+
     const double solver_tolerance = parameters.linear_stokes_solver_tolerance *
                                     sqrt(residual_u*residual_u+residual_p*residual_p);
 
@@ -792,6 +848,10 @@ namespace aspect
     pcout << solver_control_cheap.last_step() << '+'
           << solver_control_expensive.last_step() << " iterations.";
     pcout << std::endl;
+
+    // convert melt pressures:
+    if (parameters.include_melt_transport)
+      melt_handler->compute_melt_variables(solution);
 
     statistics.add_value("Iterations for Stokes solver",
                          solver_control_cheap.last_step() + solver_control_expensive.last_step());

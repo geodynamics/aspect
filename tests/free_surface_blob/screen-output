@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.2.pre
---     . running in DEBUG mode
---     . running with 1 MPI process
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
@@ -16,22 +9,22 @@ Number of free surface degrees of freedom: 1394
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
 
-Number of active cells: 220 (on 5 levels)
-Number of degrees of freedom: 3,320 (2,034+269+1,017)
+Number of active cells: 664 (on 5 levels)
+Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
-Number of free surface degrees of freedom: 538
+Number of free surface degrees of freedom: 1466
 *** Timestep 0:  t=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+12 iterations.
 
    Postprocessing:
 
      Reference density (kg/m^3):                    3300
      Reference gravity (m/s^2):                     10
      Reference thermal expansion (1/K):             4e-05
-     Temperature contrast across model domain (K): 0
+     Temperature contrast across model domain (K):  0
      Model domain depth (m):                        200000
      Reference thermal diffusivity (m^2/s):         1.13939e-06
      Reference viscosity (Pas):                     1e+21
@@ -43,167 +36,122 @@ Number of free surface degrees of freedom: 538
      Topography min/max: 0 m, 0 m, 
      RMS, max velocity:  0.000714 m/year, 0.00231 m/year
 
-*** Timestep 1:  t=675443 years
+*** Timestep 1:  t=675303 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -393.9 m, 891.3 m, 
-     RMS, max velocity:  0.000764 m/year, 0.00213 m/year
+     Topography min/max: -393.6 m, 876.5 m, 
+     RMS, max velocity:  0.000764 m/year, 0.00216 m/year
 
-*** Timestep 2:  t=2.29261e+06 years
+*** Timestep 2:  t=2.10723e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -2705 m, 1297 m, 
-     RMS, max velocity:  0.00124 m/year, 0.00313 m/year
+     Topography min/max: -2260 m, 1102 m, 
+     RMS, max velocity:  0.00121 m/year, 0.00303 m/year
 
-*** Timestep 3:  t=2.8761e+06 years
+*** Timestep 3:  t=2.68946e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 15 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-
-   Postprocessing:
-     Topography min/max: -806.7 m, 378.4 m, 
-     RMS, max velocity:  0.00108 m/year, 0.0026 m/year
-
-*** Timestep 4:  t=3.48832e+06 years
-   Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-
-   Postprocessing:
-     Topography min/max: -381.1 m, 782.5 m, 
-     RMS, max velocity:  0.000752 m/year, 0.00204 m/year
-
-*** Timestep 5:  t=5.99713e+06 years
-   Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 24 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+16 iterations.
-
-   Postprocessing:
-     Topography min/max: -4555 m, 2391 m, 
-     RMS, max velocity:  0.00129 m/year, 0.00346 m/year
-
-
-
-+---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      3.09s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-+---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         7 |     0.862s |        28% |
-| Assemble temperature system     |         7 |     0.422s |        14% |
-| Build Stokes preconditioner     |         7 |     0.568s |        18% |
-| Build temperature preconditioner|         7 |    0.0286s |      0.92% |
-| Solve Stokes system             |         7 |     0.574s |        19% |
-| Solve temperature system        |         7 |    0.0228s |      0.74% |
-| FreeSurface                     |         7 |     0.196s |       6.3% |
-| Initialization                  |         3 |    0.0552s |       1.8% |
-| Postprocessing                  |         6 |    0.0157s |      0.51% |
-| Refine mesh structure, part 1   |         1 |     0.083s |       2.7% |
-| Refine mesh structure, part 2   |         1 |   0.00186s |      0.06% |
-| Setup dof systems               |         2 |     0.162s |       5.2% |
-+---------------------------------+-----------+------------+------------+
-
-*** Timestep 6:  t=6.79909e+06 years
-   Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-
-   Postprocessing:
-     Topography min/max: -1704 m, 882.3 m, 
-     RMS, max velocity:  0.00154 m/year, 0.00388 m/year
-
-*** Timestep 7:  t=7.34608e+06 years
-   Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -267.3 m, 472.1 m, 
-     RMS, max velocity:  0.000546 m/year, 0.00134 m/year
+     Topography min/max: -476.2 m, 224.4 m, 
+     RMS, max velocity:  0.000776 m/year, 0.0021 m/year
 
-*** Timestep 8:  t=1.05623e+07 years
+*** Timestep 4:  t=3.43373e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 27 iterations.
+   Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+16 iterations.
+   Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -4022 m, 2452 m, 
-     RMS, max velocity:  0.00098 m/year, 0.00254 m/year
+     Topography min/max: -338.4 m, 712.9 m, 
+     RMS, max velocity:  0.000597 m/year, 0.00158 m/year
 
-*** Timestep 9:  t=1.18256e+07 years
+*** Timestep 5:  t=5.37507e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 20 iterations.
+   Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
+   Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -911.8 m, 545.9 m, 
-     RMS, max velocity:  0.000649 m/year, 0.00139 m/year
-
-*** Timestep 10:  t=1.3085e+07 years
-   Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-
-   Postprocessing:
-     Topography min/max: -522 m, 856.2 m, 
-     RMS, max velocity:  0.000477 m/year, 0.00121 m/year
+     Topography min/max: -2422 m, 1242 m, 
+     RMS, max velocity:  0.000995 m/year, 0.00241 m/year
 
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.05s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        12 |      1.39s |        27% |
-| Assemble temperature system     |        12 |     0.822s |        16% |
-| Build Stokes preconditioner     |        12 |     0.956s |        19% |
-| Build temperature preconditioner|        12 |    0.0468s |      0.93% |
-| Solve Stokes system             |        12 |     0.944s |        19% |
-| Solve temperature system        |        12 |    0.0516s |         1% |
-| FreeSurface                     |        12 |     0.368s |       7.3% |
-| Initialization                  |         3 |    0.0552s |       1.1% |
-| Postprocessing                  |        11 |    0.0298s |      0.59% |
-| Refine mesh structure, part 1   |         1 |     0.083s |       1.6% |
-| Refine mesh structure, part 2   |         1 |   0.00186s |     0.037% |
-| Setup dof systems               |         2 |     0.162s |       3.2% |
++---------------------------------+-----------+------------+------------+
+
+*** Timestep 6:  t=6.12596e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -583.3 m, 294.3 m, 
+     RMS, max velocity:  0.000736 m/year, 0.00179 m/year
+
+*** Timestep 7:  t=6.99697e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -376.8 m, 744.7 m, 
+     RMS, max velocity:  0.000549 m/year, 0.00145 m/year
+
+*** Timestep 8:  t=9.11876e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 24 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -2390 m, 1290 m, 
+     RMS, max velocity:  0.000916 m/year, 0.00218 m/year
+
+*** Timestep 9:  t=9.99817e+06 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+
+   Postprocessing:
+     Topography min/max: -441.2 m, 233.8 m, 
+     RMS, max velocity:  0.000558 m/year, 0.00134 m/year
+
+*** Timestep 10:  t=1.1161e+07 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+
+   Postprocessing:
+     Topography min/max: -386.3 m, 737.7 m, 
+     RMS, max velocity:  0.000435 m/year, 0.0011 m/year
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
 +---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end step
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |      5.05s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |        12 |      1.39s |        27% |
-| Assemble temperature system     |        12 |     0.822s |        16% |
-| Build Stokes preconditioner     |        12 |     0.956s |        19% |
-| Build temperature preconditioner|        12 |    0.0468s |      0.93% |
-| Solve Stokes system             |        12 |     0.944s |        19% |
-| Solve temperature system        |        12 |    0.0516s |         1% |
-| FreeSurface                     |        12 |     0.368s |       7.3% |
-| Initialization                  |         3 |    0.0552s |       1.1% |
-| Postprocessing                  |        11 |    0.0298s |      0.59% |
-| Refine mesh structure, part 1   |         1 |     0.083s |       1.6% |
-| Refine mesh structure, part 2   |         1 |   0.00186s |     0.037% |
-| Setup dof systems               |         2 |     0.162s |       3.2% |
 +---------------------------------+-----------+------------+------------+
 

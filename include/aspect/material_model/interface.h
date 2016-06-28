@@ -1047,7 +1047,6 @@ namespace aspect
     }
 
 
-
     template <int dim>
     template <class AdditionalOutputType>
     const AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output() const

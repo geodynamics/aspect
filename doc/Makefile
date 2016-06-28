@@ -3,9 +3,9 @@
 ############################################################
 
 aspect-files      = $(shell echo ../include/aspect/*.h \
-                            ../include/aspect/*/*h     \
-                            ../include/aspect/*/*/*h   \
-                            modules/*h)
+                            ../include/aspect/*/*.h     \
+                            ../include/aspect/*/*/*.h   \
+                            modules/*.h)
 aspect-manual-pix = $(shell find manual/cookbooks/ -name \*.png 2>/dev/null)
 
 

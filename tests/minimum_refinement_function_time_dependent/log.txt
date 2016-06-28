@@ -121,7 +121,7 @@ Number of degrees of freedom: 11,026 (6,772+868+3,386)
 
    Postprocessing:
 
-Number of active cells: 796 (on 6 levels)
+Number of active cells: 796 (on 7 levels)
 Number of degrees of freedom: 11,282 (6,924+896+3,462)
 
 *** Timestep 4:  t=5e+09 years

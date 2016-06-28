@@ -103,7 +103,10 @@ namespace aspect
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(q));
-              const unsigned int idx = static_cast<unsigned int>((depth*num_slices)/max_depth);
+              // make sure we are rounding down and never end up with idx==num_slices:
+              const double magic = 1.0-2.0*std::numeric_limits<double>::epsilon();
+              const unsigned int idx = static_cast<unsigned int>(std::floor((depth*num_slices)/max_depth*magic));
+
               Assert(idx<num_slices, ExcInternalError());
 
               values[idx] += output_values[q] * fe_values.JxW(q);

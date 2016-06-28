@@ -22,6 +22,8 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
+#include <aspect/freesurface.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -325,6 +327,16 @@ namespace aspect
     // to indicate a boundary
     prm.enter_subsection ("Model settings");
     {
+      prm.declare_entry ("Include melt transport", "false",
+                         Patterns::Bool (),
+                         "Whether to include the transport of melt into the model or not. If this "
+                         "is set to true, two additional pressures (the fluid pressure and the "
+                         "compaction pressure) will be added to the finite element. "
+                         "Including melt transport in the simulation also requires that there is "
+                         "one compositional field that has the name 'porosity'. This field will "
+                         "be used for computing the additional pressures and the melt velocity, "
+                         "and has a different advection equation than other compositional fields, "
+                         "as it is effectively advected with the melt velocity.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -543,9 +555,9 @@ namespace aspect
                          "seconds otherwise.");
       prm.declare_entry ("Run postprocessors on initial refinement", "false",
                          Patterns::Bool (),
-                         "Whether or not the postproccessors should be run at the end "
-                         "of each of ths initial adaptive refinement cycles at the "
-                         "of the simulation start.");
+                         "Whether or not the postproccessors should be executed after "
+                         "each of the initial adaptive refinement cycles that are run at "
+                         "the start of the simulation.");
     }
     prm.leave_subsection();
 
@@ -627,6 +639,7 @@ namespace aspect
                          "as opposed to continuous. This then requires the assembly of face terms "
                          "between cells, and weak imposition of boundary terms for the composition "
                          "field via the discontinuous Galerkin method.");
+
       prm.enter_subsection ("Stabilization parameters");
       {
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
@@ -673,6 +686,46 @@ namespace aspect
                            "is largely empirically decided -- it must be large enough to ensure "
                            "the bilinear form is coercive, but not so large as to penalize "
                            "discontinuity at all costs.");
+        prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after computing "
+                           "the discontinous temperature solution. Currently we apply this only to the "
+                           "temperature solution if the 'Global temperature maximum' and "
+                           "'Global temperature minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "'Global temperature maximum' and 'Global temperature minimum'.");
+        prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
+                           Patterns::Bool (),
+                           "Whether to apply the bound preserving limiter as a correction after having "
+                           "the discontinous composition solution. Currently we apply this only to the "
+                           "compositional solution if the 'Global composition maximum' and "
+                           "'Global composition minimum' are already defined in the .prm file. "
+                           "This limiter keeps the discontinuous solution in the range given by "
+                           "Global composition maximum' and 'Global composition minimum'.");
+        prm.declare_entry ("Global temperature maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The maximum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global temperature minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::Double (),
+                           "The minimum global temperature value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from temperature advection fields.");
+        prm.declare_entry ("Global composition maximum",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The maximum global composition values that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition maximum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
+        prm.declare_entry ("Global composition minimum",
+                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           Patterns::List(Patterns::Double ()),
+                           "The minimum global composition value that will be used in the bound preserving "
+                           "limiter for the discontinuous solutions from composition advection fields. "
+                           "The number of the input 'Global composition minimum' values seperated by ',' has to be "
+                           "the same as the number of the compositional fileds");
       }
       prm.leave_subsection ();
     }
@@ -728,7 +781,7 @@ namespace aspect
     prm.leave_subsection ();
 
     // also declare the parameters that the FreeSurfaceHandler needs
-    Simulator<dim>::FreeSurfaceHandler::declare_parameters (prm);
+    FreeSurfaceHandler<dim>::declare_parameters (prm);
 
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
@@ -879,6 +932,8 @@ namespace aspect
 
     prm.enter_subsection ("Model settings");
     {
+      include_melt_transport = prm.get_bool ("Include melt transport");
+
       {
         nullspace_removal = NullspaceRemoval::none;
         std::vector<std::string> nullspace_names =
@@ -960,6 +1015,22 @@ namespace aspect
         stabilization_c_R                   = prm.get_double ("cR");
         stabilization_beta                  = prm.get_double ("beta");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
+        use_limiter_for_discontinuous_temperature_solution
+          = prm.get_bool("Use limiter for discontinuous temperature solution");
+        use_limiter_for_discontinuous_composition_solution
+          = prm.get_bool("Use limiter for discontinuous composition solution");
+        if (use_limiter_for_discontinuous_temperature_solution
+            || use_limiter_for_discontinuous_composition_solution)
+          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
+                       ExcMessage ("The bound preserving limiter currently is "
+                                   "only implemented for the scheme using IMPES nonlinear solver. "
+                                   "Please deactivate the limiter or change the solver scheme."));
+        global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
+        global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
+        global_composition_max_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition maximum")));
+        global_composition_min_preset       = Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition minimum")));
       }
       prm.leave_subsection ();
 
@@ -974,12 +1045,33 @@ namespace aspect
                                "is of one degree lower and continuous, and if you selected "
                                "a linear element for the velocity, you'd need a continuous "
                                "element of degree zero for the pressure, which does not exist."))
+
+      if (include_melt_transport)
+        {
+          // The additional terms in the temperature systems have not been ported
+          // to the DG formulation:
+          AssertThrow(!use_discontinuous_temperature_discretization
+                      && !use_discontinuous_composition_discretization,
+                      ExcMessage ("Using discontinuous elements for temperature "
+                                  "or composition in models with melt transport is currently not implemented."));
+          // We can not have a DG p_f. While it would be possible to use a
+          // discontinuous p_c, this is not tested, so we disable it for now.
+          AssertThrow(!use_locally_conservative_discretization,
+                      ExcMessage ("Discontinuous elements for the pressure "
+                                  "in models with melt transport are not supported"));
+        }
     }
     prm.leave_subsection ();
 
     prm.enter_subsection ("Compositional fields");
     {
       n_compositional_fields = prm.get_integer ("Number of fields");
+      if (include_melt_transport && (n_compositional_fields == 0))
+        {
+          AssertThrow (false,
+                       ExcMessage ("If melt transport is included in the model, "
+                                   "there has to be at least one compositional field."));
+        }
 
       names_of_compositional_fields = Utilities::split_string_list (prm.get("Names of fields"));
       AssertThrow ((names_of_compositional_fields.size() == 0) ||
@@ -1011,6 +1103,17 @@ namespace aspect
         for (unsigned int i=0; i<n_compositional_fields; ++i)
           names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
 
+      // if we want to solve the melt transport equations, check that one of the fields
+      // has the name porosity
+      if (include_melt_transport && std::find(names_of_compositional_fields.begin(),
+                                              names_of_compositional_fields.end(), "porosity")
+          == names_of_compositional_fields.end())
+        {
+          AssertThrow (false, ExcMessage ("If melt transport is included in the model, "
+                                          "there has to be at least one compositional field "
+                                          "with the name 'porosity'."));
+        }
+
       const std::vector<int> n_normalized_fields = Utilities::string_to_int
                                                    (Utilities::split_string_list(prm.get ("List of normalized fields")));
       normalized_fields = std::vector<unsigned int> (n_normalized_fields.begin(),
@@ -1018,6 +1121,16 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
+      // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
+      if (use_limiter_for_discontinuous_temperature_solution
+          || use_limiter_for_discontinuous_composition_solution)
+        AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
+                      && global_composition_min_preset.size() == (n_compositional_fields)),
+                     ExcMessage ("The number of multiple 'Global composition maximum' values "
+                                 "and the number of multiple 'Global composition minimum' values "
+                                 "have to be the same as the total number of compositional fields"));
     }
     prm.leave_subsection ();
 
@@ -1323,6 +1436,7 @@ namespace aspect
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters<dim>::declare_parameters (prm);
+    MeltHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
     TerminationCriteria::Manager<dim>::declare_parameters (prm);

@@ -53,18 +53,11 @@ namespace aspect
     {
       connect_to_signals(this->get_signals());
 
-#if DEAL_II_VERSION_GTE(8,4,0)
       if (particle_load_balancing == repartition)
         this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
                                                                               std_cxx11::ref(*this),
                                                                               std_cxx11::_1,
                                                                               std_cxx11::_2));
-#else
-      AssertThrow(particle_load_balancing != repartition,
-                  ExcMessage("You tried to select the load balancing strategy 'repartition', "
-                             "which is only available for deal.II 8.4 and newer but the installed version "
-                             "seems to be older. Please update your deal.II or choose a different strategy."));
-#endif
     }
 
     template <int dim>
@@ -745,14 +738,8 @@ namespace aspect
     World<dim>::send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &send_particles)
     {
       // Determine the communication pattern
-#if DEAL_II_VERSION_GTE(8,4,0)
       const std::vector<types::subdomain_id> neighbors (this->get_triangulation().ghost_owners().begin(),
                                                         this->get_triangulation().ghost_owners().end());
-#else
-      const std::set<types::subdomain_id> ghost_owner = ghost_owners(this->get_triangulation());
-      const std::vector<types::subdomain_id> neighbors (ghost_owner.begin(),
-                                                        ghost_owner.end());
-#endif
       const unsigned int n_neighbors = neighbors.size();
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size();
 

@@ -32,8 +32,15 @@
 % use the listings package for code snippets. define keywords for prm files
 % and for gnuplot
 \usepackage{listings}
-\lstset{language=C++,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,frame=single}
-%\lstset{language=C++,basicstyle=\small\ttfamily,columns=flexible}
+\lstset{
+  language=C++,
+  basicstyle=\small\ttfamily,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\hspace{5em}\ensuremath{\color{red}\hookrightarrow\space}}
+}
 \lstdefinelanguage{prmfile}{morekeywords={set,subsection,end},
                             morecomment=[l]{\#},escapeinside={\%\%}{\%},}
 \lstdefinelanguage{gnuplot}{morekeywords={plot,using,title,with,set,replot},
@@ -123,7 +130,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
-1.4.0-pre %VERSION-INFO%
+1.5.0-pre %VERSION-INFO%
 \\\large(generated \today)\\}
 
 %AUTHOR(S) & WEBSITE%
@@ -139,6 +146,7 @@ Wolfgang Bangerth\\Timo Heister\\
     with contributions by:\\
     Jacqueline Austermann,
     Markus B{\"u}rg,
+    Samuel Cox,
     Juliane Dannberg,
     William Durkin, \\
     Grant Euen,
@@ -290,8 +298,7 @@ this software:
 \end{lstlisting}
 You can refer to the website by citing the following:
 \begin{lstlisting}[frame=single,language=tex]
-
-      @MANUAL{aspectweb,
+@Manual{aspectweb,
         title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
         author = {W. Bangerth and T. Heister and others},
         year   = {2014},
@@ -356,12 +363,12 @@ $c_i$ that we call \textit{compositional fields}:
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p &=
   \rho \mathbf g
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:stokes-2}
   \nabla \cdot (\rho \mathbf u) &= 0
-  & \qquad
+  &
   & \textrm{in $\Omega$},
   \\
   \label{eq:temperature}
@@ -384,7 +391,7 @@ $c_i$ that we call \textit{compositional fields}:
   \\
   &\quad
   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
-  & \quad
+  &
   & \textrm{in $\Omega$},
   \notag
   \\
@@ -392,13 +399,26 @@ $c_i$ that we call \textit{compositional fields}:
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i
   &=
   q_i
-  & \quad
+  &
   & \textrm{in $\Omega$},
   i=1\ldots C
 \end{align}
 where $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla \mathbf u + \nabla\mathbf
 u^T)$ is the symmetric gradient of the velocity (often called the
-\textit{strain rate}).
+\textit{strain rate}).%
+\footnote{There is no consensus in the sciences on the notation used
+  for strain and strain rate. The symbols $\varepsilon$,
+  $\dot\varepsilon$,  $\varepsilon(\mathbf u)$, and
+  $\dot\varepsilon(\mathbf u)$, can all be found. In this manual, and
+  in the code, we will consistently use $\varepsilon$ as an
+  \textit{operator}, i.e., the symbol is not used on its own but only
+  as applied to a field. In other words, if $\mathbf u$ is the
+  velocity field, then $\varepsilon(\mathbf u) = \frac{1}{2}(\nabla
+  \mathbf u + \nabla\mathbf u^T)$ will denote the strain rate. On the
+  other hand, if $\mathbf d$ is the
+  displacement field, then $\varepsilon(\mathbf d) = \frac{1}{2}(\nabla
+  \mathbf d + \nabla\mathbf d^T)$ will denote the strain.}
+
 
 In this set of equations, \eqref{eq:stokes-1} and \eqref{eq:stokes-2}
 represent the compressible Stokes equations in which $\mathbf u=\mathbf
@@ -512,7 +532,7 @@ essentially as tracer quantities that only keep track of where material came
 from.
 
 These equations are
-augmented by boundary conditions that can either be of Dirichlet-, Neumann, or
+augmented by boundary conditions that can either be of Dirichlet, Neumann, or
 tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 \begin{align}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$},
@@ -532,8 +552,9 @@ tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
   \mathbf n \cdot k\nabla T &= 0
    & \qquad &\textrm{on $\Gamma_{N,T}$}.
   \\
-  c_i &= 0
-   & \qquad &\textrm{on $\Gamma_\textit{in}=\{\mathbf x: \mathbf
+  \label{eq:gamma-in-composition}
+  c_i &= c_{i,\text{prescribed}}
+   & \qquad &\textrm{on $\Gamma_{\text{in}}=\{\mathbf x: \mathbf
    u\cdot\mathbf n<0\}$}.
 \end{align}
 Here, the boundary conditions for velocity and temperature are subdivided into
@@ -560,14 +581,20 @@ tangential component undetermined.
 of the shell that constitutes the domain the Earth mantle occupies is
 simulated).
 \end{itemize}
- We require that one of these boundary conditions hold at each
+We require that one of these boundary conditions hold at each
 point for both velocity and temperature, i.e.,
 $\Gamma_{0,\mathbf u}\cup\Gamma_{\text{prescribed},\mathbf
   u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{\text{traction},\mathbf
   u}=\Gamma$ and
-$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. No boundary conditions have to be
-posed for the compositional fields at those parts of the boundary where flow is either
-tangential to the boundary or points outward.
+$\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$. 
+
+Boundary conditions have to be imposed for the compositional fields only
+at those parts of the boundary where flow points inward, see equation
+\eqref{eq:gamma-in-composition}, but not where it is either tangential
+to the boundary or points outward. The difference in treatment between
+temperature and compositional boundary conditions is due to the fact
+that the temperature equation contains a (possibly small) diffusion
+component, whereas the compositional equations do not.
 
 
 \subsubsection{Comments on the final set of equations}
@@ -801,13 +828,13 @@ physical units. On the other hand, there are also downsides:
   often vastly different.%
   \footnote{To illustrate this, consider convection in the Earth as a
   back-of-the-envelope example.
-  With the length scale of the mantle $L=3\cdot 10^6\;m$, viscosity
-  $\eta=10^{24} \; kg/m/s$, density $\rho=3\cdot 10^3 \; kg/m^3$ and a typical
-  velocity of $U=0.1\;m/year=3\cdot 10^{-9}\; m/s$, we get that the friction
+  With the length scale of the mantle $L=3\cdot 10^6\;\text{m}$, viscosity
+  $\eta=10^{24} \; \text{kg}/\text{m}/\text{s}$, density $\rho=3\cdot 10^3 \; \text{kg}/\text{m}^3$ and a typical
+  velocity of $U=0.1\;\text{m}/\text{year}=3\cdot 10^{-9}\; \text{m}/\text{s}$, we get that the friction
   term in \eqref{eq:stokes-1} has size $\eta U/L^2 \approx 3\cdot 10^2 \;
-  kg/m/s^3$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
+  \text{kg}/\text{m}^2/\text{s}^2$. On the other hand, the term $\nabla\cdot(\rho u)$ in the
   continuity equation \eqref{eq:stokes-2} has size $\rho U/L\approx 3\cdot
-  10^{-12} \; kg/s/m^3$. In other words, their \textit{numerical values} are 14
+  10^{-12} \; \text{kg}/\text{s}/\text{m}^3$. In other words, their \textit{numerical values} are 14
   orders of magnitude apart.}
   Of course, these values can not be compared: they have different physical
   units, and the ratios between these values depends on whether we choose to
@@ -1076,14 +1103,17 @@ a vector $\mathfrak c$.
 
 Compositional fields were originally intended to track what their name
 suggest, namely the chemical composition of the convecting medium. In this
-interpretation, they composition is a quantity that is simply advected along
+interpretation, the composition is a quantity that is simply advected along
 passively, i.e., it would satisfy the equation
 \begin{align*}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c
   = 0.
 \end{align*}
-However, these compositional fields participate in determining the values of
-the various coefficients as discussed in Section~\ref{sec:coefficients}.
+However, the compositional fields may also participate in determining the values of
+the various coefficients as discussed in
+Section~\ref{sec:coefficients}, and in this sense the equation above
+describes a composition that is \textit{passively advected}, but an
+\textit{active participant} in the equations.
 
 That said, over time compositional fields have shown to be a much more useful
 tool than originally intended. For example, they can be used to track where
@@ -1094,13 +1124,30 @@ and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
   = \mathfrak q,
 \end{align*}
 then one can also model interaction between species -- for example to simulate
-phase changes where one compositional field indicating a particular phase
+phase changes where one compositional field, indicating a particular phase,
 transforms into another phase depending on pressure and temperature, or where
-several phases combine to other phases. Inside the material model, the interaction is given by {\tt reaction\_term}
-which is defined as $\triangle t \cdot \mathfrak q$.
+several phases combine to other phases. Another example of using a
+right hand side -- quite outside what the original term
+\textit{compositional field} was supposed to indicate -- is to track
+the accumulation of finite strain, see Section~\ref{sec:finite-strain}.
 
-Modeling reactions between different compositional fields often involves
-finding an equilibrium state between state between different fields because
+In actual practice, one finds that it is often useful to allow
+$\mathfrak q$ to be a function that has both a smooth (say,
+continuous) in time component, and one that is singular in time (i.e.,
+contains Dirac delta, or ``impulse'' functions). Typical time
+integrators require the evaluation of the right hand side at specific
+points in time, but this would preclude the use of delta
+functions. Consequently, the integrators in \aspect{} only require
+material models to provide an \textit{integrated} value
+$\int_t^{t+\Delta t} \mathfrak q(\tau) \;
+\text{d}\tau$ through the {\tt reaction\_term} output
+variable. Implementations often approximate this as $\triangle t \cdot
+\mathfrak q(t)$, or similar formulas.
+
+A second application for only providing integrated right hand sides
+comes from the fact that
+modeling reactions between different compositional fields often involves
+finding an equilibrium state between different fields because
 chemical reactions happen on a much faster time scale than transport. In other
 words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 \begin{align*}
@@ -1109,9 +1156,12 @@ words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 Consequently, the material model methods that deal with source terms for the
 compositional fields need to compute an \textit{increment} $\Delta\mathfrak c$
 to the previous value of the compositional fields so that the sum of the
-previous values and the increment equals $\mathfrak c^\ast$. This is opposed
-to the usual approach of evaluating the right hand side term $\mathfrak q$,
-which corresponds to a \textit{rate}, instead of an increment.
+previous values and the increment equals $\mathfrak c^\ast$. This
+corresponds to an \textit{impulse change} in the compositions at every
+time step, as opposed
+to the usual approach of evaluating the right hand side term
+$\mathfrak q$ as a continuous function in time,
+which corresponds to a \textit{rate}.
 
 On the other hand, there are other uses of compositional fields that do not
 actually have anything to do with quantities that can be considered related to
@@ -1459,9 +1509,18 @@ set of equations at once, iterating out nonlinearities as necessary, but
 instead in each time step solves first the Stokes system with the previous
 time step's temperature, and then uses the so-computed velocity to solve the
 temperature equation. These kind of time stepping schemes are often referred
-to as \textit{IMPES} methods (they originate in the porous media flow
+to as \textit{operator splitting} methods. A particular operator
+splitting method, used in
+earlier \aspect{} versions, solves first the Stokes equations and then
+uses a semi-explicit time stepping method for the temperature equation
+where diffusion is handled implicitly and advection explicitly;
+this algorithm is often called \textit{IMPES} (it originated in the
+porous media flow 
 community, where the acronym stands for \textit{Im}plicit \textit{P}ressure,
-\textit{E}xplicit \textit{S}aturation). For details see \cite{KHB12}.
+\textit{E}xplicit \textit{S}aturation) and is explained in more detail
+in \cite{KHB12}. However, since then the algorithm in \aspect{} has
+been rewritten to use an implicit time stepping algorithm also for the
+temperature equation because this allows to use larger time steps.
 
 
 
@@ -1572,6 +1631,142 @@ the details of which may be found in \cite{KMM2010}.
 
 An example of a simple model which uses a free surface may be found in Section \ref{sec:cookbooks-freesurface}.
 
+\subsection{Calculations with melt transport}
+\label{sec:melt_transport}
+
+The original formulation of the equations in Section~\ref{sec:equations} describes the movement of solid mantle material. These computations also allow for taking into account how partially molten material changes the material properties and the energy balance through the release of latent heat. However, this will not consider melt extraction or any relative movement between melt and solid and there might be problems where the transport of melt is of interest. Thus, \aspect{} allows for solving additional equations describing the behavior of silicate melt percolating through and interacting with a viscously deforming host rock. This requires 
+the advection of a compositional field representing the volume fraction of melt present at any given time (the porosity $\phi$), 
+and also a change of the mechanical part of the system. The latter is implemented using the approach of \cite{KMK2013} and changes 
+the Stokes system to
+
+\begin{align}
+  \label{eq:stokes-1-melt}
+  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf{u}_s)
+                                  - \frac{1}{3}(\nabla \cdot \mathbf{u}_s)\mathbf 1\right)
+                \right] + \nabla p_f + \nabla p_c  &=
+  \rho \mathbf g
+  & \qquad
+  & \textrm{in $\Omega$},
+  \\
+  \label{eq:stokes-2-melt}
+  \nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f 
+  - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
+  &= 
+  - \nabla \cdot K_D \rho_f \mathbf g
+  \notag
+  \\
+  &\quad
+  + \Gamma \left( \frac{1}{\rho_f} - \frac{1}{\rho_s} \right)
+  \\
+  &\quad
+  - \frac{\phi }{\rho_f} \mathbf{u}_s \cdot \nabla\rho_f 
+  - \frac{1 - \phi }{\rho_s} \mathbf{u}_s \cdot \nabla\rho_s
+  \notag
+  \\
+  &\quad
+  - K_D \mathbf g \cdot \nabla \rho_f 
+  & \qquad
+  & \textrm{in $\Omega$},
+  \notag
+  \\
+  \label{eq:stokes-3-melt}
+  \nabla \cdot \mathbf{u}_s + \frac{p_c}{\xi} 
+  &=
+  0.
+\end{align}
+
+We use the indices $s$ to indicate properties of the solid and $f$ for the properties of the fluid. 
+The equations are solved for the solid velocity $\mathbf{u}_s$, the fluid pressure $p_f$, and an additional 
+variable, the compaction pressure $p_c$, which is related to the fluid and solid pressure through the relation 
+$p_c = (1-\phi) (p_s-p_f)$. $K_D$ is the Darcy coefficient, which is defined as the quotient of the permeability 
+and the fluid viscosity and $\Gamma$ is the melting rate. $\eta$ and $\xi$ are the shear and compaction viscosities 
+and can depend on the porosity, temperature, pressure, strain rate and composition. However, there are various 
+laws for these quantities and so they are implemented in the material model. Common formulations for the dependence 
+on porosity are $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with $\alpha_\phi \approx 25...30$ and 
+$\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
+
+To avoid the density gradients in Equation~\eqref{eq:stokes-2-melt}, which would have to be specified individually 
+for each material model by the user, we can use the same method as for the mass conservation (described in Section~\ref{sec:boussinesq}) and assume the change in solid density is dominated by the change in static pressure, 
+which can be written as
+$\nabla p_s \approx \nabla p_\text{static} \approx \rho_s \textbf{g}$.
+This finally allows us to write
+\begin{equation*}
+\frac{1}{\rho_s} \nabla \rho_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
+\approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g}
+\approx \kappa_s \rho_s \textbf{g}. 
+\end{equation*}
+For the fluid pressure, choosing a good approximation depends on the model parameters and setup (see \cite{DH2015}). 
+Hence, we make $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the forces that are expected 
+to be dominant in the model. 
+We can then replace the second equation by
+\begin{align*}
+\nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f 
+  - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
+  &= 
+  - \nabla \cdot (K_D\rho_f \mathbf g)
+  \\
+  &\quad
+  + \Gamma \left( \frac{1}{\rho_f} - \frac{1}{\rho_s} \right)
+  \notag
+  \\
+  &\quad
+  - \frac{\phi }{\rho_f} \mathbf{u}_s \cdot \nabla\rho_f
+  - (\mathbf{u}_s \cdot \mathbf g ) (1 - \phi) \kappa_s \rho_s
+  \notag
+  \\
+  &\quad
+  - K_D \mathbf g \cdot \nabla \rho_f .
+  \notag
+\end{align*}
+%
+The melt velocity is computed as
+\[
+ \mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),
+\]
+but is only used for postprocessing purposes and for computing the time step length.  
+
+\note{Here, we do not use the visco-elasto-plastic rheology of the \cite{KMK2013} formulation. 
+Hence, we do not consider the elastic deformation terms that would appear on the right hand side of Equation 
+\eqref{eq:stokes-1-melt} and Equation~\eqref{eq:stokes-3-melt} and that include the elastic and compaction stress 
+evolution parameters $\xi_\tau$ and $\xi_p$. Moreover, our viscosity parameters $\eta$ and $\xi$ only cover viscous 
+deformation instead of combining visco-elasticity and plastic failure. This would require a modification of the rheologic 
+law using effective shear and compaction viscosities $\eta_\text{eff}$ and $\xi_\text{eff}$ combining a failure criterion 
+and shear and compaction visco-elasticities.}
+
+Moreover, melt transport requires an advection equation for the porosity field $\phi$:
+\begin{align}
+  \label{eq:porosity}
+  \rho_s \frac{\partial (1 - \phi)}{\partial t} + \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
+  &=
+  - \Gamma
+  & \quad
+  & \textrm{in $\Omega$},
+  i=1\ldots C
+\end{align}
+
+In order to solve this equation in the same way as the other advection equations, we replace the second term of the equation by: 
+
+\begin{equation*}
+\nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
+= \left( 1-\phi \right) \left( \rho_s \nabla \cdot \mathbf{u}_s 
++ \nabla \rho_s \cdot \mathbf{u}_s \right)
+- \nabla \phi \cdot \rho_s \mathbf{u}_s 
+\end{equation*}
+Then we use the same method as described above and assume again that the change in density is dominated by the change in static pressure
+\begin{equation*}
+\frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u}_s 
+\approx \kappa_s \rho_s \textbf{g} \cdot \mathbf{u}_s 
+\end{equation*}
+so we get
+\begin{equation*}
+\frac{\partial \phi}{\partial t} + \mathbf{u}_s \cdot \nabla \phi
+= \frac{\Gamma}{\rho_s}
++ (1 - \phi) (\nabla \cdot \mathbf{u}_s + \kappa_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
+\end{equation*}
+
+More details on the implementation can be found in \cite{DH2015}. A benchmark case demonstrating the propagation of solitary waves can be found in Section~\ref{sec:benchmark-solitary_wave}.
 
 \subsection{Nullspace removal}
 
@@ -1733,7 +1928,7 @@ prerequisites:
 %  Once \dealii{} 7.2 is available, this will suffice as well.
 
 \item \textit{\dealii{}:}
-  The current version of \aspect{} requires \dealii{} version 8.2 or later.
+  The current version of \aspect{} requires \dealii{} version 8.4.0 or later.
   This version can be downloaded and installed from
   \url{https://www.dealii.org/download.html}.
 
@@ -1844,70 +2039,82 @@ point for exploring the documentation.
 The here mentioned build was tested on a Cray XC30 cluster, which was set up for default static compiling and linking. On machines that default to dynamic linking additional compiler and/or linker flags may be required (e.g. "-fPIC" / "--static"). In case of questions send an email to the mailing list.
 
 \subsection{Installing and running \aspect{} on Mac OS X}
-OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9) and Yosemite (10.10) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
+OS X has some eccentricities which can complicate installation of \aspect{}. Currently the easiest and most reliable way to run \aspect{} under Mac OS X Mavericks (10.9), Yosemite (10.10) and El Capitan (10.11) is to install and run the binary package for \dealii{}. The step-by-step process is described in detail, with screenshots, here: \url{https://wiki.geodynamics.org/_media/software:aspect:aspect_yosemite_20150529.pdf}
 
 \begin{enumerate}
+\item Install Xcode from the app store. You might need to install the command line tools. Open a terminal and make sure ``clang'' does not report ``command not found''. You might need to run
+\begin{verbatim}
+  xcode-select --install
+\end{verbatim}
+to install the tools.
+
 \item Install Cmake.
 
 CMake is a cross-platform, open-source build system that can be downloaded from \url{http://www.cmake.org}.  After installation of CMake.app, the terminal command for cmake will be
 \begin{verbatim}
-/Applications/CMake.app/Contents/bin/cmake
+  /Applications/CMake.app/Contents/bin/cmake
 \end{verbatim}
 
 \item Download and install the parallel \dealii{}. This is the binary package for Mac OS .dmg file.
-%Current latest deal.ii version is 8.2.1.
-{\footnotesize
 \begin{verbatim}
-open  https://github.com/dealii/dealii/releases/download/v8.2.1/dealii-8.2.1-parallel-bundle.dmg
+  open  https://github.com/dealii/dealii/releases/download/v8.4.1/dealii-8.4.1.dmg
 \end{verbatim}
-}
+
 Open the downloaded disk image, and drag \dealii{}.app into the Applications folder.
  To start the \dealii{} app, double click the icon in the Applications folder or use the open command:
-{\footnotesize \begin{verbatim}
-open /Applications/deal.II.app
-\end{verbatim}}
+\begin{verbatim}
+  open /Applications/deal.II.app
+\end{verbatim}
 \dealii{} app opens a terminal window and displays a \dealii{} message.   \dealii{}.app will install all required libraries for \aspect{} (p4est, parMeTiS, and Trilinos) and will include the environment variables needed to use these libraries.
+
+To ensure the correct compilers are picked up when configuring \aspect{}, add the following lines to your \texttt{\textasciitilde/.profile} or \texttt{\textasciitilde/.bash\_profile}:
+
+\begin{verbatim}
+  export OMPI_CXX=clang++
+  export OMPI_CC=clang
+\end{verbatim}
 
 \item Download  the  \aspect{} source from the git repository.
 
-{\footnotesize \begin{verbatim}
-cd $HOME/src
-git clone https://github.com/geodynamics/aspect.git
-\end{verbatim}}
+\begin{verbatim}
+  cd $HOME/src
+  git clone https://github.com/geodynamics/aspect.git
+\end{verbatim}
 
-
-Note: you {\bf MUST} \underline{build} and \underline{run} \aspect{} in the terminal window started by \dealii{}.
+If you wish to use Xcode as your IDE it is recommended to skip to step 7 below. Otherwise, proceed with steps 5 and 6 below.
 
 \item Build \aspect{}
+
+Note: if you are not using Xcode (see step 7 below), you {\bf MUST} \underline{build} and \underline{run} \aspect{} in the terminal window started by \dealii{}, rather than in the Terminal app.
 
 \begin{enumerate}
 \item Go to the  directory where you wish to install \aspect{}  and run the following commands:
 
 {\footnotesize
 \begin{verbatim}
-cmake .
+  cmake .
 \end{verbatim}}
 
 This should display something like:
 
 {\footnotesize
 \begin{verbatim}
-Project  aspect  set up with  deal.II-8.2.1  found at /Applications/deal.II.app/Contents/Resources
+  Project aspect set up with  deal.II-8.4.1  found at /Applications/deal.II.app/Contents/Resources
 \end{verbatim}}
 
 \item Run make:
 
 {\footnotesize
 \begin{verbatim}
-bash-3.2$ make
-Scanning dependencies of target aspect
-[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/initial_profile.cc.o
-[  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/interface.cc.o
-...
-Linking CXX executable aspect
-[100%] Built target aspect
-bash-3.2$ ls -l aspect
--rwxr-xr-x  1 <name>  staff  19131292 May  7 15:02 aspect
+  bash-3.2$ make
+  Scanning dependencies of target aspect
+  [  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/initial_profile.cc.o
+  [  0%] Building CXX object CMakeFiles/aspect.dir/source/adiabatic_conditions/interface.cc.o
+  ...
+  Linking CXX executable aspect
+  [100%] Built target aspect
+  bash-3.2$ ls -l aspect
+  -rwxr-xr-x  1 <name>  staff  19131292 May  7 15:02 aspect
 \end{verbatim}
 }
 There may be  warnings from the compiler, but if the \aspect{} target is created then it was successful.
@@ -1915,14 +2122,14 @@ There may be  warnings from the compiler, but if the \aspect{} target is created
 \item By default,  \aspect{}  compiles the debug version of the code.
 To compile the optimized version:
 {\footnotesize\begin{verbatim}
-make release 
+  make release 
 \end{verbatim}}
 
 \item Run make test
 
 {\footnotesize
 \begin{verbatim}
-make test
+  make test
 \end{verbatim}}
 
 
@@ -1935,17 +2142,39 @@ make test
 A reminder: you {\bf must} run  \aspect{}  on the terminal window which is opened by \dealii{}.app.
 
 To start \aspect{} using MPI for parallelization, from the directory where you installed \aspect{}:
-{\footnotesize
 \begin{verbatim}
-mpirun -np <# of processes> ./aspect <parameter file>
-\end{verbatim}}
+  mpirun -np <# of processes> ./aspect <parameter file>
+\end{verbatim}
 
 To check quickly whether you are running  \aspect{} on the  \dealii{}.app terminal, check the location of the \verb|mpirun| command:
-{\footnotesize
 \begin{verbatim}
-bash-3.2$ which mpirun
-/Applications/deal.II.app/Contents/Resources/opt/openmpi-1.6.5/bin/mpirun
-\end{verbatim}}
+  bash-3.2$ which mpirun
+  /Applications/deal.II.app/Contents/Resources/opt/openmpi-1.6.5/bin/mpirun
+\end{verbatim}
+
+\item Build \aspect{} as an Xcode project.
+
+After completing step 4 above, do the following:
+\begin{enumerate}
+\item Go to the directory where you wish to install \aspect{} and run the following command:
+
+\begin{verbatim}
+  cmake -G Xcode .
+\end{verbatim}
+
+Now open the resulting \texttt{aspect.xcodeproj} in Xcode.
+
+\item Open Product\textgreater Scheme\textgreater Manage Schemes, then select ``aspect'' and click ``Edit''. Go to Run\textgreater Arguments, and under "Arguments Passed On Launch" add the filepath to the desired parameter file. Click "Close" then select Product\textgreater Run to run \aspect{} with this parameter file.
+
+\item If you want to run in parallel in Xcode, the easiest way is to create a new scheme. Open Product\textgreater Scheme\textgreater Manage Schemes, select ``aspect'' then select the gear icon, then ``Duplicate scheme''. Rename the new scheme to ``aspect parallel''. Go to Run\textgreater Info, and in Executable choose ``Other...''. Navigate to 
+\begin{verbatim}
+  /Applications/deal.II.app/Contents/Resources/opt/openmpi-1.10.2/bin
+\end{verbatim}
+and select ``orterun'', then click ``Choose''.
+
+\item Now go to the Arguments tab, and add 3 arguments: first, add \texttt{-np4} (for 4 processors -- you may use however many your machine has). Then add a path to your aspect executable -- this should be within your aspect folder, or the subfolders Debug or Release. Finally, ensure you have a path to your parameter file as above. Ensure these are in the correct order, or reorder them if necessary. Click ``Close'' then select Product\textgreater Run to run \aspect{} in parallel with this parameter file.
+\end{enumerate}
+
 
 
 \end{enumerate}
@@ -4150,7 +4379,7 @@ ends up, as well as the material that started in the top 20\%. For the moment,
 let us assume that there is no material between the materials at the bottom, the
 top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
-parameter file in \url{cookbooks/compositional-passive.prm}:
+parameter file in \url{cookbooks/composition-passive.prm}:
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-passive/passive.part.prm.out}
 
@@ -4187,7 +4416,7 @@ the domain we are interested in.}
     field is larger than 0.5 (in blue, indicating material from the top
     of the domain. The results were obtained with two more global
     refinement steps compared to the
-    \url{cookbooks/compositional-passive.prm} input file.}
+    \url{cookbooks/composition-passive.prm} input file.}
   \label{fig:compositional-passive}
 \end{figure}
 
@@ -4249,7 +4478,7 @@ While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in
 the computations shown in this section (using two additional global mesh
 refinements over the settings in the parameter file
-\url{cookbooks/compositional-passive.prm}), Fig.~\ref{fig:compositional-passive-mass}
+\url{cookbooks/composition-passive.prm}), Fig.~\ref{fig:compositional-passive-mass}
 shows the maximal and minimal values of the first compositional fields over time,
 along with the mass $m_1(t)$ (these are all tabulated in columns of the
 statistics file, see Sections~\ref{sec:running-overview} and \ref{sec:viz-stat}). While
@@ -4300,7 +4529,7 @@ exerted by whatever is driving the velocity at the top.}
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
-\url{cookbooks/compositional-active.prm}:
+\url{cookbooks/composition-active.prm}:
 
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active/active.part.prm.out}
@@ -5061,11 +5290,12 @@ Figure \ref{fig:smoothing}.
 \label{sec:finite-strain}
 \textit{This section was contributed by Juliane Dannberg}
 
-\textit{Notation: Here, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
+\note{In this section, we denote the strain rate tensor as $\varepsilon (\mathbf u)$, where 
 $\varepsilon(\mathbf u)_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right)$ 
-with the velocity $\mathbf u$, and the strain tensor as $e$, where 
+and $\mathbf u$ the velocity. We denote the strain tensor by $e$, where 
 $e_{ij} = \frac{1}{2}\left(\frac{\partial d_i}{\partial x_j} + \frac{\partial d_j}{\partial x_i}\right)$ 
-with the displacement $\mathbf d$.}
+with the displacement $\mathbf d$ the difference between a point's
+position at time $t$ and at time zero.}
 
 In many geophysical settings, material properties, and in particular the rheology, do not only depend
 on the current temperature, pressure and strain rate, but also on the history of the system. 
@@ -6081,6 +6311,7 @@ can be reproduced with the following parameters.
 \end{figure}
 
 \subsubsection{Crustal deformation}
+\label{sec:cookbooks-crustal-deformation}
 
 \textit{This section was contributed by Cedric Thieulot, and makes use of the Drucker-Prager 
 material model written by Anne Glerum and the free surface plugin by Ian Rose.}
@@ -6210,15 +6441,127 @@ the end of the first time step after one level of strain rate-based adaptive mes
 \end{figure}
 
 
+\subsubsection{Inner core convection}
+\label{sec:cookbooks-inner-core-convection}
+
+\textit{This section was contributed by Juliane Dannberg, and the model setup was inspired 
+by discussions with John Rudge.}
+
+This is an example of convection in the inner core of the Earth. It uses a spherical geometry 
+and is characterized by a single material with temperature dependent density that makes it
+unstably stratified as temperature increases towards the center of the core. 
+The boundary conditions combine normal stress and normal velocity, and take into account the
+rate of phase change (melting/freezing) at the inner-outer core boundary. Gravity decreases 
+linearly from the boundary to zero at the center of the inner core. 
+The setup is analogous to the models described in \cite{Deguen2013}, and all material properties 
+are chosen in a way so that the equations are non-dimensional.
+
+The required heating model and changes to the material model are implemented in a shared library
+(\url{cookbooks/inner_core_convection/inner_core_convection.cc}). 
+
+In their non-dimensional form, the equations are
+
+\begin{align}
+  \label{eq:inner-core-1}
+  \nabla \cdot \sigma &=
+  -Ra T \mathbf g,
+  \\
+  \label{eq:inner-core-2}
+  \nabla \cdot \mathbf u &= 0,
+  \\
+  \label{eq:inner-core-3}
+  \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
+  - \nabla^2 T
+  &=
+  H,
+\end{align}
+
+where $Ra$ is the Rayleigh number. 
+
+The mechanical boundary conditions for the inner core are
+tangential stress-free and continuity of the normal stress at the
+inner-outer core boundary. For the non-dimensional equations, that
+means that we can define a ``phase change number'' $\mathcal{P}$ so that the
+normal stress at the boundary is $-\mathcal{P} u_r$ with the radial velocity
+$u_r$. This number characterizes the resistance to phase change at
+the boundary, with $\mathcal{P}\rightarrow\infty$ corresponding to infinitely slow
+melting/freezing (or a free slip boundary), and $\mathcal{P}\rightarrow0$ corresponding to
+instantaneous melting/freezing (or a zero normal stress, corresponding to an open boundary).
+
+In the weak form, this results in boundary conditions of the form
+of a surface integral:
+\begin{equation*}
+\int_S \mathcal{P} (\mathbf u \cdot \mathbf n) (\mathbf v \cdot \mathbf n) dS,
+\end{equation*}
+with the normal vector $\mathbf n$.
+
+This phase change term is added to the matrix in the 
+\url{cookbooks/inner_core_convection/inner_core_assembly.cc} plugin by using a signal 
+(as described in Section~\ref{sec:extending-signals}). The signal 
+connects the function \verb!set_assemblers_phase_boundary!, which is only called once at the beginning of 
+the model run. It creates the new assembler \texttt{PhaseBoundaryAssembler} for the boundary faces of the Stokes 
+system and adds it to the list of assemblers executed in every time step. 
+The assembler contains the function \verb!phase_change_boundary_conditions! that loops over all faces at the model 
+boundary, queries the value of $\mathcal{P}$ from the material model, and adds the surface integral given above
+to the matrix:
+\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
+Instructions for how to compile and run models with a shared library are given in Section~\ref{sec:benchmark-run}.
+
+Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3} reveals that two parameters determine 
+the dynamics of convection in the inner core: the Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. 
+For low Rayleigh numbers below a critical value ($\sim1000$, but also slightly depending on $\mathcal{P}$), 
+there is no convection and thermal diffusion dominates the heat transport. 
+For higher values of $Ra$, the style of convection in the inner core depends on $\mathcal{P}$: 
+For high $\mathcal{P}$ ($\gg 29$, see \cite{Deguen2013}), convection is dominated by thermal plumes with the number 
+of plumes scaling with the Rayleigh number; whereas for low values of $\mathcal{P}$, the inner core is in a 
+translation regime, where material freezes at one side and melts at the other side, so that the velocity field 
+is uniform, pointing from the freezing to the melting side. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/convection.png}
+    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/translation.png}
+    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/no_convection.png}
+    \caption{Convection regimes in the inner core for different values of $Ra$ and $\mathcal{P}$.
+             From left to right: plume convection, translation, no convection.}
+    \label{fig:inner-core-regimes}
+\end{figure}
+
+Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows switching between the different regimes.
+The Rayleigh number can be changed by adjusting the magnitude of the gravity:
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.2.prm}
+The phase change number is implemented as part of the material model, and as a function that can depend on the 
+spatial coordinates and/or on time: 
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/inner_core_traction.part.1.prm}
+
+Figure~\ref{fig:inner-core-regimes} shows examples of the three regimes with $Ra=3000, \mathcal{P}=1000$ (plume convection), 
+$Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
 
-
-
-
-
-
-
-
+In addition, \cite{Deguen2013} give scaling laws for the velocities in each regime derived from linear stability 
+analysis, and show how numerical results compare to them. In the regimes of low $\mathcal{P}$, translation will start 
+at a critical ratio of Rayleigh number and phase change number $\frac{Ra}{\mathcal{P}}=\frac{175}{2}$ with steady-state 
+translation velocities being zero below this threshold and tending to $v_0=\frac{175}{2}\sqrt{\frac{6}{5}\frac{Ra}{\mathcal{P}}}$ 
+going towards higher values of $\frac{Ra}{\mathcal{P}}$.
+In the same way, translation velocities will decrease from $v_0$ with increasing $\mathcal{P}$, with translation transitioning
+to plume convection at $\mathcal{P}\sim29$. 
+Both trends are shown in Figure~\ref{fig:inner-core-trends} and can be compared to Figure~8 and 9 in \cite{Deguen2013}.
+ 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_Ra_P.pdf}
+    \hfill
+    \includegraphics[width=0.49\textwidth]{cookbooks/inner_core_convection/translation_over_P.pdf}
+    \caption{Translation rate (approximated by the average of the velocity component in the direction of translation), 
+    normalized to the low $\mathcal{P}$ 
+    limit estimate given in \cite{Deguen2013}, as a function of $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$ 
+    (left) and as a function of $\mathcal{P}$ for $Ra=10^5$ (right).
+    The dashed gray line gives the translation velocity predicted in the limit of low $\mathcal{P}$. Disagreement 
+    for larger values of $\mathcal{P}$ indicates that higher order terms (not included in the low $\mathcal{P}$
+    approximation) become important. Additionally, differences between the analytical and numerical model might 
+    be the result of limited resolution (only 12 elements in radial direction).}
+    \label{fig:inner-core-trends}
+\end{figure}
 
 \subsection{Benchmarks}
 \label{sec:cookbooks-benchmarks}

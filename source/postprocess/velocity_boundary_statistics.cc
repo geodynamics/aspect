@@ -21,7 +21,6 @@
 
 
 #include <aspect/postprocess/velocity_boundary_statistics.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -105,11 +104,8 @@ namespace aspect
                   }
                 // then merge them with the min/max velocities we found for other faces with the same boundary indicator
                 const types::boundary_id boundary_indicator
-#if DEAL_II_VERSION_GTE(8,3,0)
                   = cell->face(f)->boundary_id();
-#else
-                  = cell->face(f)->boundary_indicator();
-#endif
+
                 local_max_vel[boundary_indicator] = std::max(local_max,
                                                              local_max_vel[boundary_indicator]);
                 local_min_vel[boundary_indicator] = std::min(local_min,
@@ -132,9 +128,9 @@ namespace aspect
             local_min_values.push_back (local_min_vel[*p]);
           }
         // then collect contributions from all processors
-        std::vector<double> global_max_values;
+        std::vector<double> global_max_values (local_max_values.size());
         Utilities::MPI::max (local_max_values, this->get_mpi_communicator(), global_max_values);
-        std::vector<double> global_min_values;
+        std::vector<double> global_min_values (local_min_values.size());
         Utilities::MPI::min (local_min_values, this->get_mpi_communicator(), global_min_values);
 
         // and now take them apart into the global map again

@@ -36,7 +36,7 @@
 #include <deal.II/dofs/dof_handler.h>
 
 #include <deal.II/fe/fe_system.h>
-#include <deal.II/fe/mapping_q.h>
+#include <deal.II/fe/mapping.h>
 #include <deal.II/base/tensor_function.h>
 
 #include <aspect/global.h>
@@ -53,6 +53,7 @@
 #include <aspect/compositional_initial_conditions/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
 #include <aspect/velocity_boundary_conditions/interface.h>
+#include <aspect/fluid_pressure_boundary_conditions/interface.h>
 #include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/termination_criteria/interface.h>
@@ -66,6 +67,12 @@
 namespace aspect
 {
   using namespace dealii;
+
+  template <int dim>
+  class MeltHandler;
+
+  template <int dim>
+  class FreeSurfaceHandler;
 
   namespace internal
   {
@@ -838,11 +845,28 @@ namespace aspect
       /**
        * Invert the action of the function above.
        *
+       * This function modifies @p vector in-place. In some cases, we need
+       * locally_relevant values of the pressure. To avoid creating a new vector
+       * and transferring data, this function uses a second vector with relevant
+       * dofs (@p relevant_vector) for accessing these pressure values. Both
+       * @p vector and @p relevant_vector are expected to already contain
+       * the correct pressure values.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void denormalize_pressure(LinearAlgebra::BlockVector &vector);
+      void denormalize_pressure(LinearAlgebra::BlockVector &vector,
+                                const LinearAlgebra::BlockVector &relevant_vector);
 
+      /**
+       * Apply the bound preserving limiter to the discontinuous galerkin solutions:
+       * i.e., given two fixed upper and lower bound [min, max], after applying the limiter,
+       * the discontinuous galerkin solution will stay in the predescribed bounds.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
       /**
        * Interpolate the given function onto the velocity FE space and write
@@ -1099,6 +1123,14 @@ namespace aspect
        * @{
        */
       Parameters<dim>                     parameters;
+
+      /**
+       * Shared pointer for an instance of the MeltHandler. This way,
+       * if we do not need the machinery for doing melt stuff, we do
+       * not even allocate it.
+       */
+      std_cxx11::shared_ptr<MeltHandler<dim> > melt_handler;
+
       SimulatorSignals<dim>               signals;
       const IntermediaryConstructorAction post_signal_creation;
       Introspection<dim>                  introspection;
@@ -1212,7 +1244,15 @@ namespace aspect
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
 
-      const MappingQ<dim>                                       mapping;
+      /**
+       * Pointer to the Mapping object used by the finite elements when
+       * going from the reference cell to the cell in the computational
+       * domain. We use a pointer since different mapping objects may
+       * be useful. In particular, when the mesh is deformable we use
+       * a MappingQ1Eulerian object to describe the mesh deformation,
+       * swapping it in for the original MappingQ object.
+       */
+      std_cxx11::unique_ptr<Mapping<dim> >                      mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -1290,231 +1330,6 @@ namespace aspect
        * @}
        */
 
-    public:
-      /**
-       * A member class that isolates the functions and variables that deal
-       * with the free surface implementation.  If there are no free surface
-       * boundary indicators, then there is no instantiation of this class at
-       * all.
-       */
-      class FreeSurfaceHandler
-      {
-        public:
-          /**
-           * Initialize the free surface handler, allowing it to read in
-           * relevant parameters as well as giving it a reference to the
-           * Simulator that owns it, since it needs to make fairly extensive
-           * changes to the internals of the simulator.
-           */
-          FreeSurfaceHandler(Simulator<dim> &, ParameterHandler &prm);
-
-          /**
-           * The main execution step for the free surface implementation. This
-           * computes the motion of the free surface, moves the boundary nodes
-           * accordingly, redistributes the internal nodes in order to
-           * preserve mesh regularity, and calculates the Arbitrary-
-           * Lagrangian-Eulerian correction terms for advected quantities.
-           */
-          void execute();
-
-          /**
-           * Allocates and sets up the members of the FreeSurfaceHandler. This
-           * is called by Simulator<dim>::setup_dofs()
-           */
-          void setup_dofs();
-
-          /**
-           * Loop over all the mesh vertices and move them so that they are in
-           * the positions determined by the free surface implementation.
-           * Called in execute(), and also called after redistributing mesh so
-           * that the other processes know what has happened to that part of
-           * the mesh.
-           */
-          void displace_mesh();
-
-          /**
-           * Apply stabilization to a cell of the system matrix.  The
-           * stabilization is only added to cells on a free surface.  The
-           * scheme is based on that of Kaus et. al., 2010.  Called during
-           * assemly of the system matrix.
-           */
-          void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    internal::Assembly::CopyData::StokesSystem<dim>      &data);
-
-          /**
-           * If a geometry model uses manifolds for the refinement behavior
-           * it can produce nonsensical meshes on refinement when using a
-           * free surface, since the free surface may deform the mesh to the
-           * point where the manifold is no longer a good description of the
-           * domain.  However, it can still be useful to have the manifold
-           * description for producing a nice starting mesh with the initial
-           * refinements (that is to say, before timestepping).  This detaches
-           * manifolds from cells, and is called after the initial refinements
-           * of the domain.
-           */
-          void detach_manifolds();
-
-          /**
-           * Declare parameters for the free surface handling.
-           */
-          static
-          void declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Parse parameters for the free surface handling.
-           */
-          void parse_parameters (ParameterHandler &prm);
-
-        private:
-          /**
-           * Set the boundary conditions for the solution of the elliptic
-           * problem, which computes the displacements of the internal
-           * vertices so that the mesh does not become too distored due to
-           * motion of the free surface.  Velocities of vertices on the free
-           * surface are set to be the normal of the Stokes velocity solution
-           * projected onto that surface.  Velocities of vertices on free-slip
-           * boundaries are constrained to be tangential to those boundaries.
-           * Velocities of vertices on no-slip boundaries are set to be zero.
-           */
-          void make_constraints ();
-
-          /**
-           * Project the the Stokes velocity solution onto the
-           * free surface. Called by make_constraints()
-           */
-          void project_velocity_onto_boundary (LinearAlgebra::Vector &output);
-
-          /**
-           * Actually solve the elliptic problem for the mesh velocitiy.  Just
-           * solves a vector Laplacian equation.
-           */
-          void solve_elliptic_problem ();
-
-          /**
-           * From the mesh velocity called in
-           * FreeSurfaceHandler::solve_elliptic_problem() we calculate the
-           * mesh displacement with mesh_velocity*time_step.  This function
-           * also interpolates the mesh velocity onto the finite element space
-           * of the Stokes velocity system so that it can be used for ALE
-           * corrections.
-           */
-          void calculate_mesh_displacement ();
-
-          /**
-           * Reference to the Simulator object to which a FreeSurfaceHandler
-           * instance belongs
-           */
-          Simulator<dim> &sim;
-
-          /**
-           * Finite element for the free surface implementation.  Should be Q1
-           */
-          const FESystem<dim>                                       free_surface_fe;
-
-          /**
-           * DoFHanlder for the free surface implementation
-           */
-          DoFHandler<dim>                                           free_surface_dof_handler;
-
-          /**
-           * Stabilization parameter for the free surface.  Should be between
-           * zero and one. A value of zero means no stabilization.  See Kaus
-           * et. al. 2010 for more details.
-           */
-          double free_surface_theta;
-
-          /**
-           * BlockVector which stores the mesh velocity interpolated onto the
-           * Stokes velocity finite element space.  This is used for ALE
-           * corrections.
-           */
-          LinearAlgebra::BlockVector mesh_velocity;
-
-          /**
-           * Vector for storing the positions of the mesh vertices.  This
-           * vector is updated by
-           * FreeSurfaceHandler::calculate_mesh_displacement(), and is quite
-           * important for making sure the mesh stays the same shape upon
-           * redistribution of the system.
-           */
-          LinearAlgebra::Vector mesh_vertices;
-
-          /**
-           * The solution of FreeSurfaceHandler::solve_elliptic_problem().
-           */
-          LinearAlgebra::Vector mesh_vertex_velocity;
-
-          /**
-           * The matrix for solving the elliptic problem for moving the
-           * internal vertices.
-           */
-          LinearAlgebra::SparseMatrix mesh_matrix;
-
-          /**
-           * IndexSet for the locally owned DoFs for the mesh system
-           */
-          IndexSet mesh_locally_owned;
-
-          /**
-           * IndexSet for the locally relevant DoFs for the mesh system
-           */
-          IndexSet mesh_locally_relevant;
-
-          /**
-           * Storage for the mesh displacement constraints for solving the
-           * elliptic problem
-           */
-          ConstraintMatrix mesh_displacement_constraints;
-
-          /**
-           * Storage for the mesh vertex constraints to keep hanging nodes
-           * well-behaved
-           */
-          ConstraintMatrix mesh_vertex_constraints;
-
-          /**
-           * A struct for holding information about how to advect the free surface.
-           */
-          struct SurfaceAdvection
-          {
-            enum Direction { normal, vertical };
-          };
-
-          /**
-           * Stores whether to advect the free surface in the normal direction
-           * or the direction of the local vertical.
-           */
-          typename SurfaceAdvection::Direction advection_direction;
-
-
-          /**
-           * A set of boundary indicators that denote those boundaries that are
-           * allowed to move their mesh tangential to the boundary. All
-           * boundaries that have tangential material velocity boundary
-           * conditions are in this set by default, but it can be extended by
-           * open boundaries, boundaries with traction boundary conditions, or
-           * boundaries with prescribed material velocities if requested in
-           * the parameter file.
-           */
-          std::set<types::boundary_id> tangential_mesh_boundary_indicators;
-
-          /**
-           * A handle on the connection that connects the Stokes assembler
-           * signal of the main simulator object to the apply_stabilization()
-           * function. We keep track of this connection because we need to
-           * break it once the current free surface handler object goes out
-           * of scope.
-           *
-           * With the current variable, the connection is broken once the
-           * scoped_connection goes out of scope, i.e., when the surrounding
-           * class is destroyed.
-           */
-          boost::signals2::scoped_connection assembler_connection;
-
-          friend class Simulator<dim>;
-          friend class SimulatorAccess<dim>;
-      };
-
     private:
 
       /**
@@ -1522,11 +1337,11 @@ namespace aspect
        * if we do not need the machinery for doing free surface stuff, we do
        * not even allocate it.
        */
-      std_cxx11::shared_ptr<FreeSurfaceHandler> free_surface;
+      std_cxx11::shared_ptr<FreeSurfaceHandler<dim> > free_surface;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class FreeSurfaceHandler;  //FreeSurfaceHandler needs access to the internals of the Simulator
+      friend class FreeSurfaceHandler<dim>;  //FreeSurfaceHandler needs access to the internals of the Simulator
       friend struct Parameters<dim>;
   };
 }

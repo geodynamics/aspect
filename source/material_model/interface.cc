@@ -23,7 +23,9 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/utilities.h>
+
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/fe_q.h>
@@ -265,13 +267,13 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
       :
-      position(n_points, Point<dim>(aspect::Utilities::signaling_nan<Tensor<1,dim> >())),
-      temperature(n_points, aspect::Utilities::signaling_nan<double>()),
-      pressure(n_points, aspect::Utilities::signaling_nan<double>()),
-      pressure_gradient(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
-      velocity(n_points, aspect::Utilities::signaling_nan<Tensor<1,dim> >()),
-      composition(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>())),
-      strain_rate(n_points, aspect::Utilities::signaling_nan<SymmetricTensor<2,dim> >()),
+      position(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim> >())),
+      temperature(n_points, numbers::signaling_nan<double>()),
+      pressure(n_points, numbers::signaling_nan<double>()),
+      pressure_gradient(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      velocity(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
+      strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
       cell (NULL)
     {}
 
@@ -281,16 +283,16 @@ namespace aspect
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
       :
-      viscosities(n_points, aspect::Utilities::signaling_nan<double>()),
+      viscosities(n_points, numbers::signaling_nan<double>()),
       stress_strain_directors(n_points, dealii::identity_tensor<dim> ()),
-      densities(n_points, aspect::Utilities::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_points, aspect::Utilities::signaling_nan<double>()),
-      specific_heat(n_points, aspect::Utilities::signaling_nan<double>()),
-      thermal_conductivities(n_points, aspect::Utilities::signaling_nan<double>()),
-      compressibilities(n_points, aspect::Utilities::signaling_nan<double>()),
-      entropy_derivative_pressure(n_points, aspect::Utilities::signaling_nan<double>()),
-      entropy_derivative_temperature(n_points, aspect::Utilities::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, aspect::Utilities::signaling_nan<double>()))
+      densities(n_points, numbers::signaling_nan<double>()),
+      thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
+      specific_heat(n_points, numbers::signaling_nan<double>()),
+      thermal_conductivities(n_points, numbers::signaling_nan<double>()),
+      compressibilities(n_points, numbers::signaling_nan<double>()),
+      entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
+      entropy_derivative_temperature(n_points, numbers::signaling_nan<double>()),
+      reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()))
     {}
 
 
@@ -449,17 +451,16 @@ namespace aspect
 
             case geometric_average:
             {
-              double prod = 1;
+              double average = 1;
               for (unsigned int i=0; i<N; ++i)
                 {
                   Assert (values_out[i] >= 0,
                           ExcMessage ("Computing the geometric average "
                                       "only makes sense for non-negative "
                                       "quantities."));
-                  prod *= values_out[i];
+                  average *= std::pow (values_out[i], 1./N);
                 }
 
-              const double average = std::pow (prod, 1./N);
               for (unsigned int i=0; i<N; ++i)
                 values_out[i] = average;
               break;
@@ -630,7 +631,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    MaterialModelOutputs<dim>          &values_out)
+                    MaterialModelOutputs<dim>     &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;

@@ -70,22 +70,17 @@ namespace aspect
     }
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     Tensor<1,dim>
     Interface<dim>::boundary_velocity (const types::boundary_id ,
                                        const Point<dim> &position) const
     {
-      /**
-       * Call the old-style function without the boundary id to maintain backwards
-       * compatibility. Normarly the derived class should override this function.
-       */
-
+      // Call the old-style function without the boundary id to maintain backwards
+      // compatibility. Normally the derived class should override this function.
       return this->boundary_velocity(position);
     }
-#pragma GCC diagnostic pop
-
+    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
     template <int dim>

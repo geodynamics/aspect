@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/stokes_residual.h>
-#include <aspect/simulator_access.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 

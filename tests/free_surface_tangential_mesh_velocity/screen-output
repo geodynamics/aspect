@@ -21,41 +21,41 @@ Number of free surface degrees of freedom: 1122
    Postprocessing:
      Topography min/max: -2210 m, -2210 m, 
 
-*** Timestep 2:  t=439388 years
+*** Timestep 2:  t=444322 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Topography min/max: -4347 m, -4345 m, 
+     Topography min/max: -4395 m, -4393 m, 
 
-*** Timestep 3:  t=655320 years
+*** Timestep 3:  t=670132 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     Topography min/max: -6414 m, -6409 m, 
+     Topography min/max: -6556 m, -6551 m, 
 
-*** Timestep 4:  t=868786 years
+*** Timestep 4:  t=898406 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     Topography min/max: -8413 m, -8406 m, 
+     Topography min/max: -8690 m, -8683 m, 
 
 *** Timestep 5:  t=1e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Topography min/max: -9615 m, -9608 m, 
+     Topography min/max: -9618 m, -9611 m, 
 
 Termination requested by criterion: end time
 

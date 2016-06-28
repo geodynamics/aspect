@@ -6,9 +6,9 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
 
 *** Timestep 0:  t=0 seconds
    Solving temperature system... 0 iterations.
-   Solving C_1 system ... 0 iterations.
+   Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 11 iterations.
-   Solving C_3 system ... 0 iterations.
+   Skipping C_3 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+5 iterations.
       Nonlinear residuals: 1.37468e-11, 0, 0.0346137, 0, 22.3625
@@ -54,7 +54,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 11 iterations.
    Solving Stokes system... 30+2 iterations.
-      Nonlinear residuals: 0.0161267, 0.0346137, 6.51932e-14, 0.0346137, 0.172797
+      Nonlinear residuals: 0.0161273, 0.0346137, 6.51932e-14, 0.0346137, 0.172797
       Total relative nonlinear residual: 0.5
 
 
@@ -63,8 +63,8 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 0.0118361, 6.52004e-14, 6.51931e-14, 6.52004e-14, 2.06654e-06
-      Total relative nonlinear residual: 1.4051e-07
+      Nonlinear residuals: 0.0118359, 6.52004e-14, 6.51929e-14, 6.52004e-14, 2.03819e-06
+      Total relative nonlinear residual: 1.40508e-07
 
 
 

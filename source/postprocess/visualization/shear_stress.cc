@@ -20,7 +20,6 @@
 
 
 #include <aspect/postprocess/visualization/shear_stress.h>
-#include <aspect/simulator_access.h>
 
 
 

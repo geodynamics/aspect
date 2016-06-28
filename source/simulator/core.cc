@@ -23,6 +23,9 @@
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 #include <aspect/utilities.h>
+#include <aspect/melt.h>
+#include <aspect/freesurface.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -39,6 +42,7 @@
 #include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/fe/mapping_q.h>
 
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
@@ -84,10 +88,13 @@ namespace aspect
      */
     template <int dim>
     std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
-                                                               SimulatorSignals<dim> &signals)
+                                                               SimulatorSignals<dim> &signals,
+                                                               std_cxx11::shared_ptr<MeltHandler<dim> > &melt_handler)
     {
       std::vector<VariableDeclaration<dim> > variables
         = construct_default_variables (parameters);
+      if (melt_handler)
+        melt_handler->edit_finite_element_variables (parameters, variables);
 
       signals.edit_finite_element_variables(variables);
       return variables;
@@ -118,10 +125,11 @@ namespace aspect
     :
     assemblers (new internal::Assembly::AssemblerLists<dim>()),
     parameters (prm, mpi_communicator_),
+    melt_handler (parameters.include_melt_transport ? new MeltHandler<dim> (prm) : NULL),
     post_signal_creation(
       std_cxx11::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                        std_cxx11::ref(signals))),
-    introspection (construct_variables<dim>(parameters, signals), parameters),
+    introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
     iostream_tee_device(std::cout, log_file_stream),
     iostream_tee_stream(iostream_tee_device),
@@ -175,18 +183,12 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    //Fourth order mapping doesn't really make sense for free surface
-    //calculations (we disable curved boundaries) or we we only have straight
-    //boundaries. So we either pick MappingQ(4,true) or MappingQ(1,false)
-    mapping (
-      (parameters.free_surface_enabled
-       ||
-       geometry_model->has_curved_elements() == false
-      )?1:4,
-      (parameters.free_surface_enabled
-       ||
-       geometry_model->has_curved_elements() == false
-      )?false:true),
+    //The mapping is given by a degree four MappingQ for the case
+    //of a curved mesh, and a degree one MappingQ for a rectangular mesh.
+    //If a free surface is enabled, this is swapped out for a MappingQ1Eulerian,
+    //which allows for mesh deformation.
+    mapping( new MappingQ<dim>( geometry_model->has_curved_elements() ? 4 : 1,
+                                geometry_model->has_curved_elements() ? true : false ) ),
 
     // define the finite element
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),
@@ -486,7 +488,6 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
-
     // Initialize the free surface handler
     if (parameters.free_surface_enabled)
       {
@@ -499,7 +500,20 @@ namespace aspect
         //use it, we can run into problems with geometry_model->depth().
         AssertThrow ( parameters.pressure_normalization == "no",
                       ExcMessage("The free surface scheme can only be used with no pressure normalization") );
-        free_surface.reset( new FreeSurfaceHandler( *this, prm ) );
+
+        //Allocate the FreeSurfaceHandler object
+        free_surface.reset( new FreeSurfaceHandler<dim>( *this, prm ) );
+      }
+
+    // Initialize the melt handler
+    if (parameters.include_melt_transport)
+      {
+        AssertThrow( !parameters.use_discontinuous_temperature_discretization &&
+                     !parameters.use_discontinuous_composition_discretization,
+                     ExcMessage("Melt transport can not be used with discontinuous elements.") );
+        AssertThrow( !parameters.free_surface_enabled,
+                     ExcMessage("Melt transport together with a free surface has not been tested.") );
+        melt_handler->initialize_simulator (*this);
       }
 
     postprocess_manager.initialize_simulator (*this);
@@ -539,11 +553,11 @@ namespace aspect
         TractionBoundaryConditions::Interface<dim> *bv
           = TractionBoundaryConditions::create_traction_boundary_conditions<dim>
             (p->second.second);
+        traction_boundary_conditions[p->first].reset (bv);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
           sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
         bv->initialize ();
-        traction_boundary_conditions[p->first].reset (bv);
       }
 
     // determine how to treat the pressure. we have to scale it for the solver
@@ -570,11 +584,14 @@ namespace aspect
          ++p)
       open_velocity_boundary_indicators.erase (*p);
 
-    // we need to do the rhs compatibility modification, if the model is
-    // compressible, and there is no open boundary to balance the pressure
-    do_pressure_rhs_compatibility_modification = (material_model->is_compressible()
-                                                  &&
-                                                  (open_velocity_boundary_indicators.size() == 0));
+    // We need to do the rhs compatibility modification, if the model is
+    // compressible or compactible (in the case of melt transport), and
+    // there is no open boundary to balance the pressure.
+    do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
+                                                  ||
+                                                  (parameters.include_melt_transport && !material_model->is_compressible()))
+                                                 &&
+                                                 (open_velocity_boundary_indicators.size() == 0);
 
     // make sure that we don't have to fill every column of the statistics
     // object in each time step.
@@ -828,8 +845,6 @@ namespace aspect
 
           // here we create a mask for interpolate_boundary_values out of the 'selector'
           std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-          Assert(introspection.component_masks.velocities[0]==true,
-                 ExcInternalError()); // in case we ever move the velocity around
           const std::string &comp = parameters.prescribed_velocity_boundary_indicators[p->first].first;
 
           if (comp.length()>0)
@@ -839,15 +854,16 @@ namespace aspect
                   switch (*direction)
                     {
                       case 'x':
-                        mask[0] = true;
+                        mask[introspection.component_indices.velocities[0]] = true;
                         break;
                       case 'y':
-                        mask[1] = true;
+                        mask[introspection.component_indices.velocities[1]] = true;
                         break;
                       case 'z':
                         // we must be in 3d, or 'z' should never have gotten through
                         Assert (dim==3, ExcInternalError());
-                        mask[2] = true;
+                        if (dim==3)
+                          mask[introspection.component_indices.velocities[2]] = true;
                         break;
                       default:
                         Assert (false, ExcInternalError());
@@ -859,9 +875,6 @@ namespace aspect
               // no mask given -- take all velocities
               for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
                 mask[i]=introspection.component_masks.velocities[i];
-
-              Assert(introspection.component_masks.velocities[0]==true,
-                     ExcInternalError()); // in case we ever move the velocity down
             }
 
           VectorTools::interpolate_boundary_values (dof_handler,
@@ -892,9 +905,8 @@ namespace aspect
                     ExcInternalError());
             VectorTools::interpolate_boundary_values (dof_handler,
                                                       *p,
-                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::temperature,
+                                                      VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryTemperature::Interface<dim>::boundary_temperature,
                                                           std_cxx11::cref(*boundary_temperature),
-                                                          std_cxx11::cref(*geometry_model),
                                                           *p,
                                                           std_cxx11::_1),
                                                           introspection.component_masks.temperature.first_selected_component(),
@@ -924,9 +936,8 @@ namespace aspect
                       ExcInternalError());
               VectorTools::interpolate_boundary_values (dof_handler,
                                                         *p,
-                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::composition,
+                                                        VectorFunctionFromScalarFunctionObject<dim>(std_cxx11::bind (&BoundaryComposition::Interface<dim>::boundary_composition,
                                                             std_cxx11::cref(*boundary_composition),
-                                                            std_cxx11::cref(*geometry_model),
                                                             *p,
                                                             std_cxx11::_1,
                                                             c),
@@ -965,6 +976,10 @@ namespace aspect
     // - temperature only couples with itself when using the impes
     //   scheme
     // - compositional fields only couple with themselves
+    // this is also valid in the case of melt transport (for the
+    // fluid and the compaction pressure
+    // additionally, fluid pressure and compaction pressures couple
+    // with themselves
     {
       const typename Introspection<dim>::ComponentIndices &x
         = introspection.component_indices;
@@ -972,10 +987,38 @@ namespace aspect
       for (unsigned int c=0; c<dim; ++c)
         for (unsigned int d=0; d<dim; ++d)
           coupling[x.velocities[c]][x.velocities[d]] = DoFTools::always;
-      for (unsigned int d=0; d<dim; ++d)
+
+      if (parameters.include_melt_transport)
         {
-          coupling[x.velocities[d]][x.pressure] = DoFTools::always;
-          coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][
+                introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+              coupling[introspection.variable("compaction pressure").first_component_index]
+              [x.velocities[d]]
+                = DoFTools::always;
+              coupling[x.velocities[d]]
+              [introspection.variable("fluid pressure").first_component_index]
+                = DoFTools::always;
+              coupling[introspection.variable("fluid pressure").first_component_index]
+              [x.velocities[d]]
+                = DoFTools::always;
+            }
+
+          coupling[introspection.variable("fluid pressure").first_component_index]
+          [introspection.variable("fluid pressure").first_component_index]
+            = DoFTools::always;
+          coupling[introspection.variable("compaction pressure").first_component_index]
+          [introspection.variable("compaction pressure").first_component_index]
+            = DoFTools::always;
+        }
+      else
+        {
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              coupling[x.velocities[d]][x.pressure] = DoFTools::always;
+              coupling[x.pressure][x.velocities[d]] = DoFTools::always;
+            }
         }
       coupling[x.temperature][x.temperature] = DoFTools::always;
       for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -983,7 +1026,7 @@ namespace aspect
           = DoFTools::always;
     }
 
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
@@ -1035,14 +1078,29 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
-    for (unsigned int c=0; c<introspection.n_components; ++c)
-      for (unsigned int d=0; d<introspection.n_components; ++d)
-        if (c == d)
-          coupling[c][d] = DoFTools::always;
-        else
-          coupling[c][d] = DoFTools::none;
 
-    LinearAlgebra::BlockCompressedSparsityPattern sp;
+    const typename Introspection<dim>::ComponentIndices &x
+      = introspection.component_indices;
+
+    for (unsigned int d=0; d<dim; ++d)
+      coupling[x.velocities[d]][x.velocities[d]] = DoFTools::always;
+
+    if (parameters.include_melt_transport)
+      {
+        coupling[introspection.variable("fluid pressure").first_component_index]
+        [introspection.variable("fluid pressure").first_component_index] = DoFTools::always;
+        coupling[introspection.variable("compaction pressure").first_component_index]
+        [introspection.variable("compaction pressure").first_component_index] = DoFTools::always;
+      }
+    else
+      coupling[x.pressure][x.pressure] = DoFTools::always;
+    coupling[x.temperature][x.temperature] = DoFTools::always;
+
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
+
+    LinearAlgebra::BlockDynamicSparsityPattern sp;
+
 #ifdef ASPECT_USE_PETSC
     sp.reinit (introspection.index_sets.system_relevant_partitioning);
 #else
@@ -1121,7 +1179,7 @@ namespace aspect
       pcout << "Number of active cells: "
             << triangulation.n_global_active_cells()
             << " (on "
-            << triangulation.n_levels()
+            << triangulation.n_global_levels()
             << " levels)"
             << std::endl
             << "Number of degrees of freedom: "
@@ -1136,6 +1194,13 @@ namespace aspect
 
       pcout.get_stream().imbue(s);
     }
+
+    //We need to setup the free surface degrees of freedom first if there is a free
+    //surface active, since the mapping must be in place before applying boundary
+    //conditions that rely on it (such as no flux bcs).
+    if (parameters.free_surface_enabled)
+      free_surface->setup_dofs();
+
 
     //reinit the constraints matrix and make hanging node constraints
     constraints.clear();
@@ -1201,7 +1266,7 @@ namespace aspect
                                                        introspection.component_indices.velocities[0],
                                                        parameters.tangential_velocity_boundary_indicators,
                                                        constraints,
-                                                       mapping);
+                                                       *mapping);
     }
     constraints.close();
 
@@ -1222,8 +1287,6 @@ namespace aspect
     rebuild_stokes_matrix         = true;
     rebuild_stokes_preconditioner = true;
 
-    if (parameters.free_surface_enabled)
-      free_surface->setup_dofs();
 
     computing_timer.exit_section();
   }
@@ -1319,7 +1382,6 @@ namespace aspect
   }
 
 
-
   template <int dim>
   void Simulator<dim>::setup_introspection ()
   {
@@ -1339,24 +1401,40 @@ namespace aspect
       aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
                                          introspection.index_sets.system_relevant_set,
                                          introspection.index_sets.system_relevant_partitioning);
-      if (parameters.use_direct_stokes_solver)
+
+      if (!parameters.include_melt_transport)
         {
-          introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          // locally_owned_melt_pressure_dofs is only used if not using melt
+          if (parameters.use_direct_stokes_solver)
+            introspection.index_sets.locally_owned_pressure_dofs = system_index_set & extract_component_subset(dof_handler, introspection.component_masks.pressure);
+          else
+            introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
         }
-      else
+
+      if (parameters.include_melt_transport)
         {
-          introspection.index_sets.locally_owned_pressure_dofs = introspection.index_sets.system_partitioning[introspection.block_indices.pressure];
+          introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & extract_component_subset(dof_handler,
+                                                                      introspection.variable("fluid pressure").component_mask|
+                                                                      introspection.variable("compaction pressure").component_mask);
+          introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & extract_component_subset(dof_handler,
+                                                                       introspection.variable("fluid pressure").component_mask);
         }
+
+
 
       introspection.index_sets.stokes_partitioning.clear ();
       introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.velocities]);
       if (!parameters.use_direct_stokes_solver)
         {
-          introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
+          if (parameters.include_melt_transport)
+            // p_f and p_c are in the same block
+            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.variable("fluid pressure").block_index]);
+          else
+            introspection.index_sets.stokes_partitioning.push_back(introspection.index_sets.system_partitioning[introspection.block_indices.pressure]);
         }
 
-
       Assert(!parameters.use_direct_stokes_solver ||
+             parameters.include_melt_transport ||
              (introspection.block_indices.velocities == introspection.block_indices.pressure),
              ExcInternalError());
     }
@@ -1428,18 +1506,40 @@ namespace aspect
     mesh_refinement_manager.tag_additional_cells ();
 
 
-    // limit maximum refinement level
-    if (triangulation.n_levels() > max_grid_level)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = triangulation.begin_active(max_grid_level);
-           cell != triangulation.end(); ++cell)
-        cell->clear_refine_flag ();
+    // clear refinement flags if parameter.refinement_fraction=0.0
+    if (parameters.refinement_fraction==0.0)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active();
+             cell != triangulation.end(); ++cell)
+          cell->clear_refine_flag ();
+      }
+    else
+      {
+        // limit maximum refinement level
+        if (triangulation.n_levels() > max_grid_level)
+          for (typename Triangulation<dim>::active_cell_iterator
+               cell = triangulation.begin_active(max_grid_level);
+               cell != triangulation.end(); ++cell)
+            cell->clear_refine_flag ();
+      }
 
-    // limit minimum refinement level
-    for (typename Triangulation<dim>::active_cell_iterator
-         cell = triangulation.begin_active(0);
-         cell != triangulation.end_active(parameters.min_grid_level); ++cell)
-      cell->clear_coarsen_flag ();
+    // clear coarsening flags if parameter.coarsening_fraction=0.0
+    if (parameters.coarsening_fraction==0.0)
+      {
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active();
+             cell != triangulation.end(); ++cell)
+          cell->clear_coarsen_flag ();
+      }
+    else
+      {
+        // limit minimum refinement level
+        for (typename Triangulation<dim>::active_cell_iterator
+             cell = triangulation.begin_active(0);
+             cell != triangulation.end_active(parameters.min_grid_level); ++cell)
+          cell->clear_coarsen_flag ();
+      }
 
     std::vector<const LinearAlgebra::BlockVector *> x_system (2);
     x_system[0] = &solution;
@@ -1457,10 +1557,11 @@ namespace aspect
 
     if (parameters.free_surface_enabled)
       {
-        x_fs_system[0] = &free_surface->mesh_vertices;
+        x_fs_system[0] = &free_surface->mesh_displacements;
         freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
                                  (free_surface->free_surface_dof_handler));
       }
+
 
     // Possibly store data of plugins associated with cells
     signals.pre_refinement_store_user_data(triangulation);
@@ -1516,28 +1617,23 @@ namespace aspect
       constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
 
+      // do the same as above also for the free surface solution
       if (parameters.free_surface_enabled)
         {
           constraints.distribute (distributed_mesh_velocity);
           free_surface->mesh_velocity = distributed_mesh_velocity;
-        }
 
-      // do the same as above also for the free surface solution
-      if (parameters.free_surface_enabled)
-        {
-          LinearAlgebra::Vector distributed_mesh_vertices;
-          distributed_mesh_vertices.reinit(free_surface->mesh_locally_owned,
-                                           mpi_communicator);
+          LinearAlgebra::Vector distributed_mesh_displacements;
+
+          distributed_mesh_displacements.reinit(free_surface->mesh_locally_owned,
+                                                mpi_communicator);
 
           std::vector<LinearAlgebra::Vector *> system_tmp (1);
-          system_tmp[0] = &distributed_mesh_vertices;
+          system_tmp[0] = &distributed_mesh_displacements;
 
           freesurface_trans->interpolate (system_tmp);
-          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_vertices);
-          free_surface->mesh_vertices = distributed_mesh_vertices;
-
-          //make sure the mesh is consistent with mesh_vertices
-          free_surface->displace_mesh ();
+          free_surface->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+          free_surface->mesh_displacements = distributed_mesh_displacements;
         }
 
       // Possibly load data of plugins associated with cells
@@ -1546,7 +1642,7 @@ namespace aspect
     computing_timer.exit_section();
 
     //calculate global volume after displacing mesh (if we have, in fact, displaced it)
-    global_volume = GridTools::volume (triangulation, mapping);
+    global_volume = GridTools::volume (triangulation, *mapping);
   }
 
   /**
@@ -1676,19 +1772,22 @@ namespace aspect
             free_surface->execute ();
 
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner(AdvectionField::temperature(),
-                                         T_preconditioner);
           solve_advection(AdvectionField::temperature());
+
+          if (parameters.use_discontinuous_temperature_discretization
+              && parameters.use_limiter_for_discontinuous_temperature_solution)
+            apply_limiter_to_dg_solutions(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
 
-          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          for (unsigned int c=0; c < parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner(AdvectionField::composition(c),
-                                             C_preconditioner);
               solve_advection(AdvectionField::composition(c));
+              if (parameters.use_discontinuous_composition_discretization
+                  && parameters.use_limiter_for_discontinuous_composition_solution)
+                apply_limiter_to_dg_solutions(AdvectionField::composition(c));
             }
 
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
@@ -1767,8 +1866,6 @@ namespace aspect
           do
             {
               assemble_advection_system(AdvectionField::temperature());
-              build_advection_preconditioner(AdvectionField::temperature(),
-                                             T_preconditioner);
 
               if (iteration == 0)
                 initial_temperature_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
@@ -1783,8 +1880,6 @@ namespace aspect
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
                 {
                   assemble_advection_system (AdvectionField::composition(c));
-                  build_advection_preconditioner(AdvectionField::composition(c),
-                                                 C_preconditioner);
 
                   if (iteration == 0)
                     initial_composition_residual[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
@@ -1828,11 +1923,22 @@ namespace aspect
 
               pcout << std::endl;
 
-
               double max = 0.0;
               for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
-                if (initial_composition_residual[c]>0)
-                  max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                {
+                  // in models with melt migration the melt advection equation includes the divergence of the velocity
+                  // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+                  // thus, we set a threshold for the initial composition residual.
+                  // this only plays a role if the right-hand side of the advection equation is very small.
+                  const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                            ?
+                                            parameters.linear_stokes_solver_tolerance * time_step
+                                            :
+                                            0.0);
+                  if (initial_composition_residual[c]>threshold)
+                    max = std::max(composition_residual[c]/initial_composition_residual[c],max);
+                }
+
               if (initial_stokes_residual>0)
                 max = std::max(stokes_residual/initial_stokes_residual, max);
               if (initial_temperature_residual>0)
@@ -1860,10 +1966,8 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
-          // solve the temperature system once...
+          // solve the temperature and composition systems once...
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner (AdvectionField::temperature (),
-                                          T_preconditioner);
           solve_advection(AdvectionField::temperature());
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
@@ -1871,8 +1975,6 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner (AdvectionField::composition (c),
-                                              C_preconditioner);
               solve_advection(AdvectionField::composition(c));
             }
 
@@ -1941,7 +2043,7 @@ namespace aspect
                                                            dim+1, //velocity and pressure
                                                            introspection.n_components);
 
-          VectorTools::interpolate (mapping, dof_handler, func, distributed_stokes_solution);
+          VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
 
           const unsigned int block_vel = introspection.block_indices.velocities;
           const unsigned int block_p = introspection.block_indices.pressure;
@@ -1954,8 +2056,6 @@ namespace aspect
           solution.block(block_p) = distributed_stokes_solution.block(block_p);
 
           assemble_advection_system (AdvectionField::temperature());
-          build_advection_preconditioner(AdvectionField::temperature(),
-                                         T_preconditioner);
           solve_advection(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
@@ -1964,8 +2064,6 @@ namespace aspect
           for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
             {
               assemble_advection_system (AdvectionField::composition(c));
-              build_advection_preconditioner(AdvectionField::composition(c),
-                                             C_preconditioner);
               solve_advection(AdvectionField::composition(c));
               current_linearization_point.block(introspection.block_indices.compositional_fields[c])
                 = solution.block(introspection.block_indices.compositional_fields[c]);
@@ -2043,13 +2141,13 @@ namespace aspect
             triangulation.execute_coarsening_and_refinement();
           }
 
-        global_volume = GridTools::volume (triangulation, mapping);
-
         time                      = parameters.start_time;
         timestep_number           = 0;
         time_step = old_time_step = 0;
 
         setup_dofs();
+
+        global_volume = GridTools::volume (triangulation, *mapping);
 
         if (parameters.nonlinear_solver == NonlinearSolver::Binary_input)
           init_load_binary_solution();
@@ -2063,7 +2161,7 @@ namespace aspect
 
     if (parameters.resume_computation == false)
       {
-        computing_timer.enter_section ("Initialization");
+        computing_timer.enter_section ("Setup initial conditions");
 
         time                      = parameters.start_time;
         timestep_number           = 0;
