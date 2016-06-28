@@ -47,6 +47,25 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
+    /**
+     * Given an array @p values, consider three cases:
+     * - If it has size @p N, return the original array.
+     * - If it has size one, return an array of size @p N where all
+     *   elements are equal to the one element of @p value.
+     * - If it has any other size, throw an exception that uses
+     *   @p id_text as an identifying string.
+     *
+     * This function is typically used for parameter lists that can either
+     * contain different values for each of a set of objects (e.g., for
+     * each compositional field), or contain a single value that is then
+     * used for each object.
+     */
+    template <typename T>
+    std::vector<T>
+    possibly_extend_from_1_to_N (const std::vector<T> &values,
+                                 const unsigned int N,
+                                 const std::string &id_text);
+
 
     /**
      * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
@@ -232,6 +251,34 @@ namespace aspect
                  ExcInternalError());
           composition_values_at_q_point[k] = composition_values[k][q];
         }
+    }
+
+    template <typename T>
+    inline
+    std::vector<T>
+    possibly_extend_from_1_to_N (const std::vector<T> &values,
+                                 const unsigned int N,
+                                 const std::string &id_text)
+    {
+      if (values.size() == 1)
+        {
+          return std::vector<T> (N, values[0]);
+        }
+      else if (values.size() == N)
+        {
+          return values;
+        }
+      else
+        {
+          // Non-specified behavior
+          AssertThrow(false,
+                      ExcMessage("Length of "+id_text+" list must be " +
+                                 "either one or " + std::to_string(N)));
+        }
+
+      // This should never happen, but return an empty vector so the compiler
+      // will be happy
+      return std::vector<T> ();
     }
 
 
