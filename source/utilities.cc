@@ -17,6 +17,7 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 #include <aspect/global.h>
 #include <aspect/utilities.h>
@@ -179,6 +180,23 @@ namespace aspect
       return return_value;
     }
 
+
+    //Evaluate the cosine and sine terms of a real spherical harmonic.
+    //This is a fully normalized harmonic, that is to say, inner products
+    //of these functions should integrate to a kronecker delta over
+    //the surface of a sphere.
+    std::pair<double,double> real_spherical_harmonic( const unsigned int l, //degree
+                                                      const unsigned int m, //order
+                                                      const double theta,   //colatitude (radians)
+                                                      const double phi )    //longitude (radians)
+    {
+      const double sqrt_2 = numbers::SQRT2;
+      const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
+      if ( m == 0 )
+        return std::make_pair( sph_harm_val.real(), 0.0 );
+      else
+        return std::make_pair( sqrt_2 * sph_harm_val.real(), sqrt_2 * sph_harm_val.imag() );
+    }
 
 
     bool

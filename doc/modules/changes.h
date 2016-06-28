@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: There is a new function Utilities::real_spherical_harmonic
+ * which calculates the values of a fully normalized real spherical harmonic.
+ * <br>
+ * (Ian Rose, 2016/06/28)
+ *
  * <li> Changed: The files handling the free surface implementation
  * have been renamed to free_surface.h and free_surface.cc for better
  * consistency with the rest of the file names.

@@ -25,7 +25,7 @@
 #include <iostream>
 #include <deal.II/base/std_cxx11/array.h>
 
-#include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -162,12 +162,6 @@ namespace aspect
       spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
     }
 
-    // NOTE: this module uses the Boost spherical harmonics package which is not designed
-    // for very high order (> 100) spherical harmonics computation. If you use harmonic
-    // perturbations of a high order be sure to confirm the accuracy first.
-    // For more information, see:
-    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
-
     template <>
     double
     S40RTSPerturbation<2>::
@@ -233,8 +227,13 @@ namespace aspect
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
-                  const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
-                  const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
+                  //Evaluate the spherical harmonics at this position.
+                  //NOTE: there is apparently a factor of sqrt(2) difference
+                  //between the standard orthonormalized spherical harmonics
+                  //and those used for S40RTS (see PR # 966)
+                  const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
+                  const double cos_component = sph_harm_vals.first;
+                  const double sin_component = sph_harm_vals.second;
 
                   if (degree_l == 0)
                     prefact = (zero_out_degree_0
@@ -242,8 +241,9 @@ namespace aspect
                                0.
                                :
                                1.);
-                  else
-                    prefact = 1.;
+                  else if (order_m != 0)
+                    prefact = 1./sqrt(2.);
+                  else prefact = 1.0;
 
                   spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
 
