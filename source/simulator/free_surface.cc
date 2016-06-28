@@ -20,7 +20,7 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/freesurface.h>
+#include <aspect/free_surface.h>
 #include <aspect/global.h>
 #include <aspect/assembly.h>
 
