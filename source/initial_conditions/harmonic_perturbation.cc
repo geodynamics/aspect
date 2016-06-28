@@ -47,7 +47,7 @@ namespace aspect
       // (incompressible model) or the adiabatic temperature profile (compressible model)
 
       // TODO: this should check for adiabatic heating, right?
-      
+
       const double background_temperature = this->get_material_model().is_compressible() ?
                                             this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;

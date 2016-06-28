@@ -971,8 +971,7 @@ namespace aspect
         local_assemble_stokes_incompressible (const double                                     pressure_scaling,
                                               const bool                                       rebuild_stokes_matrix,
                                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                              internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                              const Parameters<dim> &parameters) const
+                                              internal::Assembly::CopyData::StokesSystem<dim> &data) const
         {
           const Introspection<dim> &introspection = this->introspection();
           const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
@@ -983,9 +982,9 @@ namespace aspect
               for (unsigned int k=0; k<dofs_per_cell; ++k)
                 {
                   scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
                   if (rebuild_stokes_matrix)
                     {
+                      scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
                       scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
                       scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
                     }
@@ -1026,13 +1025,14 @@ namespace aspect
                                                 // Note the negative sign to make this
                                                 // operator adjoint to the grad p term:
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j])                                              )
+                                                   scratch.phi_p[i] * scratch.div_phi_u[j])
+                                              )
                                               * scratch.finite_element_values.JxW(q);
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
                                        // buoyancy term:
-                                       (density * gravity * scratch.phi_u[i])
+                                       (scratch.material_model_outputs.densities[q] * gravity * scratch.phi_u[i])
                                      )
                                      * scratch.finite_element_values.JxW(q);
             }
@@ -1042,8 +1042,7 @@ namespace aspect
         local_assemble_stokes_compressible_diffusion (const double                                     pressure_scaling,
                                                       const bool                                       rebuild_stokes_matrix,
                                                       internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                      internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                      const Parameters<dim> &parameters) const
+                                                      internal::Assembly::CopyData::StokesSystem<dim> &data) const
         {
           if (!rebuild_stokes_matrix)
             return;
@@ -1057,6 +1056,7 @@ namespace aspect
               for (unsigned int k=0; k<dofs_per_cell; ++k)
                 {
                   scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+                  scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
                 }
 
               // Viscosity scalar
@@ -1080,8 +1080,7 @@ namespace aspect
 
 
         void
-        local_assemble_stokes_mass_density_implicit (bool compressible_strain_rate,
-                                                     const double                                     pressure_scaling,
+        local_assemble_stokes_mass_density_implicit (const double                                     pressure_scaling,
                                                      const bool                                       rebuild_stokes_matrix,
                                                      internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                      internal::Assembly::CopyData::StokesSystem<dim> &data,
@@ -1100,41 +1099,20 @@ namespace aspect
                 {
                   scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
                   scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-                  if (rebuild_stokes_matrix)
-                    {
-                      scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                      scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
-                    }
                 }
-
-              // Viscosity scalar
-              const double eta = (rebuild_stokes_matrix
-                                  ?
-                                  scratch.material_model_outputs.viscosities[q]
-                                  :
-                                  std::numeric_limits<double>::quiet_NaN());
-
-              const SymmetricTensor<4,dim> &stress_strain_director =
-                scratch.material_model_outputs.stress_strain_directors[q];
-              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
 
               const Tensor<1,dim>
               gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
               const double compressibility
                 = scratch.material_model_outputs.compressibilities[q];
-              const double density = scratch.material_model_outputs.densities[q];
-
-              const double approx_rho =
-                (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
-                 || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
-                ? scratch.mass_densities[q] : density;
+              const double mass_density = scratch.mass_densities[q];
 
               if (rebuild_stokes_matrix)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
                     data.local_matrix(i,j) += (
-                                                - (pressure_scaling * compressibility * approx_rho
+                                                - (pressure_scaling * compressibility * mass_density
                                                    *(scratch.phi_u[j] * gravity)
                                                    * scratch.phi_p[i])
                                               )
@@ -1147,10 +1125,10 @@ namespace aspect
                                        // is because we negate the entire equation to make sure we get
                                        // -div(u) as the adjoint operator of grad(p) (see above where
                                        // we assemble the matrix)
-                                       (parameters.formulation_mass != Parameters<dim>::FormulationType::implicit_adiabatic ? (pressure_scaling *
-                                           compressibility * approx_rho *
-                                           (scratch.velocity_values[q] * gravity) *
-                                           scratch.phi_p[i]) : 0.0)
+                                       (pressure_scaling *
+                                        compressibility * mass_density *
+                                        (scratch.velocity_values[q] * gravity) *
+                                        scratch.phi_p[i])
                                      )
                                      * scratch.finite_element_values.JxW(q);
             }
@@ -1158,8 +1136,7 @@ namespace aspect
         }
 
         void
-        local_assemble_stokes_mass_density_explicit (bool compressible_strain_rate,
-                                                     const double                                     pressure_scaling,
+        local_assemble_stokes_mass_density_explicit (const double                                     pressure_scaling,
                                                      const bool                                       rebuild_stokes_matrix,
                                                      internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                      internal::Assembly::CopyData::StokesSystem<dim> &data,
@@ -1176,31 +1153,18 @@ namespace aspect
             {
               for (unsigned int k=0; k<dofs_per_cell; ++k)
                 {
-                  scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
                   scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-                  if (rebuild_stokes_matrix)
-                    {
-                      scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                      scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
-                    }
                 }
-
-              // Viscosity scalar
-              const double eta = (rebuild_stokes_matrix
-                                  ?
-                                  scratch.material_model_outputs.viscosities[q]
-                                  :
-                                  std::numeric_limits<double>::quiet_NaN());
-
-              const SymmetricTensor<4,dim> &stress_strain_director =
-                scratch.material_model_outputs.stress_strain_directors[q];
-              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
 
               const Tensor<1,dim>
               gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
               const double compressibility
                 = scratch.material_model_outputs.compressibilities[q];
+
+              const double density = scratch.mass_densities.size()>0 ?
+                                     scratch.mass_densities[q]
+                                     : scratch.material_model_outputs.densities[q];
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
@@ -1209,7 +1173,7 @@ namespace aspect
                                        // is because we negate the entire equation to make sure we get
                                        // -div(u) as the adjoint operator of grad(p)
                                        (pressure_scaling *
-                                        compressibility * scratch.mass_densities[q] *
+                                        compressibility * density *
                                         (scratch.velocity_values[q] * gravity) *
                                         scratch.phi_p[i])
                                      )
@@ -2366,11 +2330,8 @@ namespace aspect
       assemblers->local_assemble_stokes_preconditioner
       .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_preconditioner,
                                 std_cxx11::cref (*complete_equation_assembler),
-                              std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
+                                std_cxx11::_1, std_cxx11::_2, std_cxx11::_3));
 
-
-    if (material_model->is_compressible()
-        && parameters.formulation_mass != Parameters<dim>::FormulationType::incompressible)
     if (parameters.include_melt_transport)
       assemblers->local_assemble_stokes_system
       .connect (std_cxx11::bind(&aspect::Assemblers::MeltEquations<dim>::local_assemble_stokes_system_melt,
@@ -2380,25 +2341,49 @@ namespace aspect
                                 std_cxx11::_3,
                                 std_cxx11::_4,
                                 std_cxx11::_5));
-    else if (material_model->is_compressible())
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5,
-                                std_cxx11::cref (this->parameters)));
     else
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
+      {
+        assemblers->local_assemble_stokes_system
+        .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_incompressible,
+                                  std_cxx11::cref (*complete_equation_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3,
+                                  std_cxx11::_4,
+                                  std_cxx11::_5));
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_compressible_diffusion,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+
+        if (parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_mass_density_implicit,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+        else
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_mass_density_explicit,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+
+      }
+
 
     assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (complete_equation_assembler));
@@ -2574,6 +2559,33 @@ namespace aspect
         material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
 
+    if (parameters.formulation_buoyancy != Parameters<dim>::FormulationType::full)
+      {
+        Assert(parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic
+               ||
+               parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure,
+               ExcNotImplemented());
+
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        scratch.mass_densities.resize(n_q_points);
+        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+            if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic)
+              {
+                approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
+                approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+              }
+            else
+              {
+                approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
+                approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+              }
+          }
+
+        material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
+      }
 
 
     // trigger the invocation of the various functions that actually do
@@ -2769,6 +2781,8 @@ namespace aspect
 
         material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
+    else
+      scratch.mass_densities.resize(0);
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
