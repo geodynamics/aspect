@@ -349,9 +349,6 @@ namespace aspect
     triangulation.load(filename.c_str());
     sol_trans.deserialize (tmp_solution);
     old_solution = tmp_solution;
-
-    free(&tmp_solution);
-    free(&sol_trans);
   }
 
   template <int dim>
@@ -375,8 +372,6 @@ namespace aspect
     old_time_step = input_fields.old_time_step;
 
     input_stream.close();
-    free(&ia);
-    free(&input_fields);
   }
 
   template <int dim>
@@ -396,8 +391,6 @@ namespace aspect
     old_time_step = input_fields.old_time_step;
     time_step = input_fields.time_step;
     input_stream.close();
-    free(&ia);
-    free(&input_fields);
   }
 }
 
