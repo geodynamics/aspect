@@ -638,8 +638,10 @@ namespace aspect
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
                            "options are 1 or 2. The recommended setting is 2. (This parameter does "
                            "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT. Rather, the paper always uses "
-                           "2 as the exponent in the definition of the entropy, following eq. (15).)."
+                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Rather, the paper always uses 2 as the exponent in the definition "
+                           "of the entropy, following equation (15) of the paper. The full "
+                           "approach is discussed in \\cite{GPP11}.) "
                            "Units: None.");
         prm.declare_entry ("cR", "0.33",
                            Patterns::Double (0),
