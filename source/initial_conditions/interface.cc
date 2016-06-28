@@ -105,9 +105,25 @@ namespace aspect
                   ExcMessage("You need to select initial conditions for the temperature "
                              "('set Model name' in 'subsection Initial conditions')."));
 
+      return create_initial_conditions<dim> (model_name);
+    }
+
+
+    template <int dim>
+    Interface<dim> *
+    create_initial_conditions(const std::string &model_name)
+    {
       Interface<dim> *plugin = std_cxx11::get<dim>(registered_plugins).create_plugin (model_name,
                                                                                       "Initial conditions::Model name");
       return plugin;
+    }
+
+
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
 
@@ -120,7 +136,7 @@ namespace aspect
       prm.enter_subsection ("Initial conditions");
       {
         const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          = get_valid_model_names_pattern<dim> ();
         prm.declare_entry ("Model name", "unspecified",
                            Patterns::Selection (pattern_of_names+"|unspecified"),
                            "Select one of the following models:\n\n"
@@ -168,7 +184,15 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_initial_conditions<dim> (ParameterHandler &prm);
+  create_initial_conditions<dim> (ParameterHandler &prm); \
+  \
+  template \
+  Interface<dim> * \
+  create_initial_conditions(const std::string &model_name); \
+  \
+  template \
+  std::string \
+  get_valid_model_names_pattern<dim> ();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
   }
