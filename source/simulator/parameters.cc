@@ -311,7 +311,7 @@ namespace aspect
                          "");
 
       prm.declare_entry ("Buoyancy density approximation", "full",
-                         Patterns::Selection ("full|adiabatic pressure|adiabatic"),
+                         Patterns::Selection ("full|adiabatic pressure"),
                          "");
       prm.declare_entry ("Mass density approximation", "full",
                          Patterns::Selection ("full|adiabatic|implicit adiabatic|incompressible"),
@@ -938,7 +938,7 @@ namespace aspect
         }
       else if (formulation == "BA")
         {
-          formulation_buoyancy = FormulationType::adiabatic;
+          formulation_buoyancy = FormulationType::adiabatic_pressure;
           formulation_mass = FormulationType::incompressible;
           formulation_temperature = FormulationType::adiabatic;
 
@@ -950,7 +950,7 @@ namespace aspect
         {
           formulation_temperature = FormulationType::adiabatic;
           formulation_mass = FormulationType::incompressible;
-          formulation_buoyancy = FormulationType::adiabatic;
+          formulation_buoyancy = FormulationType::adiabatic_pressure;
 
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true

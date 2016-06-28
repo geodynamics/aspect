@@ -2559,33 +2559,24 @@ namespace aspect
         material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
 
-    if (parameters.formulation_buoyancy != Parameters<dim>::FormulationType::full)
+    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
       {
-        Assert(parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic
-               ||
-               parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure,
-               ExcNotImplemented());
-
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         scratch.mass_densities.resize(n_q_points);
         MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
         for (unsigned int q=0; q<n_q_points; ++q)
           {
             approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic)
-              {
-                approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
-                approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-              }
-            else
-              {
-                approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
-                approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-              }
+            approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
+            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
           }
 
         material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
       }
+    else if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
+      {}
+    else
+      Assert(false, ExcNotImplemented());
 
 
     // trigger the invocation of the various functions that actually do
