@@ -170,11 +170,10 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = custom
+  set Formulation = BA # custom
   set Mass density approximation        = incompressible#implicit adiabatic
   set Temperature density approximation = adiabatic
   set Buoyancy density approximation    = adiabatic
-  #set Strain rate approximation = incompressible
 end
 
 subsection Gravity model
