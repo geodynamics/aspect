@@ -302,6 +302,11 @@ namespace aspect
                        "The relative tolerance up to which the linear system for "
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
+    prm.declare_entry ("Temperature dependency", "true",
+                       Patterns::Bool (),
+                       "Whether the model problem is dependent on the time dependent "
+                       "temperatue. In other words, it determines whether we need to "
+                       "solve the time dependent temperature equation.");
 
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
@@ -873,6 +878,7 @@ namespace aspect
     n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
     temperature_solver_tolerance    = prm.get_double ("Temperature solver tolerance");
     composition_solver_tolerance    = prm.get_double ("Composition solver tolerance");
+    temperature_dependency          = prm.get_bool("Temperature dependency");
 
     prm.enter_subsection ("Mesh refinement");
     {
