@@ -1148,9 +1148,7 @@ namespace aspect
               const double compressibility
                 = scratch.material_model_outputs.compressibilities[q];
 
-              const double density = scratch.mass_densities.size()>0 ?
-                                     scratch.mass_densities[q]
-                                     : scratch.material_model_outputs.densities[q];
+              const double density = scratch.mass_densities[q];
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
@@ -2551,6 +2549,8 @@ namespace aspect
 
         material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
+    else
+      scratch.mass_densities = scratch.material_model_outputs.densities;
 
     if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
       {
@@ -2766,7 +2766,28 @@ namespace aspect
         material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
     else
-      scratch.mass_densities.resize(0);
+      scratch.mass_densities = scratch.material_model_outputs.densities;
+
+    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
+      {
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        scratch.mass_densities.resize(n_q_points);
+        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+            approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
+            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+          }
+
+        material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
+      }
+    else if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
+      {
+        // scratch.material_model_outputs.densities is already the full density
+      }
+    else
+      Assert(false, ExcNotImplemented());
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
