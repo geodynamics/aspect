@@ -602,6 +602,9 @@ namespace aspect
         const Tensor<1,dim> velocity = (scratch.old_velocity_values[q] +
                                         scratch.old_old_velocity_values[q]) / 2;
 
+        const double strain_rate = ((scratch.old_strain_rates[q]
+                                     + scratch.old_old_strain_rates[q]) / 2).norm();
+
         if (parameters.stabilization_alpha == 2)
           {
             const double field = (scratch.old_field_values[q] + scratch.old_old_field_values[q]) / 2;
@@ -609,7 +612,9 @@ namespace aspect
           }
 
         max_residual = std::max (residual[q],     max_residual);
-        max_velocity = std::max (std::sqrt (velocity*velocity), max_velocity);
+        max_velocity = std::max (velocity.norm()
+                                 + parameters.stabilization_gamma * strain_rate * cell_diameter,
+                                 max_velocity);
 
         if (advection_field.is_temperature())
           {
