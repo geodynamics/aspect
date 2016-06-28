@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> Changed: the default for "Initial adaptive refinement" cycles is
+ * now 0.
+ * <br>
+ * (Timo Heister, 2016/06/28)
+ *
  * <li> New: There is a new parameter gamma in the entropy viscosity 
  * stabilization that allows to scale the stabilization with the strain rate 
  * (in addition to the velocity).
