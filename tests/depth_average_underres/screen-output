@@ -10,13 +10,13 @@ Number of degrees of freedom: 84 (50+9+25)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
-	Warning: No quadrature points found in at least one depth block.Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
      Writing depth average: output-depth_average_underres/depth_average.gnuplot
 
 Termination requested by criterion: end time
