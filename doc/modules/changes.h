@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ *
+ * <li> New: There is now a postprocessor that outputs the heatflux
+ * density at each boundary face into a text file and a 
+ * postprocessor that outputs the heatflux density at each boundary
+ * face for visualization.
+ * <br>
+ * (Jacky Austermann, 2016/06/28)
+ *     
  * <li> New: There is a new function Utilities::real_spherical_harmonic
  * which calculates the values of a fully normalized real spherical harmonic.
  * <br>
