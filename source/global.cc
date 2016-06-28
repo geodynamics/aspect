@@ -157,8 +157,6 @@ void print_aspect_header(Stream &stream)
   if (n_threads>1)
     stream << "--     . using " << n_threads << " threads " << (n_tasks == 1 ? "\n" : "each\n");
 
-  stream << "-- How to cite ASPECT: https://aspect.geodynamics.org/cite.html\n";
-
   stream << "-----------------------------------------------------------------------------\n"
          << std::endl;
 }

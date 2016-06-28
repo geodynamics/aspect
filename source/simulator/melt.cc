@@ -22,6 +22,7 @@
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/citation_info.h>
 #include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_tools.h>
@@ -1816,6 +1817,7 @@ namespace aspect
     :
     boundary_fluid_pressure(BoundaryFluidPressure::create_boundary_fluid_pressure<dim>(prm))
   {
+    CitationInfo::add("melt");
     melt_parameters.parse_parameters(prm);
     boundary_fluid_pressure->parse_parameters(prm);
   }

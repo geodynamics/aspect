@@ -25,6 +25,7 @@
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 #include <aspect/free_surface.h>
+#include <aspect/citation_info.h>
 #ifdef ASPECT_USE_WORLD_BUILDER
 #include <world_builder/world.h>
 #endif
@@ -439,6 +440,11 @@ namespace aspect
 
     // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
+
+    if (parameters.use_discontinuous_temperature_discretization || parameters.use_discontinuous_composition_discretization)
+      CitationInfo::add("dg");
+
+    CitationInfo::print_info_block(pcout);
 
     // now that all member variables have been set up, also
     // connect the functions that will actually do the assembly
@@ -1707,6 +1713,8 @@ namespace aspect
     // we disable automatic summary printing so that it won't happen when
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
+
+    CitationInfo::print_info_block (pcout);
   }
 }
 
