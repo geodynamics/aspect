@@ -314,7 +314,7 @@ namespace aspect
                          Patterns::Selection ("full|adiabatic pressure"),
                          "");
       prm.declare_entry ("Mass density approximation", "full",
-                         Patterns::Selection ("full|adiabatic|implicit adiabatic|incompressible"),
+                         Patterns::Selection ("full|adiabatic|implicit adiabatic|incompressible|ask material model"),
                          "");
       prm.declare_entry ("Temperature density approximation", "full",
                          Patterns::Selection ("full|adiabatic"),
@@ -933,7 +933,7 @@ namespace aspect
       if (formulation == "full")
         {
           formulation_buoyancy = FormulationType::full;
-          formulation_mass = FormulationType::full;
+          formulation_mass = FormulationType::ask_material_model;
           formulation_temperature = FormulationType::full;
         }
       else if (formulation == "BA")

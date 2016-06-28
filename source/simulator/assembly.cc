@@ -2337,6 +2337,7 @@ namespace aspect
                                   std_cxx11::_3,
                                   std_cxx11::_4,
                                   std_cxx11::_5));
+
         if (material_model->is_compressible())
           assemblers->local_assemble_stokes_system
           .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_compressible_diffusion,
@@ -2357,6 +2358,12 @@ namespace aspect
                                     std_cxx11::_4,
                                     std_cxx11::_5,
                                     std_cxx11::cref (this->parameters)));
+        else if (parameters.formulation_mass == Parameters<dim>::FormulationType::incompressible
+                 || (parameters.formulation_mass == Parameters<dim>::FormulationType::ask_material_model
+                     && !material_model->is_compressible()))
+          {
+            // do nothing, because we assembled div u =0 above already
+          }
         else
           assemblers->local_assemble_stokes_system
           .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_mass_density_explicit,

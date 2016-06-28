@@ -196,7 +196,7 @@ namespace aspect
       enum Kind
       {
         full, adiabatic_pressure, adiabatic, implicit_adiabatic,
-        incompressible
+        incompressible, ask_material_model
       };
       static Kind parse(const std::string &input)
       {
@@ -210,6 +210,8 @@ namespace aspect
           return FormulationType::implicit_adiabatic;
         else if (input == "incompressible")
           return FormulationType::incompressible;
+        else if (input == "ask material model")
+          return FormulationType::ask_material_model;
         else
           AssertThrow(false, ExcNotImplemented());
         return FormulationType::full;
