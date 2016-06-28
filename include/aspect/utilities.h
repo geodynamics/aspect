@@ -97,8 +97,8 @@ namespace aspect
      * There are an unfortunate number of normalization conventions in existence
      * for spherical harmonics. Here we use fully normalized spherical harmonics
      * including the Condon-Shortley phase. This corresponds to the definitions
-     * given in equations B.72 and B.99-B.102 in Dahlen and Tromp. The functional
-     * form of the real spherical harmonic is given by
+     * given in equations B.72 and B.99-B.102 in Dahlen and Tromp (1998, ISBN: 9780691001241).
+     * The functional form of the real spherical harmonic is given by
      *
      * \f[
      *    Y_{lm}(\theta, \phi) = \sqrt{2} X_{l \left| m \right| }(\theta) \cos m \phi \qquad \mathrm{if} \qquad -l \le m < 0
