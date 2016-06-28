@@ -1008,7 +1008,7 @@ namespace aspect
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
                     data.local_matrix(i,j) += (
-                                                // first assemble the symmetric e(u), e(v) term:
+                                                // first assemble the symmetric e(u) : e(v) term:
                                                 (use_tensor ?
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                                  :
@@ -1117,20 +1117,6 @@ namespace aspect
                                                    * scratch.phi_p[i])
                                               )
                                               * scratch.finite_element_values.JxW(q);
-
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                data.local_rhs(i) += (
-                                       // add the term that results from the compressibility. compared
-                                       // to the manual, this term seems to have the wrong sign, but this
-                                       // is because we negate the entire equation to make sure we get
-                                       // -div(u) as the adjoint operator of grad(p) (see above where
-                                       // we assemble the matrix)
-                                       (pressure_scaling *
-                                        compressibility * mass_density *
-                                        (scratch.velocity_values[q] * gravity) *
-                                        scratch.phi_p[i])
-                                     )
-                                     * scratch.finite_element_values.JxW(q);
             }
 
         }
