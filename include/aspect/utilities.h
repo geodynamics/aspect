@@ -514,27 +514,27 @@ namespace aspect
     };
 
 
-      /*
-       * Struct containing time sensitive data for the nonlinear solver kind, "Binary_input"
-       */
+    /*
+     * Struct containing time sensitive data for the nonlinear solver kind, "Binary_input"
+     */
 
-      struct BinaryInputFields
-      {
-          double time;
-          double time_step;
-          double old_time_step;
-          unsigned int timestep_number;
+    struct BinaryInputFields
+    {
+        double time;
+        double time_step;
+        double old_time_step;
+        unsigned int timestep_number;
 
       public:
-          template <class Archive>
-          void serialize(Archive &ar, const unsigned int version=2)
-          {
-              ar &time;
-              ar &time_step;
-              ar &old_time_step;
-              ar &timestep_number;
-          }
-      };
+        template <class Archive>
+        void serialize(Archive &ar, const unsigned int version=2)
+        {
+          ar &time;
+          ar &time_step;
+          ar &old_time_step;
+          ar &timestep_number;
+        }
+    };
   }
 }
 
