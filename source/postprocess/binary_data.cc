@@ -38,6 +38,9 @@ namespace aspect
     template <int dim>
     std::pair<std::string, std::string> BinaryData<dim>::execute(TableHandler &statistics)
     {
+      AssertThrow(this->get_parameters().nonlinear_solver != Parameters::NonlinearSolver::Kind::iterated_Stokes,
+                  ExcMessage(std::string("The binary data postprocessor does not support the nonlinear solver iterated Stokes")));
+
       if (my_id == 0)
         {
           this->update_time();
