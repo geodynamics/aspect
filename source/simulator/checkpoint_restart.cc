@@ -431,7 +431,10 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::create_snapshot(); \
-  template void Simulator<dim>::resume_from_snapshot();
+  template void Simulator<dim>::resume_from_snapshot(); \
+  template void Simulator<dim>::init_load_binary_solution(); \
+  template void Simulator<dim>::init_time_input(); \
+  template void Simulator<dim>::update_time_input();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

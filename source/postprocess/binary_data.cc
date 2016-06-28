@@ -1,4 +1,5 @@
 #include <aspect/postprocess/binary_data.h>
+#include <aspect/parameters.h>
 #include <deal.II/distributed/solution_transfer.h>
 #include <deal.II/lac/block_vector.h>
 
@@ -41,8 +42,6 @@ namespace aspect
         {
           this->update_time();
 
-          //std::ofstream ofs(this->get_output_directory() + "/" + filename_prefix +
-          //                  Utilities::int_to_string(this->get_timestep_number(), 5) + ".time");
           std::ofstream ofs(this->get_output_directory() + "fields-" +
                             Utilities::int_to_string(this->get_timestep_number(), 5) + ".bin");
           boost::archive::binary_oarchive oa(ofs);
@@ -50,16 +49,14 @@ namespace aspect
           ofs.close();
         }
 
-      std::string fileName = this->get_output_directory() + "/" + filename_prefix + Utilities::int_to_string(this->get_timestep_number(), 5) + ".mesh";
+      std::string file_name = this->get_output_directory() + "/" + filename_prefix + Utilities::int_to_string(this->get_timestep_number(), 5) + ".mesh";
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(this->get_dof_handler());
       sol_trans.prepare_serialization (this->get_solution());
-      this->get_triangulation().save(fileName.c_str());
+      this->get_triangulation().save(file_name.c_str());
 
-      /*           std::ofstream output (this->get_output_directory() + "solution-" + Utilities::int_to_string(this->get_timestep_number(), 5) + ".txt");
-                 dealii::BlockVector<double> solution(this->get_solution());
-                 solution.block_write(output);
-      */
-      return std::make_pair("Writing binary output to: ", fileName);
+      statistics.add_value("Binary output file name", file_name);
+
+      return std::make_pair("Writing binary output to: ", file_name);
     }
 
     template <int dim>
