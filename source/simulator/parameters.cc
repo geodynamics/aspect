@@ -501,7 +501,7 @@ namespace aspect
                          "The number of global refinement steps performed on "
                          "the initial coarse mesh, before the problem is first "
                          "solved there.");
-      prm.declare_entry ("Initial adaptive refinement", "2",
+      prm.declare_entry ("Initial adaptive refinement", "0",
                          Patterns::Integer (0),
                          "The number of adaptive refinement steps performed after "
                          "initial global refinement but while still within the first "
