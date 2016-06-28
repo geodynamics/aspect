@@ -43,6 +43,30 @@
 
 namespace aspect
 {
+  namespace
+  {
+    /* These functions implement a reduced form of the code from deal.II's TriaAccessor::measure().
+     * In the 3d dG case, a call to face->measure() is not implemented for non-planar faces.
+     * Since we only care about the scaling here, it is enough to have an approximation instead.
+     * The 2d case remains unchanged.
+     */
+    double
+    approximate_face_measure(const DoFHandler<2>::face_iterator &face)
+    {
+      return (face->vertex(0)-face->vertex(1)).norm();
+    }
+
+    double
+    approximate_face_measure(const DoFHandler<3>::face_iterator &face)
+    {
+      const Tensor<1,3> v03 = face->vertex(3) - face->vertex(0);
+      const Tensor<1,3> v12 = face->vertex(2) - face->vertex(1);
+      const Tensor<1,3> twice_area = cross_product_3d(v03, v12);
+      return 0.5 * twice_area.norm();
+    }
+  }
+
+
   namespace internal
   {
     namespace Assembly
@@ -1388,7 +1412,7 @@ namespace aspect
                                           parameters.discontinuous_penalty
                                           * parameters.temperature_degree
                                           * parameters.temperature_degree
-                                          / face->measure()
+                                          / approximate_face_measure(face)
                                           * conductivity
                                           / (density_c_P + latent_heat_LHS)
                                           :
@@ -1613,7 +1637,7 @@ namespace aspect
                                               parameters.discontinuous_penalty
                                               * parameters.temperature_degree
                                               * parameters.temperature_degree
-                                              / face->measure()
+                                              / approximate_face_measure(face)
                                               * conductivity
                                               / (density_c_P + latent_heat_LHS)
                                               :
@@ -1657,7 +1681,7 @@ namespace aspect
                                                        parameters.discontinuous_penalty
                                                        * parameters.temperature_degree
                                                        * parameters.temperature_degree
-                                                       / neighbor->face(neighbor2)->measure()
+                                                       / approximate_face_measure(neighbor->face(neighbor2))
                                                        * neighbor_conductivity
                                                        / (neighbor_density_c_P + neighbor_latent_heat_LHS)
                                                        :
@@ -1931,7 +1955,7 @@ namespace aspect
                                               parameters.discontinuous_penalty
                                               * parameters.temperature_degree
                                               * parameters.temperature_degree
-                                              / face->measure()
+                                              / approximate_face_measure(face)
                                               * conductivity
                                               / (density_c_P + latent_heat_LHS)
                                               :
@@ -1975,7 +1999,7 @@ namespace aspect
                                                        parameters.discontinuous_penalty
                                                        * parameters.temperature_degree
                                                        * parameters.temperature_degree
-                                                       / neighbor_child->face(neighbor2)->measure()
+                                                       / approximate_face_measure(neighbor_child->face(neighbor2))
                                                        * neighbor_conductivity
                                                        / (neighbor_density_c_P + neighbor_latent_heat_LHS)
                                                        :
