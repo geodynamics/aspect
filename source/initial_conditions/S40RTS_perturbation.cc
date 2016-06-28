@@ -158,8 +158,8 @@ namespace aspect
     void
     S40RTSPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup.reset(new internal::S40RTS::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
+      spline_depths_lookup.reset(new internal::S40RTS::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
     }
 
     // NOTE: this module uses the Boost spherical harmonics package which is not designed
@@ -360,9 +360,11 @@ namespace aspect
       {
         prm.enter_subsection("S40RTS perturbation");
         {
-          datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                       "$ASPECT_SOURCE_DIR",
-                                                       ASPECT_SOURCE_DIR);
+          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                        "$ASPECT_SOURCE_DIR",
+                                                        ASPECT_SOURCE_DIR);
+          if ((data_directory.size() > 0) && (data_directory[data_directory.size()-1] != '/'))
+            data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
           vs_to_density           = prm.get_double ("Vs to density scaling");
