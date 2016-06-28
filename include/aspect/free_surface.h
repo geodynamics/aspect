@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__freesurface_h
-#define __aspect__freesurface_h
+#ifndef __aspect__free_surface_h
+#define __aspect__free_surface_h
 
 #include <aspect/simulator.h>
 
