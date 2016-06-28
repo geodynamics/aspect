@@ -1,3 +1,9 @@
+#!/bin/bash
+
+# run this script from the doc directory to update parameters.tex. Note that
+# you need an in-source build or a symbolic link to the ASPECT binary in the
+# main directory.
+
 cd ..
 rm -f output/parameters.tex
 ./aspect doc/manual/empty.prm >/dev/null 2>/dev/null
