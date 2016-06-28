@@ -155,7 +155,11 @@ namespace aspect
                 const double dynamic_topography_cell_average = dynamic_topography_x_volume / volume;
                 // Compute the associated surface area to later compute the surfaces weighted integral
                 fe_face_values.reinit(cell, top_face_idx);
-                const double surface = fe_face_values.JxW(0);
+                double surface = 0;
+                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                  {
+                    surface += fe_face_values.JxW(q);
+                  }
 
                 integrated_topography += dynamic_topography_cell_average*surface;
                 integrated_surface_area += surface;
