@@ -28,6 +28,7 @@ _detailed(
 "###
 #
 #  ASPECT configuration:
+#        ASPECT_VERSION:            ${ASPECT_PACKAGE_VERSION}
 #        DEAL_II_DIR:               ${deal.II_DIR}
 #        DEAL_II VERSION:           ${DEAL_II_PACKAGE_VERSION}
 #        ASPECT_USE_PETSC:          ${ASPECT_USE_PETSC}
