@@ -86,7 +86,7 @@ namespace aspect
         /**
          * File directory and names
          */
-        std::string datadirectory;
+        std::string data_directory;
         std::string spline_depth_file_name;
 
         /**

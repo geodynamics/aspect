@@ -159,8 +159,8 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
+      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
     }
 
     template <>
@@ -350,9 +350,11 @@ namespace aspect
       {
         prm.enter_subsection("SAVANI perturbation");
         {
-          datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                       "$ASPECT_SOURCE_DIR",
-                                                       ASPECT_SOURCE_DIR);
+          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
+                                                        "$ASPECT_SOURCE_DIR",
+                                                        ASPECT_SOURCE_DIR);
+          if ((data_directory.size() > 0) && (data_directory[data_directory.size()-1] != '/'))
+            data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
           vs_to_density           = prm.get_double ("Vs to density scaling");
