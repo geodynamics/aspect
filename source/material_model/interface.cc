@@ -655,6 +655,8 @@ namespace aspect
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.specific_heat);
         average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.thermal_conductivities);
+        average_property (operation, projection_matrix, expansion_matrix,
                           values_out.compressibilities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.entropy_derivative_pressure);
