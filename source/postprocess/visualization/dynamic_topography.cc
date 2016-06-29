@@ -128,7 +128,6 @@ namespace aspect
 
                 // Compute the integral of the dynamic topography function
                 // over the entire cell, by looping over all quadrature points
-                // (currently, there is only one, but the code is generic).
                 for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                   {
                     const Point<dim> location = fe_values.quadrature_point(q);
