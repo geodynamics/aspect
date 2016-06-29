@@ -158,7 +158,7 @@ namespace aspect
     {
       // If we do not write output
       // return early with the number of particles that were advected
-      if (!output)
+      if (output.empty())
         return "";
 
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Output");
@@ -166,11 +166,28 @@ namespace aspect
                                   this->get_time() / year_in_seconds :
                                   this->get_time());
 
-      const std::string filename = output->output_particle_data(particles,
-                                                                property_manager->get_data_info(),
-                                                                output_time);
+      std::vector<std::string> output_suffixes;
 
-      return filename;
+      const std::string output_directory = output[0].get()->get_particle_output_location();
+      const std::string file_index = output[0].get()->get_file_index();
+
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++)
+        {
+          output_suffixes.push_back(itr->get()->output_particle_data(particles,
+                                                                     property_manager->get_data_info(),
+                                                                     output_time));
+        }
+
+      std::string output_formats;
+      for ( std::vector<std::string>::const_iterator itr = output_suffixes.begin(); itr != output_suffixes.end(); itr++)
+        output_formats += *itr + ",";
+      // Remove tailing comma.
+      output_formats = output_formats.substr(0, output_formats.size()-1);
+
+      if (output_suffixes.size() > 1)
+        return output_directory + "particles-" + file_index + ".{" + output_formats + "}";
+      else
+        return output_directory + "particles-" + file_index + "." +  output_formats;
     }
 
     template <int dim>
@@ -1443,7 +1460,16 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
-      output->save(os);
+
+      // let all the particle output plugins save their data in a map and then
+      // serialize that
+      std::map<std::string,std::string> saved_text;
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin();
+            itr != output.end();
+            itr++)
+        itr->get()->save(saved_text);
+
+      oa &saved_text;
     }
 
     template <int dim>
@@ -1452,7 +1478,14 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
-      output->load(is);
+      // get the map back out of the stream; then let the multiple particle output
+      // plugins get their data from there.
+      std::map<std::string,std::string> saved_text;
+      ia &saved_text;
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin();
+            itr != output.end();
+            itr++)
+        itr->get()->load (saved_text);
     }
 
     template <int dim>
@@ -1537,6 +1570,10 @@ namespace aspect
       const double CFL_number = prm.get_double ("CFL number");
       const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
+      // The variable will contain the user specified output formats that
+      // the particle data will be outputted as.
+      std::vector<std::string> output_format_names;
+
       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
                   ExcMessage("The current particle algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
@@ -1592,6 +1629,7 @@ namespace aspect
                                        "are listed in the corresponding manual subsection."));
             }
 
+          output_format_names = Utilities::split_string_list(prm.get ("Data output format"));
         }
         prm.leave_subsection ();
       }
@@ -1606,18 +1644,32 @@ namespace aspect
       generator->parse_parameters(prm);
       generator->initialize();
 
-      // Create an output object depending on what the parameters specify
-      output.reset(Output::create_particle_output<dim>
-                   (prm));
+      // Remove duplicate output formats specified in the parameter file.
+      output_format_names.erase(std::unique(output_format_names.begin(), output_format_names.end()),
+                                output_format_names.end());
 
-      // We allow to not generate any output plugin, in which case output is
-      // a null pointer. Only initialize output if it was created.
-      if (output)
+      // Create an output object depending on what the parameters specify so long as none has not been specified.
+      // If none and more than one other format is specified, then we ignore none.
+      AssertThrow ((std::find (output_format_names.begin(),
+                               output_format_names.end(),
+                               "none") == output_format_names.end())
+                   ||
+                   (output_format_names.size() == 1),
+                   ExcMessage ("If you specify 'none' for the output format for parameter \"Data output format\","
+                               "then this needs to be the only value given."));
+
+      if (output_format_names.size() != 1 || output_format_names[0] != "none")
+        for (std::vector<std::string>::const_iterator itr = output_format_names.begin();
+             itr != output_format_names.end(); itr++)
+          output.push_back(std_cxx11::shared_ptr<Output::Interface<dim> >
+                           (Output::create_particle_output<dim>(*itr)));
+
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::iterator itr = output.begin(); itr != output.end(); itr++)
         {
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
-            sim->initialize_simulator (this->get_simulator());
-          output->parse_parameters(prm);
-          output->initialize();
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(itr->get()))
+            sim->initialize_simulator(this->get_simulator());
+          itr->get()->parse_parameters(prm);
+          itr->get()->initialize();
         }
 
       // Create an integrator object depending on the specified parameter

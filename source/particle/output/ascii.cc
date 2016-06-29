@@ -29,14 +29,9 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      ASCIIOutput<dim>::ASCIIOutput()
-        :
-        file_index(0)
-      {}
-
-      template <int dim>
       void ASCIIOutput<dim>::initialize ()
       {
+        this->output_file_suffix = "txt";
         aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
                                              this->get_mpi_communicator(),
                                              true);
@@ -48,16 +43,8 @@ namespace aspect
                                              const Property::ParticlePropertyInformation &property_information,
                                              const double /*time*/)
       {
-        const std::string output_file_prefix =
-          this->get_output_directory()
-          + "particles/"
-          + "particle-"
-          + Utilities::int_to_string (file_index, 5);
-        const std::string full_filename =
-          output_file_prefix
-          + "."
-          + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4)
-          + ".txt";
+        const std::string full_filename = this->get_particle_output_location ()
+                                          + this->get_file_name ();
 
         std::ofstream output (full_filename.c_str());
 
@@ -106,34 +93,43 @@ namespace aspect
             output << "\n";
           }
 
-        file_index++;
+        this->increment_file_index ();
 
-        return output_file_prefix;
+        return this->output_file_suffix;
       }
 
       template <int dim>
       template <class Archive>
-      void ASCIIOutput<dim>::serialize (Archive &ar, const unsigned int)
+      void ASCIIOutput<dim>::serialize (Archive &ar, const unsigned int version)
       {
         // invoke serialization of the base class
-        ar &file_index
-        ;
+        this->Interface<dim>::serialize(ar, version);
       }
 
       template <int dim>
       void
-      ASCIIOutput<dim>::save (std::ostringstream &os) const
+      ASCIIOutput<dim>::save (std::map<std::string, std::string> &status_strings) const
       {
+        std::ostringstream os;
         aspect::oarchive oa (os);
+
         oa << (*this);
+
+        status_strings["ASCIIOutput"] = os.str();
       }
 
       template <int dim>
       void
-      ASCIIOutput<dim>::load (std::istringstream &is)
+      ASCIIOutput<dim>::load (std::map<std::string, std::string> &status_strings)
       {
-        aspect::iarchive ia (is);
-        ia >> (*this);
+        // see if something was saved
+        if (status_strings.find("ASCIIOutput") != status_strings.end())
+          {
+            std::istringstream is (status_strings.find("ASCIIOutput")->second);
+            aspect::iarchive ia (is);
+
+            ia >> (*this);
+          }
       }
     }
   }

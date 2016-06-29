@@ -30,16 +30,11 @@ namespace aspect
     namespace Output
     {
       template <int dim>
-      VTUOutput<dim>::VTUOutput()
-        :
-        file_index(0)
-      {}
-
-      template <int dim>
       void VTUOutput<dim>::initialize ()
       {
-        aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
-                                             this->get_mpi_communicator(),
+        this->output_file_suffix = "vtu";
+        aspect::Utilities::create_directory (this->get_particle_output_location (),
+                                             Interface<dim>::get_mpi_communicator (),
                                              true);
       }
 
@@ -49,18 +44,9 @@ namespace aspect
                                            const Property::ParticlePropertyInformation &property_information,
                                            const double current_time)
       {
-        const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix = this->get_output_directory()
-                                               + "particles/"
-                                               + output_file_prefix;
-
-        const std::string filename = (output_file_prefix +
-                                      "." +
-                                      Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) +
-                                      ".vtu");
-        const std::string full_filename = this->get_output_directory()
-                                          + "particles/"
-                                          + filename;
+        const std::string output_file_prefix = "particles-" + this->get_file_index ();
+        const std::string full_filename = this->get_particle_output_location ()
+                                          + this->get_file_name ();
 
         std::ofstream output (full_filename.c_str());
         AssertThrow (output, ExcIO());
@@ -183,8 +169,7 @@ namespace aspect
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
             const std::string pvtu_filename = (output_file_prefix + ".pvtu");
-            const std::string full_pvtu_filename = this->get_output_directory()
-                                                   + "particles/"
+            const std::string full_pvtu_filename = this->get_particle_output_location ()
                                                    + pvtu_filename;
 
             std::ofstream pvtu_output (full_pvtu_filename.c_str());
@@ -225,7 +210,7 @@ namespace aspect
             // update the .pvd record for the entire simulation
             times_and_pvtu_file_names.push_back(std::make_pair(current_time,
                                                                "particles/"+pvtu_filename));
-            const std::string pvd_master_filename = (this->get_output_directory() + "particles.pvd");
+            const std::string pvd_master_filename = (this->get_output_directory () + "particles.pvd");
             std::ofstream pvd_master (pvd_master_filename.c_str());
 
             DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
@@ -234,8 +219,8 @@ namespace aspect
             // have to collect all files that together form this one time step
             std::vector<std::string> this_timestep_output_files;
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
-              this_timestep_output_files.push_back ("particles/" + output_file_prefix +
-                                                    "." + Utilities::int_to_string(i, 4) + ".vtu");
+              this_timestep_output_files.push_back ("particles/" +
+                                                    this->get_file_name ());
             times_and_vtu_file_names.push_back (std::make_pair (current_time,
                                                                 this_timestep_output_files));
 
@@ -243,36 +228,46 @@ namespace aspect
             std::ofstream visit_master (visit_master_filename.c_str());
             DataOutBase::write_visit_record (visit_master, times_and_vtu_file_names);
           }
-        file_index++;
+        this->increment_file_index ();
 
-        return output_path_prefix;
+        return this->output_file_suffix;
       }
 
       template <int dim>
       template <class Archive>
-      void VTUOutput<dim>::serialize (Archive &ar, const unsigned int)
+      void
+      VTUOutput<dim>::serialize (Archive &ar, const unsigned int version)
       {
         // invoke serialization of the base class
-        ar &file_index
-        & times_and_pvtu_file_names
-        & times_and_vtu_file_names
+        this->Interface<dim>::serialize(ar, version);
+        ar &times_and_pvtu_file_names
         ;
       }
 
       template <int dim>
       void
-      VTUOutput<dim>::save (std::ostringstream &os) const
+      VTUOutput<dim>::save (std::map<std::string, std::string> &status_strings) const
       {
+        std::ostringstream os;
         aspect::oarchive oa (os);
+
         oa << (*this);
+
+        status_strings["VTUOutput"] = os.str();
       }
 
       template <int dim>
       void
-      VTUOutput<dim>::load (std::istringstream &is)
+      VTUOutput<dim>::load (std::map<std::string, std::string> &status_strings)
       {
-        aspect::iarchive ia (is);
-        ia >> (*this);
+        // see if something was saved
+        if (status_strings.find("VTUOutput") != status_strings.end())
+          {
+            std::istringstream is (status_strings.find("VTUOutput")->second);
+            aspect::iarchive ia (is);
+
+            ia >> (*this);
+          }
       }
     }
   }

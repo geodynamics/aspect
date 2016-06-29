@@ -45,11 +45,8 @@ namespace aspect
 #endif
 
 #endif
-
       template <int dim>
       HDF5Output<dim>::HDF5Output()
-        :
-        file_index(0)
       {
 
 #ifndef DEAL_II_WITH_HDF5
@@ -65,6 +62,7 @@ namespace aspect
       template <int dim>
       void HDF5Output<dim>::initialize ()
       {
+        this->output_file_suffix = "h5";
         aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
                                              this->get_mpi_communicator(),
                                              true);
@@ -78,12 +76,8 @@ namespace aspect
       {
 #ifdef DEAL_II_WITH_HDF5
         // Create the filename
-        const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix =
-          this->get_output_directory()
-          + "particles/"
-          + output_file_prefix;
-        const std::string h5_filename = output_path_prefix+".h5";
+        const std::string h5_filename = this->get_particle_output_location ()
+                                        + this->get_file_name ();
 
         // Create the hdf5 output size information
         types::particle_index n_local_particles = particles.size();
@@ -258,10 +252,8 @@ namespace aspect
         // Record and output XDMF info on root process
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
-            const std::string local_h5_filename =
-              "particles/"
-              + output_file_prefix
-              + ".h5";
+            const std::string local_h5_filename = "particles/"
+                                                  + this->get_file_name ();
             XDMFEntry   entry(local_h5_filename, current_time, n_global_particles, 0, 3);
             DataOut<dim> data_out;
             const std::string xdmf_filename = (this->get_output_directory() + "particles.xdmf");
@@ -286,9 +278,9 @@ namespace aspect
             data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(), this->get_mpi_communicator());
           }
 
-        file_index++;
+        this->increment_file_index ();
 
-        return output_path_prefix;
+        return this->output_file_suffix;
 #else
         (void) property_information;
         (void) particles;
@@ -300,28 +292,48 @@ namespace aspect
 
       template <int dim>
       template <class Archive>
-      void HDF5Output<dim>::serialize (Archive &ar, const unsigned int)
+      void HDF5Output<dim>::serialize (Archive &ar, const unsigned int version)
       {
         // invoke serialization of the base class
-        ar &file_index
-        &xdmf_entries
+        this->Interface<dim>::serialize(ar, version);
+        ar &xdmf_entries
         ;
       }
 
       template <int dim>
       void
-      HDF5Output<dim>::save (std::ostringstream &os) const
+      HDF5Output<dim>::save (std::map<std::string, std::string> &status_strings) const
       {
+        std::ostringstream os;
         aspect::oarchive oa (os);
+
         oa << (*this);
+
+        status_strings["HDF5Output"] = os.str();
       }
 
       template <int dim>
       void
-      HDF5Output<dim>::load (std::istringstream &is)
+      HDF5Output<dim>::load (std::map<std::string, std::string> &status_strings)
       {
-        aspect::iarchive ia (is);
-        ia >> (*this);
+        // see if something was saved
+        if (status_strings.find("HDF5Output") != status_strings.end())
+          {
+            std::istringstream is (status_strings.find("HDF5Output")->second);
+            aspect::iarchive ia (is);
+
+            ia >> (*this);
+          }
+      }
+
+      template <int dim>
+      std::string
+      HDF5Output<dim>::get_file_name () const
+      {
+        return "particles-"
+               + Interface<dim>::get_file_index ()
+               + "."
+               + this->output_file_suffix;
       }
     }
   }

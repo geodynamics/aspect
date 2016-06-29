@@ -102,24 +102,21 @@ namespace aspect
         return std::make_pair("Number of advected particles:",
                               Utilities::int_to_string(world.n_global_particles()));
 
-
       if (world.get_property_manager().need_update() == Particle::Property::update_output_step)
         world.update_particles();
 
       set_last_output_time (this->get_time());
 
-      const std::string data_file_name = world.generate_output();
+      const std::string data_file_names = world.generate_output();
 
       // If we do not write output return early with the number of particles
       // that were advected
-      if (data_file_name == "")
+      if (data_file_names.empty())
         return std::make_pair("Number of advected particles:",
                               Utilities::int_to_string(world.n_global_particles()));
 
-      // record the file base file name in the output file
-      statistics.add_value ("Particle file name",
-                            this->get_output_directory() + data_file_name);
-      return std::make_pair("Writing particle output:", data_file_name);
+      statistics.add_value ("Particle file name(s)", data_file_names);
+      return std::make_pair("Writing particle output:", data_file_names);
     }
 
 

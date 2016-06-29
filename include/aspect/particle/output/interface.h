@@ -40,9 +40,16 @@ namespace aspect
        * @ingroup ParticleOutput
        */
       template <int dim>
-      class Interface
+      class Interface : public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          Interface ()
+            :
+            file_index (0) {}
+
           /**
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
@@ -75,7 +82,7 @@ namespace aspect
            * output writers do not need to know the units in which time is
            * described.
            *
-           * @return The name of the file that was written, or any other
+           * @return The name of the file extension that was written, or any other
            * information that describes what output was produced if for example
            * multiple files were created.
            */
@@ -86,26 +93,52 @@ namespace aspect
                                const double current_time) = 0;
 
           /**
+           * Returns the particle file name taking into account the file index as well as the mpi proccess.
+           */
+          virtual
+          std::string
+          get_file_name () const;
+
+          /**
+           * Get the absolute path where the specified particle output will be generated.
+           */
+          virtual
+          std::string
+          get_particle_output_location () const;
+
+          /**
+           * Get the current file index.
+           */
+          virtual
+          std::string
+          get_file_index () const;
+
+          /**
+           * Increment file index;
+           */
+          void
+          increment_file_index ();
+
+          /**
            * Read or write the data of this object for serialization
            */
           template <class Archive>
-          void serialize(Archive &ar, const unsigned int version);
+          void
+          serialize (Archive &ar, const unsigned int version);
 
           /**
-           * Save the state of the object. The default implementation assumes
-           * there is no state to save and does nothing.
+           * Save the state of the object.
            */
           virtual
           void
-          save (std::ostringstream &os) const;
+          save (std::map<std::string, std::string> &status_strings) const;
 
           /**
-           * Restore the state of the object. The default implementation assumes
-           * there is no state to restore and does nothing.
+           * Restore the state of the object.
            */
           virtual
           void
-          load (std::istringstream &is);
+          load (std::map<std::string, std::string> &status_strings);
 
           /**
            * Declare the parameters this class takes through input files. The
@@ -126,6 +159,18 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &);
+
+        protected:
+          /**
+           * Track the file suffix of a given particle output format.
+           */
+          std::string output_file_suffix;
+
+        private:
+          /**
+           * Internal index of file output number.
+           */
+          unsigned int file_index;
       };
 
 
@@ -163,7 +208,7 @@ namespace aspect
        */
       template <int dim>
       Interface<dim> *
-      create_particle_output (ParameterHandler &prm);
+      create_particle_output (const std::string &name);
 
       /**
        * Declare the runtime parameters of the registered particle outputs.
@@ -173,6 +218,14 @@ namespace aspect
       template <int dim>
       void
       declare_parameters (ParameterHandler &prm);
+
+      /**
+      * Return a list of names of all implemented output format models,
+      * separated by '|' so that it can be used in an object of type
+      * Patterns::Selection.
+      */
+      template <int dim>
+      std::string get_names ();
 
       /**
        * Given a class name, a name, and a description for the parameter file
