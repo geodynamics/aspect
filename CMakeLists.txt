@@ -95,7 +95,7 @@ FOREACH(_source_file ${TARGET_SRC})
 ENDFOREACH()
 
 
-
+# load in version info and export it
 FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
 
 INCLUDE(CMakePackageConfigHelpers)
