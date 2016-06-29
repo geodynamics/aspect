@@ -207,7 +207,7 @@ namespace aspect
         const double r = position.norm();
         const double theta = std::atan2(position[1],position[0]);
 
-        Assert(r < evaluation_radius,
+        Assert(r/evaluation_radius -1. <= 1.e-7 ,
                ExcMessage("Can't do an external multipole expansion with this radius") );
 
         if ( evaluation_radius > 0.)
@@ -232,7 +232,7 @@ namespace aspect
         const double phi = std::atan2(position[1],position[0]);
         const double theta = std::acos(position[2]/r);
 
-        Assert(r < evaluation_radius,
+        Assert(r/evaluation_radius -1. <= 1.e-7 ,
                ExcMessage("Can't do an external multipole expansion with this radius") );
 
         if ( evaluation_radius > 0.)
@@ -307,7 +307,7 @@ namespace aspect
         const double r = position.norm();
         const double theta = std::atan2(position[1],position[0]);
 
-        Assert(r > evaluation_radius,
+        Assert(r/evaluation_radius -1. >= -1.e-7 ,
                ExcMessage("Can't do an internal multipole expansion with this radius") );
 
         if ( r > 0. )
@@ -336,7 +336,7 @@ namespace aspect
         const double phi = std::atan2(position[1],position[0]);
         const double theta = std::acos(position[2]/r);
 
-        Assert(r > evaluation_radius,
+        Assert(r/evaluation_radius -1. >= -1.e-7 ,
                ExcMessage("Can't do an internal multipole expansion with this radius") );
 
         if ( r > 0. )
