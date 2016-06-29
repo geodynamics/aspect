@@ -33,6 +33,7 @@
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -436,6 +437,12 @@ namespace aspect
        */
       const GravityModel::Interface<dim> &
       get_gravity_model () const;
+
+      /**
+       * Return a pointer to the initial topography model.
+       */
+      const InitialTopographyModel::Interface<dim> &
+      get_initial_topography_model () const;
 
       /**
        * Return a pointer to the geometry model.

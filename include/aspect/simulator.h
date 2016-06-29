@@ -45,6 +45,7 @@
 #include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -1147,6 +1148,7 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
+      const std_cxx11::unique_ptr<InitialTopographyModel::Interface<dim> >    initial_topography_model;
       const std_cxx11::unique_ptr<GeometryModel::Interface<dim> >             geometry_model;
       const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
       const std_cxx11::unique_ptr<MaterialModel::Interface<dim> >             material_model;
