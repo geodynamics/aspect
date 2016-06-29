@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__traction_boundary_conditions_lithospheric_pressure_h
-#define __aspect__traction_boundary_conditions_lithospheric_pressure_h
+#ifndef __aspect__traction_boundary_conditions_initial_lithospheric_pressure_h
+#define __aspect__traction_boundary_conditions_initial_lithospheric_pressure_h
 
 #include <aspect/traction_boundary_conditions/interface.h>
 #include <aspect/simulator_access.h>
@@ -33,20 +33,21 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements traction boundary conditions based on a
-     * functional description provided in the input file.
+     * A class that implements traction boundary conditions by prescribing
+     * the lithostatic pressure as the normal traction component.
      *
      * @ingroup TractionBoundaryConditionsModels
      */
     template <int dim>
-    class LP : public Interface<dim>, public SimulatorAccess<dim>
+    class InitialLithostaticPressure : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
         /**
          * Initialization function. Because this function is called after
          * initializing the SimulatorAccess, all of the necessary information
-         * is available to calculate the pressure profile.
+         * is available to calculate the pressure profile based on the initial
+         * temperature and pressure conditions.
          */
         virtual void initialize ();
 
@@ -79,39 +80,32 @@ namespace aspect
 
       private:
 
-        std::set<types::boundary_id> traction_bi;
-
         /**
          * The number of integration points.
          */
         unsigned int n_points;
 
         /**
-         * Interval spacing between each two data points in the tables above
-         * with regard to the depth coordinate.
+         * Depth interval spacing between each two data points in the pressure profile.
          */
         double delta_z;
 
         /*
-         * The user-specified point where to calculate the pressure profile
+         * The user-specified point where to calculate the pressure profile.
+         * The vertical coordinate/radius is ignored.
          */
         Point<dim> representative_point;
 
         /**
-         * The lithostatic pressure profile.
+         * The computed lithostatic pressure profile.
          */
         std::vector<double> pressure;
 
         /**
-         * Return the lithostatic pressure at a given point of the domain.
+         * Return the lithostatic pressure at a given point of the domain
+         * based on depth interpolation between computed pressure values.
          */
-        double get_pressure (const Point<dim> &p) const;
-
-        /**
-         * Convert spherical coordinates to cartesian coordinates
-         * TODO: use Utilities spherical_coordinates function?
-         */
-        Point<dim> spherical_to_cart(const Point<dim >spherical_coord) const;
+        double interpolate_pressure (const Point<dim> &p) const;
 
 
     };

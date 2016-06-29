@@ -1,0 +1,45 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.5.0-pre
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 652 (375+27+125+125)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+4 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        1.43 m/year, 3.34 m/year
+     Pressure min/avg/max:     -4.865e+08 Pa, 3.262e+10 Pa, 8.994e+10 Pa
+     Writing graphical output: output-chunk_lithostatic_pressure_2d/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      3.29s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |     0.783s |        24% |
+| Assemble composition system     |         1 |     0.379s |        12% |
+| Assemble temperature system     |         1 |     0.392s |        12% |
+| Build Stokes preconditioner     |         1 |     0.309s |       9.4% |
+| Build composition preconditioner|         1 |  0.000765s |     0.023% |
+| Build temperature preconditioner|         1 |   0.00389s |      0.12% |
+| Solve Stokes system             |         1 |    0.0798s |       2.4% |
+| Solve composition system        |         1 |   0.00122s |     0.037% |
+| Solve temperature system        |         1 |   0.00123s |     0.037% |
+| Initialization                  |         1 |     0.133s |         4% |
+| Postprocessing                  |         1 |     0.175s |       5.3% |
+| Setup dof systems               |         1 |     0.492s |        15% |
+| Setup initial conditions        |         1 |     0.266s |       8.1% |
++---------------------------------+-----------+------------+------------+
+

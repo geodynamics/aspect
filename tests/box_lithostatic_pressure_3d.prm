@@ -1,25 +1,25 @@
-# this is a version of the stokes' law input file
-# but with less mesh refinement
+# This is a version of the stokes' law input file
+# that demonstrates a lithostatic pressure boundary
+# - "open boundary" - for a sinking sphere. 
 
 
 
 ############### Global parameters
-# We use a 2d setup. Since we are only interested
+# We use a 3d setup. Since we are only interested
 # in a steady state solution, we set the end time
 # equal to the start time to force a single time
 # step before the program terminates.
 
-set Dimension                              = 2
+set Dimension                              = 3
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Output directory                       = stokes_left_t0
 set Pressure normalization                 = surface
 
 
 
 ############### Parameters describing the model
-# The setup is a 2d box with edge length 2890000 in which
+# The setup is a 3d box with edge length 2890000 in which
 # all sides except the left have free slip boundary conditions. Because
 # the temperature plays no role in this model we need not
 # bother to describe temperature boundary conditions or
@@ -32,22 +32,21 @@ subsection Geometry model
   subsection Box
     set X extent  = 2890000
     set Y extent  = 2890000
+    set Z extent  = 2890000
   end
 end
 
 
 subsection Model settings
-  set Tangential velocity boundary indicators = 1,2,3
-  set Prescribed traction boundary indicators = 0: lithostatic pressure #, 1: lithostatic pressure
+  set Tangential velocity boundary indicators = 1,2,3,4,5
+  set Prescribed traction boundary indicators = 0: initial lithostatic pressure #, 1: initial lithostatic pressure
   set Remove nullspace                        = #linear x momentum
 end
 
-#############
-# The lithostatic pressure profile is calculated
-# at x = 10000, over 1000 integration points
+
 subsection Boundary traction model
   subsection Lithostatic pressure
-    set Representative point = 10000,0
+    set Representative point = 10000,10000,2890000
   end
   subsection Function
     set Variable names = x,z
@@ -98,7 +97,7 @@ end
 # function. The following blocks say that we want to
 # advect a single compositional field and that we give it an
 # initial value that is zero outside a sphere of radius
-# r=200000m and centered at the point (p,p) with
+# r=200000m and centered at the point (p,p,p) with
 # p=1445000 (which is half the diameter of the box) and one inside.
 # The last block re-opens the material model and sets the
 # density differential per unit change in compositional field to
@@ -112,9 +111,9 @@ subsection Compositional initial conditions
   set Model name = function
 
   subsection Function
-    set Variable names      = x,z
+    set Variable names      = x,y,z
     set Function constants  = r=2e5,p=1445e3
-    set Function expression = if(sqrt((x-p)*(x-p)+(z-p)*(z-p)) > r, 0, 1)
+    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)+(z-p)*(z-p)) > r, 0, 1)
   end
 end
 
@@ -130,10 +129,12 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 6
+  set Initial global refinement          = 3
   set Refinement fraction                = 0.0
   set Coarsening fraction                = 0.0
   set Strategy                           = composition
+  set Run postprocessors on initial refinement = true
+  set Time steps between mesh refinement       = 0
 end
 
 
@@ -144,14 +145,8 @@ end
 # temperature and the compositional fields) as well as the density and
 # viscosity. We also select to compute some statistics about the
 # velocity field.
-# The lithostatic pressure at the bottom boundary should be 
-# 2890000*9.81*3300 = 93557970000 (9.4e10).
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, basic statistics, velocity boundary statistics, boundary pressures
+  set List of postprocessors = velocity statistics, basic statistics, velocity boundary statistics, boundary pressures
 
-  subsection Visualization
-    set List of output variables = density, viscosity, strain rate, nonadiabatic pressure
-    set Time between graphical output = 0
-  end
 end
