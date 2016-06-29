@@ -1,0 +1,169 @@
+
+Loading shared library <./libshear_bands.so>
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
+
+*** Timestep 0:  t=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 5.12712e-25, 5070.52
+      Total relative nonlinear residual: 1
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.85412e-25, 151.787
+      Total relative nonlinear residual: 0.0299352
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.59772e-25, 93.2862
+      Total relative nonlinear residual: 0.0183978
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.55987e-25, 67.6632
+      Total relative nonlinear residual: 0.0133444
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.5562e-25, 50.9306
+      Total relative nonlinear residual: 0.0100444
+
+
+
+   Postprocessing:
+     Writing graphical output:  output-shear_bands/solution-00000
+     Compositions min/max/mass: 0.04952/0.05046/2e-07
+     RMS, max velocity:         289 m/year, 493 m/year
+
+*** Timestep 1:  t=3.06238e-08 years
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 9.36797e-12, 114.632
+      Total relative nonlinear residual: 0.000714511
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 2.76384e-12, 72.4415
+      Total relative nonlinear residual: 0.000451533
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 1.75195e-12, 62.8794
+      Total relative nonlinear residual: 0.000391932
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 1.5811e-12, 57.7565
+      Total relative nonlinear residual: 0.000360001
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 36 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 1.48441e-12, 53.864
+      Total relative nonlinear residual: 0.000335738
+
+
+
+   Postprocessing:
+     Writing graphical output:  output-shear_bands/solution-00001
+     Compositions min/max/mass: 0.04911/0.0508/2e-07
+     RMS, max velocity:         289 m/year, 493 m/year
+
+*** Timestep 2:  t=5e-08 years
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 3.47977e-12, 63.146
+      Total relative nonlinear residual: 0.000393432
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 1.18907e-12, 49.4201
+      Total relative nonlinear residual: 0.000307913
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 9.00504e-13, 39.4513
+      Total relative nonlinear residual: 0.000245802
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 6.94504e-13, 31.8081
+      Total relative nonlinear residual: 0.000198181
+
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 34 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+   Solving for u_f in 11 iterations.
+      Nonlinear residuals: 0, 5.3983e-13, 25.841
+      Total relative nonlinear residual: 0.000161003
+
+
+
+   Postprocessing:
+     Writing graphical output:  output-shear_bands/solution-00002
+     Compositions min/max/mass: 0.04866/0.05124/2e-07
+     RMS, max velocity:         289 m/year, 493 m/year
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

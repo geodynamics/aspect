@@ -664,6 +664,19 @@ namespace aspect
                            "different value than described there: It can be chosen as stated there for "
                            "uniformly refined meshes, but it needs to be chosen larger if the mesh has "
                            "cells that are not squares or cubes.) Units: None.");
+        prm.declare_entry ("gamma", "0.0",
+                           Patterns::Double (0),
+                           "The strain rate scaling factor in the artificial viscosity "
+                           "stabilization. This parameter determines how much the strain rate (in addition "
+                           "to the velocity) should influence the stabilization. (This parameter does "
+                           "not correspond to any variable in the 2012 GJI paper by Kronbichler, "
+                           "Heister and Bangerth that describes ASPECT. Rather, the paper always uses "
+                           "0, i.e. they specify the maximum dissipation $\\nu_h^\\text{max}$ as "
+                           "$\\nu_h^\\text{max}\\vert_K = \\alpha_\\text{max} h_K \\|\\mathbf u\\|_{\\infty,K}$. "
+                           "Here, we use "
+                           "$\\|\\lvert\\mathbf u\\rvert + \\gamma h_K \\lvert\\varepsilon (\\mathbf u)\\rvert\\|_{\\infty,K}$ "
+                           "instead of $\\|\\mathbf u\\|_{\\infty,K}$. "
+                           "Units: None.");
         prm.declare_entry ("Discontinuous penalty", "10",
                            Patterns::Double (0),
                            "The value used to penalize discontinuities in the discontinuous Galerkin "
@@ -993,6 +1006,7 @@ namespace aspect
         stabilization_alpha                 = prm.get_integer ("alpha");
         stabilization_c_R                   = prm.get_double ("cR");
         stabilization_beta                  = prm.get_double ("beta");
+        stabilization_gamma                 = prm.get_double ("gamma");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
         use_limiter_for_discontinuous_temperature_solution
           = prm.get_bool("Use limiter for discontinuous temperature solution");

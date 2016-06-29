@@ -248,6 +248,7 @@ namespace aspect
     unsigned int                   stabilization_alpha;
     double                         stabilization_c_R;
     double                         stabilization_beta;
+    double                         stabilization_gamma;
     double                         discontinuous_penalty;
     bool                           use_limiter_for_discontinuous_temperature_solution;
     bool                           use_limiter_for_discontinuous_composition_solution;
