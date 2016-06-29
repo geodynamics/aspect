@@ -187,8 +187,9 @@ namespace aspect
     //of a curved mesh, and a degree one MappingQ for a rectangular mesh.
     //If a free surface is enabled, this is swapped out for a MappingQ1Eulerian,
     //which allows for mesh deformation.
-    mapping( new MappingQ<dim>( geometry_model->has_curved_elements() ? 4 : 1,
-                                geometry_model->has_curved_elements() ? true : false ) ),
+    mapping( ( geometry_model->has_curved_elements() ?
+               static_cast<Mapping<dim> *>(new MappingQ<dim>(4, true) ) :
+               static_cast<Mapping<dim> *>(new MappingQ1<dim>() ) ) ),
 
     // define the finite element
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),
