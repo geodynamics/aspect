@@ -789,6 +789,8 @@ namespace aspect
                    ExcMessage("The geoid postprocessor is currently only implemented for "
                               "the spherical shell geometry model."));
 
+      const double G = constants::big_g;
+
       const std::string filename = this->get_output_directory() +
                                    "geoid." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
@@ -822,10 +824,10 @@ namespace aspect
                            << std::setw(13) << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface
                            << std::setw(13) << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom
                            << std::setw(13) << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom
-                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[k]
-                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k]
-                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k]
-                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k]
+                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[k]*G
+                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k]*G
+                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k]*G
+                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k]*G
                            << std::setw(13) << surface_topography_expansion->get_coefficients().sine_coefficients[k]
                            << std::setw(13) << surface_topography_expansion->get_coefficients().cosine_coefficients[k]
                            << std::setw(13) << bottom_topography_expansion->get_coefficients().sine_coefficients[k]
@@ -835,6 +837,7 @@ namespace aspect
             }
           else
             {
+              const double gravity_constant = 4./3. * G;
               file << "# degree geoid_surf_s geoid_surf_c  geoid_cmb_s  cmb_geoid_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
               for (unsigned int n=2; n <= max_degree; ++n)
                 {
@@ -843,10 +846,10 @@ namespace aspect
                        << std::setw(13) << surface_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_surface
                        << std::setw(13) << bottom_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_bottom
                        << std::setw(13) << bottom_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_bottom
-                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[n]
-                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n]
-                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n]
-                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n]
+                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[n]*gravity_constant
+                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n]*gravity_constant
+                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n]*gravity_constant
+                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n]*gravity_constant
                        << std::setw(13) << surface_topography_expansion->get_coefficients().sine_coefficients[n]
                        << std::setw(13) << surface_topography_expansion->get_coefficients().cosine_coefficients[n]
                        << std::setw(13) << bottom_topography_expansion->get_coefficients().sine_coefficients[n]
