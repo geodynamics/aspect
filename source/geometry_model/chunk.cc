@@ -25,7 +25,11 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/tria_boundary_lib.h>
+#include <iostream>
+#include <fstream>
+
 
 
 namespace aspect
@@ -44,12 +48,15 @@ namespace aspect
                                                  point2,
                                                  true);
 
-
       // Transform box into spherical chunk
       GridTools::transform (std_cxx11::bind(&SphericalManifold<dim>::push_forward,
                                             std_cxx11::cref(manifold),
                                             std_cxx11::_1),
                             coarse_grid);
+
+      std::ofstream out ("grid-1.eps");
+      GridOut grid_out;
+      grid_out.write_eps (coarse_grid, out);
 
       // Deal with a curved mesh
       // Attach the real manifold to slot 15. we won't use it
@@ -57,6 +64,50 @@ namespace aspect
       // cells, faces and edges immediately before refinement and
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = coarse_grid.begin_active();
+           cell != coarse_grid.end(); ++cell)
+        cell->set_all_manifold_ids (15);
+
+      // clear the manifold id from objects for which we have boundary
+      // objects (and need boundary objects because at the time of
+      // writing, only boundary objects provide normal vectors)
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = coarse_grid.begin_active();
+           cell != coarse_grid.end(); ++cell)
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+
+      for (typename Triangulation<dim>::active_cell_iterator
+           cell = coarse_grid.begin_active();
+           cell != coarse_grid.end(); ++cell)
+            if (cell->at_boundary(0))
+    		  std::cout << cell->face(0)->vertex(0) << std::endl;
+
+      // deal.II wants boundary objects even for the straight boundaries
+      // when using manifolds in the interior:
+      static const StraightBoundary<dim> straight_boundary;
+      coarse_grid.set_boundary	(4, straight_boundary);
+      coarse_grid.set_boundary	(5, straight_boundary);
+
+      // attach boundary objects to the curved boundaries:
+      static const HyperShellBoundary<dim> boundary_shell;
+      coarse_grid.set_boundary (0, boundary_shell);
+      coarse_grid.set_boundary (1, boundary_shell);
+
+      Point<dim> center;
+      Point<dim> north, south;
+      north[0] = 6371000.0 * std::cos(20.0*numbers::PI/180.0);
+      south[0] = 6371000.0 * std::cos(45.0*numbers::PI/180.0);
+      const double north_radius = std::sqrt(6371000.0*6371000.0+north[0]*north[0]);
+      const double south_radius = std::sqrt(6371000.0*6371000.0+south[0]*south[0]);
+
+      static const ConeBoundary<dim> boundary_cone_north(0,north_radius,center,north);
+      coarse_grid.set_boundary (3, boundary_cone_north);
+      static const ConeBoundary<dim> boundary_cone_south(0,south_radius,center,north);
+            coarse_grid.set_boundary (2, boundary_cone_south);
 
       coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
                                                                    std_cxx11::ref(coarse_grid)));
@@ -171,7 +222,10 @@ namespace aspect
     double
     Chunk<dim>::west_longitude () const
     {
+    	if (dim == 2)
       return point1[1];
+    	else
+    		return point1[2];
     }
 
 
@@ -180,7 +234,10 @@ namespace aspect
     double
     Chunk<dim>::east_longitude () const
     {
+    	if (dim == 2)
       return point2[1];
+    	else
+    		return point2[2];
     }
 
 
@@ -189,7 +246,11 @@ namespace aspect
     double
     Chunk<dim>::longitude_range () const
     {
+    	if (dim == 2)
       return point2[1] - point1[1];
+    	else
+    		return point2[2] - point1[2];
+
     }
 
 
@@ -199,7 +260,7 @@ namespace aspect
     Chunk<dim>::south_latitude () const
     {
       if (dim == 3)
-        return point1[2];
+        return point1[1];
       else
         return 0;
     }
@@ -211,7 +272,7 @@ namespace aspect
     Chunk<dim>::north_latitude () const
     {
       if (dim==3)
-        return point2[2];
+        return point2[1];
       else
         return 0;
     }
@@ -223,7 +284,7 @@ namespace aspect
     Chunk<dim>::latitude_range () const
     {
       if (dim==3)
-        return point2[2] - point1[2];
+        return point2[1] - point1[1];
       else
         return 0;
     }
@@ -283,7 +344,10 @@ namespace aspect
     {
       for (typename Triangulation<dim>::active_cell_iterator cell =
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            if (cell->at_boundary(f))
+            	cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+        //cell->set_all_manifold_ids (numbers::invalid_manifold_id);
     }
 
     template <int dim>
@@ -310,11 +374,11 @@ namespace aspect
                              "Maximum longitude of the chunk. Units: degrees.");
 
           prm.declare_entry ("Chunk minimum latitude", "0",
-                             Patterns::Double (-90, 90),
+                             Patterns::Double (-89, 89), // -90/90 degrees will crash because north/south boundary disappears
                              "Minimum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
           prm.declare_entry ("Chunk maximum latitude", "1",
-                             Patterns::Double (-90, 90),
+                             Patterns::Double (-89, 89), // -90/90 degrees will crash because north/south boundary disappears
                              "Maximum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
 
@@ -351,11 +415,12 @@ namespace aspect
           Assert (dim >= 2, ExcInternalError());
           Assert (dim <= 3, ExcInternalError());
 
-          if (dim >= 2)
+          point1[0] = prm.get_double ("Chunk inner radius");
+          point2[0] = prm.get_double ("Chunk outer radius");
+          repetitions[0] = prm.get_integer ("Radius repetitions");
+
+          if (dim == 2)
             {
-              point1[0] = prm.get_double ("Chunk inner radius");
-              point2[0] = prm.get_double ("Chunk outer radius");
-              repetitions[0] = prm.get_integer ("Radius repetitions");
               point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
               point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
               repetitions[1] = prm.get_integer ("Longitude repetitions");
@@ -368,14 +433,18 @@ namespace aspect
                            ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
 
+          // The pull back functions require radius,latitude,longitude order in 3D
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
-              repetitions[2] = prm.get_integer ("Latitude repetitions");
+              point1[2] = prm.get_double ("Chunk minimum longitude") * degtorad;
+              point2[2] = prm.get_double ("Chunk maximum longitude") * degtorad;
+              repetitions[2] = prm.get_integer ("Longitude repetitions");
+              point1[1] = 0.5*numbers::PI - prm.get_double ("Chunk minimum latitude") * degtorad;
+              point2[1] = 0.5*numbers::PI - prm.get_double ("Chunk maximum latitude") * degtorad;
+              repetitions[1] = prm.get_integer ("Latitude repetitions");
 
-              AssertThrow (point1[2] < point2[2],
-                           ExcMessage ("Minimum latitude must be less than maximum latitude."));
+//              AssertThrow (point1[2] < point2[2],
+//                           ExcMessage ("Minimum latitude must be less than maximum latitude."));
             }
 
         }
