@@ -95,6 +95,16 @@ FOREACH(_source_file ${TARGET_SRC})
 ENDFOREACH()
 
 
+
+FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
+
+INCLUDE(CMakePackageConfigHelpers)
+WRITE_BASIC_PACKAGE_VERSION_FILE(
+  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
+  VERSION ${ASPECT_PACKAGE_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc to compile an
 # Aspect plugin
