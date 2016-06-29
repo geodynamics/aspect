@@ -273,7 +273,7 @@ void possibly_load_shared_libs (const std::string &parameters)
 }
 
 /*
- * Current implementation for reading from stdin requires use of a std:string,
+ * Current implementation for reading from stdin requires use of a std::string,
  * so this function will read until the end of the stream
  */
 std::string
