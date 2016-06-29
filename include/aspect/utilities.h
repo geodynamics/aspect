@@ -272,8 +272,8 @@ namespace aspect
         {
           // Non-specified behavior
           AssertThrow(false,
-                      ExcMessage("Length of "+id_text+" list must be " +
-                                 "either one or " + std::to_string(N)));
+                      ExcMessage("Length of " + id_text + " list must be " +
+                                 "either one or " + Utilities::to_string(N)));
         }
 
       // This should never happen, but return an empty vector so the compiler
