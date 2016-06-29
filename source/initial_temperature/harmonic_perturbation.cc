@@ -35,6 +35,9 @@ namespace aspect
     HarmonicPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+      AssertThrow (this->has_boundary_temperature() || (!use_conductive_profile),
+                   ExcMessage ("The conductive profile can only be used if a boundary "
+                               "temperature is prescribed."));
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
@@ -107,6 +110,13 @@ namespace aspect
           // This way the perturbation is alway 0 at the model borders.
           const Point<dim> extent = box_geometry_model->get_extents();
 
+          if (use_conductive_profile)
+          {
+            const double T_outer = this->get_boundary_temperature().minimal_temperature();
+            const double T_inner = this->get_boundary_temperature().maximal_temperature();
+            background_temperature = T_outer + s*(T_inner-T_outer);
+          }
+
           if (dim==2)
             {
               lateral_perturbation = std::sin(lateral_wave_number_1*position(0)*numbers::PI/extent(0));
@@ -161,6 +171,11 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature that is perturbed by the"
                              "harmonic function. Only used in incompressible models.");
+          prm.declare_entry ("Use conductive profile", "false",
+                             Patterns::Bool (),
+                             "If this is enabled, the harmonic perturbation is added"
+                             "to a conductive temperature profile instead of to the"
+                             "reference temperature.");
         }
         prm.leave_subsection ();
       }
@@ -181,6 +196,7 @@ namespace aspect
           lateral_wave_number_2 = prm.get_integer ("Lateral wave number two");
           magnitude = prm.get_double ("Magnitude");
           reference_temperature = prm.get_double ("Reference temperature");
+          use_conductive_profile = prm.get_bool ("Use conductive profile");
         }
         prm.leave_subsection ();
       }

@@ -102,6 +102,12 @@ namespace aspect
          * profile and this variable is not used at all.
          */
         double reference_temperature;
+
+        /**
+         * Whether to use a conductive profile as the background temperature
+         * instead of the reference temperature.
+         */
+        bool use_conductive_profile;
     };
   }
 }
