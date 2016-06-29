@@ -1013,11 +1013,6 @@ namespace aspect
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                                  :
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (use_tensor ?
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                   :
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                                  )
                                                 // assemble \nabla p as -(p, div v):
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
@@ -2532,45 +2527,6 @@ namespace aspect
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
-
-
-    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
-        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
-      {
-        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-        scratch.mass_densities.resize(n_q_points);
-        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
-            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-          }
-
-        material_model->density_approximation(approximate_inputs, scratch.mass_densities);
-      }
-    else
-      scratch.mass_densities = scratch.material_model_outputs.densities;
-
-    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
-      {
-        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-        scratch.mass_densities.resize(n_q_points);
-        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
-            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-          }
-
-        material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
-      }
-    else if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
-      {}
-    else
-      Assert(false, ExcNotImplemented());
-
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
