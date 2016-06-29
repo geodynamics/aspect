@@ -125,7 +125,6 @@ namespace aspect
 
               // Compute the integral of the dynamic topography function
               // over the entire cell, by looping over all quadrature points
-              // (currently, there is only one, but the code is generic).
               for (unsigned int q=0; q<quadrature_formula.size(); ++q)
                 {
                   Point<dim> location = fe_values.quadrature_point(q);
@@ -152,7 +151,12 @@ namespace aspect
               const double dynamic_topography_cell_average = dynamic_topography_x_volume / volume;
               // Compute the associated surface area to later compute the surfaces weighted integral
               fe_face_values.reinit(cell, top_face_idx);
-              const double surface = fe_face_values.JxW(0);
+              double surface = 0;
+              for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                {
+                  surface += fe_face_values.JxW(q);
+                }
+
               const Point<dim> midpoint_at_surface = cell->face(top_face_idx)->center();
 
               integrated_topography += dynamic_topography_cell_average*surface;
