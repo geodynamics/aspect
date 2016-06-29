@@ -68,9 +68,9 @@ namespace aspect
     template <int dim>
     void
     register_initial_topography (const std::string &name,
-                             const std::string &description,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ())
+                                 const std::string &description,
+                                 void (*declare_parameters_function) (ParameterHandler &),
+                                 Interface<dim> *(*factory_function) ())
     {
       std_cxx11::get<dim>(registered_plugins).register_plugin (name,
                                                                description,
@@ -155,9 +155,9 @@ namespace aspect
   template \
   void \
   register_initial_topography<dim> (const std::string &, \
-                                const std::string &, \
-                                void ( *) (ParameterHandler &), \
-                                Interface<dim> *( *) ()); \
+                                    const std::string &, \
+                                    void ( *) (ParameterHandler &), \
+                                    Interface<dim> *( *) ()); \
   \
   template  \
   void \

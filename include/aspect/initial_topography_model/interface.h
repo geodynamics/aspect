@@ -71,7 +71,7 @@ namespace aspect
          */
         virtual
         void value (const Point<dim-1> &p) const = 0;
-    
+
         /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
@@ -114,9 +114,9 @@ namespace aspect
     template <int dim>
     void
     register_initial_topography_model (const std::string &name,
-                             const std::string &description,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ());
+                                       const std::string &description,
+                                       void (*declare_parameters_function) (ParameterHandler &),
+                                       Interface<dim> *(*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an
