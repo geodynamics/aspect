@@ -44,19 +44,19 @@ _detailed(
 ")
 IF(CMAKE_C_COMPILER_WORKS)
   _detailed(
-"#      CMAKE_C_COMPILER:          ${CMAKE_C_COMPILER}\n")
+"#        CMAKE_C_COMPILER:          ${CMAKE_C_COMPILER}\n")
 ENDIF()
 
 
 IF(DEAL_II_STATIC_EXECUTABLE)
 _detailed(
 "#
-#       LINKAGE:                   STATIC
+#        LINKAGE:                   STATIC
 ")
 ELSE()
 _detailed(
 "#
-#       LINKAGE:                   DYNAMIC
+#        LINKAGE:                   DYNAMIC
 ")
 ENDIF()
 

@@ -44,7 +44,7 @@ MESSAGE(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_D
 
 SET(ASPECT_USE_PETSC OFF CACHE BOOL "Use PETSc instead of Trilinos if set to 'on'.")
 
-MESSAGE(STATUS "Using PETSc = '${ASPECT_USE_PETSC}'")
+MESSAGE(STATUS "Using ASPECT_USE_PETSC = '${ASPECT_USE_PETSC}'")
 
 SET(_DEALII_GOOD ON)
 
@@ -71,7 +71,7 @@ ENDIF()
 
 IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nAspect requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
+    "\nASPECT requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
     )
 ENDIF()
 
