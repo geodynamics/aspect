@@ -19,28 +19,12 @@
 */
 
 #include <aspect/material_model/diffusion_dislocation.h>
+#include <aspect/utilities.h>
 
 using namespace dealii;
 
 namespace aspect
 {
-  namespace
-  {
-    std::vector<double>
-    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
-    {
-      std::vector<double> parameter_list;
-      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
-      if (parameter_list.size() == 1)
-        parameter_list.resize(n_fields, parameter_list[0]);
-
-      AssertThrow(parameter_list.size() == n_fields,
-                  ExcMessage("Length of "+parameter+" list must be either one, or n_compositional_fields+1"));
-
-      return parameter_list;
-    }
-  }
-
   namespace MaterialModel
   {
 
@@ -436,8 +420,12 @@ namespace aspect
 
           // ---- Compositional parameters
           grain_size = prm.get_double("Grain size");
-          densities = get_vector_double("Densities", n_fields, prm);
-          thermal_expansivities = get_vector_double("Thermal expansivities", n_fields, prm);
+          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
+                                                              n_fields,
+                                                              "Densities");
+          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
+                                                                          n_fields,
+                                                                          "Thermal expansivities");
 
           // Rheological parameters
           if (prm.get ("Viscosity averaging scheme") == "harmonic")
@@ -453,16 +441,34 @@ namespace aspect
 
           // Rheological parameters
           // Diffusion creep parameters (Stress exponents often but not always 1)
-          prefactors_diffusion = get_vector_double("Prefactors for diffusion creep", n_fields, prm);
-          stress_exponents_diffusion = get_vector_double("Stress exponents for diffusion creep", n_fields, prm);
-          grain_size_exponents_diffusion = get_vector_double("Grain size exponents for diffusion creep", n_fields, prm);
-          activation_energies_diffusion = get_vector_double("Activation energies for diffusion creep", n_fields, prm);
-          activation_volumes_diffusion = get_vector_double("Activation volumes for diffusion creep", n_fields, prm);
+          prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
+                                                                         n_fields,
+                                                                         "Prefactors for diffusion creep");
+          stress_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for diffusion creep"))),
+                                                                               n_fields,
+                                                                               "Stress exponents for diffusion creep");
+          grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
+                                                                                   n_fields,
+                                                                                   "Grain size exponents for diffusion creep");
+          activation_energies_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for diffusion creep"))),
+                                                                                  n_fields,
+                                                                                  "Activation energies for diffusion creep");
+          activation_volumes_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for diffusion creep"))),
+                                                                                 n_fields,
+                                                                                 "Activation volumes for diffusion creep");
           // Dislocation creep parameters (Note the lack of grain size exponents)
-          prefactors_dislocation = get_vector_double("Prefactors for dislocation creep", n_fields, prm);
-          stress_exponents_dislocation = get_vector_double("Stress exponents for dislocation creep", n_fields, prm);
-          activation_energies_dislocation = get_vector_double("Activation energies for dislocation creep", n_fields, prm);
-          activation_volumes_dislocation = get_vector_double("Activation volumes for dislocation creep", n_fields, prm);
+          prefactors_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for dislocation creep"))),
+                                                                           n_fields,
+                                                                           "Prefactors for dislocation creep");
+          stress_exponents_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for dislocation creep"))),
+                                                                                 n_fields,
+                                                                                 "Stress exponents for dislocation creep");
+          activation_energies_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for dislocation creep"))),
+                                                                                    n_fields,
+                                                                                    "Activation energies for dislocation creep");
+          activation_volumes_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation creep"))),
+                                                                                   n_fields,
+                                                                                   "Activation volumes for dislocation creep");
 
         }
         prm.leave_subsection();

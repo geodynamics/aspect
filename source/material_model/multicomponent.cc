@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/multicomponent.h>
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <numeric>
 
@@ -28,23 +29,6 @@ using namespace dealii;
 
 namespace aspect
 {
-  namespace
-  {
-    std::vector<double>
-    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
-    {
-      std::vector<double> parameter_list;
-      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
-      if (parameter_list.size() == 1)
-        parameter_list.resize(n_fields, parameter_list[0]);
-
-      AssertThrow(parameter_list.size() == n_fields,
-                  ExcMessage("Length of "+parameter+" list must be either one, or n_compositional_fields+1"));
-
-      return parameter_list;
-    }
-  }
-
   namespace MaterialModel
   {
     template <int dim>
@@ -311,11 +295,21 @@ namespace aspect
             AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme"));
 
           // Parse multicomponent properties
-          densities=get_vector_double("Densities", n_fields, prm);
-          viscosities=get_vector_double("Viscosities", n_fields, prm);
-          thermal_conductivities=get_vector_double("Thermal conductivities", n_fields, prm);
-          thermal_expansivities=get_vector_double("Thermal expansivities", n_fields, prm);
-          specific_heats=get_vector_double("Specific heats", n_fields, prm);
+          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
+                                                              n_fields,
+                                                              "Densities");
+          viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosities"))),
+                                                                n_fields,
+                                                                "Viscosities");
+          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
+                                                                           n_fields,
+                                                                           "Thermal conductivities");
+          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
+                                                                          n_fields,
+                                                                          "Thermal expansivities");
+          specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Specific heats"))),
+                                                                   n_fields,
+                                                                   "Specific heats");
 
         }
         prm.leave_subsection();
