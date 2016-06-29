@@ -155,25 +155,34 @@ namespace aspect
          * Enumeration for selecting which type of viscous flow law to use.
          * Select between diffusion, dislocation or composite.
          */
-        enum viscosity_scheme
+        enum ViscosityScheme
         {
           diffusion,
           dislocation,
           composite
         } viscous_flow_law;
 
-
+        /**
+         * Enumeration for selecting which type of yield mechanism to use.
+         * Select between drucker prager and stress limiter.
+         */
+        enum YieldScheme
+        {
+          stress_limiter,
+          drucker_prager
+        } yield_mechanism;
 
         double average_value (const std::vector<double> &composition,
                               const std::vector<double> &parameter_values,
-                              const enum averaging_scheme &average_type) const;
+                              const averaging_scheme &average_type) const;
 
         std::vector<double>
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
                                           const SymmetricTensor<2,dim> &strain_rate,
-                                          const enum viscosity_scheme &viscous_type) const;
+                                          const ViscosityScheme &viscous_type,
+                                          const YieldScheme &yield_type) const;
 
 
         std::vector<double> prefactors_diffusion;
@@ -189,6 +198,7 @@ namespace aspect
 
         std::vector<double> angles_internal_friction;
         std::vector<double> cohesions;
+        std::vector<double> exponents_stress_limiter;
 
     };
 
