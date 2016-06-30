@@ -47,58 +47,33 @@ namespace aspect
     }
   }
 
-
-  template <int dim>
-  void Simulator<dim>::create_snapshot()
-  {
-    computing_timer.enter_section ("Create snapshot");
-    unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
-    if (my_id == 0)
-      {
-        // if we have previously written a snapshot, then keep the last
-        // snapshot in case this one fails to save. Note: static variables
-        // will only be initialied once per model run.
-        static bool previous_snapshot_exists = (parameters.resume_computation == true);
-
-        if (previous_snapshot_exists == true)
-          {
-//            move_file (parameters.output_directory + "restart.mesh",
-//                       parameters.output_directory + "restart.mesh.old");
-//            move_file (parameters.output_directory + "restart.mesh.info",
-//                       parameters.output_directory + "restart.mesh.info.old");
-//            move_file (parameters.output_directory + "restart.resume.z",
-//                       parameters.output_directory + "restart.resume.z.old");
-          }
-        // from now on, we know that if we get into this
-        // function again that a snapshot has previously
-        // been written
-        previous_snapshot_exists = true;
-      }
-
-    // save Triangulation and Solution vectors:
+    template<int dim>
+    void Simulator<dim>::save_triangulation(const std::string file_name)
     {
-      std::vector<const LinearAlgebra::BlockVector *> x_system (3);
-      x_system[0] = &solution;
-      x_system[1] = &old_solution;
-      x_system[2] = &old_old_solution;
+      // save Triangulation and Solution vectors:
+      {
+        std::vector<const LinearAlgebra::BlockVector *> x_system (3);
+        x_system[0] = &solution;
+        x_system[1] = &old_solution;
+        x_system[2] = &old_old_solution;
 
-      //If we are using a free surface, include the mesh velocity, which uses the system dof handler
-      if (parameters.free_surface_enabled)
-        x_system.push_back( &free_surface->mesh_velocity );
+        //If we are using a free surface, include the mesh velocity, which uses the system dof handler
+        if (parameters.free_surface_enabled)
+          x_system.push_back( &free_surface->mesh_velocity );
 
-      parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
-      system_trans (dof_handler);
+        parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
+                system_trans (dof_handler);
 
-      system_trans.prepare_serialization (x_system);
+        system_trans.prepare_serialization (x_system);
 
-      //If we are using a free surface, also serialize the mesh vertices vector, which
-      //uses its own dof handler
-      std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
-      std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
-      if (parameters.free_surface_enabled)
+        //If we are using a free surface, also serialize the mesh vertices vector, which
+        //uses its own dof handler
+        std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
+        std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
+        if (parameters.free_surface_enabled)
         {
           freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
-                                   (free_surface->free_surface_dof_handler));
+                                           (free_surface->free_surface_dof_handler));
 
           x_fs_system[0] = &free_surface->mesh_vertices;
           x_fs_system[1] = &free_surface->mesh_vertex_velocity;
@@ -106,22 +81,26 @@ namespace aspect
           freesurface_trans->prepare_serialization(x_fs_system);
         }
 
-      triangulation.save ((parameters.output_directory + "restart.mesh-" + std::to_string(timestep_number)).c_str());
+        triangulation.save ((parameters.output_directory + file_name).c_str());
+      }
     }
 
-    // save general information This calls the serialization functions on all
-    // processes (so that they can take additional action, if necessary, see
-    // the manual) but only writes to the restart file on process 0
+    template<int dim>
+    void Simulator<dim>::serialize_all(const std::string file_name)
     {
-      std::ostringstream oss;
+      // save general information This calls the serialization functions on all
+      // processes (so that they can take additional action, if necessary, see
+      // the manual) but only writes to the restart file on process 0
+      {
+        std::ostringstream oss;
 
-      // serialize into a stringstream
-      aspect::oarchive oa (oss);
-      oa << (*this);
+        // serialize into a stringstream
+        aspect::oarchive oa (oss);
+        oa << (*this);
 
-      // compress with zlib and write to file on the root processor
+        // compress with zlib and write to file on the root processor
 #ifdef DEAL_II_WITH_ZLIB
-      if (my_id == 0)
+        if (my_id == 0)
         {
           uLongf compressed_data_length = compressBound (oss.str().length());
           std::vector<char *> compressed_data (compressed_data_length);
@@ -135,28 +114,50 @@ namespace aspect
 
           // build compression header
           const uint32_t compression_header[4]
-            = { 1,                                   /* number of blocks */
-                (uint32_t)oss.str().length(), /* size of block */
-                (uint32_t)oss.str().length(), /* size of last block */
-                (uint32_t)compressed_data_length
-              }; /* list of compressed sizes of blocks */
+                  = { 1,                                   /* number of blocks */
+                      (uint32_t)oss.str().length(), /* size of block */
+                      (uint32_t)oss.str().length(), /* size of last block */
+                      (uint32_t)compressed_data_length
+                  }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume-" + std::to_string(timestep_number) + ".z").c_str());
+          std::ofstream f ((parameters.output_directory + file_name).c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
 #else
-      AssertThrow (false,
+        AssertThrow (false,
                    ExcMessage ("You need to have deal.II configured with the 'libz' "
                                "option to support checkpoint/restart, but deal.II "
                                "did not detect its presence when you called 'cmake'."));
 #endif
 
+      }
     }
+
+  template <int dim>
+  void Simulator<dim>::create_snapshot()
+  {
+    computing_timer.enter_section ("Create snapshot");
+
+    save_triangulation("restart.mesh-" + Utilities::int_to_string(timestep_number));
+    serialize_all("restart.resume-" + Utilities::int_to_string(timestep_number) + ".z");
+
     pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
   }
 
+    template <int dim>
+    void Simulator<dim>::quicksave_snapshot()
+    {
+      computing_timer.enter_section ("Create snapshot");
+
+      save_triangulation("quicksave-slot-" + Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots));
+      serialize_all("quicksave-slot-" + Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z");
+      n_quicksaves++;
+
+      pcout << "*** Quickly saving snapshot! Snapshot Created!" << std::endl << std::endl;
+      computing_timer.exit_section();
+    }
 
 
   template <int dim>
@@ -164,7 +165,7 @@ namespace aspect
   {
     // first check existence of the two restart files
     {
-      const std::string filename = parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step);
+      const std::string filename = parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step_number);
       std::ifstream in (filename.c_str());
       if (!in)
         AssertThrow (false,
@@ -176,7 +177,7 @@ namespace aspect
                                  "> does not appear to exist!"));
     }
     {
-      const std::string filename = parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step) + ".z";
+      const std::string filename = parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step_number) + ".z";
       std::ifstream in (filename.c_str());
       if (!in)
         AssertThrow (false,
@@ -192,7 +193,7 @@ namespace aspect
 
     try
       {
-        triangulation.load ((parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step)).c_str());
+        triangulation.load ((parameters.output_directory + "restart.mesh-" + std::to_string(parameters.resume_time_step_number)).c_str());
       }
     catch (...)
       {
@@ -256,7 +257,7 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step) + ".z").c_str());
+        std::ifstream ifs ((parameters.output_directory + "restart.resume-" + std::to_string(parameters.resume_time_step_number) + ".z").c_str());
         AssertThrow(ifs.is_open(),
                     ExcMessage("Cannot open snapshot resume file."));
 
@@ -280,6 +281,7 @@ namespace aspect
           std::istringstream ss;
           ss.str(std::string (&uncompressed[0], uncompressed_size));
           aspect::iarchive ia (ss);
+
           ia >> (*this);
         }
 #else

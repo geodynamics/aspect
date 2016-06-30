@@ -484,12 +484,32 @@ namespace aspect
        * particular the mesh, the solution vectors, etc) whereas others can
        * either be re-generated (matrices, DoFHandler objects, etc) or are
        * read from the input parameter file. See the manual for more
-       * information.
+       * information. These set of files are permanently stored.
        *
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
       void create_snapshot();
+
+      /**
+       * Also saves the state of this program to a set of files in output
+       * directory. However, each quicksave will overwrite pre-existing checkpoint
+       * data for a quicksave slot. By varying the number of slots, one is guaranteed
+       * to contain at least as many recent checkpoint files as number of slots.
+       */
+      void quicksave_snapshot();
+
+      /**
+       * Save the state of Triangulation and Solution vectors to a specified
+       * file in the output directory.
+       */
+      void save_triangulation(const std::string file_name);
+
+      /**
+       * Saves general information by calling the boost serialization function
+       * on all processes.
+       */
+      void serialize_all(const std::string file_name);
 
       /**
        * Restore the state of this program from a set of files in the output
@@ -1160,6 +1180,15 @@ namespace aspect
       /**
        * @}
        */
+
+      /**
+     * @name Variables that track checkpointing/quicksaving
+     * @{
+     */
+        unsigned int n_quicksaves;
+    /**
+    * @}
+    */
 
       /**
        * A member class that isolates the functions and variables that deal

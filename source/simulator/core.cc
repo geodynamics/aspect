@@ -170,7 +170,10 @@ namespace aspect
     dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+
+    // Set quicksaving information
+    n_quicksaves (0)
   {
     // FE data is no longer needed because we constructed finite_element above
     introspection.free_finite_element_data();
@@ -2165,33 +2168,42 @@ namespace aspect
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
         bool do_checkpoint = false;
+        bool do_quicksave = false;
 
         // If we base checkpoint frequency on timing, measure the time at process 0
         // This prevents race conditions where some processes will checkpoint and others won't
-        if (parameters.checkpoint_time_secs > 0)
+        if (parameters.quicksave_time_secs > 0)
           {
-            int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
-                                        parameters.checkpoint_time_secs);
-            MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+            int global_do_quicksave = ((std::time(NULL)-last_checkpoint_time) >=
+                                        parameters.quicksave_time_secs);
+            MPI_Bcast(&global_do_quicksave, 1, MPI_INT, 0, mpi_communicator);
 
-            do_checkpoint = (global_do_checkpoint == 1);
+            do_checkpoint = (global_do_quicksave == 1);
           }
 
-        // If we base checkpoint frequency on steps, see if it's time for another checkpoint
-        if ((parameters.checkpoint_time_secs == 0) &&
-            (parameters.checkpoint_steps > 0) &&
-            (timestep_number % parameters.checkpoint_steps == 0))
-          do_checkpoint = true;
+        // If we base quicksave frequency on steps, see if it's time for another quicksave
+        if ((parameters.quicksave_time_secs == 0) &&
+            (parameters.quicksave_steps > 0))
+            (timestep_number % parameters.quicksave_steps == 0))
+          do_quicksave = true;
 
         // Do a checkpoint either if indicated by checkpoint parameters, or if this
         // is the end of simulation and the termination criteria say to checkpoint
-        if (do_checkpoint || (termination.first && termination.second))
+        if (timestep_number % parameters.checkpoint_steps == 0 ||
+                (termination.first && termination.second)) {
+          do_checkpoint = true;
+          create_snapshot();
+        }
+
+        if ((!do_checkpoint && do_quicksave)
+          quicksave_snapshot();
+
+        // matrices will be regenerated after a resume, so do that here too
+        // to be consistent. otherwise we would get different results
+        // for a restarted computation than for one that ran straight
+        // through
+        if (do_checkpoint || (termination.first && termination.second) || do_quicksave)
           {
-            create_snapshot();
-            // matrices will be regenerated after a resume, so do that here too
-            // to be consistent. otherwise we would get different results
-            // for a restarted computation than for one that ran straight
-            // through
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
             last_checkpoint_time = std::time(NULL);

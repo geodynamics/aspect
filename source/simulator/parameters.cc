@@ -533,7 +533,7 @@ namespace aspect
 
     prm.enter_subsection ("Checkpointing");
     {
-      prm.declare_entry ("Time between checkpoint", "0",
+      prm.declare_entry ("Time between quicksave", "0",
                          Patterns::Integer (0),
                          "The wall time between performing checkpoints. "
                          "If 0, will use the checkpoint step frequency instead. "
@@ -544,9 +544,25 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Number of quicksave slots", "3",
+                      Patterns::Integer (0),
+                         "Checkpoint files are generated every n times steps specified by"
+      "the parameter \'Steps between quicksave.\' At most the number "
+                                 "of quicksaves will be the number of quicksave slots."
+                         "Typically, this value is smaller than \'Steps between checkpoint\.'");
+      prm.declare_entry ("Steps between quicksave", "0",
+                      Patterns::Integer (0),
+                        "The number of timesteps between performing checkpoints and storing them"
+                                 "in the number of quicksave slots that are available."
+                                 "If 0, quicksaves will not be performed");
       prm.declare_entry ("Restart from time step", "0",
                          Patterns::Integer (0),
-                         "A time step value to restart ASPECT from");
+                         "A time step number from which ASPECT resumes state."
+                        "The checkpoint data for this time step number must exist in the output directory");
+      prm.declare_entry ("Restart from quicksave slot", "0",
+                        Patterns::Integer (0),
+                        "A quicklsot id starting from 0 to '(Number of quicksave slots - 1)'."
+                        "Assuming that the specified slot contains a valid checkpoint, we resume state.");
     }
     prm.leave_subsection ();
 
@@ -886,14 +902,19 @@ namespace aspect
 
     prm.enter_subsection ("Checkpointing");
     {
-      checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
+      quicksave_time_secs = prm.get_integer ("Time between quicksave");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
-      resume_time_step     = prm.get_integer ("Restart from time step");
+      quicksave_steps = prm.get_integer ("Steps between quicksave");
+      quicksave_slots = prm.get_integer ("Number of quicksave slots");
+      resume_time_step_number = prm.get_integer ("Restart from time step");
+      resume_from_quickslot = prm.get_integer ("Restart from quicksave slot");
 
 #ifndef DEAL_II_WITH_ZLIB
-      AssertThrow ((checkpoint_time_secs == 0)
+      AssertThrow ((quicksave_time_secs == 0)
                    &&
-                   (checkpoint_steps == 0),
+                   (checkpoint_steps == 0)
+                   &&
+                   (quicksave_steps == 0),
                    ExcMessage ("You need to have deal.II configured with the 'libz' "
                                "option if you want to generate checkpoints, but deal.II "
                                "did not detect its presence when you called 'cmake'."));

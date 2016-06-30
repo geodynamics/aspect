@@ -906,7 +906,8 @@ namespace aspect
         update_particles();
 
       // Update the number of global particles if some have left the domain
-      update_n_global_particles();
+      update_n_global_particles();ls
+      
     }
   }
 }
