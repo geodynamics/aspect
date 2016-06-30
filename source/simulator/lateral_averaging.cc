@@ -135,8 +135,11 @@ namespace aspect
       }
     if (print_under_res_warning)
       {
-        this->get_pcout() << "\tWarning: No quadrature points found in at least one depth block."
-                          << " Averages are likely underresolved." << std::endl;
+        this->get_pcout() << "In computing depth averages, there is at least"
+                          << " one depth band that does not have any quadrature"
+                          << " points in it." << std::endl
+                          << " Consider reducing number of depth layers for "
+                          << " averaging" << std::endl;
       }
   }
 

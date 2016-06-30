@@ -439,7 +439,12 @@ namespace aspect
           this->get_lateral_averaging().get_temperature_averages(avg_temp);
           for (unsigned int i = 0; i < avg_temp.size(); ++i)
             AssertThrow(numbers::is_finite(avg_temp[i]),
-                        ExcMessage("Too many depth bands in lateral average for current refinement"));
+                        ExcMessage("In computing depth averages, there is at"
+                                   " least one depth band that does not have"
+                                   " any quadrature points in it."
+                                   " Consider reducing number of depth layers"
+                                   " for averaging by reducing the number of"
+                                   " slices in the viscosity prefactor file."));
         }
     }
 
