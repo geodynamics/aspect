@@ -1041,16 +1041,6 @@ namespace aspect
       stokes_matrix_depends_on_solution () const;
 
       /**
-       * Generate and output some statistics like timing information and
-       * memory consumption. Whether this function does anything or not is
-       * controlled through the variable aspect::output_parallel_statistics.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      void output_program_stats();
-
-      /**
        * This function is called at the end of each time step and writes the
        * statistics object that contains data like the current time, the
        * number of linear solver iterations, and whatever the postprocessors

@@ -401,6 +401,12 @@ namespace aspect
       const FiniteElement<dim> &
       get_fe () const;
 
+      /**
+       * Return a reference to the system matrix at the current time step.
+       */
+      const LinearAlgebra::BlockSparseMatrix &
+      get_system_matrix () const;
+
       /** @} */
 
 

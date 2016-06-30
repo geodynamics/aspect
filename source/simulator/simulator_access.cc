@@ -323,6 +323,12 @@ namespace aspect
     return simulator->dof_handler.get_fe();
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockSparseMatrix &
+  SimulatorAccess<dim>::get_system_matrix () const
+  {
+    return simulator->system_matrix;
+  }
 
   template <int dim>
   const MaterialModel::Interface<dim> &
