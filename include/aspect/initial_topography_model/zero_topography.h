@@ -47,7 +47,7 @@ namespace aspect
          */
         virtual
         double
-        value (const Point<dim-1, double> &p) const;
+        value (const Point<dim-1> &p) const;
     };
   }
 }
