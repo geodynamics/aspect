@@ -25,7 +25,7 @@
 FIND_PACKAGE(deal.II 8.4.0 QUIET REQUIRED HINTS @DEAL_II_PATH@)
 SET(Aspect_INCLUDE_DIRS "@CMAKE_SOURCE_DIR@/include")
 SET(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
-SET(ASPECT_DIR "@CMAKE_BINARY_DIR@")
+SET(Aspect_DIR "@CMAKE_BINARY_DIR@")
 SET(ASPECT_USE_PETSC "@ASPECT_USE_PETSC@")
 # force our build type to the one that is used by ASPECT:
 SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
@@ -60,6 +60,6 @@ ENDIF()
 # automatically create a symbolic link to aspect in the current directory:
 ADD_CUSTOM_COMMAND(
     TARGET ${_target} POST_BUILD
-    COMMAND ln -sf ${ASPECT_DIR}/aspect .)
+    COMMAND ln -sf ${Aspect_DIR}/aspect .)
 
 ENDMACRO()
