@@ -2727,7 +2727,6 @@ namespace aspect
     if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-        scratch.mass_densities.resize(n_q_points);
         MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
         for (unsigned int q=0; q<n_q_points; ++q)
           {
