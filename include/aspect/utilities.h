@@ -79,23 +79,23 @@ namespace aspect
                          std::vector<IndexSet> &partitioned);
 
     /**
-     * Returns spherical coordinates of a cartesian point. The returned array
+     * Returns spherical coordinates of a Cartesian point. The returned array
      * is filled with radius, phi and theta (polar angle). If the dimension is
      * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
      *
      */
     template <int dim>
     std_cxx11::array<double,dim>
-    spherical_coordinates(const Point<dim> &position);
+    cartesian_to_spherical_coordinates(const Point<dim> &position);
 
     /**
-     * Return the cartesian point of a spherical position defined by radius,
+     * Return the Cartesian point of a spherical position defined by radius,
      * phi and theta (polar angle). If the dimension is set to 2 theta is
      * omitted.
      */
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+    spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
      * Given a vector @p v in @p dim dimensional space, return a set
@@ -313,7 +313,7 @@ namespace aspect
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
-         * to the used plugin) in cartesian coordinates.
+         * to the used plugin) in Cartesian coordinates.
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)

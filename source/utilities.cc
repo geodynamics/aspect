@@ -72,7 +72,7 @@ namespace aspect
 
     template <int dim>
     std_cxx11::array<double,dim>
-    spherical_coordinates(const Point<dim> &position)
+    cartesian_to_spherical_coordinates(const Point<dim> &position)
     {
       std_cxx11::array<double,dim> scoord;
 
@@ -92,7 +92,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
+    spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
     {
       Point<dim> ccoord;
 
@@ -1119,7 +1119,7 @@ namespace aspect
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
-                ::aspect::Utilities::spherical_coordinates(position);
+                ::aspect::Utilities::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
@@ -1256,7 +1256,7 @@ namespace aspect
           || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
-            ::aspect::Utilities::spherical_coordinates(position);
+            ::aspect::Utilities::cartesian_to_spherical_coordinates(position);
 
           for (unsigned int i = 0; i < dim; i++)
             internal_position[i] = spherical_position[i];
@@ -1275,11 +1275,11 @@ namespace aspect
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
 
-    template Point<2> cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
-    template Point<3> cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
+    template Point<2> spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
+    template Point<3> spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
-    template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> cartesian_to_spherical_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
