@@ -1,7 +1,5 @@
-# Listing of Parameters
-# ---------------------
+# like tangurnis.prm, but using implicit adiabatic mass conservation, so we should only need a single Stokes solve.
 
-set Additional shared libraries            = ./code/libtangurnis.so
 
 # At the top, state that the program should be run for a two-dimensional 
 # simulation
@@ -10,7 +8,7 @@ set Dimension = 2
 subsection Formulation
   set Buoyancy density approximation    = full
   set Formulation                       = custom
-  set Mass density approximation        = adiabatic
+  set Mass density approximation        = implicit adiabatic
   set Temperature density approximation = full
 end
 
@@ -32,11 +30,10 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear solver scheme                = Stokes only
-set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = outputnew
+set Output directory                       = output
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -211,7 +208,6 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    #set Reference density = 1
     set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
@@ -226,7 +222,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 6                       # default: 2
+  set Initial global refinement          = 4                       # default: 2
 
   # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = thermal energy density

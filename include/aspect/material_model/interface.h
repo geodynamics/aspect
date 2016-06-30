@@ -657,6 +657,25 @@ namespace aspect
         virtual double reference_density () const = 0;
 
         /**
+         * Compute densities for given reference values in @p inputs. The
+         * temperature and/or pressure can be either the correct (dynamic)
+         * value, or a reference value coming from an adiabat. This function
+         * is used for various approximations of the equations, where
+         * a "reference" instead of the real density is used (for example ALA).
+         *
+         * The default implementation of this function will use the
+         * evaluate() function of this material model and copy the density
+         * from the filled outputs.
+         *
+         * @note Not all inputs will be valid in @p inputs. You are only
+         * guaranteed to have valid @p position, @p pressure, and
+         * @p temperature.
+         */
+        virtual void density_approximation (const MaterialModelInputs &inputs,
+                                            std::vector<double> &densities) const;
+
+
+        /**
          * Return a reference value for the thermal expansion coefficient
          * $\alpha$. See the thermal_expansion_coefficient() function for a
          * definition of $\alpha$.

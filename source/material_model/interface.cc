@@ -92,6 +92,22 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::
+    density_approximation (const MaterialModelInputs &inputs,
+                           std::vector<double> &densities) const
+    {
+      Assert(densities.size() == inputs.position.size(),
+             ExcMessage("Invalid size for densities input argument."));
+      MaterialModelOutputs out(inputs.position.size(),
+                               inputs.composition[0].size());
+
+      this->evaluate(inputs, out);
+      densities = out.densities;
+    }
+
+
+    template <int dim>
+    void
+    Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
 

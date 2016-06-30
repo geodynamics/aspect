@@ -25,117 +25,115 @@ namespace aspect
   /**
    * This benchmark is from the article
    * @code
-   *  @article{tan2007compressible,
-   *    title={Compressible thermochemical convection and application to lower mantle structures},
-   *    author={Tan, E. and Gurnis, M.},
-   *    journal={JOURNAL OF GEOPHYSICAL RESEARCH-ALL SERIES-},
-   *    volume={112},
-   *    number={B6},
-   *    pages={6304},
-   *    year={2007},
-   *    publisher={AGU AMERICAN GEOPHYSICAL UNION}
-   *    }
    * @endcode
    *
    * @ingroup Postprocessing
    */
 
 
-
   namespace MaterialModel
   {
 
     template <int dim>
-    class TanGurnis : public MaterialModel::InterfaceCompatibility<dim>
+    class Material : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
 
-        TanGurnis();
+
+        virtual void
+        density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
+                               std::vector<double> &densities) const
+        {
+          for (unsigned int i=0; i<in.position.size(); ++i)
+            {
+              const double depth = 1.0-in.position[i](dim-1);
+              const double temperature = in.temperature[i];
+              const double thermal_expansion_coefficients = (Di==0.0)?1.0:Di;
+              densities[i] = reference_rho *
+                             (1.0 - thermal_expansion_coefficients * (temperature - this->get_adiabatic_conditions().temperature(in.position[i])));
+
+            }
+        }
+
 
         /**
-         * @name Physical parameters used in the basic equations
-         * @{
-         */
-        virtual double viscosity (const double                  temperature,
-                                  const double                  pressure,
-                                  const std::vector<double>    &compositional_fields,
-                                  const SymmetricTensor<2,dim> &strain_rate,
-                                  const Point<dim>             &position) const;
+        * Evaluate material properties.
+        */
+        virtual void evaluate(const MaterialModelInputs<dim> &in,
+                              MaterialModelOutputs<dim> &out) const
+        {
 
-        virtual void density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
-                                            std::vector<double> &densities) const;
+          for (unsigned int i=0; i < in.temperature.size(); ++i)
+            {
+              const Point<dim> position = in.position[i];
+              const double temperature = in.temperature[i];
+              const double pressure = in.pressure[i];
+
+              const double depth = 1.0-position(dim-1);
+
+              out.viscosities[i] = ((Di==0.0)?1.0:Di)/Ra*exp(-b*(temperature- this->get_adiabatic_conditions().temperature(position))+c*depth);
+
+              out.specific_heat[i] = reference_specific_heat;
+              out.thermal_conductivities[i] = 1.0;
+              out.thermal_expansion_coefficients[i] = (Di==0.0)?1.0:Di;
+
+              double rho = reference_rho;
+              rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position));
+
+              out.densities[i] = rho;
+
+              out.compressibilities[i] = 0.0;//(d==0) ? 1.0 : (Di/gamma / d);//reference_compressibility; // 1/rho drho/dp
+              out.entropy_derivative_pressure[i] = 0.0;
+              out.entropy_derivative_temperature[i] = 0.0;
+              // Change in composition due to chemical reactions at the
+              // given positions. The term reaction_terms[i][c] is the
+              // change in compositional field c at point i.
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                out.reaction_terms[i][c] = 0.0;
+            }
+        }
+
+        virtual bool is_compressible () const
+        {
+          return false;
+        }
 
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
+        virtual double reference_viscosity () const
+        {
+          return (Di==0.0?1.0:Di)/Ra;
+        }
 
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
 
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
+        virtual double reference_density () const
+        {
 
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
+          return 1.0;
+        }
+
+
+        virtual double reference_thermal_expansion_coefficient () const
+        {
+          return 1.0;
+        }
+
+
+        double reference_thermal_diffusivity () const
+        {
+          return 1/(reference_rho*reference_specific_heat);
+        }
+
+
+        double reference_cp () const
+        {
+
+          return 1;
+        }
+
         /**
          * @}
          */
-
-        /**
-         * @name Qualitative properties one can ask a material model
-         * @{
-         */
-
-        /**
-         * Return whether the model is compressible or not.  Incompressibility
-         * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-         */
-        virtual bool is_compressible () const;
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-
-        virtual double reference_density () const;
-
-        virtual double reference_thermal_expansion_coefficient () const;
-
-//TODO: should we make this a virtual function as well? where is it used?
-        double reference_thermal_diffusivity () const;
-
-        double reference_cp () const;
-
-        double parameter_a() const;
-        double parameter_wavenumber() const;
-        double parameter_Di() const;
-        double parameter_gamma() const;
-
-        /**
-         * @}
-         */
-
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -148,252 +146,58 @@ namespace aspect
         void
         declare_parameters (ParameterHandler &prm);
 
+
+
+
         /**
          * Read the parameters this class declares from the parameter file.
          */
         virtual
         void
         parse_parameters (ParameterHandler &prm);
+
+
+
         /**
          * @}
          */
 
       private:
 
-        double a;
-        double wavenumber;
-        double Di;
-        double gamma;
+        /**
+         * blankenbach parameters
+         */
+        double b, c;
 
+
+        /**
+         * The reference surface temperature
+         */
         double reference_rho;
-        double reference_T;
-        double eta;
-        double thermal_alpha;
+
+        /**
+         * The constant viscosity
+         */
+        double Di, Ra;
+
+        /**
+         * The constant specific heat
+         */
         double reference_specific_heat;
 
         /**
-         * The thermal conductivity.
+         * The constant compressibility.
          */
-        double k_value;
+        double reference_compressibility;
+
+
     };
 
-    template <int dim>
-    TanGurnis<dim>::TanGurnis()
-    {
-      a=0; // 0 or 2
-
-      //BA:
-      //Di=0;gamma=10000; //=inf
-
-      //EBA:
-      //Di=0.5;gamma=inf;
-
-      //TALA:
-      Di=0.5;
-      gamma=1.0;
-
-      wavenumber=1;
-    }
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    viscosity (const double,
-               const double,
-               const std::vector<double> &,       /*composition*/
-               const SymmetricTensor<2,dim> &,
-               const Point<dim> &pos) const
-    {
-      const double depth = 1.0-pos(dim-1);
-      return exp(a*depth);
-    }
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_viscosity () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_density () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_expansion_coefficient () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    specific_heat (const double,
-                   const double,
-                   const std::vector<double> &, /*composition*/
-                   const Point<dim> &) const
-    {
-      return 1250;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_cp () const
-    {
-      return 1250;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    thermal_conductivity (const double,
-                          const double,
-                          const std::vector<double> &, /*composition*/
-                          const Point<dim> &) const
-    {
-      return 2e-5;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_thermal_diffusivity () const
-    {
-      return k_value/(reference_rho*reference_specific_heat);
-    }
 
 
     template <int dim>
     void
-    TanGurnis<dim>::density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
-                                           std::vector<double> &densities) const
-    {
-      for (unsigned int i=0; i<inputs.position.size(); ++i)
-        {
-          const double depth = 1.0-inputs.position[i](dim-1);
-          densities[i] = 1.0*exp(Di/gamma*(depth));
-        }
-    }
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    density (const double,
-             const double,
-             const std::vector<double> &, /*composition*/
-             const Point<dim> &pos) const
-    {
-      const double depth = 1.0-pos(dim-1);
-      const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
-      return (-1.0*temperature)*exp(Di/gamma*(depth));
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    thermal_expansion_coefficient (const double,
-                                   const double,
-                                   const std::vector<double> &, /*composition*/
-                                   const Point<dim> &) const
-    {
-      return thermal_alpha;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    compressibility (const double temperature,
-                     const double pressure,
-                     const std::vector<double> &compositional_fields,
-                     const Point<dim> &pos) const
-    {
-      const double depth = 1.0-pos(dim-1);
-      double d = 1.0*exp(Di/gamma*(depth));
-
-      return (d==0) ? 1.0 : (Di/gamma / d);
-    }
-
-
-
-    template <int dim>
-    bool
-    TanGurnis<dim>::
-    is_compressible () const
-    {
-      return true;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    parameter_a() const
-    {
-      return a;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    parameter_wavenumber() const
-    {
-      return wavenumber;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    parameter_Di() const
-    {
-      return Di;
-    }
-
-
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    parameter_gamma() const
-    {
-      return gamma;
-    }
-
-
-
-    template <int dim>
-    void
-    TanGurnis<dim>::declare_parameters (ParameterHandler &prm)
+    Material<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -405,31 +209,20 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Viscosity", "5e24",
+          prm.declare_entry ("Ra", "1e4",
                              Patterns::Double (0),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
-          prm.declare_entry ("Thermal conductivity", "4.7",
+                             "");
+          prm.declare_entry ("Di", "0.0",
                              Patterns::Double (0),
-                             "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
                              "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
-          prm.declare_entry ("a", "0",
+          prm.declare_entry ("b", "6.907755279",
                              Patterns::Double (0),
                              "");
-          prm.declare_entry ("Di", "0.5",
-                             Patterns::Double (0),
-                             "");
-          prm.declare_entry ("gamma", "1",
-                             Patterns::Double (0),
-                             "");
-          prm.declare_entry ("wavenumber", "1",
+          prm.declare_entry ("c", "0",
                              Patterns::Double (0),
                              "");
 
@@ -443,29 +236,30 @@ namespace aspect
 
     template <int dim>
     void
-    TanGurnis<dim>::parse_parameters (ParameterHandler &prm)
+    Material<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Tan Gurnis model");
         {
           reference_rho     = prm.get_double ("Reference density");
-          reference_T = prm.get_double ("Reference temperature");
-          eta                   = prm.get_double ("Viscosity");
-          k_value               = prm.get_double ("Thermal conductivity");
+          //          reference_T = prm.get_double ("Reference temperature");
+          //eta                   = prm.get_double ("Viscosity");
+          b               = prm.get_double ("b");
+          c               = prm.get_double ("c");
+          Di               = prm.get_double ("Di");
+          Ra               = prm.get_double ("Ra");
+
           reference_specific_heat = prm.get_double ("Reference specific heat");
-          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
-          a = prm.get_double("a");
-          Di = prm.get_double("Di");
-          gamma = prm.get_double("gamma");
-          wavenumber = prm.get_double("wavenumber");
+          //thermal_alpha = prm.get_double ("Thermal expansion coefficient");
+
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::none;
+      this->model_dependence.viscosity = NonlinearDependence::temperature;
       this->model_dependence.density = NonlinearDependence::none;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
@@ -586,7 +380,7 @@ namespace aspect
   {
     AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                 ExcNotImplemented());
-
+    /*
     const MaterialModel::TanGurnis<dim> *
     material_model = dynamic_cast<const MaterialModel::TanGurnis<dim> *>(&this->get_material_model());
 
@@ -639,7 +433,7 @@ namespace aspect
                 << std::endl;
           }
       }
-
+    */
     return std::make_pair("writing:", "output.csv");
   }
 
@@ -658,8 +452,8 @@ namespace aspect
 
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(TanGurnis,
-                                   "Tan Gurnis",
+    ASPECT_REGISTER_MATERIAL_MODEL(Material,
+                                   "Material",
                                    "A simple compressible material model based on a benchmark"
                                    " from the paper of Tan/Gurnis (2007). This does not use the"
                                    " temperature equation, but has a hardcoded temperature.")

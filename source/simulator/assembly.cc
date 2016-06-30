@@ -833,6 +833,17 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
 
+        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+            approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
+            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+          }
+
+        if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
+          material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
+
         viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
                                                                           global_max_velocity,
                                                                           global_field_range.second - global_field_range.first,
@@ -986,10 +997,10 @@ namespace aspect
 
 
         void
-        local_assemble_stokes_system_compressible (const double                                     pressure_scaling,
-                                                   const bool                                       rebuild_stokes_matrix,
-                                                   internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesSystem<dim> &data) const
+        local_assemble_stokes_incompressible (const double                                     pressure_scaling,
+                                              const bool                                       rebuild_stokes_matrix,
+                                              internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                              internal::Assembly::CopyData::StokesSystem<dim> &data) const
         {
           const Introspection<dim> &introspection = this->introspection();
           const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
@@ -1000,9 +1011,9 @@ namespace aspect
               for (unsigned int k=0; k<dofs_per_cell; ++k)
                 {
                   scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
                   if (rebuild_stokes_matrix)
                     {
+                      scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
                       scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
                       scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
                     }
@@ -1022,39 +1033,153 @@ namespace aspect
               const Tensor<1,dim>
               gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
-              const double compressibility
-                = scratch.material_model_outputs.compressibilities[q];
-              const double density = scratch.material_model_outputs.densities[q];
-
               if (rebuild_stokes_matrix)
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    data.local_matrix(i,j) += ( (use_tensor ?
+                    data.local_matrix(i,j) += (
+                                                // first assemble the symmetric e(u) : e(v) term:
+                                                (use_tensor ?
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
                                                  :
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (use_tensor ?
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                                   :
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                                  )
+                                                // assemble \nabla p as -(p, div v):
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                // finally the term -div(u). note the negative sign to make this
-                                                // operator adjoint to the grad(p) term
+                                                // assemble the term -div(u) as -(div u, q).
+                                                // Note the negative sign to make this
+                                                // operator adjoint to the grad p term:
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                   scratch.phi_p[i] * scratch.div_phi_u[j])
+                                              )
                                               * scratch.finite_element_values.JxW(q);
 
               for (unsigned int i=0; i<dofs_per_cell; ++i)
                 data.local_rhs(i) += (
-                                       (density * gravity * scratch.phi_u[i])
-                                       +
+                                       // buoyancy term:
+                                       (scratch.material_model_outputs.densities[q] * gravity * scratch.phi_u[i])
+                                     )
+                                     * scratch.finite_element_values.JxW(q);
+            }
+        }
+
+        void
+        local_assemble_stokes_compressible_diffusion (const double                                     pressure_scaling,
+                                                      const bool                                       rebuild_stokes_matrix,
+                                                      internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                      internal::Assembly::CopyData::StokesSystem<dim> &data) const
+        {
+          if (!rebuild_stokes_matrix)
+            return;
+
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
+                  scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
+                }
+
+              // Viscosity scalar
+              const double eta = scratch.material_model_outputs.viscosities[q];
+
+              const SymmetricTensor<4,dim> &stress_strain_director =
+                scratch.material_model_outputs.stress_strain_directors[q];
+              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
+
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                  data.local_matrix(i,j) += (  - (use_tensor ?
+                                                  eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                                  :
+                                                  eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                 )
+                                            )
+                                            * scratch.finite_element_values.JxW(q);
+            }
+        }
+
+
+        void
+        local_assemble_stokes_mass_density_implicit (const double                                     pressure_scaling,
+                                                     const bool                                       rebuild_stokes_matrix,
+                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                     internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                     const Parameters<dim> &parameters) const
+        {
+          Assert(parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic,
+                 ExcInternalError());
+
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
+                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+                }
+
+              const Tensor<1,dim>
+              gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+              const double compressibility
+                = scratch.material_model_outputs.compressibilities[q];
+              const double mass_density = scratch.mass_densities[q];
+
+              if (rebuild_stokes_matrix)
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    data.local_matrix(i,j) += (
+                                                - (pressure_scaling * compressibility * mass_density
+                                                   *(scratch.phi_u[j] * gravity)
+                                                   * scratch.phi_p[i])
+                                              )
+                                              * scratch.finite_element_values.JxW(q);
+            }
+
+        }
+
+        void
+        local_assemble_stokes_mass_density_explicit (const double                                     pressure_scaling,
+                                                     const bool                                       rebuild_stokes_matrix,
+                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                     internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                     const Parameters<dim> &parameters) const
+        {
+          Assert(parameters.formulation_mass != Parameters<dim>::FormulationType::implicit_adiabatic,
+                 ExcInternalError());
+
+          const Introspection<dim> &introspection = this->introspection();
+          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+                }
+
+              const Tensor<1,dim>
+              gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+              const double compressibility
+                = scratch.material_model_outputs.compressibilities[q];
+
+              const double density = scratch.mass_densities[q];
+
+              for (unsigned int i=0; i<dofs_per_cell; ++i)
+                data.local_rhs(i) += (
                                        // add the term that results from the compressibility. compared
                                        // to the manual, this term seems to have the wrong sign, but this
                                        // is because we negate the entire equation to make sure we get
-                                       // -div(u) as the adjoint operator of grad(p) (see above where
-                                       // we assemble the matrix)
+                                       // -div(u) as the adjoint operator of grad(p)
                                        (pressure_scaling *
                                         compressibility * density *
                                         (scratch.velocity_values[q] * gravity) *
@@ -1062,69 +1187,8 @@ namespace aspect
                                      )
                                      * scratch.finite_element_values.JxW(q);
             }
-
         }
 
-
-        void
-        local_assemble_stokes_system_incompressible (const double                                     pressure_scaling,
-                                                     const bool                                       rebuild_stokes_matrix,
-                                                     internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                     internal::Assembly::CopyData::StokesSystem<dim> &data) const
-        {
-          const Introspection<dim> &introspection = this->introspection();
-          const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
-          const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
-
-          for (unsigned int q=0; q<n_q_points; ++q)
-            {
-              for (unsigned int k=0; k<dofs_per_cell; ++k)
-                {
-                  scratch.phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-                  scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
-                  if (rebuild_stokes_matrix)
-                    {
-                      scratch.grads_phi_u[k] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                      scratch.div_phi_u[k]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
-                    }
-                }
-
-              // Viscosity scalar
-              const double eta = (rebuild_stokes_matrix
-                                  ?
-                                  scratch.material_model_outputs.viscosities[q]
-                                  :
-                                  std::numeric_limits<double>::quiet_NaN());
-
-              const SymmetricTensor<4,dim> &stress_strain_director =
-                scratch.material_model_outputs.stress_strain_directors[q];
-              const bool use_tensor = (stress_strain_director !=  dealii::identity_tensor<dim> ());
-
-              const Tensor<1,dim>
-              gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
-
-              const double density = scratch.material_model_outputs.densities[q];
-
-              if (rebuild_stokes_matrix)
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    data.local_matrix(i,j) += ( (use_tensor ?
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                                 :
-                                                 eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                                - (pressure_scaling *
-                                                   scratch.div_phi_u[i] * scratch.phi_p[j])
-                                                // finally the term -div(u). note the negative sign to make this
-                                                // operator adjoint to the grad(p) term
-                                                - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
-                                              * scratch.finite_element_values.JxW(q);
-
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
-                                     * scratch.finite_element_values.JxW(q);
-            }
-        }
 
         void
         local_assemble_advection_system (const typename Simulator<dim>::AdvectionField &advection_field,
@@ -1149,6 +1213,7 @@ namespace aspect
                :
                introspection.extractors.compositional_fields[advection_field.compositional_variable]
               );
+
 
           for (unsigned int q=0; q<n_q_points; ++q)
             {
@@ -2284,24 +2349,56 @@ namespace aspect
                                 std_cxx11::_3,
                                 std_cxx11::_4,
                                 std_cxx11::_5));
-    else if (material_model->is_compressible())
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_compressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
     else
-      assemblers->local_assemble_stokes_system
-      .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_system_incompressible,
-                                std_cxx11::cref (*complete_equation_assembler),
-                                // discard cell,
-                                std_cxx11::_2,
-                                std_cxx11::_3,
-                                std_cxx11::_4,
-                                std_cxx11::_5));
+      {
+        assemblers->local_assemble_stokes_system
+        .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_incompressible,
+                                  std_cxx11::cref (*complete_equation_assembler),
+                                  // discard cell,
+                                  std_cxx11::_2,
+                                  std_cxx11::_3,
+                                  std_cxx11::_4,
+                                  std_cxx11::_5));
+
+        if (material_model->is_compressible())
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_compressible_diffusion,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5));
+
+        if (parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_mass_density_implicit,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+        else if (parameters.formulation_mass == Parameters<dim>::FormulationType::incompressible
+                 || (parameters.formulation_mass == Parameters<dim>::FormulationType::ask_material_model
+                     && !material_model->is_compressible()))
+          {
+            // do nothing, because we assembled div u =0 above already
+          }
+        else
+          assemblers->local_assemble_stokes_system
+          .connect (std_cxx11::bind(&aspect::Assemblers::CompleteEquations<dim>::local_assemble_stokes_mass_density_explicit,
+                                    std_cxx11::cref (*complete_equation_assembler),
+                                    // discard cell,
+                                    std_cxx11::_2,
+                                    std_cxx11::_3,
+                                    std_cxx11::_4,
+                                    std_cxx11::_5,
+                                    std_cxx11::cref (this->parameters)));
+
+      }
+
 
     assembler_objects.push_back (std_cxx11::shared_ptr<internal::Assembly::Assemblers::AssemblerBase<dim> >
                                  (complete_equation_assembler));
@@ -2638,6 +2735,45 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
+        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
+      {
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        scratch.mass_densities.resize(n_q_points);
+        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+            approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
+            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+          }
+
+        material_model->density_approximation(approximate_inputs, scratch.mass_densities);
+      }
+    else
+      scratch.mass_densities = scratch.material_model_outputs.densities;
+
+    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
+      {
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        scratch.mass_densities.resize(n_q_points);
+        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+            approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
+            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+          }
+
+        material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
+      }
+    else if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
+      {
+        // scratch.material_model_outputs.densities is already the full density
+      }
+    else
+      Assert(false, ExcNotImplemented());
+
     // trigger the invocation of the various functions that actually do
     // all of the assembling
     assemblers->local_assemble_stokes_system(cell, pressure_scaling, rebuild_stokes_matrix,
@@ -2900,10 +3036,21 @@ namespace aspect
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
 
+    const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+    MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
+    for (unsigned int q=0; q<n_q_points; ++q)
+      {
+        approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
+        approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
+        approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+      }
+
+    if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
+      material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
+
     heating_model_manager.evaluate(scratch.material_model_inputs,
                                    scratch.material_model_outputs,
                                    scratch.heating_model_outputs);
-
 
     // TODO: Compute artificial viscosity once per timestep instead of each time
     // temperature system is assembled (as this might happen more than once per

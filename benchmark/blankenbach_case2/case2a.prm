@@ -1,16 +1,34 @@
+# steady, BA blankenbach case 2, table 6a
+# reference values: 
+# Ra=1e4, Nu 10.0660, RMS 480.4334
+
+
+
 # A description of convection in a 2d box. See the manual for more information.
 
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2
+set CFL number = 5.0
+set Additional shared libraries                = libplugin.so
+
+set Use direct solver for Stokes system        = true#false
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 0.5
+set End time                               = 1e20
 set Output directory                       = output
+
+subsection Discretization
+  subsection Stabilization parameters
+    set alpha                                              = 2
+    set beta                                               = 0.005
+    set cR                                                 = 0.33
+  end
+end
 
 # Then there are variables that describe the tolerance of
 # the linear solver as well as how the pressure should
@@ -22,6 +40,19 @@ set Temperature solver tolerance           = 1e-10
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+
+
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = 
+    set Function expression = 0; 0
+    set Variable names      = depth
+  end
+
+end
 
 
 # Then come a number of sections that deal with the setup
@@ -58,9 +89,19 @@ subsection Initial conditions
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+    set Function expression = 1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L))
   end
 end
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function
+#    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
+#    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
+#    set Variable names      = x,z
+  end
+end
+
 
 
 # Then follows a section that describes the boundary conditions
@@ -87,16 +128,16 @@ end
 # all other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
 subsection Model settings
-  set Fixed temperature boundary indicators   = bottom, top
+  set Fixed temperature boundary indicators   = top, bottom
 
   # The next parameters then describe on which parts of the
   # boundary we prescribe a zero or nonzero velocity and
   # on which parts the flow is allowed to be tangential.
   # Here, all four sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
-  set Zero velocity boundary indicators       =
+  set Zero velocity boundary indicators       = 
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Tangential velocity boundary indicators = left, right, top, bottom
 
   # The final part of this section describes whether we
   # want to include adiabatic heating (from a small
@@ -107,36 +148,61 @@ subsection Model settings
   set Include shear heating                   = false
 end
 
-subsection Formulation
-  set Formulation = custom
-  set Temperature density approximation = adiabatic
+subsection Heating model
+  # shear heating: 1/2 eta*e(u): ... need  -> 1/2 e(u): ..  * Di/Ra
+  # adiabatic heating: alpha T (u . \nabla p)
+  # 
+
+  set List of model names = #adiabatic heating, shear heating, constant heating
+
+  subsection Constant heating
+    set Radiogenic heating rate = 1.25e-12#5e-9
+  end
+
+  subsection Adiabatic heating
+    # A flag indicating whether the adiabatic heating should be simplified
+    # from $\alpha T (\mathbf u \cdot \nabla p)$ to $ \alpha \rho T (\mathbf u
+    # \cdot \mathbf g) $. alpha=thermal exp
+    # \alpha 1 T w Ra
+    # should be Di w T
+    set Use simplified adiabatic heating = true
+  end
 end
 
-# The following two sections describe first the
-# direction (vertical) and magnitude of gravity and the
-# material model (i.e., density, viscosity, etc). We have
-# discussed the settings used here in the introduction to
-# this cookbook in the manual already.
+subsection Formulation
+  set Formulation = BA # custom
+  set Mass density approximation        = incompressible#implicit adiabatic
+  set Temperature density approximation = adiabatic
+  set Buoyancy density approximation    = adiabatic
+end
+
 subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e4   # = Ra / Thermal expansion coefficient
+    set Magnitude = 1
   end
 end
 
 
 subsection Material model
-  set Model name = simple # default:
-
-  subsection Simple model
+  #set Model name = simple compressible # default:
+  set Model name = Material
+  subsection Tan Gurnis model
     set Reference density             = 1
-    set Reference specific heat       = 1
+
+    # The value of the specific heat $cp$. Units: $J/kg/K$. => H
+    set Reference specific heat       = 1   # ??
+
+    # The reference temperature $T_0$. Units: $K$.
     set Reference temperature         = 0
-    set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1
-    set Viscosity                     = 1
+
+    # The value of the constant viscosity. Units: $kg/m/s$.
+    set Ra                     = 1e4
+    set Di = 0.0 # BA: Di=0.0
+#    set b=0
   end
+
 end
 
 
@@ -149,7 +215,10 @@ end
 subsection Mesh refinement
   set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
-  set Time steps between mesh refinement       = 0
+  set Time steps between mesh refinement       = 10
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.82
+  set Additional refinement times              = 0.05, 0.15, 0.2 #, 0.22
 end
 
 
@@ -164,10 +233,11 @@ end
 # our start time (zero) and final time (0.5) this means that
 # we will obtain 50 output files.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average
 
   subsection Visualization
-    set Time between graphical output = 0.01
+    set Time between graphical output = 1e-3
+    set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end
 end
 

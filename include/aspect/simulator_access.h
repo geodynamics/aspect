@@ -63,6 +63,10 @@ namespace aspect
   {
     template <int dim> class Interface;
   }
+  namespace AdiabaticConditions
+  {
+    template <int dim> class Interface;
+  }
   template <int dim> class MeltHandler;
 
   /**
