@@ -842,10 +842,10 @@ namespace aspect
                            << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k]*G/gravity_at_surface
                            << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k]*G/gravity_at_bottom
                            << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k]*G/gravity_at_bottom
-                           << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[k]*G/gravity_at_surface
-                           << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[k]*G/gravity_at_surface
-                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[k]*G/gravity_at_bottom
-                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[k]*G/gravity_at_bottom
+                           << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[k]/gravity_at_surface
+                           << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[k]/gravity_at_surface
+                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[k]/gravity_at_bottom
+                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[k]/gravity_at_bottom
                            << std::endl;
                     }
                 }
@@ -865,10 +865,10 @@ namespace aspect
                        << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_surface
                        << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_bottom
                        << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_bottom
-                       << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_surface
-                       << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_surface
-                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_bottom
-                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_bottom
+                       << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[n]/gravity_at_surface
+                       << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[n]/gravity_at_surface
+                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[n]/gravity_at_bottom
+                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[n]/gravity_at_bottom
                        << std::endl;
                 }
             }
