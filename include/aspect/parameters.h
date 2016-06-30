@@ -264,8 +264,14 @@ namespace aspect
      * @name Parameters that have to do with checkpointing
      * @{
      */
-    int                            checkpoint_time_secs;
+
+    int                            quicksave_time_secs;
+    int                            quicksave_steps;
+    int                            quicksave_slots;
     int                            checkpoint_steps;
+    unsigned int                   resume_from_quickslot;
+    unsigned int                   resume_from_tsn;
+
     /**
      * @}
      */

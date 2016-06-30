@@ -156,6 +156,11 @@ namespace aspect
     bool fexists(const std::string &filename);
 
     /**
+     * Retrieve the last line of a file
+     */
+    std::string get_last_line(std::ifstream *in);
+
+    /**
      * Reads the content of the ascii file @p filename on process 0 and
      * distributes the content by MPI_Bcast to all processes. The function
      * returns the content of the file on all processes.

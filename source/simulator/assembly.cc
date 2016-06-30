@@ -571,7 +571,6 @@ namespace aspect
                     average_entropy - (-global_for_max[0]));
   }
 
-
   template <int dim>
   double
   Simulator<dim>::

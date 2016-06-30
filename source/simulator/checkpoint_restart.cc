@@ -67,35 +67,9 @@ namespace aspect
     }
   }
 
-
-  template <int dim>
-  void Simulator<dim>::create_snapshot()
+  template<int dim>
+  void Simulator<dim>::save_triangulation(const std::string file_name)
   {
-    computing_timer.enter_section ("Create snapshot");
-    unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
-
-    if (my_id == 0)
-      {
-        // if we have previously written a snapshot, then keep the last
-        // snapshot in case this one fails to save. Note: static variables
-        // will only be initialied once per model run.
-        static bool previous_snapshot_exists = (parameters.resume_computation == true);
-
-        if (previous_snapshot_exists == true)
-          {
-            move_file (parameters.output_directory + "restart.mesh",
-                       parameters.output_directory + "restart.mesh.old");
-            move_file (parameters.output_directory + "restart.mesh.info",
-                       parameters.output_directory + "restart.mesh.info.old");
-            move_file (parameters.output_directory + "restart.resume.z",
-                       parameters.output_directory + "restart.resume.z.old");
-          }
-        // from now on, we know that if we get into this
-        // function again that a snapshot has previously
-        // been written
-        previous_snapshot_exists = true;
-      }
-
     // save Triangulation and Solution vectors:
     {
       std::vector<const LinearAlgebra::BlockVector *> x_system (3);
@@ -126,9 +100,14 @@ namespace aspect
           freesurface_trans->prepare_serialization(x_fs_system);
         }
 
-      triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
+      triangulation.save ((parameters.output_directory + file_name).c_str());
     }
+  }
 
+  template<int dim>
+  void Simulator<dim>::serialize_all(const std::string file_name)
+  {
+    unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
     // save general information This calls the serialization functions on all
     // processes (so that they can take additional action, if necessary, see
     // the manual) but only writes to the restart file on process 0
@@ -161,7 +140,7 @@ namespace aspect
                 (uint32_t)compressed_data_length
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z").c_str());
+          std::ofstream f ((parameters.output_directory + file_name).c_str());
           f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
           f.write((char *)&compressed_data[0], compressed_data_length);
         }
@@ -173,37 +152,149 @@ namespace aspect
 #endif
 
     }
+  }
+
+  template<int dim>
+  void Simulator<dim>::log_checkpoint(const std::string filename_for_triangulation, const std::string filename_for_serialization, bool is_quicksave)
+  {
+    std::ofstream checkpoint_log;
+    std::string checkpoint_file_name = parameters.output_directory + checkpoint_log_file;
+
+    if (!Utilities::fexists(checkpoint_file_name))
+      {
+        checkpoint_log.open(checkpoint_file_name, std::ios_base::out);
+        checkpoint_log << "Time_step_number filename_triangulation filename_mesh quicksave_slot_id" << std::endl;
+      }
+    else
+      checkpoint_log.open(checkpoint_file_name, std::ios_base::app);
+
+    if (is_quicksave)
+      checkpoint_log << timestep_number << " "
+                     << filename_for_triangulation << " "
+                     << filename_for_serialization << " "
+                     << dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) << std::endl;
+    else
+      checkpoint_log << timestep_number << " "
+                     << filename_for_triangulation << " "
+                     << filename_for_serialization << " "
+                     << "-" << std::endl;
+
+    checkpoint_log.close();
+  }
+
+  template <int dim>
+  void Simulator<dim>::create_snapshot()
+  {
+    computing_timer.enter_section ("Create snapshot");
+
+    std::string filename_for_triangulation = "restart.mesh-" + dealii::Utilities::int_to_string(timestep_number);
+    std::string filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
+
+    save_triangulation(filename_for_triangulation);
+    serialize_all(filename_for_serialization);
+
+    log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
+
     pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
   }
 
+  template <int dim>
+  void Simulator<dim>::quicksave_snapshot()
+  {
+    computing_timer.enter_section ("Create snapshot");
+
+    std::string filename_for_triangulation = "quicksave-slot-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots);
+    std::string filename_for_serialization = "quicksave-slot-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z";
+
+    save_triangulation(filename_for_triangulation);
+    serialize_all(filename_for_serialization);
+
+    log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
+
+    n_quicksaves++;
+
+    pcout << "*** Quickly saving snapshot! Snapshot Created!" << std::endl << std::endl;
+    computing_timer.exit_section();
+  }
 
 
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
-    // first check existence of the two restart files
+    std::string filename_for_triangulation;
+    std::string filename_to_deserialize;
+
+    if (parameters.resume_from_tsn != 0)
+      {
+        //Check for checkpoint files in output directory
+        if (Utilities::fexists(parameters.output_directory + "restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn)) &&
+            Utilities::fexists(parameters.output_directory + "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z"))
+          {
+            filename_for_triangulation = parameters.output_directory + "restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn);
+            filename_to_deserialize = parameters.output_directory + "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z";
+          }
+        //Check for checkpoint files in run directory
+        else if (Utilities::fexists("restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn)) &&
+                 Utilities::fexists("restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z"))
+          {
+            filename_for_triangulation = "restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn);
+            filename_to_deserialize = "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z";
+          }
+      }
+    // Try to pick up the latest checkpoint file from checkpoint.log in the output directory.
+    else if (Utilities::fexists(parameters.output_directory + "checkpoint.log"))
+      {
+        std::ifstream checkpoint_log(parameters.output_directory + "checkpoint.log", std::ios_base::in);
+        if (!checkpoint_log)
+          {
+            AssertThrow (false,
+                         ExcMessage("Failed to find the checkpoint log file in " + parameters.output_directory +
+                                    ". Please rerun aspect or specify a valid file name to resume from."
+                                   ))
+          }
+
+        std::string last_line = Utilities::get_last_line(&checkpoint_log);
+        std::vector<std::string> tokens;
+        std::string delimiter = " ";
+
+        size_t pos = 0;
+        while ((pos = last_line.find(delimiter)) != std::string::npos)
+          {
+            tokens.push_back(last_line.substr(0, pos));
+            last_line.erase(0, pos + delimiter.length());
+          }
+
+        filename_for_triangulation = parameters.output_directory + tokens[1];
+        filename_to_deserialize = parameters.output_directory + tokens[2];
+      }
+    // For backward compatability purposes, we restart from the below checkpoint files.
+    else
+      {
+        filename_for_triangulation = parameters.output_directory + "restart.mesh";
+        filename_to_deserialize = parameters.output_directory + "restart.resume.z";
+      }
+
+
     {
-      const std::string filename = parameters.output_directory + "restart.mesh";
-      std::ifstream in (filename.c_str());
-      if (!in)
-        AssertThrow (false,
-                     ExcMessage (std::string("You are trying to restart a previous computation, "
-                                             "but the restart file <")
-                                 +
-                                 filename
-                                 +
-                                 "> does not appear to exist!"));
+      std::ifstream in(filename_for_triangulation.c_str());
+      if (!in) AssertThrow (false,
+                              ExcMessage(std::string("You are trying to restart a previous computation, "
+                                                     "but the restart file <")
+                                         +
+                                         filename_for_triangulation
+                                         +
+                                         "> does not appear to exist!"));
     }
+
     {
-      const std::string filename = parameters.output_directory + "restart.resume.z";
-      std::ifstream in (filename.c_str());
+      std::ifstream in (filename_to_deserialize.c_str());
       if (!in)
         AssertThrow (false,
                      ExcMessage (std::string("You are trying to restart a previous computation, "
                                              "but the restart file <")
                                  +
-                                 filename
+                                 filename_to_deserialize
                                  +
                                  "> does not appear to exist!"));
     }
@@ -212,7 +303,7 @@ namespace aspect
 
     try
       {
-        triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
+        triangulation.load ((filename_for_triangulation).c_str());
       }
     catch (...)
       {
@@ -269,7 +360,7 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
+        std::ifstream ifs ((filename_to_deserialize).c_str());
         AssertThrow(ifs.is_open(),
                     ExcMessage("Cannot open snapshot resume file."));
 
@@ -287,12 +378,13 @@ namespace aspect
         AssertThrow (err == Z_OK,
                      ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
                                  +
-                                 Utilities::int_to_string(err)));
+                                 dealii::Utilities::int_to_string(err)));
 
         {
           std::istringstream ss;
           ss.str(std::string (&uncompressed[0], uncompressed_size));
           aspect::iarchive ia (ss);
+
           ia >> (*this);
         }
 #else
@@ -314,7 +406,6 @@ namespace aspect
                                  ">"));
       }
   }
-
 }
 
 //why do we need this?!
@@ -335,6 +426,7 @@ namespace aspect
     ar &timestep_number;
     ar &pre_refinement_step;
     ar &pressure_adjustment;
+    ar &n_quicksaves;
 
     ar &postprocess_manager &statistics;
 
@@ -347,6 +439,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::create_snapshot(); \
+  template void Simulator<dim>::quicksave_snapshot(); \
   template void Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
