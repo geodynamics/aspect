@@ -45,10 +45,6 @@ namespace aspect
     class Simple : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
-        virtual void density_approximation (const MaterialModel::MaterialModelInputs<dim> &inputs,
-                                            std::vector<double> &densities) const;
-
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 

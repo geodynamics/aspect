@@ -30,16 +30,6 @@ namespace aspect
     template <int dim>
     void
     Simple<dim>::
-    density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
-                           std::vector<double> &densities) const
-    {
-      for (unsigned int q=0; q < in.position.size(); ++q)
-        densities[q] = reference_rho;
-    }
-
-    template <int dim>
-    void
-    Simple<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
