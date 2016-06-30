@@ -87,22 +87,6 @@ namespace aspect
         double
         get_isotherm_depth (const double latitude,
                             const double longitude) const;
-
-        /**
-         * Function that returns latitude and longitude from ECEF Cartesian
-         * coordinates that account for ellipsoidal shape of the Earth
-         * with WGS84 parameters.
-         */
-        std::pair<double, double>
-        lat_long_from_xyz_WGS84(const Point<3> &pos) const;
-
-        /**
-        * Return distance from the Earth's center to a given coordinate on the
-        * surface in the WGS84 ECEF reference frane. Note that this radius is constant
-        * for all coordinates along one line of latitude.
-        */
-        double
-        radius_WGS84(const double theta) const;
     };
   }
 }
