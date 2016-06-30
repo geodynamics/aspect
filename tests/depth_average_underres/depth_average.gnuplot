@@ -5,703 +5,150 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <temperature> <adiabatic_temperature> <velocity_magnitude> <sinking_velocity> <Vs> <Vp> <viscosity> <vertical_heat_flux> 
-0 0 nan 0 nan nan nan nan nan nan 
-0.01 0 nan 0 nan nan nan nan nan nan 
+0 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
+0.047619 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
 
-0 0 nan 0 nan nan nan nan nan nan 
-0.01 0 nan 0 nan nan nan nan nan nan 
+0 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
+0.047619 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
 
 
-0.01 0 nan 0 nan nan nan nan nan nan 
-0.02 0 nan 0 nan nan nan nan nan nan 
+0.047619 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
+0.0952381 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
 
-0.01 0 nan 0 nan nan nan nan nan nan 
-0.02 0 nan 0 nan nan nan nan nan nan 
+0.047619 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
+0.0952381 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
 
 
-0.02 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
-0.03 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
+0.0952381 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
+0.142857 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
 
-0.02 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
-0.03 0 0.025 0 1.63581 0.0686558 -1 -1 1 1.0001 
+0.0952381 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
+0.142857 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
 
 
-0.03 0 nan 0 nan nan nan nan nan nan 
-0.04 0 nan 0 nan nan nan nan nan nan 
+0.142857 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
+0.190476 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
 
-0.03 0 nan 0 nan nan nan nan nan nan 
-0.04 0 nan 0 nan nan nan nan nan nan 
+0.142857 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
+0.190476 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
 
 
-0.04 0 nan 0 nan nan nan nan nan nan 
-0.05 0 nan 0 nan nan nan nan nan nan 
+0.190476 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
+0.238095 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
 
-0.04 0 nan 0 nan nan nan nan nan nan 
-0.05 0 nan 0 nan nan nan nan nan nan 
+0.190476 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
+0.238095 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
 
 
-0.05 0 nan 0 nan nan nan nan nan nan 
-0.06 0 nan 0 nan nan nan nan nan nan 
+0.238095 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
+0.285714 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
 
-0.05 0 nan 0 nan nan nan nan nan nan 
-0.06 0 nan 0 nan nan nan nan nan nan 
+0.238095 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
+0.285714 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
 
 
-0.06 0 nan 0 nan nan nan nan nan nan 
-0.07 0 nan 0 nan nan nan nan nan nan 
+0.285714 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
+0.333333 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
 
-0.06 0 nan 0 nan nan nan nan nan nan 
-0.07 0 nan 0 nan nan nan nan nan nan 
+0.285714 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
+0.333333 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
 
 
-0.07 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
-0.08 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
+0.333333 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
+0.380952 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
 
-0.07 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
-0.08 0 0.075 0 1.65005 0.197504 -1 -1 1 1.00078 
+0.333333 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
+0.380952 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
 
 
-0.08 0 nan 0 nan nan nan nan nan nan 
-0.09 0 nan 0 nan nan nan nan nan nan 
+0.380952 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
+0.428571 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
 
-0.08 0 nan 0 nan nan nan nan nan nan 
-0.09 0 nan 0 nan nan nan nan nan nan 
+0.380952 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
+0.428571 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
 
 
-0.09 0 nan 0 nan nan nan nan nan nan 
-0.1 0 nan 0 nan nan nan nan nan nan 
+0.428571 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
+0.47619 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
 
-0.09 0 nan 0 nan nan nan nan nan nan 
-0.1 0 nan 0 nan nan nan nan nan nan 
+0.428571 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
+0.47619 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
 
 
-0.1 0 nan 0 nan nan nan nan nan nan 
-0.11 0 nan 0 nan nan nan nan nan nan 
+0.47619 0 nan 0 nan nan nan nan nan nan 
+0.52381 0 nan 0 nan nan nan nan nan nan 
 
-0.1 0 nan 0 nan nan nan nan nan nan 
-0.11 0 nan 0 nan nan nan nan nan nan 
+0.47619 0 nan 0 nan nan nan nan nan nan 
+0.52381 0 nan 0 nan nan nan nan nan nan 
 
 
-0.11 0 nan 0 nan nan nan nan nan nan 
-0.12 0 nan 0 nan nan nan nan nan nan 
+0.52381 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
+0.571429 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
 
-0.11 0 nan 0 nan nan nan nan nan nan 
-0.12 0 nan 0 nan nan nan nan nan nan 
+0.52381 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
+0.571429 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
 
 
-0.12 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
-0.13 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
+0.571429 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
+0.619048 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
 
-0.12 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
-0.13 0 0.125 0 1.67932 0.315069 -1 -1 1 1.00198 
+0.571429 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
+0.619048 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
 
 
-0.13 0 nan 0 nan nan nan nan nan nan 
-0.14 0 nan 0 nan nan nan nan nan nan 
+0.619048 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
+0.666667 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
 
-0.13 0 nan 0 nan nan nan nan nan nan 
-0.14 0 nan 0 nan nan nan nan nan nan 
+0.619048 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
+0.666667 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
 
 
-0.14 0 nan 0 nan nan nan nan nan nan 
-0.15 0 nan 0 nan nan nan nan nan nan 
+0.666667 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
+0.714286 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
 
-0.14 0 nan 0 nan nan nan nan nan nan 
-0.15 0 nan 0 nan nan nan nan nan nan 
+0.666667 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
+0.714286 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
 
 
-0.15 0 nan 0 nan nan nan nan nan nan 
-0.16 0 nan 0 nan nan nan nan nan nan 
+0.714286 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
+0.761905 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
 
-0.15 0 nan 0 nan nan nan nan nan nan 
-0.16 0 nan 0 nan nan nan nan nan nan 
+0.714286 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
+0.761905 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
 
 
-0.16 0 nan 0 nan nan nan nan nan nan 
-0.17 0 nan 0 nan nan nan nan nan nan 
+0.761905 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
+0.809524 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
 
-0.16 0 nan 0 nan nan nan nan nan nan 
-0.17 0 nan 0 nan nan nan nan nan nan 
+0.761905 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
+0.809524 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
 
 
-0.17 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
-0.18 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
+0.809524 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
+0.857143 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
 
-0.17 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
-0.18 0 0.175 0 1.70605 0.42135 -1 -1 1 1.00352 
+0.809524 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
+0.857143 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
 
 
-0.18 0 nan 0 nan nan nan nan nan nan 
-0.19 0 nan 0 nan nan nan nan nan nan 
+0.857143 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
+0.904762 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
 
-0.18 0 nan 0 nan nan nan nan nan nan 
-0.19 0 nan 0 nan nan nan nan nan nan 
+0.857143 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
+0.904762 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
 
 
-0.19 0 nan 0 nan nan nan nan nan nan 
-0.2 0 nan 0 nan nan nan nan nan nan 
+0.904762 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
+0.952381 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
 
-0.19 0 nan 0 nan nan nan nan nan nan 
-0.2 0 nan 0 nan nan nan nan nan nan 
+0.904762 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
+0.952381 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
 
 
-0.2 0 nan 0 nan nan nan nan nan nan 
-0.21 0 nan 0 nan nan nan nan nan nan 
+0.952381 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
+1 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
 
-0.2 0 nan 0 nan nan nan nan nan nan 
-0.21 0 nan 0 nan nan nan nan nan nan 
-
-
-0.21 0 nan 0 nan nan nan nan nan nan 
-0.22 0 nan 0 nan nan nan nan nan nan 
-
-0.21 0 nan 0 nan nan nan nan nan nan 
-0.22 0 nan 0 nan nan nan nan nan nan 
-
-
-0.22 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
-0.23 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
-
-0.22 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
-0.23 0 0.225 0 1.72252 0.516346 -1 -1 1 1.00524 
-
-
-0.23 0 nan 0 nan nan nan nan nan nan 
-0.24 0 nan 0 nan nan nan nan nan nan 
-
-0.23 0 nan 0 nan nan nan nan nan nan 
-0.24 0 nan 0 nan nan nan nan nan nan 
-
-
-0.24 0 nan 0 nan nan nan nan nan nan 
-0.25 0 nan 0 nan nan nan nan nan nan 
-
-0.24 0 nan 0 nan nan nan nan nan nan 
-0.25 0 nan 0 nan nan nan nan nan nan 
-
-
-0.25 0 nan 0 nan nan nan nan nan nan 
-0.26 0 nan 0 nan nan nan nan nan nan 
-
-0.25 0 nan 0 nan nan nan nan nan nan 
-0.26 0 nan 0 nan nan nan nan nan nan 
-
-
-0.26 0 nan 0 nan nan nan nan nan nan 
-0.27 0 nan 0 nan nan nan nan nan nan 
-
-0.26 0 nan 0 nan nan nan nan nan nan 
-0.27 0 nan 0 nan nan nan nan nan nan 
-
-
-0.27 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
-0.28 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
-
-0.27 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
-0.28 0 0.275 0 1.72555 0.600059 -1 -1 1 1.00701 
-
-
-0.28 0 nan 0 nan nan nan nan nan nan 
-0.29 0 nan 0 nan nan nan nan nan nan 
-
-0.28 0 nan 0 nan nan nan nan nan nan 
-0.29 0 nan 0 nan nan nan nan nan nan 
-
-
-0.29 0 nan 0 nan nan nan nan nan nan 
-0.3 0 nan 0 nan nan nan nan nan nan 
-
-0.29 0 nan 0 nan nan nan nan nan nan 
-0.3 0 nan 0 nan nan nan nan nan nan 
-
-
-0.3 0 nan 0 nan nan nan nan nan nan 
-0.31 0 nan 0 nan nan nan nan nan nan 
-
-0.3 0 nan 0 nan nan nan nan nan nan 
-0.31 0 nan 0 nan nan nan nan nan nan 
-
-
-0.31 0 nan 0 nan nan nan nan nan nan 
-0.32 0 nan 0 nan nan nan nan nan nan 
-
-0.31 0 nan 0 nan nan nan nan nan nan 
-0.32 0 nan 0 nan nan nan nan nan nan 
-
-
-0.32 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
-0.33 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
-
-0.32 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
-0.33 0 0.325 0 1.71506 0.672488 -1 -1 1 1.0087 
-
-
-0.33 0 nan 0 nan nan nan nan nan nan 
-0.34 0 nan 0 nan nan nan nan nan nan 
-
-0.33 0 nan 0 nan nan nan nan nan nan 
-0.34 0 nan 0 nan nan nan nan nan nan 
-
-
-0.34 0 nan 0 nan nan nan nan nan nan 
-0.35 0 nan 0 nan nan nan nan nan nan 
-
-0.34 0 nan 0 nan nan nan nan nan nan 
-0.35 0 nan 0 nan nan nan nan nan nan 
-
-
-0.35 0 nan 0 nan nan nan nan nan nan 
-0.36 0 nan 0 nan nan nan nan nan nan 
-
-0.35 0 nan 0 nan nan nan nan nan nan 
-0.36 0 nan 0 nan nan nan nan nan nan 
-
-
-0.36 0 nan 0 nan nan nan nan nan nan 
-0.37 0 nan 0 nan nan nan nan nan nan 
-
-0.36 0 nan 0 nan nan nan nan nan nan 
-0.37 0 nan 0 nan nan nan nan nan nan 
-
-
-0.37 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
-0.38 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
-
-0.37 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
-0.38 0 0.375 0 1.69403 0.733632 -1 -1 1 1.01022 
-
-
-0.38 0 nan 0 nan nan nan nan nan nan 
-0.39 0 nan 0 nan nan nan nan nan nan 
-
-0.38 0 nan 0 nan nan nan nan nan nan 
-0.39 0 nan 0 nan nan nan nan nan nan 
-
-
-0.39 0 nan 0 nan nan nan nan nan nan 
-0.4 0 nan 0 nan nan nan nan nan nan 
-
-0.39 0 nan 0 nan nan nan nan nan nan 
-0.4 0 nan 0 nan nan nan nan nan nan 
-
-
-0.4 0 nan 0 nan nan nan nan nan nan 
-0.41 0 nan 0 nan nan nan nan nan nan 
-
-0.4 0 nan 0 nan nan nan nan nan nan 
-0.41 0 nan 0 nan nan nan nan nan nan 
-
-
-0.41 0 nan 0 nan nan nan nan nan nan 
-0.42 0 nan 0 nan nan nan nan nan nan 
-
-0.41 0 nan 0 nan nan nan nan nan nan 
-0.42 0 nan 0 nan nan nan nan nan nan 
-
-
-0.42 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
-0.43 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
-
-0.42 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
-0.43 0 0.425 0 1.66993 0.783493 -1 -1 1 1.01148 
-
-
-0.43 0 nan 0 nan nan nan nan nan nan 
-0.44 0 nan 0 nan nan nan nan nan nan 
-
-0.43 0 nan 0 nan nan nan nan nan nan 
-0.44 0 nan 0 nan nan nan nan nan nan 
-
-
-0.44 0 nan 0 nan nan nan nan nan nan 
-0.45 0 nan 0 nan nan nan nan nan nan 
-
-0.44 0 nan 0 nan nan nan nan nan nan 
-0.45 0 nan 0 nan nan nan nan nan nan 
-
-
-0.45 0 nan 0 nan nan nan nan nan nan 
-0.46 0 nan 0 nan nan nan nan nan nan 
-
-0.45 0 nan 0 nan nan nan nan nan nan 
-0.46 0 nan 0 nan nan nan nan nan nan 
-
-
-0.46 0 nan 0 nan nan nan nan nan nan 
-0.47 0 nan 0 nan nan nan nan nan nan 
-
-0.46 0 nan 0 nan nan nan nan nan nan 
-0.47 0 nan 0 nan nan nan nan nan nan 
-
-
-0.47 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
-0.48 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
-
-0.47 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
-0.48 0 0.475 0 1.65995 0.82207 -1 -1 1 1.0124 
-
-
-0.48 0 nan 0 nan nan nan nan nan nan 
-0.49 0 nan 0 nan nan nan nan nan nan 
-
-0.48 0 nan 0 nan nan nan nan nan nan 
-0.49 0 nan 0 nan nan nan nan nan nan 
-
-
-0.49 0 nan 0 nan nan nan nan nan nan 
-0.5 0 nan 0 nan nan nan nan nan nan 
-
-0.49 0 nan 0 nan nan nan nan nan nan 
-0.5 0 nan 0 nan nan nan nan nan nan 
-
-
-0.5 0 nan 0 nan nan nan nan nan nan 
-0.51 0 nan 0 nan nan nan nan nan nan 
-
-0.5 0 nan 0 nan nan nan nan nan nan 
-0.51 0 nan 0 nan nan nan nan nan nan 
-
-
-0.51 0 nan 0 nan nan nan nan nan nan 
-0.52 0 nan 0 nan nan nan nan nan nan 
-
-0.51 0 nan 0 nan nan nan nan nan nan 
-0.52 0 nan 0 nan nan nan nan nan nan 
-
-
-0.52 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
-0.53 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
-
-0.52 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
-0.53 0 0.525 0 1.65994 0.822076 -1 -1 1 1.01239 
-
-
-0.53 0 nan 0 nan nan nan nan nan nan 
-0.54 0 nan 0 nan nan nan nan nan nan 
-
-0.53 0 nan 0 nan nan nan nan nan nan 
-0.54 0 nan 0 nan nan nan nan nan nan 
-
-
-0.54 0 nan 0 nan nan nan nan nan nan 
-0.55 0 nan 0 nan nan nan nan nan nan 
-
-0.54 0 nan 0 nan nan nan nan nan nan 
-0.55 0 nan 0 nan nan nan nan nan nan 
-
-
-0.55 0 nan 0 nan nan nan nan nan nan 
-0.56 0 nan 0 nan nan nan nan nan nan 
-
-0.55 0 nan 0 nan nan nan nan nan nan 
-0.56 0 nan 0 nan nan nan nan nan nan 
-
-
-0.56 0 nan 0 nan nan nan nan nan nan 
-0.57 0 nan 0 nan nan nan nan nan nan 
-
-0.56 0 nan 0 nan nan nan nan nan nan 
-0.57 0 nan 0 nan nan nan nan nan nan 
-
-
-0.57 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
-0.58 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
-
-0.57 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
-0.58 0 0.575 0 1.66992 0.783509 -1 -1 1 1.01145 
-
-
-0.58 0 nan 0 nan nan nan nan nan nan 
-0.59 0 nan 0 nan nan nan nan nan nan 
-
-0.58 0 nan 0 nan nan nan nan nan nan 
-0.59 0 nan 0 nan nan nan nan nan nan 
-
-
-0.59 0 nan 0 nan nan nan nan nan nan 
-0.6 0 nan 0 nan nan nan nan nan nan 
-
-0.59 0 nan 0 nan nan nan nan nan nan 
-0.6 0 nan 0 nan nan nan nan nan nan 
-
-
-0.6 0 nan 0 nan nan nan nan nan nan 
-0.61 0 nan 0 nan nan nan nan nan nan 
-
-0.6 0 nan 0 nan nan nan nan nan nan 
-0.61 0 nan 0 nan nan nan nan nan nan 
-
-
-0.61 0 nan 0 nan nan nan nan nan nan 
-0.62 0 nan 0 nan nan nan nan nan nan 
-
-0.61 0 nan 0 nan nan nan nan nan nan 
-0.62 0 nan 0 nan nan nan nan nan nan 
-
-
-0.62 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
-0.63 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
-
-0.62 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
-0.63 0 0.625 0 1.69403 0.733656 -1 -1 1 1.0102 
-
-
-0.63 0 nan 0 nan nan nan nan nan nan 
-0.64 0 nan 0 nan nan nan nan nan nan 
-
-0.63 0 nan 0 nan nan nan nan nan nan 
-0.64 0 nan 0 nan nan nan nan nan nan 
-
-
-0.64 0 nan 0 nan nan nan nan nan nan 
-0.65 0 nan 0 nan nan nan nan nan nan 
-
-0.64 0 nan 0 nan nan nan nan nan nan 
-0.65 0 nan 0 nan nan nan nan nan nan 
-
-
-0.65 0 nan 0 nan nan nan nan nan nan 
-0.66 0 nan 0 nan nan nan nan nan nan 
-
-0.65 0 nan 0 nan nan nan nan nan nan 
-0.66 0 nan 0 nan nan nan nan nan nan 
-
-
-0.66 0 nan 0 nan nan nan nan nan nan 
-0.67 0 nan 0 nan nan nan nan nan nan 
-
-0.66 0 nan 0 nan nan nan nan nan nan 
-0.67 0 nan 0 nan nan nan nan nan nan 
-
-
-0.67 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
-0.68 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
-
-0.67 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
-0.68 0 0.675 0 1.71507 0.672517 -1 -1 1 1.00871 
-
-
-0.68 0 nan 0 nan nan nan nan nan nan 
-0.69 0 nan 0 nan nan nan nan nan nan 
-
-0.68 0 nan 0 nan nan nan nan nan nan 
-0.69 0 nan 0 nan nan nan nan nan nan 
-
-
-0.69 0 nan 0 nan nan nan nan nan nan 
-0.7 0 nan 0 nan nan nan nan nan nan 
-
-0.69 0 nan 0 nan nan nan nan nan nan 
-0.7 0 nan 0 nan nan nan nan nan nan 
-
-
-0.7 0 nan 0 nan nan nan nan nan nan 
-0.71 0 nan 0 nan nan nan nan nan nan 
-
-0.7 0 nan 0 nan nan nan nan nan nan 
-0.71 0 nan 0 nan nan nan nan nan nan 
-
-
-0.71 0 nan 0 nan nan nan nan nan nan 
-0.72 0 nan 0 nan nan nan nan nan nan 
-
-0.71 0 nan 0 nan nan nan nan nan nan 
-0.72 0 nan 0 nan nan nan nan nan nan 
-
-
-0.72 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
-0.73 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
-
-0.72 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
-0.73 0 0.725 0 1.72558 0.60009 -1 -1 1 1.00705 
-
-
-0.73 0 nan 0 nan nan nan nan nan nan 
-0.74 0 nan 0 nan nan nan nan nan nan 
-
-0.73 0 nan 0 nan nan nan nan nan nan 
-0.74 0 nan 0 nan nan nan nan nan nan 
-
-
-0.74 0 nan 0 nan nan nan nan nan nan 
-0.75 0 nan 0 nan nan nan nan nan nan 
-
-0.74 0 nan 0 nan nan nan nan nan nan 
-0.75 0 nan 0 nan nan nan nan nan nan 
-
-
-0.75 0 nan 0 nan nan nan nan nan nan 
-0.76 0 nan 0 nan nan nan nan nan nan 
-
-0.75 0 nan 0 nan nan nan nan nan nan 
-0.76 0 nan 0 nan nan nan nan nan nan 
-
-
-0.76 0 nan 0 nan nan nan nan nan nan 
-0.77 0 nan 0 nan nan nan nan nan nan 
-
-0.76 0 nan 0 nan nan nan nan nan nan 
-0.77 0 nan 0 nan nan nan nan nan nan 
-
-
-0.77 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
-0.78 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
-
-0.77 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
-0.78 0 0.775 0 1.72256 0.516378 -1 -1 1 1.00531 
-
-
-0.78 0 nan 0 nan nan nan nan nan nan 
-0.79 0 nan 0 nan nan nan nan nan nan 
-
-0.78 0 nan 0 nan nan nan nan nan nan 
-0.79 0 nan 0 nan nan nan nan nan nan 
-
-
-0.79 0 nan 0 nan nan nan nan nan nan 
-0.8 0 nan 0 nan nan nan nan nan nan 
-
-0.79 0 nan 0 nan nan nan nan nan nan 
-0.8 0 nan 0 nan nan nan nan nan nan 
-
-
-0.8 0 nan 0 nan nan nan nan nan nan 
-0.81 0 nan 0 nan nan nan nan nan nan 
-
-0.8 0 nan 0 nan nan nan nan nan nan 
-0.81 0 nan 0 nan nan nan nan nan nan 
-
-
-0.81 0 nan 0 nan nan nan nan nan nan 
-0.82 0 nan 0 nan nan nan nan nan nan 
-
-0.81 0 nan 0 nan nan nan nan nan nan 
-0.82 0 nan 0 nan nan nan nan nan nan 
-
-
-0.82 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
-0.83 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
-
-0.82 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
-0.83 0 0.825 0 1.7061 0.421379 -1 -1 1 1.00361 
-
-
-0.83 0 nan 0 nan nan nan nan nan nan 
-0.84 0 nan 0 nan nan nan nan nan nan 
-
-0.83 0 nan 0 nan nan nan nan nan nan 
-0.84 0 nan 0 nan nan nan nan nan nan 
-
-
-0.84 0 nan 0 nan nan nan nan nan nan 
-0.85 0 nan 0 nan nan nan nan nan nan 
-
-0.84 0 nan 0 nan nan nan nan nan nan 
-0.85 0 nan 0 nan nan nan nan nan nan 
-
-
-0.85 0 nan 0 nan nan nan nan nan nan 
-0.86 0 nan 0 nan nan nan nan nan nan 
-
-0.85 0 nan 0 nan nan nan nan nan nan 
-0.86 0 nan 0 nan nan nan nan nan nan 
-
-
-0.86 0 nan 0 nan nan nan nan nan nan 
-0.87 0 nan 0 nan nan nan nan nan nan 
-
-0.86 0 nan 0 nan nan nan nan nan nan 
-0.87 0 nan 0 nan nan nan nan nan nan 
-
-
-0.87 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
-0.88 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
-
-0.87 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
-0.88 0 0.875 0 1.67937 0.315093 -1 -1 1 1.00208 
-
-
-0.88 0 nan 0 nan nan nan nan nan nan 
-0.89 0 nan 0 nan nan nan nan nan nan 
-
-0.88 0 nan 0 nan nan nan nan nan nan 
-0.89 0 nan 0 nan nan nan nan nan nan 
-
-
-0.89 0 nan 0 nan nan nan nan nan nan 
-0.9 0 nan 0 nan nan nan nan nan nan 
-
-0.89 0 nan 0 nan nan nan nan nan nan 
-0.9 0 nan 0 nan nan nan nan nan nan 
-
-
-0.9 0 nan 0 nan nan nan nan nan nan 
-0.91 0 nan 0 nan nan nan nan nan nan 
-
-0.9 0 nan 0 nan nan nan nan nan nan 
-0.91 0 nan 0 nan nan nan nan nan nan 
-
-
-0.91 0 nan 0 nan nan nan nan nan nan 
-0.92 0 nan 0 nan nan nan nan nan nan 
-
-0.91 0 nan 0 nan nan nan nan nan nan 
-0.92 0 nan 0 nan nan nan nan nan nan 
-
-
-0.92 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
-0.93 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
-
-0.92 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
-0.93 0 0.925 0 1.6501 0.197521 -1 -1 1 1.00087 
-
-
-0.93 0 nan 0 nan nan nan nan nan nan 
-0.94 0 nan 0 nan nan nan nan nan nan 
-
-0.93 0 nan 0 nan nan nan nan nan nan 
-0.94 0 nan 0 nan nan nan nan nan nan 
-
-
-0.94 0 nan 0 nan nan nan nan nan nan 
-0.95 0 nan 0 nan nan nan nan nan nan 
-
-0.94 0 nan 0 nan nan nan nan nan nan 
-0.95 0 nan 0 nan nan nan nan nan nan 
-
-
-0.95 0 nan 0 nan nan nan nan nan nan 
-0.96 0 nan 0 nan nan nan nan nan nan 
-
-0.95 0 nan 0 nan nan nan nan nan nan 
-0.96 0 nan 0 nan nan nan nan nan nan 
-
-
-0.96 0 nan 0 nan nan nan nan nan nan 
-0.97 0 nan 0 nan nan nan nan nan nan 
-
-0.96 0 nan 0 nan nan nan nan nan nan 
-0.97 0 nan 0 nan nan nan nan nan nan 
-
-
-0.97 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
-0.98 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
-
-0.97 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
-0.98 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
-
-
-0.98 0 nan 0 nan nan nan nan nan nan 
-0.99 0 nan 0 nan nan nan nan nan nan 
-
-0.98 0 nan 0 nan nan nan nan nan nan 
-0.99 0 nan 0 nan nan nan nan nan nan 
-
-
-0.99 0 nan 0 nan nan nan nan nan nan 
-1 0 nan 0 nan nan nan nan nan nan 
-
-0.99 0 nan 0 nan nan nan nan nan nan 
-1 0 nan 0 nan nan nan nan nan nan 
+0.952381 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
+1 0 0.975 0 1.63587 0.0686618 -1 -1 1 1.00013 
 
 

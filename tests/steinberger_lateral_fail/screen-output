@@ -3,7 +3,8 @@ Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 2,724 (1,666+225+833)
 
 *** Timestep 0:  t=0 years
-	Warning: No quadrature points found in at least one depth block. Averages are likely underresolved.
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
 
 
 Exception on processing: 
@@ -13,8 +14,8 @@ An error occurred in file <steinberger.cc> in function
 The violated condition was: 
     numbers::is_finite(avg_temp[i])
 The name and call sequence of the exception was:
-    ExcMessage("Too many depth bands in lateral average for current refinement")
+    ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging by reducing the number of" " slices in the viscosity prefactor file.")
 Additional Information: 
-Too many depth bands in lateral average for current refinement
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it. Consider reducing number of depth layers for averaging by reducing the number of slices in the viscosity prefactor file.
 
 Aborting!
