@@ -59,7 +59,6 @@ subsection Material model
     set Latent heat                      = false
     set Compressible                     = false
     set Reference viscosity              = 1e21
-    set Use lateral average temperature for viscosity = false
   end
 end
 

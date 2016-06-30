@@ -1,9 +1,9 @@
 # Duplicate of depth_average_01, with coarser mesh
 
 # Test the 'depth average' postprocessor on a coarse mesh version of
-# convection_box.prm. This test makes no sense since we average over
-# 100 depth intervals but we only compute on a 2x2 mesh -- several of
-# the depth intervals will receive no quadrature points
+# convection_box.prm. This test makes no sense since we average over 21 depth
+# intervals but we only compute on a 2x2 mesh -- one of the depth intervals
+# will receive no quadrature points
 
 set Dimension                              = 2
 
@@ -108,7 +108,7 @@ subsection Postprocess
 
   subsection Depth average
     set Time between graphical output = 0.1
-    set Number of zones = 100
+    set Number of zones = 21
   end
 end
 
