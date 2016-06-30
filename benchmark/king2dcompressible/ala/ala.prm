@@ -1,7 +1,13 @@
-# King2010 EBA, table 2
+# King2010 ALA, table ?
+
+# questions:
+# grueneisen gamma_r = ?
+# T_surf, \delta T_r, T_0 for ALA and EBA
+# H = ?
+
+# NOTE: incomplete!
 
 # reference values: 
-# Ra=1e4, Di 0.25, , Nu 4.0900, RMS 38.4000
 
 
 
@@ -54,7 +60,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = 1; 0
+    set Function expression = 0; 0
     set Variable names      = depth
   end
 
@@ -95,7 +101,7 @@ subsection Initial conditions
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = 1 + 1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L))
+    set Function expression =  1+1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L))
   end
 end
 
@@ -109,7 +115,6 @@ subsection Initial conditions
 end
 
 
-
 # Then follows a section that describes the boundary conditions
 # for the temperature. The model we choose is called 'box' and
 # allows to set a constant temperature on each of the four sides
@@ -121,10 +126,10 @@ subsection Boundary temperature model
   set Model name = box
 
   subsection Box
-    set Bottom temperature = 2
+    set Bottom temperature = 1
     set Left temperature   = 0
     set Right temperature  = 0
-    set Top temperature    = 1
+    set Top temperature    = 0
   end
 end
 
@@ -201,7 +206,7 @@ subsection Material model
     set Reference specific heat       = 1   # ??
 
     # The reference temperature $T_0$. Units: $K$.
-    set Reference temperature         = 1
+    set Reference temperature         = 0
 
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
@@ -239,7 +244,7 @@ end
 # our start time (zero) and final time (0.5) this means that
 # we will obtain 50 output files.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average, heating statistics
 
   subsection Visualization
     set Time between graphical output = 1e-3
