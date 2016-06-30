@@ -87,7 +87,16 @@ namespace aspect
     template <int dim>
     std_cxx11::array<double,dim>
     spherical_coordinates(const Point<dim> &position);
-
+      
+    /**
+     * Returns distance from the Earth's center, latitude and longitude from a 
+     * given ECEF Cartesian coordinates that account for ellipsoidal shape of
+     * the Earth with WGS84 parameters.
+     */ 
+    template <int dim>
+    std_cxx11::array<double,dim>
+    WGS84_coordinates(const Point<dim> &position);
+    
     /**
      * Return the cartesian point of a spherical position defined by radius,
      * phi and theta (polar angle). If the dimension is set to 2 theta is
