@@ -119,6 +119,50 @@ namespace aspect
       return ccoord;
     }
 
+    template <int dim>
+    std_cxx11::array<double,3>
+    cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
+                                         const double semi_major_axis_a,
+                                         const double eccentricity)
+    {
+      const double R    = semi_major_axis_a;
+      const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
+      const double ep     = std::sqrt((R * R - b * b) / (b * b));
+      const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
+      const double th     = std::atan2(R * x(2), b * p);
+      const double phi    = std::atan2(x(1), x(0));
+      const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
+                                       (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
+      const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
+      const double R_plus_d = p / std::cos(theta);
+
+      std_cxx11::array<double,3> phi_theta_d;
+      phi_theta_d[0] = phi;
+
+      phi_theta_d[1] = theta;
+      phi_theta_d[2] = R_plus_d - R_bar;
+      return phi_theta_d;
+    }
+
+    template <int dim>
+    Point<3>
+    ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                         const double semi_major_axis_a,
+                                         const double eccentricity)
+    {
+      const double phi   = phi_theta_d[0];
+      const double theta = phi_theta_d[1];
+      const double d     = phi_theta_d[2];
+
+      const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
+                                                              std::sin(theta) * std::sin(theta)));
+
+      return Point<3> ((R_bar + d) * std::cos(phi) * std::cos(theta),
+                       (R_bar + d) * std::sin(phi) * std::cos(theta),
+                       ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
+
+    }
+
 
     template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>

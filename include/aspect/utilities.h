@@ -98,6 +98,27 @@ namespace aspect
     spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
     /**
+     * Returns ellispoidal coordinates of a Cartesian point. The returned array
+     * is filled with phi, theta and radius.
+     *
+     */
+    template <int dim>
+    std_cxx11::array<double,3>
+    cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
+                                         const double semi_major_axis_a,
+                                         const double eccentricity);
+
+    /**
+     * Return the Cartesian point of a ellispoidal position defined by phi,
+     * phi and radius.
+     */
+    template <int dim>
+    Point<3>
+    ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                         const double semi_major_axis_a,
+                                         const double eccentricity);
+
+    /**
      * Given a vector @p v in @p dim dimensional space, return a set
      * of (dim-1) vectors that are orthogonal to @p v and to each
      * other. The lengths of these vectors equals that of the original
