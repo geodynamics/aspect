@@ -411,15 +411,20 @@ namespace aspect
       surface_topography_expansion.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, 1.0) );
       bottom_topography_expansion.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, 1.0) );
 
-      surface_potential_expansion.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
-      bottom_potential_expansion.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
+      bottom_potential_from_topography.reset( new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
+      surface_potential_from_topography.reset( new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
+
+      surface_potential.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
+      bottom_potential.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
 
       internal_density_expansion_surface->clear();
       internal_density_expansion_bottom->clear();
       surface_topography_expansion->clear();
       bottom_topography_expansion->clear();
-      surface_potential_expansion->clear();
-      bottom_potential_expansion->clear();
+      surface_potential_from_topography->clear();
+      bottom_potential_from_topography->clear();
+      surface_potential->clear();
+      bottom_potential->clear();
 
       boundary_pressure_postprocessor = this->template find_postprocessor<Postprocess::BoundaryPressures<dim> >();
       boundary_density_postprocessor = this->template find_postprocessor<Postprocess::BoundaryDensities<dim> >();
@@ -741,16 +746,20 @@ namespace aspect
               bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
               surface_potential_at_bottom[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l) ) * outer_radius * delta_rho_top;
             }
+          surface_potential_from_topography->clear();
+          surface_potential_from_topography->sadd(1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion);
+          surface_potential_from_topography->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+          bottom_potential_from_topography->clear();
+          bottom_potential_from_topography->sadd(1.0, -G * inner_radius * delta_rho_top, *bottom_topography_expansion);
+          bottom_potential_from_topography->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
 
-          surface_potential_expansion->clear();
-          surface_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_surface );
-          surface_potential_expansion->sadd( 1.0, -G * outer_radius * delta_rho_top, *surface_topography_expansion );
-          surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+          surface_potential->clear();
+          surface_potential->sadd( 1.0, -G , *internal_density_expansion_surface );
+          surface_potential->sadd( 1.0, 1.0, *surface_potential_from_topography );
 
-          bottom_potential_expansion->clear();
-          bottom_potential_expansion->sadd( 1.0, -G , *internal_density_expansion_bottom );
-          bottom_potential_expansion->sadd( 1.0, -G * inner_radius * delta_rho_bottom, *bottom_topography_expansion );
-          bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
+          bottom_potential->clear();
+          bottom_potential->sadd( 1.0, -G , *internal_density_expansion_bottom );
+          bottom_potential->sadd( 1.0, 1.0, *bottom_potential_from_topography );
         }
       else
         {
@@ -766,16 +775,21 @@ namespace aspect
               bottom_potential_at_bottom[n] = -gravity_constant * inner_radius * delta_rho_bottom / static_cast<double>(n);
               surface_potential_at_surface[n] = -gravity_constant * outer_radius * delta_rho_top / static_cast<double>(n);
             }
+          surface_potential_from_topography->clear();
+          surface_potential_from_topography->sadd( s, surface_potential_at_surface, *surface_topography_expansion );
+          surface_potential_from_topography->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
 
-          surface_potential_expansion->clear();
-          surface_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
-          surface_potential_expansion->sadd( s, surface_potential_at_surface, *surface_topography_expansion );
-          surface_potential_expansion->sadd( s, bottom_potential_at_surface, *bottom_topography_expansion );
+          bottom_potential_from_topography->clear();
+          bottom_potential_from_topography->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
+          bottom_potential_from_topography->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
 
-          bottom_potential_expansion->clear();
-          bottom_potential_expansion->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
-          bottom_potential_expansion->sadd( s, bottom_potential_at_bottom, *bottom_topography_expansion );
-          bottom_potential_expansion->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
+          surface_potential->clear();
+          surface_potential->sadd( 1.0, -gravity_constant , *internal_density_expansion_surface );
+          surface_potential->sadd( 1.0, 1.0, *surface_potential_from_topography );
+
+          bottom_potential->clear();
+          bottom_potential->sadd( 1.0, -gravity_constant , *internal_density_expansion_bottom );
+          bottom_potential->sadd( 1.0, 1.0, *bottom_potential_from_topography );
         }
     }
 
@@ -813,47 +827,49 @@ namespace aspect
           file << this->get_timestep_number() << " " << max_degree << " " << time_in_years_or_seconds << std::endl;
           if ( dim == 3 )
             {
-              file << "# degree   order geoid_surf_s geoid_surf_c  geoid_cmb_s  cmb_geoid_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
+              file << "# degree   order geoid_surf_s geoid_surf_c  geoid_cmb_s  geoid_cmb_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
               // Write the solution to an output file
               for (unsigned int l=2, k=0; l <= max_degree; ++l)
                 {
                   for (unsigned int m = 0; m <= l; ++m, ++k)
                     {
                       file << std::setw(8) << l << std::setw(8) << m
-                           << std::setw(13) << surface_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_surface
-                           << std::setw(13) << surface_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_surface
-                           << std::setw(13) << bottom_potential_expansion->get_coefficients().sine_coefficients[k]/gravity_at_bottom
-                           << std::setw(13) << bottom_potential_expansion->get_coefficients().cosine_coefficients[k]/gravity_at_bottom
-                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[k]*G
-                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k]*G
-                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k]*G
-                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k]*G
-                           << std::setw(13) << surface_topography_expansion->get_coefficients().sine_coefficients[k]
-                           << std::setw(13) << surface_topography_expansion->get_coefficients().cosine_coefficients[k]
-                           << std::setw(13) << bottom_topography_expansion->get_coefficients().sine_coefficients[k]
-                           << std::setw(13) << bottom_topography_expansion->get_coefficients().cosine_coefficients[k] << std::endl;
+                           << std::setw(13) << surface_potential->get_coefficients().sine_coefficients[k]/gravity_at_surface
+                           << std::setw(13) << surface_potential->get_coefficients().cosine_coefficients[k]/gravity_at_surface
+                           << std::setw(13) << bottom_potential->get_coefficients().sine_coefficients[k]/gravity_at_bottom
+                           << std::setw(13) << bottom_potential->get_coefficients().cosine_coefficients[k]/gravity_at_bottom
+                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[k]*G/gravity_at_surface
+                           << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[k]*G/gravity_at_surface
+                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[k]*G/gravity_at_bottom
+                           << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[k]*G/gravity_at_bottom
+                           << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[k]*G/gravity_at_surface
+                           << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[k]*G/gravity_at_surface
+                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[k]*G/gravity_at_bottom
+                           << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[k]*G/gravity_at_bottom
+                           << std::endl;
                     }
                 }
             }
           else
             {
               const double gravity_constant = 4./3. * G;
-              file << "# degree geoid_surf_s geoid_surf_c  geoid_cmb_s  cmb_geoid_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
+              file << "# degree geoid_surf_s geoid_surf_c  geoid_cmb_s  geoid_cmb_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
               for (unsigned int n=2; n <= max_degree; ++n)
                 {
                   file << std::setw(8) << n
-                       << std::setw(13) << surface_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_surface
-                       << std::setw(13) << surface_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_surface
-                       << std::setw(13) << bottom_potential_expansion->get_coefficients().sine_coefficients[n]/gravity_at_bottom
-                       << std::setw(13) << bottom_potential_expansion->get_coefficients().cosine_coefficients[n]/gravity_at_bottom
-                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[n]*gravity_constant
-                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n]*gravity_constant
-                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n]*gravity_constant
-                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n]*gravity_constant
-                       << std::setw(13) << surface_topography_expansion->get_coefficients().sine_coefficients[n]
-                       << std::setw(13) << surface_topography_expansion->get_coefficients().cosine_coefficients[n]
-                       << std::setw(13) << bottom_topography_expansion->get_coefficients().sine_coefficients[n]
-                       << std::setw(13) << bottom_topography_expansion->get_coefficients().cosine_coefficients[n] << std::endl;
+                       << std::setw(13) << surface_potential->get_coefficients().sine_coefficients[n]/gravity_at_surface
+                       << std::setw(13) << surface_potential->get_coefficients().cosine_coefficients[n]/gravity_at_surface
+                       << std::setw(13) << bottom_potential->get_coefficients().sine_coefficients[n]/gravity_at_bottom
+                       << std::setw(13) << bottom_potential->get_coefficients().cosine_coefficients[n]/gravity_at_bottom
+                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_surface
+                       << std::setw(13) << internal_density_expansion_surface->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_surface
+                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_bottom
+                       << std::setw(13) << internal_density_expansion_bottom->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_bottom
+                       << std::setw(13) << surface_potential_from_topography->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_surface
+                       << std::setw(13) << surface_potential_from_topography->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_surface
+                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().sine_coefficients[n]*gravity_constant/gravity_at_bottom
+                       << std::setw(13) << bottom_potential_from_topography->get_coefficients().cosine_coefficients[n]*gravity_constant/gravity_at_bottom
+                       << std::endl;
                 }
             }
         }
@@ -863,14 +879,14 @@ namespace aspect
     const internal::ExternalMultipoleExpansion<dim> &
     Geoid<dim>::get_surface_potential_expansion()
     {
-      return *surface_potential_expansion;
+      return *surface_potential;
     }
 
     template <int dim>
     const internal::InternalMultipoleExpansion<dim> &
     Geoid<dim>::get_cmb_potential_expansion()
     {
-      return *bottom_potential_expansion;
+      return *bottom_potential;
     }
 
     template <int dim>

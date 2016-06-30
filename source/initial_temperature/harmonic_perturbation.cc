@@ -111,11 +111,11 @@ namespace aspect
           const Point<dim> extent = box_geometry_model->get_extents();
 
           if (use_conductive_profile)
-          {
-            const double T_outer = this->get_boundary_temperature().minimal_temperature();
-            const double T_inner = this->get_boundary_temperature().maximal_temperature();
-            background_temperature = T_outer + s*(T_inner-T_outer);
-          }
+            {
+              const double T_outer = this->get_boundary_temperature().minimal_temperature();
+              const double T_inner = this->get_boundary_temperature().maximal_temperature();
+              background_temperature = T_outer + s*(T_inner-T_outer);
+            }
 
           if (dim==2)
             {

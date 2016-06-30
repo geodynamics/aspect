@@ -308,27 +308,40 @@ namespace aspect
         std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > internal_density_expansion_surface;
 
         /**
-         * The harmonic expansion of surface topography.
+         * The harmonic expansion of surface topography, in meters.
          */
         std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_topography_expansion;
 
         /**
-         * The harmonic expansion of bottom topography.
+         * The harmonic expansion of bottom topography, in meters.
          */
         std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_topography_expansion;
 
         /**
-         * The harmonic expansion of the gravitational potential at the bottom.
+         * The gravitational potential at the bottom due to topography, which
+         * is calclulated from surface_topography_expansion and bottom_topography_expansion.
          */
-        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_potential_expansion;
+        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_potential_from_topography;
+
+        /**
+         * The gravitational potential at the surface due to topography, which
+         * is calclulated from surface_topography_expansion and bottom_topography_expansion.
+         */
+        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_potential_from_topography;
+
+        /**
+         * The harmonic expansion of the gravitational potential at the bottom.
+         * This is a combination of internal_density_expansion_bottom and bottom_potential_from_topography.
+         */
+        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_potential;
 
         /**
          * The harmonic expansion of the gravitational potential at the surface.
+         * This is a combination of internal_density_expansion_surface and surface_potential_from_topography.
          */
-        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_potential_expansion;
+        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_potential;
     };
   }
 }
-
 
 #endif
