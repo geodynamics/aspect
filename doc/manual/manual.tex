@@ -3236,7 +3236,7 @@ What \aspect{} computes is driven by two things:
 \end{itemize}
 In this section, let us give an overview of what can be selected in the
 parameter file. Specific parameters, their default values, and allowed values
-for these parameters are documented in the Section~\ref{sec:parameters}. An index
+for these parameters are documented in Section~\ref{sec:parameters}. An index
 with page numbers for all run-time parameters can be found on
 page~\pageref{sec:runtime-parameter-index}.
 
@@ -3362,7 +3362,7 @@ particular plugin uses different variables, such as the depth), the symbol
 \texttt{t} for time in many situations, and allows you to use all of the
 typical mathematical functions such as sine and cosine. Another common case is
 an if-statement that has the general form
-\texttt{if(condition,true-expression,false-expression)}. For more examples of
+\texttt{if(condition, true-expression, false-expression)}. For more examples of
 the syntax understood, reference the documentation of the muparser library
 linked to above.
 
@@ -3370,8 +3370,6 @@ linked to above.
 
 \section{Cookbooks}
 \label{sec:cookbooks}
-
-\marginpar{Provide approximate run-times for each of these cookbooks.}
 
 In this section, let us present a number of ``cookbooks'' -- examples of how
 to use \aspect{} in typical or less typical ways. As discussed in
@@ -4305,7 +4303,6 @@ The reason is, of course, that there is no incompressible (divergence free) flow
 field that allows for a constant vertical outflow component along the top
 boundary without corresponding inflow anywhere else.}
 
-\marginpar{Is there a reason that this is not a listings environment?}
 
 The remainder of the setup is described in the following, complete input file:
 \lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/platelike.prm.out}
@@ -5226,7 +5223,7 @@ constraints are set, but before they are ``distributed.''
 
 As an example of this functionality, below is a plugin which allows the user to prescribe
 internal velocities with functions in a parameter file:
-\lstinputlisting[language=c++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
+\lstinputlisting[language=C++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
 
 The above plugin can be compiled with \texttt{cmake . \&\& make} in the
 \url{cookbooks/prescribed_velocity} directory. It can be loaded in a parameter file
@@ -5301,7 +5298,7 @@ Here, we use a material model plugin that defines the compositional fields as th
 tensor $e_{ij}$, and modifies the right-hand side of 
 the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
 \verb!out.reaction_terms! variable:
-\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+\lstinputlisting[language=C++]{cookbooks/finite_strain/finite_strain.cc}
 
 Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
 as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
@@ -6498,7 +6495,7 @@ system and adds it to the list of assemblers executed in every time step.
 The assembler contains the function \verb!phase_change_boundary_conditions! that loops over all faces at the model 
 boundary, queries the value of $\mathcal{P}$ from the material model, and adds the surface integral given above
 to the matrix:
-\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
+\lstinputlisting[language=C++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
 Instructions for how to compile and run models with a shared library are given in Section~\ref{sec:benchmark-run}.
 
 Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3} reveals that two parameters determine 
@@ -9641,7 +9638,7 @@ respective signals.
 
 In the first case, code that registers slots with global signals would look like
 this:
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 // A function that will be called at the time when parameters are declared.
 // It receives the dimension in which ASPECT will be run as the first argument,
 // and the ParameterHandler object that holds the runtime parameter
@@ -9693,7 +9690,7 @@ ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(parameter_connector)
 The second kind of signal can be connected to once a simulator object has been
 created. As above, one needs to define the slots, define a connector function,
 and register the connector function. The following gives an example:
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 // A function that is called at the end of creating the current constraints
 // on degrees of freedom (i.e., the constraints that describe, for example,
 // hanging nodes, boundary conditions, etc).
@@ -9730,7 +9727,7 @@ functions in your program) to the same signal.
 So what could one do in a place like this? One option would be to just monitor
 what is going on, e.g., in code like this that simply outputs into the
 statistics file (see Section~\ref{sec:viz-stat}):
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
                                 ConstraintMatrix &current_constraints)
@@ -9964,6 +9961,8 @@ resources:
   \end{itemize}
 \end{itemize}
 
+
+\appendix
 
 \section{Run-time input parameters}
 \label{sec:parameters}
