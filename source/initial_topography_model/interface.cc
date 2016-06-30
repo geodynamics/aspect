@@ -23,6 +23,7 @@
 #include <aspect/initial_topography_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
+#include <list>
 
 namespace aspect
 {
