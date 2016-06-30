@@ -29,7 +29,7 @@ namespace aspect
     template <int dim>
     double
     ZeroTopography<dim>::
-    value (const Point<dim-1> &p) const
+    value (const Point<dim-1, double> &p) const
     {
       // return a zero value regardless of position
       return 0.0;
