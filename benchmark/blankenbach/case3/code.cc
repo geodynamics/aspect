@@ -25,6 +25,16 @@ namespace aspect
   /**
    * This benchmark is from the article
    * @code
+   *  @article{tan2007compressible,
+   *    title={Compressible thermochemical convection and application to lower mantle structures},
+   *    author={Tan, E. and Gurnis, M.},
+   *    journal={JOURNAL OF GEOPHYSICAL RESEARCH-ALL SERIES-},
+   *    volume={112},
+   *    number={B6},
+   *    pages={6304},
+   *    year={2007},
+   *    publisher={AGU AMERICAN GEOPHYSICAL UNION}
+   *    }
    * @endcode
    *
    * @ingroup Postprocessing
@@ -33,6 +43,8 @@ namespace aspect
 
   namespace MaterialModel
   {
+    double rho_r = 1.0; // ?
+
 
     template <int dim>
     class Material : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
@@ -69,17 +81,22 @@ namespace aspect
 
               const double depth = 1.0-position(dim-1);
 
-              out.viscosities[i] = /*(Di==0.0?1.0:Di)*/1.0/Ra*exp(-b*temperature+c*depth);
-
+              out.viscosities[i] = eta;//*exp(a*depth); // can be dynamic !?
               out.specific_heat[i] = reference_specific_heat;
-              out.thermal_conductivities[i] = 1.0;
-              out.thermal_expansion_coefficients[i] = (Di==0.0)?1.0:Di;
+              out.thermal_conductivities[i] = k_value;
+              out.thermal_expansion_coefficients[i] = thermal_alpha;
 
-              double rho = reference_rho;
-              rho *= (- out.thermal_expansion_coefficients[i]) * (temperature - this->get_adiabatic_conditions().temperature(position));
+              double rho = 0.0;
+              //if (this->get_adiabatic_conditions().is_initialized())
+
+
+              rho = 1.0;//exp(Di/gamma*(depth));
+              //    rho = temperature - this->get_adiabatic_conditions().temperature(position);
+              rho = reference_rho;
+              rho *= (1.0 - thermal_alpha * (temperature - this->get_adiabatic_conditions().temperature(position)));
 
               out.densities[i] = rho;
-
+              double d = 1.0*exp(Di/gamma*(depth));
               out.compressibilities[i] = 0.0;//(d==0) ? 1.0 : (Di/gamma / d);//reference_compressibility; // 1/rho drho/dp
               out.entropy_derivative_pressure[i] = 0.0;
               out.entropy_derivative_temperature[i] = 0.0;
@@ -97,10 +114,9 @@ namespace aspect
         }
 
 
-
         virtual double reference_viscosity () const
         {
-          return (Di==0.0?1.0:Di)/Ra;
+          return 1.0;
         }
 
 
@@ -119,7 +135,7 @@ namespace aspect
 
         double reference_thermal_diffusivity () const
         {
-          return 1/(reference_rho*reference_specific_heat);
+          return k_value/(reference_rho*reference_specific_heat);
         }
 
 
@@ -161,22 +177,22 @@ namespace aspect
          */
 
       private:
-
-        /**
-         * blankenbach parameters
-         */
-        double b, c;
-
-
         /**
          * The reference surface temperature
          */
         double reference_rho;
 
+        double a;
+
         /**
          * The constant viscosity
          */
-        double Di, Ra;
+        double eta;
+
+        /**
+         * The constant thermal expansivity
+         */
+        double thermal_alpha;
 
         /**
          * The constant specific heat
@@ -187,6 +203,14 @@ namespace aspect
          * The constant compressibility.
          */
         double reference_compressibility;
+
+        /**
+         * The constant thermal conductivity.
+         */
+        double k_value;
+        double Di;
+
+        double gamma;
 
 
     };
@@ -207,20 +231,31 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. Units: $K$.");
-          prm.declare_entry ("Ra", "1e4",
+          prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
-                             "");
-          prm.declare_entry ("Di", "0.0",
+                             "The value of the constant viscosity. Units: $kg/m/s$.");
+          prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
-                             "");
+                             "The value of the thermal conductivity $k$. "
+                             "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
                              "Units: $J/kg/K$.");
-          prm.declare_entry ("b", "6.907755279",
+          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
+                             Patterns::Double (0),
+                             "The value of the thermal expansion coefficient $\\beta$. "
+                             "Units: $1/K$.");
+          prm.declare_entry ("a", "0",
                              Patterns::Double (0),
                              "");
-          prm.declare_entry ("c", "0",
+          prm.declare_entry ("Di", "0.5",
+                             Patterns::Double (0),
+                             "");
+          prm.declare_entry ("gamma", "1",
+                             Patterns::Double (0),
+                             "");
+          prm.declare_entry ("wavenumber", "1",
                              Patterns::Double (0),
                              "");
 
@@ -242,22 +277,21 @@ namespace aspect
         {
           reference_rho     = prm.get_double ("Reference density");
           //          reference_T = prm.get_double ("Reference temperature");
-          //eta                   = prm.get_double ("Viscosity");
-          b               = prm.get_double ("b");
-          c               = prm.get_double ("c");
-          Di               = prm.get_double ("Di");
-          Ra               = prm.get_double ("Ra");
-
+          eta                   = prm.get_double ("Viscosity");
+          k_value               = prm.get_double ("Thermal conductivity");
           reference_specific_heat = prm.get_double ("Reference specific heat");
-          //thermal_alpha = prm.get_double ("Thermal expansion coefficient");
-
+          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
+          a = prm.get_double("a");
+          Di = prm.get_double("Di");
+          gamma = prm.get_double("gamma");
+          //          wavenumber = prm.get_double("wavenumber");
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::temperature;
+      this->model_dependence.viscosity = NonlinearDependence::none;
       this->model_dependence.density = NonlinearDependence::none;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;

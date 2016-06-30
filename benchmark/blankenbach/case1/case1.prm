@@ -1,5 +1,8 @@
-# Listing of Parameters
-# ---------------------
+
+# case 1a, blankenbach table 9
+# Nu 4.884409 +- 0.00001
+# V_rms 42.864947 +/ 0.000020
+
 # This case is identical to case 1a from the Blankenbach Benchmark
 # (Blankenbach 1989). Cases b and c can be run by changing the 
 # Viscosity to 1e-5 and 1e-6, respectively, which leads to the
@@ -10,9 +13,9 @@
 # The relevant output is the vrms velocity and the heat flux through
 # the top boundary, which in this setup is identical to the Nu number. 
 
-set End time                               = 0.002 # 1.0 for full benchmark
+set End time                               = 1.0 # 1.0 for full benchmark
 set Use years in output instead of seconds = false
-
+set CFL number = 1.0
 
 subsection Adiabatic conditions model
   set Model name = function
@@ -85,7 +88,7 @@ subsection Mesh refinement
 end
 
 subsection Heating model
-  set List of model names = #adiabatic heating, shear heating#, constant heating
+  set List of model names =#  adiabatic heating, shear heating#, constant heating
 end
 
 subsection Model settings
