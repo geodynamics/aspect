@@ -101,6 +101,15 @@ namespace aspect
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
 
+    std::string
+    get_last_line(std::ifstream *in)
+    {
+      std::string line;
+      while (*in >> std::ws && std::getline(*in, line)) // skip empty lines
+        ;
+      return line;
+    }
+
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
     // This interpolation is based on the script spline.h, which was downloaded from
     // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //

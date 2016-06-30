@@ -173,7 +173,8 @@ namespace aspect
     rebuild_stokes_preconditioner (true),
 
     // Set quicksaving information
-    n_quicksaves (0)
+    n_quicksaves (0),
+    checkpoint_log_file ("checkpoint.log")
   {
     // FE data is no longer needed because we constructed finite_element above
     introspection.free_finite_element_data();
@@ -2032,7 +2033,7 @@ namespace aspect
       }
 
     // start the timer for periodic checkpoints after the setup above
-    time_t last_checkpoint_time = std::time(NULL);
+    time_t last_quicksave_time = std::time(NULL);
 
 
   start_time_iteration:
@@ -2174,16 +2175,16 @@ namespace aspect
         // This prevents race conditions where some processes will checkpoint and others won't
         if (parameters.quicksave_time_secs > 0)
           {
-            int global_do_quicksave = ((std::time(NULL)-last_checkpoint_time) >=
-                                        parameters.quicksave_time_secs);
+            int global_do_quicksave = ((std::time(NULL) - last_quicksave_time) >=
+                                       parameters.quicksave_time_secs);
             MPI_Bcast(&global_do_quicksave, 1, MPI_INT, 0, mpi_communicator);
 
-            do_checkpoint = (global_do_quicksave == 1);
+            do_quicksave = (global_do_quicksave == 1);
           }
 
         // If we base quicksave frequency on steps, see if it's time for another quicksave
-        if ((parameters.quicksave_time_secs == 0) &&
-            (parameters.quicksave_steps > 0))
+        if (((parameters.quicksave_time_secs == 0) &&
+            (parameters.quicksave_steps > 0)) &&
             (timestep_number % parameters.quicksave_steps == 0))
           do_quicksave = true;
 
@@ -2195,7 +2196,7 @@ namespace aspect
           create_snapshot();
         }
 
-        if ((!do_checkpoint && do_quicksave)
+        if (!do_checkpoint && do_quicksave)
           quicksave_snapshot();
 
         // matrices will be regenerated after a resume, so do that here too
@@ -2206,7 +2207,7 @@ namespace aspect
           {
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
-            last_checkpoint_time = std::time(NULL);
+            last_quicksave_time = std::time(NULL);
           }
 
         // see if we want to terminate

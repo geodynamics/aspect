@@ -536,32 +536,39 @@ namespace aspect
       prm.declare_entry ("Time between quicksave", "0",
                          Patterns::Integer (0),
                          "The wall time between performing checkpoints. "
-                         "If 0, will use the checkpoint step frequency instead. "
+                         "If 0, will use the steps between quicksave instead. "
                          "Units: Seconds.");
-      prm.declare_entry ("Steps between checkpoint", "0",
+      prm.declare_entry ("Steps between quicksave", "0",
+                         Patterns::Integer (0),
+                         "The number of timesteps between performing checkpoints and storing them"
+                                 "in the number of quicksave slots that are available."
+                                 "If 0, quicksaves will not be performed");
+      prm.declare_entry ("Number of quicksave slots", "3",
+                         Patterns::Integer (0),
+                         "Checkpoint files are generated every n times steps specified by"
+                                 "the parameter 'Steps between quicksave.' At most the number "
+                                 "of quicksaves will be the number of quicksave slots."
+                                 "Typically, this value is smaller than 'Steps between checkpoint.'");
+
+      prm.declare_entry ("Steps between checkpoint", "100",
                          Patterns::Integer (0),
                          "The number of timesteps between performing checkpoints. "
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
-      prm.declare_entry ("Number of quicksave slots", "3",
-                      Patterns::Integer (0),
-                         "Checkpoint files are generated every n times steps specified by"
-      "the parameter \'Steps between quicksave.\' At most the number "
-                                 "of quicksaves will be the number of quicksave slots."
-                         "Typically, this value is smaller than \'Steps between checkpoint\.'");
-      prm.declare_entry ("Steps between quicksave", "0",
-                      Patterns::Integer (0),
-                        "The number of timesteps between performing checkpoints and storing them"
-                                 "in the number of quicksave slots that are available."
-                                 "If 0, quicksaves will not be performed");
-      prm.declare_entry ("Restart from time step", "0",
+
+      prm.declare_entry ("Restart from time step number", "0",
                          Patterns::Integer (0),
-                         "A time step number from which ASPECT resumes state."
-                        "The checkpoint data for this time step number must exist in the output directory");
+                         "By default, a two file names are constructed following the format of restart.mesh-<TSN> and restart.resume-<TSN>.z"
+                                 "We search for these files, first in the output directory and then;"
+                                 "in the current working directory. If the files do not exist, an exception is "
+                                 "thrown at run time. Note that the quick save slot and the corresponding time information"
+                                 "are written to checkpointing.log in the output directory. By default, we resume form"
+                                 "the last entry of that file. If 0, this parameter is ignored.");
+
       prm.declare_entry ("Restart from quicksave slot", "0",
                         Patterns::Integer (0),
-                        "A quicklsot id starting from 0 to '(Number of quicksave slots - 1)'."
+                        "A quickslot id starting from 0 to '(Number of quicksave slots - 1)'."
                         "Assuming that the specified slot contains a valid checkpoint, we resume state.");
     }
     prm.leave_subsection ();
@@ -903,11 +910,11 @@ namespace aspect
     prm.enter_subsection ("Checkpointing");
     {
       quicksave_time_secs = prm.get_integer ("Time between quicksave");
-      checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
       quicksave_steps = prm.get_integer ("Steps between quicksave");
       quicksave_slots = prm.get_integer ("Number of quicksave slots");
-      resume_time_step_number = prm.get_integer ("Restart from time step");
+      checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
       resume_from_quickslot = prm.get_integer ("Restart from quicksave slot");
+      resume_from_tsn = prm.get_integer ("Restart from time step number");
 
 #ifndef DEAL_II_WITH_ZLIB
       AssertThrow ((quicksave_time_secs == 0)

@@ -72,6 +72,11 @@ namespace aspect
      */
     bool fexists(const std::string &filename);
 
+      /**
+       * Retrieve the last line of a file
+       */
+      std::string get_last_line(std::ifstream *in);
+
     /**
      * A namespace defining the cubic spline interpolation that can be used
      * between different spherical layers in the mantle.

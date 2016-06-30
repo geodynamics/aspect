@@ -512,6 +512,11 @@ namespace aspect
       void serialize_all(const std::string file_name);
 
       /**
+       * Write logging information to checkpoint log file.
+       */
+      void log_checkpoint(const std::string, const std::string, bool);
+
+      /**
        * Restore the state of this program from a set of files in the output
        * directory. In reality, however, only some variables are stored (in
        * particular the mesh, the solution vectors, etc) whereas others can
@@ -1186,6 +1191,7 @@ namespace aspect
      * @{
      */
         unsigned int n_quicksaves;
+        std::string checkpoint_log_file;
     /**
     * @}
     */
