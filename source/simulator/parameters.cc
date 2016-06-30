@@ -547,6 +547,18 @@ namespace aspect
 
     prm.enter_subsection ("Checkpointing");
     {
+      // For backwards compatability, we declare the following two parameters:.
+      prm.declare_entry ("Time between checkpoint", "0",
+                         Patterns::Integer (0),
+                         "The wall time between performing checkpoints. "
+                         "If 0, will use the checkpoint step frequency instead. "
+                         "Units: Seconds.");
+      prm.declare_entry ("Steps between checkpoint", "0",
+                         Patterns::Integer (0),
+                         "The number of timesteps between performing checkpoints. "
+                         "If 0 and time between checkpoint is not specified, "
+                         "checkpointing will not be performed. "
+                         "Units: None.");
       prm.declare_entry ("Time between quicksave", "0",
                          Patterns::Integer (0),
                          "The wall time between performing checkpoints. "
@@ -563,14 +575,12 @@ namespace aspect
                          "the parameter 'Steps between quicksave.' At most the number "
                          "of quicksaves will be the number of quicksave slots."
                          "Typically, this value is smaller than 'Steps between checkpoint.'");
-
       prm.declare_entry ("Steps between checkpoint", "100",
                          Patterns::Integer (0),
                          "The number of timesteps between performing checkpoints. "
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
-
       prm.declare_entry ("Restart from time step number", "0",
                          Patterns::Integer (0),
                          "By default, a two file names are constructed following the format of restart.mesh-<TSN> and restart.resume-<TSN>.z"
@@ -579,7 +589,6 @@ namespace aspect
                          "thrown at run time. Note that the quick save slot and the corresponding time information"
                          "are written to checkpointing.log in the output directory. By default, we resume form"
                          "the last entry of that file. If 0, this parameter is ignored.");
-
       prm.declare_entry ("Restart from quicksave slot", "0",
                          Patterns::Integer (0),
                          "A quickslot id starting from 0 to '(Number of quicksave slots - 1)'."
