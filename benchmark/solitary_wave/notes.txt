@@ -1,0 +1,2 @@
+This directory contains the "solitary wave" benchmark defined in Keller et al., 2013:
+Numerical modelling of magma dynamics coupled to tectonic deformation of lithosphere and crust.
