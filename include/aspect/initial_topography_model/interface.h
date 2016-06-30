@@ -19,11 +19,12 @@
 */
 
 
-#ifndef __aspect__initial_topography_interface_h
-#define __aspect__initial_topography_interface_h
+#ifndef __aspect__initial_topography_model_interface_h
+#define __aspect__initial_topography_model_interface_h
 
 #include <aspect/plugins.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 
 #include <set>
 
@@ -69,7 +70,7 @@ namespace aspect
          * Return the value of the elevation at the given point.
          */
         virtual
-        double value (const Point<dim-1,double> &p) const = 0;
+        double value (const Point<dim-1> &p) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
