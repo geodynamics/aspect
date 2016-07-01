@@ -73,7 +73,7 @@ namespace aspect
                   else if (coordinate_system == spherical)
                     {
                       const std_cxx11::array<double,dim> spherical_coordinates =
-                        aspect::Utilities::spherical_coordinates(vertex);
+                        aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(vertex);
 
                       // Conversion to evaluate the spherical coordinates in the maximum
                       // refinement level function.

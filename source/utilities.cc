@@ -70,55 +70,101 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    std_cxx11::array<double,dim>
-    spherical_coordinates(const Point<dim> &position)
+    namespace Coordinates
     {
-      std_cxx11::array<double,dim> scoord;
+      template <int dim>
+      std_cxx11::array<double,dim>
+      cartesian_to_spherical_coordinates(const Point<dim> &position)
+      {
+        std_cxx11::array<double,dim> scoord;
 
-      scoord[0] = position.norm(); // R
-      scoord[1] = std::atan2(position(1),position(0)); // Phi
-      if (scoord[1] < 0.0)
-        scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
-      if (dim==3)
-        {
-          if (scoord[0] > std::numeric_limits<double>::min())
-            scoord[2] = std::acos(position(2)/scoord[0]);
-          else
-            scoord[2] = 0.0;
-        }
-      return scoord;
-    }
-
-    template <int dim>
-    Point<dim>
-    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
-    {
-      Point<dim> ccoord;
-
-      switch (dim)
-        {
-          case 2:
+        scoord[0] = position.norm(); // R
+        scoord[1] = std::atan2(position(1),position(0)); // Phi
+        if (scoord[1] < 0.0)
+          scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
+        if (dim==3)
           {
-            ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
-            ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
-            break;
+            if (scoord[0] > std::numeric_limits<double>::min())
+              scoord[2] = std::acos(position(2)/scoord[0]);
+            else
+              scoord[2] = 0.0;
           }
-          case 3:
+        return scoord;
+      }
+
+      template <int dim>
+      Point<dim>
+      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
+      {
+        Point<dim> ccoord;
+
+        switch (dim)
           {
-            ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
-            ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
-            ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
-            break;
+            case 2:
+            {
+              ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
+              ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+              break;
+            }
+            case 3:
+            {
+              ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
+              ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
+              ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+              break;
+            }
+            default:
+              Assert (false, ExcNotImplemented());
+              break;
           }
-          default:
-            Assert (false, ExcNotImplemented());
-            break;
-        }
 
-      return ccoord;
+        return ccoord;
+      }
+
+      template <int dim>
+      std_cxx11::array<double,3>
+      cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity)
+      {
+        const double R    = semi_major_axis_a;
+        const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
+        const double ep     = std::sqrt((R * R - b * b) / (b * b));
+        const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
+        const double th     = std::atan2(R * x(2), b * p);
+        const double phi    = std::atan2(x(1), x(0));
+        const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
+                                         (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
+        const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
+        const double R_plus_d = p / std::cos(theta);
+
+        std_cxx11::array<double,3> phi_theta_d;
+        phi_theta_d[0] = phi;
+
+        phi_theta_d[1] = theta;
+        phi_theta_d[2] = R_plus_d - R_bar;
+        return phi_theta_d;
+      }
+
+      template <int dim>
+      Point<3>
+      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity)
+      {
+        const double phi   = phi_theta_d[0];
+        const double theta = phi_theta_d[1];
+        const double d     = phi_theta_d[2];
+
+        const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
+                                                                std::sin(theta) * std::sin(theta)));
+
+        return Point<3> ((R_bar + d) * std::cos(phi) * std::cos(theta),
+                         (R_bar + d) * std::sin(phi) * std::cos(theta),
+                         ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
+
+      }
     }
-
 
     template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
@@ -1117,7 +1163,7 @@ namespace aspect
           if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
-                ::aspect::Utilities::spherical_coordinates(position);
+                ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
@@ -1254,7 +1300,7 @@ namespace aspect
           || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
-            ::aspect::Utilities::spherical_coordinates(position);
+            ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           for (unsigned int i = 0; i < dim; i++)
             internal_position[i] = spherical_position[i];
@@ -1273,11 +1319,11 @@ namespace aspect
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
 
-    template Point<2> cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
-    template Point<3> cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
+    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
+    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
-    template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
