@@ -33,7 +33,7 @@ set Surface pressure\
 set Use years in out\
 put instead of seconds = \
 false  # default: true
-set Nonlinear solver\
+set Nonlinear solver \
  scheme                = \
 Stokes only
 
@@ -108,7 +108,7 @@ nement
   set Initial adapti\
 ve refinement        = 0 \
                       # default: 2
-  set Initial global\
+  set Initial global \
  refinement          = 2 \
                       # default: 2
 
@@ -148,7 +148,7 @@ ss
 ocessors = SolCxPostprocessor
   subsection Depth a\
 verage
-    set Time between\
+    set Time between \
  graphical output = 1e8
   end
 
@@ -159,7 +159,7 @@ ouped files       = 0
     set Output forma\
 t                 = gnupl\
 ot
-    set Time between\
+    set Time between \
  graphical output = 0   #\
  default: 1e8
   end
