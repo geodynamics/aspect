@@ -39,7 +39,7 @@ namespace aspect
       {
         particle_subdirectory = this->get_output_directory() + "particles/";
 
-        aspect::Utilities::general_create_directory (particle_subdirectory, this->get_mpi_communicator());
+        aspect::Utilities::create_directory (particle_subdirectory, this->get_mpi_communicator(), true);
       }
 
       template <int dim>

@@ -220,14 +220,16 @@ namespace aspect
     mkdirp(std::string pathname, const mode_t mode = 0755);
 
     /**
-     * Create directory with message using standard setup.
+     * Create directory @p pathname, optionally printing a message.
      *
      * @param pathname String that contains path to create. '/' is used as
      * directory separator.
      * @param comm MPI communicator, used to limit creation of directory to
      * processor 0.
+     * @param silent Print a nicely formatted message on processor 0 if set
+     * to true.
      */
-    void general_create_directory(std::string pathname, const MPI_Comm &comm);
+    void create_directory(std::string pathname, const MPI_Comm &comm, bool silent);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used

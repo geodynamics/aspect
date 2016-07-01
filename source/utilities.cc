@@ -388,7 +388,7 @@ namespace aspect
       return 0;
     }
 
-    void general_create_directory(std::string pathname, const MPI_Comm &comm)
+    void create_directory(std::string pathname, const MPI_Comm &comm, bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
       // it on processor zero
@@ -398,13 +398,14 @@ namespace aspect
         {
           if (opendir(pathname.c_str()) == NULL)
             {
-              std::cout << "\n"
-                        << "-----------------------------------------------------------------------------\n"
-                        << "The output directory <" << pathname
-                        << "> provided in the input file appears not to exist.\n"
-                        << "ASPECT will create it for you.\n"
-                        << "-----------------------------------------------------------------------------\n\n"
-                        << std::endl;
+              if (!silent)
+                std::cout << "\n"
+                          << "-----------------------------------------------------------------------------\n"
+                          << "The output directory <" << pathname
+                          << "> provided in the input file appears not to exist.\n"
+                          << "ASPECT will create it for you.\n"
+                          << "-----------------------------------------------------------------------------\n\n"
+                          << std::endl;
 
               error = Utilities::mkdirp(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 

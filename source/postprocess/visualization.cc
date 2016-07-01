@@ -784,7 +784,9 @@ namespace aspect
       vis_dirname = "solution/";
       visualization_subdirectory = this->get_output_directory()+vis_dirname;
 
-      Utilities::general_create_directory (visualization_subdirectory, this->get_mpi_communicator());
+      Utilities::create_directory (visualization_subdirectory,
+                                   this->get_mpi_communicator(),
+                                   true);
 
       prm.enter_subsection("Postprocess");
       {

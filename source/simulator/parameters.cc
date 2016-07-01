@@ -839,7 +839,9 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
-    Utilities::general_create_directory (output_directory, mpi_communicator);
+    Utilities::create_directory (output_directory,
+                                 mpi_communicator,
+                                 true);
 
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;
