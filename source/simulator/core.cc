@@ -1923,14 +1923,11 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
-          if (parameters.temperature_dependency)
-            {
               assemble_advection_system (AdvectionField::temperature());
               solve_advection(AdvectionField::temperature());
               if (parameters.use_discontinuous_temperature_discretization
                   && parameters.use_limiter_for_discontinuous_temperature_solution)
                 apply_limiter_to_dg_solutions(AdvectionField::temperature());
-            }
 
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);

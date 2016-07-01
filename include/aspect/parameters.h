@@ -182,7 +182,6 @@ namespace aspect
     unsigned int                   n_cheap_stokes_solver_steps;
     double                         temperature_solver_tolerance;
     double                         composition_solver_tolerance;
-    bool                           temperature_dependency;
 
     /**
      * @}
