@@ -204,8 +204,8 @@ namespace aspect
   {
     computing_timer.enter_section ("Create snapshot");
 
-    std::string filename_for_triangulation = "quicksave-slot-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots);
-    std::string filename_for_serialization = "quicksave-slot-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z";
+    std::string filename_for_triangulation = "quicksave.mesh-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots);
+    std::string filename_for_serialization = "quicksave.resume-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z";
 
     save_triangulation(filename_for_triangulation);
     serialize_all(filename_for_serialization);
@@ -242,8 +242,17 @@ namespace aspect
             filename_to_deserialize = "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z";
           }
       }
+    else if (parameters.resume_from_quickslot >= 0)
+      {
+        if (Utilities::fexists(parameters.output_directory + "quicksave.mesh-" + dealii::Utilities::to_string(parameters.resume_from_quickslot)) &&
+            Utilities::fexists(parameters.output_directory + "quicksave.resume-" + dealii::Utilities::to_string(parameters.resume_from_quickslot) + ".z"))
+          {
+            filename_for_triangulation = parameters.output_directory + "quicksave.mesh-" + dealii::Utilities::to_string(parameters.resume_from_quickslot);
+            filename_to_deserialize = parameters.output_directory + "quicksave.resume-" + dealii::Utilities::to_string(parameters.resume_from_quickslot) + ".z";
+          }
+      }
     // Try to pick up the latest checkpoint file from checkpoint.log in the output directory.
-    else if (Utilities::fexists(parameters.output_directory + "checkpoint.log"))
+    else (Utilities::fexists(parameters.output_directory + "checkpoint.log"))
       {
         std::ifstream checkpoint_log(parameters.output_directory + "checkpoint.log", std::ios_base::in);
         if (!checkpoint_log)
@@ -268,13 +277,6 @@ namespace aspect
         filename_for_triangulation = parameters.output_directory + tokens[1];
         filename_to_deserialize = parameters.output_directory + tokens[2];
       }
-    // For backward compatability purposes, we restart from the below checkpoint files.
-    else
-      {
-        filename_for_triangulation = parameters.output_directory + "restart.mesh";
-        filename_to_deserialize = parameters.output_directory + "restart.resume.z";
-      }
-
 
     {
       std::ifstream in(filename_for_triangulation.c_str());

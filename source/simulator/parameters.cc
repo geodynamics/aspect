@@ -589,10 +589,11 @@ namespace aspect
                          "thrown at run time. Note that the quick save slot and the corresponding time information"
                          "are written to checkpointing.log in the output directory. By default, we resume form"
                          "the last entry of that file. If 0, this parameter is ignored.");
-      prm.declare_entry ("Restart from quicksave slot", "0",
-                         Patterns::Integer (0),
+      prm.declare_entry ("Restart from quicksave slot", "-1",
+                         Patterns::Integer (-1),
                          "A quickslot id starting from 0 to '(Number of quicksave slots - 1)'."
-                         "Assuming that the specified slot contains a valid checkpoint, we resume state.");
+                         "Assuming that the specified slot contains a valid checkpoint, we resume state."
+                         "If -1, parameter is ignored.");
     }
     prm.leave_subsection ();
 
