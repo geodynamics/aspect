@@ -33,7 +33,7 @@
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
-#include <aspect/initial_topography_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>

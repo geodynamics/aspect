@@ -20,7 +20,7 @@
 
 
 #include <aspect/global.h>
-#include <aspect/initial_topography_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/std_cxx11/tuple.h>
 #include <list>
@@ -85,9 +85,13 @@ namespace aspect
     create_initial_topography_model (ParameterHandler &prm)
     {
       std::string model_name;
-      prm.enter_subsection ("Initial topography model");
+      prm.enter_subsection ("Geometry model");
       {
-        model_name = prm.get ("Model name");
+        prm.enter_subsection ("Initial topography model");
+        {
+          model_name = prm.get ("Model name");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
 
@@ -113,15 +117,19 @@ namespace aspect
     declare_parameters (ParameterHandler &prm)
     {
       // declare the entry in the parameter file
-      prm.enter_subsection ("Initial topography model");
+      prm.enter_subsection ("Geometry model");
       {
-        const std::string pattern_of_names
-          = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "zero topography",
-                           Patterns::Selection (pattern_of_names),
-                           "Select one of the following models:\n\n"
-                           +
-                           std_cxx11::get<dim>(registered_plugins).get_description_string());
+        prm.enter_subsection ("Initial topography model");
+        {
+          const std::string pattern_of_names
+            = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
+          prm.declare_entry ("Model name", "zero topography",
+                             Patterns::Selection (pattern_of_names),
+                             "Select one of the following models:\n\n"
+                             +
+                             std_cxx11::get<dim>(registered_plugins).get_description_string());
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
 

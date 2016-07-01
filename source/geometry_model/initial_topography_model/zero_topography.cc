@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 
 namespace aspect
