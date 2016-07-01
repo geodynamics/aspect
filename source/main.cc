@@ -443,9 +443,7 @@ int main (int argc, char *argv[])
 
       // Replace $ASPECT_SOURCE_DIR in the input so that include statements
       // like "include $ASPECT_SOURCE_DIR/tests/bla.prm" work.
-      input_as_string = Utilities::replace_in_string(input_as_string,
-                                                     "$ASPECT_SOURCE_DIR",
-                                                     ASPECT_SOURCE_DIR);
+      input_as_string = aspect::Utilities::expand_ASPECT_SOURCE_DIR(input_as_string);
 
 
       // try to determine the dimension we want to work in. the default

@@ -110,9 +110,8 @@ namespace aspect
             {
               prm.enter_subsection("Ascii file");
               {
-                data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                              "$ASPECT_SOURCE_DIR",
-                                                              ASPECT_SOURCE_DIR);
+                data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+
                 data_filename    = prm.get ("Data file name");
               }
               prm.leave_subsection();

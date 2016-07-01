@@ -853,9 +853,7 @@ namespace aspect
       {
         prm.enter_subsection("GPlates model");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
           velocity_file_name              = prm.get ("Velocity file name");
           data_file_time_step             = prm.get_double ("Data file time step");
