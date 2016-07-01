@@ -141,39 +141,6 @@ namespace aspect
   }
 
 
-  template <int dim>
-  void Simulator<dim>::output_program_stats()
-  {
-    if (!aspect::output_parallel_statistics)
-      return;
-
-    Utilities::System::MemoryStats stats;
-    Utilities::System::get_memory_stats(stats);
-    pcout << "VmPeak (proc0): " << stats.VmPeak/1024 << " mb" << std::endl;
-
-    // memory consumption:
-    const double mb = 1024*1024; //convert from bytes into mb
-    pcout << "memory in MB:" << std::endl
-          << "* tria " << triangulation.memory_consumption()/mb << std::endl
-          << "  - p4est " << triangulation.memory_consumption_p4est()/mb << std::endl
-          << "* DoFHandler " << dof_handler.memory_consumption()/mb <<std::endl
-          << "* ConstraintMatrix " << constraints.memory_consumption()/mb << std::endl
-          << "* current_constraints " << current_constraints.memory_consumption()/mb << std::endl
-          << "* Matrix " << system_matrix.memory_consumption()/mb << std::endl
-          << "* 5 Vectors " << 5*solution.memory_consumption()/mb << std::endl
-          << "* preconditioner " << (system_preconditioner_matrix.memory_consumption()
-//                                     + Amg_preconditioner->memory_consumption()
-                                     /*+Mp_preconditioner->memory_consumption()
-                                                                      +T_preconditioner->memory_consumption()*/)/mb
-          << std::endl
-          << "  - matrix " << system_preconditioner_matrix.memory_consumption()/mb << std::endl
-//          << "  - prec vel " << Amg_preconditioner->memory_consumption()/mb << std::endl
-          << "  - prec mass " << 0/*Mp_preconditioner->memory_consumption()/mb*/ << std::endl
-          << "  - prec T " << 0/*T_preconditioner->memory_consumption()/mb*/ << std::endl
-          << std::endl;
-  }
-
-
 
   namespace
   {
@@ -1230,7 +1197,6 @@ namespace aspect
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::output_program_stats(); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \

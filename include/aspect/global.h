@@ -182,13 +182,6 @@ namespace aspect
    */
   using constants::year_in_seconds;
 
-  /**
-   * A variable that denotes whether we should periodically output statistics
-   * about memory consumption, run times, etc via the
-   * Simulator::output_statistics() function or other means.
-   */
-  extern const bool output_parallel_statistics;
-
 
   /**
    * A typedef that denotes the BOOST stream type for reading data during
