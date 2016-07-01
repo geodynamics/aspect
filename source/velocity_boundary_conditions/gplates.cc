@@ -247,7 +247,7 @@ namespace aspect
 
         // transform internal_position in spherical coordinates
         std_cxx11::array<double,3> spherical_point =
-          ::aspect::Utilities::cartesian_to_spherical_coordinates(internal_position);
+          ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(internal_position);
 
         Tensor<1,dim> output_boundary_velocity;
         // Handle all points that are not close to the poles

@@ -78,45 +78,49 @@ namespace aspect
                          const IndexSet &whole_set,
                          std::vector<IndexSet> &partitioned);
 
-    /**
-     * Returns spherical coordinates of a Cartesian point. The returned array
-     * is filled with radius, phi and theta (polar angle). If the dimension is
-     * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
-     *
-     */
-    template <int dim>
-    std_cxx11::array<double,dim>
-    cartesian_to_spherical_coordinates(const Point<dim> &position);
+    namespace Coordinates
+    {
 
-    /**
-     * Return the Cartesian point of a spherical position defined by radius,
-     * phi and theta (polar angle). If the dimension is set to 2 theta is
-     * omitted.
-     */
-    template <int dim>
-    Point<dim>
-    spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+      /**
+       * Returns spherical coordinates of a Cartesian point. The returned array
+       * is filled with radius, phi and theta (polar angle). If the dimension is
+       * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
+       *
+       */
+      template <int dim>
+      std_cxx11::array<double,dim>
+      cartesian_to_spherical_coordinates(const Point<dim> &position);
 
-    /**
-     * Returns ellispoidal coordinates of a Cartesian point. The returned array
-     * is filled with phi, theta and radius.
-     *
-     */
-    template <int dim>
-    std_cxx11::array<double,3>
-    cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
-                                         const double semi_major_axis_a,
-                                         const double eccentricity);
+      /**
+       * Return the Cartesian point of a spherical position defined by radius,
+       * phi and theta (polar angle). If the dimension is set to 2 theta is
+       * omitted.
+       */
+      template <int dim>
+      Point<dim>
+      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
 
-    /**
-     * Return the Cartesian point of a ellispoidal position defined by phi,
-     * phi and radius.
-     */
-    template <int dim>
-    Point<3>
-    ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
-                                         const double semi_major_axis_a,
-                                         const double eccentricity);
+      /**
+       * Returns ellispoidal coordinates of a Cartesian point. The returned array
+       * is filled with phi, theta and radius.
+       *
+       */
+      template <int dim>
+      std_cxx11::array<double,3>
+      cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity);
+
+      /**
+       * Return the Cartesian point of a ellispoidal position defined by phi,
+       * phi and radius.
+       */
+      template <int dim>
+      Point<3>
+      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity);
+    }
 
     /**
      * Given a vector @p v in @p dim dimensional space, return a set

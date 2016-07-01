@@ -215,7 +215,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std_cxx11::array<double,dim> scoord = aspect::Utilities::cartesian_to_spherical_coordinates(position);
+      std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
