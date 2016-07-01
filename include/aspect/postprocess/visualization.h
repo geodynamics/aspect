@@ -353,11 +353,6 @@ namespace aspect
 
       private:
         /**
-         * Subdirectory to write the individual visualization files to.
-         */
-        std::string vis_dirname;
-        std::string visualization_subdirectory;
-        /**
          * Interval between the generation of graphical output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
