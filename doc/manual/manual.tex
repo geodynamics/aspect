@@ -3275,7 +3275,18 @@ program will simply use the default provided when declaring the parameter.
 end a line in the input file with a backslash. This indicates that the
 following line will simply continue to be part of the text of the current line,
 in the same way as the C/C++ preprocessor expands lines that end in
-backslashes.}
+backslashes. The underlying implementation always eats whitespace at
+the beginning of each continuing line, but not before the
+backslash. This means that the parameter file \\
+\hspace*{.25cm} \texttt{set Some parameter = abc}$\backslash$ \\
+\hspace*{.25cm} \texttt{\phantom{set Some parameter = }def}\\
+is equivalent to \\
+\hspace*{.25cm} \texttt{set Some parameter = abcdef}\\
+that is, with no space between \texttt{abc} and \texttt{def} despite
+the leading whitespace at the beginning of the second line. If you
+do want space between these two parts, you need to add it before the
+backslash in the first of the two lines.
+}
 
 \subsubsection{Categories of parameters}
 
