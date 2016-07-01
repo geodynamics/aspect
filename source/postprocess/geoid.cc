@@ -23,6 +23,7 @@
 #include <aspect/utilities.h>
 #include <aspect/postprocess/geoid.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <boost/math/special_functions/legendre.hpp>
 
 namespace aspect
 {
@@ -90,7 +91,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<2>::clear()
       {
-        for (unsigned int n = 2; n <= max_degree; ++n)
+        for (unsigned int n = 1; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = 0.0;
             coefficients.cosine_coefficients[n] = 0.0;
@@ -101,7 +102,7 @@ namespace aspect
       template <>
       void MultipoleExpansion<3>::clear()
       {
-        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = 0.0;
@@ -115,7 +116,7 @@ namespace aspect
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
 
-        for (unsigned int n = 2; n <= max_degree; ++n)
+        for (unsigned int n = 1; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = s * coefficients.sine_coefficients[n] +
                                                 a * M.get_coefficients().sine_coefficients[n];
@@ -130,7 +131,7 @@ namespace aspect
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
 
-        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = s * coefficients.sine_coefficients[k] +
@@ -150,7 +151,7 @@ namespace aspect
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
         AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
 
-        for (unsigned int n = 2; n <= max_degree; ++n)
+        for (unsigned int n = 1; n <= max_degree; ++n)
           {
             coefficients.sine_coefficients[n] = s[n] * coefficients.sine_coefficients[n] +
                                                 a[n] * M.get_coefficients().sine_coefficients[n];
@@ -169,7 +170,7 @@ namespace aspect
         AssertThrow( s.size() == max_degree+1 , ExcInternalError() );
         AssertThrow( a.size() == max_degree+1 , ExcInternalError() );
 
-        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
               coefficients.sine_coefficients[k] = s[l] * coefficients.sine_coefficients[k] +
@@ -212,7 +213,7 @@ namespace aspect
 
         if ( evaluation_radius > 0.)
           {
-            for (unsigned int n = 2; n <= max_degree; ++n)
+            for (unsigned int n = 1; n <= max_degree; ++n)
               {
                 const double factor = value * std::pow( r / evaluation_radius, static_cast<double>(n) )
                                       / static_cast<double>(n) * weight;
@@ -237,15 +238,16 @@ namespace aspect
 
         if ( evaluation_radius > 0.)
           {
-            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+            for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+                  double prefix = boost::math::tgamma_delta_ratio<double>(static_cast<double>(l - m + 1.), static_cast<double>(2. * m) ) ;
+                  double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
 
-                  coefficients.cosine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                         * val.first * weight;
-                  coefficients.sine_coefficients[k] += value*std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
-                                                       * val.second * weight;
+                  coefficients.cosine_coefficients[k] += value * std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                         * (m==0 ? 1.0 : 2.0) * prefix * leg * std::cos(m*phi) * weight;
+                  coefficients.sine_coefficients[k] += value * std::pow(r/evaluation_radius,static_cast<double>(l))/evaluation_radius
+                                                       * 2. * prefix * leg * std::sin(m*phi) * weight;
                 }
           }
       }
@@ -257,7 +259,7 @@ namespace aspect
         const double theta = scoord[1];
         double value = 0.;
 
-        for (unsigned int n = 2; n <= max_degree; ++n)
+        for (unsigned int n = 1; n <= max_degree; ++n)
           {
             value += coefficients.cosine_coefficients[n] * std::cos( static_cast<double>(n) * theta) +
                      coefficients.sine_coefficients[n] * std::sin( static_cast<double>(n) * theta);
@@ -274,13 +276,13 @@ namespace aspect
         const double phi = scoord[1];
         double value = 0.;
 
-        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
-              std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+              double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
 
-              value += coefficients.cosine_coefficients[k] * val.first +
-                       coefficients.sine_coefficients[k] * val.second;
+              value += coefficients.cosine_coefficients[k] * leg * std::cos(m*phi) +
+                       coefficients.sine_coefficients[k] * leg * std::sin(m*phi);
 
             }
         return value;
@@ -312,7 +314,7 @@ namespace aspect
 
         if ( r > 0. )
           {
-            for (unsigned int n = 2; n <= max_degree; ++n)
+            for (unsigned int n = 1; n <= max_degree; ++n)
               {
                 const double factor = value * std::pow( evaluation_radius/r, static_cast<double>(n) )
                                       / static_cast<double>(n) * weight;
@@ -341,15 +343,16 @@ namespace aspect
 
         if ( r > 0. )
           {
-            for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+            for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
               for (unsigned int m = 0; m <= l; ++m, ++k)
                 {
-                  std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+                  double prefix = boost::math::tgamma_delta_ratio<double>(static_cast<double>(l - m + 1.), static_cast<double>(2. * m) ) ;
+                  double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
 
                   coefficients.cosine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                         * val.first * weight;
+                                                         * (m==0 ? 1.0 : 2.0) * prefix * leg * std::cos(m*phi) * weight;
                   coefficients.sine_coefficients[k] += value*std::pow(evaluation_radius/r,static_cast<double>(l)) / r
-                                                       * val.second * weight;
+                                                       * 2. * prefix * leg * std::sin(m*phi) * weight;
                 }
           }
       }
@@ -362,7 +365,7 @@ namespace aspect
         const double theta = scoord[1];
         double value = 0.;
 
-        for (unsigned int n = 2; n <= max_degree; ++n)
+        for (unsigned int n = 1; n <= max_degree; ++n)
           {
             value += coefficients.cosine_coefficients[n] * std::cos( static_cast<double>(n) * theta) +
                      coefficients.sine_coefficients[n] * std::sin( static_cast<double>(n) * theta);
@@ -379,13 +382,13 @@ namespace aspect
         const double phi = scoord[1];
         double value = 0.;
 
-        for (unsigned int l = 2, k = 0; l <= max_degree; ++l)
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
             {
-              std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( l, m, theta, phi );
+              double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
 
-              value += coefficients.cosine_coefficients[k] * val.first +
-                       coefficients.sine_coefficients[k] * val.second;
+              value += coefficients.cosine_coefficients[k] * leg * std::cos(m*phi) +
+                       coefficients.sine_coefficients[k] * leg * std::sin(m*phi);
 
             }
         return value;
@@ -740,7 +743,7 @@ namespace aspect
 
       if ( dim == 3)
         {
-          for ( unsigned int l = 2; l <= max_degree; ++l)
+          for ( unsigned int l = 1; l <= max_degree; ++l)
             {
               s[l] = 1.0;
               bottom_potential_at_surface[l] = -G * std::pow(inner_radius/outer_radius, static_cast<double>(l+1) ) * inner_radius * delta_rho_bottom;
@@ -754,17 +757,17 @@ namespace aspect
           bottom_potential_from_topography->sadd( s, surface_potential_at_bottom, *surface_topography_expansion );
 
           surface_potential->clear();
-          surface_potential->sadd( 1.0, -G , *internal_density_expansion_surface );
+          surface_potential->sadd( 1.0, -G, *internal_density_expansion_surface );
           surface_potential->sadd( 1.0, 1.0, *surface_potential_from_topography );
 
           bottom_potential->clear();
-          bottom_potential->sadd( 1.0, -G , *internal_density_expansion_bottom );
+          bottom_potential->sadd( 1.0, -G, *internal_density_expansion_bottom );
           bottom_potential->sadd( 1.0, 1.0, *bottom_potential_from_topography );
         }
       else
         {
           const double gravity_constant = 4./3. * G;
-          for ( unsigned int n = 2; n <= max_degree; ++n)
+          for ( unsigned int n = 1; n <= max_degree; ++n)
             {
 
               s[n] = 1.0;
@@ -829,7 +832,7 @@ namespace aspect
             {
               file << "# degree   order geoid_surf_s geoid_surf_c  geoid_cmb_s  geoid_cmb_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
               // Write the solution to an output file
-              for (unsigned int l=2, k=0; l <= max_degree; ++l)
+              for (unsigned int l=1, k=0; l <= max_degree; ++l)
                 {
                   for (unsigned int m = 0; m <= l; ++m, ++k)
                     {
@@ -854,7 +857,7 @@ namespace aspect
             {
               const double gravity_constant = 4./3. * G;
               file << "# degree geoid_surf_s geoid_surf_c  geoid_cmb_s  geoid_cmb_c  dens_surf_s  dens_surf_c   dens_cmb_s   dens_cmb_c  topo_surf_s  topo_surf_c   topo_cmb_s   topo_cmb_c" << std::endl;
-              for (unsigned int n=2; n <= max_degree; ++n)
+              for (unsigned int n=1; n <= max_degree; ++n)
                 {
                   file << std::setw(8) << n
                        << std::setw(13) << surface_potential->get_coefficients().sine_coefficients[n]/gravity_at_surface
