@@ -1132,7 +1132,6 @@ namespace aspect
 
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
-
     }
 
     template <int dim>

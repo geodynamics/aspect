@@ -163,7 +163,7 @@ namespace aspect
     if (!Utilities::fexists(checkpoint_file_name))
       {
         checkpoint_log.open(checkpoint_file_name, std::ios_base::out);
-        checkpoint_log << "Time_step_number filename_triangulation filename_mesh quicksave_slot_id" << std::endl;
+        checkpoint_log << "Time_step_number filename_triangulation filename_serialized_data quicksave_slot_id" << std::endl;
       }
     else
       checkpoint_log.open(checkpoint_file_name, std::ios_base::app);
@@ -178,8 +178,6 @@ namespace aspect
                      << filename_for_triangulation << " "
                      << filename_for_serialization << " "
                      << "-" << std::endl;
-
-    checkpoint_log.close();
   }
 
   template <int dim>
@@ -187,13 +185,16 @@ namespace aspect
   {
     computing_timer.enter_section ("Create snapshot");
 
+    unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
+
     std::string filename_for_triangulation = "restart.mesh-" + dealii::Utilities::int_to_string(timestep_number);
     std::string filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
 
     save_triangulation(filename_for_triangulation);
     serialize_all(filename_for_serialization);
 
-    log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
+    if (my_id == 0)
+      log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
 
     pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
@@ -204,13 +205,16 @@ namespace aspect
   {
     computing_timer.enter_section ("Create snapshot");
 
+    unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
+
     std::string filename_for_triangulation = "quicksave.mesh-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots);
     std::string filename_for_serialization = "quicksave.resume-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z";
 
     save_triangulation(filename_for_triangulation);
     serialize_all(filename_for_serialization);
 
-    log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
+    if (my_id == 0)
+      log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
 
     n_quicksaves++;
 
@@ -252,7 +256,7 @@ namespace aspect
           }
       }
     // Try to pick up the latest checkpoint file from checkpoint.log in the output directory.
-    else (Utilities::fexists(parameters.output_directory + "checkpoint.log"))
+    else if (Utilities::fexists(parameters.output_directory + "checkpoint.log"))
       {
         std::ifstream checkpoint_log(parameters.output_directory + "checkpoint.log", std::ios_base::in);
         if (!checkpoint_log)
@@ -277,6 +281,11 @@ namespace aspect
         filename_for_triangulation = parameters.output_directory + tokens[1];
         filename_to_deserialize = parameters.output_directory + tokens[2];
       }
+    else{
+      AssertThrow(true,
+      ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
+                                     "'Restart from quicksave slot'." )))
+    }
 
     {
       std::ifstream in(filename_for_triangulation.c_str());
@@ -305,7 +314,7 @@ namespace aspect
 
     try
       {
-        triangulation.load ((filename_for_triangulation).c_str());
+        triangulation.load (filename_for_triangulation.c_str());
       }
     catch (...)
       {
@@ -362,7 +371,7 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((filename_to_deserialize).c_str());
+        std::ifstream ifs (filename_to_deserialize.c_str());
         AssertThrow(ifs.is_open(),
                     ExcMessage("Cannot open snapshot resume file."));
 

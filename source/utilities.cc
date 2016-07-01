@@ -206,6 +206,8 @@ namespace aspect
       return static_cast<bool>(ifile); // only in c++11 you can convert to bool directly
     }
 
+
+
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm)
