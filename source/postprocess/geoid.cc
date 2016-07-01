@@ -47,49 +47,34 @@ namespace aspect
       }
 
 
-      /* Definitions for the MultipoleExpansion base class */
+      /* Definitions for the HarmonicExpansion base class */
 
       // Constructor.  Just need the initialize the coefficients struct.
       template <int dim>
-      MultipoleExpansion<dim>::MultipoleExpansion(const unsigned int max_degree)
+      HarmonicExpansion<dim>::HarmonicExpansion(const unsigned int max_degree)
         :
         max_degree(max_degree),
         coefficients(max_degree)
       {}
 
-      template <int dim>
-      void
-      MultipoleExpansion<dim>::add_quadrature_point( const Point<dim> &, const double, const double )
-      {
-        AssertThrow(false, ExcNotImplemented() );
-      }
-
-      template <int dim>
-      double
-      MultipoleExpansion<dim>::evaluate( const Point<dim> &) const
-      {
-        AssertThrow(false, ExcNotImplemented() );
-        return 0.0;
-      }
-
       //Return a reference to the internal representation of the multipole expansion
       template <int dim>
       const HarmonicCoefficients<dim> &
-      MultipoleExpansion<dim>::get_coefficients () const
+      HarmonicExpansion<dim>::get_coefficients () const
       {
         return coefficients;
       }
 
       template <int dim>
       unsigned int
-      MultipoleExpansion<dim>::degree () const
+      HarmonicExpansion<dim>::degree () const
       {
         return max_degree;
       }
 
       //Zero out the expansion in 2D
       template <>
-      void MultipoleExpansion<2>::clear()
+      void HarmonicExpansion<2>::clear()
       {
         for (unsigned int n = 1; n <= max_degree; ++n)
           {
@@ -100,7 +85,7 @@ namespace aspect
 
       //Zero out the expansion in 3D
       template <>
-      void MultipoleExpansion<3>::clear()
+      void HarmonicExpansion<3>::clear()
       {
         for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
           for (unsigned int m = 0; m <= l; ++m, ++k)
@@ -111,7 +96,7 @@ namespace aspect
       }
 
       template <>
-      void MultipoleExpansion<2>::sadd( double s, double a, const MultipoleExpansion &M )
+      void HarmonicExpansion<2>::sadd( double s, double a, const HarmonicExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
@@ -126,7 +111,7 @@ namespace aspect
       }
 
       template <>
-      void MultipoleExpansion<3>::sadd( double s, double a, const MultipoleExpansion &M )
+      void HarmonicExpansion<3>::sadd( double s, double a, const HarmonicExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
@@ -143,7 +128,7 @@ namespace aspect
 
       //Version of sadd which has a different factor for each degree.  As such, s and a should have sizes of (max_degree+1)
       template <>
-      void MultipoleExpansion<2>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
+      void HarmonicExpansion<2>::sadd( const std::vector<double> &s, const std::vector<double> &a, const HarmonicExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
@@ -162,7 +147,7 @@ namespace aspect
 
       //Version of sadd which has a different factor for each degree.  As such, s and a should have sizes of (max_degree+1)
       template <>
-      void MultipoleExpansion<3>::sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M )
+      void HarmonicExpansion<3>::sadd( const std::vector<double> &s, const std::vector<double> &a, const HarmonicExpansion &M )
       {
         AssertThrow( coefficients.sine_coefficients.size() == M.get_coefficients().sine_coefficients.size() ,
                      ExcInternalError() );
@@ -182,7 +167,7 @@ namespace aspect
 
       template <int dim>
       void
-      MultipoleExpansion<dim>::mpi_sum_coefficients (MPI_Comm mpi_communicator)
+      HarmonicExpansion<dim>::mpi_sum_coefficients (MPI_Comm mpi_communicator)
       {
         dealii::Utilities::MPI::sum(coefficients.sine_coefficients,mpi_communicator,coefficients.sine_coefficients);
         dealii::Utilities::MPI::sum(coefficients.cosine_coefficients,mpi_communicator,coefficients.cosine_coefficients);
@@ -195,7 +180,7 @@ namespace aspect
       template <int dim>
       ExternalMultipoleExpansion<dim>::ExternalMultipoleExpansion(const unsigned int max_degree,
                                                                   const double evaluation_radius)
-        : MultipoleExpansion<dim>(max_degree),
+        : HarmonicExpansion<dim>(max_degree),
           evaluation_radius(evaluation_radius)
       {}
 
@@ -293,7 +278,7 @@ namespace aspect
       template <int dim>
       InternalMultipoleExpansion<dim>::InternalMultipoleExpansion(const unsigned int max_degree,
                                                                   const double evaluation_radius)
-        : MultipoleExpansion<dim>(max_degree),
+        : HarmonicExpansion<dim>(max_degree),
           evaluation_radius(evaluation_radius)
       {}
 
@@ -394,6 +379,95 @@ namespace aspect
         return value;
       }
 
+      /* Implementations for doing a surface harmonic expansion */
+
+      template <int dim>
+      SurfaceExpansion<dim>::SurfaceExpansion(const unsigned int max_degree)
+        : HarmonicExpansion<dim>(max_degree)
+      {}
+
+
+      // Add a quadrature evaluation to surface expansion in 3D using Fourier series
+      // multipole moments.
+      template <>
+      void
+      SurfaceExpansion<2>::add_quadrature_point (const Point<2> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        Assert ( position.norm() >= 0., ExcMessage("The position vector must be nonzero."));
+        const double theta = std::atan2(position[1],position[0]);
+
+        for (unsigned int n = 1; n <= max_degree; ++n)
+          {
+            const double factor = value / M_PI * weight;
+            coefficients.cosine_coefficients[n] += factor * std::cos( static_cast<double>(n) * theta);
+            coefficients.sine_coefficients[n] +=   factor * std::sin( static_cast<double>(n) * theta);
+          }
+      }
+
+
+      // Add a quadrature evaluation to the multipole expansion in 3D using spherical harmonics
+      template <>
+      void
+      SurfaceExpansion<3>::add_quadrature_point (const Point<3> &position,
+                                                           const double value,
+                                                           const double weight)
+      {
+        const double r = position.norm();
+        Assert ( r >= 0., ExcMessage("The position vector must be nonzero."));
+        const double phi = std::atan2(position[1],position[0]);
+        const double theta = std::acos(position[2]/r);
+
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              double prefix = boost::math::tgamma_delta_ratio<double>(static_cast<double>(l - m + 1.), static_cast<double>(2. * m) )
+                              * (2*l+1)/(4.*M_PI);
+              double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
+
+              coefficients.cosine_coefficients[k] += value * (m==0 ? 1.0 : 2.0) * prefix * leg * std::cos(m*phi) * weight;
+              coefficients.sine_coefficients[k] += value * 2. * prefix * leg * std::sin(m*phi) * weight;
+            }
+      }
+
+      template <>
+      double
+      SurfaceExpansion<2>::evaluate( const Point<2> &p ) const
+      {
+        const std_cxx11::array<double,2> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[1];
+        double value = 0.;
+
+        for (unsigned int n = 1; n <= max_degree; ++n)
+          {
+            value += coefficients.cosine_coefficients[n] * std::cos( static_cast<double>(n) * theta) +
+                     coefficients.sine_coefficients[n] * std::sin( static_cast<double>(n) * theta);
+          }
+        return value;
+      }
+
+      template <>
+      double
+      SurfaceExpansion<3>::evaluate( const Point<3> &p ) const
+      {
+        const std_cxx11::array<double,3> scoord = aspect::Utilities::spherical_coordinates(p);
+        const double theta = scoord[2];
+        const double phi = scoord[1];
+        double value = 0.;
+
+        for (unsigned int l = 1, k = 0; l <= max_degree; ++l)
+          for (unsigned int m = 0; m <= l; ++m, ++k)
+            {
+              double leg = boost::math::legendre_p<double>( l, m, std::cos(theta) );
+
+              value += coefficients.cosine_coefficients[k] * leg * std::cos(m*phi) +
+                       coefficients.sine_coefficients[k] * leg * std::sin(m*phi);
+
+            }
+        return value;
+      }
+
     }
 
     template <int dim>
@@ -411,8 +485,8 @@ namespace aspect
 
       internal_density_expansion_surface.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
       internal_density_expansion_bottom.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
-      surface_topography_expansion.reset(new internal::ExternalMultipoleExpansion<dim>(max_degree, 1.0) );
-      bottom_topography_expansion.reset(new internal::InternalMultipoleExpansion<dim>(max_degree, 1.0) );
+      surface_topography_expansion.reset(new internal::SurfaceExpansion<dim>(max_degree) );
+      bottom_topography_expansion.reset(new internal::SurfaceExpansion<dim>(max_degree) );
 
       bottom_potential_from_topography.reset( new internal::InternalMultipoleExpansion<dim>(max_degree, inner_radius) );
       surface_potential_from_topography.reset( new internal::ExternalMultipoleExpansion<dim>(max_degree, outer_radius) );
@@ -701,6 +775,8 @@ namespace aspect
 
                     // Add topography contribution
                     const Point<dim> location = cell->face(f)->center();
+                    const double theta = (dim==2? std::atan2(location[1], location[0]) : std::acos( location[2]/location.norm()));
+                    //const double dynamic_topography = 100. * std::sin(3. * theta);
                     surface_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_surface_area);
                   }
 
@@ -711,9 +787,10 @@ namespace aspect
                     const double dynamic_pressure   = face_pressure - bottom_pressure;
                     const double sigma_rr           = cell_surface_normal_viscous_stress - dynamic_pressure;
                     const double dynamic_topography = - sigma_rr / face_gravity / (face_density - density_below);
-
                     // Add topography contribution
                     const Point<dim> location = cell->face(f)->center();
+                    const double theta = (dim==2? std::atan2(location[1], location[0]) : std::acos( location[2]/location.norm()));
+                    //const double dynamic_topography = 100. * std::sin(3. * theta);
                     bottom_topography_expansion->add_quadrature_point(location/location.norm(), dynamic_topography, face_area/scale_bottom_area);
                   }
               }
@@ -893,6 +970,20 @@ namespace aspect
     }
 
     template <int dim>
+    const internal::SurfaceExpansion<dim> &
+    Geoid<dim>::get_surface_topography_expansion()
+    {
+      return *surface_topography_expansion;
+    }
+
+    template <int dim>
+    const internal::SurfaceExpansion<dim> &
+    Geoid<dim>::get_cmb_topography_expansion()
+    {
+      return *bottom_topography_expansion;
+    }
+
+    template <int dim>
     void
     Geoid<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -966,12 +1057,14 @@ namespace aspect
                                   "A postprocessor that computes a measure of geoid height "
                                   "based on the internal buoyancy and top and bottom topography")
 
-    template class internal::MultipoleExpansion<2>;
-    template class internal::MultipoleExpansion<3>;
+    template class internal::HarmonicExpansion<2>;
+    template class internal::HarmonicExpansion<3>;
     template class internal::ExternalMultipoleExpansion<2>;
     template class internal::ExternalMultipoleExpansion<3>;
     template class internal::InternalMultipoleExpansion<2>;
     template class internal::InternalMultipoleExpansion<3>;
+    template class internal::SurfaceExpansion<2>;
+    template class internal::SurfaceExpansion<3>;
     template struct internal::HarmonicCoefficients<2>;
     template struct internal::HarmonicCoefficients<3>;
   }

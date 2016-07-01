@@ -55,9 +55,9 @@ namespace aspect
        * 2D it is cylindrical multipole moments.
        */
       template <int dim>
-      struct MultipoleExpansion
+      struct HarmonicExpansion
       {
-        MultipoleExpansion(const unsigned int max_degree);
+        HarmonicExpansion(const unsigned int max_degree);
 
         /**
          *Do the multipole expansion at a particular quadrature point.
@@ -69,12 +69,12 @@ namespace aspect
          *@param weigth The Jacobian and weight given to the quadrature point
          *
          */
-        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight);
+        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight) = 0;
 
         /**
          * Evaluate the multipole expansion at point p
          */
-        virtual double evaluate( const Point<dim> &p ) const;
+        virtual double evaluate( const Point<dim> &p ) const = 0;
 
         /**
          * Get the maximum degree of the expansion
@@ -95,7 +95,7 @@ namespace aspect
          * Scalar add another multipole expansion to this one.
          * Computes this = s*this + a*M for each coefficient.
          */
-        void sadd( double s, double a, const MultipoleExpansion &M);
+        void sadd( double s, double a, const HarmonicExpansion &M);
 
         /*
          * Scalar add another multipole expansion to this one.
@@ -103,7 +103,7 @@ namespace aspect
          * the size of s and a are expected to be max_degree+1.
          * Computes this = s[l]*this + a[l]*M for each coefficient.
          */
-        void sadd( const std::vector<double> &s, const std::vector<double> &a, const MultipoleExpansion &M);
+        void sadd( const std::vector<double> &s, const std::vector<double> &a, const HarmonicExpansion &M);
 
 
         /**
@@ -120,7 +120,7 @@ namespace aspect
        * is external to the sources.
        */
       template <int dim>
-      struct ExternalMultipoleExpansion : public MultipoleExpansion<dim>
+      struct ExternalMultipoleExpansion : public HarmonicExpansion<dim>
       {
         ExternalMultipoleExpansion ( const unsigned int max_degree, const double evaluation_radius );
         /**
@@ -148,7 +148,7 @@ namespace aspect
        * is internal to the sources.
        */
       template <int dim>
-      struct InternalMultipoleExpansion : public MultipoleExpansion<dim>
+      struct InternalMultipoleExpansion : public HarmonicExpansion<dim>
       {
         InternalMultipoleExpansion ( const unsigned int max_degree, const double evaluation_radius );
         /**
@@ -169,6 +169,29 @@ namespace aspect
         virtual double evaluate( const Point<dim> &p ) const;
 
         const double evaluation_radius;
+      };
+
+      template <int dim>
+      struct SurfaceExpansion : public HarmonicExpansion<dim>
+      {
+        SurfaceExpansion ( const unsigned int max_degree );
+        /**
+         *Do the multipole expansion at a particular quadrature point.
+         *
+         *@param position The location of the quadrature point.
+         *
+         *@param value  The value of the function being expanded.
+         *
+         *@param weigth The Jacobian and weight given to the quadrature point
+         *
+         */
+        virtual void add_quadrature_point (const Point<dim> &position, const double value, const double weight);
+
+        /**
+         * Evaluate the expansion at point p.
+         * If p is not of unit-length, it will be normalized.
+         */
+        virtual double evaluate( const Point<dim> &p ) const;
       };
 
     }
@@ -217,6 +240,20 @@ namespace aspect
          */
         const internal::InternalMultipoleExpansion<dim> &
         get_cmb_potential_expansion();
+
+        /**
+         * Get a reference to the multipole expansion of the potential
+         * at the surface.
+         */
+        const internal::SurfaceExpansion<dim> &
+        get_surface_topography_expansion();
+
+        /**
+         * Get a reference to the multipole expansion of the potential
+         * at the CMB.
+         */
+        const internal::SurfaceExpansion<dim> &
+        get_cmb_topography_expansion();
 
         /**
          * Let the postprocessor manager know about the other postprocessors
@@ -310,12 +347,12 @@ namespace aspect
         /**
          * The harmonic expansion of surface topography, in meters.
          */
-        std_cxx11::shared_ptr< internal::ExternalMultipoleExpansion<dim> > surface_topography_expansion;
+        std_cxx11::shared_ptr< internal::SurfaceExpansion<dim> > surface_topography_expansion;
 
         /**
          * The harmonic expansion of bottom topography, in meters.
          */
-        std_cxx11::shared_ptr< internal::InternalMultipoleExpansion<dim> > bottom_topography_expansion;
+        std_cxx11::shared_ptr< internal::SurfaceExpansion<dim> > bottom_topography_expansion;
 
         /**
          * The gravitational potential at the bottom due to topography, which
