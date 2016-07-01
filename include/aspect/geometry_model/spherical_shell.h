@@ -154,7 +154,6 @@ namespace aspect
         double
         opening_angle () const;
 
-      public:
         /**
          * Inner and outer radii of the spherical shell.
          */
@@ -169,6 +168,19 @@ namespace aspect
          * Number of tangential mesh cells in the initial, coarse mesh.
          */
         int n_cells_along_circumference;
+
+      private:
+
+        /**
+         * Set all manifold_ids before refinement
+         */
+        static void set_manifold_ids (Triangulation<dim> &triangulation);
+
+        /**
+         * Remove all manifold_ids on the boundaries after refinement
+         * and attach boundary objects
+         */
+        static void clear_manifold_ids (Triangulation<dim> &triangulation);
     };
   }
 }

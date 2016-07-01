@@ -76,39 +76,14 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
-      // Use a manifold description for all cells. use manifold_id 99 in order
-      // not to step on the boundary indicators used below
-      static const SphericalManifold<dim> spherical_manifold;
-      coarse_grid.set_manifold (99, spherical_manifold);
+      set_manifold_ids(coarse_grid);
 
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        cell->set_all_manifold_ids (99);
+      clear_manifold_ids(coarse_grid);
 
-      // clear the manifold id from objects for which we have boundary
-      // objects (and need boundary objects because at the time of
-      // writing, only boundary objects provide normal vectors)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->at_boundary(f))
-            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
-
-      // deal.II wants boundary objects even for the straight boundaries
-      // when using manifolds in the interior:
-      static const StraightBoundary<dim> straight_boundary;
-      std::set<types::boundary_id> ids = get_used_boundary_indicators();
-      for (std::set<types::boundary_id>::iterator it = ids.begin();
-           it!=ids.end(); ++it)
-        if (*it > 1)
-          coarse_grid.set_boundary (*it, straight_boundary);
-
-      // attach boundary objects to the curved boundaries:
-      static const HyperShellBoundary<dim> boundary_shell;
-      coarse_grid.set_boundary (0, boundary_shell);
-      coarse_grid.set_boundary (1, boundary_shell);
+      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
+                                                                   std_cxx11::ref(coarse_grid)));
+      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
+                                                                    std_cxx11::ref(coarse_grid)));
     }
 
 
@@ -271,6 +246,50 @@ namespace aspect
     {
       return true;
     }
+
+
+
+    template <int dim>
+    void
+    SphericalShell<dim>::set_manifold_ids (Triangulation<dim> &triangulation)
+    {
+      // Use a manifold description for all cells. use manifold_id 99 in order
+      // not to step on the boundary indicators
+      static const SphericalManifold<dim> spherical_manifold;
+      triangulation.set_manifold (99, spherical_manifold);
+
+      for (typename Triangulation<dim>::active_cell_iterator cell =
+             triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        cell->set_all_manifold_ids (99);
+    }
+
+
+
+    template <int dim>
+    void
+    SphericalShell<dim>::clear_manifold_ids (Triangulation<dim> &triangulation)
+    {
+      // Remove spherical manifold from boundary faces
+      for (typename Triangulation<dim>::active_cell_iterator cell =
+             triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+
+      // On the boundary faces, set boundary object.
+      // This way we can get the normals to the boundary faces.
+      //static const StraightBoundary<dim> straight_boundary;
+      static const HyperShellBoundary<dim> boundary_shell;
+
+      // TODO use get_used_boundary_indicators()?
+      // Assuming that boundaries without boundary objects will be treated
+      // as straight boundaries
+
+      // Attach boundary objects to the curved inner and outer boundary
+      triangulation.set_boundary (0, boundary_shell);
+      triangulation.set_boundary (1, boundary_shell);
+    }
+
 
 
     template <int dim>
