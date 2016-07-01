@@ -44,6 +44,14 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/mapping_q.h>
 
+//TODO may delet hp if remove the make_face_flux_pattern
+#include <deal.II/hp/dof_handler.h>
+#include <deal.II/hp/fe_collection.h>
+#include <deal.II/hp/fe_values.h>
+#include <deal.II/hp/mapping_collection.h>
+#include <deal.II/hp/q_collection.h>
+#include <deal.II/dofs/dof_handler.h>
+//TODO upto here
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
 #include <deal.II/numerics/vector_tools.h>
@@ -100,6 +108,117 @@ namespace aspect
       return variables;
     }
   }
+
+//TODO temporaly placed here
+
+  template <int dim>
+  void Simulator<dim>::make_face_flux_sparsity_pattern(
+			  const DoFHandler<dim> &dof_handler,
+			  LinearAlgebra::BlockDynamicSparsityPattern  &sparsity,
+			  const Table<2,DoFTools::Coupling> &flux_mask,
+                          const types::subdomain_id subdomain_id)
+  {
+    const types::global_dof_index n_dofs = dof_handler.n_dofs();
+    (void)n_dofs;
+       
+    Assert (sparsity.n_rows() == n_dofs,
+            ExcDimensionMismatch (sparsity.n_rows(), n_dofs));
+    Assert (sparsity.n_cols() == n_dofs,
+            ExcDimensionMismatch (sparsity.n_cols(), n_dofs));
+    Assert (flux_mask.n_rows() == dof_handler.get_fe().n_components(),
+            ExcDimensionMismatch(flux_mask.n_rows(), dof_handler.get_fe().n_components()));
+    Assert (flux_mask.n_cols() == dof_handler.get_fe().n_components(),
+            ExcDimensionMismatch(flux_mask.n_cols(), dof_handler.get_fe().n_components()));
+
+    // If we have a distributed::Triangulation only allow locally_owned
+    // subdomain. Not setting a subdomain is also okay, because we skip
+    // ghost cells in the loop below.
+    Assert (
+      (dof_handler.get_triangulation().locally_owned_subdomain() == numbers::invalid_subdomain_id)
+      ||
+      (subdomain_id == numbers::invalid_subdomain_id)
+      ||
+      (subdomain_id == dof_handler.get_triangulation().locally_owned_subdomain()),
+      ExcMessage ("For parallel::distributed::Triangulation objects and "
+                  "associated DoF handler objects, asking for any subdomain other "
+                  "than the locally owned one does not make sense."));
+
+    const hp::FECollection<dim> fe_collection (dof_handler.get_fe());
+
+    // first, for each finite element, build a mask for each dof, not like
+    // the one given which represents components. make sure we do the right
+    // thing also with respect to non-primitive shape functions, which
+    // takes some additional thought
+    std::vector<Table<2,bool> > dof_mask(fe_collection.size());
+
+    // check whether the table of couplings contains only true arguments,
+    // i.e., we do not exclude any index. that is the easy case, since we
+    // don't have to set up the tables
+    bool need_dof_mask = false;
+    for (unsigned int i=0; i<flux_mask.n_rows(); ++i)
+      for (unsigned int j=0; j<flux_mask.n_cols(); ++j)
+        if (flux_mask(i,j) == DoFTools::none)
+          need_dof_mask = true;
+    // some pair doesn't need a coupling, this is not the easy case 
+    if (need_dof_mask == true)
+      for (unsigned int f=0; f<fe_collection.size(); ++f)
+        {
+          const unsigned int dofs_per_cell = fe_collection[f].dofs_per_cell;
+
+          dof_mask[f].reinit (dofs_per_cell, dofs_per_cell);
+
+          for (unsigned int i=0; i<dofs_per_cell; ++i)
+            for (unsigned int j=0; j<dofs_per_cell; ++j)
+              if (fe_collection[f].is_primitive(i) &&
+                  fe_collection[f].is_primitive(j))
+                dof_mask[f](i,j)
+                  = (flux_mask(fe_collection[f].system_to_component_index(i).first,
+                               fe_collection[f].system_to_component_index(j).first) != DoFTools::none);
+              else
+                {
+                  const unsigned int first_nonzero_comp_i
+                    = fe_collection[f].get_nonzero_components(i).first_selected_component();
+                  const unsigned int first_nonzero_comp_j
+                    = fe_collection[f].get_nonzero_components(j).first_selected_component();
+                  Assert (first_nonzero_comp_i < fe_collection[f].n_components(),
+                          ExcInternalError());
+                  Assert (first_nonzero_comp_j < fe_collection[f].n_components(),
+                          ExcInternalError());
+
+                  dof_mask[f](i,j)
+                    = (flux_mask(first_nonzero_comp_i,first_nonzero_comp_j) != DoFTools::none);
+                }
+        }
+    std::vector<types::global_dof_index> dofs_on_this_cell(fe_collection.max_dofs_per_cell());
+    typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
+                                                  endc = dof_handler.end();
+    // In case we work with a distributed sparsity pattern of Trilinos
+    // type, we only have to do the work if the current cell is owned by
+    // the calling processor. Otherwise, just continue.
+    for (; cell!=endc; ++cell)
+      if (((subdomain_id == numbers::invalid_subdomain_id)
+           ||
+           (subdomain_id == cell->subdomain_id()))
+          &&
+          cell->is_locally_owned())
+        {
+          const unsigned int fe_index = cell->active_fe_index();
+          const unsigned int dofs_per_cell =fe_collection[fe_index].dofs_per_cell;
+
+          dofs_on_this_cell.resize (dofs_per_cell);
+          cell->get_dof_indices (dofs_on_this_cell);
+
+          // make sparsity pattern for this cell. if no constraints pattern
+          // was given, then the following call acts as if simply no
+          // constraints existed
+          constraints.add_entries_local_to_global (dofs_on_this_cell,
+                                                   sparsity,
+                                                   false,//keep_constrained_dofs,
+                                                   dof_mask[fe_index]);
+        }
+
+  }
+
 
 
   /**
@@ -1039,10 +1158,10 @@ namespace aspect
                mpi_communicator);
 #endif
 
+     Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                                   introspection.n_components);
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
       {
-        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
         const typename Introspection<dim>::ComponentIndices &x
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization)
@@ -1053,24 +1172,18 @@ namespace aspect
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
           }
-        /*
-                DoFTools::make_sparsity_pattern (dof_handler,
-                                               coupling, sp,
-                                               constraints, false,
-                                               Utilities::MPI::
-                                               this_mpi_process(mpi_communicator));
-        */
-        DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                              sp,
-                                              coupling,
-                                              face_coupling);
       }
-    else
+
+     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+         make_face_flux_sparsity_pattern (dof_handler,
+                                          sp,
+                                          face_coupling,
+                                         Utilities::MPI::this_mpi_process(mpi_communicator));
+
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
                                        constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+                                       Utilities::MPI::this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
@@ -1133,11 +1246,10 @@ namespace aspect
                introspection.index_sets.system_relevant_partitioning,
                mpi_communicator);
 #endif
-
+     Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                                   introspection.n_components);
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
       {
-        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
         const typename Introspection<dim>::ComponentIndices &x
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization)
@@ -1148,24 +1260,20 @@ namespace aspect
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
           }
-        /*
-                DoFTools::make_sparsity_pattern (dof_handler,
-                                               coupling, sp,
-                                               constraints, false,
-                                               Utilities::MPI::
-                                               this_mpi_process(mpi_communicator));
-        */
-        DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                              sp,
-                                              coupling,
-                                              face_coupling);
       }
-    else
+     
+    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+         make_face_flux_sparsity_pattern (dof_handler,
+                                          sp,
+                                          face_coupling,
+                                          Utilities::MPI::this_mpi_process(mpi_communicator));
+
       DoFTools::make_sparsity_pattern (dof_handler,
                                        coupling, sp,
                                        constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+                                       Utilities::MPI::this_mpi_process(mpi_communicator));
+
+
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),

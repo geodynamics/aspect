@@ -26,6 +26,7 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/symmetric_tensor.h>
+#include <deal.II/base/table.h>
 
 #include <deal.II/lac/trilinos_block_vector.h>
 #include <deal.II/lac/trilinos_block_sparse_matrix.h>
@@ -34,6 +35,8 @@
 #include <deal.II/distributed/tria.h>
 
 #include <deal.II/dofs/dof_handler.h>
+#include <deal.II/dofs/dof_accessor.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/fe/mapping.h>
@@ -828,6 +831,12 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
+      //TODO add the function description
+      void make_face_flux_sparsity_pattern(
+		      const DoFHandler<dim> &dof_handler,
+		      LinearAlgebra::BlockDynamicSparsityPattern  &sp,
+		      const Table<2, DoFTools::Coupling> &flux_mask,
+		      const types::subdomain_id subdomain_id = numbers::invalid_subdomain_id);
 
       /**
        * Interpolate the given function onto the velocity FE space and write
