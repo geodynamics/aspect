@@ -283,8 +283,11 @@ geodynamics community and beyond!
 
 As with all scientific work, funding agencies have a reasonable expectation
 that if we ask for continued funding for this work, we need to demonstrate
-relevance. To this end, we ask that if you publish results that were obtained
-to some part using \aspect{}, you cite the following, canonical reference for
+relevance. 
+In addition, many have contributed to the development of \aspect{} and deserve credit
+for their work.
+To this end, we ask that if you publish results that were obtained
+to some part using \aspect{}, cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
@@ -295,7 +298,20 @@ this software:
   volume =       191,
   pages =        {12--29}}
 \end{lstlisting}
-You can refer to the website by citing the following:
+
+and cite the User's Manual:
+\begin{lstlisting}[frame=single,language=tex]
+@Manual{aspectmanual,
+        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
+                        ConvecTion v1.5.0}, 
+        author =       {W. Bangerth and J. Dannberg and 
+                        R. Gassm{\"o}ller and T. Heister and others},
+        organization = {Computational Infrastructure for Geodynamics},
+        year =         2016
+      }
+\end{lstlisting}
+
+To help your reader find the \aspect{} software package, you may also refer to the website by its url or by citing the following:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectweb,
         title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
@@ -306,17 +322,7 @@ You can refer to the website by citing the following:
         url    = {https://aspect.dealii.org/}
       }
 \end{lstlisting}
-The manual's proper reference is this:
-\begin{lstlisting}[frame=single,language=tex]
-@Manual{aspectmanual,
-        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
-                        ConvecTion},
-        author =       {W. Bangerth and J. Dannberg and 
-                        R. Gassm{\"o}ller and T. Heister and others},
-        organization = {Computational Infrastructure for Geodynamics},
-        year =         2016
-      }
-\end{lstlisting}
+
 
 
 \subsection{Acknowledgments}
