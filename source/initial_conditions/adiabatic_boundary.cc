@@ -124,7 +124,7 @@ namespace aspect
                                                         "$ASPECT_SOURCE_DIR",
                                                         ASPECT_SOURCE_DIR);
 
-          isotherm_file_name = prm.get("Isotherm depth filename");
+          isotherm_file_name   = prm.get("Isotherm depth filename");
           isotherm_temperature = prm.get_double("Isotherm temperature");
           surface_temperature  = prm.get_double("Surface temperature");
           temperature_gradient = prm.get_double("Adiabatic temperature gradient");
@@ -178,6 +178,7 @@ namespace aspect
     }
 
   }
+
 }
 
 
