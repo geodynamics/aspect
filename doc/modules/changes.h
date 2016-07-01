@@ -7,6 +7,11 @@
  * <ol>
  *
  *
+ * <li> New: There is now a plugin structure to add initial topography
+ * to geometry models.
+ * <br>
+ * (Menno Fraters and Anne Glerum, 2016/07/01)
+ *
  * <li> New: There is now a postprocessor that outputs the heatflux
  * density at each boundary face into a text file and a 
  * postprocessor that outputs the heatflux density at each boundary
