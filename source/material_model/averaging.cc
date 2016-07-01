@@ -333,12 +333,12 @@ namespace aspect
       base_model -> evaluate(in,out);
 
       /**
-       * Check if the size of the viscosities (and thereby all the other vectors) is larger
+       * Check if the size of the densities (and thereby all the other vectors) is larger
        * than one. Averaging over one or zero points does not make a difference anyway,
        * and the normalized weighted distance averaging schemes need the distance between
        * the points and can not handle a distance of zero.
        */
-      if (out.viscosities.size() > 1)
+      if (out.densities.size() > 1)
         {
           /* Average the base model values based on the chosen average */
           average (averaging_operation,in.position,out.viscosities);
