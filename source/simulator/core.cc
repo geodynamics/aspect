@@ -2154,6 +2154,8 @@ namespace aspect
         compute_initial_pressure_field ();
         initialize_tracers ();
 
+        signals.post_set_initial_state (*this);
+
         computing_timer.exit_section();
       }
 
