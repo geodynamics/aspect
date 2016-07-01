@@ -6,7 +6,14 @@
  *
  * <ol>
  *
- * <li> Changed: the default for "Initial adaptive refinement" cycles is
+ * <li> Changed: In input files, lines that end in a backslash now require
+ * a space before the backslash if the two lines should not be conjoined
+ * immediately, because leading spaces on the continuing line is ignored.
+ * See the Section "The structure of parameter files" in the manual.
+ * <br>
+ * (Jonathan Robey, 2016/06/30)
+ *
+ * <li> Changed: The default for "Initial adaptive refinement" cycles is
  * now 0.
  * <br>
  * (Timo Heister, 2016/06/28)
