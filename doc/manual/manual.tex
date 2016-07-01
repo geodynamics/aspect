@@ -1528,16 +1528,9 @@ strain:
 
 These equations are identical in form for the \textit{Boussinesq approximation
 (BA)} which only differs from the EBA in neglecting compressibility effects in
-the temperature equation.
+the temperature equation (shear heating and simplified adiabatic heating).
 
 
-
-\subsubsection{The Boussinesq approximation (BA)}
-
-Finally, if we further assume that
-The \textit{Truncated Anelastic Liquid Approximation (TALA)} further
-simplifies the ALA by assuming that the variation of the density due to pressure variations
-is small, i.e., that
 
 
 \subsubsection{The Boussinesq approximation: Incompressibility}
@@ -1797,32 +1790,33 @@ from previous time steps).
 \newpage
 \subsection{Approximations}
 
+1. Define adiabat as constant for BA models.
 
-given density:
+2. given the density:
 \[
  \rho(depth, p, T, \dots) = A(depth) + B(p-p_{ref}) + C(T-T_{ref}) + \dots
 \]
-with an adiabat $p_{ref}$ and $T_{ref}$ as a function of depth
-
-introduce density approximation $\hat{\rho}=\rho(depth, p_{ref}, T_{ref})$ by default computed using reference temperature and pressure but can be overwritten
+with an adiabat $p_{ref}$ and $T_{ref}$ as a function of depth,
+introduce a density approximation $\hat{\rho}=\rho(depth, p_{ref}, T_{ref})$ by default computed using adiabatic temperature and pressure (or one of them adiabatic) but can be overwritten.
 
 {\bf Formulation:}
 \begin{itemize}
  \item 
 
-ALA: $\hat{\rho} = \rho(z)$, $T_{ref}=T(z)$, radiogenic heating, shear heating;
-mass density = implicit adiabatic, buoyancy = full, temperature = adiabatic; adiabatic heating = simplified!
+ALA: $\hat{\rho} = \rho(z)$, $T_{ref}=T(z)$, adiabatic heating (simplified), shear heating;
+mass density = implicit adiabatic, buoyancy = full, temperature = adiabatic
 
 \item
 ``TALA'': like ALA, except buoyancy approximation = adiabatic pressure
 
 \item
-``EBA'': $\rho=1$, $T_{ref}=0$, still with radiogenic heating, shear heating;
+``EBA'': $\rho=1$, $T_{ref}=0$, still with adiabatic heating (simplified), shear heating;
 mass density = incompressible, temperature = adiabatic, buoyancy = adiabatic pressure;
-material.compressible=false
+
+Assert: material.compressible=false
 
 \item
-``BA'': EBA, but turn off shear heating and adiabatic heating (?). do we need to switch to material.compressible=false
+``BA'': EBA, but turn off shear heating and adiabatic heating. 
 
 \item
 ``current'': full/full/full
@@ -1962,12 +1956,10 @@ complicated...
 The current material.is\_compressbile setting is needed for BA/EBA to get the simplified diffusion operator. Should this be a separate setting?
 
 \item
-Model $\rho(z)$ using a linear adiabatic pressure and setting compressibilty to $\nabla \rho$ or should we introduce the depth derivative explicitly?
+Should we model $\rho(z)$ using a linear adiabatic pressure and setting compressibilty to $\nabla \rho$ or should we introduce the depth derivative explicitly?
 
 \item
-Can we improve things further and include additional terms?
-
-\item thermal expansion coefficient is sometimes $\beta$ and sometimes $\alpha$ in the manual
+Can we improve "full'' further and include additional terms?
 
 \item for WB: eqn (22) needs reference density and simplified adiabatic heating
 \end{itemize}
