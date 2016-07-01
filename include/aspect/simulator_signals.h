@@ -84,6 +84,14 @@ namespace aspect
     edit_finite_element_variables;
 
     /**
+     * A signal that is called after setting up the initial conditions.
+     *
+     * The functions (slots) that can attach to this signal need to take one
+     * argument: A SimulatorAccess object that descibes the simulator.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)>  post_set_initial_state;
+
+    /**
      * A signal that is called at the end of setting up the
      * constraints for the current time step. This allows to add
      * more constraints on degrees of freedom, for example to fix
