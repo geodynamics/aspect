@@ -841,7 +841,7 @@ namespace aspect
 
     Utilities::create_directory (output_directory,
                                  mpi_communicator,
-                                 true);
+                                 false);
 
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;
