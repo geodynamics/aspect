@@ -481,11 +481,11 @@ namespace aspect
 
           const unsigned int my_file_id = (group_files == 0) ? my_id : my_id % group_files;
           const std::string filename = this->get_output_directory()
-              + "solution/"
-              + solution_file_prefix
-              + "."
-              + Utilities::int_to_string (my_file_id, 4)
-              + ".vtu";
+                                       + "solution/"
+                                       + solution_file_prefix
+                                       + "."
+                                       + Utilities::int_to_string (my_file_id, 4)
+                                       + ".vtu";
 
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
@@ -551,11 +551,11 @@ namespace aspect
           const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
           const std::string filename = this->get_output_directory()
-              + "solution/"
-              + solution_file_prefix
-              + "."
-              +  Utilities::int_to_string (myid, 4)
-              + DataOutBase::default_suffix
+                                       + "solution/"
+                                       + solution_file_prefix
+                                       + "."
+                                       +  Utilities::int_to_string (myid, 4)
+                                       + DataOutBase::default_suffix
                                        (DataOutBase::parse_output_format(output_format));
 
           std::ofstream out (filename.c_str());
