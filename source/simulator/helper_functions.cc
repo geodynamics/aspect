@@ -1218,6 +1218,17 @@ namespace aspect
     // now get back to the original vector
     solution.block(block_idx) = distributed_solution.block(block_idx);
   }
+  /*
+    template <int dim>
+    void Simulator<dim>::make_face_flux_sparsity_pattern(
+          const DoFHandler<dim> &dof_handler,
+          LinearAlgebra::BlockDynamicSparsityPattern  &sp,
+          const Table<2,DoFTools::Coupling> &flux_mask,
+                            const types::subdomain_id subdomain_id)
+    {
+    }
+  */
+
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -1235,7 +1246,8 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
-  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field);
+  template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
+  //  template void Simulator<dim>::make_face_flux_sparsity_pattern(const DoFHandler<dim> &dof_handler, LinearAlgebra::BlockDynamicSparsityPattern &sp, const Table<2,DoFTools::Coupling> &flux_mask, const types::subdomain_id subdomain_id);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }
