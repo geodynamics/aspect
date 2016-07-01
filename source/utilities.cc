@@ -928,31 +928,90 @@ namespace aspect
 
           i++;
 
-          // TODO: add checks for coordinate ordering in data files
         }
 
       AssertThrow(i == (components + dim) * data_table.n_elements(),
                   ExcMessage (std::string("Number of read in points does not match number of expected points. File corrupted?")));
 
+      // In case the data is specified on a grid that is equidistant
+      // in each coordinate direction, we only need to store
+      // (besides the data) the number of intervals in each direction and
+      // the begin- and endpoints of the coordinates.
+      // In case the grid is not equidistant, we need to keep
+      // all the coordinates in each direction, which is more costly.
+      // Here we fill the data structures needed for both cases,
+      // and check whether the coordinates are equidistant or not.
+      // We also check the requirement that the coordinates are
+      // strictly ascending.
+
+      // The number of intervals in each direction
       std_cxx11::array<unsigned int,dim> table_intervals;
+
+      // Whether or not the grid is equidistant
+      bool equidistant_grid = true;
 
       for (unsigned int i = 0; i < dim; i++)
         {
           table_intervals[i] = table_points[i] - 1;
 
           TableIndices<dim> idx;
-          grid_extent[i].first = data_tables[i](idx);
-          idx[i] = table_points[i] - 1;
-          grid_extent[i].second = data_tables[i](idx);
+          double temp_coord = data_tables[i](idx);
+          double new_temp_coord = 0;
+
+          // The minimum coordinates
+          grid_extent[i].first = temp_coord;
+
+          // The first coordinate value
+          coordinate_values[i].push_back(temp_coord);
+
+          // The grid spacing
+          double first_grid_spacing = 0, grid_spacing = 0;
+
+          // Loop over the rest of the coordinate points
+          for (unsigned int n = 1; n < table_points[i]; n++)
+            {
+              idx[i] = n;
+              new_temp_coord = data_tables[i](idx);
+              AssertThrow(new_temp_coord > temp_coord,
+                          ExcMessage ("Coordinates in dimension "
+                                      + int_to_string(i)
+                                      + " are not strictly ascending. "));
+
+              // Test whether grid is equidistant
+              if (n == 1)
+                first_grid_spacing = new_temp_coord - temp_coord;
+              else
+                {
+                  grid_spacing = new_temp_coord - temp_coord;
+                  if (std::abs(grid_spacing - first_grid_spacing) >
+                      std::numeric_limits<double>::epsilon()*std::abs(grid_spacing+first_grid_spacing)*2)
+                    equidistant_grid = false;
+                }
+
+              // Set the coordinate value
+              coordinate_values[i].push_back(new_temp_coord);
+              temp_coord = new_temp_coord;
+            }
+
+          // The maximum coordinate
+          grid_extent[i].second = temp_coord;
         }
 
+      // For each data component, set up a GridData,
+      // its type depending on the read-in grid.
       for (unsigned int i = 0; i < components; i++)
         {
           if (data[i])
             delete data[i];
-          data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
-                                                                     table_intervals,
-                                                                     data_tables[dim+i]);
+
+          if (equidistant_grid)
+            data[i] = new Functions::InterpolatedUniformGridData<dim> (grid_extent,
+                                                                       table_intervals,
+                                                                       data_tables[dim+i]);
+          else
+            // TODO tell user that we found a grid that is not equidistant?
+            data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
+                                                                             data_tables[dim+i]);
         }
     }
 
