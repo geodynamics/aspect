@@ -436,6 +436,16 @@ namespace aspect
 
 
   template <int dim>
+  const InitialTopographyModel::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_topography_model () const
+  {
+    Assert (simulator->initial_topography_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->initial_topography_model.get();
+  }
+
+
+  template <int dim>
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
