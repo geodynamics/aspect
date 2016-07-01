@@ -72,6 +72,7 @@ namespace aspect
 
     namespace Coordinates
     {
+
     template <int dim>
         std_cxx11::array<double,dim>
         WGS84_coordinates(const Point<dim> &position)
