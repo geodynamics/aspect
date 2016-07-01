@@ -261,13 +261,15 @@ namespace aspect
       // finally, do the same for Visit via the .visit file for this
       // time step, as well as for all time steps together
       const std::string
-      visit_master_filename = (this->get_output_directory() +
-                               "solution.visit");
+      visit_master_filename = (this->get_output_directory()
+                               + "solution/"
+                               + solution_file_prefix
+                               + ".visit");
       std::ofstream visit_master (visit_master_filename.c_str());
       data_out.write_visit_record (visit_master, filenames);
 
       {
-        // the .visit file needs the relative path because it sits a
+        // the global .visit file needs the relative path because it sits a
         // directory above
         std::vector<std::string> filenames_with_path;
         for (std::vector<std::string>::const_iterator it = filenames.begin();
