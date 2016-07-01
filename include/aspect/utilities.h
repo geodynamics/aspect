@@ -81,14 +81,14 @@ namespace aspect
     namespace Coordinates
     {
 
-    /**
-     * Returns distance from the Earth's center, latitude and longitude from a
-     * given ECEF Cartesian coordinates that account for ellipsoidal shape of
-     * the Earth with WGS84 parameters.
-     */
-    template <int dim>
-    std_cxx11::array<double,dim>
-    WGS84_coordinates(const Point<dim> &position);
+      /**
+       * Returns distance from the Earth's center, latitude and longitude from a
+       * given ECEF Cartesian coordinates that account for ellipsoidal shape of
+       * the Earth with WGS84 parameters.
+       */
+      template <int dim>
+      std_cxx11::array<double,dim>
+      WGS84_coordinates(const Point<dim> &position);
 
       /**
        * Returns spherical coordinates of a Cartesian point. The returned array

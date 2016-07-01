@@ -73,46 +73,46 @@ namespace aspect
     namespace Coordinates
     {
 
-    template <int dim>
-        std_cxx11::array<double,dim>
-        WGS84_coordinates(const Point<dim> &position)
-        {
-          std_cxx11::array<double,dim> ecoord;
+      template <int dim>
+      std_cxx11::array<double,dim>
+      WGS84_coordinates(const Point<dim> &position)
+      {
+        std_cxx11::array<double,dim> ecoord;
 
-          // Define WGS84 ellipsoid constants.
-          const double radius = 6378137.;
-          const double ellipticity = 8.1819190842622e-2;
-          const double b = std::sqrt(radius * radius
-                                     * (1 - ellipticity * ellipticity));
-          const double ep = std::sqrt((radius * radius - b * b) / (b * b));
-          const double p = std::sqrt(position(0) * position(0) + position(1) * position(1));
-          const double th = std::atan2(radius * position(2), b * p);
-          ecoord[2] = std::atan2((position(2) + ep * ep * b * std::sin(th)
-                                  * std::sin(th) * std::sin(th)),
-                                 (p - (ellipticity * ellipticity * radius * (std::cos(th)
-                                                                             * std::cos(th) * std::cos(th)))))
-                      * (180. / numbers::PI);
+        // Define WGS84 ellipsoid constants.
+        const double radius = 6378137.;
+        const double ellipticity = 8.1819190842622e-2;
+        const double b = std::sqrt(radius * radius
+                                   * (1 - ellipticity * ellipticity));
+        const double ep = std::sqrt((radius * radius - b * b) / (b * b));
+        const double p = std::sqrt(position(0) * position(0) + position(1) * position(1));
+        const double th = std::atan2(radius * position(2), b * p);
+        ecoord[2] = std::atan2((position(2) + ep * ep * b * std::sin(th)
+                                * std::sin(th) * std::sin(th)),
+                               (p - (ellipticity * ellipticity * radius * (std::cos(th)
+                                                                           * std::cos(th) * std::cos(th)))))
+                    * (180. / numbers::PI);
 
-          if (dim == 3)
-            {
-              ecoord[1] = std::atan2(position(1), position(0))
-                          * (180. / numbers::PI);
+        if (dim == 3)
+          {
+            ecoord[1] = std::atan2(position(1), position(0))
+                        * (180. / numbers::PI);
 
-              /* Set all longitudes between [0,360]. */
-              if (ecoord[1] < 0.)
-                ecoord[1] += 360.;
-              else if (ecoord[1] > 360.)
-                ecoord[1] -= 360.;
-            }
-          else
-             ecoord[1] = 0.0;
+            /* Set all longitudes between [0,360]. */
+            if (ecoord[1] < 0.)
+              ecoord[1] += 360.;
+            else if (ecoord[1] > 360.)
+              ecoord[1] -= 360.;
+          }
+        else
+          ecoord[1] = 0.0;
 
 
-          ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
-                                       * std::sin(numbers::PI * ecoord[2]/180)
-                                       * std::sin(numbers::PI * ecoord[2]/180));
-          return ecoord;
-        }
+        ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
+                                     * std::sin(numbers::PI * ecoord[2]/180)
+                                     * std::sin(numbers::PI * ecoord[2]/180));
+        return ecoord;
+      }
 
       template <int dim>
       std_cxx11::array<double,dim>
