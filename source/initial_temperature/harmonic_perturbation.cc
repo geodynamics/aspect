@@ -50,7 +50,7 @@ namespace aspect
       // boundary; 0<=s<=1
       const double s = this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth();
 
-      const double depth_perturbation = std::sin(vertical_wave_number*s*numbers::PI);
+      const double depth_perturbation = (vertical_wave_number == 0 ? 1.0 : std::sin(vertical_wave_number*s*numbers::PI));
 
 
       double lateral_perturbation = 0.0;
@@ -83,7 +83,7 @@ namespace aspect
               std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
               //For historical reasons, this initial conditions module used an unnormalized real spherical harmonic.
               //Here we denormalize the return value of real_spherical_harmonic to keep the original behavior.
-              lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
+              lateral_perturbation = sph_harm_vals.first;
             }
         }
       else if (const GeometryModel::Chunk<dim> *
