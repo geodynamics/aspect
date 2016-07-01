@@ -2152,7 +2152,6 @@ namespace aspect
 
         set_initial_temperature_and_compositional_fields ();
         compute_initial_pressure_field ();
-        initialize_tracers ();
 
         signals.post_set_initial_state (*this);
 
