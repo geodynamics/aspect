@@ -281,11 +281,12 @@ namespace aspect
         filename_for_triangulation = parameters.output_directory + tokens[1];
         filename_to_deserialize = parameters.output_directory + tokens[2];
       }
-    else{
-      AssertThrow(true,
-      ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
-                                     "'Restart from quicksave slot'." )))
-    }
+    else
+      {
+        AssertThrow(true,
+                    ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
+                                           "'Restart from quicksave slot'." )))
+      }
 
     {
       std::ifstream in(filename_for_triangulation.c_str());
