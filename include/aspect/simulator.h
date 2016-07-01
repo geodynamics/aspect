@@ -833,10 +833,10 @@ namespace aspect
       void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
       //TODO add the function description
       void make_face_flux_sparsity_pattern(
-		      const DoFHandler<dim> &dof_handler,
-		      LinearAlgebra::BlockDynamicSparsityPattern  &sp,
-		      const Table<2, DoFTools::Coupling> &flux_mask,
-		      const types::subdomain_id subdomain_id = numbers::invalid_subdomain_id);
+        const DoFHandler<dim> &dof_handler,
+        LinearAlgebra::BlockDynamicSparsityPattern  &sp,
+        const Table<2, DoFTools::Coupling> &flux_mask,
+        const types::subdomain_id subdomain_id = numbers::invalid_subdomain_id);
 
       /**
        * Interpolate the given function onto the velocity FE space and write

@@ -113,14 +113,14 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::make_face_flux_sparsity_pattern(
-			  const DoFHandler<dim> &dof_handler,
-			  LinearAlgebra::BlockDynamicSparsityPattern  &sparsity,
-			  const Table<2,DoFTools::Coupling> &flux_mask,
-                          const types::subdomain_id subdomain_id)
+    const DoFHandler<dim> &dof_handler,
+    LinearAlgebra::BlockDynamicSparsityPattern  &sparsity,
+    const Table<2,DoFTools::Coupling> &flux_mask,
+    const types::subdomain_id subdomain_id)
   {
     const types::global_dof_index n_dofs = dof_handler.n_dofs();
     (void)n_dofs;
-       
+
     Assert (sparsity.n_rows() == n_dofs,
             ExcDimensionMismatch (sparsity.n_rows(), n_dofs));
     Assert (sparsity.n_cols() == n_dofs,
@@ -159,7 +159,7 @@ namespace aspect
       for (unsigned int j=0; j<flux_mask.n_cols(); ++j)
         if (flux_mask(i,j) == DoFTools::none)
           need_dof_mask = true;
-    // some pair doesn't need a coupling, this is not the easy case 
+    // some pair doesn't need a coupling, this is not the easy case
     if (need_dof_mask == true)
       for (unsigned int f=0; f<fe_collection.size(); ++f)
         {
@@ -191,7 +191,7 @@ namespace aspect
         }
     std::vector<types::global_dof_index> dofs_on_this_cell(fe_collection.max_dofs_per_cell());
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active(),
-                                                  endc = dof_handler.end();
+                                                   endc = dof_handler.end();
     // In case we work with a distributed sparsity pattern of Trilinos
     // type, we only have to do the work if the current cell is owned by
     // the calling processor. Otherwise, just continue.
@@ -1158,8 +1158,8 @@ namespace aspect
                mpi_communicator);
 #endif
 
-     Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
+    Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                               introspection.n_components);
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
       {
         const typename Introspection<dim>::ComponentIndices &x
@@ -1174,16 +1174,16 @@ namespace aspect
           }
       }
 
-     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-         make_face_flux_sparsity_pattern (dof_handler,
-                                          sp,
-                                          face_coupling,
-                                         Utilities::MPI::this_mpi_process(mpi_communicator));
-
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       constraints, false,
+    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+      make_face_flux_sparsity_pattern (dof_handler,
+                                       sp,
+                                       face_coupling,
                                        Utilities::MPI::this_mpi_process(mpi_communicator));
+
+    DoFTools::make_sparsity_pattern (dof_handler,
+                                     coupling, sp,
+                                     constraints, false,
+                                     Utilities::MPI::this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
@@ -1246,8 +1246,8 @@ namespace aspect
                introspection.index_sets.system_relevant_partitioning,
                mpi_communicator);
 #endif
-     Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
-                                                   introspection.n_components);
+    Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                               introspection.n_components);
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
       {
         const typename Introspection<dim>::ComponentIndices &x
@@ -1261,17 +1261,17 @@ namespace aspect
               face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
           }
       }
-     
-    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-         make_face_flux_sparsity_pattern (dof_handler,
-                                          sp,
-                                          face_coupling,
-                                          Utilities::MPI::this_mpi_process(mpi_communicator));
 
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       constraints, false,
+    if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
+      make_face_flux_sparsity_pattern (dof_handler,
+                                       sp,
+                                       face_coupling,
                                        Utilities::MPI::this_mpi_process(mpi_communicator));
+
+    DoFTools::make_sparsity_pattern (dof_handler,
+                                     coupling, sp,
+                                     constraints, false,
+                                     Utilities::MPI::this_mpi_process(mpi_communicator));
 
 
 #ifdef ASPECT_USE_PETSC
@@ -1923,11 +1923,11 @@ namespace aspect
           if (parameters.free_surface_enabled)
             free_surface->execute ();
 
-              assemble_advection_system (AdvectionField::temperature());
-              solve_advection(AdvectionField::temperature());
-              if (parameters.use_discontinuous_temperature_discretization
-                  && parameters.use_limiter_for_discontinuous_temperature_solution)
-                apply_limiter_to_dg_solutions(AdvectionField::temperature());
+          assemble_advection_system (AdvectionField::temperature());
+          solve_advection(AdvectionField::temperature());
+          if (parameters.use_discontinuous_temperature_discretization
+              && parameters.use_limiter_for_discontinuous_temperature_solution)
+            apply_limiter_to_dg_solutions(AdvectionField::temperature());
 
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
