@@ -75,7 +75,7 @@ namespace aspect
     {
       std_cxx11::array<double,dim> wcoord      = aspect::Utilities::WGS84_coordinates(position);
       const double depth                       = wcoord[0] - position.norm();
-      const double isotherm_depth              = get_isotherm_depth(wcoord[1], wcoord[2]);
+      const double isotherm_depth              = get_isotherm_depth(wcoord[2], wcoord[1]);
       if (depth > isotherm_depth)
         return isotherm_temperature + (depth - isotherm_depth) * temperature_gradient;
       else
