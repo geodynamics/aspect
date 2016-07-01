@@ -246,6 +246,7 @@ namespace aspect
     unsigned int                   initial_adaptive_refinement;
     double                         refinement_fraction;
     double                         coarsening_fraction;
+    bool                           adapt_by_fraction_of_cells;
     unsigned int                   min_grid_level;
     std::vector<double>            additional_refinement_times;
     unsigned int                   adaptive_refinement_interval;
