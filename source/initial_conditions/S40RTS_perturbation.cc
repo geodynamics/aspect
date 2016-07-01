@@ -360,9 +360,8 @@ namespace aspect
       {
         prm.enter_subsection("S40RTS perturbation");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+
           if ((data_directory.size() > 0) && (data_directory[data_directory.size()-1] != '/'))
             data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");

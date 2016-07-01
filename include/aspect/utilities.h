@@ -281,6 +281,19 @@ namespace aspect
       return std::vector<T> ();
     }
 
+    /**
+     * Add standard call for replacing $ASPECT_SOURCE_DIR
+     */
+    inline
+    std::string
+    expand_ASPECT_SOURCE_DIR (std::string location)
+    {
+      return Utilities::replace_in_string(location,
+                                          "$ASPECT_SOURCE_DIR",
+                                          ASPECT_SOURCE_DIR);
+    }
+
+
 
 
     /**

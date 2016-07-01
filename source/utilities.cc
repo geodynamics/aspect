@@ -822,9 +822,7 @@ namespace aspect
         // Get the path to the data files. If it contains a reference
         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
         // as a #define
-        data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                      "$ASPECT_SOURCE_DIR",
-                                                      ASPECT_SOURCE_DIR);
+        data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
         data_file_name    = prm.get ("Data file name");
         scale_factor      = prm.get_double ("Scale factor");
       }
