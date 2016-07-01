@@ -1,12 +1,14 @@
+# Duplicate of depth_average_01, with coarser mesh
+
 # Test the 'depth average' postprocessor on a coarse mesh version of
-# convection_box.prm. This test makes no sense since we average over 10 depth
-# intervals but we only compute on a 4x4 mesh -- This is sufficient to produce
-# reasonable data, but not enough for actual resolution.
+# convection_box.prm. This test makes no sense since we average over 21 depth
+# intervals but we only compute on a 2x2 mesh -- one of the depth intervals
+# will receive no quadrature points
 
 set Dimension                              = 2
 
 set Use years in output instead of seconds = false
-set End time                               = 0.5
+set End time                               = 0
 set Output directory                       = output
 
 set Linear solver tolerance                = 1e-15
@@ -95,7 +97,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 2
+  set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
@@ -106,7 +108,7 @@ subsection Postprocess
 
   subsection Depth average
     set Time between graphical output = 0.1
-    set Number of zones = 10
+    set Number of zones = 21
   end
 end
 

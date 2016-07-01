@@ -1,7 +1,13 @@
-# This is a copy of the steinberger compressible test.
-# However it uses the actual Steinberger viscosity model, 
-# instead of the constant viscosity testdata.
- 
+# EXPECT FAILURE
+
+# This is a copy of the simple compressible test.
+# However it uses the Steinberger material model, which
+# reads in lookup tables. The testdata used in this test
+# was prepared with the same equations as in the simple
+# compressible material model. However, the lookup table is much too large for
+# lateral averaging for the implementation currently, so an error should be
+# produced under the current conditions.
+
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
@@ -45,12 +51,16 @@ subsection Material model
   set Model name = Steinberger
 
   subsection Steinberger model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
-    set Material file names              = test-steinberger-compressible/testdata.txt
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
+    set Material file names              = testdata.txt
+    # Use overresolved viscosity prefactor file
+    set Lateral viscosity file name      = test-viscosity-prefactor-overres.txt 
+    set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
     set Compressible                     = true
     set Reference viscosity              = 1e21
+    set Use lateral average temperature for viscosity = true
   end
 end
 
@@ -86,13 +96,13 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = viscosity
+    set List of output variables      = density
     set Time between graphical output = 0
   end
 
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 10
-  end
+ end
 
 end

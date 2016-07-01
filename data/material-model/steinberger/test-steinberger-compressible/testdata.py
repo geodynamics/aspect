@@ -33,9 +33,12 @@ def get_Ta(temps,press,pa):
 
 aditemps,adipress = calc_adiabatic_conditions()
 
+# Number of temperature bands
 ntemp = 101
+# Number of depth bands
 npress = 101
 
+# Generate date for testdata.txt
 data = np.zeros((ntemp*npress,8))
 
 temps = np.linspace(250,4250,ntemp)
@@ -49,9 +52,9 @@ data[:,1] = np.ravel(meshpress)
 data[:,3] = np.ones((ntemp*npress)) * 3e-5
 
 for i in range(data[:,2].size):
-	adiabatic_temperature = get_Ta(aditemps,adipress,data[i,1]*1e5) 
+	adiabatic_temperature = get_Ta(aditemps,adipress,data[i,1]*1e5)
 	data[i,2] = 3340.0 * (1 - (data[i,0]-adiabatic_temperature) * 3e-5) \
-                    * np.exp(data[i,1] * 0.25e-6)
+                       * np.exp(data[i,1] * 0.25e-6)
 
 
 data[:,4] = 1200
@@ -60,3 +63,15 @@ data[:,6] = -1
 data[:,7] = 0
 
 np.savetxt("data.txt",data,fmt='%.12lg')
+
+# Generate viscosity prefactor
+ndepth = 21
+vis_prefact = np.zeros((ndepth,2))
+vis_prefact[:, 1] = np.linspace(0, 2889, ndepth)
+np.savetxt("test-viscosity-prefactor.txt", vis_prefact, fmt='%.6lg')
+
+# Generate over-resolved viscosity prefactor
+ndepth = 101
+vis_prefact = np.zeros((ndepth,2))
+vis_prefact[:, 1] = np.linspace(0, 2889, ndepth)
+np.savetxt("test-viscosity-prefactor-overres.txt", vis_prefact, fmt='%.6lg')
