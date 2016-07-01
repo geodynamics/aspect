@@ -37,6 +37,7 @@
 
 #include <fstream>
 #include <string>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <errno.h>
 
@@ -343,6 +344,46 @@ namespace aspect
         }
 
       return 0;
+    }
+
+    void general_create_directory(std::string pathname, const MPI_Comm &comm)
+    {
+      // verify that the output directory actually exists. if it doesn't, create
+      // it on processor zero
+      int error;
+
+      if ((Utilities::MPI::this_mpi_process(comm) == 0))
+        {
+          if (opendir(pathname.c_str()) == NULL)
+            {
+              std::cout << "\n"
+                        << "-----------------------------------------------------------------------------\n"
+                        << "The output directory <" << pathname
+                        << "> provided in the input file appears not to exist.\n"
+                        << "ASPECT will create it for you.\n"
+                        << "-----------------------------------------------------------------------------\n\n"
+                        << std::endl;
+
+              error = Utilities::mkdirp(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+
+            }
+          else
+            {
+              error = 0;
+            }
+          // Broadcast error code
+          MPI_Bcast (&error, 1, MPI_INT, 0, comm);
+          AssertThrow (error == 0,
+                       ExcMessage (std::string("Can't create the output directory at <") + pathname + ">"));
+        }
+      else
+        {
+          // Wait to recieve error code, and throw QuietException if directory
+          // creation has failed
+          MPI_Bcast (&error, 1, MPI_INT, 0, comm);
+          if (error!=0)
+            throw aspect::QuietException();
+        }
     }
 
     // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.

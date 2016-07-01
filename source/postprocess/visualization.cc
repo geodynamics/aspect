@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -244,14 +245,14 @@ namespace aspect
       const std::string
       pvtu_master_filename = (solution_file_prefix +
                               ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() +
+      std::ofstream pvtu_master ((visualization_subdirectory +
                                   pvtu_master_filename).c_str());
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
       times_and_pvtu_names.push_back(std::make_pair
-                                     (time_in_years_or_seconds, pvtu_master_filename));
+                                     (time_in_years_or_seconds, vis_dirname+pvtu_master_filename));
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -261,8 +262,7 @@ namespace aspect
       // time step, as well as for all time steps together
       const std::string
       visit_master_filename = (this->get_output_directory() +
-                               solution_file_prefix +
-                               ".visit");
+                               "solution.visit");
       std::ofstream visit_master (visit_master_filename.c_str());
       data_out.write_visit_record (visit_master, filenames);
 
@@ -438,12 +438,12 @@ namespace aspect
           data_out.write_filtered_data(data_filter);
           data_out.write_hdf5_parallel(data_filter,
                                        mesh_changed,
-                                       this->get_output_directory()+last_mesh_file_name,
-                                       this->get_output_directory()+h5_solution_file_name,
+                                       visualization_subdirectory+last_mesh_file_name,
+                                       visualization_subdirectory+h5_solution_file_name,
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      last_mesh_file_name,
-                                                      h5_solution_file_name,
+                                                      vis_dirname+last_mesh_file_name,
+                                                      vis_dirname+h5_solution_file_name,
                                                       time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
           xdmf_entries.push_back(new_xdmf_entry);
@@ -469,7 +469,7 @@ namespace aspect
             }
 
           const unsigned int my_file_id = (group_files == 0) ? my_id : my_id % group_files;
-          const std::string filename = this->get_output_directory() +
+          const std::string filename = visualization_subdirectory +
                                        solution_file_prefix +
                                        "." +
                                        Utilities::int_to_string (my_file_id, 4) +
@@ -538,7 +538,7 @@ namespace aspect
         {
           const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-          const std::string filename = this->get_output_directory() +
+          const std::string filename = visualization_subdirectory +
                                        solution_file_prefix +
                                        "." +
                                        Utilities::int_to_string (myid, 4) +
@@ -779,6 +779,12 @@ namespace aspect
       Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
+
+
+      vis_dirname = "solution/";
+      visualization_subdirectory = this->get_output_directory()+vis_dirname;
+
+      Utilities::general_create_directory (visualization_subdirectory, this->get_mpi_communicator());
 
       prm.enter_subsection("Postprocess");
       {
