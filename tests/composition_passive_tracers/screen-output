@@ -11,7 +11,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00000
-     Writing particle output:  output-composition_passive_tracers/particles-00000
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00000
 
 *** Timestep 1:  t=0.0625 seconds
    Solving temperature system... 10 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00001
-     Writing particle output:  output-composition_passive_tracers/particles-00001
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00001
 
 *** Timestep 3:  t=0.1875 seconds
    Solving temperature system... 10 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00002
-     Writing particle output:  output-composition_passive_tracers/particles-00002
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00002
 
 *** Timestep 5:  t=0.3125 seconds
    Solving temperature system... 10 iterations.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00003
-     Writing particle output:  output-composition_passive_tracers/particles-00003
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00003
 
 *** Timestep 6:  t=0.375 seconds
    Solving temperature system... 9 iterations.
@@ -85,7 +85,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00004
-     Writing particle output:  output-composition_passive_tracers/particles-00004
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00004
 
 *** Timestep 8:  t=0.5 seconds
    Solving temperature system... 10 iterations.
@@ -96,7 +96,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00005
-     Writing particle output:  output-composition_passive_tracers/particles-00005
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00005
 
 *** Timestep 9:  t=0.5625 seconds
    Solving temperature system... 10 iterations.
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00006
-     Writing particle output:  output-composition_passive_tracers/particles-00006
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00006
 
 *** Timestep 11:  t=0.6875 seconds
    Solving temperature system... 10 iterations.
@@ -138,7 +138,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00007
-     Writing particle output:  output-composition_passive_tracers/particles-00007
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00007
 
 *** Timestep 13:  t=0.8125 seconds
    Solving temperature system... 10 iterations.
@@ -149,7 +149,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00008
-     Writing particle output:  output-composition_passive_tracers/particles-00008
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00008
 
 *** Timestep 14:  t=0.875 seconds
    Solving temperature system... 10 iterations.
@@ -170,7 +170,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00009
-     Writing particle output:  output-composition_passive_tracers/particles-00009
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00009
 
 *** Timestep 16:  t=1 seconds
    Solving temperature system... 10 iterations.
@@ -181,7 +181,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
    Postprocessing:
      Writing graphical output: output-composition_passive_tracers/solution-00010
-     Writing particle output:  output-composition_passive_tracers/particles-00010
+     Writing particle output:  output-composition_passive_tracers/particles/particles-00010
 
 Termination requested by criterion: end time
 

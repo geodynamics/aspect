@@ -12,77 +12,77 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00000
+     Writing particle output: output-sol_cx_tracers/particles/particles-00000
 
 *** Timestep 1:  t=8.80814 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00001
+     Writing particle output: output-sol_cx_tracers/particles/particles-00001
 
 *** Timestep 2:  t=17.6163 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00002
+     Writing particle output: output-sol_cx_tracers/particles/particles-00002
 
 *** Timestep 3:  t=26.4244 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00003
+     Writing particle output: output-sol_cx_tracers/particles/particles-00003
 
 *** Timestep 4:  t=35.2326 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00004
+     Writing particle output: output-sol_cx_tracers/particles/particles-00004
 
 *** Timestep 5:  t=44.0407 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00005
+     Writing particle output: output-sol_cx_tracers/particles/particles-00005
 
 *** Timestep 6:  t=52.8489 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00006
+     Writing particle output: output-sol_cx_tracers/particles/particles-00006
 
 *** Timestep 7:  t=61.657 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00007
+     Writing particle output: output-sol_cx_tracers/particles/particles-00007
 
 *** Timestep 8:  t=70.4652 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00008
+     Writing particle output: output-sol_cx_tracers/particles/particles-00008
 
 *** Timestep 9:  t=79.2733 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00009
+     Writing particle output: output-sol_cx_tracers/particles/particles-00009
 
 *** Timestep 10:  t=88.0814 seconds
    Solving Stokes system... 0+0 iterations.
       Nonlinear Stokes residual: 3.01209e-10
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00010
+     Writing particle output: output-sol_cx_tracers/particles/particles-00010
 
 Number of active cells: 238 (on 5 levels)
 Number of degrees of freedom: 3,379 (2,070+274+1,035)
@@ -95,7 +95,7 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
       Nonlinear Stokes residual: 1.93775e-09
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00011
+     Writing particle output: output-sol_cx_tracers/particles/particles-00011
 
 *** Timestep 12:  t=100 seconds
    Solving Stokes system... 27+0 iterations.
@@ -104,7 +104,7 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
       Nonlinear Stokes residual: 2.00346e-09
 
    Postprocessing:
-     Writing particle output: output-sol_cx_tracers/particles-00012
+     Writing particle output: output-sol_cx_tracers/particles/particles-00012
 
 Termination requested by criterion: end time
 
