@@ -76,7 +76,7 @@ namespace aspect
               out.specific_heat[i] = reference_specific_heat;
               out.thermal_conductivities[i] = 1.0;
               out.thermal_expansion_coefficients[i] = (Di==0.0)?1.0:Di;
-	      
+
               double rho = reference_rho;
               rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position));
 
