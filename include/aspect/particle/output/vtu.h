@@ -46,6 +46,15 @@ namespace aspect
           VTUOutput();
 
           /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run and after the
+           * SimulatorAccess (if applicable) is initialized.
+           */
+          virtual
+          void
+          initialize ();
+
+          /**
            * Write data about the particles specified in the first argument
            * to a file. If possible, encode the current simulation time
            * into this file using the data provided in the last argument.
@@ -96,6 +105,12 @@ namespace aspect
           load (std::istringstream &is);
 
         private:
+          /**
+           * Subdirectory to store the per timestep particle data
+           */
+          std::string particle_dirname;
+          std::string particle_subdirectory;
+
           /**
            * Internal index of file output number.
            */
