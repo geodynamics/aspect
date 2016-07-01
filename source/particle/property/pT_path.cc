@@ -28,13 +28,11 @@ namespace aspect
     {
       template <int dim>
       void
-      PTPath<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                    const Vector<double> &solution,
-                                                    const std::vector<Tensor<1,dim> > &,
+      PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                     std::vector<double> &data) const
       {
-        data.push_back(solution[this->introspection().component_indices.pressure]);
-        data.push_back(solution[this->introspection().component_indices.temperature]);
+        data.push_back(this->get_adiabatic_conditions().pressure(position));
+        data.push_back(this->get_initial_conditions().initial_temperature(position));
       }
 
       template <int dim>

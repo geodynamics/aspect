@@ -301,34 +301,9 @@ namespace aspect
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
                         std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
-
-                        Vector<double> value(this->introspection().n_components);
-                        std::vector<Tensor<1,dim> > gradient (this->introspection().n_components,Tensor<1,dim>());
-
-                        std::vector<Vector<double> >  solution(1,value);
-                        std::vector<std::vector<Tensor<1,dim> > > gradients(1,gradient);
-
-                        std::vector<Point<dim> >     particle_points(1);
-                        particle_points[0] = this->get_mapping().transform_real_to_unit_cell(cell, new_particle.second.get_location());
-
-                        const Quadrature<dim> quadrature_formula(particle_points);
-                        FEValues<dim> fe_value (this->get_mapping(),
-                                                this->get_fe(),
-                                                quadrature_formula,
-                                                update_values |
-                                                update_gradients);
-
-                        fe_value.reinit (cell);
-                        fe_value.get_function_values (this->get_solution(),
-                                                      solution);
-                        fe_value.get_function_gradients (this->get_solution(),
-                                                         gradients);
-
                         property_manager->initialize_late_particle(new_particle.second,
                                                                    particles,
-                                                                   *interpolator,
-                                                                   solution[0],
-                                                                   gradients[0]);
+                                                                   *interpolator);
 
                         particles.insert(new_particle);
                       }
@@ -885,48 +860,11 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_initialize_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                           const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
+    World<dim>::local_initialize_particles(const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
                                            const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle)
     {
-      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
-      const unsigned int solution_components = this->introspection().n_components;
-
-      Vector<double> value(solution_components);
-      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
-
-      std::vector<Vector<double> >  values(particles_in_cell,value);
-      std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
-
-      std::vector<Point<dim> >     particle_points(particles_in_cell);
-
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
-        {
-          const Point<dim> position = it->second.get_location();
-          particle_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, position);
-        }
-
-      const Quadrature<dim> quadrature_formula(particle_points);
-      FEValues<dim> fe_value (this->get_mapping(),
-                              this->get_fe(),
-                              quadrature_formula,
-                              update_values |
-                              update_gradients);
-
-      fe_value.reinit (cell);
-      fe_value.get_function_values (this->get_solution(),
-                                    values);
-      fe_value.get_function_gradients (this->get_solution(),
-                                       gradients);
-
-      it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
-        {
-          property_manager->initialize_one_particle(it->second,
-                                                    values[i],
-                                                    gradients[i]);
-        }
+      for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle; it!=end_particle; ++it)
+        property_manager->initialize_one_particle(it->second);
     }
 
     template <int dim>
@@ -1060,8 +998,7 @@ namespace aspect
 
                 // Only initialize particles, if there are any in this cell
                 if (particle_range_in_cell.first != particle_range_in_cell.second)
-                  local_initialize_particles(cell,
-                                             particle_range_in_cell.first,
+                  local_initialize_particles(particle_range_in_cell.first,
                                              particle_range_in_cell.second);
               }
         }

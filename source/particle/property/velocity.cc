@@ -29,12 +29,10 @@ namespace aspect
       template <int dim>
       void
       Velocity<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                      const Vector<double> &solution,
-                                                      const std::vector<Tensor<1,dim> > &,
                                                       std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
-          data.push_back(solution[this->introspection().component_indices.velocities[i]]);
+          data.push_back(0.0);
       }
 
       template <int dim>

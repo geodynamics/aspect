@@ -117,13 +117,6 @@ namespace aspect
            * value.
            *
            * @param [in] position The current particle position.
-           *
-           * @param [in] solution The values of the solution variables at the
-           * current particle position.
-           *
-           * @param [in] gradients The gradients of the solution variables at
-           * the current particle position.
-           *
            * @param [in,out] particle_properties The properties of the particle
            * that is initialized within the call of this function. The purpose
            * of this function should be to extend this vector by a number of
@@ -132,8 +125,6 @@ namespace aspect
           virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            const Vector<double> &solution,
-                                            const std::vector<Tensor<1,dim> > &gradients,
                                             std::vector<double> &particle_properties) const;
 
           /**
@@ -285,9 +276,7 @@ namespace aspect
            * collection after it was created.
            */
           void
-          initialize_one_particle (Particle<dim> &particle,
-                                   const Vector<double> &solution,
-                                   const std::vector<Tensor<1,dim> > &gradients) const;
+          initialize_one_particle (Particle<dim> &particle) const;
 
           /**
            * Initialization function for particle properties. This function is
@@ -298,9 +287,7 @@ namespace aspect
           void
           initialize_late_particle (Particle<dim> &particle,
                                     const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                    const Interpolator::Interface<dim> &interpolator,
-                                    const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim> > &gradients) const;
+                                    const Interpolator::Interface<dim> &interpolator) const;
 
           /**
            * Update function for particle properties. This function is

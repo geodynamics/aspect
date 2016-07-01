@@ -28,26 +28,16 @@ namespace aspect
     {
       template <int dim>
       Function<dim>::Function()
-        :
-        function (1)
       {}
 
       template <int dim>
       void
       Function<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                      const Vector<double> &,
-                                                      const std::vector<Tensor<1,dim> > &,
                                                       std::vector<double> &data) const
       {
         data.push_back(function.value(position));
       }
 
-      template <int dim>
-      InitializationModeForLateParticles
-      Function<dim>::late_initialization_mode () const
-      {
-        return interpolate;
-      }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >

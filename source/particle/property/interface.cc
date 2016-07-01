@@ -42,8 +42,6 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::initialize_one_particle_property (const Point<dim> &,
-                                                        const Vector<double> &,
-                                                        const std::vector<Tensor<1,dim> > &,
                                                         std::vector<double> &) const
       {}
 
@@ -67,7 +65,7 @@ namespace aspect
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
-        return initialize_to_zero;
+        return interpolate;
       }
 
       template <int dim>
@@ -121,9 +119,7 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::initialize_one_particle (Particle<dim> &particle,
-                                             const Vector<double> &solution,
-                                             const std::vector<Tensor<1,dim> > &gradients) const
+      Manager<dim>::initialize_one_particle (Particle<dim> &particle) const
       {
         std::vector<double> particle_properties (0);
         particle.set_n_property_components(n_property_components);
@@ -131,8 +127,6 @@ namespace aspect
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize_one_particle_property(particle.get_location(),
-                                                   solution,
-                                                   gradients,
                                                    particle_properties);
           }
 
@@ -149,9 +143,7 @@ namespace aspect
       void
       Manager<dim>::initialize_late_particle (Particle<dim> &particle,
                                               const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                              const Interpolator::Interface<dim> &interpolator,
-                                              const Vector<double> &solution,
-                                              const std::vector<Tensor<1,dim> > &gradients) const
+                                              const Interpolator::Interface<dim> &interpolator) const
       {
         std::vector<double> particle_properties (0);
 
@@ -171,8 +163,6 @@ namespace aspect
                 case aspect::Particle::Property::initialize:
                 {
                   (*p)->initialize_one_particle_property(particle.get_location(),
-                                                         solution,
-                                                         gradients,
                                                          particle_properties);
                   break;
                 }

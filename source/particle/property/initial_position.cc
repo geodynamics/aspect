@@ -30,19 +30,10 @@ namespace aspect
       template <int dim>
       void
       InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                             const Vector<double> &,
-                                                             const std::vector<Tensor<1,dim> > &,
                                                              std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; i++)
           data.push_back(position[i]);
-      }
-
-      template <int dim>
-      InitializationModeForLateParticles
-      InitialPosition<dim>::late_initialization_mode () const
-      {
-        return interpolate;
       }
 
       template <int dim>
