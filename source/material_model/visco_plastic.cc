@@ -19,27 +19,11 @@
 */
 
 #include <aspect/material_model/visco_plastic.h>
+#include <aspect/utilities.h>
 using namespace dealii;
 
 namespace aspect
 {
-  namespace
-  {
-    std::vector<double>
-    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
-    {
-      std::vector<double> parameter_list;
-      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
-      if (parameter_list.size() == 1)
-        parameter_list.resize(n_fields, parameter_list[0]);
-
-      AssertThrow(parameter_list.size() == n_fields,
-                  ExcMessage("Length of "+parameter+" list must be either one, or n_compositional_fields+1"));
-
-      return parameter_list;
-    }
-  }
-
   namespace MaterialModel
   {
 
@@ -132,7 +116,8 @@ namespace aspect
                                       const double &pressure,
                                       const double &temperature,
                                       const SymmetricTensor<2,dim> &strain_rate,
-                                      const enum viscosity_scheme &viscous_type) const
+                                      const ViscosityScheme &viscous_type,
+                                      const YieldScheme &yield_type) const
     {
       // This function calculates viscosities assuming that all the compositional fields
       // experience the same strain rate (isostrain).
@@ -215,15 +200,44 @@ namespace aspect
                                     cohesions[j] * std::cos(phi) + std::max(pressure,0.0) * std::sin(phi) );
 
 
+
           // If the viscous stress is greater than the yield strength, rescale the viscosity back to yield surface
-          double viscosity_yield;
+          double viscosity_drucker_prager;
           if ( viscous_stress >= yield_strength  )
             {
-              viscosity_yield = yield_strength / (2.0 * edot_ii);
+              viscosity_drucker_prager = yield_strength / (2.0 * edot_ii);
             }
           else
             {
-              viscosity_yield = viscosity_pre_yield;
+              viscosity_drucker_prager = viscosity_pre_yield;
+            }
+
+
+          // Stress limiter rheology
+          double viscosity_limiter;
+          viscosity_limiter = yield_strength / (2.0 * ref_strain_rate) *
+                              std::pow((edot_ii/ref_strain_rate), 1./exponents_stress_limiter[j] - 1.0);
+
+          // Select if yield viscosity is based on drucker prager or stress limiter rheology
+          double viscosity_yield;
+          switch (yield_type)
+            {
+              case stress_limiter:
+              {
+                //viscosity_yield = std::min(viscosity_limiter, viscosity_pre_yield);
+                viscosity_yield = viscosity_limiter;
+                break;
+              }
+              case drucker_prager:
+              {
+                viscosity_yield = viscosity_drucker_prager;
+                break;
+              }
+              default:
+              {
+                AssertThrow( false, ExcNotImplemented() );
+                break;
+              }
             }
 
           // Limit the viscosity with specified minimum and maximum bounds
@@ -282,7 +296,7 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               const std::vector<double> composition_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i],viscous_flow_law);
+                calculate_isostrain_viscosities(volume_fractions, pressure, temperature, in.strain_rate[i],viscous_flow_law,yield_mechanism);
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -395,7 +409,10 @@ namespace aspect
                              "Select what type of viscosity law to use between diffusion, "
                              "dislocation and composite options. Soon there will be an option "
                              "to select a specific flow law for each assigned composition ");
-
+          prm.declare_entry ("Yield mechanism", "drucker",
+                             Patterns::Selection("drucker|limiter"),
+                             "Select what type of yield mechanism to use between Drucker Prager "
+                             "and stress limiter options.");
 
           // Diffusion creep parameters
           prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
@@ -452,7 +469,7 @@ namespace aspect
           // Plasticity parameters
           prm.declare_entry ("Angles of internal friction", "0",
                              Patterns::List(Patterns::Double(0)),
-                             "List of angles of internal friction, \\phi, for background material and compositional fields, "
+                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
@@ -463,6 +480,14 @@ namespace aspect
                              "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: $Pa$.");
 
+          // Stress limiter parameters
+          prm.declare_entry ("Stress limiter exponents", "1.0",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of stress limiter exponents, $n_\\text{lim}$, "
+                             "for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "The default value of 1 ensures the entire stress limiter term is set to 1 "
+                             "and does not affect the viscosity. Units: none.");
 
         }
         prm.leave_subsection();
@@ -493,13 +518,21 @@ namespace aspect
           ref_visc = prm.get_double ("Reference viscosity");
 
           // Equation of state parameters
-          thermal_diffusivities = get_vector_double("Thermal diffusivities", n_fields, prm);
-          heat_capacities = get_vector_double("Heat capacities", n_fields, prm);
+          thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
+                                                                          n_fields,
+                                                                          "Thermal diffusivities");
+          heat_capacities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Heat capacities"))),
+                                                                    n_fields,
+                                                                    "Heat capacities");
 
           // ---- Compositional parameters
           grain_size = prm.get_double("Grain size");
-          densities = get_vector_double("Densities", n_fields, prm);
-          thermal_expansivities = get_vector_double("Thermal expansivities", n_fields, prm);
+          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
+                                                              n_fields,
+                                                              "Densities");
+          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
+                                                                          n_fields,
+                                                                          "Thermal expansivities");
 
           // Rheological parameters
           if (prm.get ("Viscosity averaging scheme") == "harmonic")
@@ -524,20 +557,54 @@ namespace aspect
             AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
 
           // Rheological parameters
+          if (prm.get ("Yield mechanism") == "drucker")
+            yield_mechanism = drucker_prager;
+          else if (prm.get ("Yield mechanism") == "limiter")
+            yield_mechanism = stress_limiter;
+          else
+            AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
+
+          // Rheological parameters
           // Diffusion creep parameters (Stress exponents often but not always 1)
-          prefactors_diffusion = get_vector_double("Prefactors for diffusion creep", n_fields, prm);
-          stress_exponents_diffusion = get_vector_double("Stress exponents for diffusion creep", n_fields, prm);
-          grain_size_exponents_diffusion = get_vector_double("Grain size exponents for diffusion creep", n_fields, prm);
-          activation_energies_diffusion = get_vector_double("Activation energies for diffusion creep", n_fields, prm);
-          activation_volumes_diffusion = get_vector_double("Activation volumes for diffusion creep", n_fields, prm);
+          prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
+                                                                         n_fields,
+                                                                         "Prefactors for diffusion creep");
+          stress_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for diffusion creep"))),
+                                                                               n_fields,
+                                                                               "Stress exponents for diffusion creep");
+          grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
+                                                                                   n_fields,
+                                                                                   "Grain size exponents for diffusion creep");
+          activation_energies_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for diffusion creep"))),
+                                                                                  n_fields,
+                                                                                  "Activation energies for diffusion creep");
+          activation_volumes_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for diffusion creep"))),
+                                                                                 n_fields,
+                                                                                 "Activation volumes for diffusion creep");
           // Dislocation creep parameters (Note the lack of grain size exponents)
-          prefactors_dislocation = get_vector_double("Prefactors for dislocation creep", n_fields, prm);
-          stress_exponents_dislocation = get_vector_double("Stress exponents for dislocation creep", n_fields, prm);
-          activation_energies_dislocation = get_vector_double("Activation energies for dislocation creep", n_fields, prm);
-          activation_volumes_dislocation = get_vector_double("Activation volumes for dislocation creep", n_fields, prm);
+          prefactors_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for dislocation creep"))),
+                                                                           n_fields,
+                                                                           "Prefactors for dislocation creep");
+          stress_exponents_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for dislocation creep"))),
+                                                                                 n_fields,
+                                                                                 "Stress exponents for dislocation creep");
+          activation_energies_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for dislocation creep"))),
+                                                                                    n_fields,
+                                                                                    "Activation energies for dislocation creep");
+          activation_volumes_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation creep"))),
+                                                                                   n_fields,
+                                                                                   "Activation volumes for dislocation creep");
           // Plasticity parameters
-          angles_internal_friction = get_vector_double("Angles of internal friction", n_fields, prm);
-          cohesions = get_vector_double("Cohesions", n_fields, prm);
+          angles_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Angles of internal friction"))),
+                                                                             n_fields,
+                                                                             "Angles of internal friction");
+          cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
+                                                              n_fields,
+                                                              "Cohesions");
+          // Stress limiter parameter
+          exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
+                                                                              n_fields,
+                                                                              "Stress limiter exponents");
         }
         prm.leave_subsection();
       }
@@ -569,9 +636,9 @@ namespace aspect
                                    "(Anne Glerum) material models. "
                                    "\n\n "
                                    "The viscosity for dislocation or diffusion creep is defined as "
-                                   "$\\v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
+                                   "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
                                    "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
-                                   "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\$ "
+                                   "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\] "
                                    "where $A$ is the prefactor, $n$ is the stress exponent, "
                                    "$\\dot{\\varepsilon}_{ii}$ is the square root of the deviatoric "
                                    "strain rate tensor second invariant, $d$ is grain size, "
@@ -582,25 +649,46 @@ namespace aspect
                                    "geodnynamic simulations.  See, for example, Billen and Hirth "
                                    "(2007), G3, 8, Q08012."
                                    "\n\n "
-                                   "One may select to use the diffusion ($\\v_{diff}$; $n=1$, $m!=0$), "
-                                   "dislocation ($\\v_{disl}$, $n>1$, $m=0$) or composite "
+                                   "One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$), "
+                                   "dislocation ($v_{disl}$, $n>1$, $m=0$) or composite "
                                    "$\\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. "
                                    "\n\n "
+                                   "Viscosity is limited through one of two different 'yielding' mechanism "
+                                   "\n"
                                    "Plasticity limits viscous stress through a Drucker Prager "
                                    "yield criterion, where the yield stress in 3D is  "
                                    "$\\sigma_y = \\frac{6*C*\\cos(\\phi) + 2*P*\\sin(\\phi)} "
                                    "{\\sqrt(3)*(3+\\sin(\\phi))}$ "
                                    "and "
-                                   "$\\simga_y = C*\\cos(\\phi) + P*\\sin(\\phi)$ "
+                                   "$\\sigma_y = C\\cos(\\phi) + P\\sin(\\phi)$ "
                                    "in 2D. Above, $C$ is cohesion and $\\phi$  is the angle of "
                                    "internal friction.  Note that the 2D form is equivalent to the "
                                    "Mohr Coloumb yield surface.  If $\\phi$ is 0, the yield stress "
                                    "is fixed and equal to the cohesion (Von Mises yield criterion) "
-                                   "When the viscous stress ($2*v*{\\varepsilon}_{ii}$) "
+                                   "When the viscous stress ($2v{\\varepsilon}_{ii}$) "
                                    "the yield stress, the viscosity is rescaled back to the yield "
-                                   "surface: $v_{y}=\\sigma_{y}/(2.*{\\varepsilon}_{ii})$. "
+                                   "surface: $v_{y}=\\sigma_{y}/(2{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models "
-                                   "See, for example, Thieulot, C. (2011), PEPI 188, 47-68. "
+                                   "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
+                                   "\n\n"
+                                   "Viscous stress may also be limited by a non-linear stress limiter "
+                                   "that has a form similar to the Peierls creep mechanism. "
+                                   "This stress limiter assigns an effective viscosity "
+                                   "$\\sigma_eff = \\frac{\\tau_y}{2*\\varepsilon_y} "
+                                   "{\\frac{\\varepsilon_ii}{\\varepislon_y}}^{\\frac{1}{n_y}-1}$ "
+                                   "Above $\\tau_y$ is a yield stress, $\\varepsilon_y$ is the "
+                                   "reference strain rate, $\\varepsilon_{ii}$ is the strain rate "
+                                   "and $n_y$ is the stress limiter exponent.  The yield stress, "
+                                   "$\\tau_y$, is defined through the Drucker Prager yield criterion "
+                                   "formulation.  This method of limiting viscous stress has been used "
+                                   "in various forms within the geodynamic literature, including "
+                                   "Christensen (1992), JGR, 97(B2), pp. 2015-2036; "
+                                   "Cizkova and Bina (2013), EPSL, 379, pp. 95-103; "
+                                   "Cizkova and Bina (2015), EPSL, 430, pp. 408-415. "
+                                   "When $n_y$ is 1, it essentially becomes a linear viscosity model,"
+                                   "and in the limit $n_y\rightarrow \\infty$ it converges to the "
+                                   "standard viscosity rescaling method (concretely, values $n_y>20$"
+                                   "are large enough)."
                                    "\n\n "
                                    "Compositional fields can each be assigned individual values of"
                                    "thermal diffusivity, heat capacity, density, thermal "

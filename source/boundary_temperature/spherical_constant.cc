@@ -21,6 +21,7 @@
 
 #include <aspect/boundary_temperature/spherical_constant.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 
@@ -45,16 +46,19 @@ namespace aspect
       // do we know which boundary indicators are used and what they mean
       const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
       Assert ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>(geometry_model) != 0
+               || dynamic_cast<const GeometryModel::Sphere<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::Chunk<dim>*>(geometry_model) != 0
                || dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model) != 0),
               ExcMessage ("This boundary model is only implemented if the geometry "
-                          "is a spherical shell, ellipsoidal chunk or chunk."));
+                          "is a spherical shell, sphere, ellipsoidal chunk or chunk."));
 
       const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
 
       if (boundary_name == "inner")
         return inner_temperature;
       else if (boundary_name =="outer")
+        return outer_temperature;
+      else if (boundary_name =="surface")
         return outer_temperature;
       else
         {

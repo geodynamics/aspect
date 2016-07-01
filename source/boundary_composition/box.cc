@@ -174,6 +174,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(Box,
                                                "box",
                                                "A model in which the composition is chosen constant on "
-                                               "all the sides of a box.")
+                                               "the sides of a box which are selected by the parameters "
+                                               "Left/Right/Top/Bottom/Front/Back composition")
   }
 }

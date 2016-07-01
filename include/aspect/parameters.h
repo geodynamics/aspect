@@ -192,7 +192,7 @@ namespace aspect
      * @{
      */
     bool                           include_melt_transport;
-    double                         melt_transport_threshold;
+
     double                         radiogenic_heating_rate;
     std::set<types::boundary_id> fixed_temperature_boundary_indicators;
     std::set<types::boundary_id> fixed_composition_boundary_indicators;
@@ -248,6 +248,7 @@ namespace aspect
     unsigned int                   stabilization_alpha;
     double                         stabilization_c_R;
     double                         stabilization_beta;
+    double                         stabilization_gamma;
     double                         discontinuous_penalty;
     bool                           use_limiter_for_discontinuous_temperature_solution;
     bool                           use_limiter_for_discontinuous_composition_solution;

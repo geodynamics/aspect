@@ -167,9 +167,7 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
 
           isotherm_file_name = prm.get("Isotherm depth filename");
           isotherm_temperature = prm.get_double("Isotherm temperature");

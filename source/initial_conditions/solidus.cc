@@ -24,7 +24,6 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/boundary_temperature/interface.h>
 
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <cmath>
 
 namespace aspect
@@ -157,7 +156,8 @@ namespace aspect
                    ExcMessage ("Spherical harmonics can only be computed for "
                                "degree >= 0."));
           // use a spherical harmonic function as lateral perturbation
-          lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
+          std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
+          lateral_perturbation = sph_harm_vals.first;
         }
       litho_thick_theta=litho_thick-magnitude_lith*lateral_perturbation;
       T_litho=solidus_curve.T(0,spherical_geometry_model->R1-litho_thick_theta)+deltaT;
@@ -280,9 +280,7 @@ namespace aspect
           }
           prm.leave_subsection();
           prm.enter_subsection("Data");
-          solidus_filename = Utilities::replace_in_string(prm.get ("Solidus filename"),
-                                                          "$ASPECT_SOURCE_DIR",
-                                                          ASPECT_SOURCE_DIR);
+          solidus_filename = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Solidus filename"));
           solidus_curve.read(solidus_filename,this->get_mpi_communicator());
           prm.leave_subsection();
         }

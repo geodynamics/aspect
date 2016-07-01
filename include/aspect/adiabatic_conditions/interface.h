@@ -24,7 +24,7 @@
 
 #include <aspect/plugins.h>
 #include <aspect/geometry_model/interface.h>
-
+#include <aspect/simulator_access.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
@@ -51,7 +51,7 @@ namespace aspect
      * @ingroup AdiabaticConditions
      */
     template <int dim>
-    class Interface
+    class Interface: public SimulatorAccess<dim>
     {
       public:
         /**
@@ -95,6 +95,12 @@ namespace aspect
         double temperature (const Point<dim> &p) const = 0;
 
         /**
+         * Return the adiabatic pressure at a given point of the domain.
+         */
+        virtual
+        double pressure (const Point<dim> &p) const = 0;
+
+        /**
          * Return the adiabatic temperature profile as a vector of values
          * corresponding to increasing depth.
          *
@@ -103,14 +109,13 @@ namespace aspect
          * of depth slices.
          */
         virtual
-        void get_adiabatic_temperature_profile(std::vector<double> &values) const = 0;
+        void get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
         /**
-         * Return the adiabatic pressure at a given point of the domain.
+         * Like get_adiabatic_temperature_profile() but for the pressure.
          */
         virtual
-        double pressure (const Point<dim> &p) const = 0;
-
+        void get_adiabatic_pressure_profile(std::vector<double> &values) const;
 
         /**
          * Declare the parameters this class takes through input files. The

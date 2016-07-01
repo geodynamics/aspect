@@ -25,7 +25,7 @@
 #include <iostream>
 #include <deal.II/base/std_cxx11/array.h>
 
-#include <boost/math/special_functions/spherical_harmonic.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -159,15 +159,9 @@ namespace aspect
     void
     SAVANIPerturbation<dim>::initialize()
     {
-      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(datadirectory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
-      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(datadirectory+spline_depth_file_name,this->get_mpi_communicator()));
+      spherical_harmonics_lookup.reset(new internal::SAVANI::SphericalHarmonicsLookup(data_directory+harmonics_coeffs_file_name,this->get_mpi_communicator()));
+      spline_depths_lookup.reset(new internal::SAVANI::SplineDepthsLookup(data_directory+spline_depth_file_name,this->get_mpi_communicator()));
     }
-
-    // NOTE: this module uses the Boost spherical harmonics package which is not designed
-    // for very high order (> 100) spherical harmonics computation. If you use harmonic
-    // perturbations of a high order be sure to confirm the accuracy first.
-    // For more information, see:
-    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
 
     template <>
     double
@@ -221,7 +215,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+      std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
@@ -234,8 +228,9 @@ namespace aspect
             {
               for (int order_m = 0; order_m < degree_l+1; order_m++)
                 {
-                  const double cos_component = boost::math::spherical_harmonic_r(degree_l,order_m,scoord[2],scoord[1]); //real / cos part
-                  const double sin_component = boost::math::spherical_harmonic_i(degree_l,order_m,scoord[2],scoord[1]); //imaginary / sine part
+                  const std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( degree_l, order_m, scoord[2], scoord[1] );
+                  const double cos_component = sph_harm_vals.first;
+                  const double sin_component = sph_harm_vals.second;
 
                   // normalization after Dahlen and Tromp, 1986, Appendix B.6
                   if (degree_l == 0)
@@ -244,10 +239,7 @@ namespace aspect
                                0.
                                :
                                1.);
-                  else if (order_m == 0)
-                    prefact = 1.;
-                  else
-                    prefact = sqrt(2.);
+                  else prefact = 1.0;
 
                   spline_values[depth_interp] += prefact * (a_lm[ind]*cos_component + b_lm[ind]*sin_component);
 
@@ -358,9 +350,9 @@ namespace aspect
       {
         prm.enter_subsection("SAVANI perturbation");
         {
-          datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                       "$ASPECT_SOURCE_DIR",
-                                                       ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+          if ((data_directory.size() > 0) && (data_directory[data_directory.size()-1] != '/'))
+            data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");
           spline_depth_file_name  = prm.get ("Spline knots depth file name");
           vs_to_density           = prm.get_double ("Vs to density scaling");
@@ -398,7 +390,7 @@ namespace aspect
                                        "Research: Solid Earth 119.4 (2014): 3006-3034. "
                                        "The scaling between the shear wave perturbation and the "
                                        "temperature perturbation can be set by the user with the "
-                                       "'vs to density scaling' parameter and the 'Thermal "
+                                       "'Vs to density scaling' parameter and the 'Thermal "
                                        "expansion coefficient in initial temperature scaling' "
                                        "parameter. The scaling is as follows: $\\delta ln \\rho "
                                        "(r,\\theta,\\phi) = \\xi \\cdot \\delta ln v_s(r,\\theta, "

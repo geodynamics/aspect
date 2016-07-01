@@ -21,6 +21,7 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/free_surface.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
@@ -51,13 +52,17 @@ namespace aspect
               error = remove(new_name.c_str());
               AssertThrow (error == 0, ExcMessage(std::string ("Unable to remove file: "
                                                                + new_name
-                                                               + ", although it seems to exist.")));
+                                                               + ", although it seems to exist. "
+                                                               + "The error code is "
+                                                               + Utilities::to_string(error) + ".")));
             }
 
           error = rename(old_name.c_str(),new_name.c_str());
           AssertThrow (error == 0, ExcMessage(std::string ("Unable to rename files: ")
                                               +
-                                              old_name + " -> " + new_name));
+                                              old_name + " -> " + new_name
+                                              + ". The error code is "
+                                              + Utilities::to_string(error) + "."));
         }
     }
   }
@@ -109,15 +114,14 @@ namespace aspect
 
       //If we are using a free surface, also serialize the mesh vertices vector, which
       //uses its own dof handler
-      std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
+      std::vector<const LinearAlgebra::Vector *> x_fs_system (1);
       std_cxx11::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > freesurface_trans;
       if (parameters.free_surface_enabled)
         {
           freesurface_trans.reset (new parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>
                                    (free_surface->free_surface_dof_handler));
 
-          x_fs_system[0] = &free_surface->mesh_vertices;
-          x_fs_system[1] = &free_surface->mesh_vertex_velocity;
+          x_fs_system[0] = &free_surface->mesh_displacements;
 
           freesurface_trans->prepare_serialization(x_fs_system);
         }
@@ -214,7 +218,7 @@ namespace aspect
       {
         AssertThrow(false, ExcMessage("Cannot open snapshot mesh file or read the triangulation stored there."));
       }
-    global_volume = GridTools::volume (triangulation, mapping);
+    global_volume = GridTools::volume (triangulation, *mapping);
     setup_dofs();
 
     LinearAlgebra::BlockVector
@@ -230,6 +234,7 @@ namespace aspect
     x_system[0] = & (distributed_system);
     x_system[1] = & (old_distributed_system);
     x_system[2] = & (old_old_distributed_system);
+
     //If necessary, also include the mesh velocity for deserialization
     //with the system dof handler
     if (parameters.free_surface_enabled)
@@ -251,22 +256,14 @@ namespace aspect
 
         //deserialize and copy the vectors using the free surface dof handler
         parallel::distributed::SolutionTransfer<dim, LinearAlgebra::Vector> freesurface_trans( free_surface->free_surface_dof_handler );
-        LinearAlgebra::Vector distributed_mesh_vertices( free_surface->mesh_locally_owned,
-                                                         mpi_communicator );
-        LinearAlgebra::Vector distributed_mesh_vertex_velocity( free_surface->mesh_locally_owned,
-                                                                mpi_communicator );
-        std::vector<LinearAlgebra::Vector *> fs_system(2);
-        fs_system[0] = &distributed_mesh_vertices;
-        fs_system[1] = &distributed_mesh_vertex_velocity;
+        LinearAlgebra::Vector distributed_mesh_displacements( free_surface->mesh_locally_owned,
+                                                              mpi_communicator );
+        std::vector<LinearAlgebra::Vector *> fs_system(1);
+        fs_system[0] = &distributed_mesh_displacements;
 
         freesurface_trans.deserialize (fs_system);
-        free_surface->mesh_vertices = distributed_mesh_vertices;
-        free_surface->mesh_vertex_velocity = distributed_mesh_vertex_velocity;
-        //Make sure the mesh conforms to the mesh_vertices vector
-        free_surface->displace_mesh();
-        free_surface->detach_manifolds();
+        free_surface->mesh_displacements = distributed_mesh_displacements;
       }
-
 
     // read zlib compressed resume.z
     try

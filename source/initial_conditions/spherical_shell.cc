@@ -21,6 +21,7 @@
 
 #include <aspect/initial_conditions/spherical_shell.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <fstream>
 #include <iostream>
@@ -42,9 +43,11 @@ namespace aspect
       AssertThrow ((dynamic_cast<const GeometryModel::SphericalShell<dim>*>
                     (&this->get_geometry_model()) != 0
                     || dynamic_cast<const GeometryModel::Chunk<dim>*>
+                    (&this->get_geometry_model()) != 0
+                    || dynamic_cast<const GeometryModel::Sphere<dim>*>
                     (&this->get_geometry_model()) != 0),
                    ExcMessage ("This initial condition can only be used if the geometry "
-                               "is a spherical shell or a chunk."));
+                               "is a spherical shell, a sphere or a chunk."));
 
       // this initial condition only makes sense if a boundary temperature
       // is prescribed. verify that it is indeed
@@ -58,6 +61,11 @@ namespace aspect
           != 0)
         R1 = dynamic_cast<const GeometryModel::SphericalShell<dim>&>
              (this->get_geometry_model()).outer_radius();
+      else if (dynamic_cast<const GeometryModel::Sphere<dim>*>
+               (&this->get_geometry_model())
+               != 0)
+        R1 = dynamic_cast<const GeometryModel::Sphere<dim>&>
+             (this->get_geometry_model()).radius();
       else
         R1 = dynamic_cast<const GeometryModel::Chunk<dim>&>
              (this->get_geometry_model()).outer_radius();

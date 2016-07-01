@@ -1,9 +1,14 @@
 # This test checks if the postprocessor 'melt fraction' works as 
 # intended. The visulaization output is then a p-T-diagramme of
-# the melt fraction of pyroxebite using the melting model of 
+# the melt fraction of pyroxenite using the melting model of 
 # Sobolev et. al, 2010 (Nature)
 # with the temperature ranging from 1000°C to 1900°C on the x axis 
 # and the pressure ranging from 0 GPa to 8 GPa on the y axis.
+
+# The data can be plotted in gnuplot using:
+# set view map
+# splot "file1" using 5:6:8 with points pointtype 5 pointsize 1 palette,
+#       "file2" using 5:6:8 with points pointtype 5 pointsize 1 palette
 
 # MPI: 2
 
@@ -38,6 +43,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
+  set Names of fields = pyroxenite
 end
 
 
@@ -132,7 +138,7 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end

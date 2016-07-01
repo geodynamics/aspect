@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Number of processors to run on
+NP=1
+
 # averaging scheme:
-for avg in "none" "arithmetic average" "geometric average"
+for avg in "none" "arithmetic average" "geometric average" "harmonic average"
 do
   echo "----Averaging scheme: $avg----"
 
@@ -19,7 +22,7 @@ do
     echo "subsection Mesh refinement" >> temp.prm
     echo "set Initial global refinement = $r" >> temp.prm
     echo "end" >> temp.prm
-    ./aspect temp.prm | grep DoFs
+    mpirun -n $NP ./aspect temp.prm | grep DoFs
     rm -f temp.prm
   done
 
@@ -31,6 +34,6 @@ do
   echo "subsection Material model" >> temp.prm
   echo "set Material averaging = $avg" >> temp.prm
   echo "end" >> temp.prm
-  ./aspect temp.prm | grep DoFs
+  mpirun -n $NP ./aspect temp.prm | grep DoFs
   rm -f temp.prm
 done

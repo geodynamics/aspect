@@ -1,0 +1,16 @@
+subsection %%\hyperref[parameters:Material_20model]{Material model}%
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = inner core material%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+
+# The 'inner core material' model also contains a function that
+# represents the resistance to melting/freezing at the inner core
+# boundary. 
+# For P-->inifinity, the boundary is a free slip boundary, and for 
+# P-->0, the boundary is an open boundary (with zero normal stress). 
+  subsection %%\hyperref[parameters:Material_20model/Inner_20core]{Inner core}%
+    subsection %%\hyperref[parameters:Material_20model/Inner_20core/Phase_20change_20resistance_20function]{Phase change resistance function}%
+      set %%\hyperref[parameters:Material model/Inner core/Phase change resistance function/Variable names]{Variable names}%      = x,y,z%% \index[prmindex]{Variable names} \index[prmindexfull]{Material model!Inner core!Phase change resistance function/Variable names} %
+      set %%\hyperref[parameters:Material model/Inner core/Phase change resistance function/Function expression]{Function expression}% = 1e-2     # <-- P%% \index[prmindex]{Function expression} \index[prmindexfull]{Material model!Inner core!Phase change resistance function/Function expression} %
+    end
+  end
+end
+

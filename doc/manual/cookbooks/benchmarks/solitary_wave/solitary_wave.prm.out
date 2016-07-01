@@ -1,0 +1,101 @@
+# Listing of Parameters
+# ---------------------
+# Set up the solitary wave benchmark
+# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011; 
+# Keller et al., 2013; Schmeling, 200
+
+set %%\hyperref[parameters:Additional shared libraries]{Additional shared libraries}%            = ./libsolitary_wave.so%% \index[prmindex]{Additional shared libraries} \index[prmindexfull]{Additional shared libraries} %
+
+# A non-linear solver has to be used for models with melt migration
+set %%\hyperref[parameters:Nonlinear solver scheme]{Nonlinear solver scheme}%                = iterated IMPES%% \index[prmindex]{Nonlinear solver scheme} \index[prmindexfull]{Nonlinear solver scheme} %
+set %%\hyperref[parameters:Max nonlinear iterations]{Max nonlinear iterations}%               = 10%% \index[prmindex]{Max nonlinear iterations} \index[prmindexfull]{Max nonlinear iterations} %
+set %%\hyperref[parameters:Nonlinear solver tolerance]{Nonlinear solver tolerance}%             = 1e-5%% \index[prmindex]{Nonlinear solver tolerance} \index[prmindexfull]{Nonlinear solver tolerance} %
+set %%\hyperref[parameters:Linear solver tolerance]{Linear solver tolerance}%                = 1e-10%% \index[prmindex]{Linear solver tolerance} \index[prmindexfull]{Linear solver tolerance} %
+
+# The end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set %%\hyperref[parameters:End time]{End time}%                               = 6e6%% \index[prmindex]{End time} \index[prmindexfull]{End time} %
+
+# To model melt migration, there has to be a compositional field with 
+# the name 'porosity'. 
+subsection %%\hyperref[parameters:Compositional_20fields]{Compositional fields}%
+  set %%\hyperref[parameters:Compositional fields/Number of fields]{Number of fields}% = 1%% \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
+  set %%\hyperref[parameters:Compositional fields/Names of fields]{Names of fields}% = porosity%% \index[prmindex]{Names of fields} \index[prmindexfull]{Compositional fields!Names of fields} %
+end
+
+# Enable modelling of melt migration in addition to the advection of
+# solid material.
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Include melt transport]{Include melt transport}%                  = true%% \index[prmindex]{Include melt transport} \index[prmindexfull]{Model settings!Include melt transport} %
+end
+
+######### Parameters for the porosity field ########################
+
+# We use the initial conditions and material model from the 
+# solitary wave plugin and choose a wave with an amplitude of
+# 0.01 and a background porosity of 0.001. 
+subsection %%\hyperref[parameters:Compositional_20initial_20conditions]{Compositional initial conditions}%
+  set %%\hyperref[parameters:Compositional initial conditions/Model name]{Model name}% = Solitary wave initial condition%% \index[prmindex]{Model name} \index[prmindexfull]{Compositional initial conditions!Model name} %
+  subsection %%\hyperref[parameters:Compositional_20initial_20conditions/Solitary_20wave_20initial_20condition]{Solitary wave initial condition}%
+    set %%\hyperref[parameters:Compositional initial conditions/Solitary wave initial condition/Offset]{Offset}% = 200%% \index[prmindex]{Offset} \index[prmindexfull]{Compositional initial conditions!Solitary wave initial condition!Offset} %
+    set %%\hyperref[parameters:Compositional initial conditions/Solitary wave initial condition/Read solution from file]{Read solution from file}% = true%% \index[prmindex]{Read solution from file} \index[prmindexfull]{Compositional initial conditions!Solitary wave initial condition!Read solution from file} %
+    set %%\hyperref[parameters:Compositional initial conditions/Solitary wave initial condition/Amplitude]{Amplitude}% = 0.01%% \index[prmindex]{Amplitude} \index[prmindexfull]{Compositional initial conditions!Solitary wave initial condition!Amplitude} %
+    set %%\hyperref[parameters:Compositional initial conditions/Solitary wave initial condition/Background porosity]{Background porosity}% = 0.001%% \index[prmindex]{Background porosity} \index[prmindexfull]{Compositional initial conditions!Solitary wave initial condition!Background porosity} %
+  end
+end
+
+subsection %%\hyperref[parameters:Material_20model]{Material model}%
+  set %%\hyperref[parameters:Material model/Model name]{Model name}% = Solitary Wave%% \index[prmindex]{Model name} \index[prmindexfull]{Material model!Model name} %
+end
+
+# As material is flowing in, we prescribe the porosity at the
+# upper and lower boundary. 
+subsection %%\hyperref[parameters:Boundary_20composition_20model]{Boundary composition model}%
+  set %%\hyperref[parameters:Boundary composition model/Model name]{Model name}% = initial composition%% \index[prmindex]{Model name} \index[prmindexfull]{Boundary composition model!Model name} %
+end
+
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Fixed composition boundary indicators]{Fixed composition boundary indicators}%   = 2,3%% \index[prmindex]{Fixed composition boundary indicators} \index[prmindexfull]{Model settings!Fixed composition boundary indicators} %
+end
+
+# As we know that our solution does not have any steep gradients
+# we can use a low stabilization to avoid too much diffusion. 
+subsection %%\hyperref[parameters:Discretization]{Discretization}%
+  subsection %%\hyperref[parameters:Discretization/Stabilization_20parameters]{Stabilization parameters}%
+    set %%\hyperref[parameters:Discretization/Stabilization parameters/beta]{beta}%  = 0.001%% \index[prmindex]{beta} \index[prmindexfull]{Discretization!Stabilization parameters!beta} %
+  end
+end
+
+######### Model geometry ##############################################
+
+# Our domain is a pseudo-1D-profile 400 m in height, but only a few elements wide
+subsection %%\hyperref[parameters:Geometry_20model]{Geometry model}%
+  set %%\hyperref[parameters:Geometry model/Model name]{Model name}% = box%% \index[prmindex]{Model name} \index[prmindexfull]{Geometry model!Model name} %
+  subsection %%\hyperref[parameters:Geometry_20model/Box]{Box}%
+    set %%\hyperref[parameters:Geometry model/Box/X extent]{X extent}%  = 10%% \index[prmindex]{X extent} \index[prmindexfull]{Geometry model!Box!X extent} %
+    set %%\hyperref[parameters:Geometry model/Box/Y extent]{Y extent}%  = 400%% \index[prmindex]{Y extent} \index[prmindexfull]{Geometry model!Box!Y extent} %
+    set %%\hyperref[parameters:Geometry model/Box/Y repetitions]{Y repetitions}% = 40%% \index[prmindex]{Y repetitions} \index[prmindexfull]{Geometry model!Box!Y repetitions} %
+  end
+end
+
+######### Velocity boundary conditions ################################
+
+# We apply the phase speed of the wave here, so that it always stays in the 
+# same place in our model. The phase speed is c = 5.25e-11 m/s, but we have 
+# to convert it to m/years using the same conversion that is used internally 
+# in Aspect: year_in_seconds = 60*60*24*365.2425.
+subsection %%\hyperref[parameters:Boundary_20velocity_20model]{Boundary velocity model}%
+  subsection %%\hyperref[parameters:Boundary_20velocity_20model/Function]{Function}%
+    set %%\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}% = 0;-1.65673998e-4%% \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+  end
+end
+
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = 2:function, 3:function%% \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Tangential velocity boundary indicators]{Tangential velocity boundary indicators}% = 0,1%% \index[prmindex]{Tangential velocity boundary indicators} \index[prmindexfull]{Model settings!Tangential velocity boundary indicators} %
+end
+
+# Postprocessor for the error calculation
+subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
+  set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = solitary wave statistics%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
+end

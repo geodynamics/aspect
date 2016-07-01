@@ -109,10 +109,11 @@ namespace aspect
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=
               -std::numeric_limits<double>::epsilon() * pressures.size(),
-              ExcInternalError());
+              ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
+                         + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
       Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
-              ExcInternalError());
+              ExcMessage("Adiabatic InitialProfile encountered a negative temperature."));
 
       initialized = true;
     }
@@ -128,21 +129,6 @@ namespace aspect
     void
     InitialProfile<dim>::update()
     {}
-
-    template <int dim>
-    void InitialProfile<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
-    {
-      const unsigned int num_slices = values.size();
-      const double max_depth = this->get_geometry_model().maximal_depth();
-      double depth = 0.0;
-
-      for (unsigned int n = 0 ; n < num_slices; n++)
-        {
-          depth = n * max_depth / (num_slices-1);
-          const Point<dim> p = this->get_geometry_model().representative_point(depth);
-          values[n] = temperature(p);
-        }
-    }
 
 
     template <int dim>

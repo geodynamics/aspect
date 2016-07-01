@@ -51,22 +51,6 @@ namespace aspect
 
     template <int dim>
     double
-    Interface<dim>::composition (const GeometryModel::Interface<dim> &/*geometry_model*/,
-                                 const types::boundary_id             boundary_indicator,
-                                 const Point<dim>                    &position,
-                                 const unsigned int                   compositional_field) const
-    {
-      /**
-       * Call the new-style function without the geometry model
-       * to maintain backwards compatibility. After removal of this deprecated
-       * function the new function will be called directly by Simulator.
-       */
-
-      return boundary_composition(boundary_indicator,position,compositional_field);
-    }
-
-    template <int dim>
-    double
     Interface<dim>::boundary_composition (const types::boundary_id /*boundary_indicator*/,
                                           const Point<dim>        &/*position*/,
                                           const unsigned int       /*compositional_field*/) const

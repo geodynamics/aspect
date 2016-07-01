@@ -16,24 +16,12 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Writing graphical output: output-initial_condition_S40RTS/solution-00000
-     Temperature min/avg/max:  1450 K, 1600 K, 1798 K
+     Temperature min/avg/max:  1491 K, 1600 K, 1743 K
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |       172s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |      7.55s |       4.4% |
-| Assemble temperature system     |         1 |      4.84s |       2.8% |
-| Build Stokes preconditioner     |         1 |      3.54s |       2.1% |
-| Build temperature preconditioner|         1 |    0.0147s |    0.0086% |
-| Solve Stokes system             |         1 |     0.461s |      0.27% |
-| Solve temperature system        |         1 |    0.0033s |    0.0019% |
-| Initialization                  |         2 |       153s |        89% |
-| Postprocessing                  |         1 |     0.343s |       0.2% |
-| Setup dof systems               |         1 |      1.15s |      0.67% |
 +---------------------------------+-----------+------------+------------+
 

@@ -1,0 +1,12 @@
+# The gravity has its maximum value at the boundary of inner and
+# outer core, and decreases approximately linearly to zero towards
+# the center of the core. 
+# The Rayleigh number used in the model is given by the magnitude
+# of the gravity at the inner core/outer core boundary.
+subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%
+  set %%\hyperref[parameters:Gravity model/Model name]{Model name}% = radial linear%% \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
+
+  subsection %%\hyperref[parameters:Gravity_20model/Radial_20linear]{Radial linear}%
+    set %%\hyperref[parameters:Gravity model/Radial linear/Magnitude at surface]{Magnitude at surface}% = 2     # <-- Ra%% \index[prmindex]{Magnitude at surface} \index[prmindexfull]{Gravity model!Radial linear!Magnitude at surface} %
+  end
+end

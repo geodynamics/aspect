@@ -187,7 +187,7 @@ namespace aspect
         double min_eta;
         double max_eta;
         double max_lateral_eta_variation;
-        std::string datadirectory;
+        std::string data_directory;
         std::vector<std::string> material_file_names;
         unsigned int n_material_data;
         std::string radial_viscosity_file_name;

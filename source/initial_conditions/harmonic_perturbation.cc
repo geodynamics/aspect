@@ -25,18 +25,11 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/utilities.h>
 
-#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
   namespace InitialConditions
   {
-    // NOTE: this module uses the Boost spherical harmonics package which is not designed
-    // for very high order (> 100) spherical harmonics computation. If you use harmonic
-    // perturbations of a high order be sure to confirm the accuracy first.
-    // For more information, see:
-    // http://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_poly/sph_harm.html
-    //
     template <int dim>
     double
     HarmonicPerturbation<dim>::
@@ -63,7 +56,7 @@ namespace aspect
           spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           if (dim==2)
             {
@@ -84,7 +77,10 @@ namespace aspect
                        ExcMessage ("Spherical harmonics can only be computed for "
                                    "degree >= 0."));
               // use a spherical harmonic function as lateral perturbation
-              lateral_perturbation = boost::math::spherical_harmonic_r(lateral_wave_number_1,lateral_wave_number_2,scoord[2],scoord[1]);
+              std::pair<double,double> sph_harm_vals = Utilities::real_spherical_harmonic( lateral_wave_number_1, lateral_wave_number_2, scoord[2], scoord[1] );
+              //For historical reasons, this initial conditions module used an unnormalized real spherical harmonic.
+              //Here we denormalize the return value of real_spherical_harmonic to keep the original behavior.
+              lateral_perturbation = sph_harm_vals.first / ( lateral_wave_number_2 == 0 ? 1.0 : std::sqrt(2.) );
             }
         }
       else if (const GeometryModel::Chunk<dim> *
@@ -94,7 +90,7 @@ namespace aspect
                         ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is alway 0 at the model boundaries.

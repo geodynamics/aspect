@@ -52,21 +52,6 @@ namespace aspect
 
     template <int dim>
     double
-    Interface<dim>::temperature (const GeometryModel::Interface<dim> &/*geometry_model*/,
-                                 const types::boundary_id             boundary_indicator,
-                                 const Point<dim>                    &position) const
-    {
-      /**
-       * Call the new-style function without the geometry model
-       * to maintain backwards compatibility. After removal of this deprecated
-       * function the new function will be called directly by Simulator.
-       */
-
-      return this->boundary_temperature(boundary_indicator,position);
-    }
-
-    template <int dim>
-    double
     Interface<dim>::boundary_temperature (const types::boundary_id /*boundary_indicator*/,
                                           const Point<dim>        &/*position*/) const
     {

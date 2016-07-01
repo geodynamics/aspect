@@ -1,0 +1,45 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/chunk_3d_west.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/velocity-boundary-conditions/ascii-data/test/chunk_3d_east.0.txt.
+
+
+   Loading new data file did not succeed.
+   Assuming constant boundary conditions for rest of model run.
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 527 (375+27+125)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+19 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  13.5 m/year, 26.7 m/year
+     Temperature min/avg/max:            273 K, 1489 K, 3000 K
+     Heat fluxes through boundary parts: -2.575e+11 W, 8.242e+11 W, -2.556e+10 W, -2.556e+10 W, -3.225e+10 W, -6.983e+09 W
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+14 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  13.5 m/year, 26.7 m/year
+     Temperature min/avg/max:            273 K, 1483 K, 3000 K
+     Heat fluxes through boundary parts: -2.546e+11 W, 8.048e+11 W, -2.436e+10 W, -2.451e+10 W, -3.031e+10 W, -6.596e+09 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

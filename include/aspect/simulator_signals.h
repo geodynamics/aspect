@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2015, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -84,6 +84,14 @@ namespace aspect
     edit_finite_element_variables;
 
     /**
+     * A signal that is called after setting up the initial conditions.
+     *
+     * The functions (slots) that can attach to this signal need to take one
+     * argument: A SimulatorAccess object that descibes the simulator.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)>  post_set_initial_state;
+
+    /**
      * A signal that is called at the end of setting up the
      * constraints for the current time step. This allows to add
      * more constraints on degrees of freedom, for example to fix
@@ -129,14 +137,13 @@ namespace aspect
     /**
     * A signal that is called after every mesh_refinement.
     * This signal allows for registering functions that load data
-    * that is related to mesh cells and was transferred with the cells
+    * related to mesh cells and that was transferred with the cells
     * during the repartitioning.
 
-    * The functions that connect to this signal must take a list of callback
-    * functions that have the signature of the
-    * parallel::distributed::Triangulation::register_attach_data function.
-    * The intention of the function should be to add another function,
-    * that is called for every cell by the Triangulation.
+    * The functions that connect to this signal must take a reference
+    * to a parallel::distributed::Triangulation object as
+    * argument. This argument will point to the triangulation used by
+    * the Simulator class.
     */
     boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_refinement_load_user_data;
 

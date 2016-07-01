@@ -631,7 +631,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
-                    MaterialModelOutputs<dim>          &values_out)
+                    MaterialModelOutputs<dim>     &values_out)
       {
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
@@ -654,6 +654,8 @@ namespace aspect
                           values_out.thermal_expansion_coefficients);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.specific_heat);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.thermal_conductivities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.compressibilities);
         average_property (operation, projection_matrix, expansion_matrix,
