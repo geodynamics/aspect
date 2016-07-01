@@ -26,6 +26,7 @@
 #include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
 #include <deal.II/base/function_lib.h>
+#include <deal.II/grid/tria_boundary_lib.h>
 
 namespace aspect
 {
@@ -234,12 +235,12 @@ namespace aspect
         /**
          * Set all manifold_ids before refinement
          */
-        static void set_manifold_ids (Triangulation<dim> &triangulation);
+        void set_manifold_ids (Triangulation<dim> &triangulation) const;
 
         /**
          * Remove all manifold_ids after refinement
          */
-        static void clear_manifold_ids (Triangulation<dim> &triangulation);
+        void clear_manifold_ids (Triangulation<dim> &triangulation) const;
 
     };
   }

@@ -27,6 +27,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/tria_boundary_lib.h>
+#include <deal.II/base/std_cxx11/bind.h>
 #include <iostream>
 #include <fstream>
 
@@ -54,64 +55,24 @@ namespace aspect
                                             std_cxx11::_1),
                             coarse_grid);
 
-      std::ofstream out ("grid-1.eps");
-      GridOut grid_out;
-      grid_out.write_eps (coarse_grid, out);
 
-      // Deal with a curved mesh
-      // Attach the real manifold to slot 15. we won't use it
-      // during regular operation, but we set manifold_ids for all
-      // cells, faces and edges immediately before refinement and
-      // clear it again afterwards
-      coarse_grid.set_manifold (15, manifold);
 
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        cell->set_all_manifold_ids (15);
+      // First set manifold ids for all cells and faces (in the interior and at the boundary),
+      set_manifold_ids(coarse_grid);
 
-      // clear the manifold id from objects for which we have boundary
-      // objects (and need boundary objects because at the time of
-      // writing, only boundary objects provide normal vectors)
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-          if (cell->at_boundary(f))
-            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+      // then reset the boundary ids, because the manifold has no normals.
+      // Instead, attach boundary objects
+      clear_manifold_ids(coarse_grid);
 
-      for (typename Triangulation<dim>::active_cell_iterator
-           cell = coarse_grid.begin_active();
-           cell != coarse_grid.end(); ++cell)
-            if (cell->at_boundary(0))
-    		  std::cout << cell->face(0)->vertex(0) << std::endl;
+//            coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
+//                                                                         std_cxx11::ref(coarse_grid)));
 
-      // deal.II wants boundary objects even for the straight boundaries
-      // when using manifolds in the interior:
-      static const StraightBoundary<dim> straight_boundary;
-      coarse_grid.set_boundary	(4, straight_boundary);
-      coarse_grid.set_boundary	(5, straight_boundary);
-
-      // attach boundary objects to the curved boundaries:
-      static const HyperShellBoundary<dim> boundary_shell;
-      coarse_grid.set_boundary (0, boundary_shell);
-      coarse_grid.set_boundary (1, boundary_shell);
-
-      Point<dim> center;
-      Point<dim> north, south;
-      north[0] = 6371000.0 * std::cos(20.0*numbers::PI/180.0);
-      south[0] = 6371000.0 * std::cos(45.0*numbers::PI/180.0);
-      const double north_radius = std::sqrt(6371000.0*6371000.0+north[0]*north[0]);
-      const double south_radius = std::sqrt(6371000.0*6371000.0+south[0]*south[0]);
-
-      static const ConeBoundary<dim> boundary_cone_north(0,north_radius,center,north);
-      coarse_grid.set_boundary (3, boundary_cone_north);
-      static const ConeBoundary<dim> boundary_cone_south(0,south_radius,center,north);
-            coarse_grid.set_boundary (2, boundary_cone_south);
-
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
+      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
+                                                                   this,
                                                                    std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
+
+      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&Chunk<dim>::clear_manifold_ids,
+                                                                    this,
                                                                     std_cxx11::ref(coarse_grid)));
 
     }
@@ -222,10 +183,10 @@ namespace aspect
     double
     Chunk<dim>::west_longitude () const
     {
-    	if (dim == 2)
-      return point1[1];
-    	else
-    		return point1[2];
+      if (dim == 2)
+        return point1[1];
+      else
+        return point1[2];
     }
 
 
@@ -234,10 +195,10 @@ namespace aspect
     double
     Chunk<dim>::east_longitude () const
     {
-    	if (dim == 2)
-      return point2[1];
-    	else
-    		return point2[2];
+      if (dim == 2)
+        return point2[1];
+      else
+        return point2[2];
     }
 
 
@@ -246,10 +207,10 @@ namespace aspect
     double
     Chunk<dim>::longitude_range () const
     {
-    	if (dim == 2)
-      return point2[1] - point1[1];
-    	else
-    		return point2[2] - point1[2];
+      if (dim == 2)
+        return point2[1] - point1[1];
+      else
+        return point2[2] - point1[2];
 
     }
 
@@ -329,25 +290,74 @@ namespace aspect
 
     template <int dim>
     void
-    Chunk<dim>::set_manifold_ids (Triangulation<dim> &triangulation)
+    Chunk<dim>::set_manifold_ids (Triangulation<dim> &triangulation) const
     {
+      // Use a manifold description for all cells. Use manifold_id 15 in order
+      // not to step on the boundary indicators
+          triangulation.set_manifold (15, manifold);
+
+     // triangulation.set_all_manifold_ids(15);
       for (typename Triangulation<dim>::active_cell_iterator cell =
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
         cell->set_all_manifold_ids (15);
+
+      static int i=1;
+      std::cout << "***** before refinement ****" << std::endl;
+      std::ofstream o ("output-" + std::to_string (i) + ".vtk");
+      GridOut().write_vtk (triangulation, o);
+      ++i;
     }
 
 
 
     template <int dim>
     void
-    Chunk<dim>::clear_manifold_ids (Triangulation<dim> &triangulation)
+    Chunk<dim>::clear_manifold_ids (Triangulation<dim> &triangulation) const
     {
+      // Remove spherical manifold from boundary faces
       for (typename Triangulation<dim>::active_cell_iterator cell =
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-            if (cell->at_boundary(f))
-            	cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
-        //cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+
+      // On the boundary faces, set boundary object.
+      // This way we can get the normals to the boundary faces.
+
+      static const StraightBoundary<dim> boundary_straight;
+
+      // Define the center point of the greater radius end of the
+	  // north and south boundary cones
+      Point<dim> center;
+      Point<dim> north, south;
+      north[0] = point2[0] * std::cos(point2[1]);
+      south[0] = point2[0] * std::cos(point1[1]);
+      const double north_radius = std::sqrt(point2[0]*point2[0]+north[0]*north[0]);
+      const double south_radius = std::sqrt(point2[0]*point2[0]+south[0]*south[0]);
+      static const ConeBoundary<dim> boundary_cone_north(0,north[0],center,north);
+      static const ConeBoundary<dim> boundary_cone_south(0,south[0],center,south);
+
+      if (dim == 2)
+      {
+          // attach boundary objects to the straight east and west boundaries
+    	  triangulation.set_boundary(2, boundary_straight);
+    	  triangulation.set_boundary(3, boundary_straight);
+      }
+      else
+        {
+          // attach boundary objects to the straight east and west boundaries
+          triangulation.set_boundary (4, boundary_straight);
+          triangulation.set_boundary (5, boundary_straight);
+
+          // attach boundary objects to the conical north and south boundaries
+          triangulation.set_boundary (2, boundary_cone_north);
+          triangulation.set_boundary (3, boundary_cone_south);
+        }
+
+      // attach boundary objects to the curved boundaries
+      static const HyperShellBoundary<dim> boundary_shell;
+      triangulation.set_boundary (0, boundary_shell);
+      triangulation.set_boundary (1, boundary_shell);
     }
 
     template <int dim>
@@ -443,8 +453,8 @@ namespace aspect
               point2[1] = 0.5*numbers::PI - prm.get_double ("Chunk maximum latitude") * degtorad;
               repetitions[1] = prm.get_integer ("Latitude repetitions");
 
-//              AssertThrow (point1[2] < point2[2],
-//                           ExcMessage ("Minimum latitude must be less than maximum latitude."));
+              AssertThrow (point2[1] < point1[1],
+                           ExcMessage ("Minimum latitude must be less than maximum latitude."));
             }
 
         }
