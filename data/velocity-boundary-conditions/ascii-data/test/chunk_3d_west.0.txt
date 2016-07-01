@@ -1,0 +1,13 @@
+# Test data for ascii data boundary velocity.
+# Only next line is parsed in format: [nradius] [ncolatitude] because of keyword "POINTS:"
+# POINTS: 3 3
+# Columns: radius colatitude velocity_x velocity_y velocity_z
+3481000.  0.      0.  0. 0.
+4908500.  0.      0.  0. 0.
+6336000.  0.      0.  0. 0.
+3481000.  0.78540 0.  0. 0.
+4908500.  0.78540 0. -1. 0.
+6336000.  0.78540 0.  0. 0.
+3481000.  1.5708  0.  0. 0.
+4908500.  1.5708  0.  0. 0.
+6336000.  1.5708  0.  0. 0.

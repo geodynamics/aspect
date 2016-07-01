@@ -272,56 +272,21 @@ void possibly_load_shared_libs (const std::string &parameters)
     }
 }
 
-
-/**
- *  Look up break line sign (\\) at the end of a line and merge this line with the next one.
- *  Return the result as a string in which all lines of the input file are
- *  separated by \n characters, unless the corresponding lines ended
- *  in backslashes.
+/*
+ * Current implementation for reading from stdin requires use of a std::string,
+ * so this function will read until the end of the stream
  */
 std::string
-expand_backslashes (std::istream &input)
+read_until_end (std::istream &input)
 {
   std::string result;
-
-  unsigned int need_empty_lines = 0;
-
   while (input)
     {
-      // get one line and strip spaces at the back
       std::string line;
       std::getline(input, line);
-      while ((line.size() > 0)
-             && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
-        line.erase(line.size() - 1, std::string::npos);
 
-      // if the line ends in a backslash, add it without the backslash to
-      // the buffer and increase the counter for the number of lines we have
-      // just concatenated
-      if ((line.size() > 0) && (line[line.size()-1] == '\\'))
-        {
-          result += line.substr(0, line.size()-1);
-          ++need_empty_lines;
-        }
-      else
-        // if it doesn't end in a newline, concatenate the current line
-        // with what we have in the buffer and add the \n character
-        {
-          result += line;
-          result += '\n';
-
-          // if we have just added a line (not ending in a backslash)
-          // to something that was obtained by addressing backslashes,
-          // then add some empty lines to make sure that the line
-          // counter is still correct at least for all lines that don't
-          // end in a backslash (so that we can ensure that errors
-          // message propagating out of ParameterHandler)
-          for (; need_empty_lines>0; --need_empty_lines)
-            result += '\n';
-        }
+      result += line + '\n';
     }
-
-  // finally return whatever we have in the buffer
   return result;
 }
 
@@ -435,7 +400,7 @@ int main (int argc, char *argv[])
               return 3;
             }
 
-          input_as_string = expand_backslashes (parameter_file);
+          input_as_string = read_until_end (parameter_file);
         }
       else
         {
@@ -445,7 +410,7 @@ int main (int argc, char *argv[])
           // read it there, then broadcast it to the other processors
           if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
             {
-              input_as_string = expand_backslashes (std::cin);
+              input_as_string = read_until_end (std::cin);
               int size = input_as_string.size()+1;
               MPI_Bcast (&size,
                          1,
@@ -478,9 +443,7 @@ int main (int argc, char *argv[])
 
       // Replace $ASPECT_SOURCE_DIR in the input so that include statements
       // like "include $ASPECT_SOURCE_DIR/tests/bla.prm" work.
-      input_as_string = Utilities::replace_in_string(input_as_string,
-                                                     "$ASPECT_SOURCE_DIR",
-                                                     ASPECT_SOURCE_DIR);
+      input_as_string = aspect::Utilities::expand_ASPECT_SOURCE_DIR(input_as_string);
 
 
       // try to determine the dimension we want to work in. the default

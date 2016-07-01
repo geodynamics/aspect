@@ -280,9 +280,7 @@ namespace aspect
           }
           prm.leave_subsection();
           prm.enter_subsection("Data");
-          solidus_filename = Utilities::replace_in_string(prm.get ("Solidus filename"),
-                                                          "$ASPECT_SOURCE_DIR",
-                                                          ASPECT_SOURCE_DIR);
+          solidus_filename = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Solidus filename"));
           solidus_curve.read(solidus_filename,this->get_mpi_communicator());
           prm.leave_subsection();
         }

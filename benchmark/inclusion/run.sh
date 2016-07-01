@@ -4,7 +4,7 @@
 NP=1
 
 # averaging scheme:
-for avg in "none" "arithmetic average" "geometric average"
+for avg in "none" "arithmetic average" "geometric average" "harmonic average"
 do
   echo "----Averaging scheme: $avg----"
 

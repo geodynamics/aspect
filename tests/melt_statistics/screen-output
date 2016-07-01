@@ -1,0 +1,22 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+7 iterations.
+
+   Postprocessing:
+     Melt fraction min/total/max: 0, 21.35, 1
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

@@ -56,7 +56,7 @@ namespace aspect
           spherical_geometry_model = dynamic_cast <const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
         {
           // In case of spherical shell calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           if (dim==2)
             {
@@ -90,7 +90,7 @@ namespace aspect
                         ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
-          const std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+          const std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is alway 0 at the model boundaries.

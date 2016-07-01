@@ -142,7 +142,7 @@ namespace aspect
                      pcout,
                      TimerOutput::never,
                      TimerOutput::wall_times),
-
+    initial_topography_model(InitialTopographyModel::create_initial_topography_model<dim>(prm)),
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     // make sure the parameters object gets a chance to
     // parse those parameters that depend on symbolic names
@@ -414,6 +414,10 @@ namespace aspect
     // geometry model's description of symbolic names for boundary parts. note that
     // the geometry model is the only model whose runtime parameters are already read
     // at the time it is created
+    if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
+      sim->initialize_simulator (*this);
+    initial_topography_model->initialize ();
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(geometry_model.get()))
       sim->initialize_simulator (*this);
     geometry_model->initialize ();
@@ -2152,7 +2156,8 @@ namespace aspect
 
         set_initial_temperature_and_compositional_fields ();
         compute_initial_pressure_field ();
-        initialize_tracers ();
+
+        signals.post_set_initial_state (*this);
 
         computing_timer.exit_section();
       }

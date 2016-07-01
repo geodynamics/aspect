@@ -78,15 +78,8 @@ namespace aspect
                          const IndexSet &whole_set,
                          std::vector<IndexSet> &partitioned);
 
-    /**
-     * Returns spherical coordinates of a cartesian point. The returned array
-     * is filled with radius, phi and theta (polar angle). If the dimension is
-     * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
-     *
-     */
-    template <int dim>
-    std_cxx11::array<double,dim>
-    spherical_coordinates(const Point<dim> &position);
+    namespace Coordinates
+    {
 
     /**
      * Returns distance from the Earth's center, latitude and longitude from a
@@ -97,14 +90,46 @@ namespace aspect
     std_cxx11::array<double,dim>
     WGS84_coordinates(const Point<dim> &position);
 
-    /**
-     * Return the cartesian point of a spherical position defined by radius,
-     * phi and theta (polar angle). If the dimension is set to 2 theta is
-     * omitted.
-     */
-    template <int dim>
-    Point<dim>
-    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+      /**
+       * Returns spherical coordinates of a Cartesian point. The returned array
+       * is filled with radius, phi and theta (polar angle). If the dimension is
+       * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
+       *
+       */
+      template <int dim>
+      std_cxx11::array<double,dim>
+      cartesian_to_spherical_coordinates(const Point<dim> &position);
+
+      /**
+       * Return the Cartesian point of a spherical position defined by radius,
+       * phi and theta (polar angle). If the dimension is set to 2 theta is
+       * omitted.
+       */
+      template <int dim>
+      Point<dim>
+      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord);
+
+      /**
+       * Returns ellispoidal coordinates of a Cartesian point. The returned array
+       * is filled with phi, theta and radius.
+       *
+       */
+      template <int dim>
+      std_cxx11::array<double,3>
+      cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity);
+
+      /**
+       * Return the Cartesian point of a ellispoidal position defined by phi,
+       * phi and radius.
+       */
+      template <int dim>
+      Point<3>
+      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity);
+    }
 
     /**
      * Given a vector @p v in @p dim dimensional space, return a set
@@ -281,14 +306,27 @@ namespace aspect
         {
           // Non-specified behavior
           AssertThrow(false,
-                      ExcMessage("Length of "+id_text+" list must be " +
-                                 "either one or " + std::to_string(N)));
+                      ExcMessage("Length of " + id_text + " list must be " +
+                                 "either one or " + Utilities::to_string(N)));
         }
 
       // This should never happen, but return an empty vector so the compiler
       // will be happy
       return std::vector<T> ();
     }
+
+    /**
+     * Add standard call for replacing $ASPECT_SOURCE_DIR
+     */
+    inline
+    std::string
+    expand_ASPECT_SOURCE_DIR (std::string location)
+    {
+      return Utilities::replace_in_string(location,
+                                          "$ASPECT_SOURCE_DIR",
+                                          ASPECT_SOURCE_DIR);
+    }
+
 
 
 
@@ -322,7 +360,7 @@ namespace aspect
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
-         * to the used plugin) in cartesian coordinates.
+         * to the used plugin) in Cartesian coordinates.
          *
          * @param position The current position to compute the data (velocity,
          * temperature, etc.)

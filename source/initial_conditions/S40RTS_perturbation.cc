@@ -214,7 +214,7 @@ namespace aspect
         depth_values[i] = rcmb+(rmoho-rcmb)*0.5*(r[i]+1);
 
       // convert coordinates from [x,y,z] to [r, phi, theta]
-      std_cxx11::array<double,dim> scoord = aspect::Utilities::spherical_coordinates(position);
+      std_cxx11::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
       // iterate over all degrees and orders at each depth and sum them all up.
       std::vector<double> spline_values(num_spline_knots,0);
@@ -360,9 +360,8 @@ namespace aspect
       {
         prm.enter_subsection("S40RTS perturbation");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+
           if ((data_directory.size() > 0) && (data_directory[data_directory.size()-1] != '/'))
             data_directory += "/";
           harmonics_coeffs_file_name = prm.get ("Initial condition file name");

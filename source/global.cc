@@ -100,6 +100,4 @@ namespace aspect
     }
   }
 
-  // Output parallel statistics [bool]
-  const bool output_parallel_statistics = false;
 }

@@ -6,35 +6,35 @@ Number of degrees of freedom: 740 (450+65+225)
 
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+80 iterations.
+   Solving Stokes system... 21+0 iterations.
       Nonlinear Stokes residual: 5.10347e+15
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+79 iterations.
-      Nonlinear Stokes residual: 8.27533e+13
+   Solving Stokes system... 21+0 iterations.
+      Nonlinear Stokes residual: 7.90448e+13
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+39 iterations.
-      Nonlinear Stokes residual: 1.26805e+14
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+27 iterations.
-      Nonlinear Stokes residual: 4.39125e+11
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+14 iterations.
-      Nonlinear Stokes residual: 8.20759e+09
+   Solving Stokes system... 17+0 iterations.
+      Nonlinear Stokes residual: 2.11881e+13
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Nonlinear Stokes residual: 5.42426e+07
+      Nonlinear Stokes residual: 5.4754e+10
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Nonlinear Stokes residual: 1.19219e+09
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+      Nonlinear Stokes residual: 7.04723e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 1.53223e+07
+      Nonlinear Stokes residual: 6.42385e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 1.53223e+07
+      Nonlinear Stokes residual: 6.42385e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 1.53223e+07
+      Nonlinear Stokes residual: 6.42385e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 1.53223e+07
+      Nonlinear Stokes residual: 6.42385e+06
 
    Postprocessing:
 viscosity depends on temperature

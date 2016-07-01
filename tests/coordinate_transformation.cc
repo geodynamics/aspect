@@ -43,29 +43,29 @@ int f()
   const std_cxx1x::array<double,3> sy = {{1,numbers::PI/2,numbers::PI/2}};
   const std_cxx1x::array<double,3> sz = {{1,0,0}};
 
-  check_point<const std_cxx1x::array<double,2>,2>(spherical_coordinates(origin2),sorigin2);
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(origin3),sorigin3);
-  check_point<const Point<2>,2>(origin2, cartesian_coordinates<2>(sorigin2));
-  check_point<const Point<3>,3>(origin3, cartesian_coordinates<3>(sorigin3));
+  check_point<const std_cxx1x::array<double,2>,2>(Coordinates::cartesian_to_spherical_coordinates(origin2),sorigin2);
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(origin3),sorigin3);
+  check_point<const Point<2>,2>(origin2, Coordinates::spherical_to_cartesian_coordinates<2>(sorigin2));
+  check_point<const Point<3>,3>(origin3, Coordinates::spherical_to_cartesian_coordinates<3>(sorigin3));
 
-  check_point<const std_cxx1x::array<double,2>,2>(spherical_coordinates(one2),sone2);
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(one3),sone3);
-  check_point<const Point<2>,2>(one2, cartesian_coordinates<2>(sone2));
-  check_point<const Point<3>,3>(one3, cartesian_coordinates<3>(sone3));
+  check_point<const std_cxx1x::array<double,2>,2>(Coordinates::cartesian_to_spherical_coordinates(one2),sone2);
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(one3),sone3);
+  check_point<const Point<2>,2>(one2, Coordinates::spherical_to_cartesian_coordinates<2>(sone2));
+  check_point<const Point<3>,3>(one3, Coordinates::spherical_to_cartesian_coordinates<3>(sone3));
 
-  check_point<const Point<3>,3>(x, cartesian_coordinates<3>(sx));
-  check_point<const Point<3>,3>(y, cartesian_coordinates<3>(sy));
-  check_point<const Point<3>,3>(z, cartesian_coordinates<3>(sz));
+  check_point<const Point<3>,3>(x, Coordinates::spherical_to_cartesian_coordinates<3>(sx));
+  check_point<const Point<3>,3>(y, Coordinates::spherical_to_cartesian_coordinates<3>(sy));
+  check_point<const Point<3>,3>(z, Coordinates::spherical_to_cartesian_coordinates<3>(sz));
 
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(x),sx);
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(y),sy);
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(z),sz);
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(x),sx);
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(y),sy);
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(z),sz);
 
   const dealii::Point<3> dateline(0,-1,0);
   const std_cxx1x::array<double,3> sdateline = {{1,3*numbers::PI/2,numbers::PI/2}};
 
-  check_point<const Point<3>,3>(dateline, cartesian_coordinates<3>(sdateline));
-  check_point<const std_cxx1x::array<double,3>,3>(spherical_coordinates(dateline),sdateline);
+  check_point<const Point<3>,3>(dateline, Coordinates::spherical_to_cartesian_coordinates<3>(sdateline));
+  check_point<const std_cxx1x::array<double,3>,3>(Coordinates::cartesian_to_spherical_coordinates(dateline),sdateline);
 
 
   return 42;

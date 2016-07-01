@@ -345,6 +345,7 @@ namespace aspect
           average (averaging_operation,in.position,out.densities);
           average (averaging_operation,in.position,out.thermal_expansion_coefficients);
           average (averaging_operation,in.position,out.specific_heat);
+          average (averaging_operation,in.position,out.thermal_conductivities);
           average (averaging_operation,in.position,out.compressibilities);
           average (averaging_operation,in.position,out.entropy_derivative_pressure);
           average (averaging_operation,in.position,out.entropy_derivative_temperature);
@@ -459,12 +460,12 @@ namespace aspect
                                    "of their name work with a weighed average, which means each quadrature point "
                                    "requires an individual weight. The weight is determined by the distance, where "
                                    "the exact relation is determined by a bell shaped curve. A bell shaped curve is "
-                                   "a continuous function which is one at it's maximum and exactly zero at and beyond "
-                                   "it's limit. This bell shaped curve is spanned around each quadrature point to "
+                                   "a continuous function which is one at its maximum and exactly zero at and beyond "
+                                   "its limit. This bell shaped curve is spanned around each quadrature point to "
                                    "determine the weighting map for each quadrature point. The used bell shape comes "
                                    "from Lucy (1977). The distance is normalized so the largest distance becomes one. "
                                    "This means that if variable ''Bell shape limit'' is exactly one, the farthest "
-                                   "quadrature point is just on the limit and it's weight will be exactly zero. In "
+                                   "quadrature point is just on the limit and its weight will be exactly zero. In "
                                    "this plugin it is not implemented as larger and equal than the limit, but larger "
                                    "than, to ensure the the quadrature point at distance zero is always included."
                                   )

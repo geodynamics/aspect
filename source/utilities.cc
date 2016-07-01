@@ -70,96 +70,142 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    std_cxx11::array<double,dim>
-    spherical_coordinates(const Point<dim> &position)
+    namespace Coordinates
     {
-      std_cxx11::array<double,dim> scoord;
-
-      scoord[0] = position.norm(); // R
-      scoord[1] = std::atan2(position(1),position(0)); // Phi
-      if (scoord[1] < 0.0)
-        scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
-      if (dim==3)
-        {
-          if (scoord[0] > std::numeric_limits<double>::min())
-            scoord[2] = std::acos(position(2)/scoord[0]);
-          else
-            scoord[2] = 0.0;
-        }
-      return scoord;
-    }
-
     template <int dim>
-    std_cxx11::array<double,dim>
-    WGS84_coordinates(const Point<dim> &position)
-    {
-      std_cxx11::array<double,dim> ecoord;
-
-      // Define WGS84 ellipsoid constants.
-      const double radius = 6378137.;
-      const double ellipticity = 8.1819190842622e-2;
-      const double b = std::sqrt(radius * radius
-                                 * (1 - ellipticity * ellipticity));
-      const double ep = std::sqrt((radius * radius - b * b) / (b * b));
-      const double p = std::sqrt(position(0) * position(0) + position(1) * position(1));
-      const double th = std::atan2(radius * position(2), b * p);
-      ecoord[2] = std::atan2((position(2) + ep * ep * b * std::sin(th)
-                              * std::sin(th) * std::sin(th)),
-                             (p - (ellipticity * ellipticity * radius * (std::cos(th)
-                                                                         * std::cos(th) * std::cos(th)))))
-                  * (180. / numbers::PI);
-
-      if (dim == 3)
+        std_cxx11::array<double,dim>
+        WGS84_coordinates(const Point<dim> &position)
         {
-          ecoord[1] = std::atan2(position(1), position(0))
+          std_cxx11::array<double,dim> ecoord;
+
+          // Define WGS84 ellipsoid constants.
+          const double radius = 6378137.;
+          const double ellipticity = 8.1819190842622e-2;
+          const double b = std::sqrt(radius * radius
+                                     * (1 - ellipticity * ellipticity));
+          const double ep = std::sqrt((radius * radius - b * b) / (b * b));
+          const double p = std::sqrt(position(0) * position(0) + position(1) * position(1));
+          const double th = std::atan2(radius * position(2), b * p);
+          ecoord[2] = std::atan2((position(2) + ep * ep * b * std::sin(th)
+                                  * std::sin(th) * std::sin(th)),
+                                 (p - (ellipticity * ellipticity * radius * (std::cos(th)
+                                                                             * std::cos(th) * std::cos(th)))))
                       * (180. / numbers::PI);
 
-          /* Set all longitudes between [0,360]. */
-          if (ecoord[1] < 0.)
-            ecoord[1] += 360.;
-          else if (ecoord[1] > 360.)
-            ecoord[1] -= 360.;
-        }
-      else
-         ecoord[1] = 0.0;
+          if (dim == 3)
+            {
+              ecoord[1] = std::atan2(position(1), position(0))
+                          * (180. / numbers::PI);
+
+              /* Set all longitudes between [0,360]. */
+              if (ecoord[1] < 0.)
+                ecoord[1] += 360.;
+              else if (ecoord[1] > 360.)
+                ecoord[1] -= 360.;
+            }
+          else
+             ecoord[1] = 0.0;
 
 
-      ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
-                                   * std::sin(numbers::PI * ecoord[2]/180)
-                                   * std::sin(numbers::PI * ecoord[2]/180));
-      return ecoord;
-    }
-
-    template <int dim>
-    Point<dim>
-    cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
-    {
-      Point<dim> ccoord;
-
-      switch (dim)
-        {
-          case 2:
-          {
-            ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
-            ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
-            break;
-          }
-          case 3:
-          {
-            ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
-            ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
-            ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented());
-            break;
+          ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
+                                       * std::sin(numbers::PI * ecoord[2]/180)
+                                       * std::sin(numbers::PI * ecoord[2]/180));
+          return ecoord;
         }
 
-      return ccoord;
-    }
+      template <int dim>
+      std_cxx11::array<double,dim>
+      cartesian_to_spherical_coordinates(const Point<dim> &position)
+      {
+        std_cxx11::array<double,dim> scoord;
 
+        scoord[0] = position.norm(); // R
+        scoord[1] = std::atan2(position(1),position(0)); // Phi
+        if (scoord[1] < 0.0)
+          scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
+        if (dim==3)
+          {
+            if (scoord[0] > std::numeric_limits<double>::min())
+              scoord[2] = std::acos(position(2)/scoord[0]);
+            else
+              scoord[2] = 0.0;
+          }
+        return scoord;
+      }
+
+      template <int dim>
+      Point<dim>
+      spherical_to_cartesian_coordinates(const std_cxx11::array<double,dim> &scoord)
+      {
+        Point<dim> ccoord;
+
+        switch (dim)
+          {
+            case 2:
+            {
+              ccoord[0] = scoord[0] * std::cos(scoord[1]); // X
+              ccoord[1] = scoord[0] * std::sin(scoord[1]); // Y
+              break;
+            }
+            case 3:
+            {
+              ccoord[0] = scoord[0] * std::sin(scoord[2]) * std::cos(scoord[1]); // X
+              ccoord[1] = scoord[0] * std::sin(scoord[2]) * std::sin(scoord[1]); // Y
+              ccoord[2] = scoord[0] * std::cos(scoord[2]); // Z
+              break;
+            }
+            default:
+              Assert (false, ExcNotImplemented());
+              break;
+          }
+
+        return ccoord;
+      }
+
+      template <int dim>
+      std_cxx11::array<double,3>
+      cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity)
+      {
+        const double R    = semi_major_axis_a;
+        const double b      = std::sqrt(R * R * (1 - eccentricity * eccentricity));
+        const double ep     = std::sqrt((R * R - b * b) / (b * b));
+        const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
+        const double th     = std::atan2(R * x(2), b * p);
+        const double phi    = std::atan2(x(1), x(0));
+        const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
+                                         (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
+        const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
+        const double R_plus_d = p / std::cos(theta);
+
+        std_cxx11::array<double,3> phi_theta_d;
+        phi_theta_d[0] = phi;
+
+        phi_theta_d[1] = theta;
+        phi_theta_d[2] = R_plus_d - R_bar;
+        return phi_theta_d;
+      }
+
+      template <int dim>
+      Point<3>
+      ellipsoidal_to_cartesian_coordinates(const std_cxx11::array<double,3> &phi_theta_d,
+                                           const double semi_major_axis_a,
+                                           const double eccentricity)
+      {
+        const double phi   = phi_theta_d[0];
+        const double theta = phi_theta_d[1];
+        const double d     = phi_theta_d[2];
+
+        const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
+                                                                std::sin(theta) * std::sin(theta)));
+
+        return Point<3> ((R_bar + d) * std::cos(phi) * std::cos(theta),
+                         (R_bar + d) * std::sin(phi) * std::cos(theta),
+                         ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
+
+      }
+    }
 
     template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
@@ -257,21 +303,37 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
+          // set file size to an invalid size (signalling an error if we can not read it)
+          unsigned int filesize = numbers::invalid_unsigned_int;
+
           std::ifstream filestream(filename.c_str());
-          AssertThrow (filestream,
-                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          if (!filestream)
+            {
+              // broadcast failure state, then throw
+              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrow (false,
+                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              return data_string; // never reached
+            }
 
           // Read data from disk
           std::stringstream datastream;
           filestream >> datastream.rdbuf();
 
-          AssertThrow (filestream.eof(),
-                       ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                   "before the end of file was reached. Is the file corrupted or"
-                                   "too large for the input buffer?"));
+          if (!filestream.eof())
+            {
+              // broadcast failure state, then throw
+              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrow (false,
+                           ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                       "before the end of file was reached. Is the file corrupted or"
+                                       "too large for the input buffer?"));
+              return data_string; // never reached
+            }
 
           data_string = datastream.str();
-          unsigned int filesize = data_string.size();
+          filesize = data_string.size();
 
           // Distribute data_size and data across processes
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
@@ -282,6 +344,9 @@ namespace aspect
           // Prepare for receiving data
           unsigned int filesize;
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          if (filesize == numbers::invalid_unsigned_int)
+            throw QuietException();
+
           data_string.resize(filesize);
 
           // Receive and store data
@@ -863,9 +928,7 @@ namespace aspect
         // Get the path to the data files. If it contains a reference
         // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
         // as a #define
-        data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                      "$ASPECT_SOURCE_DIR",
-                                                      ASPECT_SOURCE_DIR);
+        data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
         data_file_name    = prm.get ("Data file name");
         scale_factor      = prm.get_double ("Scale factor");
       }
@@ -1157,10 +1220,11 @@ namespace aspect
         {
           Point<dim> internal_position = position;
 
-          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0)
+          if (dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()) != 0
+              || dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != 0)
             {
               const std_cxx11::array<double,dim> spherical_position =
-                ::aspect::Utilities::spherical_coordinates(position);
+                ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
               for (unsigned int i = 0; i < dim; i++)
                 internal_position[i] = spherical_position[i];
@@ -1297,7 +1361,7 @@ namespace aspect
           || (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model())) != 0)
         {
           const std_cxx11::array<double,dim> spherical_position =
-            ::aspect::Utilities::spherical_coordinates(position);
+            ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
           for (unsigned int i = 0; i < dim; i++)
             internal_position[i] = spherical_position[i];
@@ -1316,11 +1380,11 @@ namespace aspect
     template class AsciiDataInitial<2>;
     template class AsciiDataInitial<3>;
 
-    template Point<2> cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
-    template Point<3> cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
+    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std_cxx11::array<double,2> &scoord);
+    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std_cxx11::array<double,3> &scoord);
 
-    template std_cxx11::array<double,2> spherical_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> spherical_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
     template std_cxx11::array<double,2> WGS84_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> WGS84_coordinates<3>(const Point<3> &position);

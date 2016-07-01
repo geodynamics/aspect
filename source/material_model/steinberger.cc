@@ -421,9 +421,9 @@ namespace aspect
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; i++)
         material_lookup.push_back(std_cxx11::shared_ptr<internal::MaterialLookup>
-                                  (new internal::MaterialLookup(datadirectory+material_file_names[i],interpolation,this->get_mpi_communicator())));
-      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(datadirectory+lateral_viscosity_file_name,this->get_mpi_communicator()));
-      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(datadirectory+radial_viscosity_file_name,this->get_mpi_communicator()));
+                                  (new internal::MaterialLookup(data_directory+material_file_names[i],interpolation,this->get_mpi_communicator())));
+      lateral_viscosity_lookup.reset(new internal::LateralViscosityLookup(data_directory+lateral_viscosity_file_name,this->get_mpi_communicator()));
+      radial_viscosity_lookup.reset(new internal::RadialViscosityLookup(data_directory+radial_viscosity_file_name,this->get_mpi_communicator()));
       avg_temp.resize(lateral_viscosity_lookup->get_nslices());
     }
 
@@ -435,7 +435,17 @@ namespace aspect
     update()
     {
       if (use_lateral_average_temperature)
-        this->get_lateral_averaging().get_temperature_averages(avg_temp);
+        {
+          this->get_lateral_averaging().get_temperature_averages(avg_temp);
+          for (unsigned int i = 0; i < avg_temp.size(); ++i)
+            AssertThrow(numbers::is_finite(avg_temp[i]),
+                        ExcMessage("In computing depth averages, there is at"
+                                   " least one depth band that does not have"
+                                   " any quadrature points in it."
+                                   " Consider reducing number of depth layers"
+                                   " for averaging by reducing the number of"
+                                   " slices in the viscosity prefactor file."));
+        }
     }
 
 
@@ -903,9 +913,7 @@ namespace aspect
       {
         prm.enter_subsection("Steinberger model");
         {
-          datadirectory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                       "$ASPECT_SOURCE_DIR",
-                                                       ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
           material_file_names  = Utilities::split_string_list
                                  (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");

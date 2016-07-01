@@ -144,12 +144,16 @@ namespace aspect
                       simulator_access.get_fe().system_to_component_index(q).first;
 
                     // If we're on one of the velocity DOFs
-                    if (c_idx >= simulator_access.introspection().component_indices.velocities[0] &&
-                        c_idx <= simulator_access.introspection().component_indices.velocities[dim-1])
+                    if ((c_idx >=
+                         simulator_access.introspection().component_indices.velocities[0])
+                        &&
+                        (c_idx <=
+                         simulator_access.introspection().component_indices.velocities[dim-1]))
                       {
                         // Which velocity component is this DOF associated with?
-                        const unsigned int component_direction = c_idx
-                                                                 - simulator_access.introspection().component_indices.velocities[0];
+                        const unsigned int component_direction
+                          = (c_idx
+                             - simulator_access.introspection().component_indices.velocities[0]);
 
                         // we get time passed as seconds (always) but may want
                         // to reinterpret it in years
@@ -164,27 +168,36 @@ namespace aspect
 
                         const Point<dim> p = fe_values.quadrature_point(q);
 
-                        // Because we defined and parsed our parameter file differently for 2d and 3d
-                        // we need to be sure to query the correct object for function values. The
-                        // function parser objects expect points of a certain dimension, but Point p
-                        // will be compiled for both 2d and 3d, so we need some careful casts to make
-                        // this compile. Casting Point objects between 2d and 3d is somewhat meaningless
-                        // but the offending casts will never actually be executed because they are
+                        // Because we defined and parsed our parameter
+                        // file differently for 2d and 3d we need to
+                        // be sure to query the correct object for
+                        // function values. The function parser
+                        // objects expect points of a certain
+                        // dimension, but Point p will be compiled for
+                        // both 2d and 3d, so we need some careful
+                        // casts to make this compile. Casting Point
+                        // objects between 2d and 3d is somewhat
+                        // meaningless but the offending casts will
+                        // never actually be executed because they are
                         // protected by the if/else statements.
                         double indicator, u_i;
                         if (dim == 2)
                           {
                             indicator = prescribed_velocity_indicator_function_2d.value
-                                        (reinterpret_cast<const Point<2>&>(p), component_direction);
-                            u_i = prescribed_velocity_function_2d.value
-                                  (reinterpret_cast<const Point<2>&>(p), component_direction);
+                                        (reinterpret_cast<const Point<2>&>(p),
+                                         component_direction);
+                            u_i       = prescribed_velocity_function_2d.value
+                                        (reinterpret_cast<const Point<2>&>(p),
+                                         component_direction);
                           }
                         else
                           {
                             indicator = prescribed_velocity_indicator_function_3d.value
-                                        (reinterpret_cast<const Point<3>&>(p), component_direction);
-                            u_i = prescribed_velocity_function_3d.value
-                                  (reinterpret_cast<const Point<3>&>(p), component_direction);
+                                        (reinterpret_cast<const Point<3>&>(p),
+                                         component_direction);
+                            u_i       = prescribed_velocity_function_3d.value
+                                        (reinterpret_cast<const Point<3>&>(p),
+                                         component_direction);
                           }
 
                         if (indicator > 0.5)

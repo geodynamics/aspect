@@ -1,0 +1,21 @@
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+
+
+Exception on processing: 
+
+An error occurred in file <steinberger.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    numbers::is_finite(avg_temp[i])
+The name and call sequence of the exception was:
+    ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging by reducing the number of" " slices in the viscosity prefactor file.")
+Additional Information: 
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it. Consider reducing number of depth layers for averaging by reducing the number of slices in the viscosity prefactor file.
+
+Aborting!

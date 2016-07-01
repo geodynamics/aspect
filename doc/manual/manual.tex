@@ -131,19 +131,20 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
 % keep the following line as is so that we can replace this using a script:
 1.5.0-pre %VERSION-INFO%
-\\\large(generated \today)\\}
+\\\large(generated \today)\\
+{\Large Wolfgang Bangerth\\Juliane Dannberg\\Rene Gassm{\"o}ller\\Timo Heister\\}
+}
 
 %AUTHOR(S) & WEBSITE%
 \null
-\vspace{22em}
+\vspace{18em}
 \color{dark_grey}
-\Large \hfill {\raggedleft \fontfamily{\sfdefault}\selectfont
+{\fontfamily{\sfdefault}\selectfont
 % FILL: author list
 % e.g. Author One\\Author Two\\Author Three\\
 % be sure to have a newline (\\) after the final author
-Wolfgang Bangerth\\Juliane Dannberg\\Rene Gassm{\"o}ller\\Timo Heister\\
 \large
-    with contributions by:
+\noindent with contributions by: \\
     Jacqueline Austermann,
     Markus B{\"u}rg,
     Samuel Cox,
@@ -164,7 +165,7 @@ Wolfgang Bangerth\\Juliane Dannberg\\Rene Gassm{\"o}ller\\Timo Heister\\
     Cedric Thieulot,
     Iris van Zelst,
     Siqi Zhang \\
-
+\vspace{1em}
 }
 
 {\fontfamily{\sfdefault}\selectfont \href{https://geodynamics.org}{geodynamics.org}}
@@ -282,8 +283,11 @@ geodynamics community and beyond!
 
 As with all scientific work, funding agencies have a reasonable expectation
 that if we ask for continued funding for this work, we need to demonstrate
-relevance. To this end, we ask that if you publish results that were obtained
-to some part using \aspect{}, you cite the following, canonical reference for
+relevance. 
+In addition, many have contributed to the development of \aspect{} and deserve credit
+for their work.
+To this end, we ask that if you publish results that were obtained
+to some part using \aspect{}, cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
@@ -294,26 +298,31 @@ this software:
   volume =       191,
   pages =        {12--29}}
 \end{lstlisting}
-You can refer to the website by citing the following:
+
+and cite the User's Manual:
+\begin{lstlisting}[frame=single,language=tex]
+@Manual{aspectmanual,
+        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
+                        ConvecTion v1.5.0}, 
+        author =       {W. Bangerth and J. Dannberg and 
+                        R. Gassm{\"o}ller and T. Heister and others},
+        organization = {Computational Infrastructure for Geodynamics},
+        year =         2016
+      }
+\end{lstlisting}
+
+To help your reader find the \aspect{} software package, you may also refer to the website by its url or by citing the following:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectweb,
         title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
-        author = {W. Bangerth and T. Heister and others},
-        year   = {2014},
+        author = {W. Bangerth and J. Dannberg and 
+                  R. Gassm{\"o}ller and T. Heister and others},
+        year   = {2016},
         note   = {\texttt{https://aspect.dealii.org/}},
         url    = {https://aspect.dealii.org/}
       }
 \end{lstlisting}
-The manual's proper reference is this:
-\begin{lstlisting}[frame=single,language=tex]
-@Manual{aspectmanual,
-        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
-                        ConvecTion},
-        author =       {W. Bangerth and T. Heister and others},
-        organization = {Computational Infrastructure for Geodynamics},
-        year =         2014
-      }
-\end{lstlisting}
+
 
 
 \subsection{Acknowledgments}
@@ -3235,7 +3244,7 @@ What \aspect{} computes is driven by two things:
 \end{itemize}
 In this section, let us give an overview of what can be selected in the
 parameter file. Specific parameters, their default values, and allowed values
-for these parameters are documented in the Section~\ref{sec:parameters}. An index
+for these parameters are documented in Section~\ref{sec:parameters}. An index
 with page numbers for all run-time parameters can be found on
 page~\pageref{sec:runtime-parameter-index}.
 
@@ -3272,7 +3281,18 @@ program will simply use the default provided when declaring the parameter.
 end a line in the input file with a backslash. This indicates that the
 following line will simply continue to be part of the text of the current line,
 in the same way as the C/C++ preprocessor expands lines that end in
-backslashes.}
+backslashes. The underlying implementation always eats whitespace at
+the beginning of each continuing line, but not before the
+backslash. This means that the parameter file \\
+\hspace*{.25cm} \texttt{set Some parameter = abc}$\backslash$ \\
+\hspace*{.25cm} \texttt{\phantom{set Some parameter = }def}\\
+is equivalent to \\
+\hspace*{.25cm} \texttt{set Some parameter = abcdef}\\
+that is, with no space between \texttt{abc} and \texttt{def} despite
+the leading whitespace at the beginning of the second line. If you
+do want space between these two parts, you need to add it before the
+backslash in the first of the two lines.
+}
 
 \subsubsection{Categories of parameters}
 
@@ -3361,7 +3381,7 @@ particular plugin uses different variables, such as the depth), the symbol
 \texttt{t} for time in many situations, and allows you to use all of the
 typical mathematical functions such as sine and cosine. Another common case is
 an if-statement that has the general form
-\texttt{if(condition,true-expression,false-expression)}. For more examples of
+\texttt{if(condition, true-expression, false-expression)}. For more examples of
 the syntax understood, reference the documentation of the muparser library
 linked to above.
 
@@ -3369,8 +3389,6 @@ linked to above.
 
 \section{Cookbooks}
 \label{sec:cookbooks}
-
-\marginpar{Provide approximate run-times for each of these cookbooks.}
 
 In this section, let us present a number of ``cookbooks'' -- examples of how
 to use \aspect{} in typical or less typical ways. As discussed in
@@ -4304,7 +4322,6 @@ The reason is, of course, that there is no incompressible (divergence free) flow
 field that allows for a constant vertical outflow component along the top
 boundary without corresponding inflow anywhere else.}
 
-\marginpar{Is there a reason that this is not a listings environment?}
 
 The remainder of the setup is described in the following, complete input file:
 \lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/platelike.prm.out}
@@ -5225,7 +5242,7 @@ constraints are set, but before they are ``distributed.''
 
 As an example of this functionality, below is a plugin which allows the user to prescribe
 internal velocities with functions in a parameter file:
-\lstinputlisting[language=c++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
+\lstinputlisting[language=C++]{../../cookbooks/prescribed_velocity/prescribed_velocity.cc}
 
 The above plugin can be compiled with \texttt{cmake . \&\& make} in the
 \url{cookbooks/prescribed_velocity} directory. It can be loaded in a parameter file
@@ -5300,7 +5317,7 @@ Here, we use a material model plugin that defines the compositional fields as th
 tensor $e_{ij}$, and modifies the right-hand side of 
 the corresponding advection equations to accumulate strain over time. This is done by adjusting the 
 \verb!out.reaction_terms! variable:
-\lstinputlisting[language=c++]{cookbooks/finite_strain/finite_strain.cc}
+\lstinputlisting[language=C++]{cookbooks/finite_strain/finite_strain.cc}
 
 Let us denote the accumulated strain at time step $n$ as $e^n$. We can express it 
 as the sum of the strain $e^{n-1}$ at the previous time step, rotated by the rotational 
@@ -6497,7 +6514,7 @@ system and adds it to the list of assemblers executed in every time step.
 The assembler contains the function \verb!phase_change_boundary_conditions! that loops over all faces at the model 
 boundary, queries the value of $\mathcal{P}$ from the material model, and adds the surface integral given above
 to the matrix:
-\lstinputlisting[language=c++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
+\lstinputlisting[language=C++,,basicstyle=\footnotesize\ttfamily,]{../../cookbooks/inner_core_convection/inner_core_assembly.cc}
 Instructions for how to compile and run models with a shared library are given in Section~\ref{sec:benchmark-run}.
 
 Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3} reveals that two parameters determine 
@@ -7982,6 +7999,62 @@ could improve the convergence. The primary challenge in accuracy is limiting num
 of the rising blob. If the blob becomes too diffuse, its ability to lift topography is diminished.
 It would be instructive to compare the results of this benchmark using tracer particles with the 
 results using compositional fields.
+
+\subsubsection{The solitary wave benchmark}
+\label{sec:benchmark-solitary_wave}
+
+\textit{This section was contributed by Juliane Dannberg and is based on a section in \cite{DH2015} by Juliane Dannberg and Timo Heister.}
+
+One of the most widely used benchmarks for codes that model the migration of melt through a compacting and dilating matrix is the propagation of solitary waves (e.g. \cite{SS11, KMK2013, Schm00}). 
+The benchmark is intended to test the accuracy of the solution of the two-phase flow equations as described in Section \ref{sec:melt_transport} and makes use of the fact that there is an analytical solution for the shape of solitary waves that travel through a partially molten rock with a constant background porosity without changing their shape and with a constant wave speed. 
+Here, we follow the setup of the benchmark as it is described in \cite{BR86}, which considers one-dimensional solitary waves.
+
+The model features a perturbation of higher porosity with the amplitude $A \phi_0$ in a uniform low-porosity ($\phi=\phi_0$) background.  Due to its lower density, melt migrates upwards, dilating the solid matrix at its front and compacting it at its end. 
+
+Assuming constant shear and compaction viscosities and using a permeability law of the form
+%
+\begin{align*}
+k_\phi &= k_0 \phi^3, && \text{ implying a Darcy coefficient }
+K_D(\phi) = \frac{k_0}{\eta_f} \phi^3 , \\
+\intertext{and the non-dimensionalization }
+x &= \delta x' 
+  && \text{ with the compaction length } \delta = \sqrt{K_D(\phi_0)(\xi + \frac{4}{3}\eta)} , \\
+\phi &= \phi_0 \phi ' 
+  && \text{ with the background porosity } \phi_0 , \\
+(\mathbf u_s, \mathbf u_f) &= u_0 (\mathbf u_s, \mathbf u_f)' 
+  && \text{ with the separation flux } \phi_0 u_0 = K_D(\phi_0) \Delta\rho g ,
+\end{align*}
+%
+the analytical solution for the shape of the solitary wave can be written in implicit form as:
+\begin{align*}
+x(\phi) &= \pm (A + 0.5) 
+\left[ -2 \sqrt{A-\phi} + \frac{1}{\sqrt{A-1}} 
+\ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]
+\end{align*}
+and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$. 
+This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure \ref{fig:setup-solitary-wave} illustrates the model setup. 
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/solitary_wave/setup.pdf}
+  \end{center}
+  \caption{\it Setup of the solitary wave benchmark. The domain is $400$ m high and includes a low porosity
+  ($\phi = 0.001$) background with an initial perturbation ($\phi = 0.1$). The solid density is $3300\,kg/m^3$
+  and the melt density is $2500\,kg/m^3$. We apply the negative phase speed 
+  of the solitary wave $\mathbf u_s = -c \, \mathbf e_z$ as velocity boundary condition, so that the wave will 
+  stay at its original position while the background is moving.}
+  \label{fig:setup-solitary-wave}
+\end{figure}
+
+The parameter file and material model for this setup can be found in \url{benchmark/solitary_wave/solitary_wave.prm} and \url{benchmark/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm}
+
+The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors for the shape of the porosity, shape of the compaction pressure and the phase speed. 
+We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
+
+And extensive discussion of the results and convergence behavior can be found in \cite{DH2015}.
+
 
 \section{Extending \aspect}
 \label{sec:extending}
@@ -9640,7 +9713,7 @@ respective signals.
 
 In the first case, code that registers slots with global signals would look like
 this:
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 // A function that will be called at the time when parameters are declared.
 // It receives the dimension in which ASPECT will be run as the first argument,
 // and the ParameterHandler object that holds the runtime parameter
@@ -9692,7 +9765,7 @@ ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(parameter_connector)
 The second kind of signal can be connected to once a simulator object has been
 created. As above, one needs to define the slots, define a connector function,
 and register the connector function. The following gives an example:
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 // A function that is called at the end of creating the current constraints
 // on degrees of freedom (i.e., the constraints that describe, for example,
 // hanging nodes, boundary conditions, etc).
@@ -9729,7 +9802,7 @@ functions in your program) to the same signal.
 So what could one do in a place like this? One option would be to just monitor
 what is going on, e.g., in code like this that simply outputs into the
 statistics file (see Section~\ref{sec:viz-stat}):
-\begin{lstlisting}[frame=single,language=c++]
+\begin{lstlisting}[frame=single,language=C++]
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
                                 ConstraintMatrix &current_constraints)
@@ -9963,6 +10036,8 @@ resources:
   \end{itemize}
 \end{itemize}
 
+
+\appendix
 
 \section{Run-time input parameters}
 \label{sec:parameters}
