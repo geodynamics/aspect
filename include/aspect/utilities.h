@@ -158,7 +158,7 @@ namespace aspect
     /**
      * Retrieve the last line of a file
      */
-    std::string get_last_line(std::ifstream *in);
+    std::string get_last_line(std::istream *in);
 
     /**
      * Reads the content of the ascii file @p filename on process 0 and

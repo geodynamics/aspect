@@ -281,7 +281,7 @@ namespace aspect
     }
 
     std::string
-    get_last_line(std::ifstream *in)
+    get_last_line(std::istream *in)
     {
       std::string line;
       while (*in >> std::ws && std::getline(*in, line)) // skip empty lines

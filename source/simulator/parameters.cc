@@ -575,7 +575,7 @@ namespace aspect
                          "the parameter 'Steps between quicksave.' At most the number "
                          "of quicksaves will be the number of quicksave slots."
                          "Typically, this value is smaller than 'Steps between checkpoint.'");
-      prm.declare_entry ("Steps between checkpoint", "100",
+      prm.declare_entry ("Steps between checkpoint", "0",
                          Patterns::Integer (0),
                          "The number of timesteps between performing checkpoints. "
                          "If 0 and time between checkpoint is not specified, "
