@@ -38,6 +38,15 @@
  */
 
 /**
+ * @defgroup InitialTopographyModels Describing the properties of the initial topography of the domain
+ *
+ * A module for the definition of properties related to initial topography of
+ * the geometry. The goal of this module is to return the elevation at a
+ * certain point on the surface and store and manage all information related
+ * to this porpose.
+ */
+
+/**
  * @defgroup GeometryModels Describing the properties of the domain
  *
  * A module for the definition of properties of the geometry. This primarily
