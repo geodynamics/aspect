@@ -262,21 +262,37 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
+          // set file size to an invalid size (signalling an error if we can not read it)
+          unsigned int filesize = numbers::invalid_unsigned_int;
+
           std::ifstream filestream(filename.c_str());
-          AssertThrow (filestream,
-                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          if (!filestream)
+            {
+              // broadcast failure state, then throw
+              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrow (false,
+                           ExcMessage (std::string("Could not open file <") + filename + ">."));
+              return data_string; // never reached
+            }
 
           // Read data from disk
           std::stringstream datastream;
           filestream >> datastream.rdbuf();
 
-          AssertThrow (filestream.eof(),
-                       ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                   "before the end of file was reached. Is the file corrupted or"
-                                   "too large for the input buffer?"));
+          if (!filestream.eof())
+            {
+              // broadcast failure state, then throw
+              MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrow (false,
+                           ExcMessage (std::string("Reading of file ") + filename + " finished " +
+                                       "before the end of file was reached. Is the file corrupted or"
+                                       "too large for the input buffer?"));
+              return data_string; // never reached
+            }
 
           data_string = datastream.str();
-          unsigned int filesize = data_string.size();
+          filesize = data_string.size();
 
           // Distribute data_size and data across processes
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
@@ -287,6 +303,9 @@ namespace aspect
           // Prepare for receiving data
           unsigned int filesize;
           MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          if (filesize == numbers::invalid_unsigned_int)
+            throw QuietException();
+
           data_string.resize(filesize);
 
           // Receive and store data
