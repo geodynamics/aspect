@@ -134,9 +134,9 @@ namespace aspect
           for (unsigned int f=0; f<2*dim; ++f)
             if (cell->at_boundary(f)
                 &&
-                ((cell->face(f)->boundary_indicator() == 2)
+                ((cell->face(f)->boundary_id() == 2)
                  ||
-                 (cell->face(f)->boundary_indicator() == 3)))
+                 (cell->face(f)->boundary_id() == 3)))
               {
                 fe_face_values.reinit (cell,f);
                 fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
@@ -160,10 +160,10 @@ namespace aspect
 
                 this->get_material_model().evaluate(in, out);
 
-                if (cell->face(f)->boundary_indicator() == 2)
+                if (cell->face(f)->boundary_id() == 2)
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                     bottom_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
-                if (cell->face(f)->boundary_indicator() == 3)
+                if (cell->face(f)->boundary_id() == 3)
                   for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                     top_flux_integral += out.densities[q] * velocity_values[q][1] * fe_face_values.JxW(q);
               }
