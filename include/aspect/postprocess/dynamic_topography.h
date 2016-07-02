@@ -68,6 +68,7 @@ namespace aspect
          * we should subtract the mean topography or not.
          */
         bool subtract_mean_dyn_topography;
+        double density_above;
     };
   }
 }
