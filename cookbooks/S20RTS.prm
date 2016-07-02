@@ -33,13 +33,14 @@ subsection Geometry model
 end
 
 # This section specifies the temperature at the boundary of 
-# the domain. Here we set the temperature to be constant.
-# Alternatively it could be set to the initial condition.
+# the domain. Here we set the temperature to be constant,
+# but different from the reference temperature to approximate
+# boundary layers.
 subsection Boundary temperature model
   set Model name = spherical constant
   subsection Spherical constant
-    set Inner temperature = 1600
-    set Outer temperature = 1600
+    set Inner temperature = 2000
+    set Outer temperature = 1000
   end
 end
 
@@ -71,10 +72,8 @@ subsection Initial conditions
 
 # The following parameters determine the scaling from shear wave 
 # velocity perturbation to temperature differences. We chose the
-# scaling to density perturbation as 0.2 and zero out
-# heterogeneities in the upper 200km.
-    set Vs to density scaling             = 0.2 
-    set Remove temperature heterogeneity down to specified depth = 200000
+# scaling to density perturbation as 0.15
+    set Vs to density scaling             = 0.15
     set Thermal expansion coefficient in initial temperature scaling = 3e-5
 
 # This specifies the background temperature to which we add the 
@@ -116,11 +115,11 @@ subsection Model settings
 end
 
 
-# We output the density, velocity and dynamic topography for plotting. For the
-# dynamic topography we subtract the mean so that the mean is zero and hence
-# mass is conserved. 
+# We output the density, velocity, dynamic topography and heat flux density
+# for plotting. For the dynamic topography we subtract the mean so that the 
+# mean is zero and hence mass is conserved. 
 subsection Postprocess
-  set List of postprocessors = dynamic topography, visualization, basic statistics
+  set List of postprocessors = velocity statistics, heat flux map, heat flux statistics, dynamic topography, visualization, basic statistics
 
   subsection Dynamic Topography
     set Subtract mean of dynamic topography = true
@@ -128,7 +127,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = dynamic topography, density,viscosity, gravity
+    set List of output variables      = dynamic topography, heat flux map, density,viscosity, gravity
     set Time between graphical output = 0
     set Number of grouped files       = 1 
    
