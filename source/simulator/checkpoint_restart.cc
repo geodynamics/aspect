@@ -155,7 +155,7 @@ namespace aspect
   }
 
   template<int dim>
-  void Simulator<dim>::log_checkpoint(const std::string filename_for_triangulation, const std::string filename_for_serialization, bool is_quicksave)
+  void Simulator<dim>::log_checkpoint(const std::string filename_for_triangulation, const std::string filename_for_serialization, bool is_rotating_checkpoint)
   {
     std::ofstream checkpoint_log;
     std::string checkpoint_file_name = parameters.output_directory + checkpoint_log_file;
@@ -163,16 +163,16 @@ namespace aspect
     if (!Utilities::fexists(checkpoint_file_name))
       {
         checkpoint_log.open(checkpoint_file_name, std::ios_base::out);
-        checkpoint_log << "Time_step_number filename_triangulation filename_serialized_data quicksave_slot_id" << std::endl;
+        checkpoint_log << "Time_step_number filename_triangulation filename_serialized_data rotating_checkpoint_slot_id" << std::endl;
       }
     else
       checkpoint_log.open(checkpoint_file_name, std::ios_base::app);
 
-    if (is_quicksave)
+    if (is_rotating_checkpoint)
       checkpoint_log << timestep_number << " "
                      << filename_for_triangulation << " "
                      << filename_for_serialization << " "
-                     << dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) << std::endl;
+                     << dealii::Utilities::int_to_string(checkpoint_index % parameters.checkpoint_slots) << std::endl;
     else
       checkpoint_log << timestep_number << " "
                      << filename_for_triangulation << " "
@@ -181,47 +181,40 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::create_snapshot()
+  void Simulator<dim>::create_snapshot(bool rotating_checkpoint)
   {
     computing_timer.enter_section ("Create snapshot");
 
     unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
+    std::string filename_for_triangulation, filename_for_serialization;
 
-    std::string filename_for_triangulation = "restart.mesh-" + dealii::Utilities::int_to_string(timestep_number);
-    std::string filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
+    if (rotating_checkpoint)
+      {
+        filename_for_triangulation = "rotating-checkpoint.mesh-" + dealii::Utilities::int_to_string(checkpoint_index % parameters.checkpoint_slots);
+        filename_for_serialization = "rotating-checkpoint.resume-" + dealii::Utilities::int_to_string(
+                                       checkpoint_index % parameters.checkpoint_slots) + ".z";
+      }
+    else
+      {
+        filename_for_triangulation = "restart.mesh-" + dealii::Utilities::int_to_string(timestep_number);
+        filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
+      }
 
     save_triangulation(filename_for_triangulation);
     serialize_all(filename_for_serialization);
 
     if (my_id == 0)
-      log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
+      if (rotating_checkpoint)
+        {
+          log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
+          checkpoint_index++;
+        }
+      else
+        log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
 
     pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
   }
-
-  template <int dim>
-  void Simulator<dim>::quicksave_snapshot()
-  {
-    computing_timer.enter_section ("Create snapshot");
-
-    unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
-
-    std::string filename_for_triangulation = "quicksave.mesh-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots);
-    std::string filename_for_serialization = "quicksave.resume-" + dealii::Utilities::int_to_string(n_quicksaves % parameters.quicksave_slots) + ".z";
-
-    save_triangulation(filename_for_triangulation);
-    serialize_all(filename_for_serialization);
-
-    if (my_id == 0)
-      log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
-
-    n_quicksaves++;
-
-    pcout << "*** Quickly saving snapshot! Snapshot Created!" << std::endl << std::endl;
-    computing_timer.exit_section();
-  }
-
 
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
@@ -238,21 +231,14 @@ namespace aspect
             filename_for_triangulation = parameters.output_directory + "restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn);
             filename_to_deserialize = parameters.output_directory + "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z";
           }
-        //Check for checkpoint files in run directory
-        else if (Utilities::fexists("restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn)) &&
-                 Utilities::fexists("restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z"))
-          {
-            filename_for_triangulation = "restart.mesh-" + dealii::Utilities::to_string(parameters.resume_from_tsn);
-            filename_to_deserialize = "restart.resume-" + dealii::Utilities::to_string(parameters.resume_from_tsn) + ".z";
-          }
       }
-    else if (parameters.resume_from_quickslot >= 0)
+    else if (parameters.resume_from_rotating_checkpoint >= 0)
       {
-        if (Utilities::fexists(parameters.output_directory + "quicksave.mesh-" + dealii::Utilities::to_string(parameters.resume_from_quickslot)) &&
-            Utilities::fexists(parameters.output_directory + "quicksave.resume-" + dealii::Utilities::to_string(parameters.resume_from_quickslot) + ".z"))
+        if (Utilities::fexists(parameters.output_directory + "rotating-checkpoint.mesh-" + dealii::Utilities::to_string(parameters.resume_from_rotating_checkpoint)) &&
+            Utilities::fexists(parameters.output_directory + "rotating-checkpoint.resume-" + dealii::Utilities::to_string(parameters.resume_from_rotating_checkpoint) + ".z"))
           {
-            filename_for_triangulation = parameters.output_directory + "quicksave.mesh-" + dealii::Utilities::to_string(parameters.resume_from_quickslot);
-            filename_to_deserialize = parameters.output_directory + "quicksave.resume-" + dealii::Utilities::to_string(parameters.resume_from_quickslot) + ".z";
+            filename_for_triangulation = parameters.output_directory + "rotating-checkpoint.mesh-" + dealii::Utilities::to_string(parameters.resume_from_rotating_checkpoint);
+            filename_to_deserialize = parameters.output_directory + "rotating-checkpoint.resume-" + dealii::Utilities::to_string(parameters.resume_from_rotating_checkpoint) + ".z";
           }
       }
     // Try to pick up the latest checkpoint file from checkpoint.log in the output directory.
@@ -285,7 +271,7 @@ namespace aspect
       {
         AssertThrow(true,
                     ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
-                                           "'Restart from quicksave slot'." )))
+                                           "'Restart from checkpoint slot'." )))
       }
 
     {
@@ -438,7 +424,7 @@ namespace aspect
     ar &timestep_number;
     ar &pre_refinement_step;
     ar &pressure_adjustment;
-    ar &n_quicksaves;
+    ar &checkpoint_index;
 
     ar &postprocess_manager &statistics;
 
@@ -450,8 +436,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::create_snapshot(); \
-  template void Simulator<dim>::quicksave_snapshot(); \
+  template void Simulator<dim>::create_snapshot(bool rotating_checkpoint); \
   template void Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

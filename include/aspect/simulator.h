@@ -509,7 +509,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot();
+      void create_snapshot(bool rotating_checkpoint);
 
       /**
        * Also saves the state of this program to a set of files in output
@@ -1321,7 +1321,7 @@ namespace aspect
       * @name Variables that track checkpointing/quicksaving
       * @{
       */
-      unsigned int n_quicksaves;
+      unsigned int checkpoint_index;
       std::string checkpoint_log_file;
       /**
       * @}

@@ -265,11 +265,11 @@ namespace aspect
      * @{
      */
 
-    int                            quicksave_time_secs;
-    int                            quicksave_steps;
-    int                            quicksave_slots;
+    int rotating_checkpoint_time_secs;
+    int rotating_checkpoint_steps;
+    int checkpoint_slots;
     int                            checkpoint_steps;
-    unsigned int                   resume_from_quickslot;
+    unsigned int resume_from_rotating_checkpoint;
     unsigned int                   resume_from_tsn;
 
     /**
