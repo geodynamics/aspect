@@ -118,10 +118,10 @@ namespace aspect
             static const std::pair<std::string,types::boundary_id> mapping[]
               = { std::pair<std::string,types::boundary_id>("inner",  0),
                   std::pair<std::string,types::boundary_id>("outer",  1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3),
-                  std::pair<std::string,types::boundary_id>("south",  4),
-                  std::pair<std::string,types::boundary_id>("north",  5)
+                  std::pair<std::string,types::boundary_id>("west",   4),
+                  std::pair<std::string,types::boundary_id>("east",   5),
+                  std::pair<std::string,types::boundary_id>("south",  3),
+                  std::pair<std::string,types::boundary_id>("north",  2)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -330,25 +330,32 @@ namespace aspect
 	  // north and south boundary cones
       Point<dim> center;
       Point<dim> north, south;
-      north[0] = point2[0] * std::cos(point2[1]);
-      south[0] = point2[0] * std::cos(point1[1]);
-      const double north_radius = std::sqrt(point2[0]*point2[0]+north[0]*north[0]);
-      const double south_radius = std::sqrt(point2[0]*point2[0]+south[0]*south[0]);
-      static const ConeBoundary<dim> boundary_cone_north(0,north[0],center,north);
-      static const ConeBoundary<dim> boundary_cone_south(0,south[0],center,south);
+      north[dim-1] = point2[0] * std::cos(point2[1]);
+      south[dim-1] = point2[0] * std::cos(point1[1]);
 
+
+      const double north_radius = std::sqrt(point2[0]*point2[0]-north[0]*north[0]);
+      const double south_radius = std::sqrt(point2[0]*point2[0]-south[0]*south[0]);
+      std::cout << "north " << north_radius << std::endl;
+      std::cout << "south " << south_radius << std::endl;
+      static const ConeBoundary<dim> boundary_cone_north(0,north_radius,center,north);
+      static const ConeBoundary<dim> boundary_cone_south(0,south_radius,center,south);
+
+      if (dim == 2)
+      {
           // attach boundary objects to the straight east and west boundaries
     	  triangulation.set_boundary(2, boundary_straight);
     	  triangulation.set_boundary(3, boundary_straight);
-      if (dim == 3)
+      }
+    	  else
         {
-//          // attach boundary objects to the straight east and west boundaries
-//          triangulation.set_boundary (2, boundary_straight);
-//          triangulation.set_boundary (3, boundary_straight);
+          // attach boundary objects to the straight east and west boundaries
+          triangulation.set_boundary (4, boundary_straight);
+          triangulation.set_boundary (5, boundary_straight);
 
           // attach boundary objects to the conical north and south boundaries
-          triangulation.set_boundary (5, boundary_cone_north);
-          triangulation.set_boundary (4, boundary_cone_south);
+          triangulation.set_boundary (2, boundary_cone_north);
+          triangulation.set_boundary (3, boundary_cone_south);
         }
 
       // attach boundary objects to the curved boundaries
