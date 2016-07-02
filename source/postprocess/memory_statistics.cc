@@ -45,9 +45,9 @@ namespace aspect
       statistics.add_value ("Solution vector memory consumption (MB) ", this->get_solution().memory_consumption()/mb);
 
       std::ostringstream output;
-      output << this->get_system_matrix().memory_consumption()/mb;
+      output << std::fixed << std::setprecision(2) << this->get_system_matrix().memory_consumption()/mb << " MB";
 
-      return std::pair<std::string, std::string> ("System matrix memory consumption (MB):",
+      return std::pair<std::string, std::string> ("System matrix memory consumption: ",
                                                   output.str());
 
     }
