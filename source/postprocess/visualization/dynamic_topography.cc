@@ -143,7 +143,7 @@ namespace aspect
                     // Subtract the dynamic pressure
                     const double dynamic_pressure   = in.pressure[q] - this->get_adiabatic_conditions().pressure(location);
                     const double sigma_rr           = gravity_direction * (shear_stress * gravity_direction) - dynamic_pressure;
-                    const double dynamic_topography = - sigma_rr / gravity.norm() / density;
+                    const double dynamic_topography = - sigma_rr / gravity.norm() / (density - density_above);
 
                     // JxW provides the volume quadrature weights. This is a general formulation
                     // necessary for when a quadrature formula is used that has more than one point.
@@ -207,7 +207,9 @@ namespace aspect
                                  "in the outputted data file (not visualization). "
                                  "'true' subtracts the mean, 'false' leaves "
                                  "the calculated dynamic topography as is. ");
-
+              prm.declare_entry ("Density above","0",
+                                 Patterns::Double (0),
+                                 "The density value out of the surface boundary.");
             }
             prm.leave_subsection();
           }
@@ -228,6 +230,7 @@ namespace aspect
             prm.enter_subsection("Dynamic Topography");
             {
               subtract_mean_dyn_topography              = prm.get_bool("Subtract mean of dynamic topography");
+              density_above = prm.get_double ("Density above");
             }
             prm.leave_subsection();
           }
