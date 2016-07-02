@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: There is a new postprocessor that outputs statistics to 
+ * the screen about the memory usage and nonzero entries of matrices. 
+ * It can be called with the name 'matrix statistics'.
+ * <br>
+ * (Sam Cox, 2016/07/01)
+ *
  * <li> New: There is now a plugin structure to add initial topography
  * to geometry models.
  * <br>

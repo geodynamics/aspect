@@ -407,6 +407,12 @@ namespace aspect
       const LinearAlgebra::BlockSparseMatrix &
       get_system_matrix () const;
 
+      /**
+       * Return a reference to the system preconditioner matrix at the current time step.
+       */
+      const LinearAlgebra::BlockSparseMatrix &
+      get_system_preconditioner_matrix () const;
+
       /** @} */
 
 
