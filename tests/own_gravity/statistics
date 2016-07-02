@@ -9,4 +9,4 @@
 # 9: Schur complement iterations in Stokes preconditioner
 # 10: Time step size (seconds)
 # 11: Visualization file name
-0 0.000000000000e+00 16 187 81 0 11 12 11 5.771203102347e+21 output-own_gravity/solution-00000 
+0 0.000000000000e+00 16 187 81 0 15 16 15 5.771216049434e+21 output-own_gravity/solution-00000 

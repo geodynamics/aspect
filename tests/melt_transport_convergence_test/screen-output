@@ -10,7 +10,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
    Solving for u_f in 11 iterations.
-      Nonlinear residuals: 0, 3.1174e-17, 468.034
+      Nonlinear residuals: 0, 3.1174e-17, 468.027
       Total relative nonlinear residual: 1
 
 
@@ -19,16 +19,16 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 11 iterations.
-      Nonlinear residuals: 0, 3.1174e-17, 0.000458191
-      Total relative nonlinear residual: 9.78969e-07
+      Nonlinear residuals: 0, 3.1174e-17, 0.00046118
+      Total relative nonlinear residual: 9.8537e-07
 
 
 
    Postprocessing:
      RMS, max velocity:                                      8.19 m/s, 14.8 m/s
-     Pressure min/avg/max:                                   0.6062 Pa, 1.042 Pa, 1.649 Pa
+     Pressure min/avg/max:                                   0.6039 Pa, 1.042 Pa, 1.652 Pa
      Max and min velocity along boundary parts:              14.87 m/s, 13.45 m/s, 14.87 m/s, 13.45 m/s, 14.43 m/s, 0.3889 m/s, 14.43 m/s, 0.3889 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 2.064643e-02, 4.161914e-02, 8.978121e-02, 3.999105e-02, 8.032470e-03, 4.842330e-02
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 2.064625e-02, 4.153023e-02, 8.973258e-02, 3.999172e-02, 8.032470e-03, 4.842286e-02
 
 Termination requested by criterion: end time
 
