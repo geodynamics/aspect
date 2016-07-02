@@ -42,7 +42,7 @@ make_lib ()
 {
     echo "configuring in `pwd` ..."
     rm -rf CMakeCache.txt
-    cmake -D ASPECT_DIR=$BUILD . >/dev/null || { echo "cmake failed!"; return 1; }
+    cmake -D Aspect_DIR=$BUILD . >/dev/null || { echo "cmake failed!"; return 1; }
     make >/dev/null || { echo "make failed!"; return 2; }
     return 0;
 }
