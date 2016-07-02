@@ -1,0 +1,152 @@
+
+Loading shared library <./libsegregation_heating.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+3 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 9.32273e-15, 6.92618e-18, 0, 5.43992
+      Total relative nonlinear residual: 0.333477
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 9.32273e-15, 6.92618e-18, 0, 1.40648e-11
+      Total relative nonlinear residual: 8.62199e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  4.573e-24 W/kg, 9.147e-24 W
+     Writing graphical output:      output-segregation_heating/solution-00000
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 18+0 iterations.
+   Solving for u_f in 3 iterations.
+      Nonlinear residuals: 0.00269148, 2.89749e-15, 0, 1.36735e-05
+      Total relative nonlinear residual: 3.24316e-05
+
+
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+   Solving for u_f in 3 iterations.
+      Nonlinear residuals: 2.05175e-09, 4.09634e-10, 0, 1.26555e-07
+      Total relative nonlinear residual: 1.37804e-08
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00001
+
+*** Timestep 2:  t=0.2 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+   Solving for u_f in 3 iterations.
+      Nonlinear residuals: 9.92962e-05, 4.09569e-10, 0, 1.0372e-06
+      Total relative nonlinear residual: 7.99666e-07
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00002
+
+*** Timestep 3:  t=0.3 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+   Solving for u_f in 3 iterations.
+      Nonlinear residuals: 0.000136821, 5.46528e-10, 0, 1.41337e-06
+      Total relative nonlinear residual: 1.10183e-06
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00003
+
+*** Timestep 4:  t=0.4 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+   Solving for u_f in 4 iterations.
+      Nonlinear residuals: 0.000150361, 5.92535e-10, 0, 1.46142e-06
+      Total relative nonlinear residual: 1.21083e-06
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00004
+
+*** Timestep 5:  t=0.5 seconds
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+   Solving for u_f in 4 iterations.
+      Nonlinear residuals: 0.000151967, 6.07981e-10, 0, 1.30301e-06
+      Total relative nonlinear residual: 1.22373e-06
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00005
+
+*** Timestep 6:  t=0.5 seconds
+   Solving temperature system... 1 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 4 iterations.
+      Nonlinear residuals: 9.05249e-11, 3.75181e-16, 0, 1.10817e-11
+      Total relative nonlinear residual: 1.0985e-12
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
+     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
+     Writing graphical output:      output-segregation_heating/solution-00006
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

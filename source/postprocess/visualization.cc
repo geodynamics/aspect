@@ -142,7 +142,7 @@ namespace aspect
                                              const std::vector<Point<dim> > &,
                                              std::vector<Vector<double> >                    &computed_quantities) const
           {
-            //check that the first quadruatre point has dim components
+            //check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
                     ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
             const double velocity_scaling_factor =
