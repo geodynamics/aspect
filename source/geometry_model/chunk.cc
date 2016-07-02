@@ -337,21 +337,18 @@ namespace aspect
       static const ConeBoundary<dim> boundary_cone_north(0,north[0],center,north);
       static const ConeBoundary<dim> boundary_cone_south(0,south[0],center,south);
 
-      if (dim == 2)
-      {
           // attach boundary objects to the straight east and west boundaries
     	  triangulation.set_boundary(2, boundary_straight);
     	  triangulation.set_boundary(3, boundary_straight);
-      }
-      else
+      if (dim == 3)
         {
-          // attach boundary objects to the straight east and west boundaries
-          triangulation.set_boundary (4, boundary_straight);
-          triangulation.set_boundary (5, boundary_straight);
+//          // attach boundary objects to the straight east and west boundaries
+//          triangulation.set_boundary (2, boundary_straight);
+//          triangulation.set_boundary (3, boundary_straight);
 
           // attach boundary objects to the conical north and south boundaries
-          triangulation.set_boundary (2, boundary_cone_north);
-          triangulation.set_boundary (3, boundary_cone_south);
+          triangulation.set_boundary (5, boundary_cone_north);
+          triangulation.set_boundary (4, boundary_cone_south);
         }
 
       // attach boundary objects to the curved boundaries
