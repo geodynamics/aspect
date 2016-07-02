@@ -1387,8 +1387,8 @@ namespace aspect
     template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
-    template std_cxx11::array<double,2> WGS84_coordinates<2>(const Point<2> &position);
-    template std_cxx11::array<double,3> WGS84_coordinates<3>(const Point<3> &position);
+    template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
+    template std_cxx11::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
