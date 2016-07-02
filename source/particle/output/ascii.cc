@@ -37,7 +37,7 @@ namespace aspect
       template <int dim>
       void ASCIIOutput<dim>::initialize ()
       {
-        particle_subdirectory = this->get_output_directory() + "particles/";
+        std::string particle_subdirectory = this->get_output_directory() + "particles/";
 
         aspect::Utilities::create_directory (particle_subdirectory, this->get_mpi_communicator(), true);
       }
@@ -48,9 +48,16 @@ namespace aspect
                                              const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
                                              const double /*time*/)
       {
-        const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix = particle_subdirectory + output_file_prefix;
-        const std::string full_filename = output_path_prefix + "." + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) + ".txt";
+        const std::string output_file_prefix =
+          this->get_output_directory()
+          + "particles/"
+          + "particle-"
+          + Utilities::int_to_string (file_index, 5);
+        const std::string full_filename =
+          output_file_prefix
+          + "."
+          + Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4)
+          + ".txt";
 
         std::ofstream output (full_filename.c_str());
 
@@ -95,7 +102,7 @@ namespace aspect
 
         file_index++;
 
-        return output_path_prefix;
+        return output_file_prefix;
       }
 
       template <int dim>

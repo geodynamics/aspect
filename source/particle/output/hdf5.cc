@@ -64,8 +64,7 @@ namespace aspect
       template <int dim>
       void HDF5Output<dim>::initialize ()
       {
-        particle_dirname = "particles/";
-        particle_subdirectory = this->get_output_directory() + particle_dirname;
+        std::string particle_subdirectory = this->get_output_directory() + "particles/";
 
         aspect::Utilities::create_directory (particle_subdirectory,
                                              this->get_mpi_communicator(),
@@ -81,7 +80,10 @@ namespace aspect
 #ifdef DEAL_II_WITH_HDF5
         // Create the filename
         const std::string output_file_prefix = "particle-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix = particle_subdirectory + output_file_prefix;
+        const std::string output_path_prefix =
+          this->get_output_directory()
+          + "particles/"
+          + output_file_prefix;
         const std::string h5_filename = output_path_prefix+".h5";
 
         // Create the hdf5 output size information
@@ -235,7 +237,10 @@ namespace aspect
         // Record and output XDMF info on root process
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
-            const std::string local_h5_filename = particle_dirname + output_file_prefix + ".h5";
+            const std::string local_h5_filename =
+              "particles/"
+              + output_file_prefix
+              + ".h5";
             XDMFEntry   entry(local_h5_filename, current_time, n_global_particles, 0, 3);
             DataOut<dim> data_out;
             const std::string xdmf_filename = (this->get_output_directory() + "particle.xdmf");
