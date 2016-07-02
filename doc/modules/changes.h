@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> Changed: It is now possible to set the gravity to a negative
+ * value in order to calculate backward advection.
+ * <br>
+ * (Jacky Austermann, 2016/07/13)
+ * 
  * <li> New: There is a new postprocessor that outputs statistics to 
  * the screen about the memory usage and nonzero entries of matrices. 
  * It can be called with the name 'matrix statistics'.
