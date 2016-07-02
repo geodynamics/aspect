@@ -1043,17 +1043,47 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    DoFTools::make_sparsity_pattern (dof_handler,
-                                     coupling, sp,
-                                     constraints, false,
-                                     Utilities::MPI::
-                                     this_mpi_process(mpi_communicator));
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-      DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                            sp,
-                                            constraints, false,
-                                            Utilities::MPI::
-                                            this_mpi_process(mpi_communicator));
+      {
+        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                                   introspection.n_components);
+        const typename Introspection<dim>::ComponentIndices &x
+          = introspection.component_indices;
+        if (parameters.use_discontinuous_temperature_discretization)
+          face_coupling[x.temperature][x.temperature] = DoFTools::always;
+
+        if (parameters.use_discontinuous_composition_discretization)
+          {
+            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
+          }
+        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
+          {
+            DoFTools::make_sparsity_pattern (dof_handler,
+                                             coupling, sp,
+                                             constraints, false,
+                                             Utilities::MPI::
+                                             this_mpi_process(mpi_communicator));
+            DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                  sp,
+                                                  coupling,
+                                                  face_coupling);
+          }
+        else
+
+          DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                sp,
+                                                constraints, false,
+                                                Utilities::MPI::
+                                                this_mpi_process(mpi_communicator));
+
+      }
+    else
+      DoFTools::make_sparsity_pattern (dof_handler,
+                                       coupling, sp,
+                                       constraints, false,
+                                       Utilities::MPI::
+                                       this_mpi_process(mpi_communicator));
 
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
@@ -1117,18 +1147,46 @@ namespace aspect
                mpi_communicator);
 #endif
 
-    DoFTools::make_sparsity_pattern (dof_handler,
-                                     coupling, sp,
-                                     constraints, false,
-                                     Utilities::MPI::
-                                     this_mpi_process(mpi_communicator));
     if ((parameters.use_discontinuous_temperature_discretization) || (parameters.use_discontinuous_composition_discretization))
-      DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                            sp,
-                                            constraints, false,
-                                            Utilities::MPI::
-                                            this_mpi_process(mpi_communicator));
+      {
+        Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
+                                                   introspection.n_components);
+        const typename Introspection<dim>::ComponentIndices &x
+          = introspection.component_indices;
+        if (parameters.use_discontinuous_temperature_discretization)
+          face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
+        if (parameters.use_discontinuous_composition_discretization)
+          {
+            for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+              face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
+          }
+        if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
+          {
+            DoFTools::make_sparsity_pattern (dof_handler,
+                                             coupling, sp,
+                                             constraints, false,
+                                             Utilities::MPI::
+                                             this_mpi_process(mpi_communicator));
+            DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                  sp,
+                                                  coupling,
+                                                  face_coupling);
+          }
+        else
+          DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                sp,
+                                                constraints, false,
+                                                Utilities::MPI::
+                                                this_mpi_process(mpi_communicator));
+
+      }
+    else
+      DoFTools::make_sparsity_pattern (dof_handler,
+                                       coupling, sp,
+                                       constraints, false,
+                                       Utilities::MPI::
+                                       this_mpi_process(mpi_communicator));
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
