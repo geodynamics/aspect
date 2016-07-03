@@ -160,7 +160,7 @@ namespace aspect
           lateral_perturbation = sph_harm_vals.first;
         }
       litho_thick_theta=litho_thick-magnitude_lith*lateral_perturbation;
-      T_litho=solidus_curve.T(0,spherical_geometry_model->R1-litho_thick_theta)+deltaT;
+      T_litho=solidus_curve.T(0,spherical_geometry_model->outer_radius()-litho_thick_theta)+deltaT;
 
       if (litho_thick_theta>0 && Depth<litho_thick_theta)
         T_solidus=T_min+(T_litho-T_min)*(Depth/litho_thick_theta);
