@@ -154,7 +154,7 @@ namespace aspect
         double
         opening_angle () const;
 
-      public:
+      private:
         /**
          * Inner and outer radii of the spherical shell.
          */
