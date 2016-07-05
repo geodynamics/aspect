@@ -1013,12 +1013,6 @@ namespace aspect
           = prm.get_bool("Use limiter for discontinuous temperature solution");
         use_limiter_for_discontinuous_composition_solution
           = prm.get_bool("Use limiter for discontinuous composition solution");
-        if (use_limiter_for_discontinuous_temperature_solution
-            || use_limiter_for_discontinuous_composition_solution)
-          AssertThrow (nonlinear_solver == NonlinearSolver::IMPES,
-                       ExcMessage ("The bound preserving limiter currently is "
-                                   "only implemented for the scheme using IMPES nonlinear solver. "
-                                   "Please deactivate the limiter or change the solver scheme."));
         global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
         global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
         global_composition_max_preset       = Utilities::string_to_double
