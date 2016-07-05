@@ -20,6 +20,7 @@
 
 
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_iterator.h>
@@ -186,6 +187,32 @@ namespace aspect
     Box<dim>::has_curved_elements() const
     {
       return false;
+    }
+
+    template <int dim>
+    bool
+    Box<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function cannot be used to determine whether point lies in domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether point lies in domain or not."));
+
+      bool in_domain = true;
+
+      for (unsigned int d = 0; d < dim; d++)
+        {
+          if (point[d] > extents[d]+box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
+              point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
+            {
+              in_domain = false;
+              break;
+            }
+        }
+
+      return in_domain;
     }
 
     template <int dim>

@@ -141,6 +141,14 @@ namespace aspect
         has_curved_elements() const;
 
         /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
