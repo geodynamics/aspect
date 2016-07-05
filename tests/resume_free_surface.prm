@@ -1,0 +1,113 @@
+#Test for resuming simulations with a free surface
+set Dimension = 2
+set CFL number                             = 0.5
+set End time                               = 1e9
+#set Output directory                       = output
+#set Resume computation                     = true
+set Start time                             = 0
+set Pressure normalization                 = no
+set Linear solver tolerance                = 1.e-7
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set Model name = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = 0:200,1:200,2:200,3:200
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 5
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5   # default: 0.11
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 500.e3 
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression =  if( sqrt( (x-250.e3)^2 + (y-160.e3)^2 ) < 25.e3, 0.0, 200.0)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e19
+  end
+end
+
+
+subsection Mesh refinement
+  set Additional refinement times        =
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 4                      # default: 2
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.00
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0                     # default: 10
+end
+
+
+subsection Model settings
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+  set Fixed temperature boundary indicators   = 2,3
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 2
+  set Free surface boundary indicators = 3
+end
+
+subsection Free surface
+  set Free surface stabilization theta = 1.0
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 9
+  set Checkpoint on termination = false
+end
+
+subsection Postprocess
+  set List of postprocessors = topography,velocity statistics, basic statistics, visualization
+  subsection Visualization
+    set Output format = gnuplot
+    set Time between graphical output = 0.
+  end
+end

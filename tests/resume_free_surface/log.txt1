@@ -1,0 +1,71 @@
+
+*** Resuming from snapshot!
+
+Number of active cells: 2,560 (on 5 levels)
+Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
+
+Number of free surface degrees of freedom: 5346
+*** Timestep 5:  t=39454.7 years
+   Solving mesh velocity system... 7 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     Topography min/max:       -193.3 m, 27.46 m, 
+     RMS, max velocity:        0.0375 m/year, 0.153 m/year
+     Writing graphical output: output1.tmp/solution-00005
+
+*** Timestep 6:  t=49668.6 years
+   Solving mesh velocity system... 7 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+7 iterations.
+
+   Postprocessing:
+     Topography min/max:       -193.5 m, 28.27 m, 
+     RMS, max velocity:        0.038 m/year, 0.155 m/year
+     Writing graphical output: output1.tmp/solution-00006
+
+*** Timestep 7:  t=59756.2 years
+   Solving mesh velocity system... 7 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+8 iterations.
+
+   Postprocessing:
+     Topography min/max:       -189.4 m, 28.11 m, 
+     RMS, max velocity:        0.0386 m/year, 0.157 m/year
+     Writing graphical output: output1.tmp/solution-00007
+
+*** Timestep 8:  t=69710.3 years
+   Solving mesh velocity system... 7 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+6 iterations.
+
+   Postprocessing:
+     Topography min/max:       -184.9 m, 27.9 m, 
+     RMS, max velocity:        0.0391 m/year, 0.159 m/year
+     Writing graphical output: output1.tmp/solution-00008
+
+*** Timestep 9:  t=79544.9 years
+   Solving mesh velocity system... 7 iterations.
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     Topography min/max:       -180.4 m, 27.69 m, 
+     RMS, max velocity:        0.0396 m/year, 0.161 m/year
+     Writing graphical output: output1.tmp/solution-00009
+
+Termination requested by criterion: end step
+*** Snapshot created!
+
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
