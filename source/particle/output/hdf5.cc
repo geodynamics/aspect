@@ -64,9 +64,7 @@ namespace aspect
       template <int dim>
       void HDF5Output<dim>::initialize ()
       {
-        std::string particle_subdirectory = this->get_output_directory() + "particles/";
-
-        aspect::Utilities::create_directory (particle_subdirectory,
+        aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
                                              this->get_mpi_communicator(),
                                              true);
       }

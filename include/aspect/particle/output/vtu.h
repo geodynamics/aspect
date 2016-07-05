@@ -106,12 +106,6 @@ namespace aspect
 
         private:
           /**
-           * Subdirectory to store the per timestep particle data
-           */
-          std::string particle_dirname;
-          std::string particle_subdirectory;
-
-          /**
            * Internal index of file output number.
            */
           unsigned int    file_index;

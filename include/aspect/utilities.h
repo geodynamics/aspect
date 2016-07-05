@@ -229,7 +229,9 @@ namespace aspect
      * @param silent Print a nicely formatted message on processor 0 if set
      * to true.
      */
-    void create_directory(std::string pathname, const MPI_Comm &comm, bool silent);
+    void create_directory(const std::string &pathname,
+                          const MPI_Comm &comm,
+                          bool silent);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used

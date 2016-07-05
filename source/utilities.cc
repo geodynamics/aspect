@@ -388,7 +388,9 @@ namespace aspect
       return 0;
     }
 
-    void create_directory(std::string pathname, const MPI_Comm &comm, bool silent)
+    void create_directory(const std::string &pathname,
+                          const MPI_Comm &comm,
+                          bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
       // it on processor zero

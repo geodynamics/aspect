@@ -37,9 +37,9 @@ namespace aspect
       template <int dim>
       void ASCIIOutput<dim>::initialize ()
       {
-        std::string particle_subdirectory = this->get_output_directory() + "particles/";
-
-        aspect::Utilities::create_directory (particle_subdirectory, this->get_mpi_communicator(), true);
+        aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
+                                             this->get_mpi_communicator(),
+                                             true);
       }
 
       template <int dim>
