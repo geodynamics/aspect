@@ -468,32 +468,14 @@ namespace aspect
          */
         AsciiDataBoundary();
 
-      protected:
-
         /**
-         * Initialization function. This function is called once at the
-         * beginning of the program. Checks preconditions.
-         */
+          * Initialization function. This function is called once at the
+          * beginning of the program. Checks preconditions.
+          */
         virtual
         void
         initialize (const std::set<types::boundary_id> &boundary_ids,
                     const unsigned int components);
-
-        /**
-         * Determines which of the dimensions of the position is used to find
-         * the data point in the data grid. E.g. the left boundary of a box
-         * model extents in the y and z direction (position[1] and
-         * position[2]), therefore the function would return [1,2] for dim==3
-         * or [1] for dim==2. We are lucky that these indices are identical
-         * for the box and the spherical shell (if we use spherical
-         * coordinates for the spherical shell), therefore we do not need to
-         * distinguish between them. For the initial condition this function
-         * is trivial, because the position in the data grid is the same as
-         * the actual position (the function returns [0,1,2] or [0,1]), but
-         * for the boundary conditions it matters.
-         */
-        std_cxx11::array<unsigned int,dim-1>
-        get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -511,6 +493,39 @@ namespace aspect
         get_data_component (const types::boundary_id             boundary_indicator,
                             const Point<dim>                    &position,
                             const unsigned int                   component) const;
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename);
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm);
+
+      protected:
+
+        /**
+         * Determines which of the dimensions of the position is used to find
+         * the data point in the data grid. E.g. the left boundary of a box
+         * model extents in the y and z direction (position[1] and
+         * position[2]), therefore the function would return [1,2] for dim==3
+         * or [1] for dim==2. We are lucky that these indices are identical
+         * for the box and the spherical shell (if we use spherical
+         * coordinates for the spherical shell), therefore we do not need to
+         * distinguish between them. For the initial condition this function
+         * is trivial, because the position in the data grid is the same as
+         * the actual position (the function returns [0,1,2] or [0,1]), but
+         * for the boundary conditions it matters.
+         */
+        std_cxx11::array<unsigned int,dim-1>
+        get_boundary_dimensions (const types::boundary_id boundary_id) const;
 
         /**
          * A variable that stores the currently used data file of a series. It
@@ -593,22 +608,6 @@ namespace aspect
         std::string
         create_filename (const int timestep,
                          const types::boundary_id boundary_id) const;
-
-
-        /**
-         * Declare the parameters all derived classes take from input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename);
-
-        /**
-         * Read the parameters from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
     /**
