@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/output/vtu.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/numerics/data_out.h>
 
@@ -35,19 +36,31 @@ namespace aspect
       {}
 
       template <int dim>
+      void VTUOutput<dim>::initialize ()
+      {
+        aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
+                                             this->get_mpi_communicator(),
+                                             true);
+      }
+
+      template <int dim>
       std::string
       VTUOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                            const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
                                            const double current_time)
       {
         const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
-        const std::string output_path_prefix = this->get_output_directory() + output_file_prefix;
+        const std::string output_path_prefix = this->get_output_directory()
+                                               + "particles/"
+                                               + output_file_prefix;
 
         const std::string filename = (output_file_prefix +
                                       "." +
                                       Utilities::int_to_string(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()), 4) +
                                       ".vtu");
-        const std::string full_filename = (this->get_output_directory() + filename);
+        const std::string full_filename = this->get_output_directory()
+                                          + "particles/"
+                                          + filename;
 
         std::ofstream output (full_filename.c_str());
         AssertThrow (output, ExcIO());
@@ -146,7 +159,9 @@ namespace aspect
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
           {
             const std::string pvtu_filename = (output_file_prefix + ".pvtu");
-            const std::string full_pvtu_filename = (this->get_output_directory() + pvtu_filename);
+            const std::string full_pvtu_filename = this->get_output_directory()
+                                                   + "particles/"
+                                                   + pvtu_filename;
 
             std::ofstream pvtu_output (full_pvtu_filename.c_str());
             AssertThrow (pvtu_output, ExcIO());
@@ -174,7 +189,7 @@ namespace aspect
             pvtu_output.close();
 
             times_and_pvtu_file_names.push_back(std::make_pair(current_time,
-                                                               pvtu_filename));
+                                                               "particles/"+pvtu_filename));
             vtu_file_names.push_back (full_filename);
 
             // write .pvd and .visit records

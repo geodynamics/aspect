@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
    Postprocessing:
      RMS, max velocity:         0.000133 m/s, 0.000329 m/s
      Compositions min/max/mass: 0/1/0.2092
-     Writing particle output:   output-particle_generator_box_3d/particle-00000
+     Writing particle output:   output-particle_generator_box_3d/particles/particle-00000
 
 *** Timestep 1:  t=10 seconds
    Skipping temperature solve because RHS is zero.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
    Postprocessing:
      RMS, max velocity:         0.000135 m/s, 0.000332 m/s
      Compositions min/max/mass: -0.01188/1.004/0.2077
-     Writing particle output:   output-particle_generator_box_3d/particle-00001
+     Writing particle output:   output-particle_generator_box_3d/particles/particle-00001
 
 Termination requested by criterion: end time
 

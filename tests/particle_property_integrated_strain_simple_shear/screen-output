@@ -8,7 +8,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_simple_shear/particle-00000
+     Writing particle output: output-particle_property_integrated_strain_simple_shear/particles/particle-00000
 
 *** Timestep 1:  t=0.03125 seconds
    Skipping temperature solve because RHS is zero.
@@ -264,7 +264,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_property_integrated_strain_simple_shear/particle-00001
+     Writing particle output: output-particle_property_integrated_strain_simple_shear/particles/particle-00001
 
 Termination requested by criterion: end time
 

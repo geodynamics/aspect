@@ -12,5 +12,5 @@
 # 12: Time step size (seconds)
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.000000000000e+00 256 2467 1089 1089 0  0 32 18 9 7.000000000000e+01 10 output-particle_output_hdf5/output-particle_output_hdf5/particle-00000 
-1 7.000000000000e+01 256 2467 1089 1089 0 16 32 18 9 3.938220675571e+01 10 output-particle_output_hdf5/output-particle_output_hdf5/particle-00001 
+0 0.000000000000e+00 256 2467 1089 1089 0  0 32 18 9 7.000000000000e+01 10 output-particle_output_hdf5/output-particle_output_hdf5/particles/particle-00000 
+1 7.000000000000e+01 256 2467 1089 1089 0 16 32 18 9 3.938220675571e+01 10 output-particle_output_hdf5/output-particle_output_hdf5/particles/particle-00001 
