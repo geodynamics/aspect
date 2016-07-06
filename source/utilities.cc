@@ -17,8 +17,6 @@
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <boost/math/special_functions/spherical_harmonic.hpp>
-
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
@@ -39,6 +37,8 @@
 #include <string>
 #include <sys/stat.h>
 #include <errno.h>
+
+#include <boost/math/special_functions/spherical_harmonic.hpp>
 
 namespace aspect
 {
