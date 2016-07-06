@@ -45,7 +45,7 @@ namespace aspect
           }
 
         // Read data lines
-        types::particle_index particle_index = 0;
+        types::particle_index particle_index = this->getParticleIdx();
         Point<dim> particle_position;
 
         while (in >> particle_position)
@@ -59,6 +59,7 @@ namespace aspect
             catch (ExcParticlePointNotInDomain &)
               {}
           }
+        this->setParticleIdx(particle_index);
       }
 
 

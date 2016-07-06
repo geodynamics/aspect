@@ -923,6 +923,8 @@ namespace aspect
       it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
+          if (it->second.get_properties().size() == property_manager->get_n_property_components())
+            continue;
           property_manager->initialize_one_particle(it->second,
                                                     values[i],
                                                     gradients[i]);
@@ -1030,6 +1032,8 @@ namespace aspect
     void
     World<dim>::generate_particles()
     {
+      if (!generator->getGenerateParticlesInitially() && this->get_timestep_number() == 0)
+        return;
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
       generator->generate_particles(particles);
@@ -1129,6 +1133,13 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      // Generate more particles
+      if (generator->isTimeToGenerateParticles(this->get_timestep_number()))
+        {
+          generate_particles();
+          initialize_particles();
+        }
+
       do
         {
           advect_particles();
@@ -1217,6 +1228,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
+      Generator::Interface<dim>::declare_parameters(prm);
       Generator::declare_parameters<dim>(prm);
       Output::declare_parameters<dim>(prm);
       Integrator::declare_parameters<dim>(prm);
@@ -1278,6 +1290,7 @@ namespace aspect
       generator.reset(Generator::create_particle_generator<dim> (prm));
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
         sim->initialize_simulator (this->get_simulator());
+      generator->parse_global_parameters(prm);
       generator->parse_parameters(prm);
 
       // Create an output object depending on what the parameters specify
