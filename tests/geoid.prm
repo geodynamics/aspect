@@ -1,0 +1,100 @@
+set End time                               = 0
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+set Dimension                              = 3
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2650
+    set Outer temperature = 273
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 360
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+    set Reference temperature = 1600.0
+    set Lateral wave number one = 2
+    set Lateral wave number two = 2
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Reference temperature = 1600.0
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   =
+
+  set Include adiabatic heating               = false
+  set Include shear heating                   = false
+
+  set Tangential velocity boundary indicators = inner,outer
+  set Zero velocity boundary indicators       =
+end
+
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, depth average, geoid, visualization
+
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = density
+    set Time between graphical output = 0
+  end
+
+  subsection Geoid
+    set maximum degree = 2
+    set minimum degree = 2
+    set output data in geographical coordinates = true
+    set Density above = 0
+    set Density below = 8000
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+
+end

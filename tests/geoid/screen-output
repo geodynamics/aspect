@@ -1,0 +1,36 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 96 (on 1 levels)
+Number of degrees of freedom: 4,030 (2,910+150+970)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+14 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3340
+     Reference gravity (m/s^2):                     9.81
+     Reference thermal expansion (1/K):             3e-05
+     Temperature contrast across model domain (K):  0
+     Model domain depth (m):                        2.89e+06
+     Reference thermal diffusivity (m^2/s):         1.17265e-06
+     Reference viscosity (Pas):                     1e+21
+     Ra number:                                     0
+     k_value:                                       4.7
+     reference_cp:                                  1200
+     reference_thermal_diffusivity:                 1.17265e-06
+
+     Writing depth average:    output-geoid/depth_average.gnuplot
+     Writing geoid anomaly:    output-geoid/geoid_anomaly.00000
+     Writing graphical output: output-geoid/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
