@@ -259,10 +259,12 @@ namespace aspect
                              "the calculated dynamic topography as is. ");
           prm.declare_entry ("Density above","0",
                              Patterns::Double (0),
-                             "Dynamic topography is calculated from the density contrast throughout the surface. "
-                             "This parameter allows users to specify the density value out of the surface boundary, "
-                             "and the surface density contrast at each location is the density difference between "
-                             "the corresponding quadrature point and this outside density value. "
+                             "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
+                             "This value depends on the density of material that is moved up or down, i.e. crustal rock, and the "
+                             "density of the material that is displaced (generally water or air). While the density of crustal rock "
+                             "is part of the material model, this parameter 'density_above' allows the user to specify the density "
+                             "value of material that is displaced above the solid surface. By default this material is assumed to "
+                             "be air, with a density of 0. "
                              "Units: $kg/m^3$.");
         }
         prm.leave_subsection();
