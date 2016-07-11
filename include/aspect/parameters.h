@@ -265,11 +265,11 @@ namespace aspect
      * @{
      */
 
-    int rotating_checkpoint_time_secs;
-    int rotating_checkpoint_steps;
-    int checkpoint_slots;
+    int                            rotating_checkpoint_time_secs;
+    int                            rotating_checkpoint_steps;
+    int                            checkpoint_slots;
     int                            checkpoint_steps;
-    unsigned int resume_from_rotating_checkpoint;
+    int                            resume_from_rotating_checkpoint;
     unsigned int                   resume_from_tsn;
 
     /**

@@ -25,7 +25,9 @@ int f()
 
   ret = system ("cd output-checkpoint_01 ; "
                 " rm -rf output2.tmp ; mkdir output2.tmp ; "
-                " cp output1.tmp/restart* output2.tmp/");
+                " cp output1.tmp/restart* output2.tmp/ ; "
+                " cp output1.tmp/rotating* output2.tmp/ ; "
+                " cp output1.tmp/checkpoint.log output2.tmp/");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 

@@ -200,9 +200,6 @@ namespace aspect
         filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
       }
 
-    save_triangulation(filename_for_triangulation);
-    serialize_all(filename_for_serialization);
-
     if (my_id == 0)
       if (rotating_checkpoint)
         {
@@ -211,6 +208,9 @@ namespace aspect
         }
       else
         log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
+
+    save_triangulation(filename_for_triangulation);
+    serialize_all(filename_for_serialization);
 
     pcout << "*** Snapshot created!" << std::endl << std::endl;
     computing_timer.exit_section();
@@ -221,6 +221,8 @@ namespace aspect
   {
     std::string filename_for_triangulation;
     std::string filename_to_deserialize;
+
+    std::cout << parameters.output_directory + "checkpoint.log" << std::endl;
 
     if (parameters.resume_from_tsn != 0)
       {
@@ -268,22 +270,21 @@ namespace aspect
         filename_to_deserialize = parameters.output_directory + tokens[2];
       }
     else
-      {
-        AssertThrow(true,
-                    ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
-                                           "'Restart from checkpoint slot'." )))
-      }
+      AssertThrow(true,
+                  ExcMessage(std::string("Please set any of the parameters 'Restart from time step number' or"
+                                         "'Restart from checkpoint slot'." )))
 
-    {
-      std::ifstream in(filename_for_triangulation.c_str());
-      if (!in) AssertThrow (false,
-                              ExcMessage(std::string("You are trying to restart a previous computation, "
-                                                     "but the restart file <")
-                                         +
-                                         filename_for_triangulation
-                                         +
-                                         "> does not appear to exist!"));
-    }
+
+      {
+        std::ifstream in(filename_for_triangulation.c_str());
+        if (!in) AssertThrow (false,
+                                ExcMessage(std::string("You are trying to restart a previous computation, "
+                                                       "but the restart file <")
+                                           +
+                                           filename_for_triangulation
+                                           +
+                                           "> does not appear to exist!"));
+      }
 
     {
       std::ifstream in (filename_to_deserialize.c_str());

@@ -2286,14 +2286,15 @@ namespace aspect
         // If we base rotating checkpoint frequency on steps, see if it's time for another checkpoint
         if (((parameters.rotating_checkpoint_time_secs == 0) &&
              (parameters.rotating_checkpoint_steps > 0)) &&
-            (timestep_number % parameters.rotating_checkpoint_steps == 0))
+            (parameters.rotating_checkpoint_steps != 0 &&
+             timestep_number % parameters.rotating_checkpoint_steps == 0))
           do_rotating_checkpoint = true;
 
         // matrices will be regenerated after a resume, so do that here too
         // to be consistent. otherwise we would get different results
         // for a restarted computation than for one that ran straight
         // through
-        if ((timestep_number % parameters.checkpoint_steps == 0) ||
+        if ((parameters.checkpoint_steps != 0 && timestep_number % parameters.checkpoint_steps == 0) ||
             (termination.first && termination.second) ||
             do_rotating_checkpoint)
           {
