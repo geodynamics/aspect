@@ -1243,7 +1243,7 @@ namespace aspect
                     {
                       data.local_matrix(i,j)
                       += (
-                           (this->get_timestep() * (conductivity + artificial_viscosity)
+                           (time_step * (conductivity + artificial_viscosity)
                             * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
                            + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
                               + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
