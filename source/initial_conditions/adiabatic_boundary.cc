@@ -28,42 +28,6 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
-    std::pair<double, double>
-    AdiabaticBoundary<dim>::lat_long_from_xyz_WGS84(const Point<3> &pos) const
-    {
-      /* Define WGS84 ellipsoid constants. */
-      const double radius = 6378137;
-      const double ellipticity = 8.1819190842622e-2;
-
-      const double b = std::sqrt(radius * radius
-                                 * (1 - ellipticity * ellipticity));
-      const double ep = std::sqrt((radius * radius - b * b) / (b * b));
-      const double p = std::sqrt(pos(0) * pos(0) + pos(1) * pos(1));
-      const double th = std::atan2(radius * pos(2), b * p);
-      const double lon = std::atan2(pos(1), pos(0));
-      const double lat = std::atan2((pos(2) + ep * ep * b * std::sin(th)
-                                     * std::sin(th) * std::sin(th)),
-                                    (p - (ellipticity
-                                          * ellipticity
-                                          * radius
-                                          * (std::cos(th) * std::cos(th)
-                                             * std::cos(th)))));
-
-      /* Convert to degrees. */
-      const double lon_degrees = lon * (180. / numbers::PI);
-      const double lat_degrees = lat * (180. / numbers::PI);
-
-      /* Set all longitudes between [0,360]. */
-      if (lon_degrees < 0.)
-        return std::make_pair(lat_degrees, lon_degrees + 360.);
-      else if (lon_degrees > 360.)
-        return std::make_pair(lat_degrees, lon_degrees - 360.);
-      else
-        return std::make_pair(lat_degrees, lon_degrees);
-
-    }
-
     template <>
     double
     AdiabaticBoundary<2>::get_isotherm_depth(const double,
@@ -97,16 +61,6 @@ namespace aspect
       return 0;
     }
 
-    template <int dim>
-    double
-    AdiabaticBoundary<dim>::radius_WGS84(const double theta) const
-    {
-      const double eccentricity    = 8.1819190842622e-2;
-      const double semi_major_axis = 6378137.0;
-      return semi_major_axis/std::sqrt(1- eccentricity * eccentricity
-                                       * std::sin(numbers::PI*theta/180)*std::sin(numbers::PI*theta/180));
-    }
-
     template <>
     double
     AdiabaticBoundary<2>::initial_temperature (const Point<2> &) const
@@ -119,15 +73,14 @@ namespace aspect
     double
     AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
     {
-      const std::pair<double, double> lat_long = lat_long_from_xyz_WGS84(position);
-      const double depth                       = radius_WGS84(lat_long.first) - position.norm();
-      const double isotherm_depth              = get_isotherm_depth(lat_long.first, lat_long.second);
+      std_cxx11::array<double,dim> wcoord      = Utilities::Coordinates::WGS84_coordinates(position);
+      const double depth                       = wcoord[0] - position.norm();
+      const double isotherm_depth              = get_isotherm_depth(wcoord[2], wcoord[1]);
       if (depth > isotherm_depth)
         return isotherm_temperature + (depth - isotherm_depth) * temperature_gradient;
       else
         return surface_temperature + (depth/isotherm_depth)*(isotherm_temperature - surface_temperature);
     }
-
 
     template <int dim>
     void
@@ -167,11 +120,9 @@ namespace aspect
       {
         prm.enter_subsection("Adiabatic boundary");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR (prm.get("Data directory"));
 
-          isotherm_file_name = prm.get("Isotherm depth filename");
+          isotherm_file_name   = prm.get("Isotherm depth filename");
           isotherm_temperature = prm.get_double("Isotherm temperature");
           surface_temperature  = prm.get_double("Surface temperature");
           temperature_gradient = prm.get_double("Adiabatic temperature gradient");
@@ -225,6 +176,7 @@ namespace aspect
     }
 
   }
+
 }
 
 

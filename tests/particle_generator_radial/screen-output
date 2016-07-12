@@ -11,7 +11,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      RMS, max velocity:         0.000181 m/s, 0.000404 m/s
      Compositions min/max/mass: 0/1/0.1825
-     Writing particle output:   output-particle_generator_radial/particles-00000
+     Writing particle output:   output-particle_generator_radial/particles/particles-00000
 
 *** Timestep 1:  t=70 seconds
    Skipping temperature solve because RHS is zero.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      RMS, max velocity:         0.000327 m/s, 0.000728 m/s
      Compositions min/max/mass: -0.002207/1.002/0.1825
-     Writing particle output:   output-particle_generator_radial/particles-00001
+     Writing particle output:   output-particle_generator_radial/particles/particles-00001
 
 Termination requested by criterion: end time
 

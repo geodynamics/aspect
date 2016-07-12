@@ -497,6 +497,15 @@ namespace aspect
                            Utilities::int_to_string(advection_field.compositional_variable+1),
                            solver_control.last_step());
 
+    if ((advection_field.is_temperature()
+         && parameters.use_discontinuous_temperature_discretization
+         && parameters.use_limiter_for_discontinuous_temperature_solution)
+        ||
+        (!advection_field.is_temperature()
+         && parameters.use_discontinuous_composition_discretization
+         && parameters.use_limiter_for_discontinuous_composition_solution))
+      apply_limiter_to_dg_solutions(advection_field);
+
     computing_timer.exit_section();
 
     return initial_residual;

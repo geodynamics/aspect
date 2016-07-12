@@ -9,7 +9,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_output_hdf5/particle-00000
+     Writing particle output: output-particle_output_hdf5/particles/particle-00000
 
 *** Timestep 1:  t=70 seconds
    Skipping temperature solve because RHS is zero.
@@ -17,7 +17,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing particle output: output-particle_output_hdf5/particle-00001
+     Writing particle output: output-particle_output_hdf5/particles/particle-00001
 
 Termination requested by criterion: end time
 

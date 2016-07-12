@@ -44,7 +44,7 @@ MESSAGE(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_D
 
 SET(ASPECT_USE_PETSC OFF CACHE BOOL "Use PETSc instead of Trilinos if set to 'on'.")
 
-MESSAGE(STATUS "Using PETSc = '${ASPECT_USE_PETSC}'")
+MESSAGE(STATUS "Using ASPECT_USE_PETSC = '${ASPECT_USE_PETSC}'")
 
 SET(_DEALII_GOOD ON)
 
@@ -71,7 +71,7 @@ ENDIF()
 
 IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nAspect requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
+    "\nASPECT requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
     )
 ENDIF()
 
@@ -94,6 +94,16 @@ FOREACH(_source_file ${TARGET_SRC})
     APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 ENDFOREACH()
 
+
+# load in version info and export it
+FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
+
+INCLUDE(CMakePackageConfigHelpers)
+WRITE_BASIC_PACKAGE_VERSION_FILE(
+  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
+  VERSION ${ASPECT_PACKAGE_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
 
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc to compile an

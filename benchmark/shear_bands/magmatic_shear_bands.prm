@@ -1,0 +1,180 @@
+# Listing of Parameters
+# ---------------------
+# Set up the magmatic shear bands testcase
+# for Newtonian rheology and analyze it using
+# the relations given in Spiegelman (2003):
+# Linear analysis of melt band formation by 
+# simple shear, Geochemistry, Geophysics,
+# Geosystems, 4(9), 8615.
+
+set Additional shared libraries            = ./libshear_bands.so
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 0.5
+set Composition solver tolerance           = 1e-24
+set Temperature solver tolerance           = 1e-20
+set Nonlinear solver scheme                = iterated IMPES
+set Output directory                       = output
+set Max nonlinear iterations               = 5
+set Nonlinear solver tolerance             = 1e-5
+set Linear solver tolerance = 1e-12
+
+set Dimension                              = 2
+
+set End time                               = 0
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = false
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.0005 # default: 0.078
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773 # default: 6000
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273  # default: 0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# we apply simple shear here, so that the top and bottom boundaries 
+# move with the same speed u0, but in opposite directions
+subsection Boundary velocity model
+  subsection Function
+    set Function constants = u0=5e2,ymid=0.0005
+    set Function expression = u0*(y/ymid-1.0);0
+  end
+end
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 0.004
+    set Y extent  = 0.001
+    set X periodic = true
+    set X repetitions = 4
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical # default: 
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 0.0 # default: 30
+  end
+
+end
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = 0.0
+    set Variable names      = x,y
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = plane wave melt bands initial condition
+
+  subsection Plane wave melt bands initial condition
+    set Wave amplitude = 1e-4
+    set Initial band angle = 30
+    set Wave number = 4000
+  end
+end
+
+subsection Material model
+  set Model name = shear bands material
+
+  subsection Shear bands material
+    set Dislocation creep exponent = 1.0
+    set Porosity exponent          = -1.0
+    set Compaction viscosity exponent = 1.0
+    set Permeability exponent = 2
+  end
+end
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+
+  subsection Density
+    set Density formulation = solid density
+  end
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 8                    # default: 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+
+  set Tangential velocity boundary indicators = 
+  set Zero velocity boundary indicators       = 
+
+  set Include melt transport                  = true
+  set Include shear heating                   = false
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 1e-4
+end
+
+subsection Postprocess
+
+  set List of postprocessors = visualization,composition statistics,velocity statistics, shear bands growth rate
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, strain rate, melt material properties 
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0                                                                                # default: 1e8
+  end
+
+end
+
+
+

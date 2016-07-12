@@ -1,0 +1,145 @@
+# This test is used to check if the shear heating
+# of melt, in particular the segregation heating, is 
+# calculated correctly.
+# There is no in- or outflux of solid material, but melt
+# is allowed to flow in freely, so that it moves upwards
+# with a constant velocity determined by its buoyancy.
+# Hence there is no shear of the solid material, but there
+# is dissipation due to the segregation of melt:
+# \eta_f porosity^2 / permeability * (u_f - u_s)^2.
+#
+# With the material properties in this benchmark, shear
+# heating of melt should have a value of 0.78125 (for the
+# Total shear heating with melt rate).
+#
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+set Nonlinear solver scheme                = iterated IMPES
+set Linear solver tolerance                = 1e-12
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is.
+set Use years in output instead of seconds = false
+set End time                               = 0.5
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial conditions
+  set Model name = function
+    subsection Function
+      set Function expression       = 1600
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function expression = 0.5; 0.0
+  end
+end
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;0
+  end
+end
+
+subsection Model settings
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators = 
+  set Tangential velocity boundary indicators = 0,1,2,3
+  set Fixed temperature boundary indicators   = 2
+  set Fixed composition boundary indicators   = 2
+
+  set Include melt transport                  = true
+end
+
+subsection Melt settings
+  set Heat advection by melt = true
+end
+
+subsection Heating model
+  set List of model names = shear heating, shear heating with melt
+end
+
+subsection Boundary fluid pressure model
+  set Plugin name = PressureBdry
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = melt global
+
+  subsection Melt global
+    set Reference solid density    = 2
+    set Reference melt density     = 1
+    set Reference specific heat    = 1
+    set Reference temperature      = 1600 
+    set Thermal conductivity       = 0.0
+    set Surface solidus            = 10000.0
+    set Include melting and freezing = false
+    set Reference permeability       = 1
+    set Reference shear viscosity    = 1
+    set Reference bulk viscosity     = 1
+    set Reference melt viscosity     = 1
+    set Thermal viscosity exponent   = 0
+    set Exponential melt weakening factor = 0
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heating statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.01
+    set List of output variables = viscosity, density, nonadiabatic temperature, heating
+  end
+end
+

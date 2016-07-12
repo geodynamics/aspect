@@ -230,12 +230,13 @@ FOREACH(_test ${_tests})
         MESSAGE(FATAL_ERROR "Invalid setup in test '${_test}.prm': Tests with 'EXPECT FAILURE' are only supported if they use a single MPI rank.")
       ENDIF()
     ENDIF()
+
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output
 	COMMAND
 	  for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
 	    if echo \$i | grep -q -v .cmp.notime \; then
-	      rm -f \$i \;
+	      rm -rf \$i \;
 	    fi \;
 	  done
 	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/screen-output.tmp
@@ -243,6 +244,7 @@ FOREACH(_test ${_tests})
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
 	DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ELSE()
@@ -250,7 +252,7 @@ FOREACH(_test ${_tests})
 	COMMAND
 	  for i in ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/* \; do
 	    if echo \$i | grep -q -v .cmp.notime \; then
-	      rm -f \$i \;
+	      rm -rf \$i \;
 	    fi \;
 	  done
 	COMMAND mpirun -np ${_mpi_count} ${CMAKE_BINARY_DIR}/aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
@@ -259,6 +261,7 @@ FOREACH(_test ${_tests})
 	COMMAND ${PERL_EXECUTABLE} -pi
 		  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
 		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*
+		  ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/*/*
 	DEPENDS aspect ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm ${_testdepends}
 	)
     ENDIF()
@@ -270,11 +273,12 @@ FOREACH(_test ${_tests})
     # this test, create targets that
     # - create a 'output.notime' file
     # - diff this file with the saved one and save the result
-    FILE(GLOB _outputs ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
-    FOREACH(_output ${_outputs})
-      GET_FILENAME_COMPONENT(_output ${_output} NAME)
+    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
+	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
 
-      get_filename_component(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+    FOREACH(_output ${_outputs})
+
+      GET_FILENAME_COMPONENT(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
 
       # create the output.notime targets for each of the output files,
       # and also create a similar file for all of the input files (this
@@ -320,12 +324,14 @@ FOREACH(_test ${_tests})
 		${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.notime
       )
 
-      # add the target for this output file to the dependencies of this test
-      ADD_CUSTOM_TARGET(${_test}.${_output}.diff
+      # Add the target for this output file to the dependencies of this
+      # test. Note Note that a target may not contain "/" but outputs can be
+      # in subdirectories (for example solution/solution...), so replace them.
+      STRING(REPLACE "/" "-" _target_name ${_test}.${_output}.diff)
+      ADD_CUSTOM_TARGET(${_target_name}
 	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_output}.diff
 	)
-      ADD_DEPENDENCIES(tests.${_test}
-		       ${_test}.${_output}.diff)
+      ADD_DEPENDENCIES(tests.${_test} ${_target_name})
     ENDFOREACH()
 
     # add this test to the dependencies of the overall 'tests' target

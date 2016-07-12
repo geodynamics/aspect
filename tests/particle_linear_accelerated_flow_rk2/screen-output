@@ -7,14 +7,14 @@ Number of degrees of freedom: 31 (18+4+9)
 
    Postprocessing:
      RMS, max velocity:       0.1 m/s, 0.1 m/s
-     Writing particle output: output-particle_linear_accelerated_flow_rk2/particle-00000
+     Writing particle output: output-particle_linear_accelerated_flow_rk2/particles/particle-00000
 
 *** Timestep 1:  t=1 seconds
    Skipping temperature solve because RHS is zero.
 
    Postprocessing:
      RMS, max velocity:       1.1 m/s, 1.1 m/s
-     Writing particle output: output-particle_linear_accelerated_flow_rk2/particle-00001
+     Writing particle output: output-particle_linear_accelerated_flow_rk2/particles/particle-00001
 
 Termination requested by criterion: end time
 

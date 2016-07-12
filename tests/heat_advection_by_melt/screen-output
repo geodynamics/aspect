@@ -1,0 +1,110 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libheat_advection_by_melt.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 1.78665e-17, 1.45347e-18, 0, 0.386669
+      Total relative nonlinear residual: 0.0526341
+
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 1.78665e-17, 1.45347e-18, 0, 5.19241e-12
+      Total relative nonlinear residual: 7.06801e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  1.334e-24 W/kg, 2.668e-24 W
+     Writing graphical output:      output-heat_advection_by_melt/solution-00000
+
+*** Timestep 1:  t=0.03125 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 5.96971e-15, 5.48889e-16, 0, 5.19239e-12
+      Total relative nonlinear residual: 7.06798e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution-00001
+
+*** Timestep 2:  t=0.0625 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 5.97089e-15, 5.4877e-16, 0, 5.19578e-12
+      Total relative nonlinear residual: 7.07259e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution-00002
+
+*** Timestep 3:  t=0.09375 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 5.97151e-15, 5.48782e-16, 0, 5.19606e-12
+      Total relative nonlinear residual: 7.07298e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution-00003
+
+*** Timestep 4:  t=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving for u_f in 1 iterations.
+      Nonlinear residuals: 1.19534e-15, 1.097e-16, 0, 5.19548e-12
+      Total relative nonlinear residual: 7.07219e-13
+
+
+
+   Postprocessing:
+     Temperature min/avg/max:       1 K, 1.5 K, 2 K
+     Heating rate (average/total):  0.05 W/kg, 0.1 W
+     Writing graphical output:      output-heat_advection_by_melt/solution-00004
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

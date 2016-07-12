@@ -150,6 +150,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Samuel Cox,
     William Durkin,
     Grant Euen,
+    Menno Fraters,
     Thomas Geenen,
     Anne Glerum,
     Ryan Grove,
@@ -283,8 +284,11 @@ geodynamics community and beyond!
 
 As with all scientific work, funding agencies have a reasonable expectation
 that if we ask for continued funding for this work, we need to demonstrate
-relevance. To this end, we ask that if you publish results that were obtained
-to some part using \aspect{}, you cite the following, canonical reference for
+relevance. 
+In addition, many have contributed to the development of \aspect{} and deserve credit
+for their work.
+To this end, we ask that if you publish results that were obtained
+to some part using \aspect{}, cite the following, canonical reference for
 this software:
 \begin{lstlisting}[frame=single,language=tex]
 @Article{KHB12,
@@ -293,30 +297,34 @@ this software:
   journal =      {Geophysics Journal International},
   year =         2012,
   volume =       191,
-  pages =        {12--29}}
+  pages =        {12--29}
+}
 \end{lstlisting}
-You can refer to the website by citing the following:
-\begin{lstlisting}[frame=single,language=tex]
-@Manual{aspectweb,
-        title  = {ASPECT: Advanced Solver for Problems in Earth's ConvecTion},
-        author = {W. Bangerth and J. Dannberg and 
-                  R. Gassm{\"o}ller and T. Heister and others},
-        year   = {2016},
-        note   = {\texttt{https://aspect.dealii.org/}},
-        url    = {https://aspect.dealii.org/}
-      }
-\end{lstlisting}
-The manual's proper reference is this:
+Please also cite the User's Manual:
 \begin{lstlisting}[frame=single,language=tex]
 @Manual{aspectmanual,
-        title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
-                        ConvecTion},
-        author =       {W. Bangerth and J. Dannberg and 
-                        R. Gassm{\"o}ller and T. Heister and others},
-        organization = {Computational Infrastructure for Geodynamics},
-        year =         2016
-      }
+  title =        {\textsc{ASPECT}: {Advanced Solver for Problems in Earth's
+                  ConvecTion} v1.4.0}, 
+  author =       {W. Bangerth and T. Heister and others},
+  organization = {Computational Infrastructure for Geodynamics},
+  year =         2016
+}
 \end{lstlisting}
+
+%@Manual{aspectmanual,
+%  title =        {\textsc{ASPECT}: Advanced Solver for Problems in Earth's
+%                  ConvecTion v1.5.0}, 
+%  author =       {W. Bangerth and J. Dannberg and 
+%                  R. Gassm{\"o}ller and T. Heister and others},
+%  organization = {Computational Infrastructure for Geodynamics},
+%  year =         2016
+%}
+
+
+
+Updated citation information can also be found on the \aspect{}
+website at \url{https://aspect.dealii.org/}.
+
 
 
 \subsection{Acknowledgments}
@@ -3275,7 +3283,18 @@ program will simply use the default provided when declaring the parameter.
 end a line in the input file with a backslash. This indicates that the
 following line will simply continue to be part of the text of the current line,
 in the same way as the C/C++ preprocessor expands lines that end in
-backslashes.}
+backslashes. The underlying implementation always eats whitespace at
+the beginning of each continuing line, but not before the
+backslash. This means that the parameter file \\
+\hspace*{.25cm} \texttt{set Some parameter = abc}$\backslash$ \\
+\hspace*{.25cm} \texttt{\phantom{set Some parameter = }def}\\
+is equivalent to \\
+\hspace*{.25cm} \texttt{set Some parameter = abcdef}\\
+that is, with no space between \texttt{abc} and \texttt{def} despite
+the leading whitespace at the beginning of the second line. If you
+do want space between these two parts, you need to add it before the
+backslash in the first of the two lines.
+}
 
 \subsubsection{Categories of parameters}
 
@@ -5983,7 +6002,7 @@ The next input parameters describe the scaling from the shear wave velocity
 perturbation to the final temperature field. The shear wave velocity perturbation 
 $\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a density perturbation $\delta \rho / \rho$ with a 
 constant that is specified in the initial condition section of the input parameter 
-file as `Vs to density scaling'. Here we choose a constant scaling of 0.2. This 
+file as `Vs to density scaling'. Here we choose a constant scaling of 0.15. This 
 perturbation is further translated into a temperature difference $\Delta T$ by 
 multiplying it by the negative inverse of thermal expansion, which is also 
 specified in this section of the parameter file as `Thermal expansion coefficient 
@@ -5993,31 +6012,36 @@ model or the reference temperature (as specified in this section of the paramete
 incompressible model. Features in the upper mantle such as cratons might 
 be chemically buoyant and therefore isostatically compensated, in which case 
 their shear wave perturbation would not contribute buoyancy variations. We therefore included an 
-additional option to zero out temperature perturbations within a certain depth. 
-In this example we set this parameter `Remove temperature heterogeneity down to specified 
-depth' to 200km. The chemical variation within the mantle 
+additional option to zero out temperature perturbations within a certain depth, however, in this example we don't make use of this functionality. The chemical variation within the mantle 
 might require a more sophisticated `Vs to density' scaling that varies for 
 example with depth or as a function of the perturbation itself, which is not captured
 in this model. The described procedure 
 provides an absolute temperature for every point, which will only be adjusted 
-at the boundaries if indicated in the Boundary temperature model. 
+at the boundaries if indicated in the Boundary temperature model. In this example
+we chose a surface and core mantle boundary temperature that differ from the
+reference mantle temperature in order to approximate thermal boundary layers.
 
 \paragraph{Visualizing 3D models.}
 
 In this cookbook we calculate the instantaneous solution to examine the flow 
-field. Figure \ref{fig:ic-1} shows the density field for a resolution of 2 global refinement 
-steps (bottom right) as used in the cookbook, as well as 4 global refinement 
+field. Figure \ref{fig:ic-1} shows some of the output for a resolution of 2 global refinement 
+steps (c and e) as used in the cookbook, as well as 4 global refinement 
 steps (other panels in this figure). The top panels show the density variation 
-that has been obtained from scaling S20RTS and removing perturbations in 
-the upper 200km. One can see the two large low shear wave velocity perturbations 
+that has been obtained from scaling S20RTS in the way described above.
+One can see the two large low shear wave velocity perturbations 
 underneath Africa and the Pacific that lead to upwelling if they are assumed to 
 be buoyant (as is done in this case). One can also see the subducting slabs 
 underneath South America and the Philippine region that lead to local downwelling. 
 This flow produces dynamic topography on the surface, which is shown 
-in the bottom row (4 refinement steps on the left, 2 refinement steps on the right). 
+in the middle row for 2 refinement steps (c) and 4 refinement steps (d). 
 One can see that subduction zones are visible as depressed topography 
 due to the downward flow, while regions such as Iceland, Hawaii, or mid ocean 
-ridges are elevated due to (deep and) shallow upward flow. 
+ridges are elevated due to (deep and) shallow upward flow. The bottom row
+shows the heat flux density at the surface for 2 refinement steps (e, colorbar
+ranges from 13 to 19 mW/$m^2$) and for 4 refinement steps (f, colorbar ranges
+from 35 to 95 mW/$m^2$). Similar to the dynamic topography, a first order correlation
+with upper mantle features such as high heat flow at mid ocean ridges and low
+heat flow at cratons is correctly initialized by the tomography model. 
 This model uses a highly simplified material model that is incompressible and 
 isoviscous and does therefore not represent real mantle flow. More realistic 
 material properties, density scaling as well as boundary conditions will affect the magnitude 
@@ -6026,13 +6050,14 @@ and pattern shown here.
 \begin{figure}
   \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/full_mantle.png}
   \hfill
-  \caption{\it The top panels show the density distribution as prescribed from the shear
+  \caption{\it Panels a and b show the density distribution as prescribed from the shear
   wave velocity model S20RTS and the resulting flow for a global refinement of 4. This
-  model assumes a constant scaling between shear wave and density perturbations 
-  and zeros out perturbations in the upper 200km.
-  The bottom figures show the great circle (blue line) along which the top slices
-  are evaluated. They also show the resulting dynamic topography for a global refinement of 4 (left)
-  and 2 (right, cookbook). }
+  model assumes a constant scaling between shear wave and density perturbations.
+  Panel c shows the great circle (dashed blue line) along which the top slices
+  are evaluated. Panels c and d show the resulting dynamic topography for a global refinement of 2 (c, cookbook)
+  and 4 (d). Panels e and f show the resulting heat flux density for a global refinement of
+  2 (e, cookbook) and 4 (f). The colorbar ranges from 13 to 19 mW/$m^2$ for panel e and
+  from 35 to 95 mW/$m^2$ for panel f.}
   \label{fig:ic-1}
 \end{figure}
 
@@ -6613,7 +6638,7 @@ amounts to the following:
  information in a number of directories relative to the current one.
  If it is unable to pick up where \aspect{} was built and installed, you can
  specify this directory explicitly this using \texttt{-D
-   ASPECT\_DIR=$<$...$>$} as an additional flag to \texttt{cmake}, where
+   Aspect\_DIR=$<$...$>$} as an additional flag to \texttt{cmake}, where
  \texttt{$<$...$>$} is the path to the build directory.
  \item Build the library:
 \begin{verbatim}
@@ -6636,7 +6661,7 @@ the current directory.
 \label{sec:benchmark-van-keken}
 
 \textit{This section is a co-production of Cedric Thieulot, Juliane Dannberg,
-Timo Heister and Wolfgang Bangerth with an extension to this benchmark provided by the Virginia Tech Dept. of Geosciences class Geodynamics and ASPECT co-taught by Scott King and D.~Sarah Stamps.}
+Timo Heister and Wolfgang Bangerth with an extension to this benchmark provided by the Virginia Tech Department of Geosciences class ``Geodynamics and ASPECT'' co-taught by Scott King and D.~Sarah Stamps.}
 
 One of the most widely used benchmarks for mantle convection codes is the
 isoviscous Rayleigh-Taylor case (``case 1a'') published by van Keken \textit{et
@@ -7983,6 +8008,62 @@ of the rising blob. If the blob becomes too diffuse, its ability to lift topogra
 It would be instructive to compare the results of this benchmark using tracer particles with the 
 results using compositional fields.
 
+\subsubsection{The solitary wave benchmark}
+\label{sec:benchmark-solitary_wave}
+
+\textit{This section was contributed by Juliane Dannberg and is based on a section in \cite{DH2015} by Juliane Dannberg and Timo Heister.}
+
+One of the most widely used benchmarks for codes that model the migration of melt through a compacting and dilating matrix is the propagation of solitary waves (e.g. \cite{SS11, KMK2013, Schm00}). 
+The benchmark is intended to test the accuracy of the solution of the two-phase flow equations as described in Section \ref{sec:melt_transport} and makes use of the fact that there is an analytical solution for the shape of solitary waves that travel through a partially molten rock with a constant background porosity without changing their shape and with a constant wave speed. 
+Here, we follow the setup of the benchmark as it is described in \cite{BR86}, which considers one-dimensional solitary waves.
+
+The model features a perturbation of higher porosity with the amplitude $A \phi_0$ in a uniform low-porosity ($\phi=\phi_0$) background.  Due to its lower density, melt migrates upwards, dilating the solid matrix at its front and compacting it at its end. 
+
+Assuming constant shear and compaction viscosities and using a permeability law of the form
+%
+\begin{align*}
+k_\phi &= k_0 \phi^3, && \text{ implying a Darcy coefficient }
+K_D(\phi) = \frac{k_0}{\eta_f} \phi^3 , \\
+\intertext{and the non-dimensionalization }
+x &= \delta x' 
+  && \text{ with the compaction length } \delta = \sqrt{K_D(\phi_0)(\xi + \frac{4}{3}\eta)} , \\
+\phi &= \phi_0 \phi ' 
+  && \text{ with the background porosity } \phi_0 , \\
+(\mathbf u_s, \mathbf u_f) &= u_0 (\mathbf u_s, \mathbf u_f)' 
+  && \text{ with the separation flux } \phi_0 u_0 = K_D(\phi_0) \Delta\rho g ,
+\end{align*}
+%
+the analytical solution for the shape of the solitary wave can be written in implicit form as:
+\begin{align*}
+x(\phi) &= \pm (A + 0.5) 
+\left[ -2 \sqrt{A-\phi} + \frac{1}{\sqrt{A-1}} 
+\ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]
+\end{align*}
+and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$. 
+This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure \ref{fig:setup-solitary-wave} illustrates the model setup. 
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/solitary_wave/setup.pdf}
+  \end{center}
+  \caption{\it Setup of the solitary wave benchmark. The domain is $400$ m high and includes a low porosity
+  ($\phi = 0.001$) background with an initial perturbation ($\phi = 0.1$). The solid density is $3300\,kg/m^3$
+  and the melt density is $2500\,kg/m^3$. We apply the negative phase speed 
+  of the solitary wave $\mathbf u_s = -c \, \mathbf e_z$ as velocity boundary condition, so that the wave will 
+  stay at its original position while the background is moving.}
+  \label{fig:setup-solitary-wave}
+\end{figure}
+
+The parameter file and material model for this setup can be found in \url{benchmark/solitary_wave/solitary_wave.prm} and \url{benchmark/solitary_wave/solitary_wave.cc}. The most relevant sections are shown in the following paragraph. 
+
+\lstinputlisting[language=prmfile]{cookbooks/benchmarks/solitary_wave/solitary_wave.prm}
+
+The benchmark uses a custom model to generate the initial condition for the porosity field as specified by the analytical solution, and its own material model, which includes the additional material properties needed by models with melt migration, such as the permeability, melt density and compaction viscosity. The solitary wave postprocessor compares the porosity and pressure in the model to the analytical solution, and computes the errors for the shape of the porosity, shape of the compaction pressure and the phase speed. 
+We apply the negative phase speed of the solitary wave as a boundary condition for the solid velocity. This changes the reference frame, so that the solitary wave stays in the center of the domain, while the solid moves downwards. The temperature evolution does not play a role in this benchmark, so all temperature and heating-related parameters are disabled or set to zero. 
+
+And extensive discussion of the results and convergence behavior can be found in \cite{DH2015}.
+
+
 \section{Extending \aspect}
 \label{sec:extending}
 
@@ -8430,7 +8511,7 @@ do:
   \end{itemize}
   You can then just run the commands
     \begin{verbatim}
- cmake -DASPECT_DIR=/path/to/aspect .
+ cmake -DAspect_DIR=/path/to/aspect .
  make
     \end{verbatim}
     and it should compile your plugin files into a shared library
@@ -8443,8 +8524,8 @@ do:
     installation (i.e., the directory where you configured and compiled it,
     which may be the same directory as where you keep your sources, or a
     different one, as discussed in Section~\ref{sec:installation}) in either the
-    directory explicitly specified in the \texttt{ASPECT\_DIR} variable passed
-    to \texttt{cmake}, the shell environment, or just one directory up. It then
+    directory explicitly specified in the \texttt{Aspect\_DIR} variable passed
+    to \texttt{cmake}, the shell environment variable \texttt{ASPECT\_DIR}, or just one directory up. It then
     sets up compiler paths and similar, and the following lines simply define
     the name of a plugin, list the source files for it, and define everything
     that's necessary to compile them into a shared library. Calling

@@ -88,6 +88,11 @@ namespace aspect
         get_property_manager() const;
 
         /**
+         * Do initial logic for handling pre-refinement steps
+         */
+        void setup_initial_state ();
+
+        /**
          * Initialize the particle properties.
          */
         void generate_particles();

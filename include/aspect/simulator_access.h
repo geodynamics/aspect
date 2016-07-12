@@ -33,6 +33,7 @@
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
@@ -400,6 +401,18 @@ namespace aspect
       const FiniteElement<dim> &
       get_fe () const;
 
+      /**
+       * Return a reference to the system matrix at the current time step.
+       */
+      const LinearAlgebra::BlockSparseMatrix &
+      get_system_matrix () const;
+
+      /**
+       * Return a reference to the system preconditioner matrix at the current time step.
+       */
+      const LinearAlgebra::BlockSparseMatrix &
+      get_system_preconditioner_matrix () const;
+
       /** @} */
 
 
@@ -436,6 +449,12 @@ namespace aspect
        */
       const GravityModel::Interface<dim> &
       get_gravity_model () const;
+
+      /**
+       * Return a pointer to the initial topography model.
+       */
+      const InitialTopographyModel::Interface<dim> &
+      get_initial_topography_model () const;
 
       /**
        * Return a pointer to the geometry model.

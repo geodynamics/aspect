@@ -1,0 +1,225 @@
+# Listing of Parameters
+# ---------------------
+# Test for melt migration in a global-scale model
+
+set Adiabatic surface temperature          = 1600               # default: 0
+set CFL number                             = 1.0
+set Maximum time step                      = 1e6
+set Composition solver tolerance           = 1e-14
+set Temperature solver tolerance           = 1e-14
+set Nonlinear solver scheme                = iterated IMPES
+set Output directory                       = with_melt
+set Max nonlinear iterations               = 20
+set Linear solver tolerance                = 1e-8
+set Nonlinear solver tolerance             = 1e-5
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+# This end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 3e6
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = false
+set Number of cheap Stokes solver steps    = 0
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 1
+  subsection Stabilization parameters
+    set beta  = 0.2
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 293 # default: 6000
+    set Maximal temperature = 3700  # default: 0
+  end
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function constants  = b=100000, c=20000
+    set Variable names      = x,y
+    set Function expression = 0.0; -0.024995 + 0.1 * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 8700000
+    set Y extent = 2900000
+#    set X periodic = true
+    set X repetitions = 3
+  end
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Initial conditions
+  set Model name = adiabatic
+  subsection Adiabatic
+    set Age bottom boundary layer = 5e8
+    set Age top boundary layer    = 3e8
+    set Amplitude                 = 50
+    set Position                  = center
+    set Radius                    = 350000
+
+    subsection Function
+      set Function expression       = 0;0
+    end
+  end
+
+  subsection Harmonic perturbation
+    set Magnitude = 50
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Function constants  = pi=3.1415926,a = 0.0, b = 2500000, c = 100000, d=1450000
+    set Function expression = a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c)); a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c))
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+
+  set Model name = melt global 
+  subsection Melt global
+    set Thermal conductivity              = 4.7
+    set Reference solid density           = 3400
+    set Reference melt density            = 3000
+    set Thermal expansion coefficient     = 2e-5
+    set Reference permeability            = 1e-8
+    set Reference shear viscosity         = 5e21
+    set Reference bulk viscosity          = 1e19
+    set Exponential melt weakening factor = 10
+    set Thermal viscosity exponent        = 7
+    set Thermal bulk viscosity exponent   = 7
+    set Reference temperature             = 1600
+    set Solid compressibility             = 4.2e-12
+    set Melt compressibility              = 1.25e-11
+    set Reference melt viscosity          = 10
+    set Depletion density change          = -200.0 # -100.0 # 0.0
+  end
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.8
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 3                    # default: 2
+  set Strategy                                 = composition threshold, minimum refinement function #, nonadiabatic temperature
+  set Time steps between mesh refinement       = 0
+
+  subsection Minimum refinement function
+    set Coordinate system   = depth
+    set Function expression = if (depth>1500000,5,4)
+    set Variable names      = depth,phi
+  end
+
+  subsection Composition threshold
+    set Compositional field thresholds = 1e-4,1.0
+  end
+end
+
+
+subsection Boundary fluid pressure model
+  set Plugin name = density
+  subsection Density
+    set Density formulation = solid density
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating #, latent heat melt, shear heating
+end
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3
+  set Fixed composition boundary indicators   = #2,3
+  set Prescribed velocity boundary indicators =
+
+  set Tangential velocity boundary indicators = 0,1,2,3
+  set Zero velocity boundary indicators       =
+#  set Remove nullspace                        = net x translation
+
+  set Include melt transport                  = true
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 1e-4
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics, depth average
+
+  subsection Visualization
+
+    set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = true
+  end
+
+  subsection Depth average
+    set Number of zones = 12
+    set Time between graphical output = 6e5
+  end
+
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 1700
+end
+
+

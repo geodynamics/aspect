@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Time step size (seconds)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Average adiabatic heating rate (W/kg) 
+# 19: Total adiabatic heating rate (W) 
+# 20: Average adiabatic heating of melt rate (W/kg) 
+# 21: Total adiabatic heating of melt rate (W) 
+0 0.000000000000e+00 320 3303 1449 810  0 0 0 44 104 15 0.000000000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 
+1 1.147124999998e+13 320 3303 1449 810  0 0 0  2   3  3 1.147124999998e+13 1.72315000e+03 1.75516666e+03 1.78757747e+03 8.48573063e-03 -3.19121211e-11 -1.77378538e+02  3.19121211e-11  1.77378538e+02 
+2 2.294249984881e+13 320 3303 1449 810  8 0 0 18  19 19 1.147124984883e+13 1.72319196e+03 1.75516670e+03 1.78757747e+03 8.47462138e-03 -3.19121219e-11 -1.77378542e+02 -3.84855958e-26 -2.13916169e-13 
+3 2.500000000000e+13 320 3303 1449 810 13 0 0 21  22 22 2.057500151192e+12 1.72316615e+03 1.75516665e+03 1.78757747e+03 8.48144718e-03 -3.19121210e-11 -1.77378537e+02 -1.83398603e-26 -1.01939247e-13 
+0 0.000000000000e+00   0    0    0   0  6 0 0 17  18 18 1.147124979931e+13 1.72315936e+03 1.75516664e+03 1.78757747e+03 8.48324430e-03 -3.19121208e-11 -1.77378536e+02 -6.63833072e-26 -3.68981239e-13 

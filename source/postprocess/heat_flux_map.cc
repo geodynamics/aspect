@@ -30,7 +30,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    HeatFluxMap<dim>::execute (TableHandler &statistics)
+    HeatFluxMap<dim>::execute (TableHandler &)
     {
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);

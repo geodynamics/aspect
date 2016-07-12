@@ -101,6 +101,13 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    void
+    Interface<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> & /*outputs*/) const
+    {}
+
+
     // ------------------------------ Manager -----------------------------
 
     template <int dim>

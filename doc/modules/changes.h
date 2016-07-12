@@ -6,7 +6,33 @@
  *
  * <ol>
  *
- * <li> Changed: the default for "Initial adaptive refinement" cycles is
+ * <li> New: There is a new postprocessor that outputs statistics to 
+ * the screen about the memory usage and nonzero entries of matrices. 
+ * It can be called with the name 'matrix statistics'.
+ * <br>
+ * (Sam Cox, 2016/07/01)
+ *
+ * <li> New: There is now a plugin structure to add initial topography
+ * to geometry models.
+ * <br>
+ * (Menno Fraters and Anne Glerum, 2016/07/01)
+ *
+ * <li> New: There is a new postprocessor that outputs statistics about
+ * the memory usage at each timestep. It can be called with the name
+ * 'memory statistics'. This replaces the helper function
+ * 'output_program_stats()', which has been removed, along with the
+ * variable 'output_parallel_statistics'.
+ * <br>
+ * (Sam Cox, 2016/06/30)
+ *
+ * <li> Changed: In input files, lines that end in a backslash now require
+ * a space before the backslash if the two lines should not be conjoined
+ * immediately, because leading spaces on the continuing line is ignored.
+ * See the Section "The structure of parameter files" in the manual.
+ * <br>
+ * (Jonathan Robey, 2016/06/30)
+ *
+ * <li> Changed: The default for "Initial adaptive refinement" cycles is
  * now 0.
  * <br>
  * (Timo Heister, 2016/06/28)
@@ -16,7 +42,6 @@
  * (in addition to the velocity).
  * <br>
  * (Juliane Dannberg, 2016/06/28)
- *
  *
  * <li> New: There is now a postprocessor that outputs the heatflux
  * density at each boundary face into a text file and a 

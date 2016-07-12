@@ -1,0 +1,31 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for composition solver 1
+# 9: Iterations for composition solver 2
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Time step size (seconds)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Average shear heating rate (W/kg) 
+# 19: Total shear heating rate (W) 
+# 20: Average shear heating with melt rate (W/kg) 
+# 21: Total shear heating with melt rate (W) 
+# 22: Visualization file name
+0 0.000000000000e+00 256 2467 1089 578  0 0 0 33 22  48 0.000000000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                        "" 
+1 9.999999998596e-02 256 2467 1089 578  0 0 0  0  0   0 9.999999998596e-02 1.60000000e+03 1.60000000e+03 1.60000000e+03 7.71371070e-15 3.45586906e-24 6.91173813e-24 1.11745691e-24 2.23491382e-24 output-segregation_heating/solution-00000 
+0 0.000000000000e+00   0    0    0   0 11 0 0 18 19 209 0.000000000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                        "" 
+2 1.999999722261e-01 256 2467 1089 578  2 1 0 11 12 133 9.999997224012e-02 1.60000000e+03 1.60005134e+03 1.60005208e+03 1.36077901e-05 2.37165243e-14 4.74329999e-14 3.90624795e-01 7.81248788e-01 output-segregation_heating/solution-00001 
+3 2.999999284736e-01 256 2467 1089 578  5 1 0 12 13 142 9.999995624748e-02 1.60000000e+03 1.60010241e+03 1.60010429e+03 2.71434116e-05 9.45775182e-14 1.89154649e-13 3.90624589e-01 7.81247577e-01 output-segregation_heating/solution-00002 
+4 3.999998818736e-01 256 2467 1089 578  5 1 0 12 13 144 9.999995340008e-02 1.60000000e+03 1.60015308e+03 1.60015672e+03 4.05726591e-05 2.11781026e-13 4.23560756e-13 3.90624380e-01 7.81246368e-01 output-segregation_heating/solution-00003 
+5 4.999998145216e-01 256 2467 1089 578  5 1 0 12 13 144 9.999993264794e-02 1.60000000e+03 1.60020327e+03 1.60020836e+03 5.38758334e-05 3.74035175e-13 7.48067310e-13 3.90624169e-01 7.81245162e-01 output-segregation_heating/solution-00004 
+6 5.000000000000e-01 256 2467 1089 578  5 1 0 12 13 142 1.854784190680e-07 1.60000000e+03 1.60025295e+03 1.60026042e+03 6.70408782e-05 5.79603692e-13 1.15920152e-12 3.90623955e-01 7.81243958e-01 output-segregation_heating/solution-00005 
+0 0.000000000000e+00   0    0    0   0  1 0 0  0  0   0 9.999992202928e-02 1.60000000e+03 1.60025295e+03 1.60026042e+03 6.70409025e-05 5.79604115e-13 1.15920237e-12 3.90623955e-01 7.81243958e-01 output-segregation_heating/solution-00006 

@@ -154,6 +154,8 @@ namespace aspect
     void
     World<dim>::connect_to_signals(aspect::SimulatorSignals<dim> &signals)
     {
+      signals.post_set_initial_state.connect(std_cxx11::bind(&World<dim>::setup_initial_state,
+                                                             std_cxx11::ref(*this)));
       signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
                                                                      std_cxx11::ref(*this),
                                                                      std_cxx11::_1));
@@ -1009,6 +1011,19 @@ namespace aspect
                                        old_result,
                                        result,
                                        this->get_old_timestep());
+    }
+
+    template <int dim>
+    void
+    World<dim>::setup_initial_state ()
+    {
+      // If we are in the first adaptive refinement cycle generate particles
+      if (this->get_pre_refinement_step() == 0)
+        generate_particles();
+
+      // And initialize the tracer properties according to the initial
+      // conditions on the current mesh
+      initialize_particles();
     }
 
     template <int dim>

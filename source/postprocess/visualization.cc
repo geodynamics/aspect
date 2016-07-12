@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization.h>
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -142,7 +143,7 @@ namespace aspect
                                              const std::vector<Point<dim> > &,
                                              std::vector<Vector<double> >                    &computed_quantities) const
           {
-            //check that the first quadruatre point has dim components
+            //check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
                     ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
             const double velocity_scaling_factor =
@@ -244,14 +245,14 @@ namespace aspect
       const std::string
       pvtu_master_filename = (solution_file_prefix +
                               ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() +
+      std::ofstream pvtu_master ((this->get_output_directory() + "solution/" +
                                   pvtu_master_filename).c_str());
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
       times_and_pvtu_names.push_back(std::make_pair
-                                     (time_in_years_or_seconds, pvtu_master_filename));
+                                     (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
       const std::string
       pvd_master_filename = (this->get_output_directory() + "solution.pvd");
       std::ofstream pvd_master (pvd_master_filename.c_str());
@@ -260,13 +261,25 @@ namespace aspect
       // finally, do the same for Visit via the .visit file for this
       // time step, as well as for all time steps together
       const std::string
-      visit_master_filename = (this->get_output_directory() +
-                               solution_file_prefix +
-                               ".visit");
+      visit_master_filename = (this->get_output_directory()
+                               + "solution/"
+                               + solution_file_prefix
+                               + ".visit");
       std::ofstream visit_master (visit_master_filename.c_str());
       data_out.write_visit_record (visit_master, filenames);
 
-      output_file_names_by_timestep.push_back (filenames);
+      {
+        // the global .visit file needs the relative path because it sits a
+        // directory above
+        std::vector<std::string> filenames_with_path;
+        for (std::vector<std::string>::const_iterator it = filenames.begin();
+             it != filenames.end();
+             ++it)
+          {
+            filenames_with_path.push_back("solution/" + (*it));
+          }
+        output_file_names_by_timestep.push_back (filenames_with_path);
+      }
 
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           "solution.visit").c_str());
@@ -424,7 +437,7 @@ namespace aspect
       if (output_format=="hdf5")
         {
           XDMFEntry new_xdmf_entry;
-          std::string     h5_solution_file_name = solution_file_prefix + ".h5";
+          std::string     h5_solution_file_name = this->get_output_directory() + "solution/" + solution_file_prefix + ".h5";
           std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
 
           // Filter redundant values
@@ -438,12 +451,12 @@ namespace aspect
           data_out.write_filtered_data(data_filter);
           data_out.write_hdf5_parallel(data_filter,
                                        mesh_changed,
-                                       this->get_output_directory()+last_mesh_file_name,
-                                       this->get_output_directory()+h5_solution_file_name,
+                                       this->get_output_directory()+"solution/"+last_mesh_file_name,
+                                       this->get_output_directory()+"solution/"+h5_solution_file_name,
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      last_mesh_file_name,
-                                                      h5_solution_file_name,
+                                                      "solution/"+last_mesh_file_name,
+                                                      "solution/"+h5_solution_file_name,
                                                       time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
           xdmf_entries.push_back(new_xdmf_entry);
@@ -469,11 +482,12 @@ namespace aspect
             }
 
           const unsigned int my_file_id = (group_files == 0) ? my_id : my_id % group_files;
-          const std::string filename = this->get_output_directory() +
-                                       solution_file_prefix +
-                                       "." +
-                                       Utilities::int_to_string (my_file_id, 4) +
-                                       ".vtu";
+          const std::string filename = this->get_output_directory()
+                                       + "solution/"
+                                       + solution_file_prefix
+                                       + "."
+                                       + Utilities::int_to_string (my_file_id, 4)
+                                       + ".vtu";
 
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
@@ -538,11 +552,12 @@ namespace aspect
         {
           const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-          const std::string filename = this->get_output_directory() +
-                                       solution_file_prefix +
-                                       "." +
-                                       Utilities::int_to_string (myid, 4) +
-                                       DataOutBase::default_suffix
+          const std::string filename = this->get_output_directory()
+                                       + "solution/"
+                                       + solution_file_prefix
+                                       + "."
+                                       +  Utilities::int_to_string (myid, 4)
+                                       + DataOutBase::default_suffix
                                        (DataOutBase::parse_output_format(output_format));
 
           std::ofstream out (filename.c_str());
@@ -779,6 +794,11 @@ namespace aspect
       Assert (std_cxx11::get<dim>(registered_plugins).plugins != 0,
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
+
+      std::string visualization_subdirectory = this->get_output_directory() + "solution/";
+      Utilities::create_directory (visualization_subdirectory,
+                                   this->get_mpi_communicator(),
+                                   true);
 
       prm.enter_subsection("Postprocess");
       {

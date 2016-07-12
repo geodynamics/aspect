@@ -1,0 +1,33 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+9 iterations.
+
+   Postprocessing:
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it.
+ Consider reducing number of depth layers for  averaging
+     Writing depth average: output-depth_average_underres/depth_average.gnuplot
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

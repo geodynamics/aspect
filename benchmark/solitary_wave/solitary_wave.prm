@@ -1,0 +1,189 @@
+# Listing of Parameters
+# ---------------------
+# Set up the solitary wave benchmark
+# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011; 
+# Keller et al., 2013; Schmeling, 200
+
+set Additional shared libraries            = ./libsolitary_wave.so
+
+set Adiabatic surface temperature          = 1623               # default: 0
+set CFL number                             = 1.0
+set Composition solver tolerance           = 1e-14
+set Temperature solver tolerance           = 1e-14
+set Nonlinear solver scheme                = iterated IMPES
+set Output directory                       = output
+set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-5
+set Linear solver tolerance                = 1e-10
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+# This end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 6e6
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+set Use direct solver for Stokes system    = false
+set Number of cheap Stokes solver steps    = 0
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.001 # default: 0.078
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set Model name = initial temperature
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773 # default: 6000
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273  # default: 0
+  end
+
+end
+
+subsection Boundary composition model
+  set Model name = initial composition
+end
+
+# we apply the phase speed of the wave here, so that it always stays in the same place in our model
+# the phase speed is c = 5.25e-11 m/s, but we have to convert it to m/years using the same conversion
+# that is used internally in Aspect: year_in_seconds = 60*60*24*365.2425
+subsection Boundary velocity model
+  subsection Function
+#    set Function expression = 0;-8.2836999e-5
+    set Function expression = 0;-1.65673998e-4
+#    set Function expression = 0;-3.31347996e-4
+#    set Function expression = 0;-6.62695992e-4
+  end
+end
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 10
+    set Y extent  = 400
+    set Y repetitions = 40
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical # default: 
+
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 10.0 # default: 30
+  end
+
+end
+
+
+subsection Initial conditions
+  set Model name = function # default: 
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional initial conditions
+  set Model name = Solitary wave initial condition # default: 
+  subsection Solitary wave initial condition
+    set Offset = 200
+    set Read solution from file = true
+    set Amplitude = 0.01
+    set Background porosity = 0.001
+  end
+end
+
+
+subsection Material model
+  set Model name = Solitary Wave
+  subsection Solitary wave
+    set Reference permeability = 5e-9
+  end
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 4                    # default: 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Model settings
+  set Fixed temperature boundary indicators   = 2,3        # default: 
+  set Fixed composition boundary indicators   = 2,3
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 
+
+  set Include melt transport                  = true
+  set Include shear heating                   = false
+end
+
+subsection Melt settings
+  set Melt transport threshold                = 1e-4
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization,composition statistics,velocity statistics,solitary wave statistics
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties 
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    # VTU file output supports grouping files from several CPUs into one file
+    # using MPI I/O when writing on a parallel filesystem. Select 0 for no
+    # grouping. This will disable parallel file output and instead write one
+    # file per processor in a background thread. A value of 1 will generate
+    # one big file containing the whole solution.
+    set Number of grouped files       = 0
+
+    # The file format to be used for graphical output.
+    set Output format                 = vtu
+
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 5e5                                                                                # default: 1e8
+  end
+
+end
+
+
+

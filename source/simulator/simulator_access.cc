@@ -323,6 +323,19 @@ namespace aspect
     return simulator->dof_handler.get_fe();
   }
 
+  template <int dim>
+  const LinearAlgebra::BlockSparseMatrix &
+  SimulatorAccess<dim>::get_system_matrix () const
+  {
+    return simulator->system_matrix;
+  }
+
+  template <int dim>
+  const LinearAlgebra::BlockSparseMatrix &
+  SimulatorAccess<dim>::get_system_preconditioner_matrix () const
+  {
+    return simulator->system_preconditioner_matrix;
+  }
 
   template <int dim>
   const MaterialModel::Interface<dim> &
@@ -432,6 +445,16 @@ namespace aspect
   SimulatorAccess<dim>::get_prescribed_velocity_boundary_conditions () const
   {
     return simulator->velocity_boundary_conditions;
+  }
+
+
+  template <int dim>
+  const InitialTopographyModel::Interface<dim> &
+  SimulatorAccess<dim>::get_initial_topography_model () const
+  {
+    Assert (simulator->initial_topography_model.get() != 0,
+            ExcMessage("You can not call this function if no such model is actually available."));
+    return *simulator->initial_topography_model.get();
   }
 
 

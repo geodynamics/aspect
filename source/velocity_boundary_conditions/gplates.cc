@@ -247,7 +247,7 @@ namespace aspect
 
         // transform internal_position in spherical coordinates
         std_cxx11::array<double,3> spherical_point =
-          ::aspect::Utilities::spherical_coordinates(internal_position);
+          ::aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(internal_position);
 
         Tensor<1,dim> output_boundary_velocity;
         // Handle all points that are not close to the poles
@@ -853,9 +853,7 @@ namespace aspect
       {
         prm.enter_subsection("GPlates model");
         {
-          data_directory = Utilities::replace_in_string(prm.get ("Data directory"),
-                                                        "$ASPECT_SOURCE_DIR",
-                                                        ASPECT_SOURCE_DIR);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
           velocity_file_name              = prm.get ("Velocity file name");
           data_file_time_step             = prm.get_double ("Data file time step");

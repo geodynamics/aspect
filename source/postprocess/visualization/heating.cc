@@ -21,6 +21,7 @@
 
 #include <aspect/postprocess/visualization/heating.h>
 #include <deal.II/base/utilities.h>
+#include <deal.II/grid/grid_tools.h>
 
 #include <algorithm>
 
@@ -102,6 +103,10 @@ namespace aspect
 
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
 
+        // we need the cell as input for the material model because some heating models
+        // want to access the solution vector.
+        // To find the cell, we find a point in the middle of the cell by averaging over the quadrature points.
+        Point<dim> mid_point;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             Tensor<2,dim> grad_u;
@@ -120,9 +125,22 @@ namespace aspect
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+
+            mid_point += evaluation_points[q]/n_quadrature_points;
           }
 
         in.position = evaluation_points;
+
+        typename DoFHandler<dim>::active_cell_iterator cell;
+        cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_dof_handler(), mid_point)).first;
+        in.cell = &cell;
+
+        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+             heating_model = heating_model_objects.begin();
+             heating_model != heating_model_objects.end(); ++heating_model)
+          {
+            (*heating_model)->create_additional_material_model_outputs(out);
+          }
 
         this->get_material_model().evaluate(in, out);
 
