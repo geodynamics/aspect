@@ -121,14 +121,14 @@ namespace aspect
                                                  alpha * gravity * delta_z * one_over_cp);
         }
 
-      if (gravity_direction == 1)
+      if (gravity_direction == 1 && this->get_surface_pressure() >= 0)
         {
           Assert (*std::min_element (pressures.begin(), pressures.end()) >=
                   -std::numeric_limits<double>::epsilon() * pressures.size(),
                   ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
                              + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
         }
-      else
+      else if (gravity_direction == -1 && this->get_surface_pressure() <= 0)
         {
           Assert (*std::max_element (pressures.begin(), pressures.end()) <=
                   std::numeric_limits<double>::epsilon() * pressures.size(),
