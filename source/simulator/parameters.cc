@@ -546,18 +546,6 @@ namespace aspect
 
     prm.enter_subsection ("Checkpointing");
     {
-      // For backwards compatability, we declare the following two parameters:.
-      prm.declare_entry ("Time between checkpoint", "0",
-                         Patterns::Integer (0),
-                         "The wall time between performing checkpoints. "
-                         "If 0, will use the checkpoint step frequency instead. "
-                         "Units: Seconds.");
-      prm.declare_entry ("Steps between checkpoint", "0",
-                         Patterns::Integer (0),
-                         "The number of timesteps between performing checkpoints. "
-                         "If 0 and time between checkpoint is not specified, "
-                         "checkpointing will not be performed. "
-                         "Units: None.");
       prm.declare_entry ("Time between rotating checkpoint", "0",
                          Patterns::Integer (0),
                          "The wall time between performing checkpoints. "
@@ -580,6 +568,11 @@ namespace aspect
                          "If 0 and time between checkpoint is not specified, "
                          "checkpointing will not be performed. "
                          "Units: None.");
+      prm.declare_entry ("Time between checkpoint", "0",
+                         Patterns::Integer (0),
+                         "The wall time between performing checkpoints. "
+                         "If 0, will use the checkpoint step frequency instead. "
+                         "Units: Seconds.");
       prm.declare_entry ("Restart from time step number", "0",
                          Patterns::Integer (0),
                          "By default, a two file names are constructed following the format of restart.mesh-<TSN> and restart.resume-<TSN>.z"
@@ -998,7 +991,8 @@ namespace aspect
     {
       rotating_checkpoint_time_secs = prm.get_integer ("Time between rotating checkpoint");
       rotating_checkpoint_steps = prm.get_integer ("Steps between rotating checkpoint");
-      checkpoint_slots = prm.get_integer ("Number of rotating checkpoint slots");
+      rotating_checkpoint_slots = prm.get_integer ("Number of rotating checkpoint slots");
+      checkpoint_time_secs = prm.get_integer ("Time between checkpoint");
       checkpoint_steps     = prm.get_integer ("Steps between checkpoint");
       resume_from_rotating_checkpoint = prm.get_integer ("Restart from rotating checkpoint slot");
       resume_from_tsn = prm.get_integer ("Restart from time step number");

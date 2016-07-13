@@ -510,15 +510,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot(bool rotating_checkpoint);
-
-      /**
-       * Also saves the state of this program to a set of files in output
-       * directory. However, each quicksave will overwrite pre-existing checkpoint
-       * data for a quicksave slot. By varying the number of slots, one is guaranteed
-       * to contain at least as many recent checkpoint files as number of slots.
-       */
-      void quicksave_snapshot();
+      void create_snapshot(bool checkpoint);
 
       /**
        * Save the state of Triangulation and Solution vectors to a specified
@@ -533,7 +525,8 @@ namespace aspect
       void serialize_all(const std::string file_name);
 
       /**
-       * Write logging information to checkpoint log file.
+       * Tabulate checkpointing information into a log file within the output
+       * directory called 'checkpoint.log'.
        */
       void log_checkpoint(const std::string, const std::string, bool);
 

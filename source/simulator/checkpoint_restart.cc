@@ -172,7 +172,7 @@ namespace aspect
       checkpoint_log << timestep_number << " "
                      << filename_for_triangulation << " "
                      << filename_for_serialization << " "
-                     << dealii::Utilities::int_to_string(checkpoint_index % parameters.checkpoint_slots) << std::endl;
+                     << dealii::Utilities::int_to_string(checkpoint_index % parameters.rotating_checkpoint_slots) << std::endl;
     else
       checkpoint_log << timestep_number << " "
                      << filename_for_triangulation << " "
@@ -181,18 +181,18 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::create_snapshot(bool rotating_checkpoint)
+  void Simulator<dim>::create_snapshot(bool checkpoint)
   {
     computing_timer.enter_section ("Create snapshot");
 
     unsigned int my_id = dealii::Utilities::MPI::this_mpi_process (mpi_communicator);
     std::string filename_for_triangulation, filename_for_serialization;
 
-    if (rotating_checkpoint)
+    if (!checkpoint)
       {
-        filename_for_triangulation = "rotating-checkpoint.mesh-" + dealii::Utilities::int_to_string(checkpoint_index % parameters.checkpoint_slots);
+        filename_for_triangulation = "rotating-checkpoint.mesh-" + dealii::Utilities::int_to_string(checkpoint_index % parameters.rotating_checkpoint_slots);
         filename_for_serialization = "rotating-checkpoint.resume-" + dealii::Utilities::int_to_string(
-                                       checkpoint_index % parameters.checkpoint_slots) + ".z";
+                                       checkpoint_index % parameters.rotating_checkpoint_slots) + ".z";
       }
     else
       {
@@ -200,14 +200,13 @@ namespace aspect
         filename_for_serialization = "restart.resume-" + dealii::Utilities::int_to_string(timestep_number) + ".z";
       }
 
-    if (my_id == 0)
-      if (rotating_checkpoint)
-        {
-          log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
-          checkpoint_index++;
-        }
-      else
-        log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
+    if ((my_id == 0) && !checkpoint)
+      {
+        log_checkpoint(filename_for_triangulation, filename_for_serialization, true);
+        checkpoint_index++;
+      }
+    else
+      log_checkpoint(filename_for_triangulation, filename_for_serialization, false);
 
     save_triangulation(filename_for_triangulation);
     serialize_all(filename_for_serialization);
@@ -437,8 +436,9 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template void Simulator<dim>::create_snapshot(bool rotating_checkpoint); \
+  template void Simulator<dim>::create_snapshot(bool checkpoint); \
   template void Simulator<dim>::resume_from_snapshot();
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

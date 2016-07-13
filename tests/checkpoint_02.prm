@@ -75,7 +75,7 @@ subsection Model settings
 end
 
 subsection Postprocess
-  set List of postprocessors =depth average, visualization, composition statistics, temperature statistics, velocity statistics
+  set List of postprocessors = depth average, visualization, composition statistics, temperature statistics, velocity statistics
  subsection Visualization
      set Output format                 = gnuplot
     set Time between graphical output = 1e6
