@@ -13,7 +13,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 1:  t=8.80814 seconds
    Solving Stokes system... 0+0 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 12
 
 *** Timestep 2:  t=17.6163 seconds
    Solving Stokes system... 0+0 iterations.
@@ -37,7 +37,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 4:  t=35.2326 seconds
    Solving Stokes system... 0+0 iterations.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 5:  t=44.0407 seconds
    Solving Stokes system... 0+0 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 6:  t=52.8489 seconds
    Solving Stokes system... 0+0 iterations.
@@ -61,7 +61,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 12
 
 *** Timestep 7:  t=61.657 seconds
    Solving Stokes system... 0+0 iterations.
@@ -69,7 +69,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 8:  t=70.4652 seconds
    Solving Stokes system... 0+0 iterations.
@@ -77,7 +77,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 9:  t=79.2733 seconds
    Solving Stokes system... 0+0 iterations.
@@ -85,7 +85,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 12
+     Particle count per cell min/avg/max: 0, 3, 10
 
 *** Timestep 10:  t=88.0814 seconds
    Solving Stokes system... 0+0 iterations.
@@ -93,7 +93,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 3, 11
+     Particle count per cell min/avg/max: 0, 3, 10
 
 Number of active cells: 238 (on 5 levels)
 Number of degrees of freedom: 3,379 (2,070+274+1,035)
@@ -107,7 +107,7 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 4, 16
+     Particle count per cell min/avg/max: 0, 4, 20
 
 *** Timestep 12:  t=100 seconds
    Solving Stokes system... 27+0 iterations.
@@ -117,7 +117,7 @@ Number of degrees of freedom: 3,379 (2,070+274+1,035)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 0, 4, 16
+     Particle count per cell min/avg/max: 0, 4, 25
 
 Termination requested by criterion: end time
 
