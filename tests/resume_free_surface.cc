@@ -48,8 +48,8 @@ int f()
   std::cout << "* now comparing:" << std::endl;
 
   ret = system ("cd output-resume_free_surface ; "
-                "cp output1.tmp/solution-00009.0000.gnuplot solution-00009.0000.gnuplot1;"
-                "cp output2.tmp/solution-00009.0000.gnuplot solution-00009.0000.gnuplot2;"
+                "cp output1.tmp/solution/solution-00009.0000.gnuplot solution/solution-00009.0000.gnuplot1;"
+                "cp output2.tmp/solution/solution-00009.0000.gnuplot solution/solution-00009.0000.gnuplot2;"
                 "cp output1.tmp/log.txt log.txt1;"
                 "cp output2.tmp/log.txt log.txt2;"
                 "cp output1.tmp/statistics statistics1;"
