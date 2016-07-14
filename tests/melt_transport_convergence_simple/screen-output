@@ -8,10 +8,10 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+31 iterations.
+   Solving Stokes system... 0+30 iterations.
    Solving for u_f in 7 iterations.
-      Nonlinear residuals: 0, 2.15237e-16, 64.039
-      Total relative nonlinear residual: 0.998522
+      Nonlinear residuals: 0, 2.15237e-16, 63.9048
+      Total relative nonlinear residual: 1.00154
 
 
    Skipping temperature solve because RHS is zero.
@@ -19,8 +19,8 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving for u_f in 7 iterations.
-      Nonlinear residuals: 0, 2.15237e-16, 4.89396e-09
-      Total relative nonlinear residual: 7.63087e-11
+      Nonlinear residuals: 0, 2.15237e-16, 5.48572e-09
+      Total relative nonlinear residual: 8.59742e-11
 
 
 
@@ -28,7 +28,7 @@ Number of degrees of freedom: 28,617 (8,450+2,178+8,450+1,089+4,225+4,225)
      RMS, max velocity:                                      1.41 m/s, 1.41 m/s
      Pressure min/avg/max:                                   0.3686 Pa, 1.176 Pa, 2.718 Pa
      Max and min velocity along boundary parts:              1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.028061e-04, 1.709338e-02, 1.709900e-02, 6.920539e-05, 2.402420e-03, 4.334907e-03
+     Errors u_L2, p_L2, p_f_L2, p_c_L2, porosity_L2, u_f_L2: 1.028077e-04, 1.709337e-02, 1.709899e-02, 6.920575e-05, 2.402420e-03, 4.334907e-03
 
 Termination requested by criterion: end time
 
