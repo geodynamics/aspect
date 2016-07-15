@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -312,7 +312,7 @@ namespace aspect
           prm.declare_entry ("Heat capacity", "1.25e3",
                              Patterns::Double(0),
                              "The value of the specific heat $C_p$. "
-                             "Units: $J / (K * kg)$");
+                             "Units: $J/kg/K$");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
