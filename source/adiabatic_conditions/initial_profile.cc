@@ -53,6 +53,20 @@ namespace aspect
       temperatures[0] = this->get_adiabatic_surface_temperature();
       pressures[0]    = this->get_surface_pressure();
 
+
+      // Check whether gravity is pointing up / out or down / in. In the normal case it should
+      // point down / in and therefore gravity should be positive, leading to increasing
+      // adiabatic pressures and temperatures with depth. In some cases it will point up / out
+      // (e.g. for backward advection), in which case the pressures and temperatures should
+      // decrease with depth and therefore gravity has to be negative in the following equations.
+      Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+      const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
+      const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+      const int gravity_direction =  (g * (point_bot - point_surf) >= 0) ?
+                                     1 :
+                                     -1;
+
+
       // now integrate downward using the explicit Euler method for simplicity
       //
       // note: p'(z) = rho(p,T) * |g|
@@ -99,7 +113,7 @@ namespace aspect
           // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
           // 1/cp = 0.0 we will have a constant temperature profile with depth.
           const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
-          const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
+          double gravity = gravity_direction * this->get_gravity_model().gravity_vector(representative_point).norm();
 
           pressures[i] = pressures[i-1]
                          + density * gravity * delta_z;
@@ -107,13 +121,25 @@ namespace aspect
                                                  alpha * gravity * delta_z * one_over_cp);
         }
 
-      Assert (*std::min_element (pressures.begin(), pressures.end()) >=
-              -std::numeric_limits<double>::epsilon() * pressures.size(),
-              ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
-                         + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
+      if (gravity_direction == 1 && this->get_surface_pressure() >= 0)
+        {
+          Assert (*std::min_element (pressures.begin(), pressures.end()) >=
+                  -std::numeric_limits<double>::epsilon() * pressures.size(),
+                  ExcMessage("Adiabatic InitialProfile encountered a negative pressure of "
+                             + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
+        }
+      else if (gravity_direction == -1 && this->get_surface_pressure() <= 0)
+        {
+          Assert (*std::max_element (pressures.begin(), pressures.end()) <=
+                  std::numeric_limits<double>::epsilon() * pressures.size(),
+                  ExcMessage("Adiabatic InitialProfile encountered a positive pressure of "
+                             + dealii::Utilities::to_string(*std::max_element (pressures.begin(), pressures.end()))));
+        }
+
       Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
               -std::numeric_limits<double>::epsilon() * temperatures.size(),
               ExcMessage("Adiabatic InitialProfile encountered a negative temperature."));
+
 
       initialized = true;
     }

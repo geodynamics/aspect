@@ -69,7 +69,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    MatrixStatistics<dim>::execute (TableHandler &statistics)
+    MatrixStatistics<dim>::execute (TableHandler &)
     {
       std::ostringstream output;
       output << get_stats(this->get_system_matrix(),

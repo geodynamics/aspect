@@ -6527,9 +6527,10 @@ Instructions for how to compile and run models with a shared library are given i
 
 Analyzing Equations~\eqref{eq:inner-core-1}--\eqref{eq:inner-core-3} reveals that two parameters determine 
 the dynamics of convection in the inner core: the Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. 
-For low Rayleigh numbers below a critical value ($\sim1000$, but also slightly depending on $\mathcal{P}$), 
-there is no convection and thermal diffusion dominates the heat transport. 
-For higher values of $Ra$, the style of convection in the inner core depends on $\mathcal{P}$: 
+For low Rayleigh numbers below a critical value $Ra_c$ that is approximately $1000$ for high $\mathcal{P}$ ($\gg 29$), and 
+that depends linearly on $\mathcal{P}$ for smaller $\mathcal{P}$ (see \cite{Deguen2013}), there is no convection 
+and thermal diffusion dominates the heat transport. 
+For higher values of $Ra > Ra_c$, the style of convection in the inner core depends on $\mathcal{P}$: 
 For high $\mathcal{P}$ ($\gg 29$, see \cite{Deguen2013}), convection is dominated by thermal plumes with the number 
 of plumes scaling with the Rayleigh number; whereas for low values of $\mathcal{P}$, the inner core is in a 
 translation regime, where material freezes at one side and melts at the other side, so that the velocity field 
@@ -6537,11 +6538,23 @@ is uniform, pointing from the freezing to the melting side.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/convection.png}
-    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/translation.png}
-    \includegraphics[width=0.3\textwidth]{cookbooks/inner_core_convection/no_convection.png}
+    \begin{tabular}{lcl}
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/convection.png}
+    & \hspace{1cm} &
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/convection_contours.png}
+    \\
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/translation.png}
+    & \hspace{1cm} &
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/translation_contours.png}
+    \\
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/no_convection.png}
+    & \hspace{1cm} &
+    \includegraphics[height=0.25\textwidth]{cookbooks/inner_core_convection/no_convection_contours.png}
+    \end{tabular}
     \caption{Convection regimes in the inner core for different values of $Ra$ and $\mathcal{P}$.
-             From left to right: plume convection, translation, no convection.}
+             From top to bottom: plume convection, translation, no convection; full 3d models
+             on the left and 2d slices on the right. Temperature is shown as contours, 
+             velocity is shown as arrows.}
     \label{fig:inner-core-regimes}
 \end{figure}
 
