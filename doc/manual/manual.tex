@@ -3510,7 +3510,7 @@ In this first example, let us consider a simple situation: a 2d box of dimension
 $[0,1]\times [0,1]$ that is heated from below, insulated at the left and right,
 and cooled from the top. We will also consider the simplest model, the
 incompressible Boussinesq approximation with constant coefficients
-$\eta,\rho_0,\mathbf g,C_p k$, for this testcase. Furthermore, we
+$\eta,\rho_0,\mathbf g,C_p, k$, for this testcase. Furthermore, we
 assume that the medium expands linearly with
 temperature. This leads to the following set of equations:
 \begin{align}
@@ -3532,23 +3532,26 @@ temperature. This leads to the following set of equations:
   & \textrm{in $\Omega$}.
 \end{align}
 It is well known that we can non-dimensionalize this set of equations by
-introducing the Raleigh number $Ra=\frac{g\alpha}{\eta k}$. Formally,
+introducing the Rayleigh number $Ra=\frac{\rho_0 g \alpha \Delta T h^3}{\eta \kappa}$, 
+where $h$ is the height of the box, $\kappa = \frac{k}{\rho C_p}$ is the thermal diffusivity
+and $\Delta T$ is the temperature difference between top and bottom of the box. Formally,
 we can obtain the non-dimensionalized equations by using the above form and
 setting coefficients in the following way:
 \begin{align*}
-  \rho_0=C_p=k=\alpha=\eta=1, \qquad T_0=0, \qquad g=Ra,
+  \rho_0=C_p=\kappa=\alpha=\eta=h=\Delta T=1, \qquad T_0=0, \qquad g=Ra,
 \end{align*}
 where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
 $z$-direction. While this would be a valid description of the problem, it is not
 what one typically finds in the literature because there the density in the
-temperature equation is chosen as $\rho_0$ rather than $\rho(1-\alpha(T-T_0))$
+temperature equation is chosen as reference density $\rho_0$ rather than the 
+full density $\rho(1-\alpha(T-T_0))$
 as used by \aspect{}. However, we can mimic this by choosing a very small value
 for $\alpha$ -- small enough to ensure that for all reasonable temperatures,
 the density used here is equal to $\rho_0$ for all practical purposes --, and
 instead making $g$ correspondingly larger.
 Consequently, in this cookbook we will use the following set of parameters:
 \begin{align*}
-  \rho_0=C_p=T_0=k=\eta=1, \qquad T_0=0, \qquad \alpha=10^{-10}, \qquad
+  \rho_0=C_p=\kappa=\eta=h=\Delta T=1, \qquad T_0=0, \qquad \alpha=10^{-10}, \qquad
   g=10^{10} Ra.
 \end{align*}
 We will see all of these values again in the input file discussed below.
