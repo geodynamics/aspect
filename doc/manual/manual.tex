@@ -7496,7 +7496,7 @@ T_2, & y<y_{tr}
 \end{align*}
 While it is not entirely obvious while this equation for $T(y)$ should be
 correct (in particular why it should be asymmetric), it is not difficult to
-verify that it indeed satisfies the equatoin stated above for both $y<y_{tr}$
+verify that it indeed satisfies the equation stated above for both $y<y_{tr}$
 and $y>y_{tr}$. Furthermore, it indeed satisfies the jump condition we get by
 evaluating the equation at $y=y_{tr}$.
 Indeed, the jump condition can be reinterpreted as a balance of heat conduction:
@@ -7505,13 +7505,13 @@ we consider only steady-state, the same amount of heat is conducted upwards from
 the transition:
 
 \begin{gather*}
-\underbrace{\rho v_y T \Delta S}_{\text{latent heat release}} = \underbrace{\frac{\kappa}{\rho_0 c_p} \frac{\partial T}{\partial y} \vert_{y=y_{tr^-}} = \frac{v_y}{\rho_0 c_p} (T_2-T_1)}_{\text{heat conduction}}
+\underbrace{\rho v_y T \Delta S}_{\text{latent heat release}} = \underbrace{\frac{\kappa}{\rho_0 C_p} \frac{\partial T}{\partial y} \vert_{y=y_{tr^-}} = \frac{v_y}{\rho_0 C_p} (T_2-T_1)}_{\text{heat conduction}}
 \end{gather*}
 
 In contrast to \cite{STO01}, we also consider the density change $\Delta\rho$ across the phase transition: While the heat conduction takes place above the transition and the density can be assumed as $\rho=\rho_0=$ const., the latent heat is released directly at the phase transition. Thus, we assume an average density $\rho=\rho_0 + 0.5\Delta\rho$ for the left side of the equation. Rearranging this equation gives
 
 \begin{gather*}
-T_2 = \frac{T_1}{1 - (1+\frac{\Delta \rho}{2 \rho_0}) \frac{\Delta S}{c_p}}
+T_2 = \frac{T_1}{1 - (1+\frac{\Delta \rho}{2 \rho_0}) \frac{\Delta S}{C_p}}
 \end{gather*}
 
 In addition, we have tested the approach exactly as it is described in \cite{STO01} by setting the entropy change to a specific value and in spite of that using a constant density. However, this is physically inconsistent, as the entropy change is proportional to the density change across the phase transition. With this method, we could reproduce the analytic results from \cite{STO01}.

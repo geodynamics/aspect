@@ -309,7 +309,10 @@ namespace aspect
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0), "Units: $m^2/s$");
-          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0), "Units: $J / (K * kg)$");
+          prm.declare_entry ("Heat capacity", "1.25e3",
+                             Patterns::Double(0),
+                             "The value of the specific heat $C_p$. "
+                             "Units: $J / (K * kg)$");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "

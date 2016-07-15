@@ -382,7 +382,7 @@ namespace aspect
                              "If only one values is given, then all use the same value.  Units: $m^2/s$");
           prm.declare_entry ("Heat capacities", "1.25e3",
                              Patterns::List(Patterns::Double(0)),
-                             "List of heat capacities, for background material and compositional fields, "
+                             "List of heat capacities $C_p$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one values is given, then all use the same value.  Units: $J / (K * kg)$");
           prm.declare_entry ("Densities", "3300.",

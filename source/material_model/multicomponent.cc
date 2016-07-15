@@ -241,7 +241,7 @@ namespace aspect
                              "If only one value is given, then all use the same value. Units: $1/K$");
           prm.declare_entry ("Specific heats", "1250.",
                              Patterns::List(Patterns::Double(0)),
-                             "List of specific heats for background mantle and compositional fields,"
+                             "List of specific heats $C_p$ for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
