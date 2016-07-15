@@ -2337,7 +2337,6 @@ namespace aspect
         // This prevents race conditions where some processes will checkpoint and others won't
         if (parameters.rotating_checkpoint_time_secs > 0 || parameters.checkpoint_time_secs > 0)
           {
-
             int global_do_checkpoint = ((std::time(NULL) - last_checkpoint_time ) >=
                                         parameters.checkpoint_time_secs);
             MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
@@ -2350,7 +2349,6 @@ namespace aspect
             MPI_Bcast(&global_do_rotating_checkpoint, 1, MPI_INT, 0, mpi_communicator);
             do_rotating_checkpoint_by_time = (global_do_rotating_checkpoint == 1);
           }
-            
 
         // If we base checkpoint frequency on steps, see if it's time for another checkpoint
         if (parameters.checkpoint_steps > 0)
