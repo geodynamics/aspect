@@ -384,7 +384,7 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of heat capacities $C_p$, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: $J / (K * kg)$");
+                             "If only one values is given, then all use the same value.  Units: $J/kg/K$");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background material and compositional fields, "
