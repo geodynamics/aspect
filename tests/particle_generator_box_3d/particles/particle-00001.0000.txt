@@ -1,4 +1,4 @@
-# position[0] position[1] position[2] id function initial C_0 initial position[0] initial position[1] initial position[2] 
+# position[0] position[1] position[2] id function initial C_1 initial position[0] initial position[1] initial position[2] 
 0.299541 0.2 0.101498 0 1 0.999984 0.3 0.2 0.1
 0.299482 0.2 0.174683 1 1 0.971475 0.3 0.2 0.175
 0.299668 0.2 0.245347 2 0 0.0184882 0.3 0.2 0.25

@@ -42,7 +42,7 @@
           0
           0
         </DataArray>
-        <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
+        <DataArray type="Float64" Name="initial C_1" NumberOfComponents="1" Format="ascii">
           5.20428e-11
           2.92932e-13
           4.63574e-13

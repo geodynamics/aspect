@@ -23,13 +23,13 @@
           0
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
-          0 
+          0
         </DataArray>
-        <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
-          6.97344e-14 
+        <DataArray type="Float64" Name="initial C_1" NumberOfComponents="1" Format="ascii">
+          6.97775e-14
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.5 0.5 0 
+          0.5 0.5 0
         </DataArray>
       </PointData>
     </Piece>
