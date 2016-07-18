@@ -41,42 +41,49 @@ namespace aspect
         const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
 
         // Sum the local integrals over all nodes
-        double local_function_integral = accumulated_cell_weights.back();
-        const double global_function_integral = Utilities::MPI::sum (local_function_integral,
-                                                                     this->get_mpi_communicator());
+        double local_weight_integral = accumulated_cell_weights.back();
+        const double global_weight_integral = Utilities::MPI::sum (local_weight_integral,
+                                                                   this->get_mpi_communicator());
 
-        AssertThrow(global_function_integral > std::numeric_limits<double>::min(),
+        AssertThrow(global_weight_integral > std::numeric_limits<double>::min(),
                     ExcMessage("The integral of the user prescribed probability "
                                "density function over the domain equals zero, "
                                "ASPECT has no way to determine the cell of "
-                               "generated tracers. Please ensure that the "
+                               "generated particles. Please ensure that the "
                                "provided function is positive in at least a "
                                "part of the domain, also check the syntax of "
                                "the function."));
 
         // Determine the starting weight of this process, which is the sum of
         // the weights of all processes with a lower rank
-        double start_weight = 0.0;
-        MPI_Scan(&local_function_integral, &start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
-        start_weight -= local_function_integral;
-
-        // Build the map between integrated probability density and cell
-        std::map<double, types::LevelInd> cell_weights;
-        typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
-                                                       endc = this->get_dof_handler().end();
-        for (unsigned int i = 0; cell!=endc; ++cell)
-          if (cell->is_locally_owned())
-            {
-              // adjust the cell_weights according to the local starting weight
-              cell_weights.insert(std::make_pair(accumulated_cell_weights[i], types::LevelInd(cell->level(),cell->index())));
-              ++i;
-            }
+        double local_start_weight = 0.0;
+        MPI_Scan(&local_weight_integral, &local_start_weight, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        local_start_weight -= local_weight_integral;
 
         // Calculate start id and number of local particles
-        const types::particle_index start_id = llround(static_cast<double> (n_tracers)  * start_weight / global_function_integral);
-        const types::particle_index n_local_particles = llround(static_cast<double> (n_tracers) * local_function_integral / global_function_integral);
+        const types::particle_index start_id = llround(static_cast<double> (n_tracers)  * local_start_weight / global_weight_integral);
+        const types::particle_index n_local_particles = llround(static_cast<double> (n_tracers) * local_weight_integral / global_weight_integral);
 
-        generate_particles_in_subdomain(cell_weights,start_id,n_local_particles,particles);
+        // Uniform distribution on the interval [0,local_weight_integral). This
+        // will be used to select cells for all particles.
+        boost::random::uniform_real_distribution<double> uniform_distribution(0.0, local_weight_integral);
+
+        // Loop over all particles to create locally and pick their cells
+        std::vector<unsigned int> particles_per_cell(this->get_triangulation().n_locally_owned_active_cells(),0);
+        for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
+          {
+            // Draw the random number that determines the cell of the particle
+            const double random_weight = uniform_distribution(this->random_number_generator);
+
+            const std::vector<double>::const_iterator selected_cell = std::lower_bound(accumulated_cell_weights.begin(),
+                                                                                       accumulated_cell_weights.end(),
+                                                                                       random_weight);
+            const unsigned int cell_index = std::distance(accumulated_cell_weights.begin(),selected_cell);
+
+            ++particles_per_cell[cell_index];
+          }
+
+        generate_particles_in_subdomain(particles_per_cell,start_id,n_local_particles,particles);
       }
 
       template <int dim>
@@ -129,29 +136,36 @@ namespace aspect
 
       template <int dim>
       void
-      ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
+      ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                                                         const types::particle_index first_particle_index,
                                                                         const types::particle_index n_local_particles,
                                                                         std::multimap<types::LevelInd, Particle<dim> > &particles)
       {
-        // Uniform distribution on the interval [0,1]. This
-        // will be used to generate random particle locations.
-        boost::uniform_01<double> uniform_distribution_01;
+        // Generate particles per cell
+        unsigned int cell_index = 0;
+        unsigned int current_particle_index = first_particle_index;
 
-        // Pick cells and assign particles at random points inside them
-        for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)
-          {
-            // Draw the random number that determines the cell of the tracer
-            const double random_weight =  local_weights_map.rbegin()->first * uniform_distribution_01(this->random_number_generator);
+        // We first store the generated particles in a vector. Since they are
+        // generated cell-by-cell, they will already be sorted in the correct
+        // order to be later transferred to the multimap with O(N) complexity.
+        // If we would insert them into the multimap one-by-one it would
+        // increase the complexity to O(N log(N)).
+        std::vector<std::pair<types::LevelInd, Particle<dim> > > local_particles;
+        local_particles.reserve(n_local_particles);
+        for (typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active();
+             cell!=this->get_dof_handler().end();
+             ++cell)
+          if (cell->is_locally_owned())
+            {
+              for (unsigned int i = 0; i < particles_per_cell[cell_index]; ++i)
+                {
+                  local_particles.push_back(this->generate_particle(cell,current_particle_index));
+                  ++current_particle_index;
+                }
+              ++cell_index;
+            }
 
-            const std::map<double,types::LevelInd>::const_iterator selected_cell_map_entry = local_weights_map.lower_bound(random_weight);
-            const types::LevelInd selected_cell = selected_cell_map_entry->second;
-
-            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-            cell (&(this->get_triangulation()), selected_cell.first, selected_cell.second);
-
-            particles.insert(this->generate_particle(cell,current_particle_index + first_particle_index));
-          }
+        particles.insert(local_particles.begin(),local_particles.end());
       }
 
 

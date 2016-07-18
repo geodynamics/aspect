@@ -121,15 +121,15 @@ namespace aspect
            * Generate a set of particles distributed within the local domain
            * according to the probability density function.
            *
-           * @param [in] local_weights_map Map between accumulated cell weight and cell index
-           * for all locally owned active cells.
+           * @param [in] particles_per_cell A vector with n_locally_owned_cells entries
+           * that determines how many particles are generated in each cell.
            * @param [in] local_start_id The starting ID to assign to generated particles of the local process.
-           * @param [in] n_local_particles The local number of particles to generate.
+           * @param [in] n_local_particles The total number of particles to generate locally.
            * @param [out] particles A map between cells and all generated particles.
            *
            */
           void
-          generate_particles_in_subdomain (const std::map<double,types::LevelInd> &local_weights_map,
+          generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                            const types::particle_index local_start_id,
                                            const types::particle_index n_local_particles,
                                            std::multimap<types::LevelInd, Particle<dim> > &particles);

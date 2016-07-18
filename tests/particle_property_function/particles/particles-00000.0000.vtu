@@ -4,9 +4,9 @@
     <Piece NumberOfPoints="3" NumberOfCells="3">
       <Points>
         <DataArray name="Position" type="Float64" NumberOfComponents="3" Format="ascii">
-          0.56014 0.464805 0.0
-          0.626064 0.421401 0.0
-          0.845142 0.342838 0.0
+          0.485782 0.434821 0.0
+          0.556657 0.481879 0.0
+          0.730867 0.467838 0.0
         </DataArray>
       </Points>
       <Cells>
@@ -33,24 +33,24 @@
           2
         </DataArray>
         <DataArray type="Float64" Name="velocity" NumberOfComponents="3" Format="ascii">
-          0.000109984 -9.92431e-05 0 
-          6.86697e-05 -0.000149343 0 
-          -6.97016e-07 -0.000242139 0 
+          0.000101583 -4.9004e-05 0
+          0.000120078 -9.34886e-05 0
+          6.55293e-05 -0.000187615 0
         </DataArray>
         <DataArray type="Float64" Name="function" NumberOfComponents="1" Format="ascii">
-          0 
-          0 
-          0 
+          0
+          0
+          0
         </DataArray>
         <DataArray type="Float64" Name="initial C_0" NumberOfComponents="1" Format="ascii">
-          2.76577e-12 
-          -7.59124e-10 
-          1.09636e-07 
+          5.20428e-11
+          2.92932e-13
+          4.63574e-13
         </DataArray>
         <DataArray type="Float64" Name="initial position" NumberOfComponents="3" Format="ascii">
-          0.56014 0.464805 0 
-          0.626064 0.421401 0 
-          0.845142 0.342838 0 
+          0.485782 0.434821 0
+          0.556657 0.481879 0
+          0.730867 0.467838 0
         </DataArray>
       </PointData>
     </Piece>
