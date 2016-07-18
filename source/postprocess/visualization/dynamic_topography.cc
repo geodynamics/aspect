@@ -212,7 +212,7 @@ namespace aspect
                                  "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
                                  "This value depends on the density of material that is moved up or down, i.e. crustal rock, and the "
                                  "density of the material that is displaced (generally water or air). While the density of crustal rock "
-                                 "is part of the material model, this parameter 'density_above' allows the user to specify the density "
+                                 "is part of the material model, this parameter 'Density_above' allows the user to specify the density "
                                  "value of material that is displaced above the solid surface. By default this material is assumed to "
                                  "be air, with a density of 0. "
                                  "Units: $kg/m^3$.");
