@@ -6,6 +6,19 @@
  *
  * <ol>
  *
+ * <li> Changed: Particle initialization no longer routinely computes
+ * the solution at the particle positions, since it is usually not needed
+ * and complicates the initialization process. Instead it evaluates the 
+ * initial conditions at the particle positions. It is still possible to
+ * access the solution by evaluating it manually inside of particle
+ * property plugins. Additionally the 'initial composition' property
+ * now utilizes the user-provided names of the compositional fields
+ * to identify its particle properties (they are now named
+ * 'initial <field_name>', where <field_name> is replaced by the user
+ * provided name).
+ * <br>
+ * (Rene Gassmoeller, 2016/07/18)
+ *
  * <li> Changed: It is now possible to set the gravity to a negative
  * value in order to calculate backward advection.
  * <br>
