@@ -1,0 +1,34 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+40 iterations.
+
+   Postprocessing:
+
+     Reference density (kg/m^3):                    3300
+     Reference gravity (m/s^2):                     9.83722
+     Reference thermal expansion (1/K):             4e-05
+     Temperature contrast across model domain (K):  3773
+     Model domain depth (m):                        300000
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Reference viscosity (Pas):                     1e+22
+     Ra number:                                     11609.8
+     k_value:                                       4.7
+     reference_cp:                                  1250
+     reference_thermal_diffusivity:                 1.13939e-06
+
+     Writing graphical output: output-ellipsoidal_chunk_nonuniform_topography/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

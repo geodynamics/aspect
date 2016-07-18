@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file doc/COPYING.  If not see
   <http://www.gnu.org/licenses/>.
-*/
+ */
 
 
 #ifndef __aspect__geometry_model_ellipsoidal_chunk_h
@@ -24,11 +24,13 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/grid/manifold.h>
+#include <deal.II/base/function_lib.h>
 
 /**
- * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axis have
- * the same length. The ellipsoidal chunk can be non-coordinate parallel part of the ellipsoid.
- * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps and Wolfgang Bangerth
+ * This geometry model implements an (3d) ellipsoidal chunk geometry where two of the axes have
+ * the same length. The ellipsoidal chunk can be a non-coordinate parallel part of the ellipsoid.
+ * The ellipsoid can have an initial topography on it.
+ * @author This plugin is a joined effort of Menno Fraters, D Sarah Stamps, Wolfgang Bangerth and Anne Glerum
  */
 
 namespace aspect
@@ -37,6 +39,7 @@ namespace aspect
   {
     using namespace dealii;
 
+
     /**
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
      */
@@ -44,6 +47,69 @@ namespace aspect
     class EllipsoidalChunk : public Interface<dim>
     {
       public:
+        /**
+         * Define a type to know what type of topography we
+         * are using
+         */
+        enum TopoTypes {NO_TOPOGRAPHY,
+                        PRM_EXACT,
+                        PRM_UNIFORM_GRID_INTERPOLATED,
+                        FILE_UNIFORM_GRID,
+                        FILE_NONUNIFORM_GRID
+                       };
+        /**
+         * A class which describes the topography
+         */
+        class EllipsoidalChunkTopography
+        {
+          public:
+            EllipsoidalChunkTopography ();
+
+            /**
+             * Retrieve topography value at point lon,lat
+             */
+            double value (const double lon,
+                          const double lat) const;
+
+            /**
+             * The set functions
+             */
+            void set_corners(std::vector<Point<2> > corners);
+            void set_topography_type(TopoTypes topo_type);
+            void set_point_lists(std::vector<std::vector<std::vector<double> > > point_lists);
+            void set_topography_values (std::vector<double> topography_values);
+            void set_topography_data (Function<2> *topography_data);
+            void set_grid_number_data_points(std::vector<double> &grid_number_data_points);
+            void set_topography_file(std::string topo_file_name);
+
+            /**
+             * The get functions
+             */
+            TopoTypes                                   get_topo_type () const;
+            std_cxx11::array<std::pair<double,double>,2> get_endpoints () const;
+            std_cxx11::array<unsigned int,2>             get_number_of_intervals () const;
+            std::vector<double>                          get_data () const;
+            std_cxx11::array< std::vector< double >, 2 > get_coordinates () const;
+            void                                         get_data_from_file ();
+
+          private:
+
+            TopoTypes topo_type;
+            std::string topo_file;
+            std::vector<std::vector<std::vector<double> > > point_lists;
+            std::vector<double> topography_values;
+            // Gridded topography data
+            Function<2> *topography_data;
+            std::vector<Point<2> > corners;
+            // Number of points in each coordinate direction
+            std::vector<double> grid_number_data_points;
+            // Topography values from file
+            std::vector<double> grid_data;
+            // Grid point coordinate values from file
+            std_cxx11::array< std::vector< double >, 2 > nonuniform_grid_coordinates;
+
+        };
+
         /**
          * A class which describes the manifold.
          */
@@ -71,6 +137,8 @@ namespace aspect
             Point<3>
             push_forward(const Point<3> &chart_point) const;
 
+
+            EllipsoidalChunkTopography topography;
           private:
             double semi_major_axis_a;
             double eccentricity;
@@ -78,10 +146,18 @@ namespace aspect
             double bottom_depth;
             std::vector<Point<2> > corners;
 
+
             Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
             Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+
+            Point<3> push_forward_topography (const Point<3> &phi_theta_d_hat) const;
+            Point<3> pull_back_topography (const Point<3> &phi_theta_d_hat) const;
         };
 
+
+        virtual
+        void
+        initialize ();
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -144,8 +220,8 @@ namespace aspect
         get_used_boundary_indicators() const;
 
         /*
-        *Set symbolic names for boudaries (mrtf)
-        */
+         *Set symbolic names for boundaries
+         */
         virtual std::map<std::string,types::boundary_id>
         get_symbolic_boundary_names_map() const;
 
@@ -227,12 +303,11 @@ namespace aspect
         unsigned int NS_subdiv;
         unsigned int depth_subdiv;
 
-
-
         /**
          * Construct manifold object Pointer to an object that describes the geometry.
          */
         EllipsoidalChunkGeometry   manifold;
+
 
         static void set_manifold_ids (Triangulation<dim> &triangulation)
         {
