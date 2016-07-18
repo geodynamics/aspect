@@ -89,6 +89,11 @@ namespace aspect
            * we should subtract the mean topography or not.
            */
           bool subtract_mean_dyn_topography;
+
+          /**
+           * A parameter allows users to set the density value outside the surface
+           */
+          double density_above;
       };
     }
   }
