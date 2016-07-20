@@ -2123,9 +2123,11 @@ namespace aspect
             {
               assemble_advection_system (AdvectionField::composition(c));
               solve_advection(AdvectionField::composition(c));
-              current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-                = solution.block(introspection.block_indices.compositional_fields[c]);
             }
+
+          for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+            current_linearization_point.block(introspection.block_indices.compositional_fields[c])
+              = solution.block(introspection.block_indices.compositional_fields[c]);
 
           break;
         }
