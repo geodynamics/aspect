@@ -24,7 +24,7 @@ IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
 	"Could not find a valid ASPECT build/installation directory. "
 	"Please specify the directory where you are building ASPECT by passing\n"
-	"   -D ASPECT_DIR=<path to ASPECT>\n"
+	"   -D Aspect_DIR=<path to ASPECT>\n"
 	"to cmake or by setting the environment variable ASPECT_DIR in your shell "
 	"before calling cmake. See the section 'How to write a plugin' in the "
         "manual for more information.")
