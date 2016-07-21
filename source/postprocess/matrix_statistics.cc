@@ -44,7 +44,19 @@ namespace
            << std::fixed << std::setprecision(2) << global_matrix_memory_consumption/mb
            << " MB." << std::endl;
 
-    // output number of nonzero elements in matrix
+    // output number of nonzero elements in matrix. Do so with 1000s separator
+    // since they are frequently large; this is done by using the empty
+    // string locale, but creating std::locale with an empty string causes problems
+    // on some platforms, so catch the exception and ignore
+    try
+      {
+        output.imbue(std::locale(""));
+      }
+    catch (std::runtime_error e)
+      {
+        // If the locale doesn't work, just give up
+      }
+
     const int global_matrix_nnz = matrix.n_nonzero_elements();
     output << "Total " << matrix_name << " nnz: "
            << global_matrix_nnz << std::endl;
