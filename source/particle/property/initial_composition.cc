@@ -29,19 +29,10 @@ namespace aspect
       template <int dim>
       void
       InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                                const Vector<double> &,
-                                                                const std::vector<Tensor<1,dim> > &,
                                                                 std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           data.push_back(this->get_compositional_initial_conditions().initial_composition(position,i));
-      }
-
-      template <int dim>
-      InitializationModeForLateParticles
-      InitialComposition<dim>::late_initialization_mode () const
-      {
-        return interpolate;
       }
 
       template <int dim>
@@ -53,7 +44,7 @@ namespace aspect
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
             std::ostringstream field_name;
-            field_name << "initial C_" << i;
+            field_name << "initial " << this->introspection().name_for_compositional_index(i);
             property_information.push_back(std::make_pair(field_name.str(),1));
           }
 

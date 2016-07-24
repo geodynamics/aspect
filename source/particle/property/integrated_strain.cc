@@ -29,8 +29,6 @@ namespace aspect
       template <int dim>
       void
       IntegratedStrain<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                              const Vector<double> &,
-                                                              const std::vector<Tensor<1,dim> > &,
                                                               std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
