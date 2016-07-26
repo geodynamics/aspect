@@ -42,6 +42,139 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::set_initial_temperature_and_compositional_fields ()
   {
+    // create a fully distributed vector since we
+    // need to write into it and we can not
+    // write into vectors with ghost elements
+    LinearAlgebra::BlockVector initial_solution;
+    double max_sum_comp = 0.0;
+
+    // we need to track whether we need to normalize the totality of fields
+    bool normalize_composition = false;
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+    initial_solution.reinit(system_rhs, false);
+
+    // Interpolate initial temperature
+    VectorFunctionFromScalarFunctionObject<dim, double>
+    temperature_function(std_cxx11::bind(&InitialConditions::Interface<dim>::initial_temperature,
+                                         std::ref(*initial_conditions),
+                                         std_cxx11::_1),
+                         introspection.component_indices.temperature,
+                         introspection.n_components);
+
+    VectorTools::interpolate(*mapping,
+                             dof_handler,
+                             temperature_function,
+                             initial_solution,
+                             introspection.component_masks.temperature);
+
+    // then apply constraints and copy the
+    // result into vectors with ghost elements. to do so,
+    // we need the current constraints to be correct for
+    // the current time
+    compute_current_constraints ();
+    current_constraints.distribute(initial_solution);
+
+    // copy temperature/composition block only
+    const unsigned int t_blockidx = introspection.block_indices.temperature;
+    solution.block(t_blockidx) = initial_solution.block(t_blockidx);
+    old_solution.block(t_blockidx) = initial_solution.block(t_blockidx);
+    old_old_solution.block(t_blockidx) = initial_solution.block(t_blockidx);
+
+    // Interpolate initial compositions
+    for (unsigned int n=0; n<parameters.n_compositional_fields; ++n)
+      {
+        AdvectionField advf = AdvectionField::composition(n);
+        initial_solution.reinit(system_rhs, false);
+
+        VectorFunctionFromScalarFunctionObject<dim, double>
+        composition_function (std_cxx11::bind(&CompositionalInitialConditions::Interface<dim>::initial_composition,
+                                              std::ref(*compositional_initial_conditions),
+                                              std_cxx11::_1,
+                                              n),
+                              introspection.component_indices.compositional_fields[n],
+                              introspection.n_components);
+
+
+        VectorTools::interpolate(*mapping,
+                                 dof_handler,
+                                 composition_function,
+                                 initial_solution,
+                                 introspection.component_masks.compositional_fields[n]);
+
+        const unsigned int base_element = advf.base_element(introspection);
+
+        // get the temperature/composition support points
+        const std::vector<Point<dim> > support_points
+          = finite_element.base_element(base_element).get_unit_support_points();
+        Assert (support_points.size() != 0,
+                ExcInternalError());
+
+        // create an FEValues object to check compositions at support points
+        FEValues<dim> fe_values (*mapping, finite_element,
+                                 support_points,
+                                 update_quadrature_points);
+
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
+        for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
+             cell != dof_handler.end(); ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+
+              // Go through the support points for each dof
+              for (unsigned int i=0; i<finite_element.base_element(base_element).dofs_per_cell; ++i)
+                {
+                  // if it is specified in the parameter file that the sum of all compositional fields
+                  // must not exceed one, this should be checked
+                  if (parameters.normalized_fields.size()>0 && n == 1)
+                    {
+                      double sum = 0;
+                      for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
+                      if (std::abs(sum) > 1.0+1e-6)
+                        {
+                          max_sum_comp = std::max(sum, max_sum_comp);
+                          normalize_composition = true;
+                        }
+                    }
+
+                }
+            }
+
+        // if at least one processor decides that it needs
+        // to normalize, do the same on all processors.
+        if (Utilities::MPI::max (normalize_composition ? 1 : 0,
+                                 mpi_communicator)
+            == 1)
+          {
+            const double global_max
+              = Utilities::MPI::max (max_sum_comp, mpi_communicator);
+
+            if (n==1)
+              pcout << "Sum of compositional fields is not one, fields will be normalized"
+                    << std::endl;
+
+            for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
+              if (n==parameters.normalized_fields[m])
+                initial_solution /= global_max;
+          }
+
+        // then apply constraints and copy the
+        // result into vectors with ghost elements. to do so,
+        // we need the current constraints to be correct for
+        // the current time
+        compute_current_constraints ();
+        current_constraints.distribute(initial_solution);
+
+        // copy temperature/composition block only
+        const unsigned int blockidx = introspection.block_indices.compositional_fields[n];
+        solution.block(blockidx) = initial_solution.block(blockidx);
+        old_solution.block(blockidx) = initial_solution.block(blockidx);
+        old_old_solution.block(blockidx) = initial_solution.block(blockidx);
+      }
+#else
     // below, we would want to call VectorTools::interpolate on the
     // entire FESystem. there currently is no way to restrict the
     // interpolation operations to only a subset of vector
@@ -57,16 +190,7 @@ namespace aspect
     // to work around this problem, the following code is essentially
     // a (simplified) copy of the code in VectorTools::interpolate
     // that only works on the temperature component
-
-    // create a fully distributed vector since we
-    // need to write into it and we can not
-    // write into vectors with ghost elements
-    LinearAlgebra::BlockVector initial_solution;
-    double max_sum_comp = 0.0;
-
-    // we need to track whether we need to normalize the totality of fields
-    bool normalize_composition = false;
-
+    //
     //TODO: it would be great if we had a cleaner way than iterating to 1+n_fields.
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+parameters.n_compositional_fields; ++n)
@@ -170,6 +294,7 @@ namespace aspect
         old_solution.block(blockidx) = initial_solution.block(blockidx);
         old_old_solution.block(blockidx) = initial_solution.block(blockidx);
       }
+#endif
   }
 
 
