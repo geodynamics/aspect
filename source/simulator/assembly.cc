@@ -502,13 +502,7 @@ namespace aspect
     const QGauss<dim> quadrature_formula (parameters.temperature_degree+1);
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
+    const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
 
     FEValues<dim> fe_values (finite_element, quadrature_formula,
                              update_values | update_JxW_values);
