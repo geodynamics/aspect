@@ -140,6 +140,15 @@ namespace aspect
       return introspection.base_elements.compositional_fields;
   }
 
+  template <int dim>
+  FEValuesExtractors::Scalar
+  Simulator<dim>::AdvectionField::scalar_extractor(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.extractors.temperature;
+    else
+      return introspection.extractors.compositional_fields[compositional_variable];
+  }
 
 
   namespace

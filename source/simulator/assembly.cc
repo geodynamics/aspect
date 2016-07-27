@@ -731,12 +731,7 @@ namespace aspect
         Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
         Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
-        const FEValuesExtractors::Scalar solution_field
-          = (advection_field.is_temperature()
-             ?
-             introspection.extractors.temperature
-             :
-             introspection.extractors.compositional_fields[advection_field.compositional_variable]);
+        const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
         scratch.finite_element_values.reinit (cell);
 
@@ -1142,13 +1137,7 @@ namespace aspect
 
           const unsigned int solution_component = advection_field.component_index(introspection);
 
-          const FEValuesExtractors::Scalar solution_field
-            = (advection_field.is_temperature()
-               ?
-               introspection.extractors.temperature
-               :
-               introspection.extractors.compositional_fields[advection_field.compositional_variable]
-              );
+          const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
           for (unsigned int q=0; q<n_q_points; ++q)
             {
@@ -1342,13 +1331,7 @@ namespace aspect
 
           const unsigned int solution_component = advection_field.component_index(introspection);
 
-          const FEValuesExtractors::Scalar solution_field
-            = (advection_field.is_temperature()
-               ?
-               introspection.extractors.temperature
-               :
-               introspection.extractors.compositional_fields[advection_field.compositional_variable]
-              );
+          const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
           typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
@@ -1544,13 +1527,7 @@ namespace aspect
 
           const unsigned int solution_component = advection_field.component_index(introspection);
 
-          const FEValuesExtractors::Scalar solution_field
-            = (advection_field.is_temperature()
-               ?
-               introspection.extractors.temperature
-               :
-               introspection.extractors.compositional_fields[advection_field.compositional_variable]
-              );
+          const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
           typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
@@ -2845,13 +2822,7 @@ namespace aspect
     Assert (scratch.grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
     Assert (scratch.phi_field.size() == advection_dofs_per_cell, ExcInternalError());
 
-    const FEValuesExtractors::Scalar solution_field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
+    const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
     const unsigned int solution_component = advection_field.component_index(introspection);
 
