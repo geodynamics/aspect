@@ -691,11 +691,7 @@ namespace aspect
     AdvectionSystem<dim> scratch (finite_element,
                                   finite_element.base_element(advection_field.base_element(introspection)),
                                   *mapping,
-                                  QGauss<dim>((advection_field.is_temperature()
-                                               ?
-                                               parameters.temperature_degree
-                                               :
-                                               parameters.composition_degree)
+                                  QGauss<dim>(advection_field.polynomial_degree(introspection)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2),
                                   /* Because we can only get here in the continuous case, which never requires
@@ -3035,11 +3031,7 @@ namespace aspect
     // (Note: All compositional fields have the same base element and therefore
     // the same composition_degree. Thus, we do not need to find out the degree
     // of the current field, but use the global instead)
-    const unsigned int advection_quadrature_degree = (advection_field.is_temperature()
-                                                      ?
-                                                      parameters.temperature_degree
-                                                      :
-                                                      parameters.composition_degree)
+    const unsigned int advection_quadrature_degree = advection_field.polynomial_degree(introspection)
                                                      +
                                                      (parameters.stokes_velocity_degree+1)/2;
 
