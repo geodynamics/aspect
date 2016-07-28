@@ -33,7 +33,7 @@ SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release 
 MACRO(ASPECT_SETUP_PLUGIN _target)
   MESSAGE(STATUS "Setting up plugin:")
   MESSAGE(STATUS "  name <${_target}>")
-  MESSAGE(STATUS "  using ASPECT_DIR ${ASPECT_DIR}")
+  MESSAGE(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
   MESSAGE(STATUS "  in @CMAKE_BUILD_TYPE@ mode")
   DEAL_II_SETUP_TARGET(${_target})
   SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
