@@ -150,6 +150,16 @@ namespace aspect
       return introspection.extractors.compositional_fields[compositional_variable];
   }
 
+  template <int dim>
+  unsigned int
+  Simulator<dim>::AdvectionField::polynomial_degree(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.polynomial_degree.temperature;
+    else
+      return introspection.polynomial_degree.compositional_fields;
+  }
+
 
   namespace
   {
@@ -970,12 +980,8 @@ namespace aspect
      * in 2D: the combinations are 21, 12
      * in 3D: the combinations are 211, 121, 112
      */
-    const QGauss<1> quadrature_formula_1 (advection_field.is_temperature() ?
-                                          parameters.temperature_degree+1 :
-                                          parameters.composition_degree+1);
-    const QGaussLobatto<1> quadrature_formula_2 (advection_field.is_temperature() ?
-                                                 parameters.temperature_degree+1 :
-                                                 parameters.composition_degree+1);
+    const QGauss<1> quadrature_formula_1 (advection_field.polynomial_degree(introspection)+1);
+    const QGaussLobatto<1> quadrature_formula_2 (advection_field.polynomial_degree(introspection)+1);
 
     const unsigned int n_q_points_1 = quadrature_formula_1.size();
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
@@ -1070,9 +1076,7 @@ namespace aspect
     Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
-    const QGauss<dim> quadrature_formula_0 (advection_field.is_temperature() ?
-                                            parameters.temperature_degree+1 :
-                                            parameters.composition_degree+1);
+    const QGauss<dim> quadrature_formula_0 (advection_field.polynomial_degree(introspection)+1);
 
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 

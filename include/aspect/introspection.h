@@ -188,6 +188,24 @@ namespace aspect
        */
       const BaseElements base_elements;
 
+      /**
+       * A structure that contains the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       *
+       * If there are compositional fields, they are all discretized with the
+       * same polynomial degree and, consequently, we only need a single integer.
+       */
+      struct PolynomialDegree
+      {
+        unsigned int       velocities;
+        unsigned int       temperature;
+        unsigned int       compositional_fields;
+      };
+      /**
+       * A variable that enumerates the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const PolynomialDegree polynomial_degree;
 
       /**
        * A structure that contains component masks for each of the variables
