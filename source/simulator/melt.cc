@@ -358,13 +358,7 @@ namespace aspect
            introspection.component_indices.compositional_fields[advection_field.compositional_variable]
           );
 
-      const FEValuesExtractors::Scalar solution_field
-        = (advection_field.is_temperature()
-           ?
-           introspection.extractors.temperature
-           :
-           introspection.extractors.compositional_fields[advection_field.compositional_variable]
-          );
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 

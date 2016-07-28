@@ -263,6 +263,14 @@ namespace aspect
          * See Introspection::base_elements for more information.
          */
         unsigned int base_element(const Introspection<dim> &introspection) const;
+
+        /**
+         * Return the FEValues scalar extractor for this temperature
+         * or compositional field.
+         * This function is implemented in
+         * <code>source/simulator/helper_functions.cc</code>.
+         */
+        FEValuesExtractors::Scalar scalar_extractor(const Introspection<dim> &introspection) const;
       };
 
 
