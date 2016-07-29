@@ -159,8 +159,8 @@ namespace aspect
                                   "For full adiabatic heating, "
                                   "this has to be used in combination with the heating model "
                                   "'adiabatic heating' to also include adiabatic heating for "
-                                  "the solid part, and the full heating term is then"
+                                  "the solid part, and the full heating term is then "
                                   "$\\alpha T ((1-\\phi) \\mathbf u_s \\cdot \\nabla p) "
-                                  "+ \\alpha T (\\phi \\mathbf u_f \\cdot \nabla p)$.")
+                                  "+ \\alpha T (\\phi \\mathbf u_f \\cdot \\nabla p)$.")
   }
 }
