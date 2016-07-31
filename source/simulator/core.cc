@@ -974,6 +974,7 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
+    coupling.fill (DoFTools::none);
 
     // determine which blocks should be fillable in the matrix.
     // note:
@@ -1047,6 +1048,8 @@ namespace aspect
       {
         Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
                                                    introspection.n_components);
+        face_coupling.fill (DoFTools::none);
+
         const typename Introspection<dim>::ComponentIndices &x
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization)
@@ -1124,6 +1127,7 @@ namespace aspect
 
     Table<2,DoFTools::Coupling> coupling (introspection.n_components,
                                           introspection.n_components);
+    coupling.fill (DoFTools::none);
 
     const typename Introspection<dim>::ComponentIndices &x
       = introspection.component_indices;
@@ -1160,6 +1164,8 @@ namespace aspect
       {
         Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
                                                    introspection.n_components);
+        face_coupling.fill (DoFTools::none);
+
         const typename Introspection<dim>::ComponentIndices &x
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization)
