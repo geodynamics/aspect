@@ -689,7 +689,7 @@ namespace aspect
                                    "permeability $k$, which depend on the porosity; and the solid and melt "
                                    "densities, which depend on temperature and pressure:\n "
                                    "$\\eta(\\phi,T) = \\eta_0 e^{\\alpha(\\phi-\\phi_0)} e^{-\\beta(T-T_0)/T_0}$,\n"
-                                   "$\\xi(\\phi,T) = \\xi_0 \frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$,\n"
+                                   "$\\xi(\\phi,T) = \\xi_0 \\frac{\\phi_0}{\\phi} e^{-\\beta(T-T_0)/T_0}$,\n"
                                    "$k=k_0 \\phi^n (1-\\phi)^m$,\n"
                                    "$\\rho=\\rho_0 (1 - \\alpha (T - T_\\text{adi})) e^{\\kappa p}$."
                                    "\n\n"
