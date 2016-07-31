@@ -1057,6 +1057,16 @@ namespace aspect
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
           }
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+        DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                              sp,
+                                              constraints, false,
+                                              coupling,
+                                              face_coupling,
+                                              Utilities::MPI::
+                                              this_mpi_process(mpi_communicator));
+#else
         if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
           {
             DoFTools::make_sparsity_pattern (dof_handler,
@@ -1070,13 +1080,12 @@ namespace aspect
                                                   face_coupling);
           }
         else
-
           DoFTools::make_flux_sparsity_pattern (dof_handler,
                                                 sp,
                                                 constraints, false,
                                                 Utilities::MPI::
                                                 this_mpi_process(mpi_communicator));
-
+#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
@@ -1161,6 +1170,16 @@ namespace aspect
             for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
               face_coupling[x.compositional_fields[c]][x.compositional_fields[c]] = DoFTools::always;
           }
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+        DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                              sp,
+                                              constraints, false,
+                                              coupling,
+                                              face_coupling,
+                                              Utilities::MPI::
+                                              this_mpi_process(mpi_communicator));
+#else
         if (Utilities::MPI::n_mpi_processes(mpi_communicator) == 1)
           {
             DoFTools::make_sparsity_pattern (dof_handler,
@@ -1179,7 +1198,7 @@ namespace aspect
                                                 constraints, false,
                                                 Utilities::MPI::
                                                 this_mpi_process(mpi_communicator));
-
+#endif
       }
     else
       DoFTools::make_sparsity_pattern (dof_handler,
@@ -1187,6 +1206,7 @@ namespace aspect
                                        constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
+
 #ifdef ASPECT_USE_PETSC
     SparsityTools::distribute_sparsity_pattern(sp,
                                                dof_handler.locally_owned_dofs_per_processor(),
