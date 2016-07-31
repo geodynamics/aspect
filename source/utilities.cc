@@ -210,6 +210,62 @@ namespace aspect
     }
 
     template <int dim>
+    bool
+    polygon_contains_point(const std::vector<Point<2> > &point_list,
+                           const dealii::Point<2> &point)
+    {
+      /**
+       * This code has been based on http://geomalgorithms.com/a03-_inclusion.html,
+       * and therefore requires the following copyright notice:
+       *
+       * Copyright 2000 softSurfer, 2012 Dan Sunday
+       * This code may be freely used and modified for any purpose
+       * providing that this copyright notice is included with it.
+       * SoftSurfer makes no warranty for this code, and cannot be held
+       * liable for any real or imagined damage resulting from its use.
+       * Users of this code must verify correctness for their application.
+       *
+       * The main functional difference between the original code and this
+       * code is that all the boundaries are condidered to be inside the
+       * polygon.
+       */
+      int pointNo = point_list.size();
+      int    wn = 0;    // the  winding number counter
+      int   j=pointNo-1;
+
+
+      // loop through all edges of the polygon
+      for (int i=0; i<pointNo; i++)
+        {
+          // edge from V[i] to  V[i+1]
+          if (point_list[j][1] <= point[1])
+            {
+              // start y <= P.y
+              if (point_list[i][1]  >= point[1])      // an upward crossing
+                if (( (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                      - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]) ) >= 0)
+                  {
+                    // P left of  edge
+                    ++wn;            // have  a valid up intersect
+                  }
+            }
+          else
+            {
+              // start y > P.y (no test needed)
+              if (point_list[i][1]  <= point[1])     // a downward crossing
+                if (( (point_list[i][0] - point_list[j][0]) * (point[1] - point_list[j][1])
+                      - (point[0] -  point_list[j][0]) * (point_list[i][1] - point_list[j][1]) ) <= 0)
+                  {
+                    // P right of  edge
+                    --wn;            // have  a valid down intersect
+                  }
+            }
+          j=i;
+        }
+      return (wn != 0);
+    }
+
+    template <int dim>
     std_cxx11::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
@@ -1431,8 +1487,13 @@ namespace aspect
     template std_cxx11::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
 
+
     template std_cxx11::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
     template std_cxx11::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
+
+    template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+    template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
+
 
     template std_cxx11::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
     template std_cxx11::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);

@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: There is now an initial topography plugin which reads 
+ * from the prm file polygon definitions and set the initial topography 
+ * to be constant within those polygons.
+ * <br>
+ * (Menno Fraters, 2016/07/26)
+ * 
  * <li> Changed: Particle initialization no longer routinely computes
  * the solution at the particle positions, since it is usually not needed
  * and complicates the initialization process. Instead it evaluates the 
