@@ -568,16 +568,29 @@ namespace aspect
                          "in the Stokes system. The polynomial degree for the pressure "
                          "variable will then be one less in order to make the velocity/pressure "
                          "pair conform with the usual LBB (Babuska-Brezzi) condition. In "
-                         "other words, we are using a Taylor-Hood element for the Stoeks "
+                         "other words, we are using a Taylor-Hood element for the Stokes "
                          "equations and this parameter indicates the polynomial degree of it. "
+                         "As an example, a value of 2 for this parameter will yield the "
+                         "element $Q_2^d \times Q_1$ for the $d$ velocity components and the "
+                         "pressure, respectively (unless the `Use locally conservative "
+                         "discretization' parameter is set, which modifies the pressure "
+                         "element). "
                          "Units: None.");
       prm.declare_entry ("Temperature polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the temperature variable. "
+                         "As an example, a value of 2 for this parameter will yield "
+                         "either the element $Q_2$ or $DGQ_2$ for the temperature "
+                         "field, depending on whether we use a continuous or "
+                         "discontinuous field. "
                          "Units: None.");
       prm.declare_entry ("Composition polynomial degree", "2",
                          Patterns::Integer (1),
                          "The polynomial degree to use for the composition variable(s). "
+                         "As an example, a value of 2 for this parameter will yield "
+                         "either the element $Q_2$ or $DGQ_2$ for the compositional "
+                         "field(s), depending on whether we use continuous or "
+                         "discontinuous field(s). "
                          "Units: None.");
       prm.declare_entry ("Use locally conservative discretization", "false",
                          Patterns::Bool (),
