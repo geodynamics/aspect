@@ -1256,11 +1256,12 @@ namespace aspect
     // large
     {
       std::locale s = pcout.get_stream().getloc();
-      // Creating std::locale with an empty string causes problems
-      // on some platforms, so catch the exception and ignore
+      // Creating std::locale with an empty string previously caused problems
+      // on some platforms, so the functionality to catch the exception and ignore
+      // is kept here, even though explicitly setting a facet should always work.
       try
         {
-          pcout.get_stream().imbue(std::locale(""));
+          pcout.get_stream().imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
         }
       catch (std::runtime_error e)
         {

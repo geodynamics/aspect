@@ -22,6 +22,7 @@
 #include <aspect/postprocess/matrix_statistics.h>
 
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -45,12 +46,13 @@ namespace
            << " MB." << std::endl;
 
     // output number of nonzero elements in matrix. Do so with 1000s separator
-    // since they are frequently large; this is done by using the empty
-    // string locale, but creating std::locale with an empty string causes problems
-    // on some platforms, so catch the exception and ignore
+    // since they are frequently large; this was previously done by using the empty
+    // string locale, but creating std::locale with an empty string caused problems
+    // on some platforms, so the functionaltity yo catch the exception and ignore
+    // is kept here, even though explicitly setting a facet should always work.
     try
       {
-        output.imbue(std::locale(""));
+        output.imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
       }
     catch (std::runtime_error e)
       {

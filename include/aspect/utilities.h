@@ -192,6 +192,21 @@ namespace aspect
                                                       double phi );   //longitude (radians)
 
     /**
+     * A struct to enable numerical output with a comma as thousands separator
+     */
+    struct ThousandSep : std::numpunct<char>
+    {
+      char do_thousands_sep() const
+      {
+        return ',';
+      }
+      std::string do_grouping() const
+      {
+        return "\3";  // groups of 3 digits
+      }
+    };
+
+    /**
      * Checks whether a file named filename exists.
      *
      * @param filename File to check existence
