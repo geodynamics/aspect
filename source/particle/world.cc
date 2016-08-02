@@ -68,6 +68,13 @@ namespace aspect
     }
 
     template <int dim>
+    const Interpolator::Interface<dim> &
+    World<dim>::get_interpolator() const
+    {
+      return *interpolator;
+    }
+
+    template <int dim>
     std::multimap<types::LevelInd, Particle<dim> > &
     World<dim>::get_particles()
     {

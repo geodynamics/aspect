@@ -101,7 +101,7 @@ namespace aspect
             const std::string pattern_of_names
               = std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
 
-            prm.declare_entry ("Interpolation scheme", "first particle",
+            prm.declare_entry ("Interpolation scheme", "cell average",
                                Patterns::Selection (pattern_of_names),
                                "Select one of the following models:\n\n"
                                +
