@@ -6,7 +6,16 @@
  *
  * <ol>
  *
- * <li> New: There is now an initial topography plugin which reads 
+ * <li> New: It is now possible to create compositional fields that are
+ * not advected by a field method, but interpolated from particle properties.
+ * This simplifies the process of using the particles as 'active' particles
+ * that carry information that influences the solution. E.g. the material
+ * model can access the compositional field that is interpolated from particle
+ * properties and use this as 'composition' information.
+ * <br>
+ * (Rene Gassmoeller, 2016/08/02)
+ *
+ * <li> New: There is now an initial topography plugin which reads
  * from the prm file polygon definitions and set the initial topography 
  * to be constant within those polygons.
  * <br>
