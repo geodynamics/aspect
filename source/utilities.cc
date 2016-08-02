@@ -965,7 +965,8 @@ namespace aspect
           coordinate_values[i].push_back(temp_coord);
 
           // The grid spacing
-          double first_grid_spacing = 0, grid_spacing = 0;
+          double first_grid_spacing;
+          double grid_spacing;
 
           // Loop over the rest of the coordinate points
           for (unsigned int n = 1; n < table_points[i]; n++)
@@ -983,8 +984,9 @@ namespace aspect
               else
                 {
                   grid_spacing = new_temp_coord - temp_coord;
-                  if (std::abs(grid_spacing - first_grid_spacing) >
-                      std::numeric_limits<double>::epsilon()*std::abs(grid_spacing+first_grid_spacing)*2)
+                  // Compare current grid spacing with first grid spacing,
+                  // taking into account roundoff of the read-in coordinates
+                  if (grid_spacing / first_grid_spacing < 0.995 || grid_spacing / first_grid_spacing > 1.005)
                     equidistant_grid = false;
                 }
 
@@ -1009,9 +1011,12 @@ namespace aspect
                                                                        table_intervals,
                                                                        data_tables[dim+i]);
           else
-            // TODO tell user that we found a grid that is not equidistant?
-            data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
-                                                                             data_tables[dim+i]);
+            {
+              if (Utilities::MPI::this_mpi_process(comm) == 0)
+                std::cout << "   Ascii data file coordinates are not equidistant. " << std::endl << std::endl;
+              data[i] = new Functions::InterpolatedTensorProductGridData<dim> (coordinate_values,
+                                                                               data_tables[dim+i]);
+            }
         }
     }
 
