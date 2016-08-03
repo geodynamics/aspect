@@ -196,14 +196,16 @@ namespace aspect
      */
     struct ThousandSep : std::numpunct<char>
     {
-      char do_thousands_sep() const
-      {
-        return ',';
-      }
-      std::string do_grouping() const
-      {
-        return "\3";  // groups of 3 digits
-      }
+      protected:
+        virtual char do_thousands_sep() const
+        {
+          return ',';
+        }
+        virtual std::string do_grouping() const
+        {
+          return "\003";  // groups of 3 digits (this string is in octal format)
+        }
+
     };
 
     /**
