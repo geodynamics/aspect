@@ -356,18 +356,11 @@ namespace aspect
     }
 
     /**
-     * Add standard call for replacing $ASPECT_SOURCE_DIR
+     * Replace the variable $ASPECT_SOURCE_DIR in @p location by the current
+     * source directory of ASPECT and return the resulting string.
      */
-    inline
     std::string
-    expand_ASPECT_SOURCE_DIR (std::string location)
-    {
-      return Utilities::replace_in_string(location,
-                                          "$ASPECT_SOURCE_DIR",
-                                          ASPECT_SOURCE_DIR);
-    }
-
-
+    expand_ASPECT_SOURCE_DIR (const std::string &location);
 
 
     /**

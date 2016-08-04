@@ -46,19 +46,21 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
       APPEND PROPERTY COMPILE_DEFINITIONS ASPECT_USE_PETSC="1")
   ENDIF()
 
+  # export ASPECT_SOURCE_DIR as compile definition
+  TARGET_COMPILE_DEFINITIONS( ${_target} PRIVATE ASPECT_SOURCE_DIR="@CMAKE_SOURCE_DIR@")
 
-# workarounds for MAC OS
-IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # avoid linker errors about missing functions inside ASPECT:
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+  # workarounds for MAC OS
+  IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # avoid linker errors about missing functions inside ASPECT:
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
 
-  # make shared libraries end on .so not .dylib
-  SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
-ENDIF()
+    # make shared libraries end on .so not .dylib
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
+  ENDIF()
 
 
-# automatically create a symbolic link to aspect in the current directory:
-ADD_CUSTOM_COMMAND(
+  # automatically create a symbolic link to aspect in the current directory:
+  ADD_CUSTOM_COMMAND(
     TARGET ${_target} POST_BUILD
     COMMAND ln -sf ${Aspect_DIR}/aspect .)
 
