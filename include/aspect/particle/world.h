@@ -168,24 +168,21 @@ namespace aspect
 
         /**
          * Callback function that is called from Simulator before every
-         * refinement. Allows registering store_tracers() in the triangulation.
+         * refinement and when writing checkpoints.
+         * Allows registering store_tracers() in the triangulation.
          */
         void
-        register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+        register_store_callback_function(const bool serialization,
+                                         typename parallel::distributed::Triangulation<dim> &triangulation);
 
         /**
          * Callback function that is called from Simulator after every
-         * refinement. Allows registering load_tracers() in the triangulation.
+         * refinement and after resuming from a checkpoint.
+         * Allows registering load_tracers() in the triangulation.
          */
         void
-        register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
-
-        /**
-         * Callback function that is called from Simulator after resuming from
-         * a checkpoint. Allows registering load_tracers() in the triangulation.
-         */
-        void
-        register_serialization_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+        register_load_callback_function(const bool serialization,
+                                        typename parallel::distributed::Triangulation<dim> &triangulation);
 
         /**
          * Called by listener functions from Triangulation for every cell

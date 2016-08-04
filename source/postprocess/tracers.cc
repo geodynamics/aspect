@@ -161,43 +161,9 @@ namespace aspect
       aspect::oarchive oa (os);
 
       world.save(os);
-
-      const unsigned int mpi_tag = 124;
-
-      // on processor 0, collect all of the data the individual processors send
-      // and concatenate them as serialized strings into the archive
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          // loop through all of the other processors and collect
-          // data, then write it in the archive
-          // TODO: this assumes that the number of processes does not change
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              // get the data length and data
-              MPI_Status status;
-              MPI_Probe(p, mpi_tag, this->get_mpi_communicator(), &status);
-
-              int data_length;
-              MPI_Get_count(&status, MPI_CHAR, &data_length);
-
-              std::string tmp(data_length,'\0');
-              MPI_Recv (&tmp[0], data_length, MPI_CHAR, p, mpi_tag,
-                        this->get_mpi_communicator(), &status);
-
-              oa << tmp;
-            }
-
-          oa << (*this);
-        }
-      else
-        // on other processors, send the serialized data to processor zero.
-        {
-          MPI_Send (&os.str()[0], os.str().size(), MPI_CHAR, 0, mpi_tag,
-                    this->get_mpi_communicator());
-        }
+      oa << (*this);
 
       status_strings["Tracers"] = os.str();
-
     }
 
 
@@ -211,31 +177,8 @@ namespace aspect
           std::istringstream is (status_strings.find("Tracers")->second);
           aspect::iarchive ia (is);
 
-          // Load the particle world of the first process. This will be
-          // overwritten on all processes but the first one later on, but every
-          // process needs to load the whole archive to correctly deserialize
-          // the data
+          // Load the particle world
           world.load(is);
-
-          // Then loop through all of the other processors, but save only
-          // the data corresponding to this process. The tracers might not
-          // be in the domain of this process anymore due to a freshly build
-          // mesh, but this does not matter, because they will simply be send
-          // around until every tracer has found its process in the usual way
-          // after a mesh change.
-          // TODO: this assumes that the number of processes does not change
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              std::string tmp;
-              ia >> tmp;
-
-              if (p == Utilities::MPI::this_mpi_process(this->get_mpi_communicator()))
-                {
-                  std::istringstream ws (tmp);
-                  aspect::iarchive wa (ws);
-                  world.load(ws);
-                }
-            }
 
           ia >> (*this);
         }
