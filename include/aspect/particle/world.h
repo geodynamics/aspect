@@ -122,11 +122,14 @@ namespace aspect
         get_particles() const;
 
         /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
+         * Calculates and stores the number of particles in the cell that
+         * contains the most tracers in the global model. This variable is a
+         * state variable, because it is needed to serialize and deserialize
+         * the particle data correctly in parallel (it determines the size of
+         * the data chunks per cell that are stored and read).
          */
-        unsigned int
-        get_global_max_tracers_per_cell() const;
+        void
+        update_global_max_particles_per_cell();
 
         /**
          * Advance particles by the old timestep using the current
@@ -176,6 +179,13 @@ namespace aspect
          */
         void
         register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+
+        /**
+         * Callback function that is called from Simulator after resuming from
+         * a checkpoint. Allows registering load_tracers() in the triangulation.
+         */
+        void
+        register_serialization_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
 
         /**
          * Called by listener functions from Triangulation for every cell
@@ -289,6 +299,13 @@ namespace aspect
          * calculated by update_n_global_particles().
          */
         types::particle_index global_number_of_particles;
+
+        /**
+         * The maximum number of particles per cell in the global domain. This
+         * variable is important to store and load particle data during
+         * repartition and serialization of the solution.
+         */
+        unsigned int global_max_particles_per_cell;
 
         /**
          * This variable stores the next free particle index that is available
@@ -460,7 +477,7 @@ namespace aspect
     template <class Archive>
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &particles
+      ar &global_max_particles_per_cell
       &next_free_particle_index
       ;
     }
