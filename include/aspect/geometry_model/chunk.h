@@ -237,6 +237,8 @@ namespace aspect
         class ChunkGeometry : public ChartManifold<dim,dim>
         {
           public:
+            ChunkGeometry();
+
             virtual
             Point<dim>
             pull_back(const Point<dim> &space_point) const;
@@ -244,6 +246,14 @@ namespace aspect
             virtual
             Point<dim>
             push_forward(const Point<dim> &chart_point) const;
+
+            virtual
+            void
+            set_min_longitude(const double p1_lon);
+
+          private:
+            // The minimum longitude of the domain
+            double point1_lon;
         };
 
         Point<dim> pull_back(const Point<dim>) const;

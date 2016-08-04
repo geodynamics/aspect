@@ -34,6 +34,12 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
+    Chunk<dim>::ChunkGeometry::ChunkGeometry()
+      :
+      point1_lon(0.0)
+    {}
+
+    template <int dim>
     Point<dim>
     Chunk<dim>::ChunkGeometry::
     push_forward(const Point<dim> &input_vertex) const
@@ -72,6 +78,17 @@ namespace aspect
           {
             output_vertex[1] = std::atan2(v[1], v[0]);
             output_vertex[0] = v.norm();
+            // We must garantee that all returned points have a longitude coordinate
+            // value that is larger than (or equal to) the longitude of point1.
+            // For example:
+            // If the domain runs from longitude -10 to 200 degrees,
+            // atan2 will also return a negative value (-180 to -160) for the points
+            // with longitude 180 to 200. These values must be corrected
+            // so that they are larger than the minimum longitude value of -10,
+            // by adding 360 degrees.
+            if (output_vertex[1] < 0.0)
+              if (output_vertex[1] < point1_lon - std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                output_vertex[1] += 2.0 * numbers::PI;
             break;
           }
           case 3:
@@ -79,6 +96,10 @@ namespace aspect
             const double radius=v.norm();
             output_vertex[0] = radius;
             output_vertex[1] = std::atan2(v[1], v[0]);
+            // See 2D case
+            if (output_vertex[1] < 0.0)
+              if (output_vertex[1] < point1_lon - std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
+                output_vertex[1] += 2.0 * numbers::PI;
             output_vertex[2] = std::asin(v[2]/radius);
             break;
           }
@@ -87,6 +108,15 @@ namespace aspect
         }
       return output_vertex;
     }
+
+    template <int dim>
+    void
+    Chunk<dim>::ChunkGeometry::
+    set_min_longitude(const double p1_lon)
+    {
+      point1_lon = p1_lon;
+    }
+
 
     template <int dim>
     void
@@ -398,6 +428,9 @@ namespace aspect
               AssertThrow (point2[1] - point1[1] < 2.*numbers::PI,
                            ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
+
+          // Inform the manifold about the minimum longitude
+          manifold.set_min_longitude(point1[1]);
 
           if (dim == 3)
             {
