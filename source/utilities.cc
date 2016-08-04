@@ -842,6 +842,14 @@ namespace aspect
     } // namespace tk
 
 
+    std::string
+    expand_ASPECT_SOURCE_DIR (const std::string &location)
+    {
+      return Utilities::replace_in_string(location,
+                                          "$ASPECT_SOURCE_DIR",
+                                          ASPECT_SOURCE_DIR);
+    }
+
 
     template <int dim>
     AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
