@@ -10,6 +10,8 @@
 // and that produces some output
 int f()
 {
+  std::cout << aspect::Utilities::expand_ASPECT_SOURCE_DIR("srcdir='$ASPECT_SOURCE_DIR'") << std::endl;
+  
   std::cout << typeid(dealii::Triangulation<2>).name() << " "
             << typeid(aspect::Simulator<2>).name() << std::endl;
   return 42;
