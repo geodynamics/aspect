@@ -1,5 +1,6 @@
 // make sure we can include deal.II and aspect files
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 #include <deal.II/grid/tria.h>
 
 #include <iostream>
