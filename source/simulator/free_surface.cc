@@ -641,7 +641,13 @@ namespace aspect
     mesh_vertex_constraints.close();
 
     //Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-    sim.mapping.reset( new MappingQ1Eulerian<dim, LinearAlgebra::Vector>( mesh_displacements, free_surface_dof_handler ) );
+#if DEAL_II_VERSION_GTE(8,5,0)
+    sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (free_surface_dof_handler,
+                                                                          mesh_displacements));
+#else
+    sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_displacements,
+                                                                          free_surface_dof_handler));
+#endif
   }
 
   template <int dim>
