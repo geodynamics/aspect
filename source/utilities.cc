@@ -986,7 +986,7 @@ namespace aspect
                   grid_spacing = new_temp_coord - temp_coord;
                   // Compare current grid spacing with first grid spacing,
                   // taking into account roundoff of the read-in coordinates
-                  if (grid_spacing / first_grid_spacing < 0.995 || grid_spacing / first_grid_spacing > 1.005)
+                  if (std::abs(grid_spacing - first_grid_spacing) > 0.005*(grid_spacing+first_grid_spacing))
                     equidistant_grid = false;
                 }
 
