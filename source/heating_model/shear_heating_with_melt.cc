@@ -77,17 +77,20 @@ namespace aspect
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
-          heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
-                                                          * pow(trace(material_model_inputs.strain_rate[q]),2)
-                                                          +
-                                                          (melt_outputs->permeabilities[q] > 0
-                                                           ?
-                                                           melt_outputs->fluid_viscosities[q] * porosity * porosity
-                                                           / melt_outputs->permeabilities[q]
-                                                           * (melt_velocity[q] - material_model_inputs.velocity[q])
-                                                           * (melt_velocity[q] - material_model_inputs.velocity[q])
-                                                           :
-                                                           0.0);
+          if (porosity >= this->get_melt_handler().melt_transport_threshold)
+            heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
+                                                            * pow(trace(material_model_inputs.strain_rate[q]),2)
+                                                            +
+                                                            (melt_outputs->permeabilities[q] > 0
+                                                             ?
+                                                             melt_outputs->fluid_viscosities[q] * porosity * porosity
+                                                             / melt_outputs->permeabilities[q]
+                                                             * (melt_velocity[q] - material_model_inputs.velocity[q])
+                                                             * (melt_velocity[q] - material_model_inputs.velocity[q])
+                                                             :
+                                                             0.0);
+          else
+            heating_model_outputs.heating_source_terms[q] = 0.0;
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
