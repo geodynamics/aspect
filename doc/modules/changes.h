@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> Changed: It is now possible to read in ascii data files of
+ * which the coordinates are not equally spaced.
+ * <br>
+ * (Anne Glerum, 2016/08/05)
+ *
  * <li> New: It is now possible to create compositional fields that are
  * not advected by a field method, but interpolated from particle properties.
  * This simplifies the process of using the particles as 'active' particles
