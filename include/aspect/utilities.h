@@ -411,16 +411,23 @@ namespace aspect
 
         /**
          * Interpolation functions to access the data.
+         * Either InterpolatedUniformGridData or InterpolatedTensorProductGridData;
+         * the type is determined from the grid specified in the data file.
          */
-        std::vector<Functions::InterpolatedUniformGridData<dim> *> data;
+        std::vector<Function<dim> *> data;
 
         /**
-         * Min and Max coordinates in data file
+         * The coordinate values in each direction as specified in the data file.
+         */
+        std_cxx11::array<std::vector<double>,dim> coordinate_values;
+
+        /**
+         * The min and max of the coordinates in the data file.
          */
         std_cxx11::array<std::pair<double,double>,dim> grid_extent;
 
         /**
-         * Number of points in the data grid.
+         * Number of points in the data grid as specified in the data file.
          */
         TableIndices<dim> table_points;
 
