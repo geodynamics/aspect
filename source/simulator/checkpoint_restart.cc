@@ -304,8 +304,7 @@ namespace aspect
                                  "option to support checkpoint/restart, but deal.II "
                                  "did not detect its presence when you called 'cmake'."));
 #endif
-        signals.pre_refinement_store_user_data(triangulation);
-        signals.post_refinement_load_user_data(triangulation);
+        signals.post_serialization_load_user_data(triangulation);
       }
     catch (std::exception &e)
       {

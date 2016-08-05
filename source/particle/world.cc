@@ -211,9 +211,9 @@ namespace aspect
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
                                                      (property_manager->get_particle_size() * max_particles_per_cell) *
                                                      (serialization ?
-                                                         1
-                                                     :
-                                                         std::pow(2,dim));
+                                                      1
+                                                      :
+                                                      std::pow(2,dim));
 
           data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
         }
