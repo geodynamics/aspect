@@ -25,69 +25,18 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/tria_boundary_lib.h>
-#include <deal.II/grid/manifold_lib.h>
+#include <deal.II/base/std_cxx11/bind.h>
+#include <iostream>
+#include <fstream>
+
 
 
 namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    push_forward(const Point<dim> &input_vertex) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
-          {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[1]); // x=rcosphi
-            output_vertex[1] = input_vertex[0]*std::sin(input_vertex[1]); // z=rsinphi
-            break;
-          }
-          case 3:
-          {
-            output_vertex[0] = input_vertex[0]*std::cos(input_vertex[2])*std::cos(input_vertex[1]); // x=rsinthetacosphi
-            output_vertex[1] = input_vertex[0]*std::cos(input_vertex[2])*std::sin(input_vertex[1]); // y=rsinthetasinphi
-            output_vertex[2] = input_vertex[0]*std::sin(input_vertex[2]); // z=rcostheta
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
-
-    template <int dim>
-    Point<dim>
-    Chunk<dim>::ChunkGeometry::
-    pull_back(const Point<dim> &v) const
-    {
-      Point<dim> output_vertex;
-      switch (dim)
-        {
-          case 2:
-          {
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            output_vertex[0] = v.norm();
-            break;
-          }
-          case 3:
-          {
-            const double radius=v.norm();
-            output_vertex[0] = radius;
-            output_vertex[1] = std::atan2(v[1], v[0]);
-            output_vertex[2] = std::asin(v[2]/radius);
-            break;
-          }
-          default:
-            Assert (false, ExcNotImplemented ());
-        }
-      return output_vertex;
-    }
-
     template <int dim>
     void
     Chunk<dim>::
@@ -100,26 +49,35 @@ namespace aspect
                                                  point2,
                                                  true);
 
-
       // Transform box into spherical chunk
-      GridTools::transform (std_cxx11::bind(&ChunkGeometry::push_forward,
+      GridTools::transform (std_cxx11::bind(&SphericalManifold<dim>::push_forward,
                                             std_cxx11::cref(manifold),
                                             std_cxx11::_1),
                             coarse_grid);
 
-      // Deal with a curved mesh
-      // Attach the real manifold to slot 15. we won't use it
-      // during regular operation, but we set manifold_ids for all
-      // cells, faces and edges immediately before refinement and
-      // clear it again afterwards
-      coarse_grid.set_manifold (15, manifold);
 
-      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&set_manifold_ids,
+
+      // First set manifold ids for all cells and faces (in the interior and at the boundary),
+      set_manifold_ids(coarse_grid);
+
+      // then reset the boundary ids, because the manifold has no normals.
+      // Instead, attach boundary objects
+      clear_manifold_ids(coarse_grid);
+
+//            coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
+//                                                                         std_cxx11::ref(coarse_grid)));
+
+      coarse_grid.signals.pre_refinement.connect (std_cxx11::bind (&Chunk<dim>::set_manifold_ids,
+                                                                   this,
                                                                    std_cxx11::ref(coarse_grid)));
-      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&clear_manifold_ids,
+
+      coarse_grid.signals.post_refinement.connect (std_cxx11::bind (&Chunk<dim>::clear_manifold_ids,
+                                                                    this,
                                                                     std_cxx11::ref(coarse_grid)));
 
     }
+
+
 
     template <int dim>
     std::set<types::boundary_id>
@@ -160,10 +118,10 @@ namespace aspect
             static const std::pair<std::string,types::boundary_id> mapping[]
               = { std::pair<std::string,types::boundary_id>("inner",  0),
                   std::pair<std::string,types::boundary_id>("outer",  1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3),
-                  std::pair<std::string,types::boundary_id>("south",  4),
-                  std::pair<std::string,types::boundary_id>("north",  5)
+                  std::pair<std::string,types::boundary_id>("west",   4),
+                  std::pair<std::string,types::boundary_id>("east",   5),
+                  std::pair<std::string,types::boundary_id>("south",  3),
+                  std::pair<std::string,types::boundary_id>("north",  2)
                 };
 
             return std::map<std::string,types::boundary_id> (&mapping[0],
@@ -174,6 +132,7 @@ namespace aspect
       Assert (false, ExcNotImplemented());
       return std::map<std::string,types::boundary_id>();
     }
+
 
 
     template <int dim>
@@ -190,12 +149,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Chunk<dim>::depth(const Point<dim> &position) const
     {
       return std::min (std::max (point2[0]-position.norm(), 0.), maximal_depth());
     }
+
 
 
     template <int dim>
@@ -216,37 +177,55 @@ namespace aspect
       return manifold.push_forward(p);
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::west_longitude () const
     {
-      return point1[1];
+      if (dim == 2)
+        return point1[1];
+      else
+        return point1[2];
     }
+
 
 
     template <int dim>
     double
     Chunk<dim>::east_longitude () const
     {
-      return point2[1];
+      if (dim == 2)
+        return point2[1];
+      else
+        return point2[2];
     }
+
+
 
     template <int dim>
     double
     Chunk<dim>::longitude_range () const
     {
-      return point2[1] - point1[1];
+      if (dim == 2)
+        return point2[1] - point1[1];
+      else
+        return point2[2] - point1[2];
+
     }
+
+
 
     template <int dim>
     double
     Chunk<dim>::south_latitude () const
     {
       if (dim == 3)
-        return point1[2];
+        return point1[1];
       else
         return 0;
     }
+
 
 
     template <int dim>
@@ -254,10 +233,11 @@ namespace aspect
     Chunk<dim>::north_latitude () const
     {
       if (dim==3)
-        return point2[2];
+        return point2[1];
       else
         return 0;
     }
+
 
 
     template <int dim>
@@ -265,10 +245,11 @@ namespace aspect
     Chunk<dim>::latitude_range () const
     {
       if (dim==3)
-        return point2[2] - point1[2];
+        return point2[1] - point1[1];
       else
         return 0;
     }
+
 
 
     template <int dim>
@@ -278,12 +259,16 @@ namespace aspect
       return point2[0]-point1[0];
     }
 
+
+
     template <int dim>
     double
     Chunk<dim>::inner_radius () const
     {
       return point1[0];
     }
+
+
 
     template <int dim>
     double
@@ -292,6 +277,8 @@ namespace aspect
       return point2[0];
     }
 
+
+
     template <int dim>
     bool
     Chunk<dim>::has_curved_elements() const
@@ -299,22 +286,82 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
-    void
-    Chunk<dim>::set_manifold_ids (Triangulation<dim> &triangulation)
-    {
-      for (typename Triangulation<dim>::active_cell_iterator cell =
-             triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        cell->set_all_manifold_ids (15);
-    }
+
 
     template <int dim>
     void
-    Chunk<dim>::clear_manifold_ids (Triangulation<dim> &triangulation)
+    Chunk<dim>::set_manifold_ids (Triangulation<dim> &triangulation) const
     {
+      // Use a manifold description for all cells. Use manifold_id 15 in order
+      // not to step on the boundary indicators
+          triangulation.set_manifold (15, manifold);
+
+     // triangulation.set_all_manifold_ids(15);
       for (typename Triangulation<dim>::active_cell_iterator cell =
              triangulation.begin_active(); cell != triangulation.end(); ++cell)
-        cell->set_all_manifold_ids (numbers::invalid_manifold_id);
+        cell->set_all_manifold_ids (15);
+
+      static int i=1;
+      std::cout << "***** before refinement ****" << std::endl;
+      std::ofstream o ("output-" + std::to_string (i) + ".vtk");
+      GridOut().write_vtk (triangulation, o);
+      ++i;
+    }
+
+
+
+    template <int dim>
+    void
+    Chunk<dim>::clear_manifold_ids (Triangulation<dim> &triangulation) const
+    {
+      // Remove spherical manifold from boundary faces
+      for (typename Triangulation<dim>::active_cell_iterator cell =
+             triangulation.begin_active(); cell != triangulation.end(); ++cell)
+        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          if (cell->at_boundary(f))
+            cell->face(f)->set_all_manifold_ids (numbers::invalid_manifold_id);
+
+      // On the boundary faces, set boundary object.
+      // This way we can get the normals to the boundary faces.
+
+      static const StraightBoundary<dim> boundary_straight;
+
+      // Define the center point of the greater radius end of the
+	  // north and south boundary cones
+      Point<dim> center;
+      Point<dim> north, south;
+      north[dim-1] = point2[0] * std::cos(point2[1]);
+      south[dim-1] = point2[0] * std::cos(point1[1]);
+
+
+      const double north_radius = std::sqrt(point2[0]*point2[0]-north[0]*north[0]);
+      const double south_radius = std::sqrt(point2[0]*point2[0]-south[0]*south[0]);
+      std::cout << "north " << north_radius << std::endl;
+      std::cout << "south " << south_radius << std::endl;
+      static const ConeBoundary<dim> boundary_cone_north(0,north_radius,center,north);
+      static const ConeBoundary<dim> boundary_cone_south(0,south_radius,center,south);
+
+      if (dim == 2)
+      {
+          // attach boundary objects to the straight east and west boundaries
+    	  triangulation.set_boundary(2, boundary_straight);
+    	  triangulation.set_boundary(3, boundary_straight);
+      }
+    	  else
+        {
+          // attach boundary objects to the straight east and west boundaries
+          triangulation.set_boundary (4, boundary_straight);
+          triangulation.set_boundary (5, boundary_straight);
+
+          // attach boundary objects to the conical north and south boundaries
+          triangulation.set_boundary (2, boundary_cone_north);
+          triangulation.set_boundary (3, boundary_cone_south);
+        }
+
+      // attach boundary objects to the curved boundaries
+      static const HyperShellBoundary<dim> boundary_shell;
+      triangulation.set_boundary (0, boundary_shell);
+      triangulation.set_boundary (1, boundary_shell);
     }
 
     template <int dim>
@@ -341,11 +388,11 @@ namespace aspect
                              "Maximum longitude of the chunk. Units: degrees.");
 
           prm.declare_entry ("Chunk minimum latitude", "0",
-                             Patterns::Double (-90, 90),
+                             Patterns::Double (-89, 89), // -90/90 degrees will crash because north/south boundary disappears
                              "Minimum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
           prm.declare_entry ("Chunk maximum latitude", "1",
-                             Patterns::Double (-90, 90),
+                             Patterns::Double (-89, 89), // -90/90 degrees will crash because north/south boundary disappears
                              "Maximum latitude of the chunk. This value is ignored "
                              "if the simulation is in 2d. Units: degrees.");
 
@@ -382,11 +429,12 @@ namespace aspect
           Assert (dim >= 2, ExcInternalError());
           Assert (dim <= 3, ExcInternalError());
 
-          if (dim >= 2)
+          point1[0] = prm.get_double ("Chunk inner radius");
+          point2[0] = prm.get_double ("Chunk outer radius");
+          repetitions[0] = prm.get_integer ("Radius repetitions");
+
+          if (dim == 2)
             {
-              point1[0] = prm.get_double ("Chunk inner radius");
-              point2[0] = prm.get_double ("Chunk outer radius");
-              repetitions[0] = prm.get_integer ("Radius repetitions");
               point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
               point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
               repetitions[1] = prm.get_integer ("Longitude repetitions");
@@ -399,13 +447,17 @@ namespace aspect
                            ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
             }
 
+          // The pull back functions require radius,latitude,longitude order in 3D
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
-              repetitions[2] = prm.get_integer ("Latitude repetitions");
+              point1[2] = prm.get_double ("Chunk minimum longitude") * degtorad;
+              point2[2] = prm.get_double ("Chunk maximum longitude") * degtorad;
+              repetitions[2] = prm.get_integer ("Longitude repetitions");
+              point1[1] = 0.5*numbers::PI - prm.get_double ("Chunk minimum latitude") * degtorad;
+              point2[1] = 0.5*numbers::PI - prm.get_double ("Chunk maximum latitude") * degtorad;
+              repetitions[1] = prm.get_integer ("Latitude repetitions");
 
-              AssertThrow (point1[2] < point2[2],
+              AssertThrow (point2[1] < point1[1],
                            ExcMessage ("Minimum latitude must be less than maximum latitude."));
             }
 

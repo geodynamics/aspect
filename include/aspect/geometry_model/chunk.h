@@ -24,8 +24,9 @@
 
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/grid/manifold.h>
+#include <deal.II/grid/manifold_lib.h>
 #include <deal.II/base/function_lib.h>
-#include <deal.II/grid/grid_out.h>
+#include <deal.II/grid/tria_boundary_lib.h>
 
 namespace aspect
 {
@@ -227,35 +228,19 @@ namespace aspect
         unsigned int repetitions[dim];
 
         /**
-         * ChunkGeometry is a class that implements the interface of
-         * ChartManifold. The function push_forward takes a point
-         * in the reference (lat,long,radius) domain and transforms
-         * it into real space (cartesian). The inverse function
-         * pull_back reverses this operation.
-         */
-
-        class ChunkGeometry : public ChartManifold<dim,dim>
-        {
-          public:
-            virtual
-            Point<dim>
-            pull_back(const Point<dim> &space_point) const;
-
-            virtual
-            Point<dim>
-            push_forward(const Point<dim> &chart_point) const;
-        };
-
-        Point<dim> pull_back(const Point<dim>) const;
-        Point<dim> push_forward(const Point<dim>) const;
-
-        /**
          * An object that describes the geometry.
          */
-        ChunkGeometry manifold;
+        const SphericalManifold<dim> manifold;
 
-        static void set_manifold_ids (Triangulation<dim> &triangulation);
-        static void clear_manifold_ids (Triangulation<dim> &triangulation);
+        /**
+         * Set all manifold_ids before refinement
+         */
+        void set_manifold_ids (Triangulation<dim> &triangulation) const;
+
+        /**
+         * Remove all manifold_ids after refinement
+         */
+        void clear_manifold_ids (Triangulation<dim> &triangulation) const;
 
     };
   }
