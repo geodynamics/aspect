@@ -1841,7 +1841,7 @@ though removing linear/angular momentum is more physically motivated.
 
 The user can flag the nullspace for removal by setting the \texttt{Remove nullspace} option,
 as described in Section~\ref{parameters:Model_20settings}.
-Figure \ref{fig:rigid_rotation} shows the result of removing angular momentum from a convection 
+Figure~\ref{fig:rigid_rotation} shows the result of removing angular momentum from a convection 
 model in a 2D annulus with free-slip velocity boundary conditions. 
 
 \begin{figure}[tbp]
@@ -2459,7 +2459,7 @@ The purpose of these files is as follows:
   (if anything other than \texttt{gnuplot} is desired).
 
   By default, the data is written in text format that can be easily displayed
-  by e.g. gnuplot. For an example, see Figure \ref{fig:depthaverage}. The plot
+  by e.g. gnuplot. For an example, see Figure~\ref{fig:depthaverage}. The plot
   shows how an initially linear temperature profile forms upper and lower
   boundary layers.
 
@@ -5255,7 +5255,7 @@ The above plugin can be compiled with \texttt{cmake . \&\& make} in the
 \url{cookbooks/prescribed_velocity} directory. It can be loaded in a parameter file
 as an ``Additional shared library.'' By setting parameters like those shown below,
 it is possible to produce many interesting flow fields such as the ones visualized in
-(Figure \ref{fig:prescribed-velocity}).
+(Figure~\ref{fig:prescribed-velocity}).
 \lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity/minimal.prm.out}
 
 \begin{figure}
@@ -5288,7 +5288,7 @@ To show how this can be used in practice, let us consider the simple convection 
 By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d.prm, \end{verbatim} 
 \lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.part.prm.out}
 it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
-Figure \ref{fig:smoothing}.
+Figure~\ref{fig:smoothing}.
 
 \begin{figure}
     \centering
@@ -5349,7 +5349,7 @@ properties are read in from the subsection \texttt{Simple model}.
     \label{fig:finite_strain}
 \end{figure}
 
-We will demonstrate its use at the example of a 2D Cartesian convection model (Figure \ref{fig:finite_strain}):
+We will demonstrate its use at the example of a 2D Cartesian convection model (Figure~\ref{fig:finite_strain}):
 Heating from the bottom leads to the the ascent of plumes from the bottom boundary layer, and the
 associated deformation is visible in the components of the accumulated finite strain. 
 Material moves to the sides at the top of the plume head, so that it is shortened in vertical 
@@ -5364,6 +5364,91 @@ to extend this material model in a way that material properties depend on the in
 Because the values of the compositional fields are part of what the material model gets as inputs, 
 they can easily be used for computing material model outputs such as the viscosity.  
 
+
+\subsubsection{Reading in compositional initial composition files generated with geomIO}
+\label{sec:geomio}
+\textit{This section was contributed by Juliane Dannberg}
+
+Many geophysical setups require initial conditions with several different materials and complex geometries. 
+Hence, sometimes it would be easier to generate the initial geometries of the materials as a drawing instead 
+of by writing code. The MATLAB-based library geomIO (\url{http://geomio.bitbucket.org/}) provides a convenient tool
+to convert a drawing generated with the vector graphics editor Inkscape (\url{https://inkscape.org/en/}) to a data 
+file that can be read into \aspect{}. Here, we will demonstrate how this can be done for a 2D setup for a model
+with one compositional field, but geomIO also has the capability to create 3D volumes based on a series of 2D vector 
+drawings using any number of different materials. Similarly, initial conditions defined in this way can also be used with particles 
+instead of compositional fields. 
+
+To obtain the developer version of geomIO, you can clone the bitbucket repository by executing the command
+\begin{verbatim}
+ git clone https://bitbucket.org/geomio/geomio.git
+\end{verbatim}
+or you can download geomIO \href{https://bitbucket.org/geomio/geomio/downloads}{here}. 
+You will then need to add the geomIO source folders to your MATLAB path by running the file located in
+\texttt{/path/to/geomio/installation/InstallGeomIO.m}.
+An extensive documentation for how to use geomIO can be found \href{http://geomio-doc.bitbucket.org/}{here}.
+Among other things, it explains \href{http://geomio-doc.bitbucket.org/tuto2D.html#drawing}{how to generate drawings in Inkscape}
+that can be read in by geomIO, which involves assigning new attributes to paths in Inkscape's XML editor. 
+In particular, a new property `phase' has to be added to each path, and set to a value corresponding to the 
+index of the material that should be present in this region in the initial condition of the geodynamic model.   
+
+\note{geomIO currently only supports the latest stable version of Inkscape (0.91), and other versions might not
+  work with geomIO or cause errors. Moreover, geomIO currently does not support grouping paths (paths can still 
+  be combined using \texttt{Path$\rightarrow$Union}, \texttt{Path$\rightarrow$Difference} or similar commands), 
+  and only the outermost closed contour of a path will be considered. This means that, for example, for modeling a spherical 
+  annulus, you would have to draw two circles, and assign the inner one the same phase as the background of your drawing.}
+
+We will here use a drawing of a jellyfish located in \url{cookbooks/geomio/jellyfish.svg}, where different phases 
+have already been assigned to each path (Figure~\ref{fig:jelly-picture}). 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.2\textwidth]{cookbooks/geomio/jellyfish.pdf}
+    \caption{Vector drawing of a jellyfish.}
+    \label{fig:jelly-picture}
+\end{figure}
+\note{The page of your drawing in Inkscape should already have the extents (in px) that you later want to use in your model (in m).}
+
+After geomIO is initialized in MATLAB, we \href{http://geomio-doc.bitbucket.org/tuto2D.html#assigning-phase-to-markers}
+{run geomIO as desribed in the documentation}, loading the default options and then specifying all the option we want to 
+change, such as the path to the input file, or the resolution: 
+\lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part1.m}
+You can view all of the options available by typing \texttt{opt} in MATLAB. 
+
+In the next step we create the grid that is used for the coordinates in the ascii data initial conditions file 
+and assign a phase to each grid point: 
+\lstinputlisting[language=matlab]{cookbooks/geomio/run_geomio.part2.m}
+You can plot the \texttt{Phase} variable in MATLAB to see if the drawing was read in and all phases are assigned correctly 
+(Figure~\ref{fig:jelly-plot}). 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.45\textwidth]{cookbooks/geomio/jelly.png}
+    \caption{Plot of the \texttt{Phase} variable in MATLAB.}
+    \label{fig:jelly-plot}
+\end{figure}
+Finally, we want to write output in a format that can be read in by \aspect{}'s \texttt{ascii data} compositional
+initial conditions plugin. We write the data into the file \texttt{jelly.txt}:
+\lstinputlisting[language=matlab]{cookbooks/geomio/save_file_as_txt.m}
+
+To read in the file we just created (a copy is located in \aspect{}'s data directory), 
+we set up a model with a box geometry with the same extents we specified for the drawing in px 
+and one compositional field. We choose the ascii data compositional initial conditions and specify that we 
+want to read in our jellyfish. The relevant parts of the input file are listed below:
+\lstinputlisting[language=prmfile]{cookbooks/geomio/geomIO.prm}
+
+If we look at the output in \texttt{paraview}, we can see our jellyfish, with the mesh refined at the 
+boundaries between the different phases (Figure~\ref{fig:jelly-paraview}). 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.55\textwidth]{cookbooks/geomio/jelly-paraview.pdf}
+    \caption{\aspect{} model output of the jellyfish and corresponding mesh in paraview.}
+    \label{fig:jelly-paraview}
+\end{figure}
+
+For a geophysical setup, the MATLAB code could be extended to write out the phases into several different columns 
+of the ascii data file (corresponding to different compositional fields). This initial conditions file could then be 
+used in \aspect{} with a material model such as the \texttt{multicomponent} model, assigning each phase different 
+material properties. 
+
+An animation of a model using the jellyfish as initial condition and assigning it a higher viscosity can be found here: \url{https://www.youtube.com/watch?v=YzNTubNG83Q}. 
 
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
@@ -6029,7 +6114,7 @@ reference mantle temperature in order to approximate thermal boundary layers.
 \paragraph{Visualizing 3D models.}
 
 In this cookbook we calculate the instantaneous solution to examine the flow 
-field. Figure \ref{fig:ic-1} shows some of the output for a resolution of 2 global refinement 
+field. Figure~\ref{fig:ic-1} shows some of the output for a resolution of 2 global refinement 
 steps (c and e) as used in the cookbook, as well as 4 global refinement 
 steps (other panels in this figure). The top panels show the density variation 
 that has been obtained from scaling S20RTS in the way described above.
@@ -6187,7 +6272,7 @@ In the model settings subsection the user prescribes the boundary that is suppos
 use the GPlates plugin. Although currently nothing forbids the user to use GPlates plugin for other
 boundaries than the surface, its current usage and the provided sample data only make sense
 for the surface of a spherical shell (boundary number 1 in the above provided parameter file). 
-In case you are familiar with this kind of modelling and the plugin you could however also use it to prescribe mantle
+In case you are familiar with this kind of modeling and the plugin you could however also use it to prescribe mantle
 movements \textit{below} a lithosphere model. All plugin specific options may be set in 
 section~\ref{parameters:Boundary_20velocity_20model}. Possible options include the data directory
 and file name of the velocity file/files, the time step (in model units, mostly seconds or years depending on the 
@@ -6320,7 +6405,7 @@ can be reproduced with the following parameters.
 
 \note{The viscosity profile in Figure 1 of \cite{MD04} appears to be wrong. The published
     parameters do not reproduce those viscosities; it is unclear why. The values used here
-    get very close. See Figure \ref{fig:md-1} for an approximate reproduction of the
+    get very close. See Figure~\ref{fig:md-1} for an approximate reproduction of the
     original figure.}
 
 \lstinputlisting[language=prmfile]{cookbooks/morency_doin/morency_doin.prm.out}
@@ -7290,7 +7375,7 @@ $|\mathbf{u}|$ & $0$ &  $14.177$ \\
 
 The convergence of the numerical error of this benchmark has been analysed by
 playing with the mesh refinement level in the input file, and
-results can be found in Figure \ref{errors}. The velocity shows cubic error
+results can be found in Figure~\ref{errors}. The velocity shows cubic error
 convergence, while the pressure shows quadratic convergence in the $L_1$ and
 $L_2$ norms, as one would hope for using $Q_2$ elements for the velocity and
 $Q_1$ elements for the pressure.
@@ -8058,7 +8143,7 @@ x(\phi) &= \pm (A + 0.5)
 \ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]
 \end{align*}
 and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$. 
-This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure \ref{fig:setup-solitary-wave} illustrates the model setup. 
+This is only valid in the limit of small porosity $\phi_0 \ll 1$. Figure~\ref{fig:setup-solitary-wave} illustrates the model setup. 
 
 \begin{figure}
   \begin{center}
