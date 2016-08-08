@@ -166,19 +166,19 @@ namespace aspect
                                                                      std_cxx11::ref(*this),
                                                                      false,
                                                                      std_cxx11::_1));
-      signals.pre_serialization_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
-                                                                        std_cxx11::ref(*this),
-                                                                        true,
-                                                                        std_cxx11::_1));
+      signals.pre_checkpoint_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     true,
+                                                                     std_cxx11::_1));
 
       signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
                                                                      std_cxx11::ref(*this),
                                                                      false,
                                                                      std_cxx11::_1));
-      signals.post_serialization_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
-                                                                        std_cxx11::ref(*this),
-                                                                        true,
-                                                                        std_cxx11::_1));
+      signals.post_resume_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
+                                                                 std_cxx11::ref(*this),
+                                                                 true,
+                                                                 std_cxx11::_1));
     }
 
     template <int dim>

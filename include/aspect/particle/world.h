@@ -122,16 +122,6 @@ namespace aspect
         get_particles() const;
 
         /**
-         * Calculates and stores the number of particles in the cell that
-         * contains the most tracers in the global model. This variable is a
-         * state variable, because it is needed to serialize and deserialize
-         * the particle data correctly in parallel (it determines the size of
-         * the data chunks per cell that are stored and read).
-         */
-        void
-        update_global_max_particles_per_cell();
-
-        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the tracers
          * are actually still at their old positions and the current timestep
@@ -300,7 +290,10 @@ namespace aspect
         /**
          * The maximum number of particles per cell in the global domain. This
          * variable is important to store and load particle data during
-         * repartition and serialization of the solution.
+         * repartition and serialization of the solution. Note that the
+         * variable is only updated when it is needed, e.g. before or after
+         * serialization (before/after mesh refinement, before creating a
+         * checkpoint and after resuming from a checkpoint).
          */
         unsigned int global_max_particles_per_cell;
 
@@ -364,6 +357,19 @@ namespace aspect
          */
         void
         update_n_global_particles();
+
+        /**
+         * Calculates and stores the number of particles in the cell that
+         * contains the most tracers in the global model (stored in the
+         * member variable global_max_particles_per_cell). This variable is a
+         * state variable, because it is needed to serialize and deserialize
+         * the particle data correctly in parallel (it determines the size of
+         * the data chunks per cell that are stored and read). Before accessing
+         * the variable this function has to be called, unless the state was
+         * read from another source (e.g. after resuming from a checkpoint).
+         */
+        void
+        update_global_max_particles_per_cell();
 
         /**
          * Calculates the next free particle index in the global model domain.

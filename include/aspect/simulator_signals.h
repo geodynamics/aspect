@@ -155,7 +155,7 @@ namespace aspect
     * argument. This argument will point to the triangulation used by
     * the Simulator class.
     */
-    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_serialization_store_user_data;
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_checkpoint_store_user_data;
 
     /**
     * A signal that is called after resuming from a checkpoint.
@@ -170,7 +170,7 @@ namespace aspect
     * argument. This argument will point to the triangulation used by
     * the Simulator class.
     */
-    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_serialization_load_user_data;
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_resume_load_user_data;
 
     /**
      * A signal that is called at the beginning of the program. It

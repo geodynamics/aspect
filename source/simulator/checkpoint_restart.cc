@@ -126,7 +126,7 @@ namespace aspect
           freesurface_trans->prepare_serialization(x_fs_system);
         }
 
-      signals.pre_serialization_store_user_data(triangulation);
+      signals.pre_checkpoint_store_user_data(triangulation);
 
       triangulation.save ((parameters.output_directory + "restart.mesh").c_str());
     }
@@ -304,7 +304,7 @@ namespace aspect
                                  "option to support checkpoint/restart, but deal.II "
                                  "did not detect its presence when you called 'cmake'."));
 #endif
-        signals.post_serialization_load_user_data(triangulation);
+        signals.post_resume_load_user_data(triangulation);
       }
     catch (std::exception &e)
       {
