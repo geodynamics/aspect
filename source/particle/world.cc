@@ -53,7 +53,7 @@ namespace aspect
     {
       connect_to_signals(this->get_signals());
 
-      if (particle_load_balancing == repartition)
+      if (particle_load_balancing & ParticleLoadBalancing::repartition)
         this->get_triangulation().signals.cell_weight.connect(std_cxx11::bind(&aspect::Particle::World<dim>::cell_weight,
                                                                               std_cxx11::ref(*this),
                                                                               std_cxx11::_1,
@@ -287,7 +287,8 @@ namespace aspect
     void
     World<dim>::apply_particle_per_cell_bounds()
     {
-      if ((particle_load_balancing == remove_particles) || (particle_load_balancing == remove_and_add_particles))
+      // If any load balancing technique is selected that creates/destroys particles
+      if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
         {
           // First do some preparation for particle generation in poorly
           // populated areas. For this we need to know which particle ids to
@@ -295,7 +296,7 @@ namespace aspect
           // Ensure this by communicating the number of particles that every
           // process is going to generate.
           types::particle_index local_next_particle_index = next_free_particle_index;
-          if (particle_load_balancing == remove_and_add_particles)
+          if (particle_load_balancing & ParticleLoadBalancing::add_particles)
             {
               types::particle_index particles_to_add_locally = 0;
 
@@ -350,7 +351,7 @@ namespace aspect
                 const unsigned int n_particles_in_cell = particles.count(found_cell);
 
                 // Add particles if necessary
-                if ((particle_load_balancing == remove_and_add_particles) &&
+                if ((particle_load_balancing & ParticleLoadBalancing::add_particles) &&
                     (n_particles_in_cell < min_particles_per_cell))
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
@@ -366,7 +367,8 @@ namespace aspect
                   }
 
                 // Remove particles if necessary
-                else if (n_particles_in_cell > max_particles_per_cell)
+                else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
+                         (n_particles_in_cell > max_particles_per_cell))
                   {
                     const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::iterator, typename std::multimap<types::LevelInd, Particle<dim> >::iterator>
                     particles_in_cell = particles.equal_range(found_cell);
@@ -1317,9 +1319,9 @@ namespace aspect
       {
         prm.enter_subsection("Tracers");
         {
-          prm.declare_entry ("Load balancing strategy", "none",
-                             Patterns::Selection ("none|remove particles|"
-                                                  "remove and add particles|repartition"),
+          prm.declare_entry ("Load balancing strategy", "repartition",
+                             Patterns::MultipleSelection ("none|remove particles|add particles|"
+                                                          "remove and add particles|repartition"),
                              "Strategy that is used to balance the computational"
                              "load across processors for adaptive meshes.");
           prm.declare_entry ("Minimum tracers per cell", "0",
@@ -1350,10 +1352,15 @@ namespace aspect
           prm.declare_entry ("Tracer weight", "10",
                              Patterns::Integer (0),
                              "Weight that is associated with the computational load of "
-                             "a single particle. The sum of tracer weights will be added "
+                             "a single particle. The sum of particle weights will be added "
                              "to the sum of cell weights to determine the partitioning of "
-                             "the mesh. Every cell without tracers is associated with a "
-                             "weight of 1000.");
+                             "the mesh if the 'repartition' particle load balancing strategy "
+                             "is selected. The optimal weight depends on the used "
+                             "integrator and particle properties. In general for a more "
+                             "expensive integrator and more expensive properties a larger "
+                             "particle weight is recommended. Before adding the weights "
+                             "of particles, each cell already carries a weight of 1000 to "
+                             "account for the cost of field-based computations.");
         }
         prm.leave_subsection ();
       }
@@ -1399,16 +1406,34 @@ namespace aspect
 
           tracer_weight = prm.get_integer("Tracer weight");
 
-          if (prm.get ("Load balancing strategy") == "none")
-            particle_load_balancing = no_balancing;
-          else if (prm.get ("Load balancing strategy") == "remove particles")
-            particle_load_balancing = remove_particles;
-          else if (prm.get ("Load balancing strategy") == "remove and add particles")
-            particle_load_balancing = remove_and_add_particles;
-          else if (prm.get ("Load balancing strategy") == "repartition")
-            particle_load_balancing = repartition;
-          else
-            AssertThrow (false, ExcNotImplemented());
+          const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
+          particle_load_balancing = ParticleLoadBalancing::no_balancing;
+
+          for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
+            {
+              if (*strategy == "remove particles")
+                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
+              else if (*strategy == "add particles")
+                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
+              else if (*strategy == "remove and add particles")
+                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
+              else if (*strategy == "repartition")
+                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
+              else if (*strategy == "none")
+                {
+                  particle_load_balancing = ParticleLoadBalancing::no_balancing;
+                  AssertThrow(strategies.size() == 1,
+                              ExcMessage("The particle load balancing strategy 'none' is not compatible "
+                                         "with any other strategy, yet it seems another is selected as well. "
+                                         "Please check the parameter file."));
+                }
+              else
+                AssertThrow(false,
+                            ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
+                                       + ">. This value does not correspond to any known load balancing strategy. Possible values "
+                                       "are listed in the corresponding manual subsection."));
+            }
+
         }
         prm.leave_subsection ();
       }
