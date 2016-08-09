@@ -114,7 +114,7 @@ namespace aspect
         double
         radius () const;
 
-      public:
+      private:
         /**
          * Radius of the sphere
          */
