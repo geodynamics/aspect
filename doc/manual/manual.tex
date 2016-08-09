@@ -10144,6 +10144,49 @@ resources listed at the beginning of this section as well as references
 \cite{BHK07,BK99m}.}
 
 
+\subsection{Testing \aspect}
+\label{sec:testing}
+
+\aspect{} makes use of a large suite of tests to ensure correct behavior.
+
+\subsubsection{Running tests}
+\label{sec:running_tests}
+
+In order to run the tests, it is necessary to have either Diff or Numdiff to
+compare the results to the known good case. While it is possible to use Diff,
+Numdiff is preferred due to being able to more accurately identify whether a
+variation in numerical output is significant.
+
+To run a set of tests, go to the build directory and execute 
+
+\begin{verbatim}
+    ctest -R
+\end{verbatim}
+
+This will run all of the existing tests. To only part of the test suite, it is
+possible to supply a regex that will select the names of the desired tests as
+follows
+
+\begin{verbatim}
+    ctest -R <regex>
+\end{verbatim}
+
+
+\subsubsection{Writing tests}
+\label{sec:writing_tests}
+
+% Copied from email response by gassmoeller, and adjusted
+
+To write a test for a new feature, take one of the existing parameter files in
+the tests/ directory, modify it to use the new feature, check that the new
+feature does what it is supposed to do, and then just add the parameter file to
+the tests directory. You will then need to add another folder to that directory
+that is named like the parameter file, and add the model output files that
+prove that the feature is working (rename log.txt to screen-output for
+historical reasons). The test and output files should be as small and quick to
+run as possible.
+
+
 \section{Future plans for \aspect}
 \label{sec:future}
 
