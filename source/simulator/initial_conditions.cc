@@ -93,12 +93,14 @@ namespace aspect
 
 #if DEAL_II_VERSION_GTE(8,5,0)
         const VectorFunctionFromScalarFunctionObject<dim, double> &advf_init_function =
-          (advf.is_temperature()?
+          (advf.is_temperature()
+           ?
            VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Interface<dim>::initial_temperature,
                                                                                std::ref(*initial_conditions),
                                                                                std_cxx11::_1),
                                                                introspection.component_indices.temperature,
-                                                               introspection.n_components):
+                                                               introspection.n_components)
+           :
            VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&CompositionalInitialConditions::Interface<dim>::initial_composition,
                                                                                std::ref(*compositional_initial_conditions),
                                                                                std_cxx11::_1,
@@ -107,8 +109,10 @@ namespace aspect
                                                                introspection.n_components));
 
         const ComponentMask advf_mask =
-          (advf.is_temperature()?
-           introspection.component_masks.temperature:
+          (advf.is_temperature()
+           ?
+           introspection.component_masks.temperature
+           :
            introspection.component_masks.compositional_fields[n-1]);
 
         VectorTools::interpolate(*mapping,
@@ -117,7 +121,7 @@ namespace aspect
                                  initial_solution,
                                  advf_mask);
 
-        if (n == 1 && parameters.normalized_fields.size()>0)
+        if (parameters.normalized_fields.size()>0 && n==1)
           for (typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
                cell != dof_handler.end(); ++cell)
             if (cell->is_locally_owned())
@@ -131,8 +135,9 @@ namespace aspect
                     // must not exceed one, this should be checked
                     double sum = 0;
                     for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                      sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
-                    if (std::abs(sum) > 1.0+1e-6)
+                      sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),
+                                                                                   parameters.normalized_fields[m]);
+                    if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                       {
                         max_sum_comp = std::max(sum, max_sum_comp);
                         normalize_composition = true;
@@ -169,8 +174,9 @@ namespace aspect
                     {
                       double sum = 0;
                       for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),parameters.normalized_fields[m]);
-                      if (std::abs(sum) > 1.0+1e-6)
+                        sum += compositional_initial_conditions->initial_composition(fe_values.quadrature_point(i),
+                                                                                     parameters.normalized_fields[m]);
+                      if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                         {
                           max_sum_comp = std::max(sum, max_sum_comp);
                           normalize_composition = true;
