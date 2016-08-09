@@ -49,12 +49,14 @@ namespace aspect
          * Return a point that denotes the size of the box in each dimension
          * of the domain.
          */
+        virtual
         Point<dim> get_extents () const;
 
         /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
+        virtual
         Point<dim> get_origin () const;
 
         /**

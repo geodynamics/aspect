@@ -22,7 +22,7 @@
 #ifndef __aspect__geometry_model_two_merged_boxes_h
 #define __aspect__geometry_model_two_merged_boxes_h
 
-#include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/box.h>
 
 
 namespace aspect
@@ -37,7 +37,7 @@ namespace aspect
      * for the lithospheric part of the vertical boundaries.
      */
     template <int dim>
-    class TwoMergedBoxes : public Interface<dim>
+    class TwoMergedBoxes : public Box<dim>
     {
       public:
 
