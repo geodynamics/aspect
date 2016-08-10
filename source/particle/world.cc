@@ -193,7 +193,7 @@ namespace aspect
       // selected the tracer postprocessor but generated 0 tracers
       update_global_max_particles_per_cell();
 
-      if (max_particles_per_cell > 0)
+      if (global_max_particles_per_cell > 0)
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
@@ -209,7 +209,7 @@ namespace aspect
           // space for the data in case a cell is coarsened and all tracers
           // of the children have to be stored in the parent cell.
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * max_particles_per_cell) *
+                                                     (property_manager->get_particle_size() * global_max_particles_per_cell) *
                                                      (serialization ?
                                                       1
                                                       :
@@ -234,7 +234,7 @@ namespace aspect
       // store function again, to set the triangulation in the same state as
       // before the serialization. Only by this it knows how to deserialize the
       // data correctly. Only do this if something was actually stored.
-      if (serialization && (max_particles_per_cell > 0))
+      if (serialization && (global_max_particles_per_cell > 0))
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
@@ -248,7 +248,7 @@ namespace aspect
           // the tracer data itself and we need to provide 2^dim times the
           // space for the data in case a cell is coarsened
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * max_particles_per_cell);
+                                                     (property_manager->get_particle_size() * global_max_particles_per_cell);
           data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
         }
 
