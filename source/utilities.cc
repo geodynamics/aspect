@@ -444,6 +444,15 @@ namespace aspect
       return 0;
     }
 
+    std::string
+    get_last_line(std::istream *in)
+    {
+      std::string line;
+      while (*in >> std::ws && std::getline(*in, line)) // skip empty lines
+        ;
+      return line;
+    }
+
     void create_directory(const std::string &pathname,
                           const MPI_Comm &comm,
                           bool silent)

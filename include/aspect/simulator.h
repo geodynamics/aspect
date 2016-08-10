@@ -531,12 +531,30 @@ namespace aspect
        * particular the mesh, the solution vectors, etc) whereas others can
        * either be re-generated (matrices, DoFHandler objects, etc) or are
        * read from the input parameter file. See the manual for more
-       * information.
+       * information. These set of files are permanently stored.
        *
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot();
+      void create_snapshot(bool checkpoint);
+
+      /**
+       * Save the state of Triangulation and Solution vectors to a specified
+       * file in the output directory.
+       */
+      void save_triangulation(const std::string file_name);
+
+      /**
+       * Saves general information by calling the boost serialization function
+       * on all processes.
+       */
+      void serialize_all(const std::string file_name);
+
+      /**
+       * Tabulate checkpointing information into a log file within the output
+       * directory called 'checkpoint.log'.
+       */
+      void log_checkpoint(const std::string, const std::string, bool);
 
       /**
        * Restore the state of this program from a set of files in the output
@@ -1310,6 +1328,15 @@ namespace aspect
        */
 
     private:
+      /**
+      * @name Variables that track checkpointing/quicksaving
+      * @{
+      */
+      unsigned int checkpoint_index;
+      std::string checkpoint_log_file;
+      /**
+      * @}
+      */
 
       /**
        * Shared pointer for an instance of the FreeSurfaceHandler. this way,

@@ -6,7 +6,7 @@
 // immediately.
 int f()
 {
-  system ("rm -f output-terminate_user_request/restart.mesh");
+  system ("rm -f output-terminate_user_request/restart.mesh-5");
   return 42;
 }
 

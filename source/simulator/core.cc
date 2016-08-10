@@ -197,7 +197,11 @@ namespace aspect
     dof_handler (triangulation),
 
     rebuild_stokes_matrix (true),
-    rebuild_stokes_preconditioner (true)
+    rebuild_stokes_preconditioner (true),
+
+    // Set rotating checkpointing information
+    checkpoint_index(0),
+    checkpoint_log_file ("checkpoint.log")
   {
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
@@ -2348,6 +2352,7 @@ namespace aspect
       }
 
     // start the timer for periodic checkpoints after the setup above
+    time_t last_rotating_checkpoint_time = std::time(NULL);
     time_t last_checkpoint_time = std::time(NULL);
 
 
@@ -2478,37 +2483,46 @@ namespace aspect
 
         // periodically generate snapshots so that we can resume here
         // if the program aborts or is terminated
+        bool do_rotating_checkpoint = false;
+        bool do_rotating_checkpoint_by_time = false;
+
         bool do_checkpoint = false;
+        bool do_checkpoint_by_time = false;
 
         // If we base checkpoint frequency on timing, measure the time at process 0
         // This prevents race conditions where some processes will checkpoint and others won't
-        if (parameters.checkpoint_time_secs > 0)
+        if (parameters.rotating_checkpoint_time_secs > 0 || parameters.checkpoint_time_secs > 0)
           {
-            int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
+            int global_do_checkpoint = ((std::time(NULL) - last_checkpoint_time ) >=
                                         parameters.checkpoint_time_secs);
             MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
-
-            do_checkpoint = (global_do_checkpoint == 1);
+            do_checkpoint_by_time = (global_do_checkpoint == 1);
+          }
+        else if (parameters.rotating_checkpoint_time_secs > 0 )
+          {
+            int global_do_rotating_checkpoint = ((std::time(NULL) - last_rotating_checkpoint_time) >=
+                                                 parameters.rotating_checkpoint_time_secs);
+            MPI_Bcast(&global_do_rotating_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+            do_rotating_checkpoint_by_time = (global_do_rotating_checkpoint == 1);
           }
 
         // If we base checkpoint frequency on steps, see if it's time for another checkpoint
-        if ((parameters.checkpoint_time_secs == 0) &&
-            (parameters.checkpoint_steps > 0) &&
-            (timestep_number % parameters.checkpoint_steps == 0))
-          do_checkpoint = true;
+        if (parameters.checkpoint_steps > 0)
+          do_checkpoint = (timestep_number % parameters.checkpoint_steps == 0) ? true : false;
+        else if (parameters.rotating_checkpoint_steps > 0)
+          do_rotating_checkpoint = (timestep_number % parameters.rotating_checkpoint_steps == 0) ? true : false;
 
-        // Do a checkpoint either if indicated by checkpoint parameters, or if this
-        // is the end of simulation and the termination criteria say to checkpoint
-        if (do_checkpoint || (termination.first && termination.second))
+        if (do_checkpoint || do_rotating_checkpoint ||
+            do_rotating_checkpoint_by_time || do_checkpoint_by_time ||
+            (termination.first && termination.second))
           {
-            create_snapshot();
-            // matrices will be regenerated after a resume, so do that here too
-            // to be consistent. otherwise we would get different results
-            // for a restarted computation than for one that ran straight
-            // through
+            create_snapshot(do_checkpoint || do_checkpoint_by_time);
             rebuild_stokes_matrix =
               rebuild_stokes_preconditioner = true;
-            last_checkpoint_time = std::time(NULL);
+            if (do_rotating_checkpoint_by_time)
+              last_rotating_checkpoint_time = std::time(NULL);
+            if (do_checkpoint_by_time)
+              last_checkpoint_time = std::time(NULL);
           }
 
         // see if we want to terminate

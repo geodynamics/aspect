@@ -24,24 +24,27 @@ int f()
     std::cout << "system() returned error " << ret << std::endl;
 
   ret = system ("cd output-resume_free_surface ; "
-                " rm -rf output2.tmp ; cp -r output1.tmp output2.tmp ;"
-                " rm -f output1.tmp/log.txt; "
-                " cp output1.tmp/restart.mesh.old output1.tmp/restart.mesh;"
-                " cp output1.tmp/restart.mesh.info.old output1.tmp/restart.mesh.info;"
-                " cp output1.tmp/restart.resume.z.old output1.tmp/restart.resume.z;");
+	        " rm -rf output2.tmp ; cp -r output1.tmp output2.tmp ;"
+		" rm -f output1.tmp/log.txt; ");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
 
   std::cout << "* now resuming:" << std::endl;
   ret = system ("cd output-resume_free_surface ; "
-                "(cat " ASPECT_SOURCE_DIR "/tests/resume_free_surface.prm "
-                " ; "
+	        "(cat " ASPECT_SOURCE_DIR "/tests/resume_free_surface.prm "
+	        " ; "
                 " echo 'set Output directory = output1.tmp' "
                 " ; "
                 " echo 'set Resume computation = true' "
-                ") "
-                "| ../../aspect -- >/dev/null");
+                " ; "
+                " echo 'subsection Checkpointing' "
+                " ; "
+                " echo 'set Restart from rotating checkpoint slot = 0' "
+                " ; "
+                " echo 'end' "
+	        ") "
+	        "| ../../aspect -- >/dev/null");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
@@ -59,8 +62,8 @@ int f()
     std::cout << "system() returned error " << ret << std::endl;
 
   ret = system ("cd output-resume_free_surface ; "
-                "diff -c output?.tmp/restart.resume.z;"
-                "diff -c output?.tmp/restart.mesh;"
+                "diff -c output?.tmp/rotating-checkpoint.resume-1.z;"
+                "diff -c output?.tmp/rotating-checkpoint.mesh-1;"
                 "");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
