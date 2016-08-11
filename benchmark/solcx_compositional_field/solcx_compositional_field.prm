@@ -1,7 +1,7 @@
 # A description of the SolCX benchmark for which a known solution
 # is available. See the manual for more information.
 
-set Additional shared libraries            = ./libsolcx.so
+set Additional shared libraries            = /home/cig/workspace/egpuckett/Computations/SolCx/Benchmarks/Composition/SolCx_Composition_Library/libsolcx_compositional_field.so
 
 ############### Global parameters
 
@@ -96,4 +96,10 @@ end
 
 subsection Postprocess
   set List of postprocessors = SolCxPostprocessor, visualization
+  subsection Visualization
+    set Output format = vtu
+    set Number of grouped files = 1
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
 end
