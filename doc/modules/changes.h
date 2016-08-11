@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> Changed: Chunk geometry pull back function now returns
+ * a corrected longitude value when 180 hemisphere is crossed.
+ * <br>
+ * (Anne Glerum, 2016/08/09)
+ *
  * <li> Changed: It is now possible to read in ascii data files of
  * which the coordinates are not equally spaced.
  * <br>
