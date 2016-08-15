@@ -359,13 +359,6 @@ namespace aspect
         update_next_free_particle_index();
 
         /**
-         * Returns whether a given particle is in the given cell.
-         */
-        bool
-        particle_is_in_cell(const Particle<dim> &particle,
-                            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
-
-        /**
          * Returns a map of neighbor cells of the current cell. This map is
          * sorted according to the distance between the particle and the face
          * of cell that is shared with the neighbor cell. I.e. the first
@@ -376,14 +369,19 @@ namespace aspect
                                  const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
 
         /**
-         * Finds the cells containing each particle for all particles. If
-         * particles moved out of this subdomain they will be sent
-         * to their new process and inserted there. After this function call
-         * every particle is either on its current process and in its current
-         * cell, or deleted (if it could not find its new process or cell).
+         * Finds the cells containing each particle for all particles in
+         * @p particles_to_sort. If particles moved out of the local subdomain
+         * they will be sent to their new process and inserted there.
+         * After this function call every particle is either on its current
+         * process and in its current cell, or deleted (if it could not find
+         * its new process or cell).
+         *
+         * @param [in,out] particles_to_sort Vector containing all pairs of
+         * particles and their old cells that will be sorted into the
+         * 'particles' member variable in this function.
          */
         void
-        sort_particles_in_subdomains_and_cells();
+        sort_particles_in_subdomains_and_cells(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &particles_to_sort);
 
         /**
          * Apply the bounds for the maximum and minimum number of particles
@@ -401,9 +399,9 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(std::multimap<types::LevelInd, Particle<dim> >            &lost_particles,
-                                      std::multimap<types::LevelInd, Particle<dim> >            &moved_particles_cell,
-                                      std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain);
+        move_particles_back_into_mesh(std::vector<std::pair<types::LevelInd, Particle<dim> > > &lost_particles,
+                                      std::vector<std::pair<types::LevelInd, Particle<dim> > > &moved_particles_cell,
+                                      std::multimap<types::subdomain_id, Particle<dim> >       &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
@@ -413,14 +411,20 @@ namespace aspect
          * of ghost cells of the current process, this also handles
          * periodic boundaries correctly. Afterwards the transfer is done in the
          * same way as local communication between neighbor processes.
-         * All received particles will immediately be inserted into the
-         * particles member variable.
+         * All received particles and their new cells will be appended to the
+         * @p received_particles vector.
          *
          * @param [in] sent_particles All particles that should be sent and
          * their new subdomain_ids are in this map.
+         *
+         * @param [in,out] received_particles List that stores all received
+         * particles. Note that it is not required nor checked that the list
+         * is empty, received particles are simply attached to the end of
+         * the list.
          */
         void
-        send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &sent_particles);
+        send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &sent_particles,
+                            std::vector<std::pair<types::LevelInd, Particle<dim> > > &received_particles);
 
         /**
          * Advect the particle positions by one integration step. Needs to be
@@ -446,12 +450,16 @@ namespace aspect
         /**
          * Advect the particles of one cell. Performs only one step for
          * multi-step integrators. Needs to be called until integrator->continue()
-         * evaluates to false.
+         * evaluates to false. Particles that moved out of their old cell
+         * during this advection step are removed from the local multimap and
+         * stored in @p particles_out_of_cell for further treatment (sorting
+         * them into the new cell).
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &begin_particle,
-                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle);
+                               const typename std::multimap<types::LevelInd, Particle<dim> >::iterator &end_particle,
+                               std::vector<std::pair<types::LevelInd, Particle <dim> > >               &particles_out_of_cell);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
