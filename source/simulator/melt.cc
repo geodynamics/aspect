@@ -350,13 +350,7 @@ namespace aspect
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
 
-      const unsigned int solution_component
-        = (advection_field.is_temperature()
-           ?
-           introspection.component_indices.temperature
-           :
-           introspection.component_indices.compositional_fields[advection_field.compositional_variable]
-          );
+      const unsigned int solution_component = advection_field.component_index(introspection);
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
