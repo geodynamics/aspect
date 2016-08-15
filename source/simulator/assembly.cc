@@ -1419,7 +1419,8 @@ namespace aspect
                    * on the direction of the flow. Thus the flow-dependent terms below are
                    * only calculated if the edge is an inflow edge.
                    */
-                  const bool inflow = ((current_u * scratch.face_finite_element_values->normal_vector(q)) < 0.);
+                  const bool inflow = (advection_field.is_temperature()
+                                       || ((current_u * scratch.face_finite_element_values->normal_vector(q)) < 0.));
 
                   for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                     {
