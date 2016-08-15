@@ -125,12 +125,10 @@ namespace aspect
     * that is related to mesh cells and needs to be transferred with the cells
     * during the repartitioning.
 
-    * The functions that connect to this signal must take a list of pairs of
-    * a size and a callback function that has the signature of the
-    * parallel::distributed::Triangulation::register_attach_data function.
-    * The intention of the function should be to add another pair, describing
-    * the amount of space per cell that needs to be send and a function
-    * that is called for every cell by the Triangulation.
+    * The functions that connect to this signal must take a reference
+    * to a parallel::distributed::Triangulation object as
+    * argument. This argument will point to the triangulation used by
+    * the Simulator class.
     */
     boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_refinement_store_user_data;
 
@@ -146,6 +144,33 @@ namespace aspect
     * the Simulator class.
     */
     boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_refinement_load_user_data;
+
+    /**
+    * A signal that is called before the creation of every checkpoint.
+    * This signal allows for registering functions that store data
+    * related to mesh cells.
+    *
+    * The functions that connect to this signal must take a reference
+    * to a parallel::distributed::Triangulation object as
+    * argument. This argument will point to the triangulation used by
+    * the Simulator class.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  pre_checkpoint_store_user_data;
+
+    /**
+    * A signal that is called after resuming from a checkpoint.
+    * This signal allows for registering functions that load data
+    * related to mesh cells that was previously stored in the checkpoint.
+    * Note that before calling Triangulation::notify_ready_to_unpack() the
+    * function needs to call register_attach_data() with the appropriate arguments
+    * to restore the state of the triangulation.
+    *
+    * The functions that connect to this signal must take a reference
+    * to a parallel::distributed::Triangulation object as
+    * argument. This argument will point to the triangulation used by
+    * the Simulator class.
+    */
+    boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_resume_load_user_data;
 
     /**
      * A signal that is called at the beginning of the program. It

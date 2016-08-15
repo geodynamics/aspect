@@ -138,23 +138,21 @@ namespace aspect
     }
 
     template <int dim>
-    unsigned int
-    World<dim>::get_global_max_tracers_per_cell() const
+    void
+    World<dim>::update_global_max_particles_per_cell()
     {
-      unsigned int local_max_tracer_per_cell(0);
+      unsigned int local_max_particles_per_cell(0);
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = this->get_triangulation().begin_active();
       for (; cell!=this->get_triangulation().end(); ++cell)
         if (cell->is_locally_owned())
           {
             const types::LevelInd found_cell = std::make_pair<int, int> (cell->level(),cell->index());
-            const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator, typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particles_in_cell
-              = particles.equal_range(found_cell);
-            const unsigned int tracers_in_cell = std::distance(particles_in_cell.first,particles_in_cell.second);
-            local_max_tracer_per_cell = std::max(local_max_tracer_per_cell,
-                                                 tracers_in_cell);
+            const unsigned int particles_in_cell = particles.count(found_cell);
+            local_max_particles_per_cell = std::max(local_max_particles_per_cell,
+                                                    particles_in_cell);
           }
 
-      return dealii::Utilities::MPI::max(local_max_tracer_per_cell,this->get_mpi_communicator());
+      global_max_particles_per_cell = dealii::Utilities::MPI::max(local_max_particles_per_cell,this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -163,26 +161,80 @@ namespace aspect
     {
       signals.post_set_initial_state.connect(std_cxx11::bind(&World<dim>::setup_initial_state,
                                                              std_cxx11::ref(*this)));
+
       signals.pre_refinement_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
                                                                      std_cxx11::ref(*this),
+                                                                     false,
                                                                      std_cxx11::_1));
+      signals.pre_checkpoint_store_user_data.connect(std_cxx11::bind(&World<dim>::register_store_callback_function,
+                                                                     std_cxx11::ref(*this),
+                                                                     true,
+                                                                     std_cxx11::_1));
+
       signals.post_refinement_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
                                                                      std_cxx11::ref(*this),
+                                                                     false,
                                                                      std_cxx11::_1));
+      signals.post_resume_load_user_data.connect(std_cxx11::bind(&World<dim>::register_load_callback_function,
+                                                                 std_cxx11::ref(*this),
+                                                                 true,
+                                                                 std_cxx11::_1));
     }
 
     template <int dim>
     void
-    World<dim>::register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
+    World<dim>::register_store_callback_function(const bool serialization,
+                                                 typename parallel::distributed::Triangulation<dim> &triangulation)
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, store");
 
       // Only save and load tracers if there are any, we might get here for
       // example before the tracer generation in timestep 0, or if somebody
       // selected the tracer postprocessor but generated 0 tracers
-      const unsigned int max_tracers_per_cell = get_global_max_tracers_per_cell();
+      update_global_max_particles_per_cell();
 
-      if (max_tracers_per_cell > 0)
+      if (global_max_particles_per_cell > 0)
+        {
+          const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
+                                         const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
+            = std_cxx11::bind(&aspect::Particle::World<dim>::store_tracers,
+                              std_cxx11::ref(*this),
+                              std_cxx11::_1,
+                              std_cxx11::_2,
+                              std_cxx11::_3);
+
+          // We need to transfer the number of tracers for this cell and
+          // the tracer data itself. If we are in the process of refinement
+          // (i.e. not in serialization) we need to provide 2^dim times the
+          // space for the data in case a cell is coarsened and all tracers
+          // of the children have to be stored in the parent cell.
+          const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
+                                                     (property_manager->get_particle_size() * global_max_particles_per_cell) *
+                                                     (serialization ?
+                                                      1
+                                                      :
+                                                      std::pow(2,dim));
+
+          data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
+        }
+    }
+
+    template <int dim>
+    void
+    World<dim>::register_load_callback_function(const bool serialization,
+                                                typename parallel::distributed::Triangulation<dim> &triangulation)
+    {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, load");
+
+      // All particles have been stored, when we reach this point. Empty the
+      // map and fill with new particles.
+      particles.clear();
+
+      // If we are resuming from a checkpoint, we first have to register the
+      // store function again, to set the triangulation in the same state as
+      // before the serialization. Only by this it knows how to deserialize the
+      // data correctly. Only do this if something was actually stored.
+      if (serialization && (global_max_particles_per_cell > 0))
         {
           const std_cxx11::function<void(const typename parallel::distributed::Triangulation<dim>::cell_iterator &,
                                          const typename parallel::distributed::Triangulation<dim>::CellStatus, void *) > callback_function
@@ -196,21 +248,9 @@ namespace aspect
           // the tracer data itself and we need to provide 2^dim times the
           // space for the data in case a cell is coarsened
           const std::size_t transfer_size_per_cell = sizeof (unsigned int) +
-                                                     (property_manager->get_particle_size() * max_tracers_per_cell)
-                                                     *  std::pow(2,dim);
+                                                     (property_manager->get_particle_size() * global_max_particles_per_cell);
           data_offset = triangulation.register_data_attach(transfer_size_per_cell,callback_function);
         }
-    }
-
-    template <int dim>
-    void
-    World<dim>::register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation)
-    {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Refine mesh, load");
-
-      // All particles have been stored, when we reach this point. Empty the
-      // map and fill with new particles.
-      particles.clear();
 
       // Check if something was stored and load it
       if (data_offset != numbers::invalid_unsigned_int)

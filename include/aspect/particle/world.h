@@ -122,13 +122,6 @@ namespace aspect
         get_particles() const;
 
         /**
-         * Returns the number of particles in the cell that contains the
-         * most tracers in the global model.
-         */
-        unsigned int
-        get_global_max_tracers_per_cell() const;
-
-        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the tracers
          * are actually still at their old positions and the current timestep
@@ -165,17 +158,21 @@ namespace aspect
 
         /**
          * Callback function that is called from Simulator before every
-         * refinement. Allows registering store_tracers() in the triangulation.
+         * refinement and when writing checkpoints.
+         * Allows registering store_tracers() in the triangulation.
          */
         void
-        register_store_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+        register_store_callback_function(const bool serialization,
+                                         typename parallel::distributed::Triangulation<dim> &triangulation);
 
         /**
          * Callback function that is called from Simulator after every
-         * refinement. Allows registering load_tracers() in the triangulation.
+         * refinement and after resuming from a checkpoint.
+         * Allows registering load_tracers() in the triangulation.
          */
         void
-        register_load_callback_function(typename parallel::distributed::Triangulation<dim> &triangulation);
+        register_load_callback_function(const bool serialization,
+                                        typename parallel::distributed::Triangulation<dim> &triangulation);
 
         /**
          * Called by listener functions from Triangulation for every cell
@@ -291,6 +288,16 @@ namespace aspect
         types::particle_index global_number_of_particles;
 
         /**
+         * The maximum number of particles per cell in the global domain. This
+         * variable is important to store and load particle data during
+         * repartition and serialization of the solution. Note that the
+         * variable is only updated when it is needed, e.g. before or after
+         * serialization (before/after mesh refinement, before creating a
+         * checkpoint and after resuming from a checkpoint).
+         */
+        unsigned int global_max_particles_per_cell;
+
+        /**
          * This variable stores the next free particle index that is available
          * globally in case new particles need to be generated.
          */
@@ -350,6 +357,19 @@ namespace aspect
          */
         void
         update_n_global_particles();
+
+        /**
+         * Calculates and stores the number of particles in the cell that
+         * contains the most tracers in the global model (stored in the
+         * member variable global_max_particles_per_cell). This variable is a
+         * state variable, because it is needed to serialize and deserialize
+         * the particle data correctly in parallel (it determines the size of
+         * the data chunks per cell that are stored and read). Before accessing
+         * the variable this function has to be called, unless the state was
+         * read from another source (e.g. after resuming from a checkpoint).
+         */
+        void
+        update_global_max_particles_per_cell();
 
         /**
          * Calculates the next free particle index in the global model domain.
@@ -460,7 +480,7 @@ namespace aspect
     template <class Archive>
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {
-      ar &particles
+      ar &global_max_particles_per_cell
       &next_free_particle_index
       ;
     }
