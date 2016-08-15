@@ -1,0 +1,7 @@
+subsection %%\hyperref[parameters:Compositional_20fields]{Compositional fields}%
+  set %%\hyperref[parameters:Compositional fields/Number of fields]{Number of fields}% = 2%% \index[prmindex]{Number of fields} \index[prmindexfull]{Compositional fields!Number of fields} %
+  set %%\hyperref[parameters:Compositional fields/Names of fields]{Names of fields}% = lower, upper%% \index[prmindex]{Names of fields} \index[prmindexfull]{Compositional fields!Names of fields} %
+  set %%\hyperref[parameters:Compositional fields/Compositional field methods]{Compositional field methods}% = particles, particles%% \index[prmindex]{Compositional field methods} \index[prmindexfull]{Compositional fields!Compositional field methods} %
+  set %%\hyperref[parameters:Compositional fields/Mapped particle properties]{Mapped particle properties}% = lower:initial lower, upper:initial upper%% \index[prmindex]{Mapped particle properties} \index[prmindexfull]{Compositional fields!Mapped particle properties} %
+end
+
