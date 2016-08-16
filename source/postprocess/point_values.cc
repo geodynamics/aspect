@@ -59,12 +59,26 @@ namespace aspect
             }
 
           // ensure that exactly one processor found things
-          AssertThrow (Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator()) == 1,
-                       ExcMessage ("While trying to evaluate the values of the solution at "
-                                   "evaluation point " + Utilities::int_to_string(p) +
-                                   ", no (or more than one) processor reported that that point lies inside the "
-                                   "set of cells it owns. Are you trying to evaluate the "
-                                   "solution at a point that lies outside the domain?"));
+          int n_found;
+          AssertThrow ((n_found = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator())) == 1,
+                       ExcMessage ("While trying to evaluate the solution at evaluation point " +
+                                   Utilities::int_to_string(p) + " (" +
+                                   Utilities::to_string(evaluation_points[p][0]) + ", " +
+                                   Utilities::to_string(evaluation_points[p][1]) +
+                                   (dim == 3
+                                    ?
+                                    ", " + Utilities::to_string(evaluation_points[p][2])
+                                    :
+                                    "") + "), " +
+                                   Utilities::int_to_string(n_found) + " processors reported " +
+                                   "that the point lies inside the set of cells they own." +
+                                   (n_found == 0 ?
+                                    " Are you trying to evaluate the solution at a point that"
+                                    " lies outside of the domain?"
+                                    :
+                                    ""
+                                   )
+                                  ));
 
           // now exchange things. because we have exactly one processor that found
           // the point, we can just add up that value plus all of the zero
