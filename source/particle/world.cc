@@ -537,8 +537,13 @@ namespace aspect
       std::multimap<types::subdomain_id, Particle<dim> >       moved_particles_domain;
       std::vector<std::pair<types::LevelInd, Particle<dim> > > lost_particles;
 
-      sorted_particles.reserve(particles_to_sort.size()*2);
-      lost_particles.reserve(particles_to_sort.size());
+      // We do not know exactly how many particles are lost, exchanged between
+      // domains, or remain on this process. Therefore we pre-allocate approximate
+      // sizes for these vectors. If more space is needed an automatic and
+      // relatively fast (compared to other parts of this algorithm)
+      // re-allocation will happen.
+      sorted_particles.reserve(static_cast<unsigned int> (particles_to_sort.size()*1.25));
+      lost_particles.reserve(static_cast<unsigned int> (particles_to_sort.size()*0.25));
 
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
@@ -646,9 +651,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::move_particles_back_into_mesh(std::vector<std::pair<types::LevelInd, Particle<dim> > >  &lost_particles,
-                                              std::vector<std::pair<types::LevelInd, Particle<dim> > >  &moved_particles_cell,
-                                              std::multimap<types::subdomain_id, Particle<dim> >        &moved_particles_domain)
+    World<dim>::move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >  &lost_particles,
+                                              std::vector<std::pair<types::LevelInd, Particle<dim> > >        &moved_particles_cell,
+                                              std::multimap<types::subdomain_id, Particle<dim> >              &moved_particles_domain)
     {
       // TODO: fix this to work with arbitrary meshes. Currently periodic boundaries only work for boxes.
       // If the geometry is not a box, we simply discard particles that have left the
@@ -670,11 +675,12 @@ namespace aspect
           for (; boundary != periodic_boundaries.end(); ++boundary)
             periodic[boundary->second] = true;
 
-          typename std::vector<std::pair<types::LevelInd, Particle<dim> > >::iterator lost_particle = lost_particles.begin();
+          typename std::vector<std::pair<types::LevelInd, Particle<dim> > >::const_iterator lost_particle = lost_particles.begin();
           for (; lost_particle != lost_particles.end(); ++lost_particle)
             {
               // modify the particle position if it crossed a periodic boundary
-              Point<dim> particle_position = lost_particle->second.get_location();
+              std::pair<types::LevelInd, Particle<dim> > cell_and_particle = *lost_particle;
+              Point<dim> particle_position = cell_and_particle.second.get_location();
               for (unsigned int i = 0; i < dim; ++i)
                 {
                   if (periodic[i])
@@ -685,7 +691,7 @@ namespace aspect
                         particle_position[i] -= extent[i];
                     }
                 }
-              lost_particle->second.set_location(particle_position);
+              cell_and_particle.second.set_location(particle_position);
 
               // Try again looking for the new cell with the updated position
               typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
@@ -695,9 +701,10 @@ namespace aspect
                         Point<dim> > current_cell_and_position =
                           GridTools::find_active_cell_around_point<> (this->get_mapping(),
                                                                       this->get_triangulation(),
-                                                                      lost_particle->second.get_location());
+                                                                      cell_and_particle.second.get_location());
                   cell = current_cell_and_position.first;
-                  lost_particle->second.set_reference_location(current_cell_and_position.second);
+                  cell_and_particle.first = std::make_pair(cell->level(),cell->index());
+                  cell_and_particle.second.set_reference_location(current_cell_and_position.second);
                 }
               catch (GridTools::ExcPointNotFound<dim> &)
                 {
@@ -709,12 +716,9 @@ namespace aspect
               // Reinsert the particle into our domain if we found its cell
               // Mark it for MPI transfer otherwise
               if (cell->is_locally_owned())
-                {
-                  const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
-                  moved_particles_cell.push_back(std::make_pair(found_cell, lost_particle->second));
-                }
+                moved_particles_cell.push_back(cell_and_particle);
               else
-                moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),lost_particle->second));
+                moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),cell_and_particle.second));
             }
         }
     }
@@ -849,6 +853,8 @@ namespace aspect
                           recv_particle.set_reference_location(p_unit);
                           break;
                         }
+                      // If the particle is not in this cell, do nothing and check
+                      // the next neighbor cell
                     }
                   catch (typename Mapping<dim>::ExcTransformationFailed &)
                     {}

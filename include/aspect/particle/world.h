@@ -376,7 +376,7 @@ namespace aspect
          * process and in its current cell, or deleted (if it could not find
          * its new process or cell).
          *
-         * @param [in,out] particles_to_sort Vector containing all pairs of
+         * @param [in] particles_to_sort Vector containing all pairs of
          * particles and their old cells that will be sorted into the
          * 'particles' member variable in this function.
          */
@@ -399,9 +399,9 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(std::vector<std::pair<types::LevelInd, Particle<dim> > > &lost_particles,
-                                      std::vector<std::pair<types::LevelInd, Particle<dim> > > &moved_particles_cell,
-                                      std::multimap<types::subdomain_id, Particle<dim> >       &moved_particles_domain);
+        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &lost_particles,
+                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >       &moved_particles_cell,
+                                      std::multimap<types::subdomain_id, Particle<dim> >             &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
@@ -420,7 +420,7 @@ namespace aspect
          * @param [in,out] received_particles List that stores all received
          * particles. Note that it is not required nor checked that the list
          * is empty, received particles are simply attached to the end of
-         * the list.
+         * the vector.
          */
         void
         send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &sent_particles,
