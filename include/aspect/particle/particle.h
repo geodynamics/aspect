@@ -114,11 +114,14 @@ namespace aspect
          * does not check for duplicate particle IDs so the generator must
          * make sure the IDs are unique over all processes.
          *
-         * @param[in] new_loc Initial location of particle.
+         * @param[in] new_location Initial location of particle.
+         * @param[in] new_reference_location Initial location of the particle
+         * in the coordinate system of the reference cell.
          * @param[in] new_id Globally unique ID number of particle.
          */
-        Particle (const Point<dim> &new_loc,
-                  const types::particle_index &new_id);
+        Particle (const Point<dim> &new_location,
+                  const Point<dim> &new_reference_location,
+                  const types::particle_index new_id);
 
         /**
          * Constructor for Particle, creates a particle from a data vector.
@@ -190,6 +193,23 @@ namespace aspect
         get_location () const;
 
         /**
+         * Set the reference location of this particle. Note that this does not
+         * check whether this is a valid location in the simulation domain.
+         *
+         * @param [in] new_loc The new reference location for this particle.
+         */
+        void
+        set_reference_location (const Point<dim> &new_loc);
+
+        /**
+         * Get the reference location of this particle in its current cell.
+         *
+         * @return The reference location of this particle.
+         */
+        const Point<dim> &
+        get_reference_location () const;
+
+        /**
          * Get the ID number of this particle.
          *
          * @return The id of this particle.
@@ -232,6 +252,13 @@ namespace aspect
          * Current particle location
          */
         Point<dim>             location;
+
+        /**
+         * Current particle location in the reference cell.
+         * Storing this reduces the number of times we need to compute this
+         * location, which takes a significant amount of computing time.
+         */
+        Point<dim>             reference_location;
 
         /**
          * Globally unique ID of particle

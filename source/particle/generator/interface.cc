@@ -51,15 +51,16 @@ namespace aspect
         // exception.
         try
           {
-            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;
+            std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+                Point<dim> > it =
+                  GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
 
             //Only try to add the point if the cell it is in, is on this processor
-            AssertThrow(it->is_locally_owned(),
+            AssertThrow(it.first->is_locally_owned(),
                         ExcParticlePointNotInDomain());
 
-            const Particle<dim> particle(position, id);
-            const types::LevelInd cell(it->level(), it->index());
+            const Particle<dim> particle(position, it.second, id);
+            const types::LevelInd cell(it.first->level(), it.first->index());
             return std::make_pair(cell,particle);
           }
         catch (GridTools::ExcPointNotFound<dim> &)
@@ -114,7 +115,12 @@ namespace aspect
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
                 if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
-                  break;
+                  {
+                    // Add the generated particle to the set
+                    const Particle<dim> new_particle(particle_position, p_unit, id);
+                    const types::LevelInd cellid(cell->level(), cell->index());
+                    return std::make_pair(cellid,new_particle);
+                  }
               }
             catch (typename Mapping<dim>::ExcTransformationFailed &)
               {
@@ -128,10 +134,7 @@ namespace aspect
                                  "generated and the actual cell volume is approximately: " +
                                  boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
 
-        // Add the generated particle to the set
-        const Particle<dim> new_particle(particle_position, id);
-        const types::LevelInd cellid(cell->level(), cell->index());
-        return std::make_pair(cellid,new_particle);
+        return std::make_pair(types::LevelInd(),Particle<dim>());
       }
 
       template <int dim>

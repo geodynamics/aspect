@@ -25,21 +25,25 @@ namespace aspect
   namespace Particle
   {
     template <int dim>
-    Particle<dim>::Particle (const Point<dim> &new_loc,
-                             const types::particle_index &new_id)
-      :
-      location (new_loc),
-      id (new_id),
-      properties ()
-    {
-    }
-
-    template <int dim>
     Particle<dim>::Particle ()
       :
       location (),
+      reference_location(),
       id (0),
       properties()
+    {
+    }
+
+
+    template <int dim>
+    Particle<dim>::Particle (const Point<dim> &new_location,
+                             const Point<dim> &new_reference_location,
+                             const types::particle_index new_id)
+      :
+      location (new_location),
+      reference_location (new_reference_location),
+      id (new_id),
+      properties ()
     {
     }
 
@@ -48,11 +52,12 @@ namespace aspect
     Particle<dim>::Particle (const void *&data,
                              const unsigned int data_size)
     {
-      // The data_size includes the space for position and id, so the number
+      // The data_size includes the space for position, reference_position and
+      // id, so the number
       // of properties is the total size minus the space for position and id
       // divided by the size of one double (currently we only allow doubles as
       // tracer properties).
-      const unsigned int property_size = data_size - dim * sizeof(double) - sizeof(types::particle_index);
+      const unsigned int property_size = data_size - 2 * dim * sizeof(double) - sizeof(types::particle_index);
       properties.resize(property_size / sizeof(double));
 
       const types::particle_index *id_data = static_cast<const types::particle_index *> (data);
@@ -61,6 +66,9 @@ namespace aspect
 
       for (unsigned int i = 0; i < dim; ++i)
         location(i) = *pdata++;
+
+      for (unsigned int i = 0; i < dim; ++i)
+        reference_location(i) = *pdata++;
 
       for (unsigned int i = 0; i < properties.size(); ++i)
         properties [i] = *pdata++;
@@ -74,13 +82,6 @@ namespace aspect
     {
     }
 
-
-    template <int dim>
-    void
-    Particle<dim>::set_location (const Point<dim> &new_loc)
-    {
-      location = new_loc;
-    }
 
     template <int dim>
     void
@@ -100,7 +101,11 @@ namespace aspect
 
       // Write location data
       for (unsigned int i = 0; i < dim; ++i,++pdata)
-        *pdata =location(i);
+        *pdata = location(i);
+
+      // Write reference location data
+      for (unsigned int i = 0; i < dim; ++i,++pdata)
+        *pdata = reference_location(i);
 
       // Write property data
       for (unsigned int i = 0; i < properties.size(); ++i,++pdata)
@@ -109,12 +114,32 @@ namespace aspect
       data = static_cast<void *> (pdata);
     }
 
+    template <int dim>
+    void
+    Particle<dim>::set_location (const Point<dim> &new_loc)
+    {
+      location = new_loc;
+    }
 
     template <int dim>
     const Point<dim> &
     Particle<dim>::get_location () const
     {
       return location;
+    }
+
+    template <int dim>
+    void
+    Particle<dim>::set_reference_location (const Point<dim> &new_loc)
+    {
+      reference_location = new_loc;
+    }
+
+    template <int dim>
+    const Point<dim> &
+    Particle<dim>::get_reference_location () const
+    {
+      return reference_location;
     }
 
     template <int dim>

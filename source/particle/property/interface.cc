@@ -230,7 +230,7 @@ namespace aspect
       std::size_t
       Manager<dim>::get_particle_size () const
       {
-        return (n_property_components+dim) * sizeof(double) + sizeof(types::particle_index);
+        return (n_property_components+2*dim) * sizeof(double) + sizeof(types::particle_index);
       }
 
       template <int dim>

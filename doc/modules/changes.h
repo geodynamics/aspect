@@ -6,6 +6,17 @@
  *
  * <ol>
  *
+ * <li> Changed: Particles now also store their location in the
+ * coordinate system of their current cell. This decreases the
+ * number of times this location has to be computed by inverting
+ * the mapping for the current cell, which is expensive.
+ * On average this change will save 40-50% of the overall
+ * particle computing time, while increasing the particle
+ * memory footprint (which is usually small compared to the
+ * system matrix).
+ * <br>
+ * (Rene Gassmoeller, 2016/08/12)
+ *
  * <li> Changed: Chunk geometry pull back function now returns
  * a corrected longitude value when 180 hemisphere is crossed.
  * <br>
