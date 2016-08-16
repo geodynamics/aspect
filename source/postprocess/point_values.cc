@@ -58,11 +58,10 @@ namespace aspect
               // ignore
             }
 
-          // ensure that exactly one processor found things
-          int n_found;
-          AssertThrow ((n_found = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator())) == 1,
-                       ExcMessage ("While trying to evaluate the solution at evaluation point " +
-                                   Utilities::int_to_string(p) + " (" +
+          // ensure that at least one processor found things
+          const int n_procs = Utilities::MPI::sum (point_found ? 1 : 0, this->get_mpi_communicator());
+          AssertThrow (n_procs > 0,
+                       ExcMessage ("While trying to evaluate the solution at point " +
                                    Utilities::to_string(evaluation_points[p][0]) + ", " +
                                    Utilities::to_string(evaluation_points[p][1]) +
                                    (dim == 3
@@ -70,19 +69,18 @@ namespace aspect
                                     ", " + Utilities::to_string(evaluation_points[p][2])
                                     :
                                     "") + "), " +
-                                   Utilities::int_to_string(n_found) + " processors reported " +
-                                   "that the point lies inside the set of cells they own." +
-                                   (n_found == 0 ?
-                                    " Are you trying to evaluate the solution at a point that"
-                                    " lies outside of the domain?"
-                                    :
-                                    ""
-                                   )
+                                   "no processors reported that the point lies inside the " +
+                                   "set of cells they own. Are you trying to evaluate the " +
+                                   "solution at a point that lies outside of the domain?"
                                   ));
 
           // Reduce all collected values into local Vector
           Utilities::MPI::sum (current_point_values[p], this->get_mpi_communicator(),
                                current_point_values[p]);
+
+          // Normalize in cases where points are claimed by multiple processors
+          if (n_procs > 1)
+            current_point_values[p] /= n_procs;
         }
 
       // finally push these point values all onto the list we keep
