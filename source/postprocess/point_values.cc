@@ -80,18 +80,9 @@ namespace aspect
                                    )
                                   ));
 
-          // now exchange things. because we have exactly one processor that found
-          // the point, we can just add up that value plus all of the zero
-          // vectors from the other processors
-          //
-          // at the time of writing this (where we require deal.II 8.2) the
-          // Utilities::MPI::sum function can't sum Vector<double> arguments, so
-          // convert everything into a std::vector and back
-          std::vector<double> v (current_point_values[p].begin(),
-                                 current_point_values[p].end());
-          Utilities::MPI::sum (v, this->get_mpi_communicator(),
-                               v);
-          std::copy (v.begin(), v.end(), current_point_values[p].begin());
+          // Reduce all collected values into local Vector
+          Utilities::MPI::sum (current_point_values[p], this->get_mpi_communicator(),
+                               current_point_values[p]);
         }
 
       // finally push these point values all onto the list we keep
