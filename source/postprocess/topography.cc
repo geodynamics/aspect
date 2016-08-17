@@ -48,7 +48,8 @@ namespace aspect
                                         (const_cast<GeometryModel::Interface<dim> *>(&this->get_geometry_model())))
         {
           Point<dim> extents = gm->get_extents();
-          reference_height = extents[dim-1];
+          Point<dim> origin  = gm->get_origin();
+          reference_height = extents[dim-1]+origin[dim-1];
           vertical_gravity = true;
           relevant_boundary = (dim == 2 ? 3 : 5); //select top boundary
         }
