@@ -433,19 +433,11 @@ namespace aspect
   get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             (advection_field.is_temperature() ?
-                                              parameters.temperature_degree :
-                                              parameters.composition_degree));
+                                             advection_field.polynomial_degree(introspection));
 
     const unsigned int n_q_points = quadrature_formula.size();
 
-    const FEValuesExtractors::Scalar field
-      = (advection_field.is_temperature()
-         ?
-         introspection.extractors.temperature
-         :
-         introspection.extractors.compositional_fields[advection_field.compositional_variable]
-        );
+    const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
 
     FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula,
                              update_values);
