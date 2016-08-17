@@ -388,7 +388,7 @@ namespace aspect
           if (present[0])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NE-corner should be two (longitude:latitude)."));
               corners[0] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -397,7 +397,7 @@ namespace aspect
           if (present[1])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(NWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the NW-corner should be two (longitude:latitude)."));
               corners[1] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -406,7 +406,7 @@ namespace aspect
           if (present[2])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SWcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SW-corner should be two (longitude:latitude)."));
               corners[2] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -415,7 +415,7 @@ namespace aspect
           if (present[3])
             {
               temp = Utilities::string_to_double(Utilities::split_string_list(SEcorner,':'));
-              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (logitude:latitude)."));
+              AssertThrow (temp.size() == 2, ExcMessage ("Number of coordinates given for the SE-corner should be two (longitude:latitude)."));
               corners[3] = Point<2>(temp[0],temp[1]);
             }
           else
@@ -434,22 +434,22 @@ namespace aspect
           if (present[0] == true && present[1] == true)
             {
               AssertThrow (corners[0][0] >= corners[1][0],
-                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
+                           ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + ")."));
             }
           if (present[0] == true && present[3] == true)
             {
               AssertThrow (corners[0][1] >= corners[3][1],
-                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
+                           ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be smaller than the latitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + ")."));
             }
           if (present[2] == true && present[3] == true)
             {
               AssertThrow (corners[2][0] <= corners[3][0],
-                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
+                           ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + ")."));
             }
           if (present[2] == true && present[1] == true)
             {
               AssertThrow (corners[2][1] <= corners[1][1],
-                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
+                           ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be larger than the latitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + ")."));
             }
           if (missing == 2)
             {
@@ -514,16 +514,16 @@ namespace aspect
             }
           // Check that the calculated corners also obey the rules for the location of the corners.
           Assert (corners[0][0] >= corners[1][0],
-                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the NE corner (" + boost::lexical_cast<std::string>(corners[0][0]) + ") cannot be smaller than the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[0][1] >= corners[3][1],
-                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the NE (" + boost::lexical_cast<std::string>(corners[0][1]) + ") corner cannot be smaller than the latitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][0] <= corners[3][0],
-                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger then the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The longitude of the SW (" + boost::lexical_cast<std::string>(corners[2][0]) + ") corner cannot be larger than the longitude of the SE corner (" + boost::lexical_cast<std::string>(corners[3][0]) + "). This is an internal check, if you see this please contact the developer."));
 
           Assert (corners[2][1] <= corners[1][1],
-                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be smaller then the longitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
+                  ExcMessage ("The latitude of the SW corner (" + boost::lexical_cast<std::string>(corners[2][1]) + ") cannot be larger than the latitude of the NW corner (" + boost::lexical_cast<std::string>(corners[1][1]) + "). This is an internal check, if you see this please contact the developer."));
 
           westLongitude = corners[2][0];
           eastLongitude = corners[0][0];
