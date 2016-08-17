@@ -128,18 +128,17 @@ namespace aspect
     {
       AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function cannot be used to determine whether point lies in domain or not."));
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether point lies in domain or not."));
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      bool in_domain = true;
       const double radius = point.norm();
 
       if (radius > R+std::numeric_limits<double>::epsilon()*R)
-        in_domain = false;
+        return false;
 
-      return in_domain;
+      return true;
     }
 
 

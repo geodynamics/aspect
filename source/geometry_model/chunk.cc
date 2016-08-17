@@ -336,25 +336,19 @@ namespace aspect
     {
       AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
                   this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function cannot be used to determine whether point lies in domain or not."));
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether point lies in domain or not."));
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      bool in_domain = true;
       const Point<dim> spherical_point = manifold.pull_back(point);
 
       for (unsigned int d = 0; d < dim; d++)
-        {
-          if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
-              spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
-            {
-              in_domain = false;
-              break;
-            }
-        }
+        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
+            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+          return false;
 
-      return in_domain;
+      return true;
     }
 
     template <int dim>

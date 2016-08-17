@@ -142,7 +142,8 @@ namespace aspect
 
         /**
          * Return whether the given point lies within the domain specified
-         * by the geometry.
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
          */
         virtual
         bool

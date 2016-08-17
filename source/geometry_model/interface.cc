@@ -66,15 +66,6 @@ namespace aspect
 
 
     template <int dim>
-    bool
-    Interface<dim>::point_is_in_domain(const Point<dim> &p) const
-    {
-      // return false in the base class
-      return false;
-    }
-
-
-    template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
