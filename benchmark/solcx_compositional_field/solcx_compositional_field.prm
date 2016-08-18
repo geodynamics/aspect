@@ -72,9 +72,9 @@ end
 subsection Compositional initial conditions
   set Model name = function
   subsection Function
-    set Variable names      = x, y
-    set Function constants = pi = 3.1415926536
-    set Function expression = 1.0 - sin(pi*y)*cos(pi*x);
+    set Variable names      = x, z
+    set Function constants  = pi = 3.1415926536
+    set Function expression = 1.0 - sin(pi*z)*cos(pi*x);
  end
 end
 
@@ -88,7 +88,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 4
+  set Initial global refinement                = 5
 end
 
 
