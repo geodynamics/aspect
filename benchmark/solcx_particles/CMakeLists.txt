@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "solcx-particles")
+SET(TARGET "solcx_particles")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED solcx-particles.cc)
+ADD_LIBRARY(${TARGET} SHARED solcx_particles.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

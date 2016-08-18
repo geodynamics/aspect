@@ -340,8 +340,7 @@ namespace aspect
         t774 = t110 * t693;
         t775 = xc * t13;
         t785 = t704 * t17;
-        t789 = -0.16e2 * t736 * t150 * t270 + t718 * t116 * t693 - 0.2e1 * t746 * t555 * t24 + 0.4e1 * ion expression =  background_density - sin(pi*z) * cos(pi*x)
-t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 0.2e1 * t766 * t150 * t110 + 0.4e1 * t722 * t274 * xc + 0.4e1 * t773 * t774 * t775 - 0.8e1 * t766 * t150 * t17 + 0.8e1 * t700 * t233 * t775 + 0.4e1 * t699 * t785 * t13;
+        t789 = -0.16e2 * t736 * t150 * t270 + t718 * t116 * t693 - 0.2e1 * t746 * t555 * t24 + 0.4e1 * t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 0.2e1 * t766 * t150 * t110 + 0.4e1 * t722 * t274 * xc + 0.4e1 * t773 * t774 * t775 - 0.8e1 * t766 * t150 * t17 + 0.8e1 * t700 * t233 * t775 + 0.4e1 * t699 * t785 * t13;
         t791 = t691 * t4;
         t792 = t45 * t693;
         t793 = t49 * t792;
@@ -2364,7 +2363,7 @@ t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 
           virtual void vector_value (const Point< dim >   &p,
                                      Vector< double >   &values) const
           {
-            //AssertDimension(values.size(), 4);
+            // AssertDimension(values.size(), 4);
 
             double pos[2]= {p(0),p(1)};
             double total_stress[3], strain_rate[3];
@@ -2542,12 +2541,11 @@ t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 
     SolCxMaterial<dim>::
     viscosity (const double,
                const double,
-               const std::vector<double> &composition,       /*composition*/
+               const std::vector<double> &,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
       // defined as given in the Duretz et al. paper
-      //return composition[1];
       return (p[0] < 0.5 ? 1 : eta_B);
     }
 
@@ -2619,14 +2617,13 @@ t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 
     SolCxMaterial<dim>::
     density (const double,
              const double,
-             const std::vector<double> &composition,
+             const std::vector<double> &composition, /*composition*/
              const Point<dim> &p) const
     {
-      // defined as given in the paper, plus the constant background density
-      // This will return background_density if there are no particles in the cell
-      // EGP & HL on Thu Jul 28 09:53:27 PDT 2016
-      // return background_density - composition[0];
-      return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+      // defined as given in the paper, plus the constant
+      // background density
+      // return background_density-std::sin(numbers::PI*p[1])*std::cos(numbers::PI*p[0]);
+      return composition[0];
     }
 
 
@@ -2774,8 +2771,7 @@ t705 * t535 + 0.64e2 * t753 * t713 * t17 * t150 * t128 - 0.16e2 * t760 * t763 + 
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim), this->get_fe().n_components());
       ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),

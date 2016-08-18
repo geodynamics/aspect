@@ -1,7 +1,7 @@
 # A description of the SolCX benchmark for which a known solution
 # is available. See the manual for more information.
 
-set Additional shared libraries = /home/cig/workspace/egpuckett/Computations/SolCx/Benchmarks/Particles/SolCx_Particle_Library/libsolcx.so
+set Additional shared libraries = /home/cig/workspace/egpuckett/Computations/SolCx/Benchmarks/Particles/SolCx_Particles_Library/libsolcx_particles.so
 
 ############### Global parameters
 
@@ -11,7 +11,7 @@ set Start time                = 0
 #set End time                 = 1e10
 set End time                  = 0
 
-set Output directory          = 128x128_solcx_particle_benchmark_output
+set Output directory          = 32x32_solcx_particle_benchmark_output
 
 set Pressure normalization    = volume
 
@@ -25,9 +25,9 @@ subsection Geometry model
 
   subsection Box
     set X extent = 1
-    set X repetitions = 128
+    set X repetitions = 32
     set Y extent = 1
-    set Y repetitions = 128
+    set Y repetitions = 32
   end
 end
 
@@ -113,13 +113,13 @@ subsection Postprocess
   end
 
   subsection Tracers
-    set Number of tracers = 262144
+    set Number of tracers = 16384
     set Time between data output = 0
     set Data output format = vtu
     set List of tracer properties = function
     set Integration scheme = rk2
     set Interpolation scheme = cell average
-    set Maximum tracers per cell = 262144
+    set Maximum tracers per cell = 16384
 
     subsection Function
 #     set Number of functions = 1
