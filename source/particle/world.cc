@@ -574,7 +574,7 @@ namespace aspect
       // collected in the moved_particles_domain multimap. Particles that left
       // the mesh completely are collected in the lost_particles vector.
       std::vector<std::pair<types::LevelInd, Particle<dim> > > sorted_particles;
-      std::multimap<types::subdomain_id, Particle<dim> >       moved_particles_domain;
+      std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > moved_particles_domain;
       std::vector<std::pair<types::LevelInd, Particle<dim> > > lost_particles;
 
       // We do not know exactly how many particles are lost, exchanged between
@@ -651,19 +651,16 @@ namespace aspect
                   }
               }
 
+            std::pair<types::LevelInd, Particle<dim> > cell_and_particle = *it;
+            cell_and_particle.first = std::make_pair(current_cell->level(),current_cell->index());
+            cell_and_particle.second.set_reference_location(current_reference_position);
 
             // Reinsert the particle into our domain if we own its cell.
             // Mark it for MPI transfer otherwise
             if (current_cell->is_locally_owned())
-              {
-                sorted_particles.push_back(*it);
-
-                const types::LevelInd cell = std::make_pair(current_cell->level(),current_cell->index());
-                sorted_particles.back().first = cell;
-                sorted_particles.back().second.set_reference_location(current_reference_position);
-              }
+              sorted_particles.push_back(cell_and_particle);
             else
-              moved_particles_domain.insert(std::make_pair(current_cell->subdomain_id(),it->second));
+              moved_particles_domain.insert(std::make_pair(current_cell->subdomain_id(),cell_and_particle));
           }
 
         // If particles fell out of the mesh, put them back in if they have crossed
@@ -691,9 +688,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >  &lost_particles,
-                                              std::vector<std::pair<types::LevelInd, Particle<dim> > >        &moved_particles_cell,
-                                              std::multimap<types::subdomain_id, Particle<dim> >              &moved_particles_domain)
+    World<dim>::move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >                  &lost_particles,
+                                              std::vector<std::pair<types::LevelInd, Particle<dim> > >                        &moved_particles_cell,
+                                              std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle<dim> > >  &moved_particles_domain)
     {
       // TODO: fix this to work with arbitrary meshes. Currently periodic boundaries only work for boxes.
       // If the geometry is not a box, we simply discard particles that have left the
@@ -758,21 +755,33 @@ namespace aspect
               if (cell->is_locally_owned())
                 moved_particles_cell.push_back(cell_and_particle);
               else
-                moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),cell_and_particle.second));
+                moved_particles_domain.insert(std::make_pair(cell->subdomain_id(),cell_and_particle));
             }
         }
     }
 
     template <int dim>
     void
-    World<dim>::send_recv_particles(const std::multimap<types::subdomain_id, Particle <dim> > &send_particles,
-                                    std::vector<std::pair<types::LevelInd, Particle<dim> > >  &received_particles)
+    World<dim>::send_recv_particles(const std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle <dim> > > &send_particles,
+                                    std::vector<std::pair<types::LevelInd, Particle<dim> > >                              &received_particles)
     {
       // Determine the communication pattern
       const std::vector<types::subdomain_id> neighbors (this->get_triangulation().ghost_owners().begin(),
                                                         this->get_triangulation().ghost_owners().end());
       const unsigned int n_neighbors = neighbors.size();
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+      // The amount of data per cell id depends on coarse cell and level,
+      // assume the worst and allocate enough memory for the largest possible
+      // CellIds.
+      const CellId test_cid(this->get_triangulation().end(0)->index(),
+                            std::vector<unsigned char>(this->get_triangulation().n_global_levels(),'0'));
+      const unsigned int max_cellid_size = test_cid.to_string().size();
+
+      const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size() + max_cellid_size;
+#else
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size();
+#endif
 
       // Determine the amount of data we will send to other processors
       std::vector<int> n_send_data(n_neighbors);
@@ -785,31 +794,31 @@ namespace aspect
       std::vector<char> send_data(send_particles.size() * particle_size);
       void *data = static_cast<void *> (&send_data.front());
 
-      int total_send_data = 0;
       for (types::subdomain_id neighbor_id = 0; neighbor_id < n_neighbors; ++neighbor_id)
         {
-          send_offsets[neighbor_id] = total_send_data;
+          send_offsets[neighbor_id] = reinterpret_cast<std::size_t> (data) - reinterpret_cast<std::size_t> (&send_data.front());
 
-          std::pair< const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator,
-              const typename std::multimap<types::subdomain_id,Particle <dim> >::const_iterator>
-              send_particle_range = send_particles.equal_range(neighbors[neighbor_id]);
-
-          int n_send_particles = std::distance(send_particle_range.first,send_particle_range.second);
-          n_send_data[neighbor_id] = n_send_particles * particle_size;
-          total_send_data += n_send_particles * particle_size;
+          const typename std::pair< const typename std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle <dim> > >::const_iterator,
+                const typename std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle <dim> > >::const_iterator>
+                send_particle_range = send_particles.equal_range(neighbors[neighbor_id]);
 
           // Copy the particle data into the send array
-          typename std::multimap<types::subdomain_id,Particle<dim> >::const_iterator particle = send_particle_range.first;
-          for (; particle != send_particle_range.second; ++particle)
+          typename std::multimap<types::subdomain_id,std::pair<types::LevelInd,Particle <dim> > >::const_iterator cell_particle = send_particle_range.first;
+          for (; cell_particle != send_particle_range.second; ++cell_particle)
             {
-              particle->second.write_data(data);
-              data = integrator->write_data(data, particle->second.get_id());
+#if DEAL_II_VERSION_GTE(8,5,0)
+              const typename parallel::distributed::Triangulation<dim>::cell_iterator cell (&this->get_triangulation(),
+                                                                                            cell_particle->second.first.first,
+                                                                                            cell_particle->second.first.second);
+              const std::string cellid = cell->id().to_string();
+              cellid.copy(static_cast<char *>(data),cellid.size());
+              data = static_cast<char *>(data) + cellid.size();
+#endif
+              cell_particle->second.second.write_data(data);
+              data = integrator->write_data(data, cell_particle->second.second.get_id());
             }
+          n_send_data[neighbor_id] = reinterpret_cast<std::size_t> (data) - send_offsets[neighbor_id] - reinterpret_cast<std::size_t> (&send_data.front());
         }
-
-      AssertThrow(data == &(send_data.back())+1,
-                  ExcMessage("The amount of data written into the array that is send to other processes "
-                             "is inconsistent with the number and size of particles."));
 
       // Notify other processors how many particles we will send
       std::vector<MPI_Request> n_requests(2*n_neighbors);
@@ -826,7 +835,6 @@ namespace aspect
           recv_offsets[neighbor_id] = total_recv_data;
           total_recv_data += n_recv_data[neighbor_id];
         }
-      const int n_recv_particles = total_recv_data / particle_size;
 
       // Set up the space for the received particle data
       std::vector<char> recv_data(total_recv_data);
@@ -854,11 +862,21 @@ namespace aspect
       // Put the received particles into the domain if they are in the triangulation
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());
 
-      for (int i=0; i<n_recv_particles; ++i)
+      while (reinterpret_cast<std::size_t> (recv_data_it) - reinterpret_cast<std::size_t> (&recv_data.front()) < total_recv_data)
         {
+#if DEAL_II_VERSION_GTE(8,5,0)
+          const std::string cell_string(reinterpret_cast<const char *> (recv_data_it),max_cellid_size);
+          std::stringstream stream(cell_string);
+          CellId id;
+          stream >> id;
+          recv_data_it = static_cast<const char *> (recv_data_it) + id.to_string().size();
+
+          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = id.to_cell(this->get_triangulation());
+          const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
+          recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
+#else
           Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
           recv_data_it = integrator->read_data(recv_data_it, recv_particle.get_id());
-
           const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
                 Point<dim> > current_cell_and_position =
                   GridTools::find_active_cell_around_point<> (this->get_mapping(),
@@ -873,7 +891,6 @@ namespace aspect
           // But then at least one of its neighbors belongs to us, and the particle
           // is extremely close to the boundary of these two cells. Look in the
           // neighbor cells for the particle.
-          // TODO: remove this by sending and receiving the future CellId
           if (!cell->is_locally_owned())
             {
               // Now try again for all of the neighbors of the cell
@@ -900,6 +917,7 @@ namespace aspect
                     {}
                 }
             }
+#endif
 
           Assert(cell->is_locally_owned(),
                  ExcMessage("Another process sent us a particle, but the particle is not in our domain."));
