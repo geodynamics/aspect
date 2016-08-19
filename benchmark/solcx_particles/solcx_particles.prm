@@ -68,6 +68,7 @@ end
 subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
 end
 
 
@@ -138,10 +139,10 @@ subsection Postprocess
       end
 
       subsection Uniform box
-       set Minimum x = 0.0000000
-       set Maximum x = 1.0000000
-       set Minimum y = 0.0000000
-       set Maximum y = 1.0000000
+       set Minimum x = 0.0000010
+       set Maximum x = 0.9999999
+       set Minimum y = 0.0000010
+       set Maximum y = 0.9999999
       end
     end
   end
