@@ -34,12 +34,31 @@ namespace aspect
 
     /**
      * A class that describes a box geometry of certain width, height, and
-     * depth (in 3d).
+     * depth (in 3d), and, possibly, topography.
      */
     template <int dim>
     class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        void initialize ();
+
+        /**
+         * Add initial topography to the mesh.
+         */
+        void topography (typename parallel::distributed::Triangulation<dim> &grid) const;
+
+        /**
+         * Relocate the vertical coordinate of the given point based on
+         * the topography at the surface specified by the initial topography
+         * model.
+         */
+        Point<dim> add_topography (const Point<dim> &x_y_z) const;
+
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
@@ -82,6 +101,9 @@ namespace aspect
          * as vertical and considers the "top" boundary as the
          * "surface". In almost all cases one will use a gravity model
          * that also matches these definitions.
+         *
+         * Note that the depth is calculated with respect to the
+         * surface without initial topography.
          */
         virtual
         double depth(const Point<dim> &position) const;
@@ -178,9 +200,14 @@ namespace aspect
         bool periodic[dim];
 
         /**
-         * The number of cells in each coordinate direction
+         * The number of cells in each coordinate direction.
          */
         unsigned int repetitions[dim];
+
+        /**
+         * A pointer to the initial topography model.
+         */
+        InitialTopographyModel::Interface<dim> *topo_model;
 
     };
   }

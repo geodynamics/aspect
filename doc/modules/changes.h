@@ -31,6 +31,10 @@
  * elements.
  * <br>
  * (Timo Heister, 2017/03/23)
+ *     
+ * <li> New: The box geometry can now include initial topography.
+ * <br>
+ * (Anne Glerum, 2017/03/16)
  *
  * </ol>
  */
