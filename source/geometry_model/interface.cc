@@ -56,6 +56,7 @@ namespace aspect
       return std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int > >();
     }
 
+
     template <int dim>
     bool
     Interface<dim>::has_curved_elements() const

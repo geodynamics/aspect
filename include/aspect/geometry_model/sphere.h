@@ -21,7 +21,7 @@
 #define __aspect__geometry_model_sphere_h
 
 #include <aspect/geometry_model/interface.h>
-
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -30,7 +30,7 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    class Sphere : public Interface<dim>
+    class Sphere : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -99,6 +99,15 @@ namespace aspect
         virtual
         bool
         has_curved_elements() const;
+
+        /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
 
         static
         void

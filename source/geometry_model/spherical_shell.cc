@@ -20,10 +20,12 @@
 
 
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/manifold_lib.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -272,6 +274,42 @@ namespace aspect
       return true;
     }
 
+
+    template <int dim>
+    bool
+    SphericalShell<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      const std_cxx11::array<double, dim> spherical_point = Utilities::Coordinates::cartesian_to_spherical_coordinates(point);
+
+      std_cxx11::array<double, dim> point1, point2;
+      point1[0] = R0;
+      point2[0] = R1;
+      point1[1] = 0.0;
+      point2[1] = phi / 180.0 * numbers::PI;
+      if (dim == 3)
+        {
+          // Octant
+          if (phi == 90.0)
+            point2[2] = 0.5 * numbers::PI;
+          // Full shell
+          else
+            point2[2] = numbers::PI;
+        }
+
+      for (unsigned int d = 0; d < dim; d++)
+        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
+            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+          return false;
+
+      return true;
+    }
 
     template <int dim>
     void

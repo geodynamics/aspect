@@ -23,6 +23,7 @@
 #define __aspect__geometry_model_ellipsoidal_chunk_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 #include <deal.II/grid/manifold.h>
 
 /**
@@ -41,7 +42,7 @@ namespace aspect
      * A class that describes a geometry for an ellipsoid such as the WGS84 model of the earth.
      */
     template <int dim>
-    class EllipsoidalChunk : public Interface<dim>
+    class EllipsoidalChunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -122,6 +123,15 @@ namespace aspect
          */
         virtual Point<dim>
         representative_point(const double depth) const;
+
+        /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
 
         /**
          * Returns the bottom depth which was used to create the geometry and

@@ -20,6 +20,7 @@
 
 
 #include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
@@ -118,6 +119,28 @@ namespace aspect
     {
       return true;
     }
+
+
+
+    template <int dim>
+    bool
+    Sphere<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      const double radius = point.norm();
+
+      if (radius > R+std::numeric_limits<double>::epsilon()*R)
+        return false;
+
+      return true;
+    }
+
 
 
     template <int dim>

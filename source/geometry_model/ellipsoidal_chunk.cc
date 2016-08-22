@@ -20,6 +20,8 @@
 
 
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
+#include <aspect/utilities.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_boundary_lib.h>
 #include <deal.II/grid/tria_accessor.h>
@@ -635,6 +637,34 @@ namespace aspect
       p /= p.norm();
       p *= get_radius(p) - depth;
       return p;
+    }
+
+
+    template <int dim>
+    bool
+    EllipsoidalChunk<dim>::point_is_in_domain(const Point<dim> &point) const
+    {
+      AssertThrow(this->get_free_surface_boundary_indicators().size() == 0 ||
+                  this->get_timestep_number() == 0,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != 0,
+                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+
+      // dim = 3
+      const Point<dim> ellipsoidal_point = manifold.pull_back(point);
+      const double rad_to_degree = 180.0/numbers::PI;
+
+      // compare deflection from the ellipsoid surface
+      if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
+          -ellipsoidal_point[dim-1] > bottom_depth+std::numeric_limits<double>::epsilon()*bottom_depth)
+        return false;
+
+      // compare lon/lat
+      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*rad_to_degree,ellipsoidal_point[1]*rad_to_degree)))
+        return false;
+
+      return true;
     }
   }
 }

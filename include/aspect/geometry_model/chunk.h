@@ -23,6 +23,8 @@
 #define __aspect__geometry_model_chunk_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/grid/manifold.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/grid/grid_out.h>
@@ -48,7 +50,7 @@ namespace aspect
      * number of cells initialised in each dimension.
      */
     template <int dim>
-    class Chunk : public Interface<dim>
+    class Chunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 
@@ -193,6 +195,15 @@ namespace aspect
         virtual
         bool
         has_curved_elements() const;
+
+        /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
 
         /**
          * Declare the parameters this class takes through input files.

@@ -271,6 +271,15 @@ namespace aspect
         has_curved_elements() const;
 
         /**
+         * If true, the queried point (in Cartesian coordinates)
+         * lies in the domain specified by the geometry.
+         * The default implementation of this function will return @p false.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const = 0;
+
+        /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
          * parameters. Consequently, derived classes do not have to overload

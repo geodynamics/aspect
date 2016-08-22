@@ -23,6 +23,7 @@
 #define __aspect__geometry_model_box_h
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -36,7 +37,7 @@ namespace aspect
      * depth (in 3d).
      */
     template <int dim>
-    class Box : public Interface<dim>
+    class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -136,6 +137,15 @@ namespace aspect
         virtual
         bool
         has_curved_elements() const;
+
+        /**
+         * Return whether the given point lies within the domain specified
+         * by the geometry. This function does not take into account
+         * initial or dynamic surface topography.
+         */
+        virtual
+        bool
+        point_is_in_domain(const Point<dim> &p) const;
 
         /**
          * Declare the parameters this class takes through input files.
