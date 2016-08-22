@@ -979,25 +979,37 @@ namespace aspect
 
       std::vector<Tensor<1,dim> >  result(particles_in_cell);
       std::vector<Tensor<1,dim> >  old_result(particles_in_cell);
-      std::vector<Point<dim> >     particle_points(particles_in_cell);
 
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+      std::vector<types::global_dof_index> cell_dof_indices (this->get_fe().dofs_per_cell);
+
+      const FiniteElement<dim> &velocity_fe = this->get_fe().base_element(this->introspection().base_elements.velocities);
+      cell->get_dof_indices (cell_dof_indices);
+
+      Table<2,double> shape_values (velocity_fe.dofs_per_cell,particles_in_cell);
+
+      for (unsigned int j=0; j<velocity_fe.dofs_per_cell; ++j)
         {
-          particle_points[i] = it->second.get_reference_location();
+          typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+          for (unsigned int i = 0; it!=end_particle; ++it,++i)
+            shape_values(j,i) = velocity_fe.shape_value(j,it->second.get_reference_location());
         }
 
-      const Quadrature<dim> quadrature_formula(particle_points);
-      FEValues<dim> fe_value (this->get_mapping(),
-                              this->get_fe(),
-                              quadrature_formula,
-                              update_values);
+      for (unsigned int j=0; j<velocity_fe.dofs_per_cell; ++j)
+        for (unsigned int dir=0; dir<dim; ++dir)
+          {
+            const unsigned int support_point_index
+            = this->get_fe().component_to_system_index(/*velocity component=*/ this->introspection().component_indices.velocities[dir],
+                /*dof index within component=*/ j);
+            const double solution = this->get_solution()[cell_dof_indices[support_point_index]];
+            const double old_solution = this->get_old_solution()[cell_dof_indices[support_point_index]];
 
-      fe_value.reinit (cell);
-      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                 result);
-      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
-                                                                                 old_result);
+            for (unsigned int particle_index=0; particle_index<particles_in_cell; ++particle_index)
+              {
+                const double shape_value = shape_values(j,particle_index);
+                result[particle_index][dir] += solution * shape_value;
+                old_result[particle_index][dir] += old_solution * shape_value;
+              }
+          }
 
       integrator->local_integrate_step(begin_particle,
                                        end_particle,
