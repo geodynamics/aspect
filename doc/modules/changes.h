@@ -6,6 +6,11 @@
  *
  * <ol>
  *
+ * <li> New: There is now an initial topography plugin that returns
+ * initial topography values based on an ascii data file.
+ * <br>
+ * (Anne Glerum, 2016/08/22)
+ *
  * <li> Changed: Particles now also store their location in the
  * coordinate system of their current cell. This decreases the
  * number of times this location has to be computed by inverting
