@@ -4746,23 +4746,24 @@ These commands add the tracer properties \texttt{function}, \texttt{pT path}, \t
 \end{itemize}
 
 \paragraph{Using active tracers}
-In the examples above, tracers properties passively track distinct model properties.  These tracer properties, however, may also be used to actively influence the model as it runs.  For instance, a composition-dependent material model may use a particle's initial composition rather than advected compositional field.  
+In the examples above, tracers properties passively track distinct model properties.  These tracer properties, however, may also be used to actively influence the model as it runs.  For instance, a composition-dependent material model may use a particle's initial composition rather than an advected compositional field.  
 A slightly modified version of the active-composition cookbook (\url{cookbooks/composition-active.prm}:) illustrates how to use 'active tracers' in this manner.
 
 This cookbook (\url{cookbooks/composition-active-tracers.prm}:) modifies two sections of the input file.  First, tracers are added under the \texttt{Postprocess} section: 
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/tracers.part.prm.out}
 
-In this case, the tracked particle properties are velocity and initial composition.  In order to use the tracer initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
-
+In this case, the tracked tracer properties are \texttt{velocity} and \texttt{initial composition}.  In order to use the tracer initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/composition.part.prm.out}
  
 In comparison to \url{cookbooks/composition-active.prm}, the \texttt{Composition} section now contains variables that specify the \texttt{Compositional field method} and \texttt{Mapped particle properties}.  The \texttt{Compositional field method} parameter may set to either \texttt{field} or \texttt{particles}, where \texttt{field} specifies that compositional fields are tracked by advected fields (default method).  
 
-In this case, we specify that the compositional fields are in fact tracked by particles.  In order for the material model to access information stored on the particles, we now specify that the initial composition of each particle is mapped to a new field created at each time step for use in the material model.  The name of this field will still correspond to the ones specified (\texttt{lower}, \texttt{upper})
+In this case, we specify that the compositional fields are in fact tracked by particles.  In order for the material model to access information stored on the particles, however, we also need to specify that the initial composition of each particle is mapped to a new field created at each time step for use in the material model.  The name of this field will still correspond to those specified in \texttt{set Names of fields}.  
+
+The initial composition is mapped to a new field with the general phrase \texttt{field_name: initial field_name}, where \texttt{field_name} corresponds to \texttt{upper} or \texttt{lower}.  Notably, the order in which field names are defined in \texttt{set Names of fields} will determine the compositional field index number referenced in a material model.  However, it is recommended for consistency that mapped properties are listed in the same order as in \texttt{Set Mapped particle properties} . 
  
-For the given global refinement level (5) and associated number of cells (1024), 100,000 total particles produces an average particle-per-cell count slightly below 100.  While on the high end, increasing the number of particles per cell further may alter the solution as the particles actively modify the element properties in this case.   one chooses to modify an element property (density, for example) based on particle properties, 
+In this model the given global refinement level (5), associated number of cells (1024) and 100,000 total particles produces an average particle-per-cell count slightly below 100.  While on the high end compared to most geodynamic studies using active particles, increasing the number of particles per cell further may alter the solution.  As with the numerical resolution, any study using active particles should systematically vary the number of particles per cell in order to determine this parameter's influence on the simulation.
 
 \note{\aspect{}'s tracer implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand tracers per process can slow down a model significantly. Moreover, models with an highly adaptive mesh and many tracers do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of tracers. Therefore processes that compute the solution for coarse-grid regions have to process many more tracers than other processes. Additionally, the checkpoint/restart functionality for tracers is only implemented in models with a constant number of processes before and after the checkpoint and when the selected tracer properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
 
