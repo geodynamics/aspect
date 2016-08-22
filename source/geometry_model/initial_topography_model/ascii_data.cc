@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -46,20 +46,17 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      // Get the symbolic names used by the current geometry
-      const std::map<std::string,types::boundary_id> boundary_names = this->get_geometry_model().get_symbolic_boundary_names_map();
-
-      // Get the boundary id number for the boundary that is the surface of the current geometry
-      for (std::map<std::string,types::boundary_id>::const_iterator i = boundary_names.begin();
-           i != boundary_names.end();
-           i ++)
-        {
-          if (i->first == "surface" || i->first == "top" || i->first == "outer")
-            {
-              surface_boundary_id = i->second;
-              break;
-            }
-        }
+      // Based on the current geometry, set the boundary id of the surface
+      if (const GeometryModel::Box<dim> *gm = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("top");
+      else if (const GeometryModel::Chunk<dim> *gm = dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()))
+        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("outer");
+      else if (const GeometryModel::Sphere<dim> *gm = dynamic_cast<const GeometryModel::Sphere<dim>*> (&this->get_geometry_model()))
+        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("surface");
+      else if (const GeometryModel::SphericalShell<dim> *gm = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model()))
+        surface_boundary_id = gm->translate_symbolic_boundary_name_to_id("outer");
+      else
+        AssertThrow(false, ExcMessage("This initial topography plugin can only be used for a Box, Shell, Sphere or Chunk geometry."));
 
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(surface_boundary_id);
