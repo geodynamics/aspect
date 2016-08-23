@@ -979,25 +979,41 @@ namespace aspect
 
       std::vector<Tensor<1,dim> >  result(particles_in_cell);
       std::vector<Tensor<1,dim> >  old_result(particles_in_cell);
-      std::vector<Point<dim> >     particle_points(particles_in_cell);
 
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+      // Below we manually evaluate the solution at all support points of the
+      // current cell, and then use the shape functions to interpolate the
+      // solution to the particle points. All of this can be done with less
+      // code using an FEValues object, but since this object initializes a lot
+      // of memory for other purposes and we can not reuse the FEValues object
+      // for other cells, it is much faster to do the work manually. Also this
+      // function is quite performance critical.
+
+      std::vector<types::global_dof_index> cell_dof_indices (this->get_fe().dofs_per_cell);
+      cell->get_dof_indices (cell_dof_indices);
+
+      const FiniteElement<dim> &velocity_fe = this->get_fe().base_element(this->introspection().base_elements.velocities);
+
+      for (unsigned int j=0; j<velocity_fe.dofs_per_cell; ++j)
         {
-          particle_points[i] = it->second.get_reference_location();
+          Tensor<1,dim> solution_at_support_point;
+          Tensor<1,dim> old_solution_at_support_point;
+          for (unsigned int dir=0; dir<dim; ++dir)
+            {
+              const unsigned int support_point_index
+                = this->get_fe().component_to_system_index(/*velocity component=*/ this->introspection().component_indices.velocities[dir],
+                                                                                   /*dof index within component=*/ j);
+              solution_at_support_point[dir] = this->get_solution()[cell_dof_indices[support_point_index]];
+              old_solution_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
+            }
+
+          typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+          for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
+            {
+              const double shape_value = velocity_fe.shape_value(j,it->second.get_reference_location());
+              result[particle_index] += solution_at_support_point * shape_value;
+              old_result[particle_index] += old_solution_at_support_point * shape_value;
+            }
         }
-
-      const Quadrature<dim> quadrature_formula(particle_points);
-      FEValues<dim> fe_value (this->get_mapping(),
-                              this->get_fe(),
-                              quadrature_formula,
-                              update_values);
-
-      fe_value.reinit (cell);
-      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                 result);
-      fe_value[this->introspection().extractors.velocities].get_function_values (this->get_old_solution(),
-                                                                                 old_result);
 
       integrator->local_integrate_step(begin_particle,
                                        end_particle,
