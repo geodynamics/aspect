@@ -1,0 +1,138 @@
+# A description of the SolKZ benchmark for which a known solution
+# is available. See the manual for more information.
+
+set Additional shared libraries            = ./libsolkz.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = Stokes only
+
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Model settings
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Zero velocity boundary indicators       =
+end
+
+
+subsection Material model
+  set Model name = SolKzMaterial
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set Model name = box
+end
+
+
+subsection Initial conditions
+  set Model name = perturbed box
+end
+
+
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Use locally conservative discretization = false
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+
+##############
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_comp #, viscosity_comp
+  set Compositional field methods = particles #, particles
+  # set Mapped particle properties = density_comp:function1 #, viscosity_comp:fun
+ction2
+  # This is what was recommended by Rene on Friday, August 11, 2016
+  set Mapped particle properties = density_comp:function [0]
+end
+
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926, eta_b=1e6, background_density=1.0
+    # set Function expression =  background_density - sin(pi*z) * cos(pi*x); if(x
+<0.5, 1, eta_b)
+    set Function expression =  background_density - sin(pi*z) * cos(pi*x)
+  end
+end
+
+
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = SolKzPostprocessor, visualization
+
+  subsection Tracers
+    set Number of tracers = 262144
+    set Time between data output = 0
+    set Data output format = vtu
+    set List of tracer properties = function
+    set Integration scheme = rk2
+    set Interpolation scheme = cell average
+    set Maximum tracers per cell = 262144
+
+    subsection Function
+#     set Number of functions = 1
+      set Variable names      = x, z
+      set Function constants  = pi=3.1415926, eta_b=1e6, background_density=1.0
+#     set Function expression = ref_density - sin(pi*z) * cos(pi*x); if(x<0.5, 1, eta_b)
+      set Function expression = background_density - sin(pi*z) * cos(pi*x)
+    end
+
+    set Particle generator name = uniform box
+
+    subsection Generator
+      subsection Probability density function
+        set Variable names      = x,y
+        set Function expression = x*x*y
+      end
+
+      subsection Uniform box
+       set Minimum x = 0.0000000
+       set Maximum x = 1.0000000
+       set Minimum y = 0.0000000
+       set Maximum y = 1.0000000
+      end
+    end
+  end # end subsection Tracers
+end # end subsection Postprocess
