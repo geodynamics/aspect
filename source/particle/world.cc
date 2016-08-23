@@ -950,34 +950,77 @@ namespace aspect
       const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
       const unsigned int solution_components = this->introspection().n_components;
 
+      const std::vector<UpdateFlags> update_flags = property_manager->get_needed_update_flags();
+
+      UpdateFlags any_update_flags = update_default;
+
+      for (unsigned int i = 0; i<solution_components; ++i)
+        any_update_flags |= update_flags[i];
+
+      const bool compute_any_values = any_update_flags & update_values;
+      const bool compute_any_gradients = any_update_flags & update_gradients;
+
       Vector<double> value(solution_components);
       std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
 
       std::vector<Vector<double> >  values(particles_in_cell,value);
       std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
 
-      std::vector<Point<dim> >     particle_points(particles_in_cell);
-
-      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
+      // If we only need to compute solution values and not gradients we can
+      // save quite some time by ignoring the mapping (we already know the
+      // reference coordinates of the particles) and calculate the
+      // values of the solution manually instead of using FEValues
+      if (compute_any_values && !compute_any_gradients)
         {
-          particle_points[i] = it->second.get_reference_location();
+          std::vector<types::global_dof_index> cell_dof_indices (this->get_fe().dofs_per_cell);
+          cell->get_dof_indices (cell_dof_indices);
+
+          for (unsigned int j=0; j<this->get_fe().dofs_per_cell; ++j)
+            {
+              const unsigned int component_index
+                = this->get_fe().system_to_component_index(j).first;
+
+              // The most expensive part of this function is computing the
+              // shape_value below. Only do it if this component is needed
+              // to update the properties.
+              if (update_flags[component_index] & update_values)
+                {
+                  typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+                  for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
+                    {
+                      const double shape_value = this->get_fe().shape_value(j,it->second.get_reference_location());
+                      values[particle_index][component_index] += shape_value * this->get_solution()[cell_dof_indices[j]];
+                    }
+                }
+            }
+        }
+      // If we need to compute gradients of the solution we need the mapping
+      // to transform from the reference cell to the real cell, so there is
+      // not much to save, except that we will not compute solution values if
+      // they are not needed according to any_update_flags.
+      else if (compute_any_gradients)
+        {
+          std::vector<Point<dim> > particle_points(particles_in_cell);
+
+          typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
+          for (unsigned int i = 0; it!=end_particle; ++it,++i)
+            particle_points[i] = it->second.get_reference_location();
+
+          const Quadrature<dim> quadrature_formula(particle_points);
+          FEValues<dim> fe_value (this->get_mapping(),
+                                  this->get_fe(),
+                                  quadrature_formula,
+                                  any_update_flags);
+
+          fe_value.reinit (cell);
+          if (compute_any_values)
+            fe_value.get_function_values (this->get_solution(),
+                                          values);
+          fe_value.get_function_gradients (this->get_solution(),
+                                           gradients);
         }
 
-      const Quadrature<dim> quadrature_formula(particle_points);
-      FEValues<dim> fe_value (this->get_mapping(),
-                              this->get_fe(),
-                              quadrature_formula,
-                              update_values |
-                              update_gradients);
-
-      fe_value.reinit (cell);
-      fe_value.get_function_values (this->get_solution(),
-                                    values);
-      fe_value.get_function_gradients (this->get_solution(),
-                                       gradients);
-
-      it = begin_particle;
+      typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
           property_manager->update_one_particle(it->second,

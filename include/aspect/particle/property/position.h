@@ -22,7 +22,6 @@
 #define __aspect__particle_property_position_h
 
 #include <aspect/particle/property/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -36,7 +35,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Position : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class Position : public Interface<dim>
       {
         public:
           /**

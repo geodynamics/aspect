@@ -22,7 +22,6 @@
 #define __aspect__particle_property_initial_composition_h
 
 #include <aspect/particle/property/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -37,7 +36,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class InitialComposition : public Interface<dim>, public SimulatorAccess<dim>
+      class InitialComposition : public Interface<dim>
       {
         public:
           /**

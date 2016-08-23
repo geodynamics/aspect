@@ -22,7 +22,6 @@
 #define __aspect__particle_property_integrated_strain_h
 
 #include <aspect/particle/property/interface.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -40,7 +39,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class IntegratedStrain : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class IntegratedStrain : public Interface<dim>
       {
         public:
           /**
@@ -94,6 +93,14 @@ namespace aspect
            */
           UpdateTimeFlags
           need_update () const;
+
+          /**
+           * Return, which data has to be provided to update the property.
+           * The integrated strains needs the gradients of the velocity.
+           */
+          virtual
+          std::vector<UpdateFlags>
+          get_needed_update_flags () const;
 
           /**
            * Set up the information about the names and number of components

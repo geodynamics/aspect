@@ -94,7 +94,7 @@ namespace aspect
         * @ingroup ParticleProperties
         */
       template <int dim>
-      class Interface
+      class Interface: public SimulatorAccess<dim>
       {
         public:
           /**
@@ -176,6 +176,19 @@ namespace aspect
           virtual
           UpdateTimeFlags
           need_update () const;
+
+          /**
+           * Return, which data has to be provided to update the property.
+           * Note that particle properties can only ask for no data, the
+           * solution values, and the solution gradients and all other update
+           * flags will throw exceptions.
+           *
+           * @return A vector with as many entries as solution components.
+           * Each entry contains the necessary update flags for this component.
+           */
+          virtual
+          std::vector<UpdateFlags>
+          get_needed_update_flags () const;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -311,6 +324,15 @@ namespace aspect
            */
           UpdateTimeFlags
           need_update () const;
+
+          /**
+           * Return, which data has to be provided to update all properties.
+           * Note that particle properties can only ask for no data, the
+           * solution values, and the solution gradients and all other update
+           * flags will throw exceptions.
+           */
+          std::vector<UpdateFlags>
+          get_needed_update_flags () const;
 
           /**
            * Get the number of components required to represent this particle's

@@ -62,6 +62,13 @@ namespace aspect
       }
 
       template <int dim>
+      std::vector<UpdateFlags>
+      Interface<dim>::get_needed_update_flags () const
+      {
+        return std::vector<UpdateFlags> (this->introspection().n_components,update_default);
+      }
+
+      template <int dim>
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
@@ -215,6 +222,23 @@ namespace aspect
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             update = std::max(update,(*p)->need_update());
+          }
+        return update;
+      }
+
+      template <int dim>
+      std::vector<UpdateFlags>
+      Manager<dim>::get_needed_update_flags () const
+      {
+        const unsigned int n_components = this->introspection().n_components;
+        std::vector<UpdateFlags> update (n_components,update_default);
+        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+             p = property_list.begin(); p!=property_list.end(); ++p)
+          {
+            const std::vector<UpdateFlags> property_update ((*p)->get_needed_update_flags());
+
+            for (unsigned int i = 0; i<n_components; ++i)
+              update[i] |= property_update[i];
           }
         return update;
       }
