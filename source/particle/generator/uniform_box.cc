@@ -165,31 +165,31 @@ namespace aspect
                 Point<dim> position(P_min[0] + x_indices[i]*spacing[0], P_min[1] + y_indices[j]*spacing[1]);
                 if ( position[0] == local_x_min)
                 {
-                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const Particle<dim> particle(position, this->get_mapping().transform_real_to_unit_cell(cell, position),  (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
                   const types::LevelInd p_cell(cell->level(), cell->index());
                   particles.insert(std::make_pair(p_cell,particle));
                 }
                 else if ( position[0] == local_x_max)
                 {
-                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const Particle<dim> particle(position, this->get_mapping().transform_real_to_unit_cell(cell, position), (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
                   const types::LevelInd p_cell(cell->level(), cell->index());
                   particles.insert(std::make_pair(p_cell,particle));
                 }
                 else if ( position[1] == local_y_min)
                 {
-                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const Particle<dim> particle(position, this->get_mapping().transform_real_to_unit_cell(cell, position), (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
                   const types::LevelInd p_cell(cell->level(), cell->index());
                   particles.insert(std::make_pair(p_cell,particle));
                 }
                 else if ( position[1] == local_y_max)
                 {
-                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const Particle<dim> particle(position, this->get_mapping().transform_real_to_unit_cell(cell, position), (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
                   const types::LevelInd p_cell(cell->level(), cell->index());
                   particles.insert(std::make_pair(p_cell,particle));
                 }
                 else
                 {
-                  const Particle<dim> particle(position, (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
+                  const Particle<dim> particle(position, this->get_mapping().transform_real_to_unit_cell(cell, position), (x_indices[i]) * n_particles_per_direction[1]  + y_indices[j]);
                   const types::LevelInd p_cell(cell->level(), cell->index());
                   particles.insert(std::make_pair(p_cell,particle));
                 }
