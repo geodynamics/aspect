@@ -489,6 +489,13 @@ namespace aspect
                                        + Utilities::int_to_string (my_file_id, 4)
                                        + ".vtu";
 
+          // pass time step number and time as metadata into the output file
+          DataOutBase::VtkFlags vtk_flags;
+          vtk_flags.cycle = this->get_timestep_number();
+          vtk_flags.time = time_in_years_or_seconds;
+
+          data_out.set_flags (vtk_flags);
+
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
           // into a string that is written to disk in a writer function
@@ -499,13 +506,6 @@ namespace aspect
               const std::string *file_contents;
               {
                 std::ostringstream tmp;
-
-                // pass time step number and time as metadata into the output file
-                DataOutBase::VtkFlags vtk_flags;
-                vtk_flags.cycle = this->get_timestep_number();
-                vtk_flags.time = time_in_years_or_seconds;
-
-                data_out.set_flags (vtk_flags);
 
                 data_out.write (tmp, DataOutBase::parse_output_format(output_format));
                 file_contents = new std::string (tmp.str());

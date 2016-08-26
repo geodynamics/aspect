@@ -2,9 +2,12 @@
 <!-- 
 # vtk DataFile Version 3.0
 #This file was generated 
--->
 <VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
 <UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">1</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">1</DataArray>
+</FieldData>
 <Piece NumberOfPoints="32" NumberOfCells="8" >
   <Points>
     <DataArray type="Float64" NumberOfComponents="3" format="binary">
@@ -32,6 +35,10 @@ AQAAAAABAAAAAQAAdwAAAA==eNpjYGBgeMi96iCQOtAqthJEK/y/L+wEpBs4H4NpmLjDaZfFB5HEH7i9
 AQAAAAABAAAAAQAASwAAAA==eNpjYACCjD4HBmRaYg6IXsBSNhdVHELDxBUY2OdhV1+3BEQnRKQvxaYeJq7AcGIpNvNh6gjZD7MXXT3MXHT7YeoR9gPdCQDfGi/b    </DataArray>
   </PointData>
  </Piece>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">1</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">1</DataArray>
+</FieldData>
 <Piece NumberOfPoints="40" NumberOfCells="10" >
   <Points>
     <DataArray type="Float64" NumberOfComponents="3" format="binary">
@@ -59,6 +66,10 @@ AQAAAEABAABAAQAAhAAAAA==eNpjYGB4kByv7MTAwKDQFgqmD+x9YwSiEza+M0IWZ+itUkYWXzDvPUTd
 AQAAAEABAABAAQAAXgAAAA==eNpjYACCuiUOQFKB4cRSEM3AsHEDMg0TV4CqQ5dnYMjoQ6YR6kwWY5OHiSvA7UVXj24+qnpC9jMwSMwB0QtYyuZik4eJKzCwz8OmHmZPQkT6UmzqYeLgcAEA5Qk6wA==    </DataArray>
   </PointData>
  </Piece>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">1</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">1</DataArray>
+</FieldData>
 <Piece NumberOfPoints="24" NumberOfCells="6" >
   <Points>
     <DataArray type="Float64" NumberOfComponents="3" format="binary">
