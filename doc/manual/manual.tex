@@ -10148,19 +10148,33 @@ resources listed at the beginning of this section as well as references
 \label{sec:testing}
 
 \aspect{} makes use of a large suite of tests to ensure correct behavior.
+The test suite is run automatically for each change to the Github repository,
+and it is good practice to add new tests for any new functionality.
 
 \subsubsection{Running tests}
 \label{sec:running_tests}
 
 In order to run the tests, it is necessary to have either Diff or Numdiff to
-compare the results to the known good case. While it is possible to use Diff,
-Numdiff is preferred due to being able to more accurately identify whether a
-variation in numerical output is significant.
+compare the results to the known good case.
+Diff is installed by default on most Linux systems, and Numdiff is usually
+available as a package so this is not a severe limitation.
+While it is possible to use Diff, Numdiff is preferred due to being able to
+more accurately identify whether a variation in numerical output is
+significant.
+The test suite is run using ctest, which comes with cmake, and should therefore
+be available on all systems that have compiled \aspect{}.
+
+By default, only a small suite of tests are run.
+To set up the full test suite, run
+
+\begin{verbatim}
+    make setup_tests
+\end{verbatim}
 
 To run a set of tests, go to the build directory and execute 
 
 \begin{verbatim}
-    ctest -R
+    ctest
 \end{verbatim}
 
 This will run all of the existing tests. To only part of the test suite, it is
@@ -10175,8 +10189,6 @@ follows
 \subsubsection{Writing tests}
 \label{sec:writing_tests}
 
-% Copied from email response by gassmoeller, and adjusted
-
 To write a test for a new feature, take one of the existing parameter files in
 the tests/ directory, modify it to use the new feature, check that the new
 feature does what it is supposed to do, and then just add the parameter file to
@@ -10185,6 +10197,19 @@ that is named like the parameter file, and add the model output files that
 prove that the feature is working (rename log.txt to screen-output for
 historical reasons). The test and output files should be as small and quick to
 run as possible.
+
+Permission to request the test suite be run for a particular pull request on
+Github is restricted to a set of trusted maintainers.
+Once permission has been given, the full test suite will be run, and any errors
+recorded.
+Upon completion of the test suite, the both the general summary (pass/fail) and
+full verbose log will available.
+The reference machine may produce slightly different results due to differing
+libraries, operating systems, etc.
+If this has been confirmed to be the source of the error, the reference machine
+the trusted maintainers can indicate for the reference machine to also produce
+a diff file (git patch) that can be used to modify the expected test results to
+match those of the reference machine. 
 
 
 \section{Future plans for \aspect}
