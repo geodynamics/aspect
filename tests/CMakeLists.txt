@@ -169,18 +169,32 @@ FOREACH(_test ${_tests})
       SET(_testlib)
     ENDIF()
 
-    # Create the output directory and a rule to generate the input file therein.
-    # This input file is the one found in the source dir, but it has the
-    # correct output directory so that we do not need to specify it by hand
-    # (a common mistake when copying a previous test) and do not need to
-    # specify any additional plugin shared libraries, should they exist
-    # for this test
+    # Create the output directory and subdirectories as needed. To do this, we
+    # recursively glob all files (and only files, not subdirectories) located
+    # in this test's directory.  For each file get the directory part relative
+    # to the test directory and create a corresponding subdirectory in the
+    # output directory of this test. MAKE_DIRECTORY then does a `mkdir -p`.
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
+
+    FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
+	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
+    FOREACH(_output ${_outputs})
+      GET_FILENAME_COMPONENT(_dir ${_output} DIRECTORY)
+      IF(NOT  ${_dir} STREQUAL "" )
+        FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_dir})
+      ENDIF()
+    ENDFOREACH()
+
+    # A rule to generate the input file therein.  This input file is copied
+    # from the one found in the source dir, but we make sure it has the
+    # correct output directory so that we do not need to specify it by hand (a
+    # common mistake when copying a previous test) and we specify any
+    # additional plugin shared libraries, should they exist for this test
     #
     # We also replace all occurrences of @SOURCE_DIR@ by
     # ${CMAKE_CURRENT_SOURCE_DIR} so that input files can reference
     # mesh, input files, etc, in the tests/ directory without having
     # to know where exactly they are run.
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test})
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
       COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_test}.prm
 		 ${CMAKE_CURRENT_BINARY_DIR}/${_test}.x.prm
