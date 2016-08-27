@@ -28,6 +28,7 @@
 /doc/aspect.tag
 /doc/deal.tag
 /doc/doxygen/
+/doc/manual.pdf
 /doc/manual/manual.aux
 /doc/manual/manual.bbl
 /doc/manual/manual.blg
@@ -40,6 +41,7 @@
 /doc/manual/prmindexfull.idx
 /doc/manual/prmindexfull.ilg
 /doc/manual/prmindexfull.ind
+/doc/manual/cookbooks/**/*.out
 /output/
 /tests/CMakeFiles/
 /tests/CTestTestfile.cmake
