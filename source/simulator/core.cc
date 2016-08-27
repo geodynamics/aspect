@@ -346,7 +346,7 @@ namespace aspect
 
       const std::set<types::boundary_id> all_boundary_indicators
         = geometry_model->get_used_boundary_indicators();
-      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only)
+      if (parameters.nonlinear_solver!=NonlinearSolver::Advection_only || parameters.nonlinear_solver!=NonlinearSolver::Binary_input)
         {
           // next make sure that all listed indicators are actually used by
           // this geometry
@@ -364,9 +364,8 @@ namespace aspect
           // next make sure that there are no listed indicators
           for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
             AssertThrow (boundary_indicator_lists[i].empty(),
-                         ExcMessage ("With solver type Advection only, one cannot set boundary conditions for velocity."));
+                         ExcMessage ("With solver type Advection only or Binary data, one cannot set boundary conditions for velocity."));
         }
-
 
       // now do the same for the fixed temperature indicators and the
       // compositional indicators
@@ -488,7 +487,6 @@ namespace aspect
         prescribed_stokes_solution->parse_parameters (prm);
         prescribed_stokes_solution->initialize ();
       }
-
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(adiabatic_conditions.get()))
       sim->initialize_simulator (*this);
@@ -2286,6 +2284,23 @@ namespace aspect
           break;
         }
 
+        case NonlinearSolver::Binary_input:
+        {
+          AssertThrow (!parameters.free_surface_enabled,
+                       ExcMessage (std::string("Currently, we do not support free surface mesh with the \"nonlinear\" binary input scheme.")));
+
+          std::string filename = parameters.binary_data_directory + "/" + parameters.binary_data_file_name + Utilities::int_to_string(timestep_number, 5) + ".mesh";
+
+          triangulation.load(filename.c_str());
+          LinearAlgebra::BlockVector tmp_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+          parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector> sol_trans(dof_handler);
+          sol_trans.deserialize (tmp_solution);
+          solution = tmp_solution;
+          //triangulation.clear();
+
+          break;
+        }
+
         default:
           Assert (false, ExcNotImplemented());
       }
@@ -2345,6 +2360,9 @@ namespace aspect
         setup_dofs();
 
         global_volume = GridTools::volume (triangulation, *mapping);
+
+        if (parameters.nonlinear_solver == NonlinearSolver::Binary_input)
+          init_load_binary_solution();
       }
 
     // start the timer for periodic checkpoints after the setup above
@@ -2367,15 +2385,18 @@ namespace aspect
         signals.post_set_initial_state (*this);
 
         computing_timer.exit_section();
+
+        if (parameters.nonlinear_solver == NonlinearSolver::Binary_input)
+          init_time_input();
       }
 
     // start the principal loop over time steps:
     do
       {
-        start_timestep ();
+        start_timestep();
 
         // then do the core work: assemble systems and solve
-        solve_timestep ();
+        solve_timestep();
 
         pcout << std::endl;
 
@@ -2383,10 +2404,15 @@ namespace aspect
         // for now the bool (convection/conduction dominated)
         // returned by compute_time_step is unused, will be
         // added to statistics later
-        old_time_step = time_step;
-        time_step = std::min (compute_time_step().first,
-                              parameters.maximum_time_step);
-        time_step = termination_manager.check_for_last_time_step(time_step);
+        if (parameters.nonlinear_solver != NonlinearSolver::Binary_input)
+          {
+            old_time_step = time_step;
+            time_step = std::min(compute_time_step().first,
+                                 parameters.maximum_time_step);
+            time_step = termination_manager.check_for_last_time_step(time_step);
+          }
+        else
+          this->update_time_input();
 
         if (parameters.convert_to_years == true)
           statistics.add_value("Time step size (years)", time_step / year_in_seconds);
