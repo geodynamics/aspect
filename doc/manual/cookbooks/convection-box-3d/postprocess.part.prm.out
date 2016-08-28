@@ -1,8 +1,0 @@
-subsection %%\hyperref[parameters:Postprocess]{Postprocess}%
-  set %%\hyperref[parameters:Postprocess/List of postprocessors]{List of postprocessors}% = velocity statistics, temperature statistics, ...%% \index[prmindex]{List of postprocessors} \index[prmindexfull]{Postprocess!List of postprocessors} %
-                       ...heat flux statistics, visualization
-
-  subsection %%\hyperref[parameters:Postprocess/Visualization]{Visualization}%
-    set %%\hyperref[parameters:Postprocess/Visualization/Time between graphical output]{Time between graphical output}% = 0.0001%% \index[prmindex]{Time between graphical output} \index[prmindexfull]{Postprocess!Visualization!Time between graphical output} %
-  end
-end

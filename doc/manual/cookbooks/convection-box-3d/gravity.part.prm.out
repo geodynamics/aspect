@@ -1,7 +1,0 @@
-subsection %%\hyperref[parameters:Gravity_20model]{Gravity model}%
-  set %%\hyperref[parameters:Gravity model/Model name]{Model name}% = vertical%% \index[prmindex]{Model name} \index[prmindexfull]{Gravity model!Model name} %
-
-  subsection %%\hyperref[parameters:Gravity_20model/Vertical]{Vertical}%
-    set %%\hyperref[parameters:Gravity model/Vertical/Magnitude]{Magnitude}% = 1e16   # = Ra / Thermal expansion coefficient%% \index[prmindex]{Magnitude} \index[prmindexfull]{Gravity model!Vertical!Magnitude} %
-  end
-end

@@ -1,3 +1,0 @@
-subsection %%\hyperref[parameters:Discretization]{Discretization}%
-  set %%\hyperref[parameters:Discretization/Use locally conservative discretization]{Use locally conservative discretization}% = true%% \index[prmindex]{Use locally conservative discretization} \index[prmindexfull]{Discretization!Use locally conservative discretization} %
-end

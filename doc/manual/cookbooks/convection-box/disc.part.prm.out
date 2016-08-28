@@ -1,4 +1,0 @@
-subsection %%\hyperref[parameters:Discretization]{Discretization}%
-  set %%\hyperref[parameters:Discretization/Stokes velocity polynomial degree]{Stokes velocity polynomial degree}%       = 2%% \index[prmindex]{Stokes velocity polynomial degree} \index[prmindexfull]{Discretization!Stokes velocity polynomial degree} %
-  set %%\hyperref[parameters:Discretization/Temperature polynomial degree]{Temperature polynomial degree}%           = 3%% \index[prmindex]{Temperature polynomial degree} \index[prmindexfull]{Discretization!Temperature polynomial degree} %
-end
