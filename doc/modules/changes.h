@@ -6,6 +6,13 @@
  *
  * <ol>
  *
+ * <li> New: .visit output files now also contain information about
+ * the model time, as long as ASPECT was build with at least
+ * deal.II 8.5.0.pre. Previously, this information was only available
+ * in the Paraview .pvd files.
+ * <br>
+ * (Rene Gassmoeller, Juliane Dannberg, 2016/08/24)
+ *
  * <li> New: There is now an initial topography plugin that returns
  * initial topography values based on an ascii data file.
  * <br>

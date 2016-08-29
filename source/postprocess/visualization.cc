@@ -283,7 +283,16 @@ namespace aspect
 
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           "solution.visit").c_str());
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+      std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
+      for (unsigned int timestep=0; timestep<times_and_pvtu_names.size(); ++timestep)
+        times_and_output_file_names.push_back(std::make_pair(times_and_pvtu_names[timestep].first,
+                                                             output_file_names_by_timestep[timestep]));
+      data_out.write_visit_record (global_visit_master, times_and_output_file_names);
+#else
       data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+#endif
     }
 
     template <int dim>
