@@ -419,9 +419,9 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > > &lost_particles,
-                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >       &moved_particles_cell,
-                                      std::multimap<types::subdomain_id, Particle<dim> >             &moved_particles_domain);
+        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >                  &lost_particles,
+                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >                        &moved_particles_cell,
+                                      std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
@@ -437,14 +437,14 @@ namespace aspect
          * @param [in] sent_particles All particles that should be sent and
          * their new subdomain_ids are in this map.
          *
-         * @param [in,out] received_particles List that stores all received
+         * @param [in,out] received_particles Vector that stores all received
          * particles. Note that it is not required nor checked that the list
          * is empty, received particles are simply attached to the end of
          * the vector.
          */
         void
-        send_recv_particles(const std::multimap<types::subdomain_id,Particle <dim> > &sent_particles,
-                            std::vector<std::pair<types::LevelInd, Particle<dim> > > &received_particles);
+        send_recv_particles(const std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle <dim> > > &sent_particles,
+                            std::vector<std::pair<types::LevelInd, Particle<dim> > >                              &received_particles);
 
         /**
          * Advect the particle positions by one integration step. Needs to be
