@@ -47,7 +47,8 @@ namespace aspect
           bool point_found = false;
           try
             {
-              VectorTools::point_value(this->get_dof_handler(),
+              VectorTools::point_value(this->get_mapping(),
+                                       this->get_dof_handler(),
                                        this->get_solution(),
                                        evaluation_points[p],
                                        current_point_values[p]);

@@ -18,6 +18,11 @@
  * <br>
  * (Anne Glerum, 2016/08/22)
  *
+ * <li> Fixed: The point value postprocessor forgot to take into
+ * account the mapping we use when describing curved boundaries.
+ * <br>
+ * (Rene Gassmoeller, Wolfgang Bangerth, 2016/08/16)
+ *
  * <li> Changed: Particles now also store their location in the
  * coordinate system of their current cell. This decreases the
  * number of times this location has to be computed by inverting
@@ -29,7 +34,7 @@
  * <br>
  * (Rene Gassmoeller, 2016/08/12)
  *
- * <li> Changed: Chunk geometry pull back function now returns
+ * <li> Fixed: The chunk geometry pull back function now returns
  * a corrected longitude value when 180 hemisphere is crossed.
  * <br>
  * (Anne Glerum, 2016/08/09)
