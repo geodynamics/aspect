@@ -55,13 +55,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<UpdateFlags>
+      UpdateFlags
       Velocity<dim>::get_needed_update_flags () const
       {
-        std::vector<UpdateFlags> update(this->introspection().n_components,update_default);
-        for (unsigned int i = 0; i<dim; ++i)
-          update[this->introspection().component_indices.velocities[i]] = update_values;
-        return update;
+        return update_values;
       }
 
       template <int dim>

@@ -55,13 +55,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<UpdateFlags>
+      UpdateFlags
       PTPath<dim>::get_needed_update_flags () const
       {
-        std::vector<UpdateFlags> update(this->introspection().n_components,update_default);
-        update[this->introspection().component_indices.pressure] = update_values;
-        update[this->introspection().component_indices.temperature] = update_values;
-        return update;
+        return update_values;
       }
 
       template <int dim>

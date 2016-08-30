@@ -22,6 +22,7 @@
 #define __aspect__particle_property_pT_path_h
 
 #include <aspect/particle/property/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -39,7 +40,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class PTPath : public Interface<dim>
+      class PTPath : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -95,11 +96,11 @@ namespace aspect
           need_update () const;
 
           /**
-           * Return, which data has to be provided to update the property.
+           * Return which data has to be provided to update the property.
            * The pressure and temperature need the values of their variables.
            */
           virtual
-          std::vector<UpdateFlags>
+          UpdateFlags
           get_needed_update_flags () const;
 
           /**
