@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Changed: The 'cell average' particle interpolator is now more
+ * tolerant against cells without particles by interpolating properties
+ * from neighboring cells. This is necessary, because during refinement
+ * even children of cells with a reasonable number of particles can be
+ * void of particles.
+ * <br>
+ * (Rene Gassmoeller, Jonathan Perry-Houts, 2016/08/31)
+ *
  * <li> Changed: Particle properties should now declare which solution
  * properties they need to update themselves. The particle world then
  * only computes values and gradients of the solution at
