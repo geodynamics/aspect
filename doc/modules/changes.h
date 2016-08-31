@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Changed: Particle properties should now declare which solution
+ * properties they need to update themselves. The particle world then
+ * only computes values and gradients of the solution at
+ * the particle positions if necessary, which can reduce the computational
+ * cost of the particle update for simple particle properties.
+ * <br>
+ * (Rene Gassmoeller, 2016/08/30)
+ *
  * <li> New: .visit output files now also contain information about
  * the model time, as long as ASPECT was build with at least
  * deal.II 8.5.0.pre. Previously, this information was only available

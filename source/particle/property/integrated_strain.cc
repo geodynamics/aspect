@@ -83,6 +83,13 @@ namespace aspect
       }
 
       template <int dim>
+      UpdateFlags
+      IntegratedStrain<dim>::get_needed_update_flags () const
+      {
+        return update_gradients;
+      }
+
+      template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       IntegratedStrain<dim>::get_property_information() const
       {

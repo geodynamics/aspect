@@ -950,32 +950,33 @@ namespace aspect
       const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
       const unsigned int solution_components = this->introspection().n_components;
 
-      Vector<double> value(solution_components);
+      Vector<double>              value (solution_components);
       std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
 
-      std::vector<Vector<double> >  values(particles_in_cell,value);
+      std::vector<Vector<double> >              values(particles_in_cell,value);
       std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
-
-      std::vector<Point<dim> >     particle_points(particles_in_cell);
+      std::vector<Point<dim> >                  positions(particles_in_cell);
 
       typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
         {
-          particle_points[i] = it->second.get_reference_location();
+          positions[i] = it->second.get_reference_location();
         }
 
-      const Quadrature<dim> quadrature_formula(particle_points);
+      const Quadrature<dim> quadrature_formula(positions);
+      const UpdateFlags update_flags = property_manager->get_needed_update_flags();
       FEValues<dim> fe_value (this->get_mapping(),
                               this->get_fe(),
                               quadrature_formula,
-                              update_values |
-                              update_gradients);
+                              update_flags);
 
       fe_value.reinit (cell);
-      fe_value.get_function_values (this->get_solution(),
-                                    values);
-      fe_value.get_function_gradients (this->get_solution(),
-                                       gradients);
+      if (update_flags & update_values)
+        fe_value.get_function_values (this->get_solution(),
+                                      values);
+      if (update_flags & update_gradients)
+        fe_value.get_function_gradients (this->get_solution(),
+                                         gradients);
 
       it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)

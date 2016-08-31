@@ -92,6 +92,15 @@ namespace aspect
           need_update () const;
 
           /**
+           * Return which data has to be provided to update the property.
+           * The velocity particle property needs the values of the velocity
+           * solution.
+           */
+          virtual
+          UpdateFlags
+          get_needed_update_flags () const;
+
+          /**
            * Set up the information about the names and number of components
            * this property requires.
            *

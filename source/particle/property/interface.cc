@@ -62,6 +62,13 @@ namespace aspect
       }
 
       template <int dim>
+      UpdateFlags
+      Interface<dim>::get_needed_update_flags () const
+      {
+        return update_default;
+      }
+
+      template <int dim>
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
@@ -217,6 +224,20 @@ namespace aspect
             update = std::max(update,(*p)->need_update());
           }
         return update;
+      }
+
+      template <int dim>
+      UpdateFlags
+      Manager<dim>::get_needed_update_flags () const
+      {
+        UpdateFlags update = update_default;
+        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+             p = property_list.begin(); p!=property_list.end(); ++p)
+          {
+            update |= (*p)->get_needed_update_flags();
+          }
+
+        return (update & (update_default | update_values | update_gradients));
       }
 
       template <int dim>

@@ -55,6 +55,13 @@ namespace aspect
       }
 
       template <int dim>
+      UpdateFlags
+      PTPath<dim>::get_needed_update_flags () const
+      {
+        return update_values;
+      }
+
+      template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       PTPath<dim>::get_property_information() const
       {
