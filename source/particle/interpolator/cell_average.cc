@@ -56,7 +56,7 @@ namespace aspect
         else
           found_cell = cell;
 
-        const types::LevelInd cell_index = std::make_pair<unsigned int, unsigned int> (found_cell->level(),found_cell->index());
+        const types::LevelInd cell_index = std::make_pair(found_cell->level(),found_cell->index());
         const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
               typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range = particles.equal_range(cell_index);
 
@@ -64,21 +64,52 @@ namespace aspect
         const unsigned int n_properties = particles.begin()->second.get_properties().size();
         std::vector<double> cell_properties (n_properties,0.0);
 
-        AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The 'cell "
-                               "average' interpolation scheme does not support this case. "));
-
-        for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
-             particle != particle_range.second; ++particle)
+        if (n_particles > 0)
           {
-            const std::vector<double> &particle_properties = particle->second.get_properties();
+            for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
+                 particle != particle_range.second; ++particle)
+              {
+                const std::vector<double> &particle_properties = particle->second.get_properties();
+
+                for (unsigned int i = 0; i < n_properties; ++i)
+                  cell_properties[i] += particle_properties[i];
+              }
 
             for (unsigned int i = 0; i < n_properties; ++i)
-              cell_properties[i] += particle_properties[i];
+              cell_properties[i] /= n_particles;
           }
+        // If there are no particles in this cell use the average of the
+        // neighboring cells.
+        else
+          {
+            std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbors;
+            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim> >(found_cell,neighbors);
 
-        for (unsigned int i = 0; i < n_properties; ++i)
-          cell_properties[i] /= n_particles;
+            unsigned int non_empty_neighbors = 0;
+            for (unsigned int i=0; i<neighbors.size(); ++i)
+              {
+                // Only recursively call this function if the neighbor cell contains
+                // particles (else we end up in an endless recursion)
+                if (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0)
+                  continue;
+
+                std::vector<double> neighbor_properties = properties_at_points(particles,
+                                                                               std::vector<Point<dim> > (1,neighbors[i]->center(true,false)),
+                                                                               neighbors[i])[0];
+
+                for (unsigned int i = 0; i < n_properties; ++i)
+                  cell_properties[i] += neighbor_properties[i];
+
+                ++non_empty_neighbors;
+              }
+
+            AssertThrow(non_empty_neighbors != 0,
+                        ExcMessage("A cell and all of its neighbors do not contain any particles. "
+                                   "The 'cell average' interpolation scheme does not support this case."));
+
+            for (unsigned int i = 0; i < n_properties; ++i)
+              cell_properties[i] /= non_empty_neighbors;
+          }
 
         return std::vector<std::vector<double> > (positions.size(),cell_properties);
       }
