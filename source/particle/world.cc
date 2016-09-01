@@ -350,7 +350,8 @@ namespace aspect
                         std::pair<aspect::Particle::types::LevelInd,Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
                         property_manager->initialize_late_particle(new_particle.second,
                                                                    particles,
-                                                                   *interpolator);
+                                                                   *interpolator,
+                                                                   cell);
 
                         particles.insert(new_particle);
                       }

@@ -300,7 +300,8 @@ namespace aspect
           void
           initialize_late_particle (Particle<dim> &particle,
                                     const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                    const Interpolator::Interface<dim> &interpolator) const;
+                                    const Interpolator::Interface<dim> &interpolator,
+                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Update function for particle properties. This function is
