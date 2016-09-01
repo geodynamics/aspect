@@ -4680,13 +4680,13 @@ is that the value of a compositional field is well defined at every point within
 the domain. On the other hand, compositional fields over time diffuse initially
 sharp interfaces, as we have seen in the images of the previous section.
 
-On the other hand, the geodynamics community has a history of using tracers for
+At the same time, the geodynamics community has a history of using tracers for
 this purpose. Historically, this may have been because it is conceptually
 simpler to advect along individual particles rather than whole fields, since it
 only requires an ODE integrator rather than the stabilization techniques
 necessary to advect fields. They also provide the appearance of no diffusion,
-though this is arguable. Leaving the debate whether fields or particles are the
-way to go aside, \aspect{} supports using tracers.
+though this is arguable. Leaving aside the debate whether fields or particles are the
+way to go, \aspect{} supports both: using fields and using tracers.
 
 In order to advect tracer particles along with the flow field, one just needs to
 add the \texttt{tracers} postprocessor to the list of postprocessors and specify
@@ -4730,42 +4730,130 @@ in handy because they allow the eye to follow the motion of a single particle.
 This makes it rather intuitive to understand a flow field, but it can of course
 not be reproduced in a static medium such as this manual.
 
-\paragraph{Using tracer properties}
+\paragraph{Using tracer properties.}
 
-The particles in the above example only fulfil the purpose of visualizing the convection pattern. A more meaningful use for particles is to attach properties to them, which may be set at the beginning of the model run, or updated during the model runtime. These properties can then be used for many applications, e.g. tracking an initial property (like the position), evaluating a property at a defined particle path (like the pressure-temperature evolution of a certain piece of rock), or by integrating a quantity along a particle parth (like the integrated strain a certain domain has experienced).  We illustrate these properties in the cookbook \url{cookbooks/composition-passive-tracers-properties.prm}, in which we added the following lines to the \texttt{Tracers} subsection.
+The particles in the above example only fulfill the purpose of
+visualizing the convection pattern. A more meaningful use for
+particles is to attach ``properties'' to them. A property consists of
+one or more numbers (or vectors or tensors) that may either be set at
+the beginning of the model run and stay constant, or are updated
+during the model runtime. These properties can then be used for many
+applications, e.g., storing an initial property (like the position, or
+initial composition), evaluating a property at a defined particle path (like the pressure-temperature evolution of a certain piece of rock), or by integrating a quantity along a particle parth (like the integrated strain a certain domain has experienced).  We illustrate these properties in the cookbook \url{cookbooks/composition-passive-tracers-properties.prm}, in which we add the following lines to the \texttt{Tracers} subsection.
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-passive-tracers/tracer-properties.part.prm.out}
 
-These commands add the tracer properties \texttt{function}, \texttt{pT path}, \texttt{initial position} and \texttt{initial composition}, which can be used for various purposes. A full list of particle properties can be found in Section~\ref{parameters:Postprocess/Tracers}. New tracer properties can be added as plugins as described in Section~\ref{sec:write-plugin}. The here selected properties allow us in this example:
+These commands make sure that every tracer will carry four different
+properties (\texttt{function}, \texttt{pT path}, \texttt{initial
+  position} and \texttt{initial composition}), some of which may be
+scalars and others can have multiple components. (A full list of
+particle properties that can currently be selected can be found in
+Section~\ref{parameters:Postprocess/Tracers}, and new tracer
+properties can be added as plugins as described in
+Section~\ref{sec:write-plugin}.) The properties selected above do the following:
 
 \begin{itemize}
-\item To compare the final position of a particle with its initial position and therefore determine, how far certain domains travelled during the model runtime.
-\item To compare the final composition of a particle with its initial composition and therefore determine, which regions underwent the reaction described in Section~\ref{sec:cookbooks-composition}, and where the material that underwent this reaction got transported to.
-\item Note that the \texttt{function} property of the particles follows the same function as the compositional initial composition of field number one. Therefore, this property should behave identical to the compositional field, except for the reaction term of the compositional field. This allows to compare the error in tracer position to the numerical diffusion of the compositional field.
-\item If one selects a tracer of a particular id, an output of the pressure and temperature at its current position generated by the \texttt{pT path} property over time allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere to crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g. in a subduction zone).
+\item \texttt{initial position:} This particle property simply stores
+  the initial position of the particle and then never changes it. This
+  can be useful to compare the final position of a particle with its initial position and therefore determine how far certain domains traveled during the model runtime.
+\item \texttt{initial composition:} This property uses the same
+  method to initialize particle properties as is used to initialize
+  the corresponding compositional fields. Using this, it stores the
+  compositional field initialization values at the location where the particle
+  started, and again never changes them. This is useful in the same
+  context as shown for the field-based example in
+  Section~\ref{sec:cookbooks-composition} where we would like to
+  figure where materials ends up. In this case, one would set the
+  initial composition to an indicator function for certain parts of
+  the domain, and then set the initial composition property for the
+  particles to match this composition. Letting the particles advect
+  and at a later time visualizing this particle property will then
+  show where particles came from. In cases where compositional
+  variables undergo changes, e.g., by describing phase changes or
+  chemical reactions, the ``initial composition'' property can also be
+  useful to compare the final composition of a particle with its
+  initial composition and therefore determine which regions underwent
+  reactions such as those described in Section~\ref{sec:cookbooks-composition},
+  and where the material that underwent this reaction got transported
+  to. 
+\item \texttt{function:} This particle property can be used to assign
+  to each particle values that are described based on a function of
+  space. It provides an alternative way to set initial values if you
+  don't want to first set a compositional field's initial values based
+  on a function, and then copy these values via the ``initial
+  composition'' property to particles. In the example above, we use
+  the same function as for the compositional initial composition of
+  field number one in
+  Section~\ref{sec:cookbooks-composition}. Therefore, this property
+  should behave identical to the compositional field (except that the
+  compositional field may have a reaction term that this particle
+  property does not), although the two are of course advected using
+  very different methods. This allows to compare the error in tracer
+  position to the numerical diffusion of the compositional field.
+\item \texttt{pT path:} This property is interesting in that the
+  particle property's values always exactly mirror the pressure and
+  temperature at the particle's current location. This does not seem
+  to be very useful since the information is already
+  avaiable. However, because each particle has a unique id, one can
+  select a particular tracer particle and output its properties
+  (including pressure and temperature based on the \texttt{pT path}
+  property) at all time steps. This allows for the creation of a pressure-temperature curve of a certain piece of rock. This property is interesting in many lithosphere and crustal scale models, because it is determining the metamorphic reactions that happen during deformation processes (e.g., in a subduction zone).
 \end{itemize}
 
-\paragraph{Using active tracers}
-In the examples above, tracer properties passively track distinct model properties.  These tracer properties, however, may also be used to actively influence the model as it runs.  For instance, a composition-dependent material model may use a particle's initial composition rather than an advected compositional field.  
-A slightly modified version of the active-composition cookbook (\url{cookbooks/composition-active.prm}:) illustrates how to use 'active tracers' in this manner.
+\paragraph{Using active tracers.}
+In the examples above, tracer properties passively track distinct
+model properties.  These tracer properties, however, may also be used
+to actively influence the model as it runs.  For instance, a
+composition-dependent material model may use particles' initial
+composition rather than an advected compositional field. To make this
+work -- i.e., to get information from particles that are located at
+unpredictable locations, to the quadrature
+points at which material models and other parts of the code need to
+evaluate these properties -- we need to somehow get the values from
+particles back to fields that can then be evaluated at any point where
+this is necessary.
+A slightly modified version of the active-composition cookbook (\url{cookbooks/composition-active.prm}) illustrates how to use `active tracers' in this manner.
 
-This cookbook (\url{cookbooks/composition-active-tracers.prm}:) modifies two sections of the input file.  First, tracers are added under the \texttt{Postprocess} section: 
+This cookbook, \url{cookbooks/composition-active-tracers.prm}, modifies two sections of the input file.  First, tracers are added under the \texttt{Postprocess} section: 
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/tracers.part.prm.out}
-
-In this case, the tracked tracer properties are \texttt{velocity} and \texttt{initial composition}.  In order to use the tracer initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
+Here, each particle will carry the \texttt{velocity} and
+\texttt{initial composition} properties.  In order to use the tracer initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
 
 \lstinputlisting[language=prmfile]{cookbooks/composition-active-tracers/composition.part.prm.out}
  
-In comparison to \url{cookbooks/composition-active.prm}, the \texttt{Composition} section now contains variables that specify the \texttt{Compositional field method} and \texttt{Mapped particle properties}.  The \texttt{Compositional field method} parameter may be set to either \texttt{field} or \texttt{particles}, where \texttt{field} specifies that compositional fields are tracked by advected fields (default method).  
+What this does is the following: It says that there will be two
+compositional fields, called \texttt{lower} and \texttt{upper}
+(because we will use them to indicate material that comes from either
+the lower or upper part of the domain). Next, the
+\texttt{Compositional field methods} states that each of these fields
+will be computed by interpolation from the particles (if we had left
+this parameter at its default value, \texttt{field}, for each field,
+then it would have solved an advection PDE in each time step, as we
+have done in all previous examples).
 
-In this case, we specify that the compositional fields are in fact tracked by particles.  In order for the material model to access information stored on the particles, however, we also need to specify that the initial composition of each particle is mapped to a new field created at each time step for use in the material model.  The name of this field will still correspond to those specified in \texttt{set Names of fields}.  
+In this case, we specify that both of the compositional fields are in
+fact interpolated from particle properties in each time step. How this
+is done is described in the fourth line. To understand it, it is
+important to realize that particles and fields have matching names: We
+have named the fields \texttt{lower} and \texttt{upper}, whereas the
+properties that result from the \texttt{initial composition} entry in
+the particles section are called \texttt{initial lower} and
+\texttt{initial upper}, since they inherit the names of the fields.
 
-The initial composition is mapped to a new field with the general phrase \texttt{field{\_}name{:} initial field{\_}name}, where \texttt{field{\_}name} corresponds to \texttt{upper} or \texttt{lower}.  Notably, the order in which field names are defined in \texttt{set Names of fields} will determine the compositional field index number referenced in a material model. Therefore, it is recommended for consistency that mapped particle properties are listed in the same order as in \texttt{set Names of fields} . 
+The syntax for interpolation from particles to fields then
+states that the \texttt{lower} field will be set to the interpolated
+value of the \texttt{initial lower} particle property at the end of
+each time step, and similarly
+for the \texttt{upper} field. In turn, the
+\texttt{initial composition} particle property was using the same
+method that one would have used for the compositional field
+initialization if these fields were actually advected along in each
+time step.
  
 In this model the given global refinement level (5), associated number of cells (1024) and 100,000 total particles produces an average particle-per-cell count slightly below 100.  While on the high end compared to most geodynamic studies using active particles, increasing the number of particles per cell further may alter the solution.  As with the numerical resolution, any study using active particles should systematically vary the number of particles per cell in order to determine this parameter's influence on the simulation.
 
-\note{\aspect{}'s tracer implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand tracers per process can slow down a model significantly. Moreover, models with an highly adaptive mesh and many tracers do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of tracers. Therefore processes that compute the solution for coarse-grid regions have to process many more tracers than other processes. Additionally, the checkpoint/restart functionality for tracers is only implemented in models with a constant number of processes before and after the checkpoint and when the selected tracer properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
+\note{\aspect{}'s tracer implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand tracers per process can slow down a model significantly. Moreover, models with a highly adaptive mesh and many tracers do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of tracers. Therefore processes that compute the solution for coarse-grid regions have to process many more tracers than other processes. Additionally, the checkpoint/restart functionality for tracers is only implemented in models with a constant number of processes before and after the checkpoint and when the selected tracer properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
 
 
 \subsubsection{Using a free surface}
@@ -6532,7 +6620,7 @@ $35^\circ$ in compression, both of which correspond to the reported Arthur angle
 
 
 
-\paragraph{Extension to 3D} We can easily modify the previous 
+\paragraph{Extension to 3D.} We can easily modify the previous 
 input file to produce {\tt crustal\_model\_3D.prm}
 which implements a similar setup, with the additional constraint that the position 
 of the velocity discontinuity varies with the $y$-coordinate, 
@@ -7768,7 +7856,7 @@ exact equations chosen to model the fluid. We will discuss these in the
 following.
 
 
-\paragraph{Case 1.1: BA\_Ra104\_Iso\_ZS}
+\paragraph{Case 1.1: BA\_Ra104\_Iso\_ZS.}
 \label{sec:davies-case11_BA}
 
 This case is run with the following settings:
@@ -7801,7 +7889,7 @@ gravity.
 Results for this and the other cases are shown below.
 
 
-\paragraph{Case 2.1: BA\_Ra104\_Iso\_FS}
+\paragraph{Case 2.1: BA\_Ra104\_Iso\_FS.}
 \label{sec:davies-case21_BA}
 
 Case 2.1 uses the following setup, differing only in the boundary conditions:
@@ -7829,7 +7917,7 @@ that is relevant is then as follows (the full input file resides at
 Again, results are shown below.
 
 
-\paragraph{Case 2.2: BA\_Ra105\_Iso\_FS}
+\paragraph{Case 2.2: BA\_Ra105\_Iso\_FS.}
 \label{sec:davies-case22_BA}
 
 Case 2.2 is described as follows:
@@ -7855,7 +7943,7 @@ gravity in the input file.  The full script for case 2.2 is located in
 \url{benchmark/davies_et_al/case-2.2.prm}
 
 
-\paragraph{Case 2.3: BA\_Ra103\_vv\_FS}
+\paragraph{Case 2.3: BA\_Ra103\_vv\_FS.}
 \label{sec:davies-case23_BA}
 
 Case 2.3 is a variation on the previous one:
@@ -7908,7 +7996,7 @@ following parts:
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/davies_et_al/case-2.3.prm.out}
 
 
-\paragraph{Results}
+\paragraph{Results.}
 
 In the following, let us discuss some of the results of the benchmark setups
 discussed above. First, the final steady state temperature fields are shown in
@@ -7997,7 +8085,7 @@ of results are listed in Table~\ref{tab:davies-et-al-results}.%
 
 This section follows the two free surface benchmarks described by Crameri et al. \cite{CSG12}.  
 
-\paragraph{ Case 1: Relaxation of topography }
+\paragraph{Case 1: Relaxation of topography.}
 \label{sec:benchmark-crameri-case-1}
 
 The first benchmark involves a high viscosity lid sitting on top of a lower viscosity 
@@ -8047,7 +8135,7 @@ codes which are included in this comparison are basically indistinguishable.
   \label{fig:crameri-benchmark-relaxation-topography}
 \end{figure}
 
-\paragraph{ Case 2: Dynamic topography }
+\paragraph{Case 2: Dynamic topography.}
 \label{sec:benchmark-crameri-case-2}
 
 Case two is more complicated. Unlike the case one, it occurs over mantle convection 
