@@ -192,6 +192,8 @@ namespace aspect
               }
           }
 
+        Assert (particle_properties.size() == n_property_components, ExcInternalError());
+
         particle.set_properties(particle_properties);
       }
 
