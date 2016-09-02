@@ -72,7 +72,7 @@ namespace aspect
       template <int dim>
       std::string
       HDF5Output<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                            const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                            const Property::ParticlePropertyInformation &property_information,
                                             const double current_time)
       {
 #ifdef DEAL_II_WITH_HDF5
@@ -107,13 +107,14 @@ namespace aspect
         // Prepare the output data
         std::vector<double> position_data (3 * n_local_particles,0.0);
         std::vector<types::particle_index> index_data (n_local_particles);
-        std::vector<std::vector<double> > property_data(property_component_list.size());
+        std::vector<std::vector<double> > property_data(property_information.n_fields());
 
-        for (unsigned int property = 0; property < property_component_list.size(); ++property)
+        for (unsigned int property = 0; property < property_information.n_fields(); ++property)
           {
-            const unsigned int data_components = (property_component_list[property].second != 2
+            const unsigned int n_components = property_information.get_components_by_field_index(property);
+            const unsigned int data_components = (n_components != 2
                                                   ?
-                                                  property_component_list[property].second
+                                                  n_components
                                                   :
                                                   3);
 
@@ -131,16 +132,16 @@ namespace aspect
             const std::vector<double> properties = it->second.get_properties();
             unsigned int particle_property_index = 0;
 
-            for (unsigned int property = 0; property < property_component_list.size(); ++property)
+            for (unsigned int property = 0; property < property_information.n_fields(); ++property)
               {
-
-                const unsigned int data_components = (property_component_list[property].second != 2
+                const unsigned int n_components = property_information.get_components_by_field_index(property);
+                const unsigned int data_components = (n_components != 2
                                                       ?
-                                                      property_component_list[property].second
+                                                      n_components
                                                       :
                                                       3);
 
-                for (unsigned int component = 0; component < property_component_list[property].second; ++component,++particle_property_index)
+                for (unsigned int component = 0; component < n_components; ++component,++particle_property_index)
                   property_data[property][i * data_components + component] = properties[particle_property_index];
 
               }
@@ -199,11 +200,12 @@ namespace aspect
         H5Dclose(particle_index_dataset);
 
         // Write the property data
-        for (unsigned int property = 0; property != property_component_list.size(); ++property)
+        for (unsigned int property = 0; property != property_information.n_fields(); ++property)
           {
-            const unsigned int data_components = (property_component_list[property].second != 2
+            const unsigned int n_components = property_information.get_components_by_field_index(property);
+            const unsigned int data_components = (n_components != 2
                                                   ?
-                                                  property_component_list[property].second
+                                                  n_components
                                                   :
                                                   3);
 
@@ -213,9 +215,9 @@ namespace aspect
             const hid_t property_dataspace = H5Screate_simple(2, global_dataset_size, NULL);
             const hid_t local_property_dataspace = H5Screate_simple(2, local_dataset_size, NULL);
 #if H5Dcreate_vers == 1
-            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_component_list[property].first.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
+            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_information.field_names[property].c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT);
 #else
-            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_component_list[property].first.c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+            const hid_t particle_property_dataset = H5Dcreate(h5_file, property_information.get_field_name_by_index(property).c_str(), H5T_NATIVE_DOUBLE, property_dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #endif
 
             // Select the local hyperslab from the dataspace
@@ -245,15 +247,16 @@ namespace aspect
 
             entry.add_attribute("id", 1);
 
-            for (unsigned int property = 0; property < property_component_list.size(); ++property)
+            for (unsigned int property = 0; property < property_information.n_fields(); ++property)
               {
-                const unsigned int data_components = (property_component_list[property].second != 2
+                const unsigned int n_components = property_information.get_components_by_field_index(property);
+                const unsigned int data_components = (n_components != 2
                                                       ?
-                                                      property_component_list[property].second
+                                                      n_components
                                                       :
                                                       3);
 
-                entry.add_attribute(property_component_list[property].first, data_components);
+                entry.add_attribute(property_information.get_field_name_by_index(property), data_components);
               }
 
             xdmf_entries.push_back(entry);
@@ -265,7 +268,7 @@ namespace aspect
 
         return output_path_prefix;
 #else
-        (void) property_component_list;
+        (void) property_information;
         (void) particles;
         (void) current_time;
         return "";

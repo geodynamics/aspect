@@ -45,7 +45,7 @@ namespace aspect
       template <int dim>
       std::string
       ASCIIOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                             const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                             const Property::ParticlePropertyInformation &property_information,
                                              const double /*time*/)
       {
         const std::string output_file_prefix =
@@ -73,17 +73,18 @@ namespace aspect
         for (unsigned int i = 0; i < dim; ++i)
           output << "position[" << i << "] ";
 
-        output << "id ";
+        output << "id";
 
-        std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
-        for (; property!=property_component_list.end(); ++property)
+        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
+            const unsigned n_components = property_information.get_components_by_field_index(field_index);
+            const std::string field_name = property_information.get_field_name_by_index(field_index);
             // If it is a 1D element, print just the name, otherwise use []
-            if (property->second == 1)
-              output << property->first << ' ';
+            if (n_components == 1)
+              output << ' ' << field_name;
             else
-              for (unsigned int component_index=0; component_index<property->second; ++component_index)
-                output << property->first << "[" << component_index << "] ";
+              for (unsigned int component_index=0; component_index<n_components; ++component_index)
+                output << ' ' << field_name << "[" << component_index << "]";
           }
         output << "\n";
 

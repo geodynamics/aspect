@@ -22,6 +22,7 @@
 #define __aspect__particle_output_interface_h
 
 #include <aspect/particle/particle.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/plugins.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -85,7 +86,7 @@ namespace aspect
           virtual
           std::string
           output_particle_data(const std::multimap<types::LevelInd, Particle<dim> >     &particles,
-                               const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                               const Property::ParticlePropertyInformation &property_information,
                                const double current_time) = 0;
 
           /**

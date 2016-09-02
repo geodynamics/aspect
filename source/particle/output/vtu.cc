@@ -46,7 +46,7 @@ namespace aspect
       template <int dim>
       std::string
       VTUOutput<dim>::output_particle_data(const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                           const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                                           const Property::ParticlePropertyInformation &property_information,
                                            const double current_time)
       {
         const std::string output_file_prefix = "particles-" + Utilities::int_to_string (file_index, 5);
@@ -117,13 +117,16 @@ namespace aspect
         output << "        </DataArray>\n";
 
         // Print the data associated with the particles
-        std::vector<std::pair<std::string,unsigned int> >::const_iterator property = property_component_list.begin();
         unsigned int data_offset = 0;
 
-        for (; property!=property_component_list.end(); ++property)
+        for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
           {
+            const unsigned int n_components = property_information.get_components_by_field_index(field_index);
 
-            output << "        <DataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" Format=\"ascii\">\n";
+            output << "        <DataArray type=\"Float64\" Name=\""
+                   << property_information.get_field_name_by_index(field_index)
+                   << "\" NumberOfComponents=\"" << (n_components == 2 ? 3 : n_components)
+                   << "\" Format=\"ascii\">\n";
             for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
@@ -131,19 +134,19 @@ namespace aspect
 
                 output << "          ";
 
-                for (unsigned int d=0; d < property->second; ++d)
+                for (unsigned int d=0; d < n_components; ++d)
                   {
                     output << particle_data[data_offset+d];
 
-                    if (d+1 < property->second)
+                    if (d+1 < n_components)
                       output << ' ';
                   }
 
-                if (property->second == 2)
+                if (n_components == 2)
                   output << " 0";
                 output << "\n";
               }
-            data_offset += property->second;
+            data_offset += n_components;
             output << "        </DataArray>\n";
           }
         output << "      </PointData>\n";
@@ -175,9 +178,16 @@ namespace aspect
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
             pvtu_output << "      <PDataArray type=\"UInt64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\"/>\n";
 
-            for (property=property_component_list.begin(); property!=property_component_list.end(); ++property)
+            for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
               {
-                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property->first << "\" NumberOfComponents=\"" << (property->second == 2 ? 3 : property->second) << "\" format=\"ascii\"/>\n";
+                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
+                            << "\" NumberOfComponents=\""
+                            << (property_information.get_components_by_field_index(field_index) == 2
+                                ?
+                                3
+                                :
+                                property_information.get_components_by_field_index(field_index))
+                            << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)

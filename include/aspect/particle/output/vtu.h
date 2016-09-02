@@ -81,7 +81,7 @@ namespace aspect
           virtual
           std::string
           output_particle_data(const std::multimap<types::LevelInd, Particle<dim> >     &particles,
-                               const std::vector<std::pair<std::string, unsigned int> > &property_component_list,
+                               const Property::ParticlePropertyInformation &property_information,
                                const double current_time);
 
           /**

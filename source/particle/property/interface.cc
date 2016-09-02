@@ -30,6 +30,139 @@ namespace aspect
   {
     namespace Property
     {
+      ParticlePropertyInformation::ParticlePropertyInformation()
+        :
+        number_of_components(numbers::invalid_unsigned_int),
+        number_of_fields(numbers::invalid_unsigned_int),
+        number_of_plugins(numbers::invalid_unsigned_int)
+      {}
+
+      ParticlePropertyInformation::ParticlePropertyInformation(const std::vector<
+                                                               std::vector<
+                                                               std::pair<std::string,unsigned int> > > &properties)
+      {
+        unsigned int global_component_index = 0;
+        for (unsigned int plugin_index = 0;
+             plugin_index < properties.size(); ++plugin_index)
+          {
+            unsigned int component_per_plugin = 0;
+            unsigned int field_per_plugin = 0;
+
+            position_per_plugin.push_back(global_component_index);
+
+            for (unsigned int field_index = 0;
+                 field_index < properties[plugin_index].size(); ++field_index)
+              {
+                const std::string  name         = properties[plugin_index][field_index].first;
+                const unsigned int n_components = properties[plugin_index][field_index].second;
+
+                field_names.push_back(name);
+                components_per_field.push_back(n_components);
+                position_per_field.push_back(global_component_index);
+                component_per_plugin += n_components;
+                global_component_index += n_components;
+                ++field_per_plugin;
+              }
+
+            fields_per_plugin.push_back(field_per_plugin);
+            components_per_plugin.push_back(component_per_plugin);
+          }
+
+        number_of_components = global_component_index;
+        number_of_fields = field_names.size();
+        number_of_plugins = properties.size();
+      }
+
+      bool
+      ParticlePropertyInformation::fieldname_exists(const std::string &name) const
+      {
+        return (std::find(field_names.begin(),field_names.end(),name) != field_names.end());
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_field_index_by_name(const std::string &name) const
+      {
+        const std::vector<std::string>::const_iterator field = std::find(field_names.begin(),
+                                                                         field_names.end(),
+                                                                         name);
+
+        AssertThrow(field != field_names.end(),
+                    ExcMessage("The particle property manager was asked for a property "
+                               "field with the name <" + name + ">, but no such field could "
+                               "be found."));
+        return std::distance(field_names.begin(),field);
+      }
+
+      std::string
+      ParticlePropertyInformation::get_field_name_by_index(const unsigned int field_index) const
+      {
+        return field_names[field_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_position_by_field_name(const std::string &name) const
+      {
+        const unsigned int field_index = get_field_index_by_name(name);
+        return position_per_field[field_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_components_by_field_name(const std::string &name) const
+      {
+        const unsigned int field_index = get_field_index_by_name(name);
+        return components_per_field[field_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_position_by_field_index(const unsigned int field_index) const
+      {
+        return position_per_field[field_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_components_by_field_index(const unsigned int field_index) const
+      {
+        return components_per_field[field_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_position_by_plugin_index(const unsigned int plugin_index) const
+      {
+        return position_per_plugin[plugin_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_components_by_plugin_index(const unsigned int plugin_index) const
+      {
+        return components_per_plugin[plugin_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::get_fields_by_plugin_index(const unsigned int plugin_index) const
+      {
+        return fields_per_plugin[plugin_index];
+      }
+
+      unsigned int
+      ParticlePropertyInformation::n_plugins() const
+      {
+        return number_of_plugins;
+      }
+
+      unsigned int
+      ParticlePropertyInformation::n_fields() const
+      {
+        return number_of_fields;
+      }
+
+      unsigned int
+      ParticlePropertyInformation::n_components() const
+      {
+        return number_of_components;
+      }
+
+
+
       template <int dim>
       Interface<dim>::~Interface ()
       {}
@@ -103,25 +236,19 @@ namespace aspect
       void
       Manager<dim>::initialize ()
       {
-        n_property_components = 0;
+        std::vector<std::vector<std::pair<std::string, unsigned int> > > info;
 
-        // Save the names, lengths and positions of the selected properties
+        // Get the property information of the selected plugins
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
-            positions.push_back(n_property_components);
-
             (*p)->initialize();
 
-            const std::vector<std::pair<std::string,unsigned int> > properties = (*p)->get_property_information();
-            property_component_list.insert(property_component_list.end(),properties.begin(),properties.end());
-
-            for (unsigned int i = 0; i < properties.size(); ++i)
-              {
-                property_position_map.insert(std::make_pair(properties[i].first,n_property_components));
-                n_property_components += properties[i].second;
-              }
+            info.push_back((*p)->get_property_information());
           }
+
+        // Initialize our property information
+        property_information = ParticlePropertyInformation(info);
       }
 
       template <int dim>
@@ -129,7 +256,7 @@ namespace aspect
       Manager<dim>::initialize_one_particle (Particle<dim> &particle) const
       {
         std::vector<double> particle_properties (0);
-        particle.set_n_property_components(n_property_components);
+        particle.set_n_property_components(property_information.n_components());
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
@@ -163,7 +290,7 @@ namespace aspect
               {
                 case aspect::Particle::Property::initialize_to_zero:
                 {
-                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                  for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                     particle_properties.push_back(0.0);
                   break;
                 }
@@ -191,8 +318,8 @@ namespace aspect
                   const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
                                                                                     std::vector<Point<dim> > (1,particle.get_location()),
                                                                                     found_cell);
-                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
-                    particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
+                  for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
+                    particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
                   break;
                 }
 
@@ -201,7 +328,7 @@ namespace aspect
               }
           }
 
-        Assert (particle_properties.size() == n_property_components, ExcInternalError());
+        Assert (particle_properties.size() == property_information.n_components(), ExcInternalError());
 
         particle.set_properties(particle_properties);
       }
@@ -212,11 +339,11 @@ namespace aspect
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &gradients) const
       {
-        unsigned int property = 0;
+        unsigned int plugin_index = 0;
         for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p,++property)
+             p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
-            (*p)->update_one_particle_property(positions[property],
+            (*p)->update_one_particle_property(property_information.get_position_by_plugin_index(plugin_index),
                                                particle.get_location(),
                                                solution,
                                                gradients,
@@ -255,37 +382,28 @@ namespace aspect
       unsigned int
       Manager<dim>::get_n_property_components () const
       {
-        return n_property_components;
+        return property_information.n_components();
       }
 
       template <int dim>
       std::size_t
       Manager<dim>::get_particle_size () const
       {
-        return (n_property_components+2*dim) * sizeof(double) + sizeof(types::particle_index);
+        return (property_information.n_components()+2*dim) * sizeof(double) + sizeof(types::particle_index);
       }
 
       template <int dim>
-      const std::vector<std::pair<std::string, unsigned int> > &
+      const ParticlePropertyInformation &
       Manager<dim>::get_data_info () const
       {
-        return property_component_list;
+        return property_information;
       }
 
       template <int dim>
       unsigned int
       Manager<dim>::get_property_component_by_name(const std::string &name) const
       {
-        // see if the given name is defined
-        if (property_position_map.find (name) != property_position_map.end())
-          return property_position_map.find(name)->second;
-        else
-          {
-            Assert(false,ExcMessage("The particle property manager was asked for "
-                                    "the property called <" + name + ">. This "
-                                    "property does not exist in this model."));
-            return 0;
-          }
+        return property_information.get_position_by_field_name(name);
       }
 
       namespace
@@ -394,7 +512,6 @@ namespace aspect
                                                                  declare_parameters_function,
                                                                  factory_function);
       }
-
     }
   }
 }
