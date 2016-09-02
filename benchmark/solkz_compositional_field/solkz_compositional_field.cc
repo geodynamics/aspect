@@ -12,7 +12,6 @@
 
 
 
-
 namespace aspect
 {
   /**
@@ -219,38 +218,7 @@ namespace aspect
         t90 = sin(t67);
         t94 = exp(-t53);
         t97 = 0.3e1 * Rm * t26;
-        t98 = t2 * Rm;############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
-
-subsection Compositional fields
-  set Number of fields = 1
-end
-
-subsection Compositional initial conditions
-  set Model name = function
-  subsection Function
-    set Variable names      = x, z
-    set Function constants  = pi = 3.1415926536
-    set Function expression = 1.0 - sin(pi*z)*cos(pi*x);
- end
-end
-
-############### Parameters describing the discretization
-
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Use locally conservative discretization = true
-
-  # Whether to use a composition discretization that is discontinuous as
-  # opposed to continuous. This then requires the assembly of face terms
-  # between cells, and weak imposition of boundary terms for the composition
-  # field via the discontinuous Galerkin method.
-
-  set Use discontinuous composition discretization = true
-
-end
-
+        t98 = t2 * Rm;
         t99 = t98 * B;
         t100 = t3 * Rm;
         t101 = t100 * Rp;
@@ -769,11 +737,13 @@ end
     SolKzMaterial<dim>::
     density (const double,
              const double,
-             const std::vector<double> &, /*composition*/
+             const std::vector<double> &composition, /*composition*/
              const Point<dim> &p) const
     {
       // defined as given in the paper
-      return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+      // return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+      
+      return composition[0];
     }
 
 
@@ -872,9 +842,11 @@ end
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          dim+2);
-      ComponentSelectFunction<dim> comp_p(dim, dim+2);
+      // ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
+         //                                 dim+2);
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim), this->get_fe().n_components());
+      // ComponentSelectFunction<dim> comp_p(dim, dim+2);
+      ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
