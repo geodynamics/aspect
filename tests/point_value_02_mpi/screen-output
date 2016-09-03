@@ -9,7 +9,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00000
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00000
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 1:  t=3.85098e-08 years
@@ -19,7 +19,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00001
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00001
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 2:  t=8.43635e-08 years
@@ -29,7 +29,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+12 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00002
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00002
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 3:  t=1.33523e-07 years
@@ -39,7 +39,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00003
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00003
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 4:  t=1.85895e-07 years
@@ -49,7 +49,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00004
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00004
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 5:  t=2.4208e-07 years
@@ -59,7 +59,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00005
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00005
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 6:  t=3.02674e-07 years
@@ -69,7 +69,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00006
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00006
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 7:  t=3.68562e-07 years
@@ -79,7 +79,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00007
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00007
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 8:  t=4.4072e-07 years
@@ -89,7 +89,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00008
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00008
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 9:  t=5.21042e-07 years
@@ -99,7 +99,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00009
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00009
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 10:  t=6.12069e-07 years
@@ -109,7 +109,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 30+13 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00010
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00010
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Number of active cells: 64 (on 4 levels)
@@ -122,7 +122,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00011
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00011
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 12:  t=9.44845e-07 years
@@ -132,7 +132,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00012
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00012
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 13:  t=1.29715e-06 years
@@ -142,7 +142,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00013
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00013
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 14:  t=2.0387e-06 years
@@ -152,7 +152,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00014
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00014
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 15:  t=3.24612e-06 years
@@ -162,7 +162,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+8 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00015
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00015
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 16:  t=4.5336e-06 years
@@ -172,7 +172,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00016
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00016
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 17:  t=5.94223e-06 years
@@ -182,7 +182,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00017
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00017
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 18:  t=7.55685e-06 years
@@ -192,7 +192,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00018
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00018
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 19:  t=9.38709e-06 years
@@ -202,7 +202,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00019
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00019
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 20:  t=1.14364e-05 years
@@ -212,7 +212,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00020
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00020
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Number of active cells: 22 (on 4 levels)
@@ -225,7 +225,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+10 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00021
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00021
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 22:  t=1.61126e-05 years
@@ -235,7 +235,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00022
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00022
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 23:  t=1.96229e-05 years
@@ -245,7 +245,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+7 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00023
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00023
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 24:  t=2.56358e-05 years
@@ -255,7 +255,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00024
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00024
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 25:  t=3.23498e-05 years
@@ -265,7 +265,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00025
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00025
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 26:  t=4.0912e-05 years
@@ -275,7 +275,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00026
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00026
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 27:  t=5.05323e-05 years
@@ -285,7 +285,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00027
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00027
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 28:  t=6.01849e-05 years
@@ -295,7 +295,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00028
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00028
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 29:  t=7.43393e-05 years
@@ -305,7 +305,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00029
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00029
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 30:  t=8.29617e-05 years
@@ -315,7 +315,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00030
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00030
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Number of active cells: 16 (on 3 levels)
@@ -328,7 +328,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00031
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00031
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 32:  t=0.000113755 years
@@ -338,7 +338,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00032
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00032
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 33:  t=0.000138619 years
@@ -348,7 +348,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00033
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00033
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 34:  t=0.000145174 years
@@ -358,7 +358,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00034
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00034
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 35:  t=0.000158994 years
@@ -368,7 +368,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00035
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00035
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 36:  t=0.000173478 years
@@ -378,7 +378,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00036
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00036
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 37:  t=0.000236253 years
@@ -388,7 +388,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00037
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00037
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 38:  t=0.000243622 years
@@ -398,7 +398,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00038
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00038
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 39:  t=0.000255041 years
@@ -408,7 +408,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00039
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00039
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 40:  t=0.000273333 years
@@ -418,7 +418,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00040
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00040
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Number of active cells: 16 (on 3 levels)
@@ -431,7 +431,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00041
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00041
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 42:  t=0.000347767 years
@@ -441,7 +441,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+1 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00042
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00042
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 43:  t=0.000554282 years
@@ -451,7 +451,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+1 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00043
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00043
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 44:  t=0.00056464 years
@@ -461,7 +461,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00044
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00044
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 45:  t=0.00058051 years
@@ -471,7 +471,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00045
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00045
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 46:  t=0.000605205 years
@@ -481,7 +481,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00046
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00046
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 47:  t=0.000648354 years
@@ -491,7 +491,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00047
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00047
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 48:  t=0.000711217 years
@@ -501,7 +501,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 30+1 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00048
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00048
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 *** Timestep 49:  t=0.001 years
@@ -511,7 +511,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-point_value_02_mpi/solution-00049
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00049
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Termination requested by criterion: end time

@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-passive_comp/solution-00000
+     Writing graphical output:           output-passive_comp/solution/solution-00000
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0 K, 0 K
      Heat fluxes through boundary parts: 0 W, 0 W
@@ -35,7 +35,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-passive_comp/solution-00001
+     Writing graphical output:           output-passive_comp/solution/solution-00001
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0003907 K, 0.002625 K
      Heat fluxes through boundary parts: -0.2152 W, 0.07768 W
@@ -48,7 +48,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-passive_comp/solution-00002
+     Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.0007814 K, 0.004368 K
      Heat fluxes through boundary parts: 0.08938 W, 0.2083 W
@@ -61,7 +61,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-passive_comp/solution-00003
+     Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.29e-08 m/s
      Temperature min/avg/max:            0 K, 0.001107 K, 0.005515 K
      Heat fluxes through boundary parts: 0.5138 W, 0.3178 W

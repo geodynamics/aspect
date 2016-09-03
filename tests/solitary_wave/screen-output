@@ -26,7 +26,7 @@ Number of degrees of freedom: 74,049 (21,794+5,778+21,794+2,889+10,897+10,897)
 
 
    Postprocessing:
-     Writing graphical output:    output-solitary_wave/solution-00000
+     Writing graphical output:    output-solitary_wave/solution/solution-00000
      Compositions min/max/mass:   0.001/0.01/13.3
      RMS, max velocity:           0.000166 m/year, 0.000167 m/year
      Errors e_f, e_p, e_c, delta: 2.539743e-05, 2.204725e-02, 0.000000e+00, 1.710566e-15

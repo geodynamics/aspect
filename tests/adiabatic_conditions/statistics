@@ -18,4 +18,4 @@
 # 18: Outward heat flux through boundary with indicator 1 ("outer") (W)
 # 19: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 20: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.0000e+00 3072 28291 12545 0 37 65 16 1.2908e-04 output-adiabatic_conditions/solution-00000 9.00182145e+07 2.21462573e+08 1.61300000e+03 1.61300000e+03 1.61300000e+03 6.75070251e-18 2.12272778e-17 3.27260402e-18 6.35372590e-18 
+0 0.000000000000e+00 3072 28291 12545 0 37 65 16 1.290824474017e-04 output-adiabatic_conditions/solution/solution-00000 9.00182145e+07 2.21462573e+08 1.61300000e+03 1.61300000e+03 1.61300000e+03 6.75070251e-18 2.12272778e-17 3.27260402e-18 6.35372590e-18 

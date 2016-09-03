@@ -40,7 +40,7 @@ Number of degrees of freedom: 9,767 (5,682+297+1,894+1,894)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output: output-stokes/solution-00000
+     Writing graphical output: output-stokes/solution/solution-00000
      RMS, max velocity:        7.2e-11 m/s, 1.09e-09 m/s
 
 Termination requested by criterion: end time

@@ -27,7 +27,7 @@ Number of degrees of freedom: 9,767 (5,682+297+1,894+1,894)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Writing graphical output: output-viscous_dissipation_statistics/solution-00000
+     Writing graphical output: output-viscous_dissipation_statistics/solution/solution-00000
      RMS, max velocity:        7.2e-11 m/s, 1.09e-09 m/s
 
 Termination requested by criterion: end time

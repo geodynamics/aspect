@@ -8,7 +8,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
-     Writing graphical output: output-octagonal_initial_temperature_rotated/solution-00000
+     Writing graphical output: output-octagonal_initial_temperature_rotated/solution/solution-00000
      Temperature min/avg/max:  0 K, 0.4444 K, 1 K
 
 Termination requested by criterion: end time

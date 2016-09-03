@@ -21,7 +21,7 @@ Number of degrees of freedom: 948 (578+81+289)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-minimum_refinement_function/solution-00000
+     Writing graphical output:           output-minimum_refinement_function/solution/solution-00000
      RMS, max velocity:                  3.8e-06 m/year, 5.98e-06 m/year
      Temperature min/avg/max:            1623 K, 1743 K, 1873 K
      Heat fluxes through boundary parts: 9.059e-12 W, 1.359e-11 W, 5.662e-12 W, 1.359e-11 W
@@ -49,7 +49,7 @@ Number of degrees of freedom: 3,113 (1,906+254+953)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-minimum_refinement_function/solution-00001
+     Writing graphical output:           output-minimum_refinement_function/solution/solution-00001
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
      Heat fluxes through boundary parts: 1.585e-11 W, -1.019e-11 W, 1.246e-11 W, 1.246e-11 W
@@ -77,7 +77,7 @@ Number of degrees of freedom: 8,386 (5,146+667+2,573)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-minimum_refinement_function/solution-00002
+     Writing graphical output:           output-minimum_refinement_function/solution/solution-00002
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1746 K, 1904 K
      Heat fluxes through boundary parts: 2.491e-11 W, -1.925e-11 W, 1.246e-11 W, 2.378e-11 W
@@ -105,7 +105,7 @@ Number of degrees of freedom: 18,894 (11,610+1,479+5,805)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-minimum_refinement_function/solution-00003
+     Writing graphical output:           output-minimum_refinement_function/solution/solution-00003
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1746 K, 1904 K
      Heat fluxes through boundary parts: 3.397e-11 W, -1.132e-12 W, 1.246e-11 W, 2.378e-11 W

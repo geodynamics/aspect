@@ -30,7 +30,7 @@ Number of degrees of freedom: 268 (162+25+81)
      reference_thermal_diffusivity:                 1.13939e-06
 
      RMS, max velocity:        401 m/year, 1.2e+03 m/year
-     Writing graphical output: output-periodic_box_mpi10/solution-00000
+     Writing graphical output: output-periodic_box_mpi10/solution/solution-00000
 
 *** Timestep 1:  t=33.429 years
    Solving temperature system... 16 iterations.

@@ -29,7 +29,7 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Postprocessing:
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
      Heating rate (average/total):  0.51 W/kg, 1.02 W
-     Writing graphical output:      output-compression_heating/solution-00000
+     Writing graphical output:      output-compression_heating/solution/solution-00000
 
 *** Timestep 1:  t=0.3125 seconds
    Solving temperature system... 9 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Postprocessing:
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
      Heating rate (average/total):  0.51 W/kg, 1.02 W
-     Writing graphical output:      output-compression_heating/solution-00001
+     Writing graphical output:      output-compression_heating/solution/solution-00001
 
 *** Timestep 2:  t=0.5 seconds
    Solving temperature system... 5 iterations.
@@ -83,7 +83,7 @@ Number of degrees of freedom: 6,890 (2,178+578+2,178+289+1,089+289+289)
    Postprocessing:
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
      Heating rate (average/total):  0.51 W/kg, 1.02 W
-     Writing graphical output:      output-compression_heating/solution-00002
+     Writing graphical output:      output-compression_heating/solution/solution-00002
 
 Termination requested by criterion: end time
 

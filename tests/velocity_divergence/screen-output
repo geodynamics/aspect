@@ -23,7 +23,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00000
+     Writing graphical output:           output-velocity_divergence/solution/solution-00000
      Compositions min/max/mass:          7.47e-89/1e-05/251.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -41,13 +41,13 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 21.0037, 9.02321e-09, 350035
+      Nonlinear residuals: 21.0037, 9.02322e-09, 350035
       Total relative nonlinear residual: 4.16921e-08
 
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00001
+     Writing graphical output:           output-velocity_divergence/solution/solution-00001
      Compositions min/max/mass:          -0.000656/0.0006635/249.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -71,7 +71,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00002
+     Writing graphical output:           output-velocity_divergence/solution/solution-00002
      Compositions min/max/mass:          -0.001271/0.001291/234.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -89,13 +89,13 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 56.8239, 2.09445e-08, 350035
+      Nonlinear residuals: 56.824, 2.09445e-08, 350035
       Total relative nonlinear residual: 4.16921e-08
 
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00003
+     Writing graphical output:           output-velocity_divergence/solution/solution-00003
      Compositions min/max/mass:          -0.001846/0.001885/210.2
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -113,13 +113,13 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 83.1388, 3.32192e-08, 350035
+      Nonlinear residuals: 83.1388, 3.3219e-08, 350035
       Total relative nonlinear residual: 4.16921e-08
 
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00004
+     Writing graphical output:           output-velocity_divergence/solution/solution-00004
      Compositions min/max/mass:          -0.002204/0.002258/196.1
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr

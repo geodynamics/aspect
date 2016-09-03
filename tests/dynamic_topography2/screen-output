@@ -28,7 +28,7 @@ Number of degrees of freedom: 20,149 (9,466+1,217+4,733+4,733)
 
    Postprocessing:
      Writing dynamic topography: output-dynamic_topography2/dynamic_topography.00000
-     Writing graphical output:   output-dynamic_topography2/solution-00000
+     Writing graphical output:   output-dynamic_topography2/solution/solution-00000
 
 Termination requested by criterion: end time
 

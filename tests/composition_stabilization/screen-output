@@ -10,7 +10,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00000
+     Writing graphical output:  output-composition_stabilization/solution/solution-00000
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.1237 // 10/1000/132.5
 
@@ -55,7 +55,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00001
+     Writing graphical output:  output-composition_stabilization/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.5005 K, 1 K
      Compositions min/max/mass: -0.05777/1.019/0.1237 // -47.2/1019/132.5
 
@@ -89,7 +89,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00002
+     Writing graphical output:  output-composition_stabilization/solution/solution-00002
      Temperature min/avg/max:   0 K, 0.5008 K, 1 K
      Compositions min/max/mass: -0.05783/1.01/0.1237 // -47.25/1010/132.5
 
@@ -123,7 +123,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00003
+     Writing graphical output:  output-composition_stabilization/solution/solution-00003
      Temperature min/avg/max:   0 K, 0.5012 K, 1 K
      Compositions min/max/mass: -0.04109/1.004/0.1237 // -30.68/1004/132.5
 
@@ -157,7 +157,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00004
+     Writing graphical output:  output-composition_stabilization/solution/solution-00004
      Temperature min/avg/max:   0 K, 0.5015 K, 1 K
      Compositions min/max/mass: -0.03021/1.002/0.1237 // -19.9/1002/132.5
 
@@ -191,7 +191,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00005
+     Writing graphical output:  output-composition_stabilization/solution/solution-00005
      Temperature min/avg/max:   0 K, 0.5019 K, 1.002 K
      Compositions min/max/mass: -0.02232/1.002/0.1237 // -12.1/1002/132.5
 
@@ -236,7 +236,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00006
+     Writing graphical output:  output-composition_stabilization/solution/solution-00006
      Temperature min/avg/max:   0 K, 0.5023 K, 1.006 K
      Compositions min/max/mass: -0.01409/1.003/0.1237 // -3.947/1003/132.5
 
@@ -270,7 +270,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00007
+     Writing graphical output:  output-composition_stabilization/solution/solution-00007
      Temperature min/avg/max:   0 K, 0.5025 K, 1.008 K
      Compositions min/max/mass: -0.0114/1.003/0.1237 // -1.282/1003/132.5
 
@@ -304,7 +304,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00008
+     Writing graphical output:  output-composition_stabilization/solution/solution-00008
      Temperature min/avg/max:   0 K, 0.5028 K, 1.01 K
      Compositions min/max/mass: -0.008595/1.003/0.1237 // 1.491/1003/132.5
 
@@ -338,7 +338,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00009
+     Writing graphical output:  output-composition_stabilization/solution/solution-00009
      Temperature min/avg/max:   0 K, 0.503 K, 1.011 K
      Compositions min/max/mass: -0.006882/1.001/0.1237 // 3.187/1001/132.5
 
@@ -372,7 +372,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00010
+     Writing graphical output:  output-composition_stabilization/solution/solution-00010
      Temperature min/avg/max:   0 K, 0.5031 K, 1.013 K
      Compositions min/max/mass: -0.00646/1/0.1237 // 3.605/1000/132.5
 
@@ -417,7 +417,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00011
+     Writing graphical output:  output-composition_stabilization/solution/solution-00011
      Temperature min/avg/max:   0 K, 0.5032 K, 1.015 K
      Compositions min/max/mass: -0.005811/1/0.1237 // 4.247/1000/132.5
 
@@ -451,7 +451,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00012
+     Writing graphical output:  output-composition_stabilization/solution/solution-00012
      Temperature min/avg/max:   0 K, 0.5033 K, 1.016 K
      Compositions min/max/mass: -0.005088/1.001/0.1237 // 4.963/1001/132.5
 
@@ -485,7 +485,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00013
+     Writing graphical output:  output-composition_stabilization/solution/solution-00013
      Temperature min/avg/max:   0 K, 0.5035 K, 1.018 K
      Compositions min/max/mass: -0.003895/0.9994/0.1237 // 6.144/999.4/132.5
 
@@ -519,7 +519,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00014
+     Writing graphical output:  output-composition_stabilization/solution/solution-00014
      Temperature min/avg/max:   0 K, 0.5037 K, 1.019 K
      Compositions min/max/mass: -0.004634/0.9958/0.1237 // 5.413/995.8/132.5
 
@@ -553,7 +553,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00015
+     Writing graphical output:  output-composition_stabilization/solution/solution-00015
      Temperature min/avg/max:   0 K, 0.5038 K, 1.02 K
      Compositions min/max/mass: -0.005534/0.9971/0.1237 // 4.521/997.1/132.5
 
@@ -598,7 +598,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00016
+     Writing graphical output:  output-composition_stabilization/solution/solution-00016
      Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
      Compositions min/max/mass: -0.006296/0.9917/0.1237 // 3.767/991.8/132.5
 
@@ -632,7 +632,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00017
+     Writing graphical output:  output-composition_stabilization/solution/solution-00017
      Temperature min/avg/max:   0 K, 0.5039 K, 1.021 K
      Compositions min/max/mass: -0.006188/0.9925/0.1237 // 3.874/992.6/132.5
 
@@ -666,7 +666,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00018
+     Writing graphical output:  output-composition_stabilization/solution/solution-00018
      Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
      Compositions min/max/mass: -0.005475/0.9885/0.1237 // 4.58/988.7/132.5
 
@@ -700,7 +700,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00019
+     Writing graphical output:  output-composition_stabilization/solution/solution-00019
      Temperature min/avg/max:   0 K, 0.5038 K, 1.021 K
      Compositions min/max/mass: -0.005747/0.9858/0.1237 // 4.311/985.9/132.5
 
@@ -734,7 +734,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00020
+     Writing graphical output:  output-composition_stabilization/solution/solution-00020
      Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
      Compositions min/max/mass: -0.005768/0.9871/0.1237 // 4.289/987.2/132.5
 
@@ -779,7 +779,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00021
+     Writing graphical output:  output-composition_stabilization/solution/solution-00021
      Temperature min/avg/max:   0 K, 0.5037 K, 1.021 K
      Compositions min/max/mass: -0.00533/0.9801/0.1237 // 4.723/980.3/132.5
 
@@ -813,7 +813,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00022
+     Writing graphical output:  output-composition_stabilization/solution/solution-00022
      Temperature min/avg/max:   0 K, 0.5036 K, 1.02 K
      Compositions min/max/mass: -0.00506/0.9792/0.1237 // 4.991/979.4/132.5
 
@@ -847,7 +847,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00023
+     Writing graphical output:  output-composition_stabilization/solution/solution-00023
      Temperature min/avg/max:   0 K, 0.5033 K, 1.018 K
      Compositions min/max/mass: -0.005212/0.9782/0.1237 // 4.84/978.4/132.5
 
@@ -881,7 +881,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00024
+     Writing graphical output:  output-composition_stabilization/solution/solution-00024
      Temperature min/avg/max:   0 K, 0.5028 K, 1.015 K
      Compositions min/max/mass: -0.004624/0.9699/0.1237 // 5.422/970.2/132.5
 
@@ -915,7 +915,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00025
+     Writing graphical output:  output-composition_stabilization/solution/solution-00025
      Temperature min/avg/max:   0 K, 0.5025 K, 1.012 K
      Compositions min/max/mass: -0.004981/0.9696/0.1237 // 5.069/969.9/132.5
 
@@ -960,7 +960,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00026
+     Writing graphical output:  output-composition_stabilization/solution/solution-00026
      Temperature min/avg/max:   0 K, 0.503 K, 1.006 K
      Compositions min/max/mass: -0.004742/0.9646/0.1237 // 5.305/964.9/132.5
 
@@ -994,7 +994,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00027
+     Writing graphical output:  output-composition_stabilization/solution/solution-00027
      Temperature min/avg/max:   0 K, 0.5035 K, 1.003 K
      Compositions min/max/mass: -0.004485/0.9647/0.1237 // 5.56/965/132.5
 
@@ -1028,7 +1028,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00028
+     Writing graphical output:  output-composition_stabilization/solution/solution-00028
      Temperature min/avg/max:   0 K, 0.5038 K, 1.003 K
      Compositions min/max/mass: -0.003687/0.9602/0.1237 // 6.35/960.6/132.5
 
@@ -1062,7 +1062,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00029
+     Writing graphical output:  output-composition_stabilization/solution/solution-00029
      Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
      Compositions min/max/mass: -0.004633/0.9599/0.1237 // 5.413/960.3/132.5
 
@@ -1096,7 +1096,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00030
+     Writing graphical output:  output-composition_stabilization/solution/solution-00030
      Temperature min/avg/max:   0 K, 0.5036 K, 1.004 K
      Compositions min/max/mass: -0.004264/0.9562/0.1237 // 5.779/956.7/132.5
 
@@ -1141,7 +1141,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00031
+     Writing graphical output:  output-composition_stabilization/solution/solution-00031
      Temperature min/avg/max:   0 K, 0.5037 K, 1.003 K
      Compositions min/max/mass: -0.005711/0.957/0.1237 // 4.346/957.5/132.5
 
@@ -1181,7 +1181,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00032
+     Writing graphical output:  output-composition_stabilization/solution/solution-00032
      Temperature min/avg/max:   0 K, 0.5038 K, 1 K
      Compositions min/max/mass: -0.00611/0.9532/0.1237 // 3.951/953.7/132.5
 
@@ -1215,7 +1215,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00033
+     Writing graphical output:  output-composition_stabilization/solution/solution-00033
      Temperature min/avg/max:   0 K, 0.5038 K, 1 K
      Compositions min/max/mass: -0.004229/0.9525/0.1237 // 5.813/953/132.5
 
@@ -1249,7 +1249,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00034
+     Writing graphical output:  output-composition_stabilization/solution/solution-00034
      Temperature min/avg/max:   0 K, 0.5037 K, 1 K
      Compositions min/max/mass: -0.006671/0.9481/0.1237 // 3.396/948.6/132.5
 
@@ -1283,7 +1283,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00035
+     Writing graphical output:  output-composition_stabilization/solution/solution-00035
      Temperature min/avg/max:   0 K, 0.5035 K, 1 K
      Compositions min/max/mass: -0.003791/0.9442/0.1237 // 6.247/944.8/132.5
 
@@ -1328,7 +1328,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00036
+     Writing graphical output:  output-composition_stabilization/solution/solution-00036
      Temperature min/avg/max:   0 K, 0.5034 K, 1 K
      Compositions min/max/mass: -0.005037/0.9442/0.1237 // 5.013/944.7/132.5
 
@@ -1362,7 +1362,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00037
+     Writing graphical output:  output-composition_stabilization/solution/solution-00037
      Temperature min/avg/max:   0 K, 0.5034 K, 1 K
      Compositions min/max/mass: -0.004949/0.9407/0.1237 // 5.1/941.3/132.5
 
@@ -1396,7 +1396,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00038
+     Writing graphical output:  output-composition_stabilization/solution/solution-00038
      Temperature min/avg/max:   0 K, 0.5033 K, 1 K
      Compositions min/max/mass: -0.00508/0.939/0.1237 // 4.971/939.6/132.5
 
@@ -1430,7 +1430,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00039
+     Writing graphical output:  output-composition_stabilization/solution/solution-00039
      Temperature min/avg/max:   0 K, 0.5032 K, 1.002 K
      Compositions min/max/mass: -0.005519/0.9346/0.1237 // 4.536/935.2/132.5
 
@@ -1464,7 +1464,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-composition_stabilization/solution-00040
+     Writing graphical output:  output-composition_stabilization/solution/solution-00040
      Temperature min/avg/max:   0 K, 0.5032 K, 1.005 K
      Compositions min/max/mass: -0.004098/0.9386/0.1237 // 5.943/939.2/132.5
 

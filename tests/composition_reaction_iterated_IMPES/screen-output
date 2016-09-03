@@ -36,7 +36,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
 
    Postprocessing:
      Compositions min/max/mass: 1/1/2 // 1/1/2 // 1/1/2
-     Writing graphical output:  output-composition_reaction_iterated_IMPES/solution-00000
+     Writing graphical output:  output-composition_reaction_iterated_IMPES/solution/solution-00000
 
 *** Timestep 1:  t=0.01 seconds
    Solving temperature system... 9 iterations.

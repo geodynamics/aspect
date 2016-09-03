@@ -21,7 +21,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00000
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00000
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 998.6 W, 1953 W, 2479 W, 2479 W
@@ -49,7 +49,7 @@ Number of degrees of freedom: 6,181 (3,790+496+1,895)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00001
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00001
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 1002 W, 1955 W, 2463 W, 2463 W
@@ -77,7 +77,7 @@ Number of degrees of freedom: 12,734 (7,814+1,013+3,907)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00002
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00002
      RMS, max velocity:                  8.15e-07 m/year, 1.44e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 984.1 W, 1956 W, 2452 W, 2452 W
@@ -105,7 +105,7 @@ Number of degrees of freedom: 22,293 (13,694+1,752+6,847)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00003
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
      RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 986.3 W, 1958 W, 2453 W, 2453 W
@@ -133,7 +133,7 @@ Number of degrees of freedom: 37,297 (22,914+2,926+11,457)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00004
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00004
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 987.8 W, 1961 W, 2449 W, 2449 W
@@ -161,7 +161,7 @@ Number of degrees of freedom: 56,759 (34,886+4,430+17,443)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 1.13939e-06
 
-     Writing graphical output:           output-maximum_refinement_function_spherical/solution-00005
+     Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00005
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 986.8 W, 1962 W, 2448 W, 2448 W

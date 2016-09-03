@@ -10,7 +10,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-postprocess_initial/solution-00000
+     Writing graphical output:  output-postprocess_initial/solution/solution-00000
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.4583 // 0/1/0.4583
 
@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,703 (646+88+323+323+323)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-postprocess_initial/solution-00001
+     Writing graphical output:  output-postprocess_initial/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.3958 // 0/1/0.4167
 
@@ -40,7 +40,7 @@ Number of degrees of freedom: 2,694 (1,022+139+511+511+511)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-postprocess_initial/solution-00002
+     Writing graphical output:  output-postprocess_initial/solution/solution-00002
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.125/1/0.3946 // 0/1/0.4167
 
@@ -55,7 +55,7 @@ Number of degrees of freedom: 4,080 (1,550+205+775+775+775)
    Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-postprocess_initial/solution-00003
+     Writing graphical output:  output-postprocess_initial/solution/solution-00003
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.125/1/0.3869 // 0/1/0.4167
 
@@ -67,7 +67,7 @@ Number of degrees of freedom: 4,080 (1,550+205+775+775+775)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output:  output-postprocess_initial/solution-00004
+     Writing graphical output:  output-postprocess_initial/solution/solution-00004
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.125/1/0.3869 // 0/1/0.4167
 
