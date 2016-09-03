@@ -30,7 +30,7 @@
 namespace
 {
   const std::string
-  get_stats(const aspect::TrilinosWrappers::BlockSparseMatrix &matrix,
+  get_stats(const aspect::LinearAlgebra::BlockSparseMatrix &matrix,
             const std::string matrix_name,
             const MPI_Comm &comm)
   {
@@ -59,6 +59,9 @@ namespace
         // If the locale doesn't work, just give up
       }
 
+#ifdef ASPECT_USE_PETSC
+    // TODO: PETSc statistics, n_nonzero_elements doesn't exist.
+#else
     const int global_matrix_nnz = matrix.n_nonzero_elements();
     output << "Total " << matrix_name << " nnz: "
            << global_matrix_nnz << std::endl;
@@ -71,6 +74,7 @@ namespace
           output << std::setw(12) << matrix.block(i,j).n_nonzero_elements();
         output << std::endl;
       }
+#endif
 
     return output.str();
   }
