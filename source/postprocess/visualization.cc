@@ -579,7 +579,9 @@ namespace aspect
 
       // record the file base file name in the output file
       statistics.add_value ("Visualization file name",
-                            this->get_output_directory() + solution_file_prefix);
+                            this->get_output_directory()
+                            + "solution/"
+                            + solution_file_prefix);
 
       // up the counter of the number of the file by one; also
       // up the next time we need output
@@ -588,7 +590,9 @@ namespace aspect
 
       // return what should be printed to the screen.
       return std::make_pair (std::string ("Writing graphical output:"),
-                             this->get_output_directory() + solution_file_prefix);
+                             this->get_output_directory()
+                             + "solution/"
+                             + solution_file_prefix);
     }
 
 
