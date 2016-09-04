@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -150,10 +150,8 @@ namespace aspect
     {
       const int dim = 3;
 
-      /**
-       * Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
-       * other corners (respectively corner 1,2 and 4) placed relative to that point.
-       */
+      // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
+      // other corners (respectively corner 1,2 and 4) placed relative to that point.
       const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
                                                       (corners[1][1]-corners[0][1])*numbers::PI/180,
                                                       0),
@@ -168,11 +166,9 @@ namespace aspect
 
       GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
 
-      /**
-       * Shift the grid point at (0,0,0) (and the rest of the
-       * points with it) to the correct location at corner[0] at a
-       * negative depth.
-       */
+      // Shift the grid point at (0,0,0) (and the rest of the
+      // points with it) to the correct location at corner[0] at a
+      // negative depth.
       const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
@@ -343,20 +339,16 @@ namespace aspect
       {
         prm.enter_subsection("Ellipsoidal chunk");
         {
-          /**
-           * Get latitude and longitudes defining region of interest from
-           * the parameter file.
-           */
+          // Get latitude and longitudes defining region of interest from
+          // the parameter file.
           corners.resize(4);
           std::string NEcorner = prm.get("NE corner");
           std::string NWcorner = prm.get("NW corner");
           std::string SWcorner = prm.get("SW corner");
           std::string SEcorner = prm.get("SE corner");
 
-          /**
-           * make a list of what corners are present and check that there should be one or two corner missing,
-           * otherwise throw an exception
-           */
+          // make a list of what corners are present and check that there should be one or two corner missing,
+          // otherwise throw an exception
           std::vector<bool> present(4,true);
           unsigned int missing = 0;
           if (NEcorner == "")
@@ -537,9 +529,7 @@ namespace aspect
       prm.leave_subsection();
 
 
-      /**
-       * Construct manifold object Pointer to an object that describes the geometry.
-       */
+      // Construct manifold object Pointer to an object that describes the geometry.
       manifold.set_manifold_parameters(semi_major_axis_a,
                                        eccentricity,
                                        semi_minor_axis_b,
