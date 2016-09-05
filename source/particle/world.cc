@@ -830,7 +830,7 @@ namespace aspect
       MPI_Waitall(2*n_neighbors,&n_requests[0],MPI_STATUSES_IGNORE);
 
       // Determine how many particles and data we will receive
-      int total_recv_data = 0;
+      unsigned int total_recv_data = 0;
       for (unsigned int neighbor_id=0; neighbor_id<n_neighbors; ++neighbor_id)
         {
           recv_offsets[neighbor_id] = total_recv_data;
