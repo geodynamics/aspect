@@ -8,7 +8,7 @@
 INCLUDE (CheckCXXSourceRuns)
 
 SET(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
-SET(_backup_includes ${CMAKE_REQUIRED_LIBRARIES})
+SET(_backup_includes ${CMAKE_REQUIRED_INCLUDES})
 SET(_build "RELEASE")
 STRING(TOLOWER "${CMAKE_BUILD_TYPE}" _cmake_build_type)
 IF("${_cmake_build_type}" MATCHES "debug")
