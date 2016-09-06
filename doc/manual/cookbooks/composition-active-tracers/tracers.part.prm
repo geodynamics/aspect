@@ -1,9 +1,9 @@
 subsection Tracers
-  set Number of tracers = 100000
-  set Time between data output = 0
-  set Data output format = vtu
+  set Number of tracers         = 100000
+  set Time between data output  = 0
+  set Data output format        = vtu
   set List of tracer properties = velocity, initial composition
-  set Interpolation scheme = cell average
-  set Particle generator name = random uniform
+  set Interpolation scheme      = cell average
+  set Particle generator name   = random uniform
 end
 
