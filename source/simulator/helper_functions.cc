@@ -286,7 +286,137 @@ namespace aspect
 
 
   template <int dim>
-  std::pair<double,bool> Simulator<dim>::compute_time_step () const
+  bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level)
+  {
+    if (pre_refinement_step < parameters.initial_adaptive_refinement)
+      {
+        if (parameters.timing_output_frequency ==0)
+          computing_timer.print_summary ();
+
+        output_statistics();
+
+        if (parameters.run_postprocessors_on_initial_refinement)
+          postprocess ();
+
+        refine_mesh (max_refinement_level);
+        ++pre_refinement_step;
+        return true;
+      }
+    else
+      {
+        // invalidate the value of pre_refinement_step since it will no longer be used from here on
+        pre_refinement_step = std::numeric_limits<unsigned int>::max();
+        return false;
+      }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
+                                          unsigned int &max_refinement_level)
+  {
+    /*
+     * see if this is an additional refinement cycle. An additional refinement
+     * cycle differs from a regular, because the maximal refinement level allowed
+     * is increased by one from this time on.
+     */
+    if ((parameters.additional_refinement_times.size() > 0)
+        &&
+        (parameters.additional_refinement_times.front () < time+new_time_step))
+      {
+        // loop over as many times as this is necessary
+        while ((parameters.additional_refinement_times.size() > 0)
+               &&
+               (parameters.additional_refinement_times.front () < time+new_time_step))
+          {
+            ++max_refinement_level;
+            refine_mesh (max_refinement_level);
+
+            parameters.additional_refinement_times
+            .erase (parameters.additional_refinement_times.begin());
+          }
+      }
+    // see if this is a time step where regular refinement is requested
+    else if ((timestep_number > 0
+              &&
+              parameters.adaptive_refinement_interval > 0
+              &&
+              timestep_number % parameters.adaptive_refinement_interval == 0)
+             ||
+             (timestep_number == 0 && parameters.adaptive_refinement_interval == 1)
+            )
+      {
+        refine_mesh (max_refinement_level);
+      }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::maybe_write_timing_output () const
+  {
+    bool write_timing_output = false;
+    if (parameters.timing_output_frequency <= 1)
+      write_timing_output = true;
+    else if ((timestep_number > 0) &&
+             (timestep_number % parameters.timing_output_frequency == 0))
+      write_timing_output = true;
+
+    // if requested output a summary of the current timing information
+    if (write_timing_output)
+      computing_timer.print_summary ();
+  }
+
+
+
+  template <int dim>
+  bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time,
+                                               const std::pair<bool,bool> termination_output)
+  {
+    bool write_checkpoint = false;
+    // If we base checkpoint frequency on timing, measure the time at process 0
+    // This prevents race conditions where some processes will checkpoint and others won't
+    if (parameters.checkpoint_time_secs > 0)
+      {
+        int global_do_checkpoint = ((std::time(NULL)-last_checkpoint_time) >=
+                                    parameters.checkpoint_time_secs);
+        MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
+
+        if (global_do_checkpoint == 1)
+          write_checkpoint = true;
+      }
+
+    // If we base checkpoint frequency on steps, see if it's time for another checkpoint
+    if ((parameters.checkpoint_time_secs == 0) &&
+        (parameters.checkpoint_steps > 0) &&
+        (timestep_number % parameters.checkpoint_steps == 0))
+      write_checkpoint = true;
+
+    // Do a checkpoint if this is the end of simulation,
+    // and the termination criteria say to checkpoint at the end.
+    if (termination_output.first && termination_output.second)
+      write_checkpoint = true;
+
+
+    // Do a checkpoint if indicated by checkpoint parameters
+    if (write_checkpoint)
+      {
+        create_snapshot();
+        // matrices will be regenerated after a resume, so do that here too
+        // to be consistent. otherwise we would get different results
+        // for a restarted computation than for one that ran straight
+        // through
+        rebuild_stokes_matrix =
+          rebuild_stokes_preconditioner = true;
+      }
+    return write_checkpoint;
+  }
+
+
+
+  template <int dim>
+  double Simulator<dim>::compute_time_step () const
   {
     const QIterated<dim> quadrature_formula (QTrapez<1>(),
                                              parameters.stokes_velocity_degree);
@@ -409,6 +539,9 @@ namespace aspect
       min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
 
     double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
+
+    // for now the bool (convection/conduction dominated)
+    // is unused, will be added to statistics later
     bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
 
     if (new_time_step == std::numeric_limits<double>::max())
@@ -422,7 +555,10 @@ namespace aspect
         convection_dominant = false;
       }
 
-    return std::make_pair(new_time_step, convection_dominant);
+    new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
+                                                                          parameters.maximum_time_step));
+
+    return new_time_step;
   }
 
 
@@ -1207,7 +1343,11 @@ namespace aspect
   template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector); \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
-  template std::pair<double,bool> Simulator<dim>::compute_time_step () const; \
+  template void Simulator<dim>::maybe_write_timing_output () const; \
+  template bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time, const std::pair<bool,bool> termination_output); \
+  template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
+  template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
+  template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \
   template double Simulator<dim>::compute_initial_stokes_residual(); \

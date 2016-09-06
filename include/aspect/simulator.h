@@ -968,17 +968,64 @@ namespace aspect
       get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
-       * Compute the size of the next time step from the mesh size and the
-       * velocity on each cell. The computed time step has to satisfy the CFL
-       * number chosen in the input parameter file on each cell of the mesh.
-       * If specified in the parameter file, the time step will be the minimum
-       * of the convection *and* conduction time steps. Also returns whether
-       * the timestep is dominated by convection (true) or conduction (false).
+       * Check if timing output should be written in this timestep, and if
+       * so write it.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       * */
+      void maybe_write_timing_output () const;
+
+      /**
+       * Check if a checkpoint should be written in this timestep. Is so create
+       * one. Returns whether a checkpoint was written.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      std::pair<double,bool> compute_time_step () const;
+      bool maybe_write_checkpoint (const time_t last_checkpoint_time,
+                                   const std::pair<bool,bool> termination_output);
+
+      /**
+       * Check if we should do an initial refinement cycle in this timestep.
+       * This will only be checked in timestep 0, afterwards the variable
+       * pre_refinement_step variable is invalidated, and this function will
+       * return without doing refinement.
+       * An initial refinement cycle is different from a regular one,
+       * because time is not increased. Instead the same timestep is solved
+       * using the new mesh.
+       * Therefore, only output timing information and postprocessor output
+       * if required in the input file. But always output statistics (to have
+       * a history of the number of cells in the statistics file).
+       * This function returns whether an initial refinement was done.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      bool maybe_do_initial_refinement (const unsigned int max_refinement_level);
+
+      /**
+       * Check if refinement is requested in this timestep. If so: Refine mesh.
+       * The @p max_refinement_level might be increased from this time on
+       * if this is an additional refinement cycle.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void maybe_refine_mesh (const double new_time_step,
+                              unsigned int &max_refinement_level);
+
+      /**
+       * Compute the size of the next time step from the mesh size and the
+       * velocity on each cell. The computed time step has to satisfy the CFL
+       * number chosen in the input parameter file on each cell of the mesh.
+       * If specified in the parameter file, the time step will be the minimum
+       * of the convection *and* conduction time steps.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      double compute_time_step () const;
 
       /**
        * Compute the artificial diffusion coefficient value on a cell given
