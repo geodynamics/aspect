@@ -163,7 +163,12 @@ namespace aspect
               {
                 case aspect::Particle::Property::initialize_to_zero:
                 {
-                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+                  const unsigned int next_property_component = (property_index < property_list.size()-1)
+                      ?
+                          positions[property_index+1] - positions[property_index]
+                                                                :
+                          n_property_components - positions[property_index];
+                  for (unsigned int property_component = 0; property_component < next_property_component; ++property_component)
                     particle_properties.push_back(0.0);
                   break;
                 }
@@ -191,7 +196,13 @@ namespace aspect
                   const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
                                                                                     std::vector<Point<dim> > (1,particle.get_location()),
                                                                                     found_cell);
-                  for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
+
+                  const unsigned int next_property_component = (property_index < property_list.size()-1)
+                      ?
+                          positions[property_index+1] - positions[property_index]
+                                                                :
+                          n_property_components - positions[property_index];
+                  for (unsigned int property_component = 0; property_component < next_property_component; ++property_component)
                     particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
                   break;
                 }
