@@ -1039,7 +1039,7 @@ namespace aspect
                                        end_particle,
                                        old_result,
                                        result,
-                                       this->get_old_timestep());
+                                       this->get_timestep());
 
       // Now update the reference locations of the moved particles
       for (typename std::multimap<types::LevelInd, Particle<dim> >::iterator it = begin_particle;
