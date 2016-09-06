@@ -10,7 +10,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
    Postprocessing:
      Number of advected particles: 30
-     Writing graphical output:     output-particle_visualization_particle_count/solution-00000
+     Writing graphical output:     output-particle_visualization_particle_count/solution/solution-00000
 
 *** Timestep 1:  t=70 seconds
    Skipping temperature solve because RHS is zero.
@@ -19,7 +19,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
    Postprocessing:
      Number of advected particles: 30
-     Writing graphical output:     output-particle_visualization_particle_count/solution-00001
+     Writing graphical output:     output-particle_visualization_particle_count/solution/solution-00001
 
 Termination requested by criterion: end time
 

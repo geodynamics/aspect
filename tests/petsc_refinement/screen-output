@@ -19,7 +19,7 @@ Number of degrees of freedom: 8,170 (3,832+506+1,916+1,916)
 
    Postprocessing:
      Writing depth average:    output-petsc_refinement/depth_average.gnuplot
-     Writing graphical output: output-petsc_refinement/solution-00000
+     Writing graphical output: output-petsc_refinement/solution/solution-00000
 
 Termination requested by criterion: end time
 

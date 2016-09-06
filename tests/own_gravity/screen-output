@@ -10,7 +10,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-own_gravity/solution-00000
+     Writing graphical output: output-own_gravity/solution/solution-00000
 
 Termination requested by criterion: end time
 

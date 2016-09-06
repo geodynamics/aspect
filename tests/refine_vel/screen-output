@@ -21,7 +21,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 2.42424e-13
 
-     Writing graphical output:           output-refine_vel/solution-00000
+     Writing graphical output:           output-refine_vel/solution/solution-00000
      RMS, max velocity:                  1.2e-09 m/s, 3.64e-09 m/s
      Temperature min/avg/max:            0 K, 100.4 K, 1613 K
      Heat fluxes through boundary parts: -0.1197 W, -0.2657 W, -1.004e-07 W, -1.004e-07 W
@@ -39,7 +39,7 @@ Number of degrees of freedom: 12,749 (7,822+1,016+3,911)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00001
+     Writing graphical output:           output-refine_vel/solution/solution-00001
      RMS, max velocity:                  1.26e-09 m/s, 3.74e-09 m/s
      Temperature min/avg/max:            -199.9 K, 101.8 K, 1613 K
      Heat fluxes through boundary parts: -0.117 W, -0.2642 W, -1.326e-06 W, -9.045e-06 W
@@ -50,7 +50,7 @@ Number of degrees of freedom: 12,749 (7,822+1,016+3,911)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00002
+     Writing graphical output:           output-refine_vel/solution/solution-00002
      RMS, max velocity:                  1.29e-09 m/s, 3.79e-09 m/s
      Temperature min/avg/max:            -198.5 K, 102.8 K, 1613 K
      Heat fluxes through boundary parts: -0.1147 W, -0.2626 W, -2.308e-06 W, -1.555e-05 W
@@ -65,7 +65,7 @@ Number of degrees of freedom: 13,903 (8,530+1,108+4,265)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00003
+     Writing graphical output:           output-refine_vel/solution/solution-00003
      RMS, max velocity:                  1.32e-09 m/s, 3.84e-09 m/s
      Temperature min/avg/max:            -196.9 K, 103.7 K, 1613 K
      Heat fluxes through boundary parts: -0.1126 W, -0.2615 W, -3.359e-06 W, -2.174e-05 W
@@ -76,7 +76,7 @@ Number of degrees of freedom: 13,903 (8,530+1,108+4,265)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00004
+     Writing graphical output:           output-refine_vel/solution/solution-00004
      RMS, max velocity:                  1.35e-09 m/s, 3.89e-09 m/s
      Temperature min/avg/max:            -195.1 K, 104.6 K, 1613 K
      Heat fluxes through boundary parts: -0.1106 W, -0.26 W, -4.404e-06 W, -2.714e-05 W
@@ -91,7 +91,7 @@ Number of degrees of freedom: 15,158 (9,300+1,208+4,650)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00005
+     Writing graphical output:           output-refine_vel/solution/solution-00005
      RMS, max velocity:                  1.38e-09 m/s, 3.93e-09 m/s
      Temperature min/avg/max:            -198.7 K, 105.5 K, 1613 K
      Heat fluxes through boundary parts: -0.1088 W, -0.2591 W, -5.432e-06 W, -3.748e-05 W
@@ -102,7 +102,7 @@ Number of degrees of freedom: 15,158 (9,300+1,208+4,650)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00006
+     Writing graphical output:           output-refine_vel/solution/solution-00006
      RMS, max velocity:                  1.41e-09 m/s, 3.97e-09 m/s
      Temperature min/avg/max:            -198.4 K, 106.3 K, 1613 K
      Heat fluxes through boundary parts: -0.1072 W, -0.2579 W, -6.441e-06 W, -4.045e-05 W
@@ -117,7 +117,7 @@ Number of degrees of freedom: 16,667 (10,226+1,328+5,113)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00007
+     Writing graphical output:           output-refine_vel/solution/solution-00007
      RMS, max velocity:                  1.43e-09 m/s, 4.01e-09 m/s
      Temperature min/avg/max:            -201.8 K, 107 K, 1613 K
      Heat fluxes through boundary parts: -0.1059 W, -0.257 W, -1.38e-05 W, -4.283e-05 W
@@ -128,7 +128,7 @@ Number of degrees of freedom: 16,667 (10,226+1,328+5,113)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00008
+     Writing graphical output:           output-refine_vel/solution/solution-00008
      RMS, max velocity:                  1.46e-09 m/s, 4.04e-09 m/s
      Temperature min/avg/max:            -201.6 K, 107.7 K, 1613 K
      Heat fluxes through boundary parts: -0.105 W, -0.256 W, -1.46e-05 W, -4.477e-05 W
@@ -143,7 +143,7 @@ Number of degrees of freedom: 18,282 (11,218+1,455+5,609)
    Solving Stokes system... 30+4 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00009
+     Writing graphical output:           output-refine_vel/solution/solution-00009
      RMS, max velocity:                  1.49e-09 m/s, 4.07e-09 m/s
      Temperature min/avg/max:            -201.5 K, 108.3 K, 1613 K
      Heat fluxes through boundary parts: -0.1045 W, -0.2551 W, -1.539e-05 W, -4.603e-05 W
@@ -154,7 +154,7 @@ Number of degrees of freedom: 18,282 (11,218+1,455+5,609)
    Solving Stokes system... 30+5 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-refine_vel/solution-00010
+     Writing graphical output:           output-refine_vel/solution/solution-00010
      RMS, max velocity:                  1.52e-09 m/s, 4.1e-09 m/s
      Temperature min/avg/max:            -201.4 K, 108.7 K, 1613 K
      Heat fluxes through boundary parts: -0.1044 W, -0.2542 W, -1.615e-05 W, -4.709e-05 W

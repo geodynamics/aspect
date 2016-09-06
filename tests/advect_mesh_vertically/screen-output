@@ -33,7 +33,7 @@ Number of free surface degrees of freedom: 326
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-advect_mesh_vertically/solution-00000
+     Writing graphical output: output-advect_mesh_vertically/solution/solution-00000
      Topography min/max:       0 m, 0 m, 
      RMS, max velocity:        0.418 m/year, 0.988 m/year
 
@@ -266,7 +266,7 @@ Number of free surface degrees of freedom: 598
    Solving Stokes system... 30+11 iterations.
 
    Postprocessing:
-     Writing graphical output: output-advect_mesh_vertically/solution-00001
+     Writing graphical output: output-advect_mesh_vertically/solution/solution-00001
      Topography min/max:       -5119 m, 1045 m, 
      RMS, max velocity:        0.134 m/year, 0.383 m/year
 

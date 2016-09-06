@@ -8,9 +8,9 @@
 # 8: Schur complement iterations in Stokes preconditioner
 # 9: Time step size (seconds)
 # 10: Visualization file name
-0 0.0000e+00  64  659  289 23  24  95 8.8424e-02 output-inclusion_adaptive/solution-00000 
-0 0.0000e+00  76  803  353 27  28 116 8.8424e-02 output-inclusion_adaptive/solution-00001 
-0 0.0000e+00 100 1055  465 28  29 128 8.8424e-02 output-inclusion_adaptive/solution-00002 
-0 0.0000e+00 172 1847  817 30  32 129 8.7930e-02 output-inclusion_adaptive/solution-00003 
-0 0.0000e+00 268 2891 1281 43 306  68 7.5257e-02 output-inclusion_adaptive/solution-00004 
-0 0.0000e+00 430 4691 2081 41 286  60 6.3301e-02 output-inclusion_adaptive/solution-00005 
+0 0.000000000000e+00  64  659  289 23  24  95 8.842364643865e-02 output-inclusion_adaptive/solution/solution-00000 
+0 0.000000000000e+00  76  803  353 27  28 116 8.842364643865e-02 output-inclusion_adaptive/solution/solution-00001 
+0 0.000000000000e+00 100 1055  465 28  29 128 8.842364643865e-02 output-inclusion_adaptive/solution/solution-00002 
+0 0.000000000000e+00 172 1847  817 30  32 129 8.792988292941e-02 output-inclusion_adaptive/solution/solution-00003 
+0 0.000000000000e+00 268 2891 1281 43 306  68 7.525674526432e-02 output-inclusion_adaptive/solution/solution-00004 
+0 0.000000000000e+00 430 4691 2081 41 286  60 6.330073561576e-02 output-inclusion_adaptive/solution/solution-00005 

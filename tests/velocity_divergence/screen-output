@@ -23,7 +23,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00000
+     Writing graphical output:           output-velocity_divergence/solution/solution-00000
      Compositions min/max/mass:          7.47e-89/1e-05/251.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -47,7 +47,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00001
+     Writing graphical output:           output-velocity_divergence/solution/solution-00001
      Compositions min/max/mass:          -0.000656/0.0006635/249.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -71,7 +71,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00002
+     Writing graphical output:           output-velocity_divergence/solution/solution-00002
      Compositions min/max/mass:          -0.001271/0.001291/234.3
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -95,7 +95,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00003
+     Writing graphical output:           output-velocity_divergence/solution/solution-00003
      Compositions min/max/mass:          -0.001846/0.001885/210.2
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
@@ -119,7 +119,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
 
    Postprocessing:
-     Writing graphical output:           output-velocity_divergence/solution-00004
+     Writing graphical output:           output-velocity_divergence/solution/solution-00004
      Compositions min/max/mass:          -0.002204/0.002258/196.1
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr

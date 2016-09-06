@@ -8,7 +8,7 @@ Number of degrees of freedom: 400 (240+40+120)
    Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output-cells_in_circumference/solution-00000
+     Writing graphical output: output-cells_in_circumference/solution/solution-00000
 
 Number of active cells: 20 (on 1 levels)
 Number of degrees of freedom: 400 (240+40+120)

@@ -8,6 +8,6 @@
 # 8: Iterations for composition solver 1
 # 9: Time step size (seconds)
 # 10: Visualization file name
-0 0.000000000000e+00 4096 45957 16641 16641 0 0 0.000000000000e+00                                                "" 
-0 0.000000000000e+00    0     0     0     0 0 0 0.000000000000e+00                                                "" 
-0 0.000000000000e+00    0     0     0     0 0 0 1.202887867102e-03 output-melt_property_visualization/solution-00000 
+0 0.000000000000e+00 4096 45957 16641 16641 0 0 0.000000000000e+00                                                         "" 
+0 0.000000000000e+00    0     0     0     0 0 0 0.000000000000e+00                                                         "" 
+0 0.000000000000e+00    0     0     0     0 0 0 1.202887593370e-03 output-melt_property_visualization/solution/solution-00000 

@@ -21,7 +21,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      reference_cp:                                  1250
      reference_thermal_diffusivity:                 8e-10
 
-     Writing graphical output: output-temperature_dependent_stokes_matrix/solution-00000
+     Writing graphical output: output-temperature_dependent_stokes_matrix/solution/solution-00000
      RMS, max velocity:        9e-09 m/s, 3.13e-08 m/s
 
 *** Timestep 1:  t=495763 seconds

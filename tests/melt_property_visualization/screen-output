@@ -31,7 +31,7 @@ Number of degrees of freedom: 112,521 (41,732+33,282+4,225+16,641+16,641)
 
 
    Postprocessing:
-     Writing graphical output: output-melt_property_visualization/solution-00000
+     Writing graphical output: output-melt_property_visualization/solution/solution-00000
 
 Termination requested by criterion: end time
 

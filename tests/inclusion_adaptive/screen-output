@@ -10,7 +10,7 @@ Number of degrees of freedom: 948 (578+81+289)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00000
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00000
      Errors u_L1, p_L1, u_L2, p_L2: 1.728438e-01, 1.486558e+00, 8.838163e-02, 1.109955e+00
 
 Number of active cells: 76 (on 5 levels)
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,156 (706+97+353)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00001
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00001
      Errors u_L1, p_L1, u_L2, p_L2: 1.395862e-01, 1.164569e+00, 7.233389e-02, 8.870612e-01
 
 Number of active cells: 100 (on 5 levels)
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,520 (930+125+465)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00002
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00002
      Errors u_L1, p_L1, u_L2, p_L2: 1.103003e-01, 1.245554e+00, 5.774426e-02, 1.478275e+00
 
 Number of active cells: 172 (on 6 levels)
@@ -46,7 +46,7 @@ Number of degrees of freedom: 2,664 (1,634+213+817)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00003
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00003
      Errors u_L1, p_L1, u_L2, p_L2: 3.406444e-02, 5.739048e-01, 1.825207e-02, 1.110491e+00
 
 Number of active cells: 268 (on 7 levels)
@@ -58,7 +58,7 @@ Number of degrees of freedom: 4,172 (2,562+329+1,281)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00004
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00004
      Errors u_L1, p_L1, u_L2, p_L2: 2.502087e-02, 5.110049e-01, 1.347433e-02, 1.208220e+00
 
 Number of active cells: 430 (on 8 levels)
@@ -70,8 +70,8 @@ Number of degrees of freedom: 6,772 (4,162+529+2,081)
       Nonlinear Stokes residual: 54.8383
 
    Postprocessing:
-     Writing graphical output:      output-inclusion_adaptive/solution-00005
-     Errors u_L1, p_L1, u_L2, p_L2: 1.275058e-02, 3.582180e-01, 6.857981e-03, 9.860893e-01
+     Writing graphical output:      output-inclusion_adaptive/solution/solution-00005
+     Errors u_L1, p_L1, u_L2, p_L2: 1.275058e-02, 3.582181e-01, 6.857981e-03, 9.860895e-01
 
 Termination requested by criterion: end time
 

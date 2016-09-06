@@ -52,7 +52,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
 
 
    Postprocessing:
-     Writing graphical output:  output-shear_bands/solution-00000
+     Writing graphical output:  output-shear_bands/solution/solution-00000
      Compositions min/max/mass: 0.04952/0.05046/2e-07
      RMS, max velocity:         289 m/year, 493 m/year
 
@@ -104,7 +104,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
 
 
    Postprocessing:
-     Writing graphical output:  output-shear_bands/solution-00001
+     Writing graphical output:  output-shear_bands/solution/solution-00001
      Compositions min/max/mass: 0.04911/0.0508/2e-07
      RMS, max velocity:         289 m/year, 493 m/year
 
@@ -156,7 +156,7 @@ Number of degrees of freedom: 28,857 (8,514+2,210+8,514+1,105+4,257+4,257)
 
 
    Postprocessing:
-     Writing graphical output:  output-shear_bands/solution-00002
+     Writing graphical output:  output-shear_bands/solution/solution-00002
      Compositions min/max/mass: 0.04866/0.05124/2e-07
      RMS, max velocity:         289 m/year, 493 m/year
 

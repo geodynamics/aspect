@@ -16,4 +16,4 @@
 # 16: Schur complement iterations in Stokes preconditioner
 # 17: Time step size (years)
 # 18: Visualization file name
-0 0.000000000000e+00 256 2467 1089 6534 0 0 0 0 0 0 0 29 30 29 4.180179372399e+29 output-compositional_vectors/solution-00000 
+0 0.000000000000e+00 256 2467 1089 6534 0 0 0 0 0 0 0 29 30 29 4.180179372399e+29 output-compositional_vectors/solution/solution-00000 

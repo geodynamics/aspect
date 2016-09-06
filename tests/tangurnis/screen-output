@@ -23,7 +23,7 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
    Postprocessing:
      writing:                  output.csv
-     Writing graphical output: output-tangurnis/solution-00000
+     Writing graphical output: output-tangurnis/solution/solution-00000
 
 *** Timestep 1:  t=0.0001 seconds
    Solving Stokes system... 0+0 iterations.
@@ -31,7 +31,7 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
    Postprocessing:
      writing:                  output.csv
-     Writing graphical output: output-tangurnis/solution-00001
+     Writing graphical output: output-tangurnis/solution/solution-00001
 
 Termination requested by criterion: end time
 

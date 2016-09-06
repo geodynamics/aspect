@@ -25,7 +25,7 @@ Number of free surface degrees of freedom: 5346
 
      Topography min/max:       0 m, 0 m, 
      RMS, max velocity:        0.11 m/year, 0.399 m/year
-     Writing graphical output: output1.tmp/solution-00000
+     Writing graphical output: output1.tmp/solution/solution-00000
 
 *** Timestep 1:  t=3917.03 years
    Solving mesh velocity system... 7 iterations.
@@ -36,7 +36,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -1386 m, 415.3 m, 
      RMS, max velocity:        0.071 m/year, 0.265 m/year
-     Writing graphical output: output1.tmp/solution-00001
+     Writing graphical output: output1.tmp/solution/solution-00001
 
 *** Timestep 2:  t=9717.25 years
    Solving mesh velocity system... 7 iterations.
@@ -47,7 +47,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -127.5 m, 226.8 m, 
      RMS, max velocity:        0.0465 m/year, 0.189 m/year
-     Writing graphical output: output1.tmp/solution-00002
+     Writing graphical output: output1.tmp/solution/solution-00002
 
 *** Timestep 3:  t=17969.8 years
    Solving mesh velocity system... 7 iterations.
@@ -58,7 +58,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -330.7 m, 82.32 m, 
      RMS, max velocity:        0.035 m/year, 0.139 m/year
-     Writing graphical output: output1.tmp/solution-00003
+     Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Timestep 4:  t=29233.8 years
    Solving mesh velocity system... 7 iterations.
@@ -69,7 +69,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -162.1 m, 28.84 m, 
      RMS, max velocity:        0.0372 m/year, 0.153 m/year
-     Writing graphical output: output1.tmp/solution-00004
+     Writing graphical output: output1.tmp/solution/solution-00004
 
 *** Snapshot created!
 
@@ -82,7 +82,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -193.3 m, 27.46 m, 
      RMS, max velocity:        0.0375 m/year, 0.153 m/year
-     Writing graphical output: output1.tmp/solution-00005
+     Writing graphical output: output1.tmp/solution/solution-00005
 
 *** Timestep 6:  t=49668.6 years
    Solving mesh velocity system... 7 iterations.
@@ -93,7 +93,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -193.5 m, 28.27 m, 
      RMS, max velocity:        0.038 m/year, 0.155 m/year
-     Writing graphical output: output1.tmp/solution-00006
+     Writing graphical output: output1.tmp/solution/solution-00006
 
 *** Timestep 7:  t=59756.2 years
    Solving mesh velocity system... 7 iterations.
@@ -104,7 +104,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -189.4 m, 28.11 m, 
      RMS, max velocity:        0.0386 m/year, 0.157 m/year
-     Writing graphical output: output1.tmp/solution-00007
+     Writing graphical output: output1.tmp/solution/solution-00007
 
 *** Timestep 8:  t=69710.3 years
    Solving mesh velocity system... 7 iterations.
@@ -115,7 +115,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -184.9 m, 27.9 m, 
      RMS, max velocity:        0.0391 m/year, 0.159 m/year
-     Writing graphical output: output1.tmp/solution-00008
+     Writing graphical output: output1.tmp/solution/solution-00008
 
 *** Timestep 9:  t=79544.9 years
    Solving mesh velocity system... 7 iterations.
@@ -126,7 +126,7 @@ Number of free surface degrees of freedom: 5346
    Postprocessing:
      Topography min/max:       -180.4 m, 27.69 m, 
      RMS, max velocity:        0.0396 m/year, 0.161 m/year
-     Writing graphical output: output1.tmp/solution-00009
+     Writing graphical output: output1.tmp/solution/solution-00009
 
 Termination requested by criterion: end step
 *** Snapshot created!

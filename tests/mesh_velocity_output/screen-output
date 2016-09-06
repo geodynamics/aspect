@@ -35,7 +35,7 @@ Number of free surface degrees of freedom: 142
 
      Topography min/max:       0 m, 0 m, 
      RMS, max velocity:        0.000648 m/year, 0.00217 m/year
-     Writing graphical output: output-mesh_velocity_output/solution-00000
+     Writing graphical output: output-mesh_velocity_output/solution/solution-00000
 
 *** Timestep 1:  t=2.84834e+06 years
    Solving mesh velocity system... 1 iterations.
@@ -46,7 +46,7 @@ Number of free surface degrees of freedom: 142
    Postprocessing:
      Topography min/max:       -1507 m, 3580 m, 
      RMS, max velocity:        0.000782 m/year, 0.00234 m/year
-     Writing graphical output: output-mesh_velocity_output/solution-00001
+     Writing graphical output: output-mesh_velocity_output/solution/solution-00001
 
 *** Timestep 2:  t=6.85344e+06 years
    Solving mesh velocity system... 1 iterations.
@@ -57,7 +57,7 @@ Number of free surface degrees of freedom: 142
    Postprocessing:
      Topography min/max:       -6031 m, 2618 m, 
      RMS, max velocity:        0.00095 m/year, 0.00362 m/year
-     Writing graphical output: output-mesh_velocity_output/solution-00002
+     Writing graphical output: output-mesh_velocity_output/solution/solution-00002
 
 Termination requested by criterion: end step
 

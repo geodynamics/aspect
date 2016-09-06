@@ -13,7 +13,7 @@ Number of degrees of freedom: 6,686 (2,187+125+729+729+729+729+729+729)
    Solving Stokes system... 30+3 iterations.
 
    Postprocessing:
-     Writing graphical output: output-compositional_vectors_3d/solution-00000
+     Writing graphical output: output-compositional_vectors_3d/solution/solution-00000
 
 Termination requested by criterion: end time
 

@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 96 (on 1 levels)
 Number of degrees of freedom: 4,030 (2,910+150+970)
@@ -11,7 +9,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Writing dynamic topography: output-dynamic_topography3/dynamic_topography.00000
-     Writing graphical output:   output-dynamic_topography3/solution-00000
+     Writing graphical output:   output-dynamic_topography3/solution/solution-00000
 
 Termination requested by criterion: end time
 
