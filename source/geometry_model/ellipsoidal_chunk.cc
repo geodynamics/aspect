@@ -75,9 +75,9 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
-      const double phi   = phi_theta_d[0];
-      const double theta = phi_theta_d[1];
-      const double d     = phi_theta_d[2];
+      const double phi   = phi_theta_d[0]; // Longitude in radians
+      const double theta = phi_theta_d[1]; // Latitude in radians
+      const double d     = phi_theta_d[2]; // The negative depth (a depth of 10 meters is -10)
 
       const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
                                                               std::sin(theta) * std::sin(theta)));
@@ -617,16 +617,11 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p =
-        (manifold.push_forward(Point<3>(southLatitude * numbers::PI/180,
-                                        eastLongitude * numbers::PI/180,
-                                        -bottom_depth))
-         + manifold.push_forward(Point<3>(northLatitude * numbers::PI/180,
-                                          westLongitude * numbers::PI/180
-                                          , 0))) / 2;
-      p /= p.norm();
-      p *= get_radius(p) - depth;
-      return p;
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
+                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+                              -depth);
+
+      return manifold.push_forward(p);
     }
 
 
