@@ -127,6 +127,8 @@ namespace aspect
                            const Mapping<dim>       &mapping,
                            const Quadrature<dim>    &quadrature,
                            const Quadrature<dim-1>  &face_quadrature,
+                           const UpdateFlags         update_flags,
+                           const UpdateFlags         face_update_flags,
                            const unsigned int        n_compositional_fields);
           AdvectionSystem (const AdvectionSystem &data);
 
