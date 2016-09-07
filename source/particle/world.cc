@@ -535,6 +535,90 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    World<dim>::find_ghost_neighbor_subdomains(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                               std::vector<unsigned int> &cell_neighbor_domains)
+    {
+      const unsigned int subdomain_id = this->get_triangulation().locally_owned_subdomain();
+      std::set<unsigned int> neighbor_domains;
+
+      for (unsigned int vertex_no=0; vertex_no<GeometryInfo<dim>::vertices_per_cell; ++vertex_no)
+        {
+          const unsigned int vertex_index = cell->vertex_iterator(vertex_no)->index();
+
+          std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
+          neighbor_cells = GridTools::find_cells_adjacent_to_vertex(this->get_triangulation(),
+                                                                    vertex_index);
+
+          for (unsigned int i = 0; i<neighbor_cells.size(); ++i)
+            if (neighbor_cells[i]->subdomain_id() != subdomain_id)
+              neighbor_domains.insert(neighbor_cells[i]->subdomain_id());
+        }
+
+      cell_neighbor_domains.resize(neighbor_domains.size());
+      std::copy(neighbor_domains.begin(),neighbor_domains.end(),cell_neighbor_domains.begin());
+    }
+
+    template <int dim>
+    void
+    World<dim>::remove_ghost_particles()
+    {
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      for (; cell!=endc; ++cell)
+        if (cell->is_ghost())
+          {
+            particles.erase(std::make_pair(cell->level(),cell->index()));
+          }
+    }
+
+    template <int dim>
+    void
+    World<dim>::exchange_ghost_particles()
+    {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
+
+      std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > ghost_particles_by_domain;
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+
+      std::vector<unsigned int> cell_neighbor_domains;
+      cell_neighbor_domains.reserve(GeometryInfo<dim>::max_children_per_cell);
+
+      for (; cell!=endc; ++cell)
+        {
+          find_ghost_neighbor_subdomains(cell,cell_neighbor_domains);
+
+          if (cell_neighbor_domains.size() > 0)
+            {
+              const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
+                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
+                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+              for (unsigned int i = 0; i < cell_neighbor_domains.size(); ++i)
+                for (typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particle_range_in_cell.first;
+                     particle != particle_range_in_cell.second;
+                     ++particle)
+                  ghost_particles_by_domain.insert(std::make_pair(cell_neighbor_domains[i],*particle));
+            }
+        }
+
+      std::vector<std::pair<types::LevelInd, Particle<dim> > > received_ghost_particles;
+      send_recv_particles(ghost_particles_by_domain,
+                          received_ghost_particles);
+
+      // Sort the updated particles. This pre-sort speeds up inserting
+      // them into particles to O(N) complexity.
+      const std::multimap<types::LevelInd,Particle <dim> > sorted_particles_map(received_ghost_particles.begin(),
+                                                                                received_ghost_particles.end());
+
+      ghost_particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
+    }
+
+    template <int dim>
     std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
     World<dim>::neighbor_cells_to_search(const Particle<dim> &particle,
                                          const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
@@ -920,9 +1004,6 @@ namespace aspect
             }
 #endif
 
-          Assert(cell->is_locally_owned(),
-                 ExcMessage("Another process sent us a particle, but the particle is not in our domain."));
-
           const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 
           received_particles.push_back(std::make_pair(found_cell, recv_particle));
@@ -1203,6 +1284,8 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      ghost_particles.clear();
+
       do
         {
           advect_particles();
@@ -1218,6 +1301,8 @@ namespace aspect
 
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
+
+      exchange_ghost_particles();
     }
 
     template <int dim>

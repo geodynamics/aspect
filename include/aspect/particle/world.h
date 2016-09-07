@@ -282,6 +282,13 @@ namespace aspect
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
         /**
+         * Set of particles currently in the ghost cells of the local domain,
+         * organized by the level/index of the cell they are in. These
+         * particles are marked read-only.
+         */
+        std::multimap<types::LevelInd, const Particle<dim> > ghost_particles;
+
+        /**
          * This variable stores how many particles are stored globally. It is
          * calculated by update_n_global_particles().
          */
@@ -377,6 +384,28 @@ namespace aspect
          */
         void
         update_next_free_particle_index();
+
+        /**
+         * Find all subdomain_ids from neighboring cells that are not of the
+         * local subdomain_id (i.e. find all ghost neighbors of this cell).
+         */
+        void
+        find_ghost_neighbor_subdomains(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                       std::vector<unsigned int> &cell_neighbor_domains);
+
+        /**
+         * Removes all particles from the local domain that live in ghost
+         * cells.
+         */
+        void
+        remove_ghost_particles();
+
+        /**
+         * Removes all particles from the local domain that live in ghost
+         * cells.
+         */
+        void
+        exchange_ghost_particles();
 
         /**
          * Returns a map of neighbor cells of the current cell. This map is
