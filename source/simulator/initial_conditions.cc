@@ -269,7 +269,7 @@ namespace aspect
       {
         const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_field.compositional_variable)->second;
 
-        particle_property = particle_property_manager->get_property_component_by_name(particle_property_and_component.first)
+        particle_property = particle_property_manager->get_data_info().get_position_by_field_name(particle_property_and_component.first)
                             + particle_property_and_component.second;
       }
     else
@@ -277,7 +277,7 @@ namespace aspect
         particle_property = std::count(introspection.compositional_field_methods.begin(),
                                        introspection.compositional_field_methods.begin() + advection_field.compositional_variable,
                                        Parameters<dim>::AdvectionFieldMethod::particles);
-        AssertThrow(particle_property <= particle_property_manager->get_n_property_components(),
+        AssertThrow(particle_property <= particle_property_manager->get_data_info().n_components(),
                     ExcMessage("Can not automatically match particle properties to fields, because there are"
                                "more fields that are marked as particle advected than particle properties"));
       }

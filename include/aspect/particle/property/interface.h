@@ -36,6 +36,201 @@ namespace aspect
   {
     namespace Property
     {
+      /**
+       * This class is used to store all the necessary information to translate
+       * between the data structure of the particle properties (a flat vector of
+       * doubles) and the semantic meaning of these properties. It contains
+       * information about the three layers of particle property information:
+       *
+       * By 'property plugins' we mean each separate class that is derived from
+       * aspect::Particle::Property::Interface<dim>, and that is selected in
+       * the input file. This means in any model there are as many property
+       * plugins as entries in the 'List of tracer properties' input parameter.
+       *
+       * Each plugin can create one or more 'property fields'. Property fields
+       * are interpreted as distinctly named particle properties. Most plugins
+       * contain only one field, but some group distinctly named properties
+       * into groups, such as the 'InitialComposition' plugin, which creates
+       * one property field per compositional field and names the property
+       * fields according to the compositional field names. When writing particle
+       * data to output files each 'property field' will be written into a
+       * separate output field.
+       *
+       * Last each field can contain several 'property components'
+       * if it represents a vector or tensor property. These components can
+       * not be named individually, but it is still important to be able to
+       * know how many components belong to a particular field.
+       *
+       * Information that is often required by other algorithms is for example
+       * the number of components (= number of doubles in the property vector)
+       * of a particle field or plugin, and its position within the particle
+       * property vector. All of this information might be required within
+       * loops over all fields, or for a specific field either identified by
+       * its index, or by its name.
+       *
+       * @ingroup ParticleProperties
+       */
+      class ParticlePropertyInformation
+      {
+        public:
+          /**
+           * Empty default constructor.
+           */
+          ParticlePropertyInformation();
+
+          /**
+           * Constructor. Initialize the various arrays of this structure with the
+           * given property information collected from the individual plugins.
+           *
+           * @p property_information A vector that contains one vector per
+           * property plugin. Each of these vectors contains one or more pairs
+           * that represent a property field name and the number of components
+           * for this field. The input argument can be constructed by
+           * concatenating the output of the
+           * Particle::Property::Interface<dim>::get_property_information()
+           * functions of all property plugins.
+           */
+          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int> > > &property_information);
+
+          /**
+           * Checks if the particle property specified by @p name exists
+           * in this model.
+           */
+          bool
+          fieldname_exists(const std::string &name) const;
+
+          /**
+           * Get the field index of the particle property specified by @p name.
+           */
+          unsigned int
+          get_field_index_by_name(const std::string &name) const;
+
+          /**
+           * Get the field index of the particle property specified by @p name.
+           */
+          std::string
+          get_field_name_by_index(const unsigned int field_index) const;
+
+          /**
+           * Get the data position of the first component of the particle
+           * property specified by @p name in the property vector of a particle.
+           */
+          unsigned int
+          get_position_by_field_name(const std::string &name) const;
+
+          /**
+           * Get the number of components of the particle property specified
+           * by @p name.
+           */
+          unsigned int
+          get_components_by_field_name(const std::string &name) const;
+
+          /**
+           * Get the data position of the first component of the particle
+           * property specified by @p field_index in the property vector
+           * of a particle.
+           */
+          unsigned int
+          get_position_by_field_index(const unsigned int field_index) const;
+
+          /**
+           * Get the number of components of the particle property specified
+           * by @p field_index.
+           */
+          unsigned int
+          get_components_by_field_index(const unsigned int field_index) const;
+
+          /**
+           * Get the data position of the first component of the particle
+           * property specified by @p plugin_index in the property vector
+           * of a particle.
+           */
+          unsigned int
+          get_position_by_plugin_index(const unsigned int plugin_index) const;
+
+          /**
+           * Get the number of components of the particle property specified
+           * by @p plugin_index.
+           */
+          unsigned int
+          get_components_by_plugin_index(const unsigned int plugin_index) const;
+
+          /**
+           * Get the number of fields of the particle property specified
+           * by @p plugin_index.
+           */
+          unsigned int
+          get_fields_by_plugin_index(const unsigned int plugin_index) const;
+
+
+          /**
+           * Return the number of active particle property plugins.
+           */
+          unsigned int
+          n_plugins() const;
+
+          /**
+           * Return the number of active particle property fields.
+           */
+          unsigned int
+          n_fields() const;
+
+          /**
+           * Return the number of active particle property components.
+           */
+          unsigned int
+          n_components() const;
+
+        private:
+          /**
+           * A vector of all property field names.
+           */
+          std::vector<std::string> field_names;
+
+          /**
+           * A vector containing the number of components per property field.
+           */
+          std::vector<unsigned int> components_per_field;
+
+          /**
+           * A vector containing the position index of the first data component
+           * of each field in the property vector of every particle.
+           */
+          std::vector<unsigned int> position_per_field;
+
+          /**
+           * A vector containing the number of property fields per property
+           * plugin.
+           */
+          std::vector<unsigned int> fields_per_plugin;
+
+          /**
+           * A vector containing the number of components per property plugin.
+           */
+          std::vector<unsigned int> components_per_plugin;
+
+          /**
+           * A vector containing the position index of the first data component
+           * of each plugin in the property vector of every particle.
+           */
+          std::vector<unsigned int> position_per_plugin;
+
+          /**
+           * The number of doubles needed to represent a tracer's
+           * additional properties.
+           */
+          unsigned int number_of_components;
+
+          /**
+           * The number of disctintly named particle property fields.
+           */
+          unsigned int number_of_fields;
+
+          /**
+           * The number of active particle property plugins.
+           */
+          unsigned int number_of_plugins;
+      };
 
       enum UpdateTimeFlags
       {
@@ -362,15 +557,18 @@ namespace aspect
            * @return A vector of pairs for each property name and the
            * corresponding number of components attached to particles.
            */
-          const std::vector<std::pair<std::string,unsigned int> > &
+          const ParticlePropertyInformation &
           get_data_info() const;
 
           /**
            * Get the position of the property specified by name in the property
            * vector of the particles.
+           *
+           * @deprecated This function will be replaced by
+           * ParticlePropertyInformation::get_position_by_fieldname(name)
            */
           unsigned int
-          get_property_component_by_name(const std::string &name) const;
+          get_property_component_by_name(const std::string &name) const DEAL_II_DEPRECATED;
 
           /**
            * A function that is used to register particle property
@@ -412,6 +610,7 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
         private:
+
           /**
            * A list of property objects that have been requested in the
            * parameter file.
@@ -419,34 +618,11 @@ namespace aspect
           std::list<std_cxx1x::shared_ptr<Interface<dim> > > property_list;
 
           /**
-           * A map between names of properties and the position of their
-           * first data component in the particle property vector.
+           * A class that stores all information about the particle properties,
+           * their association with property plugins and their storage pattern.
            */
-          std::map<std::string,unsigned int> property_position_map;
+          ParticlePropertyInformation property_information;
 
-          /**
-           * The number of doubles needed to represent a tracer's
-           * additional properties.
-           */
-          unsigned int n_property_components;
-
-          /**
-           * Vector of the names and number of components of the properties
-           * that are selected in this
-           * model. This vector has as many entries as individually named
-           * fields in the properties, which does not need to be the size of
-           * the property_list, because a single property plugin can define
-           * several properties (scalar or vector).
-           */
-          std::vector<std::pair<std::string,unsigned int> > property_component_list;
-
-          /**
-           * Vector of the data positions of individual property plugins.
-           * This vector has as many components as property plugins selected.
-           * It can be different from property_position_map, because
-           * single plugins can define multiple data fields.
-           */
-          std::vector<unsigned int> positions;
       };
 
 
