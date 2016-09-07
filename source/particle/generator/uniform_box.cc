@@ -53,10 +53,11 @@ namespace aspect
             spacing[i] = P_diff[i] / fmax(n_particles_per_direction[i] - 1,1);
           }
 
-//        n_particles_per_direction[0] = 181;
-//        n_particles_per_direction[1] = 32;
-//        spacing[0] = 5.65625/181.0;
-//        spacing[1] = 1.0/32.0;
+          n_particles_per_direction[0] = n_particles_x;
+          n_particles_per_direction[1] = n_particles_y;
+
+          spacing[0] = delta_x;
+          spacing[1] = delta_y;
 
         // std::vector<Point<dim>> particle_positions;
         typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(),
@@ -293,6 +294,18 @@ namespace aspect
                 prm.declare_entry ("Maximum z", "1",
                                    Patterns::Double (),
                                    "Maximum z coordinate for the region of tracers.");
+                prm.declare_entry ("Delta x", "0.1",
+                                   Patterns::Double (),
+                                   "Delta x for placement of particles.");
+                prm.declare_entry ("Delta y", "0.1",
+                                   Patterns::Double (),
+                                   "Delta y for placement of particles.");
+                prm.declare_entry ("Number of particles in x", "10",
+                                   Patterns::Integer (),
+                                   "Number of particles in x direction.");
+                prm.declare_entry ("Number of particles in y", "10",
+                                   Patterns::Integer (),
+                                   "Number of particles in y direction.");
               }
               prm.leave_subsection();
             }
@@ -322,6 +335,12 @@ namespace aspect
                 P_max(0) = prm.get_double ("Maximum x");
                 P_min(1) = prm.get_double ("Minimum y");
                 P_max(1) = prm.get_double ("Maximum y");
+
+                n_particles_x = prm.get_integer ("Number of particles in x");
+                n_particles_y = prm.get_integer ("Number of particles in y");
+
+                delta_x = prm.get_double ("Delta x");
+                delta_y = prm.get_double ("Delta y");
 
                 if (dim == 3)
                   {
