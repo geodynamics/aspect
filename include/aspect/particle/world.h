@@ -386,23 +386,9 @@ namespace aspect
         update_next_free_particle_index();
 
         /**
-         * Find all subdomain_ids from neighboring cells that are not of the
-         * local subdomain_id (i.e. find all ghost neighbors of this cell).
-         */
-        void
-        find_ghost_neighbor_subdomains(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                       std::vector<unsigned int> &cell_neighbor_domains);
-
-        /**
-         * Removes all particles from the local domain that live in ghost
-         * cells.
-         */
-        void
-        remove_ghost_particles();
-
-        /**
-         * Removes all particles from the local domain that live in ghost
-         * cells.
+         * Exchanges all particles that live in cells adjacent to ghost cells
+         * (i.e. cells that are ghosts to other processes) with the neighboring
+         * domains. Clears and re-populates the ghost_neighbors member variable.
          */
         void
         exchange_ghost_particles();

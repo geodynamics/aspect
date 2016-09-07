@@ -272,6 +272,7 @@ namespace aspect
           // can change because of discarded or newly generated particles
           data_offset = numbers::invalid_unsigned_int;
           update_n_global_particles();
+          exchange_ghost_particles();
         }
     }
 
@@ -536,73 +537,55 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::find_ghost_neighbor_subdomains(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                               std::vector<unsigned int> &cell_neighbor_domains)
-    {
-      const unsigned int subdomain_id = this->get_triangulation().locally_owned_subdomain();
-      std::set<unsigned int> neighbor_domains;
-
-      for (unsigned int vertex_no=0; vertex_no<GeometryInfo<dim>::vertices_per_cell; ++vertex_no)
-        {
-          const unsigned int vertex_index = cell->vertex_iterator(vertex_no)->index();
-
-          std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
-          neighbor_cells = GridTools::find_cells_adjacent_to_vertex(this->get_triangulation(),
-                                                                    vertex_index);
-
-          for (unsigned int i = 0; i<neighbor_cells.size(); ++i)
-            if (neighbor_cells[i]->subdomain_id() != subdomain_id)
-              neighbor_domains.insert(neighbor_cells[i]->subdomain_id());
-        }
-
-      cell_neighbor_domains.resize(neighbor_domains.size());
-      std::copy(neighbor_domains.begin(),neighbor_domains.end(),cell_neighbor_domains.begin());
-    }
-
-    template <int dim>
-    void
-    World<dim>::remove_ghost_particles()
-    {
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
-      for (; cell!=endc; ++cell)
-        if (cell->is_ghost())
-          {
-            particles.erase(std::make_pair(cell->level(),cell->index()));
-          }
-    }
-
-    template <int dim>
-    void
     World<dim>::exchange_ghost_particles()
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
 
+      // First clear the current ghost_particle information
+      ghost_particles.clear();
+
       std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > ghost_particles_by_domain;
+      std::vector<std::set<unsigned int> > vertex_to_neighbor_subdomain(this->get_triangulation().n_vertices());
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
-
-      std::vector<unsigned int> cell_neighbor_domains;
-      cell_neighbor_domains.reserve(GeometryInfo<dim>::max_children_per_cell);
-
-      for (; cell!=endc; ++cell)
+      for (typename Triangulation<dim>::active_cell_iterator cell=
+             this->get_triangulation().begin_active(); cell != this->get_triangulation().end(); ++cell)
         {
-          find_ghost_neighbor_subdomains(cell,cell_neighbor_domains);
+          if (cell->is_ghost())
+            for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+              vertex_to_neighbor_subdomain[cell->vertex_index(v)].insert(cell->subdomain_id());
+        }
 
-          if (cell_neighbor_domains.size() > 0)
+      for (typename Triangulation<dim>::active_cell_iterator cell=
+             this->get_triangulation().begin_active(); cell != this->get_triangulation().end(); ++cell)
+        {
+          if (!cell->is_ghost())
             {
-              const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
-                    const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
-                    particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
-              for (unsigned int i = 0; i < cell_neighbor_domains.size(); ++i)
-                for (typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particle_range_in_cell.first;
-                     particle != particle_range_in_cell.second;
-                     ++particle)
-                  ghost_particles_by_domain.insert(std::make_pair(cell_neighbor_domains[i],*particle));
+              std::set<unsigned int> cell_to_neighbor_subdomain;
+              for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+                {
+                  cell_to_neighbor_subdomain.insert(vertex_to_neighbor_subdomain[cell->vertex_index(v)].begin(),
+                                                    vertex_to_neighbor_subdomain[cell->vertex_index(v)].end());
+                }
+
+              if (cell_to_neighbor_subdomain.size() > 0)
+                {
+                  const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
+                        const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
+                        particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+
+                  for (std::set<unsigned int>::iterator domain=cell_to_neighbor_subdomain.begin();
+                       domain!= cell_to_neighbor_subdomain.end(); ++domain)
+                    {
+                      for (typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particle_range_in_cell.first;
+                           particle != particle_range_in_cell.second;
+                           ++particle)
+
+                        ghost_particles_by_domain.insert(std::make_pair(*domain,*particle));
+                    }
+                }
             }
         }
 
@@ -610,12 +593,8 @@ namespace aspect
       send_recv_particles(ghost_particles_by_domain,
                           received_ghost_particles);
 
-      // Sort the updated particles. This pre-sort speeds up inserting
-      // them into particles to O(N) complexity.
-      const std::multimap<types::LevelInd,Particle <dim> > sorted_particles_map(received_ghost_particles.begin(),
-                                                                                received_ghost_particles.end());
-
-      ghost_particles.insert(sorted_particles_map.begin(),sorted_particles_map.end());
+      ghost_particles.insert(received_ghost_particles.begin(),
+                             received_ghost_particles.end());
     }
 
     template <int dim>
@@ -1284,8 +1263,6 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
-      ghost_particles.clear();
-
       do
         {
           advect_particles();
@@ -1302,6 +1279,8 @@ namespace aspect
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
 
+      // Now that all particle information was updated, exchange the new
+      // ghost particles.
       exchange_ghost_particles();
     }
 
