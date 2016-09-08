@@ -51,10 +51,7 @@ namespace aspect
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
 
-        // Note: We use the old_timestep, because this function is called as
-        // postprocessor right now, and get_timestep() is already updated for
-        // the next timestep.
-        const double dt = this->get_old_timestep();
+        const double dt = this->get_timestep();
 
         // Here we update the integrated strain by rotating the already existing
         // strain with the rotational (asymmetric) part of the velocity gradient

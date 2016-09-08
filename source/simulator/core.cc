@@ -2379,19 +2379,18 @@ namespace aspect
 
         pcout << std::endl;
 
-        // update the time step size
+        // get new time step size
         // for now the bool (convection/conduction dominated)
         // returned by compute_time_step is unused, will be
         // added to statistics later
-        old_time_step = time_step;
-        time_step = std::min (compute_time_step().first,
-                              parameters.maximum_time_step);
-        time_step = termination_manager.check_for_last_time_step(time_step);
+        const double new_time_step = termination_manager.check_for_last_time_step(
+                                       std::min(compute_time_step().first,
+                                                parameters.maximum_time_step));
 
         if (parameters.convert_to_years == true)
-          statistics.add_value("Time step size (years)", time_step / year_in_seconds);
+          statistics.add_value("Time step size (years)", new_time_step / year_in_seconds);
         else
-          statistics.add_value("Time step size (seconds)", time_step);
+          statistics.add_value("Time step size (seconds)", new_time_step);
 
 
         // see if we have to start over with a new refinement cycle
@@ -2422,11 +2421,11 @@ namespace aspect
         // if so, then loop over as many times as this is necessary
         if ((parameters.additional_refinement_times.size() > 0)
             &&
-            (parameters.additional_refinement_times.front () < time+time_step))
+            (parameters.additional_refinement_times.front () < time+new_time_step))
           {
             while ((parameters.additional_refinement_times.size() > 0)
                    &&
-                   (parameters.additional_refinement_times.front () < time+time_step))
+                   (parameters.additional_refinement_times.front () < time+new_time_step))
               {
                 ++max_refinement_level;
                 refine_mesh (max_refinement_level);
@@ -2459,6 +2458,10 @@ namespace aspect
             computing_timer.print_summary ();
             output_statistics();
           }
+
+        // update values for timestep
+        old_time_step = time_step;
+        time_step = new_time_step;
 
         // increment time step by one. then prepare
         // for the next time step by shifting solution vectors
