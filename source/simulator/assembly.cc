@@ -192,46 +192,32 @@ namespace aspect
                          const Mapping<dim>       &mapping,
                          const Quadrature<dim>    &quadrature,
                          const Quadrature<dim-1>  &face_quadrature,
+                         const UpdateFlags         update_flags,
+                         const UpdateFlags         face_update_flags,
                          const unsigned int        n_compositional_fields)
           :
           finite_element_values (mapping,
                                  finite_element, quadrature,
-                                 update_values    |
-                                 update_gradients |
-                                 update_hessians  |
-                                 update_quadrature_points |
-                                 update_JxW_values),
+                                 update_flags),
           face_finite_element_values ((face_quadrature.size() > 0
                                        ?
                                        new FEFaceValues<dim> (mapping,
                                                               finite_element, face_quadrature,
-                                                              update_values    |
-                                                              update_gradients |
-                                                              update_quadrature_points |
-                                                              update_normal_vectors |
-                                                              update_JxW_values)
+                                                              face_update_flags)
                                        :
                                        NULL)),
           neighbor_face_finite_element_values ((face_quadrature.size() > 0
                                                 ?
                                                 new FEFaceValues<dim> (mapping,
                                                                        finite_element, face_quadrature,
-                                                                       update_values    |
-                                                                       update_gradients |
-                                                                       update_quadrature_points |
-                                                                       update_normal_vectors |
-                                                                       update_JxW_values)
+                                                                       face_update_flags)
                                                 :
                                                 NULL)),
           subface_finite_element_values ((face_quadrature.size() > 0
                                           ?
                                           new FESubfaceValues<dim> (mapping,
                                                                     finite_element, face_quadrature,
-                                                                    update_values    |
-                                                                    update_gradients |
-                                                                    update_quadrature_points |
-                                                                    update_normal_vectors |
-                                                                    update_JxW_values)
+                                                                    face_update_flags)
                                           :
                                           NULL)),
           local_dof_indices (finite_element.dofs_per_cell),
@@ -686,6 +672,17 @@ namespace aspect
                                                              advection_field);
     double global_max_velocity = get_maximal_velocity(old_solution);
 
+    const UpdateFlags update_flags = update_values |
+                                     update_gradients |
+                                     (advection_field.is_temperature() ? update_hessians : update_default) |
+                                     update_quadrature_points |
+                                     update_JxW_values;
+
+    /* Because we can only get here in the continuous case, which never requires
+     * face integrals, we supply no face_update_flags and an invalid
+     * face_quadrature to the scratch object to reduce the initialization cost.
+     */
+    const UpdateFlags face_update_flags = update_default;
 
     internal::Assembly::Scratch::
     AdvectionSystem<dim> scratch (finite_element,
@@ -694,11 +691,9 @@ namespace aspect
                                   QGauss<dim>(advection_field.polynomial_degree(introspection)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2),
-                                  /* Because we can only get here in the continuous case, which never requires
-                                   * face integrals, we supply an invalid face_quadrature to the scratch object
-                                   * to reduce the initialization cost.
-                                   */
                                   Quadrature<dim-1> (),
+                                  update_flags,
+                                  face_update_flags,
                                   parameters.n_compositional_fields);
 
     typename DoFHandler<dim>::active_cell_iterator cell = dof_handler.begin_active();
@@ -782,10 +777,13 @@ namespace aspect
         scratch.finite_element_values[solution_field].get_function_gradients (old_old_solution,
                                                                               scratch.old_old_field_grads);
 
-        scratch.finite_element_values[solution_field].get_function_laplacians (old_solution,
-                                                                               scratch.old_field_laplacians);
-        scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
-                                                                               scratch.old_old_field_laplacians);
+        if (advection_field.is_temperature())
+          {
+            scratch.finite_element_values[solution_field].get_function_laplacians (old_solution,
+                                                                                   scratch.old_field_laplacians);
+            scratch.finite_element_values[solution_field].get_function_laplacians (old_old_solution,
+                                                                                   scratch.old_old_field_laplacians);
+          }
 
         if (parameters.include_melt_transport && melt_handler->is_porosity(advection_field))
           {
@@ -1242,54 +1240,45 @@ namespace aspect
           const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
           std::vector<double> residuals(n_q_points);
 
-          this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
-                                                     scratch.material_model_outputs,
-                                                     scratch.heating_model_outputs);
+          if (advection_field.is_temperature())
+            this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
+                                                       scratch.material_model_outputs,
+                                                       scratch.heating_model_outputs);
 
           for (unsigned int q=0; q < n_q_points; ++q)
             {
               const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
                                        scratch.old_old_velocity_values[q]) / 2;
 
-              const double dField_dt = (this->get_old_timestep() == 0.0) ? 0 :
+              const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
                                        (
                                          ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
                                          / this->get_old_timestep());
               const double u_grad_field = u * (scratch.old_field_grads[q] +
                                                scratch.old_old_field_grads[q]) / 2;
 
-              const double density       = ((advection_field.is_temperature()) ? scratch.material_model_outputs.densities[q] : 1.0);
-              const double conductivity  = ((advection_field.is_temperature()) ? scratch.material_model_outputs.thermal_conductivities[q] : 0.0);
-              const double c_P           = ((advection_field.is_temperature()) ? scratch.material_model_outputs.specific_heat[q] : 1.0);
-              const double k_Delta_field = conductivity
-                                           * (scratch.old_field_laplacians[q] +
-                                              scratch.old_old_field_laplacians[q]) / 2;
+              if (advection_field.is_temperature())
+                {
+                  const double density       = scratch.material_model_outputs.densities[q];
+                  const double conductivity  = scratch.material_model_outputs.thermal_conductivities[q];
+                  const double c_P           = scratch.material_model_outputs.specific_heat[q];
+                  const double k_Delta_field = conductivity * (scratch.old_field_laplacians[q] +
+                                                               scratch.old_old_field_laplacians[q]) / 2;
 
-              const double gamma =
-                ((advection_field.is_temperature())
-                 ?
-                 scratch.heating_model_outputs.heating_source_terms[q]
-                 :
-                 0.0);
+                  const double gamma           = scratch.heating_model_outputs.heating_source_terms[q];
+                  const double latent_heat_LHS = scratch.heating_model_outputs.lhs_latent_heat_terms[q];
 
-              const double latent_heat_LHS =
-                ((advection_field.is_temperature())
-                 ?
-                 scratch.heating_model_outputs.lhs_latent_heat_terms[q]
-                 :
-                 0.0);
+                  residuals[q]
+                    = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma);
+                }
+              else
+                {
+                  const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
+                                                   scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                                                   / this->get_old_timestep();
 
-              const double dreaction_term_dt =
-                (advection_field.is_temperature() || this->get_old_timestep() == 0)
-                ?
-                0.0
-                :
-                (scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
-                 / this->get_old_timestep());
-
-              residuals[q]
-                = std::abs((density * c_P + latent_heat_LHS) * (dField_dt + u_grad_field) - k_Delta_field - gamma
-                           - dreaction_term_dt);
+                  residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
+                }
             }
           return residuals;
         }
@@ -2709,7 +2698,7 @@ namespace aspect
           update_normal_vectors |
           update_JxW_values
           :
-          UpdateFlags(0))
+          update_default)
         |
         (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data
          ?
@@ -2717,7 +2706,7 @@ namespace aspect
          // also be able to compute the strain rate
          update_gradients
          :
-         UpdateFlags(0))
+         update_default)
         |
         assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags;
 
@@ -3039,6 +3028,20 @@ namespace aspect
                                           !assemblers->local_assemble_advection_system_on_interior_face.empty();
     const bool allocate_neighbor_contributions = !assemblers->local_assemble_advection_system_on_interior_face.empty();
 
+    const UpdateFlags update_flags = update_values |
+                                     update_gradients |
+                                     update_quadrature_points |
+                                     update_JxW_values;
+
+    const UpdateFlags face_update_flags = (allocate_face_quadrature ?
+                                           update_values |
+                                           update_gradients |
+                                           update_quadrature_points |
+                                           update_normal_vectors |
+                                           update_JxW_values
+                                           :
+                                           update_default);
+
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
                      dof_handler.begin_active()),
@@ -3068,6 +3071,8 @@ namespace aspect
                                (allocate_face_quadrature ?
                                 QGauss<dim-1>(advection_quadrature_degree) :
                                 Quadrature<dim-1> ()),
+                               update_flags,
+                               face_update_flags,
                                parameters.n_compositional_fields),
          internal::Assembly::CopyData::
          AdvectionSystem<dim> (finite_element.base_element(advection_field.base_element(introspection)),
