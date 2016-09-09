@@ -8,7 +8,7 @@ set Additional shared libraries            = ./libsolkz.so
 set Dimension                              = 2
 
 set Start time                             = 0
-#set End time                               = 0
+set End time                               = 0
 
 set Output directory = 32x32_output
 
@@ -108,11 +108,13 @@ subsection Postprocess
   end
 
   subsection Tracers
-    set Number of tracers = 36864
+    set Number of tracers = 16384
     set Time between data output = 0
     set Data output format = vtu
     set List of tracer properties = function
     set Integration scheme = rk2
+    #set Interpolation scheme = cell average
+    #set Interpolation scheme = cell average
     set Interpolation scheme = cell average
     set Maximum tracers per cell = 1048576
 
@@ -132,14 +134,14 @@ subsection Postprocess
       end
 
       subsection Uniform box
-       set Minimum x = .00260416666666666666
-       set Maximum x = .99739583333333333334
-       set Minimum y = .00260416666666666666
-       set Maximum y = .99739583333333333334
-       set Number of particles in x = 192
-       set Number of particles in y = 192
-       set Delta x = .00520833333333333333
-       set Delta y = .00520833333333333333
+       set Minimum x = .00390625000000000000
+       set Maximum x = .99609375000000000000
+       set Minimum y = .00390625000000000000
+       set Maximum y = .99609375000000000000
+       set Number of particles in x = 128
+       set Number of particles in y = 128
+       set Delta x = .00781250000000000000
+       set Delta y = .00781250000000000000
       end
     end
   end
