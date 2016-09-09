@@ -660,15 +660,13 @@ namespace aspect
     SolKzMaterial<dim>::
     viscosity (const double,
                const double,
-               const std::vector<double> &composition,       /*composition*/
+               const std::vector<double> &c,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
       // defined as given in the Duretz et al. paper
-      // static const double B = 0.5 * std::log(1e6);
-      // return std::exp(2*B*p[1]);
-
-      return composition[0];
+      static const double B = 0.5 * std::log(1e6);
+      return std::exp(2*B*p[1]);
     }
 
 
@@ -739,11 +737,12 @@ namespace aspect
     SolKzMaterial<dim>::
     density (const double,
              const double,
-             const std::vector<double> &, /*composition*/
+             const std::vector<double> &c, /*composition*/
              const Point<dim> &p) const
     {
       // defined as given in the paper
-      return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+      //return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
+      return c[0];
     }
 
 
@@ -842,11 +841,9 @@ namespace aspect
       Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
-      // ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-         //                                 dim+2);
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim), this->get_fe().n_components());
-      // ComponentSelectFunction<dim> comp_p(dim, dim+2);
-      ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
+                                          dim+3);
+      ComponentSelectFunction<dim> comp_p(dim, dim+3);
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
                                          this->get_solution(),
