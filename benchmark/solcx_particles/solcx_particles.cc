@@ -2541,12 +2541,13 @@ namespace aspect
     SolCxMaterial<dim>::
     viscosity (const double,
                const double,
-               const std::vector<double> &,       /*composition*/
+               const std::vector<double> &composition,       /*composition*/
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
       // defined as given in the Duretz et al. paper
-      return (p[0] < 0.5 ? 1 : eta_B);
+      // return (p[0] < 0.5 ? 1 : eta_B);
+      return composition[1];
     }
 
 
