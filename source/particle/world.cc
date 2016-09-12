@@ -583,7 +583,7 @@ namespace aspect
                         particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
 
                   for (std::set<unsigned int>::iterator domain=cell_to_neighbor_subdomain.begin();
-                       domain!= cell_to_neighbor_subdomain.end(); ++domain)
+                       domain != cell_to_neighbor_subdomain.end(); ++domain)
                     {
                       for (typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particle_range_in_cell.first;
                            particle != particle_range_in_cell.second;

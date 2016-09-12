@@ -65,17 +65,13 @@ namespace aspect
 
         const types::LevelInd cell_index = std::make_pair(found_cell->level(),found_cell->index());
 
-        std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
-              typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range;
-
-        if (cell->is_locally_owned())
-          {
-            particle_range = particles.equal_range(cell_index);
-          }
-        else
-          {
-            particle_range = ghost_particles.equal_range(cell_index);
-          }
+        const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
+              typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range =
+                (cell->is_locally_owned())
+                ?
+                particles.equal_range(cell_index)
+                :
+                ghost_particles.equal_range(cell_index);
 
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_properties = particles.begin()->second.get_properties().size();
@@ -111,7 +107,7 @@ namespace aspect
                     && (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
                 else if ((!neighbors[i]->is_locally_owned())
-                  && (ghost_particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
+                         && (ghost_particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
 
                 std::vector<double> neighbor_properties = properties_at_points(particles,

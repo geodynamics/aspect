@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Number of mesh cells
+# 4: Number of Stokes degrees of freedom
+# 5: Number of temperature degrees of freedom
+# 6: Number of degrees of freedom for all compositions
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Time step size (years)
+# 12: Number of advected particles
+# 13: Minimal particles per cell: 
+# 14: Average particles per cell: 
+# 15: Maximal particles per cell: 
+0 0.000000000000e+00 256 2467 1089 1089 0 40 105 33 3.231679664777e+16 400 0 1 6 
