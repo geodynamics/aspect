@@ -1,16 +1,18 @@
 ############### Global parameters
 
-set Additional shared libraries            = ./libinclusion.so
+set Additional shared libraries            = /home/jjn2015/inclusion_viscosity_comp/new_particle_interpolation/library/libinclusion_particles.so
 
 
 set Dimension                              = 2
 
 set Start time                             = 0
-set End time                               = 0
-set Output directory          		   = output
+#set End time                               = 0
+set Output directory = 32x32_output
 set Pressure normalization                 = volume
-set Nonlinear solver scheme                = Stokes only
 
+set Nonlinear solver scheme                = IMPES
+#set Nonlinear solver scheme                = Stokes only
+set Linear solver tolerance                = 1e-4
 
 ############### Parameters describing the model
 
@@ -19,7 +21,9 @@ subsection Geometry model
 
   subsection Box
     set X extent = 2
+    set X repetitions = 32
     set Y extent = 2
+    set Y repetitions = 32
   end
 end
 
@@ -36,7 +40,6 @@ end
 
 subsection Material model
   set Model name = InclusionMaterial
-
   subsection Inclusion
     set Viscosity jump = 1e3
   end
@@ -64,6 +67,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Discretization
+  set Composition polynomial degree           = 1
   set Stokes velocity polynomial degree       = 2
   set Use locally conservative discretization = true
   set Use discontinuous composition discretization = true
@@ -72,10 +76,8 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
-  set Initial global refinement                = 4
+  set Initial global refinement                = 0
 end
-
-
 
 ############### Parameters describing the compositional field
 # Note: The compositional field is what drives the flow
@@ -83,49 +85,45 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
-  set Names of fields = viscosity_comp #, viscosity_comp
+  set Names of fields = viscosity_comp #, density_comp
   set Compositional field methods = particles #, particles
-  # set Mapped particle properties = density_comp:function1 #, viscosity_comp:function2
-  # This is what was recommended by Rene on Friday, August 11, 2016
-  set Mapped particle properties = viscosity_comp:function [0]
+  set Mapped particle properties = viscosity_comp:function1
+  #set Mapped particle properties = viscosity_comp:function1
 end
-
 subsection Compositional initial conditions
   set Model name = function
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926, eta_b=1e3, rmax=0.2
-    #set Function expression =  background_density - sin(pi*z) * cos(pi*x); if(x<0.5, 1, eta_b)
-    set Function expression =  if((x-1)*(x-1)+(z-1)*(z-1)<rmax*rmax,eta_b,1)
+    set Function constants  = eta_b=1e3, rmax=0.2
+    set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
   end
 end
-
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
+  #set List of postprocessors = InclusionPostprocessor, visualization
   set List of postprocessors = InclusionPostprocessor, visualization, tracers
-
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0
-    set List of output variables = density, viscosity
+    set List of output variables = density, viscosity, partition
+    #set List of output variables = density, viscosity
   end
-
   subsection Tracers
-    set Number of tracers = 4096
+    set Number of tracers = 16384
     set Time between data output = 0
     set Data output format = vtu
     set List of tracer properties = function
     set Integration scheme = rk2
+    #set Interpolation scheme = least squares
     set Interpolation scheme = cell average
-    set Maximum tracers per cell = 4096
+    set Maximum tracers per cell = 16384
 
     subsection Function
-      set Variable names      = x, z
-      set Function constants  = pi=3.1415926, eta_b=1e3, rmax=0.2
-      set Function expression =  if((x-1)*(x-1)+(z-1)*(z-1)<rmax*rmax,eta_b,1)
-     # set Function expression = background_density - sin(pi*z) * cos(pi*x)
+       set Variable names      = x,z
+       set Function constants  = eta_b=1e3, rmax=0.2
+       set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
     end
 
     set Particle generator name = uniform box
@@ -137,11 +135,19 @@ subsection Postprocess
       end
 
       subsection Uniform box
-       set Minimum x = 0.0000000
-       set Maximum x = 2.0000000
-       set Minimum y = 0.0000000
-       set Maximum y = 2.0000000
+       set Minimum x = .00781250000000000000
+       set Maximum x = 1.99218750000000000000
+       set Minimum y = .00781250000000000000
+       set Maximum y = 1.99218750000000000000
+       set Number of particles in x = 128
+       set Number of particles in y = 128
+       set Delta x = .01562500000000000000
+       set Delta y = .01562500000000000000
       end
     end
   end
+end
+subsection Termination criteria
+  set End step = 0
+  set Termination criteria = end step
 end

@@ -271,9 +271,16 @@ namespace aspect
                const SymmetricTensor<2,dim> &,
                const Point<dim> &p) const
     {
-      const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
-      return (r2<0.2*0.2)? eta_B : 1.0;
-      //return composition[0];    
+//      const double r2 = (p(0)-1.0)*(p(0)-1.0) + (p(1)-1.0)*(p(1)-1.0);
+      //return (r2<0.2*0.2)? eta_B : 1.0;
+//      double value = (r2<0.2*0.2)? eta_B : 1.0;  
+//      if (abs(value - composition[0]) > 1e-12){
+//    std::cout << p << " " << value << " " << composition[0] << " " << r2 << std::endl;
+//std::cout << "Position:" << p << "value: " << value << "Comp: " << composition[0] << "  r2:" << r2 << std::endl;
+      //return value;
+//      }
+      return composition[0];
+      
     }
 
 
