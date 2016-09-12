@@ -89,6 +89,13 @@ namespace aspect
     }
 
     template <int dim>
+    const std::multimap<types::LevelInd, Particle<dim> > &
+    World<dim>::get_ghost_particles() const
+    {
+      return ghost_particles;
+    }
+
+    template <int dim>
     std::string
     World<dim>::generate_output() const
     {
@@ -550,16 +557,15 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       cell = this->get_dof_handler().begin_active(),
       endc = this->get_dof_handler().end();
-      for (typename Triangulation<dim>::active_cell_iterator cell=
-             this->get_triangulation().begin_active(); cell != this->get_triangulation().end(); ++cell)
+      for (; cell != endc; ++cell)
         {
           if (cell->is_ghost())
             for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
               vertex_to_neighbor_subdomain[cell->vertex_index(v)].insert(cell->subdomain_id());
         }
 
-      for (typename Triangulation<dim>::active_cell_iterator cell=
-             this->get_triangulation().begin_active(); cell != this->get_triangulation().end(); ++cell)
+      cell = this->get_triangulation().begin_active();
+      for (; cell != endc; ++cell)
         {
           if (!cell->is_ghost())
             {
@@ -1189,6 +1195,7 @@ namespace aspect
                   local_initialize_particles(particle_range_in_cell.first,
                                              particle_range_in_cell.second);
               }
+          exchange_ghost_particles();
         }
     }
 
