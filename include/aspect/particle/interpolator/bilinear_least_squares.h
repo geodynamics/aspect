@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_interpolator_quadratic_least_squares_h
-#define __aspect__particle_interpolator_quadratic_least_squares_h
+#ifndef __aspect__particle_interpolator_bilinear_least_squares_h
+#define __aspect__particle_interpolator_bilinear_least_squares_h
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
@@ -37,7 +37,7 @@ namespace aspect
        * @ingroup ParticleInterpolators
        */
       template <int dim>
-      class QuadraticLeastSquares : public Interface<dim>, public aspect::SimulatorAccess<dim>
+      class BilinearLeastSquares : public Interface<dim>, public aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -48,9 +48,6 @@ namespace aspect
           properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
-
-      //    void
-      //    calculate_linear_constants(double *c1, double *c2, double *c3, dealii::FullMatrix<double> A, dealii::FullMatrix<double> r);
       };
     }
   }
