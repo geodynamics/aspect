@@ -1,7 +1,7 @@
 # A description of the SolKZ benchmark for which a known solution
 # is available. See the manual for more information.
 
-set Additional shared libraries            = /home/cig/workspace/egpuckett/Computations/SolCx/Particles/SolCx_Particles_Library/libsolcx_particles.so
+set Additional shared libraries            = ./libsolcx_particles.so
 
 ############### Global parameters
 

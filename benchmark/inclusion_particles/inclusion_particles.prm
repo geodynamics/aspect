@@ -1,7 +1,6 @@
 ############### Global parameters
 
-set Additional shared libraries            = /home/jjn2015/inclusion_viscosity_comp/new_particle_interpolation/library/libinclusion_particles.so
-
+set Additional shared libraries            = ./libinclusion_particles.so
 
 set Dimension                              = 2
 
@@ -90,6 +89,7 @@ subsection Compositional fields
   set Mapped particle properties = viscosity_comp:function1
   #set Mapped particle properties = viscosity_comp:function1
 end
+
 subsection Compositional initial conditions
   set Model name = function
   subsection Function
@@ -101,7 +101,6 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  #set List of postprocessors = InclusionPostprocessor, visualization
   set List of postprocessors = InclusionPostprocessor, visualization, tracers
   subsection Visualization
     set Output format                 = vtu
@@ -116,7 +115,6 @@ subsection Postprocess
     set Data output format = vtu
     set List of tracer properties = function
     set Integration scheme = rk2
-    #set Interpolation scheme = least squares
     set Interpolation scheme = cell average
     set Maximum tracers per cell = 16384
 
