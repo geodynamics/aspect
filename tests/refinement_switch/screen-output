@@ -1,0 +1,64 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving heat system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.79 m/s, 2.51 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.0002951 W, -0.0002951 W, -1 W, 1 W
+     Writing graphical output:           output-refinement_switch/solution/solution-00000
+
+Number of active cells: 28 (on 4 levels)
+Number of degrees of freedom: 639 (298+43+149+149)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving heat system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.79 m/s, 2.55 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.000125 W, -0.000125 W, -1 W, 1 W
+     Writing graphical output:           output-refinement_switch/solution/solution-00001
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving heat system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.79 m/s, 2.53 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 3.761e-05 W, -3.761e-05 W, -1 W, 1 W
+     Writing graphical output:           output-refinement_switch/solution/solution-00002
+
+*** Timestep 1:  t=0.0246635 seconds
+   Solving temperature system... 20 iterations.
+   Solving heat system ... 15 iterations.
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  8.64 m/s, 12.2 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0.0001872 W, -0.0001862 W, -1.016 W, 1.016 W
+     Writing graphical output:           output-refinement_switch/solution/solution-00003
+
+Termination requested by criterion: end step
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+

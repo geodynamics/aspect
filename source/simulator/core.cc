@@ -1660,11 +1660,18 @@ namespace aspect
     Vector<float> estimated_error_per_cell (triangulation.n_active_cells());
     mesh_refinement_manager.execute (estimated_error_per_cell);
 
-    parallel::distributed::GridRefinement::
-    refine_and_coarsen_fixed_fraction (triangulation,
-                                       estimated_error_per_cell,
-                                       parameters.refinement_fraction,
-                                       parameters.coarsening_fraction);
+    if (parameters.adapt_by_fraction_of_cells)
+      parallel::distributed::GridRefinement::
+      refine_and_coarsen_fixed_number   (triangulation,
+                                         estimated_error_per_cell,
+                                         parameters.refinement_fraction,
+                                         parameters.coarsening_fraction);
+    else
+      parallel::distributed::GridRefinement::
+      refine_and_coarsen_fixed_fraction (triangulation,
+                                         estimated_error_per_cell,
+                                         parameters.refinement_fraction,
+                                         parameters.coarsening_fraction);
 
     mesh_refinement_manager.tag_additional_cells ();
 

@@ -518,6 +518,11 @@ namespace aspect
                          Patterns::Double(0,1),
                          "The fraction of cells with the smallest error that "
                          "should be flagged for coarsening.");
+      prm.declare_entry ("Adapt by fraction of cells", "false",
+                         Patterns::Bool(),
+                         "Use fraction of the total number of cells instead of "
+                         "fraction of the total error as the limit for refinement "
+                         "and coarsening.");
       prm.declare_entry ("Minimum refinement level", "0",
                          Patterns::Integer (0),
                          "The minimum refinement level each cell should have, "
@@ -918,6 +923,7 @@ namespace aspect
       adaptive_refinement_interval = prm.get_integer ("Time steps between mesh refinement");
       refinement_fraction          = prm.get_double ("Refinement fraction");
       coarsening_fraction          = prm.get_double ("Coarsening fraction");
+      adapt_by_fraction_of_cells   = prm.get_bool ("Adapt by fraction of cells");
       min_grid_level               = prm.get_integer ("Minimum refinement level");
 
       AssertThrow(refinement_fraction >= 0 && coarsening_fraction >= 0,
