@@ -53,6 +53,7 @@ subsection Material model
     set Latent heat                      = false
     set Compressible                     = true
     set Reference viscosity              = 1e21
+    set Number lateral average bands = 40
   end
 end
 

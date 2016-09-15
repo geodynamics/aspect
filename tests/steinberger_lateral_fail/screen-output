@@ -14,8 +14,8 @@ An error occurred in file <steinberger.cc> in function
 The violated condition was: 
     numbers::is_finite(avg_temp[i])
 The name and call sequence of the exception was:
-    ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging by reducing the number of" " slices in the viscosity prefactor file.")
+    ExcMessage("In computing depth averages, there is at" " least one depth band that does not have" " any quadrature points in it." " Consider reducing number of depth layers" " for averaging specified in the parameter" " file.(Number lateral average bands)")
 Additional Information: 
-In computing depth averages, there is at least one depth band that does not have any quadrature points in it. Consider reducing number of depth layers for averaging by reducing the number of slices in the viscosity prefactor file.
+In computing depth averages, there is at least one depth band that does not have any quadrature points in it. Consider reducing number of depth layers for averaging specified in the parameter file.(Number lateral average bands)
 
 Aborting!
