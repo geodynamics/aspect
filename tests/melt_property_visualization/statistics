@@ -1,13 +1,13 @@
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Time step size (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
 # 10: Visualization file name
-0 0.000000000000e+00 4096 45957 16641 16641 0 0 0.000000000000e+00                                                         "" 
-0 0.000000000000e+00    0     0     0     0 0 0 0.000000000000e+00                                                         "" 
-0 0.000000000000e+00    0     0     0     0 0 0 1.202887593370e-03 output-melt_property_visualization/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 4096 45957 16641 16641 0 0                                                         "" 
+0 0.000000000000e+00 0.000000000000e+00    0     0     0     0 0 0                                                         "" 
+0 0.000000000000e+00 0.000000000000e+00    0     0     0     0 0 0 output-melt_property_visualization/solution/solution-00000 

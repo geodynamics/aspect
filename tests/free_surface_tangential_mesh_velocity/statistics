@@ -1,18 +1,18 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Iterations for temperature solver
-# 7: Iterations for Stokes solver
-# 8: Velocity iterations in Stokes preconditioner
-# 9: Schur complement iterations in Stokes preconditioner
-# 10: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
 # 11: Minimum topography (m)
 # 12: Maximum topography (m)
-0 0.000000000000e+00 512 4851 2145  0 32 21  3 2.209708731302e+05  0.00000000e+00  0.00000000e+00 
-1 2.209708731302e+05 512 4851 2145 13 32 18  3 2.233514898316e+05 -2.20970873e+03 -2.20970850e+03 
-2 4.443223629618e+05 512 4851 2145 10 28 29 29 2.258091909037e+05 -4.39536428e+03 -4.39278248e+03 
-3 6.701315538654e+05 512 4851 2145 10 23 24 24 2.282748570052e+05 -6.55560057e+03 -6.55073079e+03 
-4 8.984064108706e+05 512 4851 2145 10 23 24 24 1.015935891294e+05 -8.68973233e+03 -8.68320389e+03 
-5 1.000000000000e+06 512 4851 2145  7 28 29 29 2.317836444764e+05 -9.61771202e+03 -9.61064635e+03 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145  0 32 21  3  0.00000000e+00  0.00000000e+00 
+1 2.209708731302e+05 2.209708731302e+05 512 4851 2145 13 32 18  3 -2.20970873e+03 -2.20970850e+03 
+2 4.443223629618e+05 2.233514898316e+05 512 4851 2145 10 28 29 29 -4.39536428e+03 -4.39278248e+03 
+3 6.701315538654e+05 2.258091909037e+05 512 4851 2145 10 23 24 24 -6.55560057e+03 -6.55073079e+03 
+4 8.984064108706e+05 2.282748570052e+05 512 4851 2145 10 23 24 24 -8.68973233e+03 -8.68320389e+03 
+5 1.000000000000e+06 1.015935891294e+05 512 4851 2145  7 28 29 29 -9.61771202e+03 -9.61064635e+03 

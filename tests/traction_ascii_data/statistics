@@ -1,19 +1,19 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Iterations for temperature solver
-# 7: Iterations for Stokes solver
-# 8: Velocity iterations in Stokes preconditioner
-# 9: Schur complement iterations in Stokes preconditioner
-# 10: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
 # 11: RMS velocity (m/year)
 # 12: Max. velocity (m/year)
 # 13: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
 # 14: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
 # 15: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 16: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
-0 0.000000000000e+00 4608 42355 18785 0 79 967 171 0.000000000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00    0     0     0 0 67 619 114 0.000000000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00    0     0     0 0 64 602 105 5.860029365648e+01 6.68377609e+01 1.76156558e+02 3.70050002e+06 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 4608 42355 18785 0 79 967 171 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00    0     0     0 0 67 619 114 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00    0     0     0 0 64 602 105 6.68377609e+01 1.76156558e+02 3.70050002e+06 0.00000000e+00 0.00000000e+00 0.00000000e+00 

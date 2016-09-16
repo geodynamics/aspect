@@ -1,21 +1,21 @@
 # 1: Time step number
 # 2: Time (seconds)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Time step size (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
 # 13: Minimal temperature (K)
 # 14: Average temperature (K)
 # 15: Maximal temperature (K)
-0 0.000000000000e+00 1280 12363 5457 5457  0 0 26 27 27 5.735624579448e+12 1.44679400e+03 1.59679400e+03 1.74679400e+03 
-1 5.735624579448e+12 1280 12363 5457 5457 16 0  7  8  8 5.735624520393e+12 1.44741825e+03 1.59691536e+03 1.74679400e+03 
-2 1.147124909984e+13 1280 12363 5457 5457 20 0  9 10 10 5.735624270851e+12 1.44780925e+03 1.59703094e+03 1.74679400e+03 
-3 1.720687337069e+13 1280 12363 5457 5457 17 0 10 11 11 5.735624255067e+12 1.44822764e+03 1.59714349e+03 1.74679400e+03 
-4 2.294249762576e+13 1280 12363 5457 5457 17 0  6  7  7 2.057502374241e+12 1.44869736e+03 1.59725221e+03 1.74679400e+03 
-5 2.500000000000e+13 1280 12363 5457 5457 12 0  7  8  8 5.735623635507e+12 1.44887259e+03 1.59728861e+03 1.74679400e+03 
+0 0.000000000000e+00 0.000000000000e+00 1280 12363 5457 5457  0 0 26 27 27 1.44679400e+03 1.59679400e+03 1.74679400e+03 
+1 5.735624579448e+12 5.735624579448e+12 1280 12363 5457 5457 16 0  7  8  8 1.44741825e+03 1.59691536e+03 1.74679400e+03 
+2 1.147124910026e+13 5.735624520809e+12 1280 12363 5457 5457 20 0  9 10 10 1.44780925e+03 1.59703094e+03 1.74679400e+03 
+3 1.720687336991e+13 5.735624269657e+12 1280 12363 5457 5457 17 0 10 11 11 1.44822764e+03 1.59714349e+03 1.74679400e+03 
+4 2.294249762608e+13 5.735624256166e+12 1280 12363 5457 5457 17 0  6  7  7 1.44869736e+03 1.59725220e+03 1.74679400e+03 
+5 2.500000000000e+13 2.057502373920e+12 1280 12363 5457 5457 12 0  7  8  8 1.44887259e+03 1.59728861e+03 1.74679400e+03 
