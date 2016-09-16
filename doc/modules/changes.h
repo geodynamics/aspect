@@ -6,6 +6,13 @@
  *
  * <ol>
  *
+ * <li> Changed: The timestep entry in the statistics file has been moved to
+ * column 3 and is now the timestep used for the timestep corresponding to the
+ * current row.
+ * <br>
+ * (Jonathan Robey, 2016/09/16)
+ * </li>
+ *
  * <li> Changed: The 'cell average' particle interpolator is now more
  * tolerant against cells without particles by interpolating properties
  * from neighboring cells. This is necessary, because during refinement
