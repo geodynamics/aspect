@@ -32,7 +32,7 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "solkz")
+SET(TARGET "solkz_particles")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED solkz_particles.cc)
