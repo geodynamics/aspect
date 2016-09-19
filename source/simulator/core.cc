@@ -773,6 +773,12 @@ namespace aspect
       statistics.add_value("Time (years)", time / year_in_seconds);
     else
       statistics.add_value("Time (seconds)", time);
+
+    if (parameters.convert_to_years == true)
+      statistics.add_value("Time step size (years)", time_step / year_in_seconds);
+    else
+      statistics.add_value("Time step size (seconds)", time_step);
+
     statistics.add_value("Number of mesh cells",
                          triangulation.n_global_active_cells());
 
@@ -2382,14 +2388,6 @@ namespace aspect
         // then do the core work: assemble systems and solve
         solve_timestep ();
 
-        // get new time step size
-        const double new_time_step = compute_time_step();
-
-        if (parameters.convert_to_years == true)
-          statistics.add_value("Time step size (years)", new_time_step / year_in_seconds);
-        else
-          statistics.add_value("Time step size (seconds)", new_time_step);
-
         // see if we have to start over with a new adaptive refinement cycle
         // at the beginning of the simulation
         if (timestep_number == 0)
@@ -2400,6 +2398,9 @@ namespace aspect
           }
 
         postprocess ();
+
+        // get new time step size
+        const double new_time_step = compute_time_step();
 
         // see if we want to refine the mesh
         maybe_refine_mesh(new_time_step,max_refinement_level);

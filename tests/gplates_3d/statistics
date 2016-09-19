@@ -1,13 +1,13 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Iterations for temperature solver
-# 7: Iterations for Stokes solver
-# 8: Velocity iterations in Stokes preconditioner
-# 9: Schur complement iterations in Stokes preconditioner
-# 10: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
 # 11: RMS velocity (m/year)
 # 12: Max. velocity (m/year)
 # 13: Minimal temperature (K)
@@ -20,4 +20,4 @@
 # 20: Minimum velocity magnitude on boundary with indicator 0 ("inner") (m/yr)
 # 21: Maximum velocity magnitude on boundary with indicator 1 ("outer") (m/yr)
 # 22: Minimum velocity magnitude on boundary with indicator 1 ("outer") (m/yr)
-0 0.000000000000e+00 768 21760 6930 0 65 213 229 2.188977076922e+06 3.99363032e-02 1.42683981e-01 2.73000000e+02 1.47646227e+03 2.60000000e+03 5.17173300e-01 -5.58597169e+12 8.42140850e+12 9.60625849e-02 7.42961268e-04 9.24483081e-02 5.50367654e-04 
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 0 65 213 229 3.99363032e-02 1.42683981e-01 2.73000000e+02 1.47646227e+03 2.60000000e+03 5.17173300e-01 -5.58597169e+12 8.42140850e+12 9.60625849e-02 7.42961268e-04 9.24483081e-02 5.50367654e-04 

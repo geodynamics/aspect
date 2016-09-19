@@ -1,15 +1,15 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
 # 13: Minimal value for composition porosity
 # 14: Maximal value for composition porosity
 # 15: Global mass for composition porosity
@@ -17,8 +17,8 @@
 # 17: Average temperature (K)
 # 18: Maximal temperature (K)
 # 19: Visualization file name
-0 0.000000000000e+00 1024 9539 4225 4225 0 0 8 52 26 1.562499961249e-03 1.00000000e-01 5.00000000e-01 1.78515625e-01 1.00000000e-01 1.78515625e-01 5.00000000e-01 output-artificial_viscosity/solution/solution-00000 
-1 1.562499961249e-03 1024 9539 4225 4225 6 6 0  0  0 1.562499961249e-03 8.46851362e-02 5.17202484e-01 1.78515625e-01 8.46851447e-02 1.78515624e-01 5.17202513e-01                                                  "" 
-2 3.124999922498e-03 1024 9539 4225 4225 6 6 0  0  0 1.562499961249e-03 7.30801871e-02 5.32035408e-01 1.78515625e-01 7.30802006e-02 1.78515623e-01 5.32035447e-01                                                  "" 
-3 4.687499883746e-03 1024 9539 4225 4225 6 6 0  0  0 3.125001162537e-04 6.78134025e-02 5.40691338e-01 1.78515625e-01 6.78134226e-02 1.78515621e-01 5.40691354e-01 output-artificial_viscosity/solution/solution-00001 
-4 5.000000000000e-03 1024 9539 4225 4225 5 5 0  0  0 1.562499961249e-03 6.75444425e-02 5.41628386e-01 1.78515625e-01 6.75444644e-02 1.78515621e-01 5.41628393e-01                                                  "" 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 4225 0 0 8 52 26 1.00000000e-01 5.00000000e-01 1.78515625e-01 1.00000000e-01 1.78515625e-01 5.00000000e-01 output-artificial_viscosity/solution/solution-00000 
+1 1.562499961249e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 0  0  0 8.46851362e-02 5.17202484e-01 1.78515625e-01 8.46851447e-02 1.78515624e-01 5.17202513e-01                                                  "" 
+2 3.124999922498e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 0  0  0 7.30801871e-02 5.32035408e-01 1.78515625e-01 7.30802006e-02 1.78515623e-01 5.32035447e-01                                                  "" 
+3 4.687499883746e-03 1.562499961249e-03 1024 9539 4225 4225 6 6 0  0  0 6.78134025e-02 5.40691338e-01 1.78515625e-01 6.78134226e-02 1.78515621e-01 5.40691354e-01 output-artificial_viscosity/solution/solution-00001 
+4 5.000000000000e-03 3.125001162537e-04 1024 9539 4225 4225 5 5 0  0  0 6.75444425e-02 5.41628386e-01 1.78515625e-01 6.75444644e-02 1.78515621e-01 5.41628393e-01                                                  "" 

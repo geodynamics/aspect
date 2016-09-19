@@ -1,19 +1,19 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for composition solver 2
-# 10: Iterations for composition solver 3
-# 11: Iterations for Stokes solver
-# 12: Velocity iterations in Stokes preconditioner
-# 13: Schur complement iterations in Stokes preconditioner
-# 14: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
 # 15: Visualization file name
-0 0.000000000000e+00 4096 37667 16705 50115  0  0  0  0 41 195 42 1.134213812243e+05                                                     "" 
-0 0.000000000000e+00 1198 11581  5129 15387  0  0  0  0 42 211 59 5.688653684717e+04 output-multicomponent_harmonic/solution/solution-00000 
-1 5.688653684717e+04 1198 11581  5129 15387 10 11 14 11 39 161 42 5.583806914782e+04                                                     "" 
-2 1.127246059950e+05 1198 11581  5129 15387 10 11 11 10 37 116 32 5.552939590799e+04                                                     "" 
+0 0.000000000000e+00 0.000000000000e+00 4096 37667 16705 50115  0  0  0  0 41 195 42                                                     "" 
+0 0.000000000000e+00 0.000000000000e+00 1198 11581  5129 15387  0  0  0  0 42 211 59 output-multicomponent_harmonic/solution/solution-00000 
+1 5.688653684717e+04 5.688653684717e+04 1198 11581  5129 15387 10 11 14 11 39 161 42                                                     "" 
+2 1.127246059950e+05 5.583806914782e+04 1198 11581  5129 15387 10 11 11 10 37 116 32                                                     "" 
