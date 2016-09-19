@@ -5,13 +5,9 @@ set Additional shared libraries            = ./libinclusion_particles.so
 set Dimension                              = 2
 
 set Start time                             = 0
-#set End time                               = 0
-set Output directory = 32x32_output
 set Pressure normalization                 = volume
 
 set Nonlinear solver scheme                = IMPES
-#set Nonlinear solver scheme                = Stokes only
-set Linear solver tolerance                = 1e-4
 
 ############### Parameters describing the model
 
@@ -88,15 +84,6 @@ subsection Compositional fields
   set Compositional field methods = particles #, particles
   set Mapped particle properties = viscosity_comp:function1
   #set Mapped particle properties = viscosity_comp:function1
-end
-
-subsection Compositional initial conditions
-  set Model name = function
-  subsection Function
-    set Variable names      = x,z
-    set Function constants  = eta_b=1e3, rmax=0.2
-    set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
-  end
 end
 ############### Parameters describing what to do with the solution
 

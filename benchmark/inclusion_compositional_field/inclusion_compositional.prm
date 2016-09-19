@@ -63,6 +63,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Discretization
+  set Composition polynomial degree           = 1
   set Stokes velocity polynomial degree       = 2
   set Use locally conservative discretization = true
   set Use discontinuous composition discretization = true
@@ -82,6 +83,14 @@ subsection Compositional fields
   set Number of fields = 1
   set Names of fields = viscosity_comp #, density_comp
   set Compositional field methods = field #, particles
+end
+subsection Compositional initial conditions
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = eta_b=1e3, rmax=0.2
+    set Function expression =  if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+  end
 end
 
 ############### Parameters describing what to do with the solution

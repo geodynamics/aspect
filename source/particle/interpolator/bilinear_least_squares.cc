@@ -86,6 +86,17 @@ namespace aspect
                 dealii::FullMatrix<double> r(3,1); // = dealii::FullMatrix<double>(3,3);
                 A = 0;
                 r = 0;
+                double max_value_for_particle_property=(particle_range.first)->second.get_properties()[i];
+                double min_value_for_particle_property=(particle_range.first)->second.get_properties()[i];
+                for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
+                       particle != particle_range.second; ++particle)
+                {
+                    const double particle_property = particle->second.get_properties()[i];
+                    if (max_value_for_particle_property<particle_property)
+			max_value_for_particle_property=particle_property;
+                    if (min_value_for_particle_property>particle_property)
+			min_value_for_particle_property=particle_property;
+                }
 
                 for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator particle = particle_range.first;
                      particle != particle_range.second; ++particle)
@@ -117,6 +128,14 @@ namespace aspect
 
                 Point<dim> support_point = *itr;
                 cell_properties2[i] = c(2,0) + c(0,0)*(support_point[0]) + c(1,0)*(support_point[1]);
+                if (cell_properties2[i]>max_value_for_particle_property)
+                {
+                    cell_properties2[i]=max_value_for_particle_property;
+                }
+                if (cell_properties2[i]<min_value_for_particle_property)
+                {
+                      cell_properties2[i]=min_value_for_particle_property;
+                }
               }
             properties.push_back(cell_properties2);
           }
