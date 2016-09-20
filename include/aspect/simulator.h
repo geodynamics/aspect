@@ -795,7 +795,7 @@ namespace aspect
        * the surface is determined by asking whether its depth of its midpoint
        * (as determined by the geometry model) is less than
        * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved
-       * boundaries, this rules out side faces that are perpendicular ot the
+       * boundaries, this rules out side faces that are perpendicular to the
        * surface boundary but includes those faces that are along the boundary
        * even if the real boundary is curved.
        *
