@@ -664,7 +664,9 @@ namespace aspect
     // extract Stokes parts of solution vector, without any ghost elements
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
-    // create vector with distribution of system_rhs.
+    // create a completely distributed vector that will be used for
+    // the scaled and denormalized solution and later used as a
+    // starting guess for the linear solver
     LinearAlgebra::BlockVector remap (introspection.index_sets.stokes_partitioning, mpi_communicator);
 
     // copy the velocity and pressure from current_linearization_point into
