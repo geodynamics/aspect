@@ -7,29 +7,29 @@
         <Time Value="0"/>
         <Geometry GeometryType="XYZ">
           <DataItem Dimensions="10 3" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00000.h5:/nodes
+            particles/particles-00000.h5:/nodes
           </DataItem>
         </Geometry>
         <Topology TopologyType="Polyvertex" NumberOfElements="10">
         </Topology>
         <Attribute Name="function" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00000.h5:/function
+            particles/particles-00000.h5:/function
           </DataItem>
         </Attribute>
         <Attribute Name="id" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00000.h5:/id
+            particles/particles-00000.h5:/id
           </DataItem>
         </Attribute>
         <Attribute Name="initial C_1" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00000.h5:/initial C_1
+            particles/particles-00000.h5:/initial C_1
           </DataItem>
         </Attribute>
         <Attribute Name="initial position" AttributeType="Vector" Center="Node">
           <DataItem Dimensions="10 3" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00000.h5:/initial position
+            particles/particles-00000.h5:/initial position
           </DataItem>
         </Attribute>
       </Grid>
@@ -37,29 +37,29 @@
         <Time Value="70"/>
         <Geometry GeometryType="XYZ">
           <DataItem Dimensions="10 3" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00001.h5:/nodes
+            particles/particles-00001.h5:/nodes
           </DataItem>
         </Geometry>
         <Topology TopologyType="Polyvertex" NumberOfElements="10">
         </Topology>
         <Attribute Name="function" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00001.h5:/function
+            particles/particles-00001.h5:/function
           </DataItem>
         </Attribute>
         <Attribute Name="id" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00001.h5:/id
+            particles/particles-00001.h5:/id
           </DataItem>
         </Attribute>
         <Attribute Name="initial C_1" AttributeType="Scalar" Center="Node">
           <DataItem Dimensions="10 1" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00001.h5:/initial C_1
+            particles/particles-00001.h5:/initial C_1
           </DataItem>
         </Attribute>
         <Attribute Name="initial position" AttributeType="Vector" Center="Node">
           <DataItem Dimensions="10 3" NumberType="Float" Precision="8" Format="HDF">
-            particles/particle-00001.h5:/initial position
+            particles/particles-00001.h5:/initial position
           </DataItem>
         </Attribute>
       </Grid>
