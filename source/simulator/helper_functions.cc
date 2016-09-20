@@ -679,8 +679,9 @@ namespace aspect
   }
 
   /*
-   * normalize the pressure by calculating the surface integral of the pressure on the outer
-   * shell and subtracting this from all pressure nodes.
+   * normalize the pressure by calculating the outer surface or volume
+   * average of the pressure and subtracting this from all pressure
+   * DoFs.
    */
   template <int dim>
   void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)

@@ -815,15 +815,32 @@ namespace aspect
       void compute_Vp_anomaly(Vector<float> &values) const;
 
       /**
-       * Adjust the pressure variable (which is only determined up to a
-       * constant) by adding a constant to it in such a way that the pressure
-       * on the surface has a known average value. Whether a face is part of
-       * the surface is determined by asking whether its depth of its midpoint
-       * (as determined by the geometry model) is less than
+       * Adjust the pressure variable (which is only determined up to
+       * a constant by the equations, though its value may enter
+       * traction boundary conditions) by adding a constant to it in
+       * such a way that the pressure on the surface or within the
+       * entire volume has a known average value. The point of this
+       * function is that the pressure that results from solving the
+       * linear system may not coincide with what we think of as the
+       * "physical pressure"; in particular, we typically think of the
+       * pressure as zero (on average) along the surface because it is
+       * the sum of the hydrostatic and dynamic pressure, where the
+       * former is thought of as zero along the surface. This function
+       * therefore converts from the "mathematical" pressure to the
+       * "physical" pressure so that all following postprocessing
+       * steps can use the latter.
+       *
+       * In the case of the surface average, whether a face is part of
+       * the surface is determined by asking whether its depth of its
+       * midpoint (as determined by the geometry model) is less than
        * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved
-       * boundaries, this rules out side faces that are perpendicular to the
-       * surface boundary but includes those faces that are along the boundary
-       * even if the real boundary is curved.
+       * boundaries, this rules out side faces that are perpendicular
+       * to the surface boundary but includes those faces that are
+       * along the boundary even if the real boundary is curved.
+       *
+       * Whether the pressure should be normalized based on the
+       * surface or volume average is decided by a parameter in the
+       * input file.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
