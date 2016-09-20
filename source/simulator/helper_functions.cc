@@ -737,7 +737,7 @@ namespace aspect
                 }
             }
       }
-    else if (parameters.pressure_normalization=="volume")
+    else if (parameters.pressure_normalization == "volume")
       {
         const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
 
@@ -769,12 +769,12 @@ namespace aspect
       AssertThrow (false, ExcMessage("Invalid pressure normalization method: " +
                                      parameters.pressure_normalization));
 
-    pressure_adjustment = 0.0;
     // sum up the integrals from each processor
     {
       const double my_temp[2] = {my_pressure, my_area};
       double temp[2];
       Utilities::MPI::sum (my_temp, mpi_communicator, temp);
+
       if (parameters.pressure_normalization == "surface")
         pressure_adjustment = -temp[0]/temp[1] + parameters.surface_pressure;
       else if (parameters.pressure_normalization == "volume")
