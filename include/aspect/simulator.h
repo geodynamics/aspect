@@ -842,13 +842,18 @@ namespace aspect
        * surface or volume average is decided by a parameter in the
        * input file.
        *
+       * @note This function stores the pressure adjustment in the @p
+       * pressure_adjustment member variable of the current class. It
+       * is there so that we can later use the negative adjustment in
+       * denormalize_pressure().
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void normalize_pressure(LinearAlgebra::BlockVector &vector);
 
       /**
-       * Invert the action of the function above.
+       * Invert the action of the normalize_pressure() function above.
        *
        * This function modifies @p vector in-place. In some cases, we need
        * locally_relevant values of the pressure. To avoid creating a new vector
@@ -856,6 +861,10 @@ namespace aspect
        * dofs (@p relevant_vector) for accessing these pressure values. Both
        * @p vector and @p relevant_vector are expected to already contain
        * the correct pressure values.
+       *
+       * @note The adjustment made in this function is done using the
+       * negative of the @p pressure_adjustment member variable
+       * previously set in normalize_pressure().
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
