@@ -241,12 +241,10 @@ namespace aspect
 
 
 
-  /**
-   * Find the largest velocity throughout the domain.
-   **/
   template <int dim>
-  double Simulator<dim>::get_maximal_velocity (
-    const LinearAlgebra::BlockVector &solution) const
+  double
+  Simulator<dim>::
+  get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const
   {
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
@@ -678,13 +676,10 @@ namespace aspect
     hanging_constraints.distribute(vec);
   }
 
-  /*
-   * normalize the pressure by calculating the outer surface or volume
-   * average of the pressure and subtracting this from all pressure
-   * DoFs.
-   */
+
+
   template <int dim>
-  void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector)
+  void Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector)
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -870,9 +865,7 @@ namespace aspect
   }
 
 
-  /*
-   * inverse to normalize_pressure.
-   */
+
   template <int dim>
   void
   Simulator<dim>::
@@ -969,14 +962,9 @@ namespace aspect
 
 
 
-  /**
-   * This routine adjusts the second block of the right hand side of the
-   * system containing the compressibility, so that the system becomes
-   * compatible. See the general documentation of this class for more
-   * information.
-   */
   template <int dim>
-  void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
+  void
+  Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
     if (parameters.use_locally_conservative_discretization)
       AssertThrow(false, ExcNotImplemented());
