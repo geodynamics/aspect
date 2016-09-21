@@ -538,11 +538,8 @@ namespace aspect
     if (parameters.use_conduction_timestep)
       min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
 
-    double new_time_step = std::min(min_convection_timestep,min_conduction_timestep);
-
-    // for now the bool (convection/conduction dominated)
-    // is unused, will be added to statistics later
-    bool convection_dominant = (min_convection_timestep < min_conduction_timestep);
+    double new_time_step = std::min(min_convection_timestep,
+                                    min_conduction_timestep);
 
     if (new_time_step == std::numeric_limits<double>::max())
       {
@@ -552,7 +549,6 @@ namespace aspect
         // the velocity was one
         new_time_step = (parameters.CFL_number /
                          (parameters.temperature_degree * 1));
-        convection_dominant = false;
       }
 
     new_time_step = termination_manager.check_for_last_time_step(std::min(new_time_step,
