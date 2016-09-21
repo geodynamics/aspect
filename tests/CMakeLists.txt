@@ -179,7 +179,7 @@ FOREACH(_test ${_tests})
     FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
 	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
     FOREACH(_output ${_outputs})
-      GET_FILENAME_COMPONENT(_dir ${_output} DIRECTORY)
+      GET_FILENAME_COMPONENT(_dir ${_output} PATH)
       IF(NOT  ${_dir} STREQUAL "" )
         FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_dir})
       ENDIF()
