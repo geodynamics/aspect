@@ -179,7 +179,15 @@ FOREACH(_test ${_tests})
     FILE(GLOB_RECURSE _outputs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${_test}/
 	${CMAKE_CURRENT_SOURCE_DIR}/${_test}/[a-zA-Z0-9]*)
     FOREACH(_output ${_outputs})
-      GET_FILENAME_COMPONENT(_dir ${_output} DIRECTORY)
+
+      # get the directory name we should work on; for cmake <2.8.11, the
+      # subcommand was PATH (legacy), for everything after we can use
+      # DIRECTORY
+      IF (${CMAKE_VERSION} VERSION_LESS "2.8.12")
+        GET_FILENAME_COMPONENT(_dir ${_output} PATH)
+      ELSE()
+        GET_FILENAME_COMPONENT(_dir ${_output} DIRECTORY)
+      ENDIF()
       IF(NOT  ${_dir} STREQUAL "" )
         FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output-${_test}/${_dir})
       ENDIF()
