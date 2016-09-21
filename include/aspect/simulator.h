@@ -844,7 +844,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void denormalize_pressure(LinearAlgebra::BlockVector &vector,
-                                const LinearAlgebra::BlockVector &relevant_vector);
+                                const LinearAlgebra::BlockVector &relevant_vector) const;
 
       /**
        * Apply the bound preserving limiter to the discontinuous galerkin solutions:

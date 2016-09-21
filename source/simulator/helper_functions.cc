@@ -877,8 +877,10 @@ namespace aspect
    * inverse to normalize_pressure.
    */
   template <int dim>
-  void Simulator<dim>::denormalize_pressure (LinearAlgebra::BlockVector &vector,
-                                             const LinearAlgebra::BlockVector &relevant_vector)
+  void
+  Simulator<dim>::
+  denormalize_pressure (LinearAlgebra::BlockVector &vector,
+                        const LinearAlgebra::BlockVector &relevant_vector) const
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -1340,7 +1342,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct Simulator<dim>::AdvectionField; \
   template void Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector); \
+  template void Simulator<dim>::denormalize_pressure(LinearAlgebra::BlockVector &vector, const LinearAlgebra::BlockVector &relevant_vector) const; \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template void Simulator<dim>::maybe_write_timing_output () const; \
