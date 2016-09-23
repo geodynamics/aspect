@@ -6,6 +6,12 @@
  *
  * <ol>
  *
+ * <li> New: Multiple particle properties can be intialized by specifying
+ * multiple particle property function components as opposed to one particle
+ * property.
+ * <br>
+ * (Harsha Lokavarapu, Gerry Puckett, 2016/09/20)
+ *
  * <li> Changed: The timestep entry in the statistics file has been moved to
  * column 3 and is now the timestep used for the timestep corresponding to the
  * current row.

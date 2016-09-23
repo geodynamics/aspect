@@ -89,7 +89,13 @@ namespace aspect
           /**
            * A function object representing the tracer property.
            */
-          Functions::ParsedFunction<dim> function;
+          std_cxx11::unique_ptr<Functions::ParsedFunction<dim> > function;
+
+          /**
+           * A private variable that stores the number of particle property
+           * function components.
+           */
+          unsigned int n_components;
       };
     }
   }

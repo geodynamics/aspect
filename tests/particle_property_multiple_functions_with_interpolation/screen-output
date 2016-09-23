@@ -1,0 +1,60 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 1.5.0-pre
+--     . running in DEBUG mode
+--     . running with 2 MPI processes
+--     . using Trilinos
+-----------------------------------------------------------------------------
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000181 m/s, 0.000404 m/s
+     Compositions min/max/mass:    0/1/0.1825 // 0/1/0.1675 // 0/1/0.169
+     Number of advected particles: 1024
+
+*** Timestep 1:  t=70 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 16 iterations.
+   Solving Stokes system... 30+2 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000327 m/s, 0.000728 m/s
+     Compositions min/max/mass:    -0.002207/1.002/0.1825 // 0/1/0.1675 // 0/1/0.169
+     Number of advected particles: 1024
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.359s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         2 |    0.0646s |        18% |
+| Assemble composition system     |         2 |    0.0359s |        10% |
+| Assemble temperature system     |         2 |     0.038s |        11% |
+| Build Stokes preconditioner     |         1 |    0.0391s |        11% |
+| Build composition preconditioner|         2 |    0.0022s |      0.61% |
+| Solve Stokes system             |         2 |    0.0403s |        11% |
+| Solve composition system        |         2 |   0.00371s |         1% |
+| Initialization                  |         1 |    0.0228s |       6.4% |
+| Particles: Advect               |         4 |   0.00409s |       1.1% |
+| Particles: Communicate          |         4 |  0.000273s |     0.076% |
+| Particles: Generate             |         1 |  0.000366s |       0.1% |
+| Particles: Initialization       |         1 |   0.00021s |     0.058% |
+| Particles: Initialize properties|         1 |  0.000678s |      0.19% |
+| Particles: Sort                 |         4 |  0.000686s |      0.19% |
+| Particles: Update properties    |         2 |    0.0415s |        12% |
+| Postprocessing                  |         2 |    0.0528s |        15% |
+| Setup dof systems               |         1 |    0.0375s |        10% |
+| Setup initial conditions        |         1 |   0.00713s |         2% |
++---------------------------------+-----------+------------+------------+
+
