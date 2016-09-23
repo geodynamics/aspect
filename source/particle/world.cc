@@ -89,6 +89,13 @@ namespace aspect
     }
 
     template <int dim>
+    const std::multimap<types::LevelInd, Particle<dim> > &
+    World<dim>::get_ghost_particles() const
+    {
+      return ghost_particles;
+    }
+
+    template <int dim>
     std::string
     World<dim>::generate_output() const
     {
@@ -272,6 +279,7 @@ namespace aspect
           // can change because of discarded or newly generated particles
           data_offset = numbers::invalid_unsigned_int;
           update_n_global_particles();
+          exchange_ghost_particles();
         }
     }
 
@@ -532,6 +540,67 @@ namespace aspect
                 }
             }
         }
+    }
+
+    template <int dim>
+    void
+    World<dim>::exchange_ghost_particles()
+    {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
+
+      // First clear the current ghost_particle information
+      ghost_particles.clear();
+
+      std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > ghost_particles_by_domain;
+      std::vector<std::set<unsigned int> > vertex_to_neighbor_subdomain(this->get_triangulation().n_vertices());
+
+      typename DoFHandler<dim>::active_cell_iterator
+      cell = this->get_dof_handler().begin_active(),
+      endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
+        {
+          if (cell->is_ghost())
+            for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+              vertex_to_neighbor_subdomain[cell->vertex_index(v)].insert(cell->subdomain_id());
+        }
+
+      cell = this->get_triangulation().begin_active();
+      for (; cell != endc; ++cell)
+        {
+          if (!cell->is_ghost())
+            {
+              std::set<unsigned int> cell_to_neighbor_subdomain;
+              for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+                {
+                  cell_to_neighbor_subdomain.insert(vertex_to_neighbor_subdomain[cell->vertex_index(v)].begin(),
+                                                    vertex_to_neighbor_subdomain[cell->vertex_index(v)].end());
+                }
+
+              if (cell_to_neighbor_subdomain.size() > 0)
+                {
+                  const std::pair< const typename std::multimap<types::LevelInd,Particle <dim> >::iterator,
+                        const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
+                        particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
+
+                  for (std::set<unsigned int>::iterator domain=cell_to_neighbor_subdomain.begin();
+                       domain != cell_to_neighbor_subdomain.end(); ++domain)
+                    {
+                      for (typename std::multimap<types::LevelInd,Particle <dim> >::iterator particle = particle_range_in_cell.first;
+                           particle != particle_range_in_cell.second;
+                           ++particle)
+
+                        ghost_particles_by_domain.insert(std::make_pair(*domain,*particle));
+                    }
+                }
+            }
+        }
+
+      std::vector<std::pair<types::LevelInd, Particle<dim> > > received_ghost_particles;
+      send_recv_particles(ghost_particles_by_domain,
+                          received_ghost_particles);
+
+      ghost_particles.insert(received_ghost_particles.begin(),
+                             received_ghost_particles.end());
     }
 
     template <int dim>
@@ -920,9 +989,6 @@ namespace aspect
             }
 #endif
 
-          Assert(cell->is_locally_owned(),
-                 ExcMessage("Another process sent us a particle, but the particle is not in our domain."));
-
           const types::LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 
           received_particles.push_back(std::make_pair(found_cell, recv_particle));
@@ -1129,6 +1195,7 @@ namespace aspect
                   local_initialize_particles(particle_range_in_cell.first,
                                              particle_range_in_cell.second);
               }
+          exchange_ghost_particles();
         }
     }
 
@@ -1218,6 +1285,10 @@ namespace aspect
 
       // Update the number of global particles if some have left the domain
       update_n_global_particles();
+
+      // Now that all particle information was updated, exchange the new
+      // ghost particles.
+      exchange_ghost_particles();
     }
 
     template <int dim>

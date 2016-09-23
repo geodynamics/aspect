@@ -19,6 +19,8 @@
  */
 
 #include <aspect/particle/interpolator/cell_average.h>
+#include <aspect/postprocess/tracers.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 
@@ -34,6 +36,11 @@ namespace aspect
                                              const std::vector<Point<dim> > &positions,
                                              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
+        const Postprocess::Tracers<dim> *tracer_postprocessor = this->template find_postprocessor<Postprocess::Tracers<dim> >();
+
+        const std::multimap<aspect::Particle::types::LevelInd, aspect::Particle::Particle<dim> > &ghost_particles =
+          tracer_postprocessor->get_particle_world().get_ghost_particles();
+
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
         if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
@@ -57,8 +64,14 @@ namespace aspect
           found_cell = cell;
 
         const types::LevelInd cell_index = std::make_pair(found_cell->level(),found_cell->index());
+
         const std::pair<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator,
-              typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range = particles.equal_range(cell_index);
+              typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator> particle_range =
+                (cell->is_locally_owned())
+                ?
+                particles.equal_range(cell_index)
+                :
+                ghost_particles.equal_range(cell_index);
 
         const unsigned int n_particles = std::distance(particle_range.first,particle_range.second);
         const unsigned int n_properties = particles.begin()->second.get_properties().size();
@@ -90,7 +103,11 @@ namespace aspect
               {
                 // Only recursively call this function if the neighbor cell contains
                 // particles (else we end up in an endless recursion)
-                if (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0)
+                if ((neighbors[i]->is_locally_owned())
+                    && (particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
+                  continue;
+                else if ((!neighbors[i]->is_locally_owned())
+                         && (ghost_particles.count(std::make_pair(neighbors[i]->level(),neighbors[i]->index())) == 0))
                   continue;
 
                 std::vector<double> neighbor_properties = properties_at_points(particles,

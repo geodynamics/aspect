@@ -122,6 +122,14 @@ namespace aspect
         get_particles() const;
 
         /**
+         * Const access to ghost particles in this world.
+         * Ghost particles are all particles that are owned by another process
+         * and live in one of the ghost cells of the local subdomain.
+         */
+        const std::multimap<types::LevelInd, Particle<dim> > &
+        get_ghost_particles() const;
+
+        /**
          * Advance particles by the old timestep using the current
          * integration scheme. This accounts for the fact that the tracers
          * are actually still at their old positions and the current timestep
@@ -282,6 +290,13 @@ namespace aspect
         std::multimap<types::LevelInd, Particle<dim> > particles;
 
         /**
+         * Set of particles currently in the ghost cells of the local domain,
+         * organized by the level/index of the cell they are in. These
+         * particles are marked read-only.
+         */
+        std::multimap<types::LevelInd, Particle<dim> > ghost_particles;
+
+        /**
          * This variable stores how many particles are stored globally. It is
          * calculated by update_n_global_particles().
          */
@@ -377,6 +392,14 @@ namespace aspect
          */
         void
         update_next_free_particle_index();
+
+        /**
+         * Exchanges all particles that live in cells adjacent to ghost cells
+         * (i.e. cells that are ghosts to other processes) with the neighboring
+         * domains. Clears and re-populates the ghost_neighbors member variable.
+         */
+        void
+        exchange_ghost_particles();
 
         /**
          * Returns a map of neighbor cells of the current cell. This map is
