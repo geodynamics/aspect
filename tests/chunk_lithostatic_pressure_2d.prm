@@ -109,7 +109,7 @@ end
 
 
 subsection Boundary traction model
-   subsection Lithostatic pressure
+   subsection Initial lithostatic pressure
      set Representative point =  6371000, 50, 40
    end
 end

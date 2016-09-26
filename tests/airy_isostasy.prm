@@ -104,7 +104,7 @@ end
 # profile is calculated, this can be anywhere in the two
 # outer columns
 subsection Boundary traction model
-  subsection Lithostatic pressure
+  subsection Initial lithostatic pressure
    set Number of integration points = 260
    set Representative point         = 0.1,1
   end

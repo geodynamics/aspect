@@ -46,7 +46,7 @@ end
 # The lithostatic pressure profile is calculated
 # at x = 10000, over 1000 integration points
 subsection Boundary traction model
-  subsection Lithostatic pressure
+  subsection Initial lithostatic pressure
     set Representative point = 10000,0
   end
   subsection Function

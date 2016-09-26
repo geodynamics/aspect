@@ -1,15 +1,15 @@
 # 1: Time step number
 # 2: Time (years)
-# 3: Number of mesh cells
-# 4: Number of Stokes degrees of freedom
-# 5: Number of temperature degrees of freedom
-# 6: Number of degrees of freedom for all compositions
-# 7: Iterations for temperature solver
-# 8: Iterations for composition solver 1
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Time step size (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
 # 13: RMS velocity (m/year)
 # 14: Max. velocity (m/year)
 # 15: Minimal pressure (Pa)
@@ -17,6 +17,6 @@
 # 17: Maximal pressure (Pa)
 # 18: Minimum topography (m)
 # 19: Maximum topography (m)
-0 0.000000000000e+00 1024  9539 4225 4225 0 0 52 677  23 1.767099825501e-08 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 1264 11875 5261 5261 0 0 53 704  96 8.812240306585e-09 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
-0 0.000000000000e+00 2128 20008 8871 8871 0 0 53 685 103 4.406155860314e-09 6.62362366e+05 8.87370124e+05 -6.50747415e-01 5.00500946e+00 1.00000030e+01 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 1024  9539 4225 4225 0 0 52 677  23 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 1264 11875 5261 5261 0 0 53 704  96 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 2128 20008 8871 8871 0 0 53 685 103 6.62362366e+05 8.87370124e+05 -6.50747415e-01 5.00500946e+00 1.00000030e+01 0.00000000e+00 0.00000000e+00 
