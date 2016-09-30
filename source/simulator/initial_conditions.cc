@@ -96,13 +96,13 @@ namespace aspect
           (advf.is_temperature()
            ?
            VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&InitialConditions::Interface<dim>::initial_temperature,
-                                                                               std::ref(*initial_conditions),
+                                                                               std_cxx11::ref(*initial_conditions),
                                                                                std_cxx11::_1),
                                                                introspection.component_indices.temperature,
                                                                introspection.n_components)
            :
            VectorFunctionFromScalarFunctionObject<dim, double>(std_cxx11::bind(&CompositionalInitialConditions::Interface<dim>::initial_composition,
-                                                                               std::ref(*compositional_initial_conditions),
+                                                                               std_cxx11::ref(*compositional_initial_conditions),
                                                                                std_cxx11::_1,
                                                                                n-1),
                                                                introspection.component_indices.compositional_fields[n-1],
