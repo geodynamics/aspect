@@ -123,31 +123,52 @@ namespace aspect
           {
             const unsigned int n_components = property_information.get_components_by_field_index(field_index);
 
-            output << "        <DataArray type=\"Float64\" Name=\""
-                   << property_information.get_field_name_by_index(field_index)
-                   << "\" NumberOfComponents=\"" << (n_components == 2 ? 3 : n_components)
-                   << "\" Format=\"ascii\">\n";
-            for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
-                 it=particles.begin(); it!=particles.end(); ++it)
+            // If this is a property with one component or as many components
+            // as spatial dimensions, output it as one scalar / vector field.
+            // Vector fields are padded with zeroes to 3 dimensions (vtk limitation).
+            if ((n_components == 1) || (n_components == dim))
               {
-                const std::vector<double> particle_data = it->second.get_properties();
-
-                output << "          ";
-
-                for (unsigned int d=0; d < n_components; ++d)
+                output << "        <DataArray type=\"Float64\" Name=\""
+                       << property_information.get_field_name_by_index(field_index)
+                       << "\" NumberOfComponents=\"" << (n_components == 1 ? 1 : 3)
+                       << "\" Format=\"ascii\">\n";
+                for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
+                     it=particles.begin(); it!=particles.end(); ++it)
                   {
-                    output << particle_data[data_offset+d];
+                    const std::vector<double> particle_data = it->second.get_properties();
 
-                    if (d+1 < n_components)
-                      output << ' ';
+                    output << "         ";
+                    for (unsigned int d=0; d < n_components; ++d)
+                      output << ' ' << particle_data[data_offset+d];
+
+                    if (n_components == 2)
+                      output << " 0";
+                    output << "\n";
                   }
-
-                if (n_components == 2)
-                  output << " 0";
-                output << "\n";
+                data_offset += n_components;
+                output << "        </DataArray>\n";
               }
-            data_offset += n_components;
-            output << "        </DataArray>\n";
+            // Otherwise create n_components scalar fields
+            else
+              {
+                for (unsigned int d=0; d<n_components; ++d)
+                  {
+                    output << "        <DataArray type=\"Float64\" Name=\""
+                           << property_information.get_field_name_by_index(field_index) << '_' << d
+                           << "\" NumberOfComponents=\"1"
+                           << "\" Format=\"ascii\">\n";
+                    for (typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator
+                         it=particles.begin(); it!=particles.end(); ++it)
+                      {
+                        const std::vector<double> particle_data = it->second.get_properties();
+
+                        output << particle_data[data_offset+d] << "\n";
+                      }
+                    output << "        </DataArray>\n";
+                  }
+                data_offset += n_components;
+
+              }
           }
         output << "      </PointData>\n";
 
@@ -180,14 +201,17 @@ namespace aspect
 
             for (unsigned int field_index = 0; field_index < property_information.n_fields(); ++field_index)
               {
-                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
-                            << "\" NumberOfComponents=\""
-                            << (property_information.get_components_by_field_index(field_index) == 2
-                                ?
-                                3
-                                :
-                                property_information.get_components_by_field_index(field_index))
-                            << "\" format=\"ascii\"/>\n";
+                const unsigned int n_components = property_information.get_components_by_field_index(field_index);
+                if ((n_components == 1) || (n_components == dim))
+                  pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
+                              << "\" NumberOfComponents=\"" << (n_components == 1 ? 1 : 3)
+                              << "\" format=\"ascii\"/>\n";
+                else
+                  for (unsigned int component = 0; component < property_information.get_components_by_field_index(field_index); ++component)
+                    pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << property_information.get_field_name_by_index(field_index)
+                                << '_' << component
+                                << "\" NumberOfComponents=\"1"
+                                << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++i)
