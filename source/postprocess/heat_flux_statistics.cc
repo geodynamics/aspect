@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -224,6 +224,13 @@ namespace aspect
                                   "flux. If you "
                                   "are interested in the opposite direction, for example from "
                                   "the core into the mantle when the domain describes the "
-                                  "mantle, then you need to multiply the result by -1.")
+                                  "mantle, then you need to multiply the result by -1."
+                                  "\n\n"
+                                  "\\note{In geodynamics, the term ``heat flux'' is often understand "
+                                  "to be the quantity $- k \\nabla T$, which is really a heat "
+                                  "flux \\textit{density}, i.e., a vector-valued field. In contrast "
+                                  "to this, the current postprocessor only computes the integrated "
+                                  "flux over each part of the boundary. Consequently, the units of "
+                                  "the quantity computed here are $W=\\frac{J}{s}$.}")
   }
 }
