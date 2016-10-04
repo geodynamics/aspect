@@ -66,14 +66,6 @@ namespace aspect
          */
         ~World();
 
-        enum ParticleLoadBalancing
-        {
-          no_balancing,
-          remove_particles,
-          remove_and_add_particles,
-          repartition
-        };
-
         /**
          * Initialize the particle world.
          */
@@ -256,6 +248,18 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
+        struct ParticleLoadBalancing
+        {
+          enum Kind
+          {
+            no_balancing = 0x0,
+            remove_particles = 0x1,
+            add_particles = 0x2,
+            repartition = 0x4,
+            remove_and_add_particles = remove_particles | add_particles
+          };
+        };
+
         /**
          * Generation scheme for creating particles in this world
          */
@@ -328,7 +332,7 @@ namespace aspect
         /**
          * Strategy for tracer load balancing.
          */
-        ParticleLoadBalancing particle_load_balancing;
+        typename ParticleLoadBalancing::Kind particle_load_balancing;
 
         /**
          * Lower limit for particle number per cell. This limit is
@@ -360,7 +364,7 @@ namespace aspect
         /**
          * The computational cost of a single particle. This is an input
          * parameter that is set during initialization and is only used if the
-         * particle_load_balancing strategy 'repartition' is used. This value
+         * particle load balancing strategy 'repartition' is used. This value
          * determines how costly the computation of a single tracer is compared
          * to the computation of a whole cell, which is arbitrarily defined
          * to represent a cost of 1000.
