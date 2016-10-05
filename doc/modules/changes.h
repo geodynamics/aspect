@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Changed: The finite strain cookbook used a way to compute 
+ * the finite strain that was only appropriate for a small amount of
+ * strain. This was fixed to a proper finite strain computation.
+ * Added tests and benchmarks for the new formulation, and updated
+ * the according particle property in the same way. Also updated
+ * and extended the cookbook description in the manual.
+ * <br> (Rene Gassmoeller, 2017/01/19)
+ *
  * <li> New: Added a "heat flux densities" postprocessor.
  * <br> (Timo Heister, 2016/12/26)
  *

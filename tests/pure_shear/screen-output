@@ -1,0 +1,40 @@
+
+Loading shared library <./libpure_shear.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving strain_xx system ... 0 iterations.
+   Skipping strain_xy composition solve because RHS is zero.
+   Skipping strain_yx composition solve because RHS is zero.
+   Solving strain_yy system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+     Writing particle output:   output-pure_shear/particles/particles-00000
+     Writing graphical output:  output-pure_shear/solution/solution-00000
+     Compositions min/max/mass: 1/1/1 // 0/0/0 // 0/0/0 // 1/1/1
+
+*** Timestep 1:  t=0.025 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving strain_xx system ... 12 iterations.
+   Solving strain_xy system ... 14 iterations.
+   Solving strain_yx system ... 14 iterations.
+   Solving strain_yy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 1
+     Compositions min/max/mass:    0.9931/1.031/1.012 // -0.03311/-1.203e-06/-0.01392 // 1.197e-06/0.03164/0.01385 // 0.9687/1.002/0.9875
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
