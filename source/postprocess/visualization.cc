@@ -446,30 +446,30 @@ namespace aspect
       if (output_format=="hdf5")
         {
           XDMFEntry new_xdmf_entry;
-          std::string     h5_solution_file_name = this->get_output_directory() + "solution/" + solution_file_prefix + ".h5";
-          std::string     xdmf_filename = this->get_output_directory() + "solution.xdmf";
+          const std::string h5_solution_file_name = "solution/" + solution_file_prefix + ".h5";
+          const std::string xdmf_filename = "solution.xdmf";
 
           // Filter redundant values
-          DataOutBase::DataOutFilter   data_filter(DataOutBase::DataOutFilterFlags(true, true));
+          DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(true, true));
 
           // If the mesh changed since the last output, make a new mesh file
-          std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
+          const std::string mesh_file_prefix = "mesh-" + Utilities::int_to_string (output_file_number, 5);
           if (mesh_changed)
-            last_mesh_file_name = mesh_file_prefix + ".h5";
+            last_mesh_file_name = "solution/" + mesh_file_prefix + ".h5";
 
           data_out.write_filtered_data(data_filter);
           data_out.write_hdf5_parallel(data_filter,
                                        mesh_changed,
-                                       this->get_output_directory()+"solution/"+last_mesh_file_name,
-                                       this->get_output_directory()+"solution/"+h5_solution_file_name,
+                                       this->get_output_directory()+last_mesh_file_name,
+                                       this->get_output_directory()+h5_solution_file_name,
                                        this->get_mpi_communicator());
           new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                      "solution/"+last_mesh_file_name,
-                                                      "solution/"+h5_solution_file_name,
+                                                      last_mesh_file_name,
+                                                      h5_solution_file_name,
                                                       time_in_years_or_seconds,
                                                       this->get_mpi_communicator());
           xdmf_entries.push_back(new_xdmf_entry);
-          data_out.write_xdmf_file(xdmf_entries, xdmf_filename.c_str(),
+          data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
                                    this->get_mpi_communicator());
           mesh_changed = false;
         }
