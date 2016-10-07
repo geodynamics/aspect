@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -108,8 +108,8 @@ namespace aspect
                   }
               }
 
-      double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
-      double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
+      const double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
+      const double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
 
       statistics.add_value ("Minimum topography (m)",
                             min_topography);
