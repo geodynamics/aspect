@@ -622,7 +622,7 @@ namespace aspect
          * Incompressibility does not necessarily imply that the density is
          * constant; rather, it may still depend on temperature or pressure.
          * In the current context, compressibility means whether we should
-         * solve the contuity equation as $\nabla \cdot (\rho \mathbf u)=0$
+         * solve the continuity equation as $\nabla \cdot (\rho \mathbf u)=0$
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
