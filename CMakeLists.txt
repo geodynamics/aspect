@@ -162,6 +162,28 @@ IF (DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
   MESSAGE(STATUS "Creating a statically linked executable")
   SET(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 ENDIF()
+
+INCLUDE (CheckCXXSourceCompiles)
+
+SET(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
+LIST(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+CHECK_CXX_SOURCE_COMPILES("
+#include <cstddef>
+#include <dlfcn.h>
+
+int main()
+{
+  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
+  return handle == NULL || dlerror();
+}
+" HAVE_DLOPEN)
+SET(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
+
+IF (NOT HAVE_DLOPEN)
+  MESSAGE(STATUS "dlopen() test failed, disabling dynamic plugin loading")
+  SET(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
 IF (ASPECT_USE_SHARED_LIBS)
   MESSAGE(STATUS "Enabling dynamic loading of plugins from the input file")
   FOREACH(_source_file ${TARGET_SRC})
@@ -192,7 +214,15 @@ IF (ASPECT_HAVE_LINK_H)
   ENDFOREACH()
 ENDIF()
 
+
 DEAL_II_INVOKE_AUTOPILOT()
+
+
+IF (ASPECT_USE_SHARED_LIBS)
+  # some systems need to explicitly link to some libraries to use dlopen
+  TARGET_LINK_LIBRARIES(aspect ${CMAKE_DL_LIBS})
+ENDIF()
+
 
 
 # Check if we can raise floating point exceptions.
