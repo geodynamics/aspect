@@ -353,6 +353,16 @@ namespace aspect
       bool
       compositional_name_exists (const std::string &name) const;
 
+      /**
+       * A function that gets a component index as an input
+       * parameter and returns if the component is one of the stokes system
+       * (i.e. if it is the pressure or one of the velocity components).
+       *
+       * @param component_index The component index to check.
+       */
+      bool
+      is_stokes_component (const unsigned int component_index) const;
+
     private:
       /**
        * A vector that stores the names of the compositional fields that will
