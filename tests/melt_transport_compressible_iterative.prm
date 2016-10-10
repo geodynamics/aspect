@@ -1,5 +1,7 @@
 # Identical to melt_transport_compressible.prm except using an iterative
-# solver.
+# solver. Note that because of the low resolution the linear and nonlinear
+# solver tolerance for this test is increased. Higher resolutions converge
+# correctly.
 
 subsection Discretization
   # The polynomial degree to use for the composition variable(s). Units:
@@ -16,6 +18,8 @@ set CFL number                             = 1.0
 set Composition solver tolerance           = 1e-12
 set Nonlinear solver scheme                = iterated IMPES
 set Max nonlinear iterations               = 50
+set Linear solver tolerance                = 5e-7
+set Nonlinear solver tolerance             = 1e-4
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2

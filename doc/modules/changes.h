@@ -6,6 +6,13 @@
  *
  * <ol>
  *
+ * <li> Improved: Box models without deformed mesh now use a MappingCartesian,
+ * which assumes all mesh cells are aligned with cartesian coordinate axes.
+ * Matrix assembly and particle transport in such mappings is around 20 % faster
+ * compared to a general MappingQ1 for other box models.
+ * <br>
+ * (Rene Gassmoeller, 2016/10/14)
+ *
  * <li> Changed: HDF5 particle output files are now named 'particles-...'
  * instead of 'particle-...' to be consistent with the vtu output. Also 
  * particle properties with more than one component are now correctly split

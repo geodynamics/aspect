@@ -89,7 +89,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 56.8239, 2.09445e-08, 350035
+      Nonlinear residuals: 56.824, 2.09445e-08, 350035
       Total relative nonlinear residual: 4.16921e-08
 
 
@@ -113,7 +113,7 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear residuals: 83.1388, 3.32192e-08, 350035
+      Nonlinear residuals: 83.1388, 3.32189e-08, 350035
       Total relative nonlinear residual: 4.16921e-08
 
 

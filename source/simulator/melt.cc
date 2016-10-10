@@ -815,7 +815,7 @@ namespace aspect
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
-                               update_quadrature_points | update_values | update_gradients);
+                               update_quadrature_points | update_values | update_gradients | update_JxW_values);
 
       const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
                          n_q_points    = fe_values.n_quadrature_points;

@@ -26,6 +26,8 @@
 #include <aspect/melt.h>
 #include <aspect/free_surface.h>
 
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -43,6 +45,7 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/mapping_q.h>
+#include <deal.II/fe/mapping_cartesian.h>
 
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
@@ -98,6 +101,27 @@ namespace aspect
 
       signals.edit_finite_element_variables(variables);
       return variables;
+    }
+
+    /**
+     * Helper function to construct mapping for the model.
+     * The mapping is given by a degree four MappingQ for the case
+     * of a curved mesh, and a cartesian mapping for a rectangular mesh that is
+     * not deformed. Use a MappingQ1 if the mesh is deformed.
+     * If a free surface is enabled, each mapping is later swapped out for a
+     * MappingQ1Eulerian, which allows for mesh deformation during the
+     * computation.
+     */
+    template <int dim>
+    std_cxx11::unique_ptr<Mapping<dim> > construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
+                                                           const InitialTopographyModel::Interface<dim> &initial_topography_model)
+    {
+      if (geometry_model.has_curved_elements())
+        return std_cxx11::unique_ptr<Mapping<dim> >(new MappingQ<dim>(4, true));
+      if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != 0)
+        return std_cxx11::unique_ptr<Mapping<dim> >(new MappingCartesian<dim>());
+
+      return std_cxx11::unique_ptr<Mapping<dim> >(new MappingQ1<dim>());
     }
   }
 
@@ -183,13 +207,7 @@ namespace aspect
                     Triangulation<dim>::smoothing_on_coarsening),
                    parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning),
 
-    //The mapping is given by a degree four MappingQ for the case
-    //of a curved mesh, and a degree one MappingQ for a rectangular mesh.
-    //If a free surface is enabled, this is swapped out for a MappingQ1Eulerian,
-    //which allows for mesh deformation.
-    mapping( ( geometry_model->has_curved_elements() ?
-               static_cast<Mapping<dim> *>(new MappingQ<dim>(4, true) ) :
-               static_cast<Mapping<dim> *>(new MappingQ1<dim>() ) ) ),
+    mapping(construct_mapping<dim>(*geometry_model,*initial_topography_model)),
 
     // define the finite element
     finite_element(introspection.get_fes(), introspection.get_multiplicities()),

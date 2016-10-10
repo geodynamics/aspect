@@ -19,8 +19,8 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 0 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 455.855, 1.45653e-09, 1.45653e-09, 0.751931
-      Total relative nonlinear residual: 2.06303e-14
+      Nonlinear residuals: 455.855, 1.45653e-09, 1.45653e-09, 0.862325
+      Total relative nonlinear residual: 2.36591e-14
 
 
 
@@ -85,7 +85,7 @@ Number of degrees of freedom: 16,698 (5,412+4,290+561+2,145+2,145+2,145)
    Solving peridotite system ... 2 iterations.
    Solving Stokes system... done.
    Solving for u_f in 12 iterations.
-      Nonlinear residuals: 3.45814e+07, 0.166928, 0.00613047, 63421.4
+      Nonlinear residuals: 3.45813e+07, 0.166928, 0.00613047, 63421.4
       Total relative nonlinear residual: 3.53203e-08
 
 

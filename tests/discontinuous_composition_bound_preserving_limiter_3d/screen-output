@@ -8,8 +8,8 @@ Number of degrees of freedom: 4,769 (2,187+125+729+1,728)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
 
-Number of active cells: 120 (on 4 levels)
-Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
+Number of active cells: 85 (on 4 levels)
+Number of degrees of freedom: 6,599 (3,099+172+1,033+2,295)
 
 *** Timestep 0:  t=0 years
    Skipping temperature solve because RHS is zero.
@@ -18,39 +18,39 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0288 m/year, 0.0899 m/year
-     Compositions min/max/mass: 0/1/1.52e+16
+     RMS, max velocity:         0.0257 m/year, 0.0888 m/year
+     Compositions min/max/mass: 0/1/1.219e+16
 
-*** Timestep 1:  t=175148 years
+*** Timestep 1:  t=176473 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0285 m/year, 0.0891 m/year
-     Compositions min/max/mass: -0.005362/1.035/1.519e+16
+     RMS, max velocity:         0.0253 m/year, 0.0876 m/year
+     Compositions min/max/mass: -0.001931/1/1.219e+16
 
-*** Timestep 2:  t=352467 years
+*** Timestep 2:  t=355845 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0281 m/year, 0.0878 m/year
-     Compositions min/max/mass: -0.04655/1.038/1.519e+16
+     RMS, max velocity:         0.0249 m/year, 0.0859 m/year
+     Compositions min/max/mass: -0.01153/1/1.219e+16
 
-Number of active cells: 204 (on 4 levels)
-Number of degrees of freedom: 14,954 (6,825+346+2,275+5,508)
+Number of active cells: 148 (on 4 levels)
+Number of degrees of freedom: 11,267 (5,247+275+1,749+3,996)
 
 *** Timestep 3:  t=500000 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0278 m/year, 0.0868 m/year
-     Compositions min/max/mass: -0.0508/1.029/1.519e+16
+     RMS, max velocity:         0.0246 m/year, 0.0843 m/year
+     Compositions min/max/mass: -0.07777/1.033/1.219e+16
 
 Termination requested by criterion: end time
 
