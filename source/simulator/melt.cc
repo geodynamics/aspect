@@ -85,6 +85,9 @@ namespace aspect
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
 
+      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+
       for (unsigned int q=0; q<n_q_points; ++q)
         {
           for (unsigned int k=0; k<dofs_per_cell; ++k)
@@ -116,32 +119,36 @@ namespace aspect
           const bool use_tensor = (stress_strain_director != dealii::identity_tensor<dim> ());
 
           for (unsigned int i=0; i<dofs_per_cell; ++i)
-            for (unsigned int j=0; j<dofs_per_cell; ++j)
-              if (fe.system_to_component_index(i).first
-                  ==
-                  fe.system_to_component_index(j).first)
-                data.local_matrix(i,j) += ((use_tensor ?
-                                            eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                            :
-                                            eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                           +
-                                           (1./eta *
-                                            pressure_scaling *
-                                            pressure_scaling)
-                                           * scratch.phi_p[i] * scratch.phi_p[j]
-                                           +
-                                           (K_D *
-                                            pressure_scaling *
-                                            pressure_scaling) *
-                                           scratch.grad_phi_p[i] *
-                                           scratch.grad_phi_p[j]
-                                           +
-                                           (1./eta + 1./viscosity_c) *
-                                           pressure_scaling *
-                                           pressure_scaling *
-                                           (scratch.phi_p_c[i] * scratch.phi_p_c[j])
-                                          )
-                                          * scratch.finite_element_values.JxW(q);
+            {
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
+              if (introspection.is_stokes_component(component_index_i) ||
+                  (component_index_i == p_f_component_index)
+                  || (component_index_i == p_c_component_index))
+                for (unsigned int j=0; j<dofs_per_cell; ++j)
+                  if (component_index_i == fe.system_to_component_index(j).first)
+                    data.local_matrix(i,j) += ((use_tensor ?
+                                                eta * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                                :
+                                                eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                               +
+                                               (1./eta *
+                                                pressure_scaling *
+                                                pressure_scaling)
+                                               * scratch.phi_p[i] * scratch.phi_p[j]
+                                               +
+                                               (K_D *
+                                                pressure_scaling *
+                                                pressure_scaling) *
+                                               scratch.grad_phi_p[i] *
+                                               scratch.grad_phi_p[j]
+                                               +
+                                               (1./eta + 1./viscosity_c) *
+                                               pressure_scaling *
+                                               pressure_scaling *
+                                               (scratch.phi_p_c[i] * scratch.phi_p_c[j])
+                                              )
+                                              * scratch.finite_element_values.JxW(q);
+            }
         }
     }
 
@@ -157,11 +164,16 @@ namespace aspect
                                        internal::Assembly::CopyData::StokesSystem<dim> &data) const
     {
       const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
       const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
       const FEValuesExtractors::Scalar extractor_pressure = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+
+      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
       for (unsigned int q=0; q<n_q_points; ++q)
@@ -219,63 +231,79 @@ namespace aspect
           const double bulk_density = (1.0 - porosity) * density_s + porosity * density_f;
 
 
-          if (rebuild_stokes_matrix)
-            for (unsigned int i=0; i<dofs_per_cell; ++i)
-              for (unsigned int j=0; j<dofs_per_cell; ++j)
-                data.local_matrix(i,j) += ( (use_tensor ?
-                                             eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
-                                             :
-                                             eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                                            - (use_tensor ?
-                                               eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
-                                               :
-                                               eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                              )
-                                            - (pressure_scaling *
-                                               scratch.div_phi_u[i] * scratch.phi_p[j])
-                                            // finally the term -div(u). note the negative sign to make this
-                                            // operator adjoint to the grad(p) term
-                                            - (pressure_scaling *
-                                               scratch.phi_p[i] * scratch.div_phi_u[j])
-                                            +
-                                            (- pressure_scaling * pressure_scaling / viscosity_c
-                                             * scratch.phi_p_c[i] * scratch.phi_p_c[j])
-                                            - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
-                                            - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
-                                            - K_D * pressure_scaling * pressure_scaling *
-                                            (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
-                                            + (this->get_material_model().is_compressible()
-                                               ?
-                                               K_D * pressure_scaling * pressure_scaling / density_f
-                                               * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f)
-                                               :
-                                               0.0))
-                                          * scratch.finite_element_values.JxW(q);
-
           for (unsigned int i=0; i<dofs_per_cell; ++i)
-            data.local_rhs(i) += (
-                                   (bulk_density * gravity * scratch.phi_u[i])
-                                   +
-                                   // add the term that results from the compressibility. compared
-                                   // to the manual, this term seems to have the wrong sign, but this
-                                   // is because we negate the entire equation to make sure we get
-                                   // -div(u) as the adjoint operator of grad(p) (see above where
-                                   // we assemble the matrix)
-                                   (this->get_material_model().is_compressible()
-                                    ?
-                                    (pressure_scaling *
-                                     compressibility * density_s *
-                                     (scratch.velocity_values[q] * gravity) *
-                                     scratch.phi_p[i])
-                                    :
-                                    0)
-                                   + pressure_scaling *
-                                   p_f_RHS * scratch.phi_p[i]
-                                   - pressure_scaling *
-                                   K_D * density_f *
-                                   (scratch.grad_phi_p[i] * gravity)
-                                 )
-                                 * scratch.finite_element_values.JxW(q);
+            {
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
+
+              if (introspection.is_stokes_component(component_index_i) ||
+                  (component_index_i == p_f_component_index)
+                  || (component_index_i == p_c_component_index))
+                {
+                  data.local_rhs(i) += (
+                                         (bulk_density * gravity * scratch.phi_u[i])
+                                         +
+                                         // add the term that results from the compressibility. compared
+                                         // to the manual, this term seems to have the wrong sign, but this
+                                         // is because we negate the entire equation to make sure we get
+                                         // -div(u) as the adjoint operator of grad(p) (see above where
+                                         // we assemble the matrix)
+                                         (this->get_material_model().is_compressible()
+                                          ?
+                                          (pressure_scaling *
+                                           compressibility * density_s *
+                                           (scratch.velocity_values[q] * gravity) *
+                                           scratch.phi_p[i])
+                                          :
+                                          0)
+                                         + pressure_scaling *
+                                         p_f_RHS * scratch.phi_p[i]
+                                         - pressure_scaling *
+                                         K_D * density_f *
+                                         (scratch.grad_phi_p[i] * gravity)
+                                       )
+                                       * scratch.finite_element_values.JxW(q);
+
+                  if (rebuild_stokes_matrix)
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      {
+                        const unsigned int component_index_j = fe.system_to_component_index(j).first;
+
+                        if (introspection.is_stokes_component(component_index_j) ||
+                            (component_index_j == p_f_component_index)
+                            || (component_index_j == p_c_component_index))
+                          data.local_matrix(i,j) += ( (use_tensor ?
+                                                       eta * 2.0 * (scratch.grads_phi_u[i] * stress_strain_director * scratch.grads_phi_u[j])
+                                                       :
+                                                       eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
+                                                      - (use_tensor ?
+                                                         eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                                         :
+                                                         eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                        )
+                                                      - (pressure_scaling *
+                                                         scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                      // finally the term -div(u). note the negative sign to make this
+                                                      // operator adjoint to the grad(p) term
+                                                      - (pressure_scaling *
+                                                         scratch.phi_p[i] * scratch.div_phi_u[j])
+                                                      +
+                                                      (- pressure_scaling * pressure_scaling / viscosity_c
+                                                       * scratch.phi_p_c[i] * scratch.phi_p_c[j])
+                                                      - pressure_scaling * scratch.div_phi_u[i] * scratch.phi_p_c[j]
+                                                      - pressure_scaling * scratch.phi_p_c[i] * scratch.div_phi_u[j]
+                                                      - K_D * pressure_scaling * pressure_scaling *
+                                                      (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
+                                                      + (this->get_material_model().is_compressible()
+                                                         ?
+                                                         K_D * pressure_scaling * pressure_scaling / density_f
+                                                         * scratch.phi_p[i] * (scratch.grad_phi_p[j] * density_gradient_f)
+                                                         :
+                                                         0.0))
+                                                    * scratch.finite_element_values.JxW(q);
+                      }
+                }
+            }
+
         }
     }
 

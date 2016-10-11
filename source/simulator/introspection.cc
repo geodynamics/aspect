@@ -273,6 +273,20 @@ namespace aspect
             false);
   }
 
+  template <int dim>
+  bool
+  Introspection<dim>::is_stokes_component (const unsigned int component_index) const
+  {
+    if (component_index == component_indices.pressure)
+      return true;
+
+    for (unsigned int i=0; i<dim; ++i)
+      if (component_index == component_indices.velocities[i])
+        return true;
+
+    return false;
+  }
+
 
 }
 
