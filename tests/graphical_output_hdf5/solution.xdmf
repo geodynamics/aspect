@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="CellTime" GridType="Collection" CollectionType="Temporal">
+      <Grid Name="mesh" GridType="Uniform">
+        <Time Value="0"/>
+        <Geometry GeometryType="XY">
+          <DataItem Dimensions="25 2" NumberType="Float" Precision="8" Format="HDF">
+            solution/mesh-00000.h5:/nodes
+          </DataItem>
+        </Geometry>
+        <Topology TopologyType="Quadrilateral" NumberOfElements="16">
+          <DataItem Dimensions="16 4" NumberType="UInt" Format="HDF">
+            solution/mesh-00000.h5:/cells
+          </DataItem>
+        </Topology>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+            solution/solution-00000.h5:/T
+          </DataItem>
+        </Attribute>
+        <Attribute Name="nonadiabatic_pressure" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+            solution/solution-00000.h5:/nonadiabatic_pressure
+          </DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+            solution/solution-00000.h5:/p
+          </DataItem>
+        </Attribute>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="25 3" NumberType="Float" Precision="8" Format="HDF">
+            solution/solution-00000.h5:/velocity
+          </DataItem>
+        </Attribute>
+        <Attribute Name="viscosity" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="25 1" NumberType="Float" Precision="8" Format="HDF">
+            solution/solution-00000.h5:/viscosity
+          </DataItem>
+        </Attribute>
+      </Grid>
+    </Grid>
+  </Domain>
+</Xdmf>
