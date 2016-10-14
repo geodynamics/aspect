@@ -1129,13 +1129,18 @@ namespace aspect
                                          internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
         {
           const Introspection<dim> &introspection = this->introspection();
-          const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
+          const FiniteElement<dim> &fe = this->get_fe();
           const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
           const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
+          const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
           const double time_step = this->get_timestep();
           const double old_time_step = this->get_old_timestep();
 
+          const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                         (time_step + old_time_step)) : 1.0;
+
+          const bool advection_field_is_temperature = advection_field.is_temperature();
           const unsigned int solution_component = advection_field.component_index(introspection);
 
           const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
@@ -1146,14 +1151,19 @@ namespace aspect
               // We only need to look up values of shape functions if they
               // belong to 'our' component. They are zero otherwise anyway.
               // Note that we later only look at the values that we do set here.
-              for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+              for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
                 {
-                  scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
-                  scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
+                  if (fe.system_to_component_index(i).first == solution_component)
+                    {
+                      scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                      scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                      ++i_advection;
+                    }
+                  ++i;
                 }
 
               const double density_c_P              =
-                ((advection_field.is_temperature())
+                ((advection_field_is_temperature)
                  ?
                  scratch.material_model_outputs.densities[q] *
                  scratch.material_model_outputs.specific_heat[q]
@@ -1165,13 +1175,13 @@ namespace aspect
                                   "non-negative quantity."));
 
               const double conductivity =
-                ((advection_field.is_temperature())
+                ((advection_field_is_temperature)
                  ?
                  scratch.material_model_outputs.thermal_conductivities[q]
                  :
                  0.0);
               const double latent_heat_LHS =
-                ((advection_field.is_temperature())
+                ((advection_field_is_temperature)
                  ?
                  scratch.heating_model_outputs.lhs_latent_heat_terms[q]
                  :
@@ -1181,14 +1191,14 @@ namespace aspect
                                   "to the left hand side needs to be a non-negative quantity."));
 
               const double gamma =
-                ((advection_field.is_temperature())
+                ((advection_field_is_temperature)
                  ?
                  scratch.heating_model_outputs.heating_source_terms[q]
                  :
                  0.0);
 
               const double reaction_term =
-                ((advection_field.is_temperature())
+                ((advection_field_is_temperature)
                  ?
                  0.0
                  :
@@ -1212,8 +1222,7 @@ namespace aspect
               if (this->get_parameters().free_surface_enabled)
                 current_u -= scratch.mesh_velocity_values[q];
 
-              const double factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
-                                                        (time_step + old_time_step)) : 1.0;
+              const double JxW = scratch.finite_element_values.JxW(q);
 
               // do the actual assembly. note that we only need to loop over the advection
               // shape functions because these are the only contributions we compute here
@@ -1227,7 +1236,7 @@ namespace aspect
                       + scratch.phi_field[i]
                       * reaction_term)
                      *
-                     scratch.finite_element_values.JxW(q);
+                     JxW;
 
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
@@ -1236,10 +1245,10 @@ namespace aspect
                            (time_step * (conductivity + artificial_viscosity)
                             * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
                            + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                              + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                              + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
                            (density_c_P + latent_heat_LHS)
                          )
-                         * scratch.finite_element_values.JxW(q);
+                         * JxW;
                     }
                 }
             }
@@ -1306,6 +1315,8 @@ namespace aspect
         {
           const Parameters<dim> &parameters = this->get_parameters();
           const Introspection<dim> &introspection = this->introspection();
+          const FiniteElement<dim> &fe = this->get_fe();
+
           const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
 
           const double time_step = this->get_timestep();
@@ -1354,11 +1365,17 @@ namespace aspect
                   // We only need to look up values of shape functions if they
                   // belong to 'our' component. They are zero otherwise anyway.
                   // Note that we later only look at the values that we do set here.
-                  for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                  for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
                     {
-                      scratch.face_grad_phi_field[k] = (*scratch.face_finite_element_values)[solution_field].gradient (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                      scratch.face_phi_field[k]      = (*scratch.face_finite_element_values)[solution_field].value (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                      if (fe.system_to_component_index(i).first == solution_component)
+                        {
+                          scratch.face_grad_phi_field[i_advection] = (*scratch.face_finite_element_values)[solution_field].gradient (i, q);
+                          scratch.face_phi_field[i_advection]      = (*scratch.face_finite_element_values)[solution_field].value (i, q);
+                          ++i_advection;
+                        }
+                      ++i;
                     }
+
                   const double density_c_P              =
                     ((advection_field.is_temperature())
                      ?
@@ -1502,6 +1519,8 @@ namespace aspect
         {
           const Parameters<dim> &parameters = this->get_parameters();
           const Introspection<dim> &introspection = this->introspection();
+          const FiniteElement<dim> &fe = this->get_fe();
+
           const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
 
           const double time_step = this->get_timestep();
@@ -1512,6 +1531,7 @@ namespace aspect
           // also have the number of dofs that correspond just to the element for
           // the system we are currently trying to assemble
           const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+          const unsigned int dofs_per_cell = fe.dofs_per_cell;
 
           Assert (advection_dofs_per_cell < scratch.face_finite_element_values->get_fe().dofs_per_cell, ExcInternalError());
           Assert (scratch.face_grad_phi_field.size() == advection_dofs_per_cell, ExcInternalError());
@@ -1556,12 +1576,19 @@ namespace aspect
                                                              scratch.neighbor_face_material_model_outputs,
                                                              scratch.neighbor_face_heating_model_outputs);
 
-                  std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
+                  std::vector<types::global_dof_index> neighbor_dof_indices (dofs_per_cell);
                   // get all dof indices on the neighbor, then extract those
                   // that correspond to the solution_field we are interested in
                   neighbor->get_dof_indices (neighbor_dof_indices);
-                  for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-                    data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face][i] = neighbor_dof_indices[scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, i)];
+                  for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+                    {
+                      if (fe.system_to_component_index(i).first == solution_component)
+                        {
+                          data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face][i_advection] = neighbor_dof_indices[i];
+                          ++i_advection;
+                        }
+                      ++i;
+                    }
                   data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face] = true;
 
                   for (unsigned int q=0; q<n_q_points; ++q)
@@ -1570,12 +1597,17 @@ namespace aspect
                       // We only need to look up values of shape functions if they
                       // belong to 'our' component. They are zero otherwise anyway.
                       // Note that we later only look at the values that we do set here.
-                      for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                      for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
                         {
-                          scratch.face_grad_phi_field[k]          = (*scratch.face_finite_element_values)[solution_field].gradient (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.face_phi_field[k]               = (*scratch.face_finite_element_values)[solution_field].value (scratch.face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.neighbor_face_grad_phi_field[k] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.neighbor_face_phi_field[k]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          if (fe.system_to_component_index(i).first == solution_component)
+                            {
+                              scratch.face_grad_phi_field[i_advection]          = (*scratch.face_finite_element_values)[solution_field].gradient (i, q);
+                              scratch.face_phi_field[i_advection]               = (*scratch.face_finite_element_values)[solution_field].value (i, q);
+                              scratch.neighbor_face_grad_phi_field[i_advection] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (i, q);
+                              scratch.neighbor_face_phi_field[i_advection]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (i, q);
+                              ++i_advection;
+                            }
+                          ++i;
                         }
 
                       const double density_c_P              =
@@ -1874,12 +1906,19 @@ namespace aspect
                                                              scratch.neighbor_face_material_model_outputs,
                                                              scratch.neighbor_face_heating_model_outputs);
 
-                  std::vector<types::global_dof_index> neighbor_dof_indices (scratch.face_finite_element_values->get_fe().dofs_per_cell);
+                  std::vector<types::global_dof_index> neighbor_dof_indices (fe.dofs_per_cell);
                   // get all dof indices on the neighbor, then extract those
                   // that correspond to the solution_field we are interested in
                   neighbor_child->get_dof_indices (neighbor_dof_indices);
-                  for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-                    data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no][i] = neighbor_dof_indices[scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, i)];
+                  for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+                    {
+                      if (fe.system_to_component_index(i).first == solution_component)
+                        {
+                          data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no][i_advection] = neighbor_dof_indices[i];
+                          ++i_advection;
+                        }
+                      ++i;
+                    }
                   data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no] = true;
 
                   for (unsigned int q=0; q<n_q_points; ++q)
@@ -1888,12 +1927,17 @@ namespace aspect
                       // We only need to look up values of shape functions if they
                       // belong to 'our' component. They are zero otherwise anyway.
                       // Note that we later only look at the values that we do set here.
-                      for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+                      for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
                         {
-                          scratch.face_grad_phi_field[k]          = (*scratch.subface_finite_element_values)[solution_field].gradient (scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.face_phi_field[k]               = (*scratch.subface_finite_element_values)[solution_field].value (scratch.subface_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.neighbor_face_grad_phi_field[k] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
-                          scratch.neighbor_face_phi_field[k]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (scratch.neighbor_face_finite_element_values->get_fe().component_to_system_index(solution_component, k), q);
+                          if (fe.system_to_component_index(i).first == solution_component)
+                            {
+                              scratch.face_grad_phi_field[i_advection]          = (*scratch.subface_finite_element_values)[solution_field].gradient (i, q);
+                              scratch.face_phi_field[i_advection]               = (*scratch.subface_finite_element_values)[solution_field].value (i, q);
+                              scratch.neighbor_face_grad_phi_field[i_advection] = (*scratch.neighbor_face_finite_element_values)[solution_field].gradient (i, q);
+                              scratch.neighbor_face_phi_field[i_advection]      = (*scratch.neighbor_face_finite_element_values)[solution_field].value (i, q);
+                              ++i_advection;
+                            }
+                          ++i;
                         }
 
                       const double density_c_P              =
@@ -2823,8 +2867,15 @@ namespace aspect
     // get all dof indices on the current cell, then extract those
     // that correspond to the solution_field we are interested in
     cell->get_dof_indices (scratch.local_dof_indices);
-    for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
-      data.local_dof_indices[i] = scratch.local_dof_indices[scratch.finite_element_values.get_fe().component_to_system_index(solution_component, i)];
+    for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
+      {
+        if (finite_element.system_to_component_index(i).first == solution_component)
+          {
+            data.local_dof_indices[i_advection] = scratch.local_dof_indices[i];
+            ++i_advection;
+          }
+        ++i;
+      }
 
     data.local_matrix = 0;
     data.local_rhs = 0;

@@ -371,6 +371,8 @@ namespace aspect
                                           internal::Assembly::CopyData::AdvectionSystem<dim> &data) const
     {
       const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
       const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -394,10 +396,15 @@ namespace aspect
           // We only need to look up values of shape functions if they
           // belong to 'our' component. They are zero otherwise anyway.
           // Note that we later only look at the values that we do set here.
-          for (unsigned int k=0; k<advection_dofs_per_cell; ++k)
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell; /*increment at end of loop*/)
             {
-              scratch.grad_phi_field[k] = scratch.finite_element_values[solution_field].gradient (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k),q);
-              scratch.phi_field[k]      = scratch.finite_element_values[solution_field].value (scratch.finite_element_values.get_fe().component_to_system_index(solution_component, k), q);
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
             }
 
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
