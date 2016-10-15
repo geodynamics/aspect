@@ -64,10 +64,10 @@ namespace aspect
     {
       template<int dim>
       bool
-      is_stokes_component (const Introspection<dim> &introspection,
-                           const unsigned int p_c_component_index,
-                           const unsigned int p_f_component_index,
-                           const unsigned int component_index)
+      is_velocity_or_pressures (const Introspection<dim> &introspection,
+                                const unsigned int p_c_component_index,
+                                const unsigned int p_f_component_index,
+                                const unsigned int component_index)
       {
         if (component_index == p_c_component_index)
           return true;
@@ -99,7 +99,7 @@ namespace aspect
                                                internal::Assembly::CopyData::StokesPreconditioner<dim> &data) const
     {
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int   stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
 
@@ -111,35 +111,38 @@ namespace aspect
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
-      for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
-          const unsigned int component_index_k = fe.system_to_component_index(k).first;
+          const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-          if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+          if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
             {
-              data.local_dof_indices[i] = scratch.local_dof_indices[k];
-              scratch.dof_component_indices[i] = fe.system_to_component_index(k).first;
-              ++i;
+              data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
+              scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
+              ++i_stokes;
             }
+          ++i;
         }
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
-              const unsigned int component_index_k = fe.system_to_component_index(k).first;
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
                 {
-                  scratch.grads_phi_u[i] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                  scratch.phi_p[i]       = scratch.finite_element_values[ex_p_f].value (k, q);
-                  scratch.phi_p_c[i] = scratch.finite_element_values[ex_p_c].value (k, q);
-                  scratch.grad_phi_p[i] = scratch.finite_element_values[ex_p_f].gradient (k, q);
-                  ++i;
+                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                  scratch.phi_p[i_stokes]       = scratch.finite_element_values[ex_p_f].value (i, q);
+                  scratch.phi_p_c[i_stokes]     = scratch.finite_element_values[ex_p_c].value (i, q);
+                  scratch.grad_phi_p[i_stokes]  = scratch.finite_element_values[ex_p_f].gradient (i, q);
+                  ++i_stokes;
                 }
+              ++i;
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
+          const double one_over_eta = 1. / eta;
 
           /*
             - R = 1/eta M_p + K_D L_p for p
@@ -169,7 +172,7 @@ namespace aspect
                                             :
                                             eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                            +
-                                           (1./eta *
+                                           (one_over_eta *
                                             pressure_scaling *
                                             pressure_scaling)
                                            * scratch.phi_p[i] * scratch.phi_p[j]
@@ -201,7 +204,7 @@ namespace aspect
                                        internal::Assembly::CopyData::StokesSystem<dim> &data) const
     {
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+      const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
@@ -213,37 +216,39 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
 
-      for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+      for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
-          const unsigned int component_index_k = fe.system_to_component_index(k).first;
+          const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-          if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+          if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
             {
-              data.local_dof_indices[i] = scratch.local_dof_indices[k];
-              ++i;
+              data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
+              ++i_stokes;
             }
+          ++i;
         }
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
-          for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
-              const unsigned int component_index_k = fe.system_to_component_index(k).first;
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
                 {
-                  scratch.phi_u[i]   = scratch.finite_element_values[introspection.extractors.velocities].value (k,q);
-                  scratch.phi_p[i]   = scratch.finite_element_values[extractor_pressure].value (k, q);
-                  scratch.phi_p_c[i] = scratch.finite_element_values[ex_p_c].value (k, q);
-                  scratch.grad_phi_p[i] = scratch.finite_element_values[extractor_pressure].gradient (k, q);
+                  scratch.phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
+                  scratch.phi_p[i_stokes]   = scratch.finite_element_values[extractor_pressure].value (i, q);
+                  scratch.phi_p_c[i_stokes] = scratch.finite_element_values[ex_p_c].value (i, q);
+                  scratch.grad_phi_p[i_stokes] = scratch.finite_element_values[extractor_pressure].gradient (i, q);
 
                   if (rebuild_stokes_matrix)
                     {
-                      scratch.grads_phi_u[i] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(k,q);
-                      scratch.div_phi_u[i]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (k, q);
+                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                      scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
                     }
-                  ++i;
+                  ++i_stokes;
                 }
+              ++i;
             }
 
           // Viscosity scalar
@@ -252,7 +257,11 @@ namespace aspect
                               scratch.material_model_outputs.viscosities[q]
                               :
                               std::numeric_limits<double>::quiet_NaN());
-
+          const double eta_two_thirds = (rebuild_stokes_matrix
+                                         ?
+                                         scratch.material_model_outputs.viscosities[q] * 2.0 / 3.0
+                                         :
+                                         std::numeric_limits<double>::quiet_NaN());
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
           const SymmetricTensor<4,dim> &stress_strain_director =
@@ -320,9 +329,9 @@ namespace aspect
                                                  :
                                                  eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
                                                 - (use_tensor ?
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
+                                                   eta_two_thirds * (scratch.div_phi_u[i] * trace(stress_strain_director * scratch.grads_phi_u[j]))
                                                    :
-                                                   eta * 2.0/3.0 * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                   eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
                                                   )
                                                 - (pressure_scaling *
                                                    scratch.div_phi_u[i] * scratch.phi_p[j])
@@ -362,7 +371,7 @@ namespace aspect
                                                 internal::Assembly::CopyData::StokesSystem<dim>      &data) const
     {
       const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
+      const FiniteElement<dim> &fe = this->get_fe();
 
       const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
@@ -395,21 +404,22 @@ namespace aspect
                               :
                               0.0);
 
-          for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
-              const unsigned int component_index_k = fe.system_to_component_index(k).first;
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
                 {
                   // apply the fluid pressure boundary condition
-                  data.local_rhs(i) += (scratch.face_finite_element_values[ex_p_f].value(k, q)
-                                        * pressure_scaling * K_D *
-                                        (density_f
-                                         * (scratch.face_finite_element_values.normal_vector(q) * gravity)
-                                         - grad_p_f[q])
-                                        * scratch.face_finite_element_values.JxW(q));
-                  ++i;
+                  data.local_rhs(i_stokes) += (scratch.face_finite_element_values[ex_p_f].value(i, q)
+                                               * pressure_scaling * K_D *
+                                               (density_f
+                                                * (scratch.face_finite_element_values.normal_vector(q) * gravity)
+                                                - grad_p_f[q])
+                                               * scratch.face_finite_element_values.JxW(q));
+                  ++i_stokes;
                 }
+              ++i;
             }
         }
     }
@@ -795,16 +805,17 @@ namespace aspect
         const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
 
         for (unsigned int q=0; q<n_q_points; ++q)
-          for (unsigned int k=0, i=0; i<stokes_dofs_per_cell; ++k)
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
             {
-              const unsigned int component_index_k = fe.system_to_component_index(k).first;
+              const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_stokes_component(introspection,p_c_component_index,p_f_component_index,component_index_k))
+              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
                 {
-                  scratch.phi_p[i] = scratch.finite_element_values[ex_p_f].value (k, q);
-                  data.local_pressure_shape_function_integrals(i) += scratch.phi_p[i] * scratch.finite_element_values.JxW(q);
-                  ++i;
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[ex_p_f].value (i, q);
+                  data.local_pressure_shape_function_integrals(i_stokes) += scratch.phi_p[i_stokes] * scratch.finite_element_values.JxW(q);
+                  ++i_stokes;
                 }
+              ++i;
             }
       }
     }

@@ -57,9 +57,19 @@ namespace aspect
                                 std_cxx11::_1,
                                 // discard pressure_scaling,
                                 // discard rebuild_stokes_matrix,
-                                // discard scratch object,
+                                std_cxx11::_4,
                                 std_cxx11::_5));
 
+    // Note that we do not want face_material_model_data, because we do not
+    // connect to a face assembler. We instead connect to a normal assembler,
+    // and compute our own material_model_inputs in apply_stabilization
+    // (because we want to use the solution instead of the current_linearization_point
+    // to compute the material properties).
+    sim.assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags |= (update_values  |
+        update_gradients |
+        update_quadrature_points |
+        update_normal_vectors |
+        update_JxW_values);
   }
 
   template <int dim>
@@ -654,22 +664,17 @@ namespace aspect
   void
   FreeSurfaceHandler<dim>::
   apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                       internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                        internal::Assembly::CopyData::StokesSystem<dim>      &data)
   {
     if (!sim.parameters.free_surface_enabled)
       return;
 
-    QGauss<dim-1> quadrature(sim.parameters.stokes_velocity_degree+1);
-    UpdateFlags update_flags = UpdateFlags(update_values | update_normal_vectors |
-                                           update_quadrature_points | update_JxW_values);
-    FEFaceValues<dim> fe_face_values (*sim.mapping, sim.finite_element, quadrature, update_flags);
-    const unsigned int n_face_q_points = fe_face_values.n_quadrature_points;
+    const Introspection<dim> &introspection = sim.introspection;
+    const FiniteElement<dim> &fe = sim.finite_element;
 
-    MaterialModel::MaterialModelInputs<dim> in(n_face_q_points,
-                                               sim.parameters.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs<dim> out(n_face_q_points,
-                                                 sim.parameters.n_compositional_fields);
-    std::vector<std::vector<double> > composition_values (sim.parameters.n_compositional_fields,std::vector<double> (n_face_q_points));
+    const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
+    const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
     //only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
@@ -683,56 +688,53 @@ namespace aspect
                 == sim.parameters.free_surface_boundary_indicators.end())
               continue;
 
-            fe_face_values.reinit(cell, face_no);
-            std::vector<Point<dim> > quad_points = fe_face_values.get_quadrature_points();
+            scratch.face_finite_element_values.reinit(cell, face_no);
 
-            //Evaluate the density at the surface quadrature points
-            fe_face_values[sim.introspection.extractors.temperature]
-            .get_function_values (sim.solution, in.temperature);
-            fe_face_values[sim.introspection.extractors.pressure]
-            .get_function_values (sim.solution, in.pressure);
+            sim.compute_material_model_input_values (sim.solution,
+                                                     scratch.face_finite_element_values,
+                                                     cell,
+                                                     false,
+                                                     scratch.face_material_model_inputs);
 
-            in.position = quad_points;
-            in.strain_rate.resize(0);  //no need for viscosity
-
-            for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
-              fe_face_values[sim.introspection.extractors.compositional_fields[c]]
-              .get_function_values(sim.solution,
-                                   composition_values[c]);
-            for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-              {
-                for (unsigned int c=0; c<sim.parameters.n_compositional_fields; ++c)
-                  in.composition[i][c] = composition_values[c][i];
-              }
-
-            sim.material_model->evaluate(in, out);
+            sim.material_model->evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 
             for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-              for (unsigned int i=0; i< fe_face_values.dofs_per_cell; ++i)
-                for (unsigned int j=0; j< fe_face_values.dofs_per_cell; ++j)
+              {
+                for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                   {
-                    //see Kaus et al 2010 for details
-
-                    const Tensor<1,dim> gravity = sim.gravity_model->gravity_vector(quad_points[q_point]);
-                    double g_norm = gravity.norm();
-
-                    //construct the relevant vectors
-                    const Tensor<1,dim> v =     fe_face_values[sim.introspection.extractors.velocities].value(j, q_point);
-                    const Tensor<1,dim> n_hat = fe_face_values.normal_vector(q_point);
-                    const Tensor<1,dim> w =     fe_face_values[sim.introspection.extractors.velocities].value(i, q_point);
-                    const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
-
-                    double pressure_perturbation = out.densities[q_point]*
-                                                   sim.time_step*free_surface_theta*g_norm;
-
-                    //The fictive stabilization stress is (w.g)*(v.n)
-                    const double stress_value = -pressure_perturbation*
-                                                (w*g_hat) * (v*n_hat)
-                                                *fe_face_values.JxW(q_point);
-
-                    data.local_matrix(i,j) += stress_value;
+                    if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                      {
+                        scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
+                        ++i_stokes;
+                      }
+                    ++i;
                   }
+
+                const Tensor<1,dim>
+                gravity = sim.gravity_model->gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
+                double g_norm = gravity.norm();
+
+                //construct the relevant vectors
+                const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
+                const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
+
+                double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
+                                               sim.time_step * free_surface_theta * g_norm;
+
+                //see Kaus et al 2010 for details of the stabilization term
+                for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
+                  for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
+                    {
+                      //The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
+                      const double stress_value = -pressure_perturbation*
+                                                  (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
+                                                  *scratch.face_finite_element_values.JxW(q_point);
+
+                      data.local_matrix(i,j) += stress_value;
+                    }
+              }
           }
+
 
   }
 }
