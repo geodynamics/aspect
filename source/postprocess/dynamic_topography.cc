@@ -41,7 +41,8 @@ namespace aspect
                                quadrature_formula,
                                update_values |
                                update_gradients |
-                               update_q_points);
+                               update_q_points |
+                               update_JxW_values);
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),

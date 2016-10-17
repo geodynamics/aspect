@@ -1302,7 +1302,7 @@ namespace aspect
        * domain. We use a pointer since different mapping objects may
        * be useful. In particular, when the mesh is deformable we use
        * a MappingQ1Eulerian object to describe the mesh deformation,
-       * swapping it in for the original MappingQ object.
+       * swapping it in for the original MappingQ or MappingCartesian object.
        */
       std_cxx11::unique_ptr<Mapping<dim> >                      mapping;
 
