@@ -98,6 +98,7 @@ subsection Postprocess
     set Data output format = none
     set List of tracer properties = initial composition
     set Interpolation scheme = cell average
+    set Update ghost particles = true
   end
 end
 

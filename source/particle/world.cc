@@ -92,6 +92,10 @@ namespace aspect
     const std::multimap<types::LevelInd, Particle<dim> > &
     World<dim>::get_ghost_particles() const
     {
+      AssertThrow(update_ghost_particles == true,
+                  ExcMessage("A part of the model has requested access to the ghost "
+                             "particles, but the parameter 'Update ghost particles' has not "
+                             "been set, therefore no ghost particles are available."));
       return ghost_particles;
     }
 
@@ -279,7 +283,9 @@ namespace aspect
           // can change because of discarded or newly generated particles
           data_offset = numbers::invalid_unsigned_int;
           update_n_global_particles();
-          exchange_ghost_particles();
+
+          if (update_ghost_particles)
+            exchange_ghost_particles();
         }
     }
 
@@ -1197,7 +1203,8 @@ namespace aspect
                   local_initialize_particles(particle_range_in_cell.first,
                                              particle_range_in_cell.second);
               }
-          exchange_ghost_particles();
+          if (update_ghost_particles)
+            exchange_ghost_particles();
         }
     }
 
@@ -1290,7 +1297,8 @@ namespace aspect
 
       // Now that all particle information was updated, exchange the new
       // ghost particles.
-      exchange_ghost_particles();
+      if (update_ghost_particles)
+        exchange_ghost_particles();
     }
 
     template <int dim>
@@ -1361,6 +1369,13 @@ namespace aspect
                              "particle weight is recommended. Before adding the weights "
                              "of particles, each cell already carries a weight of 1000 to "
                              "account for the cost of field-based computations.");
+          prm.declare_entry ("Update ghost particles", "false",
+                             Patterns::Bool (),
+                             "Some particle interpolation algorithms require knowledge "
+                             "about particles in neighboring cells. To allow this, "
+                             "particles in ghost cells need to be exchanged between the "
+                             "processes neighboring this cell. This parameter determines "
+                             "whether this transport is happening.");
         }
         prm.leave_subsection ();
       }
@@ -1405,6 +1420,8 @@ namespace aspect
                                  "that is smaller than or equal to the 'Maximum tracers per cell' parameter."));
 
           tracer_weight = prm.get_integer("Tracer weight");
+
+          update_ghost_particles = prm.get_bool("Update ghost particles");
 
           const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
           particle_load_balancing = ParticleLoadBalancing::no_balancing;

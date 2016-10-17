@@ -372,6 +372,15 @@ namespace aspect
         unsigned int tracer_weight;
 
         /**
+         * Some particle interpolation algorithms require knowledge
+         * about particles in neighboring cells. To allow this,
+         * particles in ghost cells need to be exchanged between the
+         * processes neighboring this cell. This parameter determines
+         * whether this transport is happening.
+         */
+        bool update_ghost_particles;
+
+        /**
          * Calculates the number of particles in the global model domain.
          */
         void

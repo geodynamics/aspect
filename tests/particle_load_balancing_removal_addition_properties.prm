@@ -106,5 +106,6 @@ subsection Postprocess
     set Minimum tracers per cell = 5
     set Data output format = ascii
     set Integration scheme = euler
+    set Update ghost particles = true
   end
 end
