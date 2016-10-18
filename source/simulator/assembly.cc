@@ -1401,8 +1401,8 @@ namespace aspect
 
     // then also work on possible face terms. if necessary, initialize
     // the material model data on faces
-    const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty();
-    const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty();
+    const bool has_boundary_face_assemblers = !assemblers->local_assemble_advection_system_on_boundary_face.empty() && advection_field.is_discontinuous(introspection);
+    const bool has_interior_face_assemblers = !assemblers->local_assemble_advection_system_on_interior_face.empty() && advection_field.is_discontinuous(introspection);
 
     // skip the remainder if no work needs to be done on faces
     if (!has_boundary_face_assemblers && !has_interior_face_assemblers)
