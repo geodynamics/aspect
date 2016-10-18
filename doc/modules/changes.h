@@ -6,6 +6,15 @@
  *
  * <ol>
  *
+ * <li> Improved: The matrix assembly of Stokes and Advection systems has been
+ * optimized, by assembling less (only the relevant) DoFs, and by optimizing
+ * calls to deal.II functions. The overall speedup for box models is between
+ * 20 and 40% of the assembly time, likely somewhat less for curved geometries.
+ * This change will require changes in user written assembler plugins, because
+ * the Stokes system assembly now only loops over Stokes degrees of freedom.
+ * <br>
+ * (Rene Gassmoeller, 2016/10/17)
+ *
  * <li> Improved: Box models without deformed mesh now use a MappingCartesian,
  * which assumes all mesh cells are aligned with cartesian coordinate axes.
  * Matrix assembly and particle transport in such mappings is around 20 % faster

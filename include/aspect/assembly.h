@@ -51,6 +51,7 @@ namespace aspect
                                 const Mapping<dim>       &mapping,
                                 const UpdateFlags         update_flags,
                                 const unsigned int        n_compositional_fields,
+                                const unsigned int        stokes_dofs_per_cell,
                                 const bool                add_compaction_pressure);
           StokesPreconditioner (const StokesPreconditioner &data);
 
@@ -58,6 +59,8 @@ namespace aspect
 
           FEValues<dim>               finite_element_values;
 
+          std::vector<types::global_dof_index> local_dof_indices;
+          std::vector<unsigned int>            dof_component_indices;
           std::vector<SymmetricTensor<2,dim> > grads_phi_u;
           std::vector<double>                  phi_p;
           std::vector<double>                  phi_p_c;
@@ -94,6 +97,7 @@ namespace aspect
                         const UpdateFlags         update_flags,
                         const UpdateFlags         face_update_flags,
                         const unsigned int        n_compositional_fields,
+                        const unsigned int        stokes_dofs_per_cell,
                         const bool                add_compaction_pressure);
 
           StokesSystem (const StokesSystem<dim> &data);
@@ -231,7 +235,7 @@ namespace aspect
         template <int dim>
         struct StokesPreconditioner
         {
-          StokesPreconditioner (const FiniteElement<dim> &finite_element);
+          StokesPreconditioner (const unsigned int stokes_dofs_per_cell);
           StokesPreconditioner (const StokesPreconditioner &data);
 
           virtual ~StokesPreconditioner ();
@@ -245,7 +249,7 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const FiniteElement<dim> &finite_element,
+          StokesSystem (const unsigned int        stokes_dofs_per_cell,
                         const bool                do_pressure_rhs_compatibility_modification);
           StokesSystem (const StokesSystem<dim> &data);
 

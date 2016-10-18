@@ -67,6 +67,7 @@ namespace aspect
        * assemly of the system matrix.
        */
       void apply_stabilization (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                 internal::Assembly::CopyData::StokesSystem<dim>      &data);
 
       /**
