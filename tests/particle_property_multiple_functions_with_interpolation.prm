@@ -108,6 +108,7 @@ subsection Postprocess
     set Time between data output = 70
     set Data output format = none
     set List of tracer properties = velocity, function, initial composition
+    set Update ghost particles = true
 
     subsection Function
       set Number of components = 2

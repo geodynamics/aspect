@@ -74,6 +74,7 @@ subsection Postprocess
     set Data output format = none
     set List of tracer properties = initial composition, initial position
     set Interpolation scheme = cell average
+    set Update ghost particles = true
     set Particle generator name = random uniform
     set Minimum tracers per cell = 2
     set Maximum tracers per cell = 100

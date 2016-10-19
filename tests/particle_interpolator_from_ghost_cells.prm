@@ -85,5 +85,6 @@ subsection Postprocess
     set Minimum tracers per cell = 2
     set Maximum tracers per cell = 100
     set Load balancing strategy = none
+    set Update ghost particles = true
   end
 end

@@ -98,6 +98,7 @@ subsection Postprocess
     set Time between data output = 0.03
     set Data output format       = none
     set List of tracer properties = initial composition
+    set Update ghost particles   = true
   end
 end
 
