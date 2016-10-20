@@ -1,0 +1,26 @@
+subsection %%\hyperref[parameters:Model_20settings]{Model settings}%
+  set %%\hyperref[parameters:Model settings/Include adiabatic heating]{Include adiabatic heating}%               = false%% \index[prmindex]{Include adiabatic heating} \index[prmindexfull]{Model settings!Include adiabatic heating} %
+  set %%\hyperref[parameters:Model settings/Include shear heating]{Include shear heating}%                   = false%% \index[prmindex]{Include shear heating} \index[prmindexfull]{Model settings!Include shear heating} %
+  set %%\hyperref[parameters:Model settings/Fixed temperature boundary indicators]{Fixed temperature boundary indicators}%   = bottom, top%% \index[prmindex]{Fixed temperature boundary indicators} \index[prmindexfull]{Model settings!Fixed temperature boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Prescribed velocity boundary indicators]{Prescribed velocity boundary indicators}% = left x: function, right x:function, bottom y:function%% \index[prmindex]{Prescribed velocity boundary indicators} \index[prmindexfull]{Model settings!Prescribed velocity boundary indicators} %
+  set %%\hyperref[parameters:Model settings/Free surface boundary indicators]{Free surface boundary indicators}%        = top%% \index[prmindex]{Free surface boundary indicators} \index[prmindexfull]{Model settings!Free surface boundary indicators} %
+end
+
+subsection %%\hyperref[parameters:Boundary_20velocity_20model]{Boundary velocity model}%
+  subsection %%\hyperref[parameters:Boundary_20velocity_20model/Function]{Function}%
+    set %%\hyperref[parameters:Boundary velocity model/Function/Variable names]{Variable names}%      = x,y%% \index[prmindex]{Variable names} \index[prmindexfull]{Boundary velocity model!Function!Variable names} %
+    set %%\hyperref[parameters:Boundary velocity model/Function/Function constants]{Function constants}%  = m=0.0025, year=1%% \index[prmindex]{Function constants} \index[prmindexfull]{Boundary velocity model!Function!Function constants} %
+    set %%\hyperref[parameters:Boundary velocity model/Function/Function expression]{Function expression}% =  if (x<200e3 , -1*m/year, 1*m/year) ; 0.00125%% \index[prmindex]{Function expression} \index[prmindexfull]{Boundary velocity model!Function!Function expression} %
+  end
+end
+
+subsection %%\hyperref[parameters:Boundary_20temperature_20model]{Boundary temperature model}%
+  set %%\hyperref[parameters:Boundary temperature model/Model name]{Model name}% = box%% \index[prmindex]{Model name} \index[prmindexfull]{Boundary temperature model!Model name} %
+  subsection %%\hyperref[parameters:Boundary_20temperature_20model/Box]{Box}%
+    set %%\hyperref[parameters:Boundary temperature model/Box/Bottom temperature]{Bottom temperature}% = 1573%% \index[prmindex]{Bottom temperature} \index[prmindexfull]{Boundary temperature model!Box!Bottom temperature} %
+    set %%\hyperref[parameters:Boundary temperature model/Box/Left temperature]{Left temperature}%   =  273%% \index[prmindex]{Left temperature} \index[prmindexfull]{Boundary temperature model!Box!Left temperature} %
+    set %%\hyperref[parameters:Boundary temperature model/Box/Right temperature]{Right temperature}%  =  273%% \index[prmindex]{Right temperature} \index[prmindexfull]{Boundary temperature model!Box!Right temperature} %
+    set %%\hyperref[parameters:Boundary temperature model/Box/Top temperature]{Top temperature}%    =  273%% \index[prmindex]{Top temperature} \index[prmindexfull]{Boundary temperature model!Box!Top temperature} %
+  end
+end
+
