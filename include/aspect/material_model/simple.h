@@ -112,6 +112,8 @@ namespace aspect
         double eta;
         double composition_viscosity_prefactor;
         double thermal_viscosity_exponent;
+        double maximum_thermal_prefactor;
+        double minimum_thermal_prefactor;
         double thermal_alpha;
         double reference_specific_heat;
 
