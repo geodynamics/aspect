@@ -207,7 +207,7 @@ namespace aspect
               // Assign strain values for compositional field to a symmetric tensor
               SymmetricTensor<2,dim> strain;
               for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-               strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = composition[i];
+                strain[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = composition[i];
 
               // Calculate second strain invariant
               const double strain_ii = std::fabs(second_invariant(strain));
@@ -424,7 +424,7 @@ namespace aspect
                              "If only one value is given, then all use the same value.  Units: $1 / K$");
 
           // Strain weakening parameters
-          prm.declare_entry ("Use strain weakening", "true",
+          prm.declare_entry ("Use strain weakening", "false",
                              Patterns::Bool (),
                              "Apply strain weakening to viscosity, cohesion and internal angle "
                              "of friction based on accumulated finite strain.  Units: None");
@@ -755,7 +755,7 @@ namespace aspect
                                    "The user has the option to linearly reduce the cohesion and "
                                    "internal friction angle as a function of accumulated finite strain. "
                                    "Finite strain may be calculated through tracers (implemented by Rene Gassmoeller) "
-                                   "or the compositional field finite strain plugin (implemented Juliane Dannberg). "
+                                   "or the compositional field finite strain plugin (implemented by Juliane Dannberg). "
                                    "In either case, the user specifies compositional fields for each of "
                                    "the symmetric strain tensor components, which must be listed before "
                                    "any additional compositional fields and will reflect the following order "
