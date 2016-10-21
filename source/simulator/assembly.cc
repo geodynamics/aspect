@@ -547,12 +547,6 @@ namespace aspect
                     average_entropy - (-global_for_max[0]));
   }
 
-                                             ? scratch.explicit_material_model_outputs.densities[q] : 1.0);
-                                             ((parameters.use_full_density_formulation)
-                                              ?
-                                              scratch.explicit_material_model_outputs.densities[q]
-                                              : adiabatic_conditions->density(scratch.explicit_material_model_inputs.position[q]))
-                                             : 1.0);
 
   template <int dim>
   double
@@ -1277,12 +1271,6 @@ namespace aspect
       if (cell->at_boundary(face_no))
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
-        const double density = scratch.material_model_outputs.densities[q];
-        const double compressibility_density = (parameters.use_full_density_formulation)
-                                               ?
-                                               buoyancy_density
-                                               :
-                                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);;
 
           if (assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data)
             {
@@ -1295,11 +1283,11 @@ namespace aspect
 
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
-                                 (density * gravity * scratch.phi_u[i])
+  //                               (density * gravity * scratch.phi_u[i])
 //  a dim-1 dimensional quadrature
               // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
               //                                            cell,
-                                     compressibility * density *
+//                                     compressibility * density *
               //                                            scratch.face_finite_element_values.get_mapping(),
               //                                            scratch.face_material_model_outputs);
             }

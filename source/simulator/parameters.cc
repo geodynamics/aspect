@@ -999,7 +999,6 @@ namespace aspect
     prm.enter_subsection ("Model settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
-      use_full_density_formulation = prm.get_bool ("Use full density formulation");
 
       {
         nullspace_removal = NullspaceRemoval::none;
