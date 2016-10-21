@@ -407,6 +407,15 @@ namespace aspect
         update_next_free_particle_index();
 
         /**
+         * Get a map between subdomain id and the neighbor index. In other words
+         * the returned map answers the question: Which neighbor (in terms of
+         * a contiguous number from 0 to n_neighbors) owns a given subdomain
+         * number.
+         */
+        std::map<unsigned int, unsigned int>
+        get_subdomain_id_to_neighbor_map() const;
+
+        /**
          * Exchanges all particles that live in cells adjacent to ghost cells
          * (i.e. cells that are ghosts to other processes) with the neighboring
          * domains. Clears and re-populates the ghost_neighbors member variable.
@@ -415,14 +424,20 @@ namespace aspect
         exchange_ghost_particles();
 
         /**
-         * Returns a map of neighbor cells of the current cell. This map is
-         * sorted according to the distance between the particle and the face
-         * of cell that is shared with the neighbor cell. I.e. the first
-         * entries of the map are the most likely ones to find the particle in.
+         * Returns the vertex of cell @p cell that is closest to
+         * the given particle @p particle.
          */
-        std::multimap<double, typename parallel::distributed::Triangulation<dim>::active_cell_iterator>
-        neighbor_cells_to_search(const Particle<dim> &particle,
-                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+        unsigned int
+        get_closest_vertex(const Particle<dim> &particle,
+                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+        /**
+         * Create a vector that contains for every vertex which cells it
+         * belongs to, and a normalized vector from the vertex to the
+         * center of the respective cell.
+         */
+        std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
+        vertex_index_to_active_cell_iterators() const;
 
         /**
          * Finds the cells containing each particle for all particles in
@@ -455,9 +470,9 @@ namespace aspect
          * that can not be found are discarded.
          */
         void
-        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >                  &lost_particles,
-                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >                        &moved_particles_cell,
-                                      std::multimap<types::subdomain_id, std::pair<types::LevelInd, Particle<dim> > > &moved_particles_domain);
+        move_particles_back_into_mesh(const std::vector<std::pair<types::LevelInd, Particle<dim> > >         &lost_particles,
+                                      std::vector<std::pair<types::LevelInd, Particle<dim> > >               &moved_particles_cell,
+                                      std::vector<std::vector<std::pair<types::LevelInd, Particle<dim> > > > &moved_particles_domain);
 
         /**
          * Transfer particles that have crossed subdomain boundaries to other
@@ -479,8 +494,8 @@ namespace aspect
          * the vector.
          */
         void
-        send_recv_particles(const std::multimap<types::subdomain_id, std::pair<types::LevelInd,Particle <dim> > > &sent_particles,
-                            std::vector<std::pair<types::LevelInd, Particle<dim> > >                              &received_particles);
+        send_recv_particles(const std::vector<std::vector<std::pair<types::LevelInd,Particle <dim> > > > &sent_particles,
+                            std::vector<std::pair<types::LevelInd, Particle<dim> > >                     &received_particles);
 
         /**
          * Advect the particle positions by one integration step. Needs to be
