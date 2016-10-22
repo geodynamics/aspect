@@ -901,7 +901,7 @@ namespace aspect
       const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
                          n_q_points    = fe_values.n_quadrature_points;
 
-      std::vector<unsigned int> cell_dof_indices (dofs_per_cell);
+      std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
       Vector<double> cell_vector (dofs_per_cell);
       FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
