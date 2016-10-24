@@ -40,8 +40,8 @@ namespace aspect
           const double temperature_dependence = (reference_T > 0
                                                  ?
                                                  std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),
-                                                                   1e2),
-                                                          1e-2)
+                                                                   maximum_thermal_prefactor),
+                                                          minimum_thermal_prefactor)
                                                  :
                                                  1.0);
 
@@ -161,6 +161,14 @@ namespace aspect
                              "See the general documentation "
                              "of this model for a formula that states the dependence of the "
                              "viscosity on this factor, which is called $\\beta$ there.");
+          prm.declare_entry("Maximum thermal prefactor","1.0e2",
+                            Patterns::Double (0),
+                            "The maximum value of the viscosity prefactor associated with temperature "
+                            "dependence.");
+          prm.declare_entry("Minimum thermal prefactor","1.0e-2",
+                            Patterns::Double (0),
+                            "The minimum value of the viscosity prefactor associated with temperature "
+                            "dependence.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
@@ -205,6 +213,11 @@ namespace aspect
           eta                        = prm.get_double ("Viscosity");
           composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
           thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
+          maximum_thermal_prefactor       = prm.get_double ("Maximum thermal prefactor");
+          minimum_thermal_prefactor       = prm.get_double ("Minimum thermal prefactor");
+          if ( maximum_thermal_prefactor == 0.0 ) maximum_thermal_prefactor = std::numeric_limits<double>::max();
+          if ( minimum_thermal_prefactor == 0.0 ) minimum_thermal_prefactor = std::numeric_limits<double>::min();
+
           k_value                    = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
@@ -265,14 +278,17 @@ namespace aspect
                                    "\\begin{align}"
                                    "  \\tau(T) &= H\\left(e^{-\\beta (T-T_0)/T_0}\\right),"
                                    "  \\qquad\\qquad H(x) = \\begin{cases}"
-                                   "                            10^{-2} & \\text{if}\\; x<10^{-2}, \\\\"
+                                   "                            \\tau_{min} & \\text{if}\\; x<\\tau_{min}, \\\\"
                                    "                            x & \\text{if}\\; 10^{-2}\\le x \\le 10^2, \\\\"
-                                   "                            10^{2} & \\text{if}\\; x>10^{2}, \\\\"
+                                   "                            \\tau_{max} & \\text{if}\\; x>\\tau_{max}, \\\\"
                                    "                         \\end{cases}"
                                    "\\end{align} "
                                    "where $\\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' "
                                    "and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ "
-                                   "in the input file, the thermal pre-factor $\\tau(T)=1$."
+                                   "in the input file, the thermal pre-factor $\\tau(T)=1$. The parameters $\\tau_{min}$ "
+                                   "and $\\tau_{max}$ set the minimum and maximum values of the temperature pre-factor "
+                                   "and are set using ``Maximum thermal prefactor'' and ``Minimum thermal prefactor''. "
+                                   "Specifying a value of 0.0 for the minimum or maximum values will disable pre-factor limiting."
                                    "\n\n"
                                    "The compositional pre-factor for the viscosity is defined as "
                                    "\\begin{align}"
