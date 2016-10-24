@@ -55,12 +55,12 @@ set Surface pressure                       = 0
 
 
 subsection Adiabatic conditions model
-  set Model name = initial profile
-  #set Model name = function
+  #set Model name = initial profile
+  set Model name = function
 
   subsection Function
-    set Function constants  = 
-    set Function expression = 0; 0; 1
+    set Function constants  = Di=0.25
+    set Function expression = 1/1*exp(depth*Di); 0; exp(depth*Di)
     set Variable names      = depth
   end
 
@@ -101,7 +101,7 @@ subsection Initial conditions
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression =  1+1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L))
+    set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L))
   end
 end
 
@@ -175,8 +175,8 @@ subsection Heating model
     # from $\alpha T (\mathbf u \cdot \nabla p)$ 
     # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. alpha=thermal exp
 
-    # \alpha rho T w Ra
-    # need: Di w T
+    # have \alpha rho T w
+    # need: \alpha \rho T w Di
     set Use simplified adiabatic heating = true
   end
 end

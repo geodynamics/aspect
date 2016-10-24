@@ -40,21 +40,6 @@ namespace aspect
       public:
 
 
-        virtual void
-        density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
-                               std::vector<double> &densities) const
-        {
-          for (unsigned int i=0; i<in.position.size(); ++i)
-            {
-              const double depth = 1.0-in.position[i](dim-1);
-              const double temperature = in.temperature[i];
-              const double thermal_expansion_coefficients = (Di==0.0)?1.0:Di;
-              densities[i] = reference_rho *
-                             (1.0 - thermal_expansion_coefficients * (temperature - this->get_adiabatic_conditions().temperature(in.position[i])));
-
-            }
-        }
-
 
         /**
         * Evaluate material properties.
@@ -79,6 +64,7 @@ namespace aspect
 
               double rho = reference_rho;
               rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position));
+	      //rho*= exp(depth);
 
               out.densities[i] = rho;
 
