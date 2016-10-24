@@ -373,16 +373,11 @@ namespace aspect
                                                    scratch.finite_element_values.get_mapping(),
                                                    scratch.material_model_outputs);
 
-        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
-            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-          }
-
         if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
-          material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+            }
 
         viscosity_per_cell[cell->active_cell_index()] = compute_viscosity(scratch,
                                                                           global_max_velocity,

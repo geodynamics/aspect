@@ -77,7 +77,7 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         Functions::ParsedFunction<1>::declare_parameters (prm, 3);
-        prm.declare_entry("Function expression","0.0; 0.0; 0.0");
+        prm.declare_entry("Function expression","0.0; 0.0; 1.0");
         prm.declare_entry("Variable names","depth");
         prm.leave_subsection();
       }

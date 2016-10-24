@@ -944,11 +944,11 @@ namespace aspect
         }
       else if (formulation == "BA")
         {
-          formulation_buoyancy = FormulationType::adiabatic_pressure;
+          formulation_buoyancy = FormulationType::full;
           formulation_mass = FormulationType::incompressible;
           formulation_temperature = FormulationType::adiabatic;
 
-          // Assert AdiabaticConditions = ConstantTemperature
+          // Assert AdiabaticConditions = ConstantTemperature, density=1
           // Assert shear/adiabatic heating plugins are off
           // is_compressible= false
         }
@@ -956,7 +956,7 @@ namespace aspect
         {
           formulation_temperature = FormulationType::adiabatic;
           formulation_mass = FormulationType::incompressible;
-          formulation_buoyancy = FormulationType::adiabatic_pressure;
+          formulation_buoyancy = FormulationType::full;
 
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true

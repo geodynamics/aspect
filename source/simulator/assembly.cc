@@ -1227,33 +1227,15 @@ namespace aspect
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         scratch.mass_densities.resize(n_q_points);
-        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
         for (unsigned int q=0; q<n_q_points; ++q)
           {
-            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
-            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
+            scratch.mass_densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
           }
-
-        material_model->density_approximation(approximate_inputs, scratch.mass_densities);
       }
     else
       scratch.mass_densities = scratch.material_model_outputs.densities;
 
-    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::adiabatic_pressure)
-      {
-        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-        MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
-        for (unsigned int q=0; q<n_q_points; ++q)
-          {
-            approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-            approximate_inputs.temperature[q] = scratch.material_model_inputs.temperature[q];
-            approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-          }
-
-        material_model->density_approximation(approximate_inputs, scratch.material_model_outputs.densities);
-      }
-    else if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
+    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
       {
         // scratch.material_model_outputs.densities is already the full density
       }
@@ -1452,11 +1434,6 @@ namespace aspect
 
 
   template <int dim>
-    const double density              = (parameters.use_full_density_formulation)
-                                        ?
-                                        material_model_outputs.densities[q]
-                                        :
-                                        adiabatic_conditions->density(material_model_inputs.position[q]);
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
                                    const Vector<double>           &viscosity_per_cell,
@@ -1521,23 +1498,20 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
+    if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
+      {
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+          }
+      }
+
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
                                                scratch.material_model_outputs);
-
-    const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
-    MaterialModel::MaterialModelInputs<dim> approximate_inputs (n_q_points, parameters.n_compositional_fields);
-    for (unsigned int q=0; q<n_q_points; ++q)
-      {
-        approximate_inputs.position[q] = scratch.material_model_inputs.position[q];
-        approximate_inputs.temperature[q] = adiabatic_conditions->temperature(approximate_inputs.position[q]);
-        approximate_inputs.pressure[q] = adiabatic_conditions->pressure(approximate_inputs.position[q]);
-      }
-
-    if (parameters.formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
-      material_model->density_approximation(approximate_inputs,scratch.material_model_outputs.densities);
 
     heating_model_manager.evaluate(scratch.material_model_inputs,
                                    scratch.material_model_outputs,
@@ -1575,15 +1549,14 @@ namespace aspect
           }
       }
 
-                               :
-                               adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
-           scratch.material_model_outputs.densities[q] *
+    for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      {
+        const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
 
         if ((has_boundary_face_assemblers && face->at_boundary()) ||
             (has_interior_face_assemblers && !face->at_boundary()))
           {
             (*scratch.face_finite_element_values).reinit (cell, face_no);
-           - scratch.material_model_outputs.densities[q] *
 
             (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(current_linearization_point,
                 scratch.face_current_velocity_values);
