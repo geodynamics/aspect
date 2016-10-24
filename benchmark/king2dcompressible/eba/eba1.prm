@@ -1,7 +1,11 @@
-# King2010 EBA, table 2
+# King2010 EBA, supplementary table 2
 
 # reference values: 
 # Ra=1e4, Di 0.25, , Nu 4.0900, RMS 38.4000
+# -> ref4: 4.323 | 39.4
+#    ref5: 4.238 | 39.21
+
+# Ra=1e5, Di 0.25, , Nu 8.6100, RMS 174.0000
 
 # NOTE: values are incorrect. What is t_0 in adiabatic heating from paper?
 
@@ -54,7 +58,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = 0; 0
+    set Function expression = 0; 0; 1   # T=1-exp(Di)
     set Variable names      = depth
   end
 
@@ -178,7 +182,7 @@ subsection Formulation
   set Formulation = EBA # custom
   set Mass density approximation        = incompressible#implicit adiabatic
   set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = adiabatic pressure
+  set Buoyancy density approximation    = full
 end
 
 subsection Gravity model
@@ -205,7 +209,8 @@ subsection Material model
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
     set Di = 0.25 # BA: Di=0.0
-#    set b=0
+    set b=0
+    set c=0
   end
 
 end
@@ -241,7 +246,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, depth average, heating statistics
 
   subsection Visualization
-    set Time between graphical output = 1e-3
+    set Time between graphical output = 1e-10
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end
 end

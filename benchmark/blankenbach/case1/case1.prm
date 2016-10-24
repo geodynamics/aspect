@@ -22,7 +22,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = 0; 0
+    set Function expression = 0; 0; 1
     set Variable names      = depth
   end
 
@@ -52,7 +52,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 1e4 
+    set Magnitude = 1
   end
 end
 
@@ -75,7 +75,7 @@ subsection Material model
     set Reference specific heat       = 1
     set Reference temperature         = 0
     set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1
+    set Thermal expansion coefficient = 1e4
     set Viscosity                     = 1
   end
 end
@@ -101,8 +101,8 @@ subsection Model settings
 end
 
 subsection Formulation
-  set Formulation = BA#custom
-  set Mass density approximation        = implicit adiabatic
+  set Formulation = custom #BA
+  set Mass density approximation        = incompressible # implicit adiabatic
   set Temperature density approximation = adiabatic
   set Buoyancy density approximation    = full#adiabatic pressure
 end
@@ -110,7 +110,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heating statistics
 subsection Visualization
-    set Time between graphical output = 1e-10
+    set Time between graphical output = 0.05
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end
 end

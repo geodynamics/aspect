@@ -60,7 +60,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = 0; 0
+    set Function expression = 0; 0; 1
     set Variable names      = depth
   end
 
@@ -172,19 +172,20 @@ subsection Heating model
 
   subsection Adiabatic heating
     # A flag indicating whether the adiabatic heating should be simplified
-    # from $\alpha T (\mathbf u \cdot \nabla p)$ to $ \alpha \rho T (\mathbf u
-    # \cdot \mathbf g) $. alpha=thermal exp
-    # \alpha 1 T w Ra
-    # should be Di w T
+    # from $\alpha T (\mathbf u \cdot \nabla p)$ 
+    # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. alpha=thermal exp
+
+    # \alpha rho T w Ra
+    # need: Di w T
     set Use simplified adiabatic heating = true
   end
 end
 
 subsection Formulation
-  set Formulation = EBA # custom
-  set Mass density approximation        = incompressible#implicit adiabatic
+  set Formulation = custom
+  set Mass density approximation        = implicit adiabatic
   set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = adiabatic pressure
+  set Buoyancy density approximation    = full
 end
 
 subsection Gravity model
@@ -211,7 +212,8 @@ subsection Material model
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
     set Di = 0.25 # BA: Di=0.0
-#    set b=0
+    #set b=0
+    set c=0
   end
 
 end
