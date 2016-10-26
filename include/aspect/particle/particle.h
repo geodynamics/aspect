@@ -153,6 +153,16 @@ namespace aspect
          * one.
          */
         Particle (Particle<dim> &&particle);
+
+        /**
+         * Copy assignment operator.
+         */
+        Particle<dim> &operator=(const Particle<dim> &particle);
+
+        /**
+         * Move assignment operator.
+         */
+        Particle<dim> &operator=(Particle<dim> &&particle);
 #endif
 
         /**

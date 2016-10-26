@@ -94,6 +94,34 @@ namespace aspect
       id (particle.id),
       properties(std::move(particle.properties))
     {}
+
+    template <int dim>
+    Particle<dim> &
+    Particle<dim>::operator=(const Particle<dim> &particle)
+    {
+      if (this != &particle)
+        {
+          location = particle.location;
+          reference_location = particle.reference_location;
+          id = particle.id;
+          properties = particle.properties;
+        }
+      return *this;
+    }
+
+    template <int dim>
+    Particle<dim> &
+    Particle<dim>::operator=(Particle<dim> &&particle)
+    {
+      if (this != &particle)
+        {
+          location = particle.location;
+          reference_location = particle.reference_location;
+          id = particle.id;
+          properties = std::move(particle.properties);
+        }
+      return *this;
+    }
 #endif
 
 
