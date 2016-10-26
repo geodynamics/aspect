@@ -1017,14 +1017,8 @@ namespace aspect
         n_send_particles += send_particles[i].size();
 
 #if DEAL_II_VERSION_GTE(8,5,0)
-      // The amount of data per cell id depends on coarse cell and level,
-      // assume the worst and allocate enough memory for the largest possible
-      // CellIds.
-      const CellId test_cid(this->get_triangulation().end(0)->index(),
-                            std::vector<unsigned char>(this->get_triangulation().n_global_levels(),'0'));
-      const unsigned int max_cellid_size = test_cid.to_string().size();
-
-      const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size() + max_cellid_size;
+      const unsigned int cellid_size = sizeof(CellId::binary_type);
+      const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size() + cellid_size;
 #else
       const unsigned int particle_size = property_manager->get_particle_size() + integrator->get_data_size();
 #endif
@@ -1054,9 +1048,9 @@ namespace aspect
               const typename parallel::distributed::Triangulation<dim>::cell_iterator cell (&this->get_triangulation(),
                                                                                             cell_particle->first.first,
                                                                                             cell_particle->first.second);
-              const std::string cellid = cell->id().to_string();
-              cellid.copy(static_cast<char *>(data),cellid.size());
-              data = static_cast<char *>(data) + cellid.size();
+              const CellId::binary_type cellid = cell->id().template to_binary<dim>();
+              memcpy(data, &cellid, cellid_size);
+              data = static_cast<char *>(data) + cellid_size;
 #endif
               cell_particle->second.write_data(data);
               data = integrator->write_data(data, cell_particle->second.get_id());
@@ -1117,11 +1111,10 @@ namespace aspect
       while (reinterpret_cast<std::size_t> (recv_data_it) - reinterpret_cast<std::size_t> (&recv_data.front()) < total_recv_data)
         {
 #if DEAL_II_VERSION_GTE(8,5,0)
-          const std::string cell_string(reinterpret_cast<const char *> (recv_data_it),max_cellid_size);
-          std::stringstream stream(cell_string);
-          CellId id;
-          stream >> id;
-          recv_data_it = static_cast<const char *> (recv_data_it) + id.to_string().size();
+          CellId::binary_type binary_cellid;
+          memcpy(&binary_cellid, recv_data_it, cellid_size);
+          const CellId id(binary_cellid);
+          recv_data_it = static_cast<const char *> (recv_data_it) + cellid_size;
 
           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell = id.to_cell(this->get_triangulation());
           const Particle<dim> recv_particle(recv_data_it,property_manager->get_particle_size());
