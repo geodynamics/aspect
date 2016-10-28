@@ -516,30 +516,77 @@ namespace aspect
 
       // Load all particles from the data stream and store them in the local
       // particle map.
-      for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
+      if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
         {
-          Particle<dim> p(pdata,property_manager->get_particle_size());
-
-          if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
-            particles.insert(std::make_pair(std::make_pair(cell->level(),cell->index()),p));
-          else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
+          typename std::multimap<types::LevelInd,Particle<dim> >::const_iterator position_hint = particles.end();
+          for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-              const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, p.get_location());
-              p.set_reference_location(p_unit);
-              particles.insert(std::make_pair(std::make_pair(cell->level(),cell->index()),p));
+#ifdef DEAL_II_WITH_CXX11
+              position_hint = particles.emplace_hint(position_hint,
+                                                     std::make_pair(cell->level(),cell->index()),
+                                                     Particle<dim>(pdata,property_manager->get_particle_size()));
+#else
+              position_hint = particles.insert(position_hint,
+                                               std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                              Particle<dim>(pdata,property_manager->get_particle_size())));
+#endif
+              ++position_hint;
             }
-          else if (status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
+        }
+
+      else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
+        {
+          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
+          for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
+#ifdef DEAL_II_WITH_CXX11
+              position_hint = particles.emplace_hint(position_hint,
+                                                     std::make_pair(cell->level(),cell->index()),
+                                                     Particle<dim>(pdata,property_manager->get_particle_size()));
+#else
+              position_hint = particles.insert(position_hint,
+                                               std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                              Particle<dim>(pdata,property_manager->get_particle_size())));
+#endif
+              const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, position_hint->second.get_location());
+              position_hint->second.set_reference_location(p_unit);
+              ++position_hint;
+            }
+        }
+      else if (status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
+        {
+          std::vector<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator > position_hints(GeometryInfo<dim>::max_children_per_cell);
+          for (unsigned int child_index=0; child_index<GeometryInfo<dim>::max_children_per_cell; ++child_index)
+            {
+              const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
+              position_hints[child_index] = particles.upper_bound(std::make_pair(child->level(),child->index()));
+            }
+
+          for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
+            {
+              Particle<dim> p (pdata,property_manager->get_particle_size());
+
               for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
                 {
                   const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
+
                   try
                     {
-                      const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(child, p.get_location());
+                      const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(child,
+                                                                                                p.get_location());
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
                           p.set_reference_location(p_unit);
-                          particles.insert(std::make_pair(std::make_pair(child->level(),child->index()),p));
+#ifdef DEAL_II_WITH_CXX11
+                          position_hints[child_index] = particles.emplace_hint(position_hints[child_index],
+                                                                               std::make_pair(child->level(),child->index()),
+                                                                               std::move(p));
+#else
+                          position_hints[child_index] = particles.insert(position_hints[child_index],
+                                                                         std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                                                        p));
+#endif
+                          ++position_hints[child_index];
                           break;
                         }
                     }

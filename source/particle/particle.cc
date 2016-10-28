@@ -76,11 +76,53 @@ namespace aspect
       data = static_cast<const void *> (pdata);
     }
 
+#ifdef DEAL_II_WITH_CXX11
+    template <int dim>
+    Particle<dim>::Particle (const Particle<dim> &particle)
+      :
+      location (particle.location),
+      reference_location(particle.reference_location),
+      id (particle.id),
+      properties(particle.properties)
+    {}
 
     template <int dim>
-    Particle<dim>::~Particle ()
+    Particle<dim>::Particle (Particle<dim> &&particle)
+      :
+      location (particle.location),
+      reference_location(particle.reference_location),
+      id (particle.id),
+      properties(std::move(particle.properties))
+    {}
+
+    template <int dim>
+    Particle<dim> &
+    Particle<dim>::operator=(const Particle<dim> &particle)
     {
+      if (this != &particle)
+        {
+          location = particle.location;
+          reference_location = particle.reference_location;
+          id = particle.id;
+          properties = particle.properties;
+        }
+      return *this;
     }
+
+    template <int dim>
+    Particle<dim> &
+    Particle<dim>::operator=(Particle<dim> &&particle)
+    {
+      if (this != &particle)
+        {
+          location = particle.location;
+          reference_location = particle.reference_location;
+          id = particle.id;
+          properties = std::move(particle.properties);
+        }
+      return *this;
+    }
+#endif
 
 
     template <int dim>

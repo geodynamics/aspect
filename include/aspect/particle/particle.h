@@ -141,11 +141,29 @@ namespace aspect
         Particle (const void *&begin_data,
                   const unsigned int data_size);
 
+#ifdef DEAL_II_WITH_CXX11
         /**
-         * Destructor for Particle
+         * Copy constructor for Particle, creates a particle from an existing
+         * one.
          */
-        virtual
-        ~Particle ();
+        Particle (const Particle<dim> &particle);
+
+        /**
+         * Move constructor for Particle, creates a particle from an existing
+         * one.
+         */
+        Particle (Particle<dim> &&particle);
+
+        /**
+         * Copy assignment operator.
+         */
+        Particle<dim> &operator=(const Particle<dim> &particle);
+
+        /**
+         * Move assignment operator.
+         */
+        Particle<dim> &operator=(Particle<dim> &&particle);
+#endif
 
         /**
           * Resize the properties member variable to hold the number of doubles
