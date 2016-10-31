@@ -37,19 +37,54 @@ namespace aspect
   {
     namespace
     {
+      /**
+       * This function is used as comparison argument to std::sort to sort the
+       * vector of tensors @p center_directions by its scalar product with the
+       * @p particle_direction tensor. The sorted indices allow to
+       * loop over @p center_directions with increasing angle between
+       * @p particle_direction and @p center_directions. This function assumes
+       * that @p particle_direction and @p center_directions are normalized
+       * to length one before calling this function.
+       */
       template <int dim>
-      unsigned int
-      compare_particle_association(const std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > &cell_a,
-                                   const std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > &cell_b,
-                                   const Tensor<1,dim> &particle_direction)
+      bool
+      compare_particle_association(const unsigned int a,
+                                   const unsigned int b,
+                                   const Tensor<1,dim> &particle_direction,
+                                   const std::vector<Tensor<1,dim> > &center_directions)
       {
-        const double scalar_product_a = scalar_product(cell_a.second,particle_direction);
-        const double scalar_product_b = scalar_product(cell_b.second,particle_direction);
+        const double scalar_product_a = center_directions[a] * particle_direction;
+        const double scalar_product_b = center_directions[b] * particle_direction;
 
         // The function is supposed to return if a is before b. We are looking
         // for the alignment of particle direction and center direction,
         // therefore return if the scalar product of a is larger.
         return (scalar_product_a > scalar_product_b);
+      }
+
+      /**
+       * Returns the local vertex index of cell @p cell that is closest to
+       * the given location @p position.
+       */
+      template <int dim>
+      unsigned int
+      get_closest_vertex_of_cell(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                 const Point<dim> &position)
+      {
+        double minimum_distance = std::numeric_limits<double>::max();
+        unsigned int closest_vertex = numbers::invalid_unsigned_int;
+
+        for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+          {
+            const double vertex_distance = position.distance(cell->vertex(v));
+            if (vertex_distance < minimum_distance)
+              {
+                closest_vertex = v;
+                minimum_distance = vertex_distance;
+              }
+          }
+
+        return closest_vertex;
       }
     }
 
@@ -616,12 +651,12 @@ namespace aspect
     }
 
     template <int dim>
-    std::map<unsigned int, unsigned int>
+    std::map<types::subdomain_id, unsigned int>
     World<dim>::get_subdomain_id_to_neighbor_map() const
     {
-      std::map<unsigned int, unsigned int> subdomain_id_to_neighbor_map;
-      const std::set<unsigned int> ghost_owners = this->get_triangulation().ghost_owners();
-      std::set<unsigned int>::const_iterator ghost_owner = ghost_owners.begin();
+      std::map<types::subdomain_id, unsigned int> subdomain_id_to_neighbor_map;
+      const std::set<types::subdomain_id> ghost_owners = this->get_triangulation().ghost_owners();
+      std::set<types::subdomain_id>::const_iterator ghost_owner = ghost_owners.begin();
 
       for (unsigned int neighbor_id=0; neighbor_id<ghost_owners.size(); ++neighbor_id,++ghost_owner)
         {
@@ -639,7 +674,7 @@ namespace aspect
       // First clear the current ghost_particle information
       ghost_particles.clear();
 
-      std::map<unsigned int, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
+      const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
 
       std::vector<std::vector<std::pair<types::LevelInd, Particle<dim> > > > ghost_particles_by_domain(subdomain_to_neighbor_map.size());
       std::vector<std::set<unsigned int> > vertex_to_neighbor_subdomain(this->get_triangulation().n_vertices());
@@ -672,7 +707,7 @@ namespace aspect
                         const typename std::multimap<types::LevelInd,Particle <dim> >::iterator>
                         particle_range_in_cell = particles.equal_range(std::make_pair(cell->level(),cell->index()));
 
-                  for (std::set<unsigned int>::const_iterator domain=cell_to_neighbor_subdomain.begin();
+                  for (std::set<types::subdomain_id>::const_iterator domain=cell_to_neighbor_subdomain.begin();
                        domain != cell_to_neighbor_subdomain.end(); ++domain)
                     {
                       const unsigned int neighbor_id = subdomain_to_neighbor_map.find(*domain)->second;
@@ -694,53 +729,27 @@ namespace aspect
     }
 
     template <int dim>
-    std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
-    World<dim>::vertex_index_to_active_cell_iterators() const
+    std::vector<std::vector<Tensor<1,dim> > >
+    World<dim>::vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const
     {
-      std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > tmp;
-      tmp.reserve(GeometryInfo<dim>::vertices_per_cell);
+      const std::vector<Point<dim> > &vertices = this->get_triangulation().get_vertices();
+      const unsigned int n_vertices = vertex_to_cells.size();
 
-      std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
-      vertex_to_active_cell_iterators(this->get_triangulation().n_vertices(),tmp);
+      std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(n_vertices);
+      for (unsigned int vertex=0; vertex<n_vertices; ++vertex)
+        if (this->get_triangulation().vertex_used(vertex))
+          {
+            const unsigned int n_neighbor_cells = vertex_to_cells[vertex].size();
+            vertex_to_cell_centers[vertex].resize(n_neighbor_cells);
 
-      typename Triangulation<dim>::active_cell_iterator
-      cell = this->get_triangulation().begin_active(),
-      endc = this->get_triangulation().end();
-      for (; cell != endc; ++cell)
-        {
-          const Point<dim> center = cell->center();
-          if (!cell->is_artificial())
-            for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
+            typename std::set<typename Triangulation<dim>::active_cell_iterator>::iterator it = vertex_to_cells[vertex].begin();
+            for (unsigned int cell=0; cell<n_neighbor_cells; ++cell,++it)
               {
-                const Tensor<1,dim> center_direction = center - cell->vertex(v);
-                vertex_to_active_cell_iterators[cell->vertex_index(v)]
-                .push_back(std::make_pair(cell,
-                                          center_direction/center_direction.norm()));
+                vertex_to_cell_centers[vertex][cell] = (*it)->center() - vertices[vertex];
+                vertex_to_cell_centers[vertex][cell] /= vertex_to_cell_centers[vertex][cell].norm();
               }
-        }
-
-      return vertex_to_active_cell_iterators;
-    }
-
-    template <int dim>
-    unsigned int
-    World<dim>::get_closest_vertex(const Particle<dim> &particle,
-                                   const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
-    {
-      double minimum_distance = std::numeric_limits<double>::max();
-      unsigned int closest_vertex = numbers::invalid_unsigned_int;
-
-      for (unsigned int v=0; v<GeometryInfo<dim>::vertices_per_cell; ++v)
-        {
-          const double vertex_distance = particle.get_location().distance(cell->vertex(v));
-          if (vertex_distance < minimum_distance)
-            {
-              closest_vertex = v;
-              minimum_distance = vertex_distance;
-            }
-        }
-
-      return closest_vertex;
+          }
+      return vertex_to_cell_centers;
     }
 
     template <int dim>
@@ -768,7 +777,7 @@ namespace aspect
       // re-allocation will happen.
       sorted_particles.reserve(static_cast<unsigned int> (particles_to_sort.size()*1.25));
       lost_particles.reserve(static_cast<unsigned int> (particles_to_sort.size()*0.25));
-      std::map<unsigned int, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
+      const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
       moved_particles_domain.resize(subdomain_to_neighbor_map.size());
       for (unsigned int i=0; i<subdomain_to_neighbor_map.size(); ++i)
         moved_particles_domain[i].reserve(static_cast<unsigned int> (particles_to_sort.size()*0.25));
@@ -776,8 +785,14 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Sort");
 
-        std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
-        vertex_to_active_cell_iterators(vertex_index_to_active_cell_iterators());
+        // Create a map from vertices to adjacent cells
+        const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
+        vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
+
+        // Create a corresponding map of vectors from vertex to cell center
+        const std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(vertex_to_cell_centers_directions(vertex_to_cells));
+
+        std::vector<unsigned int> neighbor_permutation;
 
         // Find the cells that the particles moved to.
         typename std::vector<std::pair<types::LevelInd, Particle<dim> > >::const_iterator it = particles_to_sort.begin(),
@@ -797,33 +812,38 @@ namespace aspect
                                it->first.first,
                                it->first.second);
 
-                const unsigned int closest_vertex = get_closest_vertex(it->second,current_cell);
-                const unsigned int closest_vertex_index = current_cell->vertex_index(closest_vertex);
-                Tensor<1,dim> particle_direction = it->second.get_location() - current_cell->vertex(closest_vertex);
-                particle_direction /= particle_direction.norm();
+                const unsigned int closest_vertex = get_closest_vertex_of_cell(current_cell,it->second.get_location());
+                Tensor<1,dim> vertex_to_particle = it->second.get_location() - current_cell->vertex(closest_vertex);
+                vertex_to_particle /= vertex_to_particle.norm();
 
-                std::sort(vertex_to_active_cell_iterators[closest_vertex_index].begin(),
-                          vertex_to_active_cell_iterators[closest_vertex_index].end(),
+                const unsigned int closest_vertex_index = current_cell->vertex_index(closest_vertex);
+                const unsigned int n_neighbor_cells = vertex_to_cells[closest_vertex_index].size();
+
+                neighbor_permutation.resize(n_neighbor_cells);
+                for (unsigned int i=0; i<n_neighbor_cells; ++i)
+                  neighbor_permutation[i] = i;
+
+                std::sort(neighbor_permutation.begin(),
+                          neighbor_permutation.end(),
                           std_cxx11::bind(&compare_particle_association<dim>,
                                           std_cxx11::_1,
                                           std_cxx11::_2,
-                                          std_cxx11::cref(particle_direction)));
+                                          std_cxx11::cref(vertex_to_particle),
+                                          std_cxx11::cref(vertex_to_cell_centers[closest_vertex_index])));
 
                 // Search all of the cells adjacent to the closest vertex of the previous cell
                 // Most likely we will find the particle in them.
-                typename std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > >::const_iterator
-                neighbor_cell = vertex_to_active_cell_iterators[closest_vertex_index].begin(),
-                end_neighbor_cell = vertex_to_active_cell_iterators[closest_vertex_index].end();
-
-                for (; neighbor_cell!=end_neighbor_cell; ++neighbor_cell)
+                for (unsigned int i=0; i<n_neighbor_cells; ++i)
                   {
                     try
                       {
-                        const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(neighbor_cell->first,
+                        typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator cell = vertex_to_cells[closest_vertex_index].begin();
+                        std::advance(cell,neighbor_permutation[i]);
+                        const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(*cell,
                                                                                                   it->second.get_location());
                         if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                           {
-                            current_cell = neighbor_cell->first;
+                            current_cell = *cell;
                             current_reference_position = p_unit;
                             found_cell = true;
                             break;
@@ -868,7 +888,7 @@ namespace aspect
               }
             else
               {
-                const unsigned int neighbor_index = subdomain_to_neighbor_map[current_cell->subdomain_id()];
+                const unsigned int neighbor_index = subdomain_to_neighbor_map.find(current_cell->subdomain_id())->second;
                 moved_particles_domain[neighbor_index].push_back(*it);
                 moved_particles_domain[neighbor_index].back().first =
                   std::make_pair(current_cell->level(),current_cell->index());
@@ -920,7 +940,7 @@ namespace aspect
           const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries =
             geometry->get_periodic_boundary_pairs();
 
-          std::map<unsigned int, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
+          const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
 
           std::vector<bool> periodic(dim,false);
           std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
@@ -971,7 +991,7 @@ namespace aspect
               if (cell->is_locally_owned())
                 moved_particles_cell.push_back(cell_and_particle);
               else
-                moved_particles_domain[subdomain_to_neighbor_map[cell->subdomain_id()]].push_back(cell_and_particle);
+                moved_particles_domain[subdomain_to_neighbor_map.find(cell->subdomain_id())->second].push_back(cell_and_particle);
             }
         }
     }
@@ -1087,8 +1107,11 @@ namespace aspect
       const void *recv_data_it = static_cast<const void *> (&recv_data.front());
 
 #if !DEAL_II_VERSION_GTE(8,5,0)
-      std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
-      vertex_to_active_cell_iterators(vertex_index_to_active_cell_iterators());
+      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
+      vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
+      const std::vector<std::vector<Tensor<1,dim> > > vertex_to_cell_centers(vertex_to_cell_centers_directions(vertex_to_cells));
+
+      std::vector<unsigned int> neighbor_permutation;
 #endif
 
       while (reinterpret_cast<std::size_t> (recv_data_it) - reinterpret_cast<std::size_t> (&recv_data.front()) < total_recv_data)
@@ -1122,37 +1145,41 @@ namespace aspect
           // neighbor cells for the particle.
           if (!cell->is_locally_owned())
             {
-              const unsigned int closest_vertex = get_closest_vertex(recv_particle,cell);
+              const unsigned int closest_vertex = get_closest_vertex_of_cell(cell,recv_particle.get_location());
               const unsigned int closest_vertex_index = cell->vertex_index(closest_vertex);
-              Tensor<1,dim> particle_direction = recv_particle.get_location() - cell->vertex(closest_vertex);
-              particle_direction /= particle_direction.norm();
+              Tensor<1,dim> vertex_to_particle = recv_particle.get_location() - cell->vertex(closest_vertex);
+              vertex_to_particle /= vertex_to_particle.norm();
 
-              std::sort(vertex_to_active_cell_iterators[closest_vertex_index].begin(),
-                        vertex_to_active_cell_iterators[closest_vertex_index].end(),
+              const unsigned int n_neighbor_cells = vertex_to_cells[closest_vertex_index].size();
+
+              neighbor_permutation.resize(n_neighbor_cells);
+              for (unsigned int i=0; i<n_neighbor_cells; ++i)
+                neighbor_permutation[i] = i;
+
+              std::sort(neighbor_permutation.begin(),
+                        neighbor_permutation.end(),
                         std_cxx11::bind(&compare_particle_association<dim>,
                                         std_cxx11::_1,
                                         std_cxx11::_2,
-                                        std_cxx11::cref(particle_direction)));
+                                        std_cxx11::cref(vertex_to_particle),
+                                        std_cxx11::cref(vertex_to_cell_centers[closest_vertex_index])));
 
               // Search all of the cells adjacent to the closest vertex of the previous cell
               // Most likely we will find the particle in them.
-              typename std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > >::const_iterator
-              neighbor_cell = vertex_to_active_cell_iterators[closest_vertex_index].begin(),
-              end_neighbor_cell = vertex_to_active_cell_iterators[closest_vertex_index].end();
-
-              for (; neighbor_cell != end_neighbor_cell; ++neighbor_cell)
+              for (unsigned int i=0; i<n_neighbor_cells; ++i)
                 {
                   try
                     {
-                      const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(neighbor_cell->first, recv_particle.get_location());
+                      typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = vertex_to_cells[closest_vertex_index].begin();
+                      std::advance(neighbor_cell,neighbor_permutation[i]);
+                      const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(*neighbor_cell,
+                                                                                                recv_particle.get_location());
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
-                          cell = neighbor_cell->first;
+                          cell = *neighbor_cell;
                           recv_particle.set_reference_location(p_unit);
                           break;
                         }
-                      // If the particle is not in this cell, do nothing and check
-                      // the next neighbor cell
                     }
                   catch (typename Mapping<dim>::ExcTransformationFailed &)
                     {}

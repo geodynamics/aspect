@@ -408,11 +408,11 @@ namespace aspect
 
         /**
          * Get a map between subdomain id and the neighbor index. In other words
-         * the returned map answers the question: Which neighbor (in terms of
-         * a contiguous number from 0 to n_neighbors) owns a given subdomain
-         * number.
+         * the returned map answers the question: Given a subdomain id, which
+         * neighbor of the current processor's domain (in terms of a contiguous
+         * number from 0 to n_neighbors) owns this subdomain?
          */
-        std::map<unsigned int, unsigned int>
+        std::map<types::subdomain_id, unsigned int>
         get_subdomain_id_to_neighbor_map() const;
 
         /**
@@ -424,20 +424,14 @@ namespace aspect
         exchange_ghost_particles();
 
         /**
-         * Returns the vertex of cell @p cell that is closest to
-         * the given particle @p particle.
+         * Returns a vector that contains a tensor for every vertex-cell
+         * combination of the output of dealii::GridTools::vertex_to_cell_map()
+         * (which is expected as input parameter for this function).
+         * Each tensor represents a geometric vector from the vertex to the
+         * respective cell center.
          */
-        unsigned int
-        get_closest_vertex(const Particle<dim> &particle,
-                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
-
-        /**
-         * Create a vector that contains for every vertex which cells it
-         * belongs to, and a normalized vector from the vertex to the
-         * center of the respective cell.
-         */
-        std::vector<std::vector<std::pair<typename Triangulation<dim>::active_cell_iterator, Tensor<1,dim> > > >
-        vertex_index_to_active_cell_iterators() const;
+        std::vector<std::vector<Tensor<1,dim> > >
+        vertex_to_cell_centers_directions(const std::vector<std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> > &vertex_to_cells) const;
 
         /**
          * Finds the cells containing each particle for all particles in
