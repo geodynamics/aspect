@@ -521,7 +521,7 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::const_iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-#ifdef DEAL_II_WITH_CXX11
+#ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
                                                      Particle<dim>(pdata,property_manager->get_particle_size()));
@@ -539,7 +539,7 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-#ifdef DEAL_II_WITH_CXX11
+#ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
                                                      Particle<dim>(pdata,property_manager->get_particle_size()));
@@ -577,7 +577,7 @@ namespace aspect
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
                           p.set_reference_location(p_unit);
-#ifdef DEAL_II_WITH_CXX11
+#ifdef DEAL_II_WITH_CXX14
                           position_hints[child_index] = particles.emplace_hint(position_hints[child_index],
                                                                                std::make_pair(child->level(),child->index()),
                                                                                std::move(p));
