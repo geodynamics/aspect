@@ -2039,6 +2039,22 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Compositional_20fields}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Compositional field methods}
+\phantomsection\label{parameters:Compositional fields/Compositional field methods}
+
+
+\index[prmindex]{Compositional field methods}
+\index[prmindexfull]{Compositional fields!Compositional field methods}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list denoting the solution method of each compositional field. Each entry of the list must be one of the currently implemented field types: ``field'', or ``particles''.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of field, particles]
 \item {\it Parameter name:} {\tt List of normalized fields}
 \phantomsection\label{parameters:Compositional fields/List of normalized fields}
 
@@ -2055,6 +2071,24 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [An integer $n$ such that $0\leq n \leq 2147483647$]
+\item {\it Parameter name:} {\tt Mapped particle properties}
+\phantomsection\label{parameters:Compositional fields/Mapped particle properties}
+
+
+\index[prmindex]{Mapped particle properties}
+\index[prmindexfull]{Compositional fields!Mapped particle properties}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list denoting the particle properties that will be projected to those compositional fields that are of the ``particles'' field type.
+
+The format of valid entries for this parameter is that of a map given as ``key1: value1, key2: value2 [component2], key3: value3 [component4], ...'' where each key must be a valid field name of the ``particles'' type, and each value must be one of the currently selected particle properties. Component is a component index of the particle property that is 0 by default, but can be set up to n-1, where n is the number of vector components of this particle property. The component indicator only needs to be set if not the first component of the particle property should be mapped (e.g. the $y$-component of the velocity at the particle positions).
+
+
+{\it Possible values:} A key-value map of 0 to 4294967295 elements  where each key is [Any string] and each value is [Any string]
 \item {\it Parameter name:} {\tt Names of fields}
 \phantomsection\label{parameters:Compositional fields/Names of fields}
 
@@ -2245,7 +2279,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} The polynomial degree to use for the composition variable(s). Units: None.
+{\it Description:} The polynomial degree to use for the composition variable(s). As an example, a value of 2 for this parameter will yield either the element $Q_2$ or $DGQ_2$ for the compositional field(s), depending on whether we use continuous or discontinuous field(s). Units: None.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
@@ -2261,7 +2295,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babuska-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stoeks equations and this parameter indicates the polynomial degree of it. Units: None.
+{\it Description:} The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babuska-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stokes equations and this parameter indicates the polynomial degree of it. As an example, a value of 2 for this parameter will yield the element $Q_2^d 	imes Q_1$ for the $d$ velocity components and the pressure, respectively (unless the `Use locally conservative discretization' parameter is set, which modifies the pressure element). Units: None.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
@@ -2277,7 +2311,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} The polynomial degree to use for the temperature variable. Units: None.
+{\it Description:} The polynomial degree to use for the temperature variable. As an example, a value of 2 for this parameter will yield either the element $Q_2$ or $DGQ_2$ for the temperature field, depending on whether we use a continuous or discontinuous field. Units: None.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
@@ -3447,10 +3481,92 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 {\it Description:} Select one of the following models:
 
+`ascii data': Implementation of a model in which the surface topography is derived from a file containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. The order of the data columns has to be 'x', 'Topography [m]' in a 2d model and  'x', 'y', 'Topography [m]' in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the data will still be handled as Cartesian, however the assumed grid changes. 'x' will be replaced by the azimuth angle in radians  and 'y' by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is 'phi', 'theta' and not 'theta', 'phi', since this allows for dimension independent expressions.
+
+`prm polygon': An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the `Geometry model/Initial topography/Prm polygon' section.
+
 `zero topography': Implementation of a model in which the initial topography is zero. 
 
 
-{\it Possible values:} Any one of zero topography
+{\it Possible values:} Any one of ascii data, prm polygon, zero topography
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Geometry model/Initial topography model/Ascii data model}
+\label{parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Geometry model/Initial topography model/Ascii data model/Data directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Geometry model!Initial topography model!Ascii data model/Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the 'data/' subdirectory of ASPECT. 
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Geometry model/Initial topography model/Ascii data model/Data file name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Geometry model!Initial topography model!Ascii data model/Data file name}
+{\it Value:} box\_2d\_\%s.0.txt
+
+
+{\it Default:} box\_2d\_\%s.0.txt
+
+
+{\it Description:} The file name of the material data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of a box or a spherical shell).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Geometry model/Initial topography model/Ascii data model/Scale factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Geometry model!Initial topography model!Ascii data model/Scale factor}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Scalar factor, which is applied to the boundary velocity. You might want to use this to scale the velocities to a reference model (e.g. with free-slip boundary) or another plate reconstruction. Another way to use this factor is to convert units of the input files. The unit is assumed to bem/s or m/yr depending on the 'Use years in output instead of seconds' flag. If you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
+
+\subsection{Parameters in section \tt Geometry model/Initial topography model/Prm polygon}
+\label{parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Topography parameters}
+\phantomsection\label{parameters:Geometry model/Initial topography model/Prm polygon/Topography parameters}
+
+
+\index[prmindex]{Topography parameters}
+\index[prmindexfull]{Geometry model!Initial topography model!Prm polygon/Topography parameters}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Set the topography height and the polygon which should be set to that height. The format is : "The topography height 	extgreater The point list describing a polygon \& The next topography height 	extgreater the next point list describing a polygon." The format for the point list describing the polygon is "x1,y1;x2,y2". For example for two triangular areas of 100 and -100 meters high set: '100 	extgreater 0,0;5,5;0,10 \& -100 	extgreater 10,10;10,15;20,15'. Units of the height are always in meters. The units of the coordinates are dependent on the geometry model. In the box model they are in meters, in the chunks they are in degrees, etc. Please refer to the manual of the individual geometry model to so see how the topography is implemented.
+
+
+{\it Possible values:} Any string
 \end{itemize}
 
 \subsection{Parameters in section \tt Geometry model/Sphere}
@@ -5445,11 +5561,9 @@ with $T_\text{sol} = T_\text{sol,0} + \Delta T_p \, p + \Delta T_c \, C$
 $T_\text{liq} = T_\text{sol}  + \Delta T_\text{sol-liq}$.
 
 `melt simple': A material model that implements a simple formulation of the material parameters required for the modelling of melt transport, including a source term for the porosity according to the melting model for dry peridotite of \cite{KSL2003}. This also includes a computation of the latent heat of melting (if the 'latent heat' heating model is active).
+
 Most of the material properties are constant, except for the shear, viscosity $\eta$, the compaction viscosity $\xi$, and the permeability $k$, which depend on the porosity; and the solid and melt densities, which depend on temperature and pressure:
- $\eta(\phi,T) = \eta_0 e^{\alpha(\phi-\phi_0)} e^{-\beta(T-T_0)/T_0}$,
-$\xi(\phi,T) = \xi_0 \frac{\phi_0}{\phi} e^{-\beta(T-T_0)/T_0}$,
-$k=k_0 \phi^n (1-\phi)^m$,
-$\rho=\rho_0 (1 - \alpha (T - T_\text{adi})) e^{\kappa p}$.
+ $\eta(\phi,T) = \eta_0 e^{\alpha(\phi-\phi_0)} e^{-\beta(T-T_0)/T_0}$, $\xi(\phi,T) = \xi_0 \frac{\phi_0}{\phi} e^{-\beta(T-T_0)/T_0}$, $k=k_0 \phi^n (1-\phi)^m$, $\rho=\rho_0 (1 - \alpha (T - T_\text{adi})) e^{\kappa p}$.
 
 The model is compressible only if this is specified in the input file, and contains compressibility for both solid and melt.
 
@@ -5459,7 +5573,7 @@ The model is compressible only if this is specified in the input file, and conta
 
 This model uses the following set of equations for the two coefficients that are non-constant: \begin{align}  \eta(p,T,\mathfrak c) &= \tau(T) \zeta(\mathfrak c) \eta_0, \\  \rho(p,T,\mathfrak c) &= \left(1-\alpha (T-T_0)\right)\rho_0 + \Delta\rho \; c_0,\end{align}where $c_0$ is the first component of the compositional vector $\mathfrak c$ if the model uses compositional fields, or zero otherwise. 
 
-The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{-\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \begin{cases}                            10^{-2} & \text{if}\; x<10^{-2}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            10^{2} & \text{if}\; x>10^{2}, \\                         \end{cases}\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$.
+The temperature pre-factor for the viscosity formula above is defined as \begin{align}  \tau(T) &= H\left(e^{-\beta (T-T_0)/T_0}\right),  \qquad\qquad H(x) = \begin{cases}                            \tau_{min} & \text{if}\; x<\tau_{min}, \\                            x & \text{if}\; 10^{-2}\le x \le 10^2, \\                            \tau_{max} & \text{if}\; x>\tau_{max}, \\                         \end{cases}\end{align} where $\beta$ corresponds to the input parameter ``Thermal viscosity exponent'' and $T_0$ to the parameter ``Reference temperature''. If you set $T_0=0$ in the input file, the thermal pre-factor $\tau(T)=1$. The parameters $\tau_{min}$ and $\tau_{max}$ set the minimum and maximum values of the temperature pre-factor and are set using ``Maximum thermal prefactor'' and ``Minimum thermal prefactor''. Specifying a value of 0.0 for the minimum or maximum values will disable pre-factor limiting.
 
 The compositional pre-factor for the viscosity is defined as \begin{align}  \zeta(\mathfrak c) &= \xi^{c_0}\end{align} if the model has compositional fields and equals one otherwise. $\xi$ corresponds to the parameter ``Composition viscosity prefactor'' in the input file.
 
@@ -8775,6 +8889,38 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum thermal prefactor}
+\phantomsection\label{parameters:Material model/Simple model/Maximum thermal prefactor}
+
+
+\index[prmindex]{Maximum thermal prefactor}
+\index[prmindexfull]{Material model!Simple model!Maximum thermal prefactor}
+{\it Value:} 1.0e2
+
+
+{\it Default:} 1.0e2
+
+
+{\it Description:} The maximum value of the viscosity prefactor associated with temperature dependence.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minimum thermal prefactor}
+\phantomsection\label{parameters:Material model/Simple model/Minimum thermal prefactor}
+
+
+\index[prmindex]{Minimum thermal prefactor}
+\index[prmindexfull]{Material model!Simple model!Minimum thermal prefactor}
+{\it Value:} 1.0e-2
+
+
+{\it Default:} 1.0e-2
+
+
+{\it Description:} The minimum value of the viscosity prefactor associated with temperature dependence.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Reference density}
 \phantomsection\label{parameters:Material model/Simple model/Reference density}
 
@@ -9653,6 +9799,22 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 \label{parameters:Mesh_20refinement}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Adapt by fraction of cells}
+\phantomsection\label{parameters:Mesh refinement/Adapt by fraction of cells}
+
+
+\index[prmindex]{Adapt by fraction of cells}
+\index[prmindexfull]{Mesh refinement!Adapt by fraction of cells}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Use fraction of the total number of cells instead of fraction of the total error as the limit for refinement and coarsening.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Additional refinement times}
 \phantomsection\label{parameters:Mesh refinement/Additional refinement times}
 
@@ -10472,11 +10634,15 @@ The file format then consists of lines with Euclidiean coordinates followed by t
 
 As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
+\note{In geodynamics, the term ``heat flux'' is often understand to be the quantity $- k \nabla T$, which is really a heat flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
+
 `heating statistics': A postprocessor that computes some statistics about heating, averaged by volume. 
 
 `mass flux statistics': A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal. 
 
 As stated, this postprocessor computes the \textit{outbound} mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
+
+\note{In geodynamics, the term ``mass flux'' is often understand to be the quantity $\rho \mathbf v$, which is really a mass flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $\frac{kg}{s}$.}
 
 `matrix statistics': A postprocessor that computes some statistics about the matrices. In particular, it outputs total memory consumption, total non-zero elements, and non-zero elements per block, for system matrix and system preconditioner matrix.
 
@@ -10762,18 +10928,18 @@ Select one of the following models:
 
 \index[prmindex]{Interpolation scheme}
 \index[prmindexfull]{Postprocess!Tracers!Interpolation scheme}
-{\it Value:} first particle
+{\it Value:} cell average
 
 
-{\it Default:} first particle
+{\it Default:} cell average
 
 
 {\it Description:} Select one of the following models:
 
-`first particle': Return the properties of the first tracer in the given cell.
+`cell average': Return the average of all tracer properties in the given cell.
 
 
-{\it Possible values:} Any one of first particle
+{\it Possible values:} Any one of cell average
 \item {\it Parameter name:} {\tt List of tracer properties}
 \phantomsection\label{parameters:Postprocess/Tracers/List of tracer properties}
 
@@ -10814,16 +10980,16 @@ The following properties are available:
 
 \index[prmindex]{Load balancing strategy}
 \index[prmindexfull]{Postprocess!Tracers!Load balancing strategy}
-{\it Value:} none
+{\it Value:} repartition
 
 
-{\it Default:} none
+{\it Default:} repartition
 
 
 {\it Description:} Strategy that is used to balance the computationalload across processors for adaptive meshes.
 
 
-{\it Possible values:} Any one of none, remove particles, remove and add particles, repartition
+{\it Possible values:} A comma-separated list of any of none, remove particles, add particles, remove and add particles, repartition
 \item {\it Parameter name:} {\tt Maximum tracers per cell}
 \phantomsection\label{parameters:Postprocess/Tracers/Maximum tracers per cell}
 
@@ -10928,10 +11094,26 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 {\it Default:} 10
 
 
-{\it Description:} Weight that is associated with the computational load of a single particle. The sum of tracer weights will be added to the sum of cell weights to determine the partitioning of the mesh. Every cell without tracers is associated with a weight of 1000.
+{\it Description:} Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the 'repartition' particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Update ghost particles}
+\phantomsection\label{parameters:Postprocess/Tracers/Update ghost particles}
+
+
+\index[prmindex]{Update ghost particles}
+\index[prmindexfull]{Postprocess!Tracers!Update ghost particles}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Some particle interpolation algorithms require knowledge about particles in neighboring cells. To allow this, particles in ghost cells need to be exchanged between the processes neighboring this cell. This parameter determines whether this transport is happening.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 
@@ -10976,6 +11158,22 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Number of components}
+\phantomsection\label{parameters:Postprocess/Tracers/Function/Number of components}
+
+
+\index[prmindex]{Number of components}
+\index[prmindexfull]{Postprocess!Tracers!Function/Number of components}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The number of function components where each component is describedby a function expression delimited by a ';'.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Variable names}
 \phantomsection\label{parameters:Postprocess/Tracers/Function/Variable names}
 
