@@ -567,6 +567,9 @@ namespace aspect
       const unsigned int *n_particles_in_cell_ptr = static_cast<const unsigned int *> (data);
       const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell_ptr + 1);
 
+      if (*n_particles_in_cell_ptr == 0)
+        return;
+
       // Load all particles from the data stream and store them in the local
       // particle map.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
@@ -574,7 +577,11 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::const_iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-#ifdef DEAL_II_WITH_CXX11
+              // Use std::multimap::emplace_hint to speed up insertion of
+              // particles. This is a C++11 function, but not all compilers
+              // that report a -std=c++11 (like gcc 4.6) implement it, so
+              // require C++14 instead.
+#ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
                                                      Particle<dim>(pdata,property_manager->get_particle_size()));
@@ -592,7 +599,11 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
-#ifdef DEAL_II_WITH_CXX11
+              // Use std::multimap::emplace_hint to speed up insertion of
+              // particles. This is a C++11 function, but not all compilers
+              // that report a -std=c++11 (like gcc 4.6) implement it, so
+              // require C++14 instead.
+#ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
                                                      Particle<dim>(pdata,property_manager->get_particle_size()));
@@ -630,13 +641,17 @@ namespace aspect
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
                           p.set_reference_location(p_unit);
-#ifdef DEAL_II_WITH_CXX11
+                          // Use std::multimap::emplace_hint to speed up insertion of
+                          // particles. This is a C++11 function, but not all compilers
+                          // that report a -std=c++11 (like gcc 4.6) implement it, so
+                          // require C++14 instead.
+#ifdef DEAL_II_WITH_CXX14
                           position_hints[child_index] = particles.emplace_hint(position_hints[child_index],
                                                                                std::make_pair(child->level(),child->index()),
                                                                                std::move(p));
 #else
                           position_hints[child_index] = particles.insert(position_hints[child_index],
-                                                                         std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                                         std::make_pair(std::make_pair(child->level(),child->index()),
                                                                                         p));
 #endif
                           ++position_hints[child_index];
