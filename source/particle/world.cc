@@ -567,6 +567,9 @@ namespace aspect
       const unsigned int *n_particles_in_cell_ptr = static_cast<const unsigned int *> (data);
       const void *pdata = reinterpret_cast<const void *> (n_particles_in_cell_ptr + 1);
 
+      if (*n_particles_in_cell_ptr == 0)
+        return;
+
       // Load all particles from the data stream and store them in the local
       // particle map.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
@@ -636,7 +639,7 @@ namespace aspect
                                                                                std::move(p));
 #else
                           position_hints[child_index] = particles.insert(position_hints[child_index],
-                                                                         std::make_pair(std::make_pair(cell->level(),cell->index()),
+                                                                         std::make_pair(std::make_pair(child->level(),child->index()),
                                                                                         p));
 #endif
                           ++position_hints[child_index];
