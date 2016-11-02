@@ -90,16 +90,16 @@ namespace aspect
       template <int dim>
       void
       MaterialProperties<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &solution_gradients,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = uh.size();
+        const unsigned int n_quadrature_points = solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(n_quadrature_points,
                                                    this->n_compositional_fields());
@@ -112,18 +112,18 @@ namespace aspect
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
               {
-                grad_u[d] = duh[q][d];
-                in.velocity[q][d] = uh[q][this->introspection().component_indices.velocities[d]];
-                in.pressure_gradient[q][d] = duh[q][this->introspection().component_indices.pressure][d];
+                grad_u[d] = solution_gradients[q][d];
+                in.velocity[q][d] = solution_values[q][this->introspection().component_indices.velocities[d]];
+                in.pressure_gradient[q][d] = solution_gradients[q][this->introspection().component_indices.pressure][d];
               }
 
             in.strain_rate[q] = symmetrize (grad_u);
 
-            in.pressure[q]=uh[q][this->introspection().component_indices.pressure];
-            in.temperature[q]=uh[q][this->introspection().component_indices.temperature];
+            in.pressure[q]=solution_values[q][this->introspection().component_indices.pressure];
+            in.temperature[q]=solution_values[q][this->introspection().component_indices.temperature];
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[q][c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+              in.composition[q][c] = solution_values[q][this->introspection().component_indices.compositional_fields[c]];
           }
 
         this->get_material_model().evaluate(in, out);

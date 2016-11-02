@@ -70,23 +70,23 @@ namespace aspect
       template <int dim>
       void
       CompositionalVector<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
                                          const std::vector<std::vector<Tensor<1,dim> > > &,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> > &,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = uh.size();
+        const unsigned int n_quadrature_points = solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError ());
-        Assert (uh[0].size() == this->introspection().n_components, ExcInternalError ());
+        Assert (solution_values[0].size() == this->introspection().n_components, ExcInternalError ());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             for (unsigned int i=0; i<vector_names.size(); ++i)
               for (unsigned int j=0; j<dim; ++j)
                 computed_quantities[q][i*dim+j] =
-                  uh[q][this->introspection().component_indices.compositional_fields[sets[i][j]]];
+                  solution_values[q][this->introspection().component_indices.compositional_fields[sets[i][j]]];
           }
       }
 

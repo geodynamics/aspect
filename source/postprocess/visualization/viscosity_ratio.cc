@@ -42,34 +42,34 @@ namespace aspect
       template <int dim>
       void
       ViscosityRatio<dim>::
-      compute_derived_quantities_vector (const std::vector<Vector<double> >              &uh,
-                                         const std::vector<std::vector<Tensor<1,dim> > > &duh,
+      compute_derived_quantities_vector (const std::vector<Vector<double> >              &solution_values,
+                                         const std::vector<std::vector<Tensor<1,dim> > > &solution_gradients,
                                          const std::vector<std::vector<Tensor<2,dim> > > &,
                                          const std::vector<Point<dim> > &,
                                          const std::vector<Point<dim> >                  &evaluation_points,
                                          std::vector<Vector<double> >                    &computed_quantities) const
       {
-        const unsigned int n_quadrature_points = uh.size();
+        const unsigned int n_quadrature_points = solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (uh[0].size() == this->introspection().n_components,           ExcInternalError());
-        Assert (duh[0].size() == this->introspection().n_components,          ExcInternalError());
+        Assert (solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (solution_gradients[0].size() == this->introspection().n_components,          ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             // extract the primal variables
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = duh[q][d];
+              grad_u[d] = solution_gradients[q][d];
 
-            const double pressure    = uh[q][this->introspection().component_indices.pressure];
-            const double temperature = uh[q][this->introspection().component_indices.temperature];
+            const double pressure    = solution_values[q][this->introspection().component_indices.pressure];
+            const double temperature = solution_values[q][this->introspection().component_indices.temperature];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
             std::vector<double> composition(this->n_compositional_fields());
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              composition[c] = uh[q][this->introspection().component_indices.compositional_fields[c]];
+              composition[c] = solution_values[q][this->introspection().component_indices.compositional_fields[c]];
 
             computed_quantities[q](0) = this->get_material_model().viscosity_ratio(temperature,
                                                                                    pressure,
