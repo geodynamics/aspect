@@ -577,6 +577,10 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::const_iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
+              // Use std::multimap::emplace_hint to speed up insertion of
+              // particles. This is a C++11 function, but not all compilers
+              // that report a -std=c++11 (like gcc 4.6) implement it, so
+              // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
@@ -595,6 +599,10 @@ namespace aspect
           typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
+              // Use std::multimap::emplace_hint to speed up insertion of
+              // particles. This is a C++11 function, but not all compilers
+              // that report a -std=c++11 (like gcc 4.6) implement it, so
+              // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
               position_hint = particles.emplace_hint(position_hint,
                                                      std::make_pair(cell->level(),cell->index()),
@@ -633,6 +641,10 @@ namespace aspect
                       if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                         {
                           p.set_reference_location(p_unit);
+                          // Use std::multimap::emplace_hint to speed up insertion of
+                          // particles. This is a C++11 function, but not all compilers
+                          // that report a -std=c++11 (like gcc 4.6) implement it, so
+                          // require C++14 instead.
 #ifdef DEAL_II_WITH_CXX14
                           position_hints[child_index] = particles.emplace_hint(position_hints[child_index],
                                                                                std::make_pair(child->level(),child->index()),
