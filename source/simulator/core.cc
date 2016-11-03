@@ -113,15 +113,15 @@ namespace aspect
      * computation.
      */
     template <int dim>
-    std_cxx11::unique_ptr<Mapping<dim> > construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
-                                                           const InitialTopographyModel::Interface<dim> &initial_topography_model)
+    Mapping<dim> *construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
+                                    const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return std_cxx11::unique_ptr<Mapping<dim> >(new MappingQ<dim>(4, true));
+        return new MappingQ<dim>(4, true);
       if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&initial_topography_model) != 0)
-        return std_cxx11::unique_ptr<Mapping<dim> >(new MappingCartesian<dim>());
+        return new MappingCartesian<dim>();
 
-      return std_cxx11::unique_ptr<Mapping<dim> >(new MappingQ1<dim>());
+      return new MappingQ1<dim>();
     }
   }
 
