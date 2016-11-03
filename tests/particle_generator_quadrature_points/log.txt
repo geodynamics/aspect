@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
 --     . version 1.5.0-pre
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
+--     . running in DEBUG mode
+--     . running with 2 MPI processes
 --     . using Trilinos
 -----------------------------------------------------------------------------
 
@@ -24,28 +24,28 @@ Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |    0.0428s |            |
+| Total wallclock time elapsed since start    |     0.058s |            |
 |                                             |            |            |
 | Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00124s |       2.9% |
-| Assemble composition system     |         1 |  0.000813s |       1.9% |
-| Assemble temperature system     |         1 |  0.000931s |       2.2% |
-| Build Stokes preconditioner     |         1 |   0.00378s |       8.8% |
-| Build composition preconditioner|         1 |  0.000267s |      0.62% |
-| Solve Stokes system             |         1 |   0.00211s |       4.9% |
-| Solve composition system        |         1 |  0.000225s |      0.53% |
-| Initialization                  |         1 |    0.0269s |        63% |
-| Particles: Advect               |         2 |  0.000162s |      0.38% |
-| Particles: Exchange ghosts      |         2 |  1.72e-05s |      0.04% |
-| Particles: Generate             |         1 |  8.11e-05s |      0.19% |
-| Particles: Initialization       |         1 |   9.8e-05s |      0.23% |
-| Particles: Initialize properties|         1 |  0.000162s |      0.38% |
-| Particles: Output               |         1 |   0.00052s |       1.2% |
-| Particles: Sort                 |         2 |  3.34e-06s |    0.0078% |
-| Particles: Update properties    |         1 |  0.000639s |       1.5% |
-| Postprocessing                  |         1 |   0.00166s |       3.9% |
-| Setup dof systems               |         1 |   0.00286s |       6.7% |
-| Setup initial conditions        |         1 |  0.000889s |       2.1% |
+| Assemble Stokes system          |         1 |   0.00139s |       2.4% |
+| Assemble composition system     |         1 |   0.00159s |       2.7% |
+| Assemble temperature system     |         1 |   0.00188s |       3.2% |
+| Build Stokes preconditioner     |         1 |    0.0044s |       7.6% |
+| Build composition preconditioner|         1 |  0.000369s |      0.64% |
+| Solve Stokes system             |         1 |   0.00375s |       6.5% |
+| Solve composition system        |         1 |  0.000509s |      0.88% |
+| Initialization                  |         1 |    0.0309s |        53% |
+| Particles: Advect               |         2 |  0.000161s |      0.28% |
+| Particles: Communicate          |         2 |   7.8e-05s |      0.13% |
+| Particles: Generate             |         1 |  0.000146s |      0.25% |
+| Particles: Initialization       |         1 |   0.00011s |      0.19% |
+| Particles: Initialize properties|         1 |  0.000121s |      0.21% |
+| Particles: Output               |         1 |  0.000256s |      0.44% |
+| Particles: Sort                 |         2 |  9.08e-05s |      0.16% |
+| Particles: Update properties    |         1 |  0.000741s |       1.3% |
+| Postprocessing                  |         1 |   0.00195s |       3.4% |
+| Setup dof systems               |         1 |   0.00654s |        11% |
+| Setup initial conditions        |         1 |   0.00171s |         3% |
 +---------------------------------+-----------+------------+------------+
 

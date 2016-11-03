@@ -37,6 +37,8 @@ namespace aspect
       class QuadraturePoints : public Interface<dim>
       {
         public:
+          QuadraturePoints();
+
           /**
            * Generate particles in at the quadrature points of each active cell
            * of the triangulation mesh.
@@ -61,6 +63,14 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+          * To obtain unique particle indices across multiple MPI processes,
+          * this variable stores the starting index. This value is updated for each
+          * call to generate_particles().
+          */
+          types::particle_index starting_particle_index;
       };
     }
   }

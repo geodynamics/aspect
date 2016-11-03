@@ -4,6 +4,8 @@
 # This test adds tracers to the cookbook parameter file, and therefore
 # tests the behaviour of the tracers.
 
+# MPI: 2
+
 set Dimension                              = 2
 set End time                               = 0
 set Use years in output instead of seconds = false
@@ -99,7 +101,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics, tracers
 
   subsection Tracers
-    set Number of tracers = 400
+    set Number of tracers = 256
     set Time between data output = 0
     set Data output format = ascii
     set List of tracer properties = velocity,function, initial composition, initial position
@@ -113,7 +115,7 @@ subsection Postprocess
 
     subsection Generator
       subsection Reference cell
-        set Number of tracers per cell per direction = 0.5e1
+        set Number of tracers per cell per direction = 0.4e1
       end
     end
   end

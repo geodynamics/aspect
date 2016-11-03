@@ -4,6 +4,8 @@
 # This test adds tracers to the cookbook parameter file, and therefore
 # tests the behaviour of the tracers.
 
+# MPI: 2
+
 set Dimension                              = 2
 set End time                               = 0
 set Use years in output instead of seconds = false

@@ -41,6 +41,8 @@ namespace aspect
       class ReferenceCell : public Interface<dim>
       {
         public:
+          ReferenceCell();
+
           /**
            * Generate a uniformly distributed set of particles in
            * the unit domain and transform back to real domain.
@@ -73,6 +75,12 @@ namespace aspect
            * Specified within the parameter file.
            */
           std_cxx11::array<unsigned int,dim> number_of_particles;
+          /**
+           * To obtain unique particle indices across multiple MPI processes,
+           * this variable stores the starting index. This value is updated for each
+           * call to generate_particles().
+           */
+          types::particle_index starting_particle_index;
       };
 
     }
