@@ -574,7 +574,7 @@ namespace aspect
       // particle map.
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST)
         {
-          typename std::multimap<types::LevelInd,Particle<dim> >::const_iterator position_hint = particles.end();
+          typename std::multimap<types::LevelInd,Particle<dim> >::iterator position_hint = particles.end();
           for (unsigned int i = 0; i < *n_particles_in_cell_ptr; ++i)
             {
               // Use std::multimap::emplace_hint to speed up insertion of
@@ -619,7 +619,7 @@ namespace aspect
         }
       else if (status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
-          std::vector<typename std::multimap<types::LevelInd, Particle<dim> >::const_iterator > position_hints(GeometryInfo<dim>::max_children_per_cell);
+          std::vector<typename std::multimap<types::LevelInd, Particle<dim> >::iterator > position_hints(GeometryInfo<dim>::max_children_per_cell);
           for (unsigned int child_index=0; child_index<GeometryInfo<dim>::max_children_per_cell; ++child_index)
             {
               const typename parallel::distributed::Triangulation<dim>::cell_iterator child = cell->child(child_index);
