@@ -1661,6 +1661,7 @@ namespace aspect
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
+      generator->initialize();
 
       // Create an output object depending on what the parameters specify
       output.reset(Output::create_particle_output<dim>

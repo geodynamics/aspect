@@ -115,7 +115,7 @@ subsection Postprocess
 
     subsection Generator
       subsection Reference cell
-        set Number of tracers per cell per direction = 0.4e1
+        set Number of tracers per cell per direction = 4
       end
     end
   end

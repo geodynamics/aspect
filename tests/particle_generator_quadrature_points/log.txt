@@ -1,10 +1,3 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 1.5.0-pre
---     . running in DEBUG mode
---     . running with 2 MPI processes
---     . using Trilinos
------------------------------------------------------------------------------
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
@@ -18,34 +11,12 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      RMS, max velocity:         0.000133 m/s, 0.000331 m/s
      Compositions min/max/mass: 0/1/0.1914
-     Writing particle output:   output/particles/particle-00000
+     Writing particle output:   output-particle_generator_quadrature_points/particles/particle-00000
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.058s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system          |         1 |   0.00139s |       2.4% |
-| Assemble composition system     |         1 |   0.00159s |       2.7% |
-| Assemble temperature system     |         1 |   0.00188s |       3.2% |
-| Build Stokes preconditioner     |         1 |    0.0044s |       7.6% |
-| Build composition preconditioner|         1 |  0.000369s |      0.64% |
-| Solve Stokes system             |         1 |   0.00375s |       6.5% |
-| Solve composition system        |         1 |  0.000509s |      0.88% |
-| Initialization                  |         1 |    0.0309s |        53% |
-| Particles: Advect               |         2 |  0.000161s |      0.28% |
-| Particles: Communicate          |         2 |   7.8e-05s |      0.13% |
-| Particles: Generate             |         1 |  0.000146s |      0.25% |
-| Particles: Initialization       |         1 |   0.00011s |      0.19% |
-| Particles: Initialize properties|         1 |  0.000121s |      0.21% |
-| Particles: Output               |         1 |  0.000256s |      0.44% |
-| Particles: Sort                 |         2 |  9.08e-05s |      0.16% |
-| Particles: Update properties    |         1 |  0.000741s |       1.3% |
-| Postprocessing                  |         1 |   0.00195s |       3.4% |
-| Setup dof systems               |         1 |   0.00654s |        11% |
-| Setup initial conditions        |         1 |   0.00171s |         3% |
 +---------------------------------+-----------+------------+------------+
 

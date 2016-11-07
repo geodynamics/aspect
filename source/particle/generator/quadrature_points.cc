@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 by the authors of the ASPECT code.
+  Copyright (C) 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,9 +30,9 @@ namespace aspect
     {
       template <int dim>
       QuadraturePoints<dim>::QuadraturePoints()
-      {
-        starting_particle_index = 0;
-      }
+        :
+        starting_particle_index(0)
+      {}
 
       template <int dim>
       void
@@ -40,57 +40,34 @@ namespace aspect
       {
         const QGauss<dim> quadrature_formula(this->get_parameters().stokes_velocity_degree + 1);
 
-        unsigned int n_particles_to_generate = 0, prefix_sum = 0;
+        types::particle_index n_particles_to_generate = quadrature_formula.size() * this->get_triangulation().n_locally_owned_active_cells();
+        types::particle_index prefix_sum = 0;
 
         FEValues<dim> fe_values(this->get_mapping(),
                                 this->get_fe(),
                                 quadrature_formula,
-                                update_values |
-                                update_quadrature_points |
-                                update_JxW_values);
+                                update_quadrature_points);
 
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-        cell = this->get_triangulation().begin_active(),
-        endc = this->get_triangulation().end();
 
-        if (cell != endc)
-          {
-            fe_values.reinit(cell);
-            n_particles_to_generate = this->get_triangulation().n_locally_owned_active_cells() * fe_values.n_quadrature_points;
-          }
-
-        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, MPI_UNSIGNED, MPI_SUM, this->get_mpi_communicator());
+        MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, ASPECT_TRACER_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
 
         starting_particle_index += prefix_sum - n_particles_to_generate;
         types::particle_index particle_index = starting_particle_index;
+
+        typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+        cell = this->get_triangulation().begin_active(), endc = this->get_triangulation().end();
 
         for (; cell != endc; cell++)
           {
             if (cell->is_locally_owned())
               {
                 fe_values.reinit(cell);
-                std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
-                for (typename std::vector<Point<dim>>::const_iterator q_points_itr = quadrature_points.begin();
-                     q_points_itr != quadrature_points.end(); q_points_itr++)
+                for (unsigned int i = 0; i < quadrature_formula.size(); i++)
                   {
-                    Point<dim> particle_position_real = (*q_points_itr);
-
-                    try
-                      {
-                        Point<dim> particle_position_unit = this->get_mapping().transform_real_to_unit_cell(cell, (*q_points_itr));
-                        if (GeometryInfo<dim>::is_inside_unit_cell(particle_position_unit))
-                          {
-                            const Particle<dim> particle(particle_position_real, particle_position_unit, particle_index);
-                            const types::LevelInd cell_index(cell->level(), cell->index());
-                            particles.insert(std::make_pair(cell_index, particle));
-                            particle_index++;
-                          }
-                      }
-                    catch (typename Mapping<dim>::ExcTransformationFailed &)
-                      {
-                        AssertThrow (true,
-                                     ExcMessage ("Couldn't generate particle (unusual cell shape?). "));
-                      }
+                    const Particle<dim> particle(fe_values.get_quadrature_points()[i], quadrature_formula.get_points()[i], particle_index);
+                    const types::LevelInd cell_index(cell->level(), cell->index());
+                    particles.insert(std::make_pair(cell_index, particle));
+                    ++particle_index;
                   }
               }
           }
@@ -123,8 +100,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(QuadraturePoints,
                                          "quadrature points",
-                                         "Generate particles at the quadrature points of each active"
-                                         "cell of the triangulation mesh.")
+                                         "Generates particles at the quadrature points of each active cell of"
+                                         "the triangulation. Here, Gauss quadrature of degree, (velocity_degree + 1),"
+                                         "is used similarly to the assembly of Stokes matrix.")
     }
   }
 }

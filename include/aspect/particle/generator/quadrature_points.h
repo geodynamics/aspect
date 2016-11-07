@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,18 +30,24 @@ namespace aspect
     namespace Generator
     {
       /**
-       * Generate particles at the quadrature points of each active cell of the triangulation mesh.
+       * Generates particles at the quadrature points of each active cell of the triangulation.
+       * Here, Gauss quadrature of degree, (velocity_degree + 1), is used similarly to the assembly of the
+       * Stokes matrix.
        * @ingroup ParticleGenerators
        */
       template <int dim>
       class QuadraturePoints : public Interface<dim>
       {
         public:
+          /**
+           * Constructor
+           */
           QuadraturePoints();
 
           /**
-           * Generate particles in at the quadrature points of each active cell
-           * of the triangulation mesh.
+           * Generates particles at the quadrature points of each active cell of the triangulation.
+           * Here, Gauss quadrature of degree, (velocity_degree + 1), is used similarly to the assembly of the
+           * Stokes matrix.
            *
            * @param [in,out] particles A multimap between cells and their
            * particles. This map will be filled in this function.

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 by the authors of the ASPECT code.
+ Copyright (C) 2016 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
     namespace Generator
     {
       /**
-       * Generate a uniform distribution of particles in the unit cell and tranform
+       * Generate a uniform distribution of particles in the unit cell and transforms
        * each of the particles back to real region in the model domain.
        * Uniform here means the particles will be generated with
        * an equal spacing in each spatial dimension.
@@ -41,11 +41,16 @@ namespace aspect
       class ReferenceCell : public Interface<dim>
       {
         public:
+          /**
+          * Constructor.
+          */
           ReferenceCell();
 
           /**
-           * Generate a uniformly distributed set of particles in
-           * the unit domain and transform back to real domain.
+           * Generate a uniform distribution of particles in the unit cell and transforms
+           * each of the particles back to real region in the model domain.
+           * Uniform here means the particles will be generated with
+           * an equal spacing in each spatial dimension.
            *
            * @param [in,out] particles A multimap between cells and their
            * particles. This map will be filled in this function.
@@ -54,7 +59,6 @@ namespace aspect
           void
           generate_particles(std::multimap<types::LevelInd, Particle<dim> > &particles);
 
-          const std::vector<Point<dim>> generate_particle_positions_in_unit_cell();
           /**
            * Declare the parameters this class takes through input files.
            */
@@ -71,10 +75,18 @@ namespace aspect
 
         private:
           /**
-           * Number of particles to create for each spatial dimension.
-           * Specified within the parameter file.
+           * Calculates particle position in the unit cell.
+           *
+           * @return A vector container of points each of size dim.
            */
-          std_cxx11::array<unsigned int,dim> number_of_particles;
+          std::vector<Point<dim> > generate_particle_positions_in_unit_cell();
+
+          /**
+           * Number of particles to create for each spatial dimension as
+           * specified within the parameter file.
+           */
+          std::vector<unsigned int> number_of_particles;
+
           /**
            * To obtain unique particle indices across multiple MPI processes,
            * this variable stores the starting index. This value is updated for each
