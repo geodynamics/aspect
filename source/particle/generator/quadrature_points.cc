@@ -100,8 +100,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(QuadraturePoints,
                                          "quadrature points",
-                                         "Generates particles at the quadrature points of each active cell of"
-                                         "the triangulation. Here, Gauss quadrature of degree, (velocity_degree + 1),"
+                                         "Generates particles at the quadrature points of each active cell of "
+                                         "the triangulation. Here, Gauss quadrature of degree (velocity\\_degree + 1), "
                                          "is used similarly to the assembly of Stokes matrix.")
     }
   }

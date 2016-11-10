@@ -127,9 +127,9 @@ namespace aspect
               {
                 prm.declare_entry ("Number of tracers per cell per direction", "2",
                                    Patterns::List(Patterns::Double(0)),
-                                   "List of number of tracers to create per cell and spatial dimension."
-                                   "The size of the list is the number of spatial dimensions. If only"
-                                   "one value is given, then each spatial dimension is set to the same value."
+                                   "List of number of tracers to create per cell and spatial dimension. "
+                                   "The size of the list is the number of spatial dimensions. If only "
+                                   "one value is given, then each spatial dimension is set to the same value. "
                                    "The list of numbers are parsed as a floating point number (so that one can "
                                    "specify, for example, '1e4' particles) but it is interpreted as "
                                    "an integer, of course.");
@@ -184,9 +184,9 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_GENERATOR(ReferenceCell,
                                          "reference cell",
-                                         "Generate a uniform distribution of particles per cell and spatial direction in"
-                                         "the unit cell and transforms each of the particles back to real region in the model"
-                                         "domain. Uniform here means the particles will be generated with an equal spacing in"
+                                         "Generate a uniform distribution of particles per cell and spatial direction in "
+                                         "the unit cell and transforms each of the particles back to real region in the model "
+                                         "domain. Uniform here means the particles will be generated with an equal spacing in "
                                          "each spatial dimension")
     }
   }

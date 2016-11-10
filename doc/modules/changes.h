@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> New: Two particle generators were added. One, generates particles
+ * at the quadrature points for each active cell in the triangulation.
+ * Two, generates a uniform distribution of particles in the unit cell
+ * and transforms each of the particles back to real region in the model
+ * domain for each active cell in the triangulation.
+ * <br>
+ * (Harsha Lokavarapu, 2016/11/10)
+ *
  * <li> Changed: The exchange of ghost particles that was introduced lately
  * can be quite expensive for models with many particles,
  * and is often unnecessary if the particles are used as passive tracers.
