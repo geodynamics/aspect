@@ -24,6 +24,9 @@
 #include <aspect/global.h>
 
 #include <deal.II/base/array_view.h>
+#include <deal.II/base/index_set.h>
+
+#include <boost/bimap.hpp>
 
 namespace aspect
 {
@@ -46,7 +49,11 @@ namespace aspect
          * uniquely identifies the slot of memory that is reserved for this
          * particle.
          */
+#if DEAL_II_VERSION_GTE(8,5,0)
+        typedef IndexSet::size_type Handle;
+#else
         typedef double *Handle;
+#endif
 
         /**
          * Define a default (invalid) value for handles.
@@ -77,6 +84,9 @@ namespace aspect
          */
         ArrayView<double> get_properties (const Handle handle);
 
+//        void
+//        consolidate_memory ();
+
         /**
          * Reserves the dynamic memory needed for storing the properties of
          * @p size particles.
@@ -88,6 +98,16 @@ namespace aspect
          * The number of properties that are reserved per particle.
          */
         const unsigned int n_properties;
+
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+        std::vector<double> memory_pool;    // size == n_slots * n_properties_per_slot;
+
+        boost::bimap<Handle, std::size_t> translation_map;
+        typedef boost::bimap<Handle, std::size_t>::value_type translation_entry;
+
+        IndexSet free_slots; // size = number_of_slots, n_elements = currently free slots
+#endif
     };
 
   }

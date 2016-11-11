@@ -1428,6 +1428,8 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
+          //property_manager->get_property_pool().consolidate_memory();
+
           // Loop over all cells and update the particles cell-wise
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),
