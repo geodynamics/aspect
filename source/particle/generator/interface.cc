@@ -42,6 +42,11 @@ namespace aspect
       {}
 
       template <int dim>
+      void
+      Interface<dim>::initialize ()
+      {}
+
+      template <int dim>
       std::pair<types::LevelInd,Particle<dim> >
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const

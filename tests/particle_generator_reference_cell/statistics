@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal value for composition C_1
+# 16: Maximal value for composition C_1
+# 17: Global mass for composition C_1
+# 18: Number of advected particles
+# 19: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 20 21 60 1.33268179e-04 3.31044348e-04 0.00000000e+00 1.00000000e+00 1.91399339e-01 256 output-particle_generator_reference_cell/output-particle_generator_reference_cell/particles/particle-00000 
