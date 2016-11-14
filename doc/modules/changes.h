@@ -6,6 +6,15 @@
  *
  * <ol>
  *
+ * <li> New: The visco plastic material model now includes an option for
+ * strain-weakening of cohesion and the internal angle of friction. 
+ * Strain-weakeing of these properties is commonly used to help localize 
+ * deformation in regions undergoing plastic failure. Note that using this
+ * option requires tracking the finite strain tensor through particles or
+ * compositional fields.    
+ * <br>
+ * (John Naliboff, 2016/11/10) 
+ *
  * <li> New: Two particle generators were added. One, generates particles
  * at the quadrature points for each active cell in the triangulation.
  * Two, generates a uniform distribution of particles in the unit cell
