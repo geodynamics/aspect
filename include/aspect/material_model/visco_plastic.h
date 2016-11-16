@@ -180,10 +180,17 @@ namespace aspect
         calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
                                           const double &pressure,
                                           const double &temperature,
+                                          const std::vector<double> &composition,
                                           const SymmetricTensor<2,dim> &strain_rate,
                                           const ViscosityScheme &viscous_type,
                                           const YieldScheme &yield_type) const;
 
+        bool use_strain_weakening;
+        std::vector<double> start_strain_weakening_intervals;
+        std::vector<double> end_strain_weakening_intervals;
+        std::vector<double> viscous_strain_weakening_factors;
+        std::vector<double> cohesion_strain_weakening_factors;
+        std::vector<double> friction_strain_weakening_factors;
 
         std::vector<double> prefactors_diffusion;
         std::vector<double> stress_exponents_diffusion;
