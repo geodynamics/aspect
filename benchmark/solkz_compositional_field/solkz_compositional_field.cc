@@ -742,7 +742,7 @@ namespace aspect
     {
       // defined as given in the paper
       // return -std::sin(2*p[1])*std::cos(3*numbers::PI*p[0]);
-      
+
       return composition[0];
     }
 
@@ -843,7 +843,7 @@ namespace aspect
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
       // ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-         //                                 dim+2);
+      //                                 dim+2);
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim), this->get_fe().n_components());
       // ComponentSelectFunction<dim> comp_p(dim, dim+2);
       ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());

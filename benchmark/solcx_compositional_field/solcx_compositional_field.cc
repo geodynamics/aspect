@@ -2771,7 +2771,7 @@ namespace aspect
       Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
 
       ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                               this->get_fe().n_components());
+                                          this->get_fe().n_components());
       ComponentSelectFunction<dim> comp_p(dim, this->get_fe().n_components());
 
       VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
