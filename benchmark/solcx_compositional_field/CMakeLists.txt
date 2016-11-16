@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "solcx")
+SET(TARGET "solcx_compositional_field")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED solcx.cc)
+ADD_LIBRARY(${TARGET} SHARED solcx_compositional_field.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
