@@ -83,17 +83,10 @@ namespace aspect
           prm.enter_subsection("Tracers");
           {
             prm.enter_subsection("Function");
-<<<<<<< a254998818a3e8daad1a17ffd41f865c450b5b29
             n_components = prm.get_integer ("Number of components");
             try
               {
                 function.reset (new Functions::ParsedFunction<dim>(n_components));
-=======
-            n_functions = prm.get_integer ("Number of functions");
-            try
-              {
-                function.reset (new Functions::ParsedFunction<dim>(n_functions));
->>>>>>> Implementation of multiple particle property functions
                 function->parse_parameters (prm);
               }
             catch (...)
