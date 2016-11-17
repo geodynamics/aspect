@@ -48,6 +48,27 @@ namespace aspect
           properties_at_points(const std::multimap<types::LevelInd, Particle<dim> > &particles,
                                const std::vector<Point<dim> > &positions,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+      private:
+          /**
+           * The cell average of each property is kept within these bounds.
+           */
+          std::vector<double> global_max;
+          std::vector<double> global_min;
       };
     }
   }
