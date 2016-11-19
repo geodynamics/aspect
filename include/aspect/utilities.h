@@ -152,7 +152,7 @@ namespace aspect
 
     /**
      * A function for evaluating real spherical harmonics. It takes the degree (l)
-     * and the order (m) of the spherical harmonic, where $l >= 0$ and $0 <= m <=l$.
+     * and the order (m) of the spherical harmonic, where $l \geq 0$ and $0 \leq m \leq l$.
      * It also takes the colatitude (theta) and longitude (phi), which are in
      * radians.
      *
