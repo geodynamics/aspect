@@ -238,8 +238,8 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Coarsening fraction                      = 0.0
-  set Refinement fraction                      = 0.82
-  set Additional refinement times              = #0.05, 0.15, 0.2 #, 0.22
+  set Refinement fraction                      = 1.0
+  set Additional refinement times              = #0.5, 1.0, 2.0
 end
 
 
