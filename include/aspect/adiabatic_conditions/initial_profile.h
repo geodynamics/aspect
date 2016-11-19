@@ -93,6 +93,13 @@ namespace aspect
          */
         virtual double density (const Point<dim> &p) const;
 
+        /**
+         * Return the derivative of the density with respect to depth
+         * at the given point @p p.
+         */
+        virtual
+        double density_derivative (const Point<dim> &p) const;
+
       private:
 
         /**

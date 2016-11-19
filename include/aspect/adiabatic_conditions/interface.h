@@ -107,6 +107,13 @@ namespace aspect
         double density (const Point<dim> &p) const = 0;
 
         /**
+         * Return the derivative of the density with respect to depth
+         * at the given point @p p.
+         */
+        virtual
+        double density_derivative (const Point<dim> &p) const = 0;
+
+        /**
          * Return the adiabatic temperature profile as a vector of values
          * corresponding to increasing depth.
          *
@@ -119,10 +126,21 @@ namespace aspect
 
         /**
          * Like get_adiabatic_temperature_profile() but for the pressure.
-         * @param values
          */
         virtual
         void get_adiabatic_pressure_profile(std::vector<double> &values) const;
+
+        /**
+         * Like get_adiabatic_temperature_profile() but for the density.
+         */
+        virtual
+        void get_adiabatic_density_profile(std::vector<double> &values) const;
+
+        /**
+         * Like get_adiabatic_temperature_profile() but for the density derivative.
+         */
+        virtual
+        void get_adiabatic_density_derivative_profile(std::vector<double> &values) const;
 
 
         /**

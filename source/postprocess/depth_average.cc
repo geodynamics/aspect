@@ -90,6 +90,12 @@ namespace aspect
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic pressure") != output_variables.end() )
           variables.push_back("adiabatic_pressure");
 
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density") != output_variables.end() )
+          variables.push_back("adiabatic_density");
+
+        if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density derivative") != output_variables.end() )
+          variables.push_back("adiabatic_density_derivative");
+
         if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
           variables.push_back("velocity_magnitude");
 
@@ -133,6 +139,14 @@ namespace aspect
         //adiabatic pressure
         if ( std::find( variables.begin(), variables.end(), "adiabatic_pressure") != variables.end() )
           this->get_adiabatic_conditions().get_adiabatic_pressure_profile(data_point.values[index++]);
+
+        //adiabatic density
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_density") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_density_profile(data_point.values[index++]);
+
+        //adiabatic density derivative
+        if ( std::find( variables.begin(), variables.end(), "adiabatic_density_derivative") != variables.end() )
+          this->get_adiabatic_conditions().get_adiabatic_density_derivative_profile(data_point.values[index++]);
 
         //velocity magnitude
         if ( std::find( variables.begin(), variables.end(), "velocity_magnitude") != variables.end() )
@@ -308,7 +322,8 @@ namespace aspect
                              "format in which the output is generated also determines "
                              "the extension of the file into which data is written.");
           const std::string variables =
-            "all|temperature|composition|adiabatic temperature|adiabatic pressure|"
+            "all|temperature|composition|"
+            "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
             "velocity magnitude|sinking velocity|Vs|Vp|"
             "viscosity|vertical heat flux";
           prm.declare_entry("List of output variables", "all",

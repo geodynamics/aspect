@@ -95,6 +95,11 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, depth average
 
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = adiabat
+  end
+
   subsection Depth average
     set Number of zones = 10
   end

@@ -44,6 +44,7 @@ namespace aspect
         solution_names.push_back("adiabatic_temperature");
         solution_names.push_back("adiabatic_pressure");
         solution_names.push_back("adiabatic_density");
+        solution_names.push_back("adiabatic_density_derivative");
         return solution_names;
       }
 
@@ -53,8 +54,8 @@ namespace aspect
       Adiabat<dim>::
       get_data_component_interpretation () const
       {
-        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation(3,
-                                                                                             DataComponentInterpretation::component_is_scalar);
+        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation(4,
+            DataComponentInterpretation::component_is_scalar);
 
         return interpretation;
       }
@@ -81,13 +82,14 @@ namespace aspect
       {
         const unsigned int n_quadrature_points = uh.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 3,                   ExcInternalError());
+        Assert (computed_quantities[0].size() == 4,                   ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             computed_quantities[q](0) = this->get_adiabatic_conditions().temperature(evaluation_points[q]);
             computed_quantities[q](1) = this->get_adiabatic_conditions().pressure(evaluation_points[q]);
             computed_quantities[q](2) = this->get_adiabatic_conditions().density(evaluation_points[q]);
+            computed_quantities[q](3) = this->get_adiabatic_conditions().density_derivative(evaluation_points[q]);
           }
       }
     }
@@ -106,9 +108,9 @@ namespace aspect
                                                   "adiabat",
                                                   "A visualization output "
                                                   "object that generates "
-                                                  "adiabatic temperature and "
-                                                  "pressure as produced by "
-                                                  "AdiabaticConditions.")
+                                                  "adiabatic temperature, pressure, "
+                                                  "density, and density derivative "
+                                                  "as produced by AdiabaticConditions.")
     }
   }
 }

@@ -60,11 +60,8 @@ namespace aspect
       // note: p'(z) = rho(p,T) * |g|
       //       T'(z) = alpha |g| T / c_p
       double z;
-      for (unsigned int i=1; i<n_points; ++i)
+      for (unsigned int i=1; i<=n_points; ++i)
         {
-          Assert (i < pressures.size(), ExcInternalError());
-          Assert (i < temperatures.size(), ExcInternalError());
-
           z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
 
           const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
@@ -75,9 +72,9 @@ namespace aspect
           MaterialModel::MaterialModelOutputs<dim> out(1, n_compositional_fields);
           in.position[0] = representative_point;
           in.temperature[0] = (this->get_material_model().is_compressible())
-                               ?
-                                 temperatures[i-1]
-                               : temperatures[0];
+                              ?
+                              temperatures[i-1]
+                              : temperatures[0];
           in.pressure[0] = pressures[i-1];
           in.velocity[0] = Tensor <1,dim> ();
 
@@ -106,13 +103,17 @@ namespace aspect
           const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
           const double gravity = this->get_gravity_model().gravity_vector(representative_point).norm();
 
-          pressures[i] = pressures[i-1]
-                         + density * gravity * delta_z;
-          temperatures[i] = temperatures[i-1] * (1 +
-                                                 alpha * gravity * delta_z * one_over_cp);
+          if (i<n_points)
+            {
+              Assert (i < pressures.size(), ExcInternalError());
+              Assert (i < temperatures.size(), ExcInternalError());
+              pressures[i] = pressures[i-1]
+                             + density * gravity * delta_z;
+              temperatures[i] = temperatures[i-1] * (1 +
+                                                     alpha * gravity * delta_z * one_over_cp);
+            }
           densities[i-1] = density;
         }
-      densities[n_points-1] = densities[n_points-2];
 
       Assert (*std::min_element (pressures.begin(), pressures.end()) >=
               -std::numeric_limits<double>::epsilon() * pressures.size(),
@@ -209,6 +210,30 @@ namespace aspect
 
       return d*densities[i]+(1-d)*densities[i+1];
     }
+
+
+    template <int dim>
+    double InitialProfile<dim>::density_derivative (const Point<dim> &p) const
+    {
+      const double z = this->get_geometry_model().depth(p);
+
+      if (z >= this->get_geometry_model().maximal_depth())
+        {
+          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
+                  ExcInternalError());
+          return (densities[densities.size()-1]-densities[densities.size()-2])/delta_z;
+        }
+
+      const unsigned int i = static_cast<unsigned int>(z/delta_z);
+      Assert ((z/delta_z) >= 0, ExcInternalError());
+      Assert (i+1 < temperatures.size(), ExcInternalError());
+
+      const double d=1.0+i-z/delta_z;
+      Assert ((d>=0) && (d<=1), ExcInternalError());
+
+      return (densities[i+1]-densities[i])/delta_z;
+    }
+
   }
 }
 

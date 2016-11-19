@@ -36,7 +36,7 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that outputs adiabatic
-       * temperature and pressure.
+       * temperature, pressure, density, and density derivative.
        */
       template <int dim>
       class Adiabat
