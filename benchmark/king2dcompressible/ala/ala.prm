@@ -10,13 +10,52 @@
 # reference values (old): 
 # Code Ra   Di   Nu     Vrms    Vsurf−max <V surf> <T>    <φ>    <W >
 # CU   10^4 0.25 4.4100 40.0000 58.1000   38.8000  0.5148 0.8494 0.8501
+# wealt   "    "    4.44   39.9                       0.51493 8.46633256e-01 8.46071386e-01 
+# we   "    "    4.43957   39.887840                       0.514951021 8.46633256e-01 8.46071386e-01 
+# okay
+
+# CU   10^5 0.25 9.2100 178.2000 252.4000 184.3000 0.5319 2.0503 2.0540
+# WE   "    "    9.50829 178.07837                  0.532474458   2.05198146e+00  -2.05114850e+00  
+# okay
+
+
+# ALA  10^4  1   2.4700 24.9000 37.6000 24.4000 0.5103 1.3627 1.3638
+# Leng08     1   2.47                   24.3           1.3542 ,1.3587 
+# WE schrott     2.411  24.3                    0.510  1.30194982e+00 -1.31280279e+00
+# We new         2.455  24.7                    0.5115 1.34274053e+00 -1.35403894e+00
+# no-1/3 	 2.456	24.7			0.5117 1.34669982e+00  -1.35134127e+00
+# with, exact grad 					1.34253646e+00 -1.35382342e+00
+
+
+# ALA  10^4 0.5 3.8200 35.9000 52.8000 35.1000 0.5217 1.3818 1.3830
+# we with1/3    3.849  35.9                    0.5225 1.38400306e+00 -1.38222762e+00
+# we no-1/3     3.83   35.9                    0.5225 1.38569274e+00 -1.38212532e+00 
+
+
+# ALA  10^5 1.0  3.8800 84.6000 137.2000 88.8000 0.5294 2.7652 2.7742
+# we             3.886  84.4                     0.53   2.76013974e+00 -2.76857768e+00
+      
+
+
+
+
 # Di	    Ra	    Nu		RMS
 # 0.25 	    10^4    4.41	40.0
-# 0.25	    10^5    9.2		178 
 # 0.75	    10^4    3.1		31
 # 1.0	    10^4    2.4		25
 # 1.0	    10^5    3.8		84  
 # 1.0	    10^6    ?
+
+
+# TALA:
+# Code Ra   Di   Nu     Vrms    Vsurf−max <V surf> <T>    <φ>    <W >
+# TALA 10^4 0.25 4.4200 40.1000 58.7000 39.3000 0.5129 0.8539 0.8521
+# TALA 10^5 0.25 9.2300 178.6000 254.6000 186.0000 0.5303 2.0597 2.0573
+# TALA 10^4  0.5 3.8600 36.3000 54.3000 36.1000 0.5191 1.4103 1.3948
+
+# TALA 10^4 1    2.5700 26.0000 40.6000 26.4000 0.5092 1.4651 1.4019
+# ALA  10^4  1   2.4700 24.9000 37.6000 24.4000 0.5103 1.3627 1.3638
+
 
 
 
@@ -32,7 +71,7 @@ set Additional shared libraries                = ./libplugin.so
 set Use direct solver for Stokes system        = true#false
 
 
-set Adiabatic surface temperature              = 0.100 #0.100
+set Adiabatic surface temperature              = 0.091 #0.100
 #set Use conduction timestep = true
 
 
@@ -40,14 +79,14 @@ set Adiabatic surface temperature              = 0.100 #0.100
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
 set Use years in output instead of seconds = false
-set End time                               = 5
+set End time                               = 1e20
 set Output directory                       = output
 
 subsection Discretization
   subsection Stabilization parameters
     set alpha                                              = 2
-    set beta                                               = 0.005
-    set cR                                                 = 0.33
+    set beta                                               = 0.005 # default: 0.078
+    set cR                                                 = 0.033 # default: 0.33
   end
 end
 
@@ -69,8 +108,8 @@ subsection Adiabatic conditions model
   set Model name = function
 
   subsection Function
-    set Function constants  = Di=0.25, gamma=1
-    set Function expression = 0.100*exp(depth*Di); depth; exp(depth*Di/gamma)
+    set Function constants  = Di=1.0, gamma=1.0
+    set Function expression = 0.091*exp(depth*Di); gamma/Di*(exp(depth*Di/gamma)-1); exp(depth*Di/gamma)  # T,p,rho
     set Variable names      = depth
   end
 
@@ -111,7 +150,7 @@ subsection Initial conditions
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L)) +0.100
+    set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L)) +0.091
   end
 end
 
@@ -135,11 +174,12 @@ end
 subsection Boundary temperature model
   set Model name = box
 
+
   subsection Box
-    set Bottom temperature = 1.100
+    set Top temperature    = 0.091
+    set Bottom temperature = 1.091
     set Left temperature   = 0
     set Right temperature  = 0
-    set Top temperature    = 0.100
   end
 end
 
@@ -156,7 +196,7 @@ subsection Model settings
   # Here, all four sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
   set Zero velocity boundary indicators       = 
-  set Prescribed velocity boundary indicators = #top:function
+  set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = left, right, top, bottom
 
   # The final part of this section describes whether we
@@ -194,7 +234,6 @@ subsection Formulation
   set Formulation = custom
   set Mass density approximation        = adiabatic
   set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = full
 end
 
 subsection Gravity model
@@ -215,12 +254,15 @@ subsection Material model
     # The value of the specific heat $cp$. Units: $J/kg/K$. => H
     set Reference specific heat       = 1   # ??
 
+    # The reference temperature $T_0$. Units: $K$.
+    set Reference temperature         = 0
+
     # The value of the constant viscosity. Units: $kg/m/s$.
     set Ra                     = 1e4
-    set Di = 0.25 # BA: Di=0.0
+    set Di = 1.0 # BA: Di=0.0
     set b=0
     set c=0
-    set gamma = 1
+    set gamma = 1.0
   end
 
 end
@@ -233,12 +275,13 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 5
+  set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 1.0
-  set Additional refinement times              = #0.5, 1.0, 2.0
+  #set Additional refinement times              = 0.1, 0.2, 0.3, 0.5, 1.0, 1.5, 2.0
+  set Additional refinement times              = 0.5, 1.0, 1.5, 2.0
 end
 
 

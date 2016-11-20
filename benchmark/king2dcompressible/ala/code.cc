@@ -62,13 +62,14 @@ namespace aspect
               out.thermal_conductivities[i] = 1.0;
               out.thermal_expansion_coefficients[i] = (Di==0.0)?1.0:Di;
 
-              double rho = reference_rho;
-              rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position));
-	      //rho*= exp(depth);
+              double rho = reference_rho * exp(depth * Di/gamma);
+              rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position))
+                     + (tala?0.0:1.0)*Di*gamma
+                     *  (pressure - this->get_adiabatic_conditions().pressure(position));
 
               out.densities[i] = rho;
 
-              out.compressibilities[i] = 0.0;//(d==0) ? 1.0 : (Di/gamma / d);//reference_compressibility; // 1/rho drho/dp
+              out.compressibilities[i] = 0.0;
               out.entropy_derivative_pressure[i] = 0.0;
               out.entropy_derivative_temperature[i] = 0.0;
               // Change in composition due to chemical reactions at the
@@ -81,7 +82,7 @@ namespace aspect
 
         virtual bool is_compressible () const
         {
-          return false;
+          return true;
         }
 
 
@@ -150,6 +151,8 @@ namespace aspect
 
       private:
 
+        bool tala;
+
         /**
          * blankenbach parameters
          */
@@ -164,7 +167,7 @@ namespace aspect
         /**
          * The constant viscosity
          */
-        double Di, Ra;
+        double Di, Ra, gamma;
 
         /**
          * The constant specific heat
@@ -201,6 +204,9 @@ namespace aspect
           prm.declare_entry ("Di", "0.0",
                              Patterns::Double (0),
                              "");
+          prm.declare_entry ("gamma", "1.0",
+                             Patterns::Double (0),
+                             "");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
@@ -235,6 +241,10 @@ namespace aspect
           c               = prm.get_double ("c");
           Di               = prm.get_double ("Di");
           Ra               = prm.get_double ("Ra");
+          gamma            = prm.get_double ("gamma");
+
+          tala = false;
+
 
           reference_specific_heat = prm.get_double ("Reference specific heat");
           //thermal_alpha = prm.get_double ("Thermal expansion coefficient");
