@@ -46,13 +46,13 @@ namespace aspect
      *   $V$ is activation volume, $P$ is pressure, $R$ is the gas
      *   exponent and $T$ is temperature.
      *
-     * One may select to use the diffusion ($\v_{diff}$; $n=1$, $m!=0$),
-     * dislocation ($\v_{disl}$, $n>1$, $m=0$) or composite
+     * One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$),
+     * dislocation ($v_{disl}$, $n>1$, $m=0$) or composite
      * $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form.
      *
      * Viscous stress is limited by plastic deformation, which follows
      * a Drucker Prager yield criterion:
-     *  $\simga_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
+     *  $\sigma_y = C*\cos(\phi) + P*\sin(\phi)$  (2D)
      * or in 3D
      *  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)}{\sqrt(3)*(3+\sin(\phi))}$
      * where

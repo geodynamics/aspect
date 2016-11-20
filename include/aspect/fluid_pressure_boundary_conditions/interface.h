@@ -77,7 +77,7 @@ namespace aspect
          * boundary of the domain on which the point is located at which we
          * are requesting the fluid pressure gradients.
          * @param material_model_inputs The material property inputs.
-         * @param material_model_inputs The material property outputs.
+         * @param material_model_outputs The material property outputs.
          * @param normal_vectors A normal vector for each point.
          * @param fluid_pressure_gradient_outputs Result to be filled.
          */

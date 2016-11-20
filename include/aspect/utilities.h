@@ -152,7 +152,7 @@ namespace aspect
 
     /**
      * A function for evaluating real spherical harmonics. It takes the degree (l)
-     * and the order (m) of the spherical harmonic, where l >= 0 and 0 <= m <=l.
+     * and the order (m) of the spherical harmonic, where $l \geq 0$ and $0 \leq m \leq l$.
      * It also takes the colatitude (theta) and longitude (phi), which are in
      * radians.
      *
@@ -171,14 +171,14 @@ namespace aspect
      * \f[
      *    Y_{lm}(\theta, \phi) = \sqrt{2} X_{lm}(\theta) \sin m \phi \qquad \mathrm{if}  \qquad 0< m \le m
      * \f]
-     * where \f$X_{lm}( \theta )\f$ is an associated Legendre function.
+     * where $X_{lm}( \theta )$ is an associated Legendre function.
      *
-     * In practice it is often convenient to compute the sine (\f$-l \le m < 0\f$) and cosine (\f$0 < m \le l\f$)
+     * In practice it is often convenient to compute the sine ($-l \le m < 0$) and cosine ($0 < m \le l$)
      * variants of the real spherical harmonic at the same time. That is the approach taken
      * here, where we return a pair of numbers, the first corresponding the cosine part and the
      * second corresponding to the sine part. Given this, it is no longer necessary to distinguish
-     * between postitive and negative \f$ m \f$, so this function only accepts \f$ m \ge 0 \f$.
-     * For \f$ m = 0 \f$, there is only one part, which is stored in the first entry of the pair.
+     * between postitive and negative $m$, so this function only accepts $ m \ge 0$.
+     * For $m = 0$, there is only one part, which is stored in the first entry of the pair.
      *
      * @note This function uses the Boost spherical harmonics implementation internally,
      * which is not designed for very high order (> 100) spherical harmonics computation.
@@ -356,7 +356,7 @@ namespace aspect
     }
 
     /**
-     * Replace the variable $ASPECT_SOURCE_DIR in @p location by the current
+     * Replace the string <tt>\$ASPECT_SOURCE_DIR</tt> in @p location by the current
      * source directory of ASPECT and return the resulting string.
      */
     std::string

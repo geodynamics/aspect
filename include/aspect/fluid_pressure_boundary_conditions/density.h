@@ -45,7 +45,7 @@ namespace aspect
     {
       public:
         /**
-         * @copydoc Interface::fluid_pressure
+         * @copydoc Interface::fluid_pressure_gradient
          */
         virtual
         void fluid_pressure_gradient (
