@@ -146,7 +146,7 @@ namespace aspect
   template <int dim>
   void
   StokesAssembler<dim>::
-  local_assemble_stokes_compressible_diffusion (const double                                     pressure_scaling,
+  local_assemble_stokes_compressible_diffusion (const double                                     /*pressure_scaling*/,
                                                 const bool                                       rebuild_stokes_matrix,
                                                 internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                 internal::Assembly::CopyData::StokesSystem<dim> &data) const
@@ -190,7 +190,7 @@ namespace aspect
   void
   StokesAssembler<dim>::
   local_assemble_stokes_mass_density_gradient (const double                                     pressure_scaling,
-                                               const bool                                       rebuild_stokes_matrix,
+                                               const bool                                       /*rebuild_stokes_matrix*/,
                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
                                                const Parameters<dim> &parameters) const
@@ -273,7 +273,7 @@ namespace aspect
   void
   StokesAssembler<dim>::
   local_assemble_stokes_mass_density_explicit (const double                                     pressure_scaling,
-                                               const bool                                       rebuild_stokes_matrix,
+                                               const bool                                       /*rebuild_stokes_matrix*/,
                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
                                                const Parameters<dim> &parameters) const
