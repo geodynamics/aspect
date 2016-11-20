@@ -189,6 +189,45 @@ namespace aspect
   template <int dim>
   void
   StokesAssembler<dim>::
+  local_assemble_stokes_mass_density_gradient (const double                                     pressure_scaling,
+                                               const bool                                       rebuild_stokes_matrix,
+                                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                               internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                               const Parameters<dim> &parameters) const
+  {
+    // assemble RHS of:
+    //  - div u = 1/rho * drho/dz g/||g||* u
+
+    Assert(parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic,
+           ExcInternalError());
+
+    const Introspection<dim> &introspection = this->introspection();
+    const unsigned int dofs_per_cell = scratch.finite_element_values.get_fe().dofs_per_cell;
+    const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+    for (unsigned int q=0; q<n_q_points; ++q)
+      {
+        for (unsigned int k=0; k<dofs_per_cell; ++k)
+          {
+            scratch.phi_p[k] = scratch.finite_element_values[introspection.extractors.pressure].value (k, q);
+          }
+
+        const Tensor<1,dim>
+        gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+        const double drho_dz_u = scratch.adiabatic_density_gradients[q]
+                                 * (gravity * scratch.velocity_values[q]) / gravity.norm();
+        const double one_over_rho = 1.0/scratch.mass_densities[q];
+
+        for (unsigned int i=0; i<dofs_per_cell; ++i)
+          data.local_rhs(i) += (pressure_scaling *
+                                one_over_rho * drho_dz_u * scratch.phi_p[i])
+                               * scratch.finite_element_values.JxW(q);
+      }
+  }
+
+  template <int dim>
+  void
+  StokesAssembler<dim>::
   local_assemble_stokes_mass_density_implicit (const double                                     pressure_scaling,
                                                const bool                                       rebuild_stokes_matrix,
                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,

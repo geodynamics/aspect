@@ -195,7 +195,11 @@ namespace aspect
     {
       enum Kind
       {
-        full, adiabatic_pressure, adiabatic, implicit_adiabatic,
+        full,
+        adiabatic,
+        adiabatic_density,
+        adiabatic_pressure,
+        implicit_adiabatic,
         incompressible, ask_material_model
       };
       static Kind parse(const std::string &input)
@@ -204,6 +208,8 @@ namespace aspect
           return FormulationType::full;
         else if (input == "adiabatic")
           return FormulationType::adiabatic;
+        else if (input == "adiabatic density")
+          return FormulationType::adiabatic_density;
         else if (input == "adiabatic pressure")
           return FormulationType::adiabatic_pressure;
         else if (input == "implicit adiabatic")
@@ -218,7 +224,6 @@ namespace aspect
       }
     };
 
-    typename FormulationType::Kind formulation_buoyancy;
     typename FormulationType::Kind formulation_mass;
     typename FormulationType::Kind formulation_temperature;
 

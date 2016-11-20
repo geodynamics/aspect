@@ -862,6 +862,18 @@ namespace aspect
                                     std_cxx11::_4,
                                     std_cxx11::_5,
                                     std_cxx11::cref (this->parameters)));
+        else if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
+          {
+            assemblers->local_assemble_stokes_system
+            .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_gradient,
+                                      std_cxx11::cref (*stokes_assembler),
+                                      // discard cell,
+                                      std_cxx11::_2,
+                                      std_cxx11::_3,
+                                      std_cxx11::_4,
+                                      std_cxx11::_5,
+                                      std_cxx11::cref (this->parameters)));
+          }
         else if (parameters.formulation_mass == Parameters<dim>::FormulationType::incompressible
                  || (parameters.formulation_mass == Parameters<dim>::FormulationType::ask_material_model
                      && !material_model->is_compressible()))
@@ -1222,8 +1234,10 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
-    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
-        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic)
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic_density
+        || parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic
+        || parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic
+       )
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         scratch.mass_densities.resize(n_q_points);
@@ -1235,12 +1249,17 @@ namespace aspect
     else
       scratch.mass_densities = scratch.material_model_outputs.densities;
 
-    if (parameters.formulation_buoyancy == Parameters<dim>::FormulationType::full)
+    if (parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic)
       {
-        // scratch.material_model_outputs.densities is already the full density
+        const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+        scratch.adiabatic_density_gradients.resize(n_q_points);
+        for (unsigned int q=0; q<n_q_points; ++q)
+          {
+            scratch.adiabatic_density_gradients[q] = adiabatic_conditions->density_derivative(scratch.material_model_inputs.position[q]);
+          }
       }
     else
-      Assert(false, ExcNotImplemented());
+      scratch.adiabatic_density_gradients.resize(0);
 
     // trigger the invocation of the various functions that actually do
     // all of the assembling
@@ -1265,7 +1284,9 @@ namespace aspect
 
               material_model->evaluate(scratch.face_material_model_inputs,
                                        scratch.face_material_model_outputs);
-  //                               (density * gravity * scratch.phi_u[i])
+
+              // TODO: formulations?
+
 //  a dim-1 dimensional quadrature
               // MaterialModel::MaterialAveraging::average (parameters.material_averaging,
               //                                            cell,

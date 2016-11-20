@@ -310,11 +310,8 @@ namespace aspect
                          Patterns::Selection ("full|custom|ALA|TALA|EBA|BA"),
                          "");
 
-      prm.declare_entry ("Buoyancy density approximation", "full",
-                         Patterns::Selection ("full|adiabatic pressure"),
-                         "");
       prm.declare_entry ("Mass density approximation", "full",
-                         Patterns::Selection ("full|adiabatic|implicit adiabatic|incompressible|ask material model"),
+                         Patterns::Selection ("full|adiabatic|adiabatic density|implicit adiabatic|incompressible|ask material model"),
                          "");
       prm.declare_entry ("Temperature density approximation", "full",
                          Patterns::Selection ("full|adiabatic"),
@@ -340,12 +337,6 @@ namespace aspect
                          "be used for computing the additional pressures and the melt velocity, "
                          "and has a different advection equation than other compositional fields, "
                          "as it is effectively advected with the melt velocity.");
-      prm.declare_entry ("Use full density formulation", "true",
-                         Patterns::Bool (),
-                         "Whether to use the full density formulation, using the same density "
-                         "for all terms of the equations. The usual approximations use the "
-                         "reference density profile in every term except the buoyancy term of "
-                         "the stokes equation.");
       prm.declare_entry ("Fixed temperature boundary indicators", "",
                          Patterns::List (Patterns::Anything()),
                          "A comma separated list of names denoting those boundaries "
@@ -938,13 +929,11 @@ namespace aspect
       const std::string formulation = prm.get("Formulation");
       if (formulation == "full")
         {
-          formulation_buoyancy = FormulationType::full;
           formulation_mass = FormulationType::ask_material_model;
           formulation_temperature = FormulationType::full;
         }
       else if (formulation == "BA")
         {
-          formulation_buoyancy = FormulationType::full;
           formulation_mass = FormulationType::incompressible;
           formulation_temperature = FormulationType::adiabatic;
 
@@ -956,7 +945,6 @@ namespace aspect
         {
           formulation_temperature = FormulationType::adiabatic;
           formulation_mass = FormulationType::incompressible;
-          formulation_buoyancy = FormulationType::full;
 
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true
@@ -966,20 +954,14 @@ namespace aspect
         }
       else if (formulation == "TALA")
         {
-          formulation_temperature = FormulationType::adiabatic;
-          formulation_mass = FormulationType::adiabatic; // or maybe implicit_adiabatic?
-          // like ALA except:
-          formulation_buoyancy = FormulationType::adiabatic_pressure;
-          // Assert shear/adiabatic heating plugins are on
-          // adiabatic.simple = true
-          // is_compressible= true
-          // Assert AdiabaticConditions = InitialProfile
+          // like ALA, but make your MaterialModel::density
+          // independent of pressure
+          AssertThrow(false, ExcNotImplemented());
         }
       else if (formulation == "ALA")
         {
           formulation_temperature = FormulationType::adiabatic;
           formulation_mass = FormulationType::adiabatic; // or maybe implicit_adiabatic?
-          formulation_buoyancy = FormulationType::full;
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true
           // is_compressible= true
@@ -987,7 +969,6 @@ namespace aspect
         }
       else if (formulation == "custom")
         {
-          formulation_buoyancy = FormulationType::parse(prm.get("Buoyancy density approximation"));
           formulation_mass = FormulationType::parse(prm.get("Mass density approximation"));
           formulation_temperature = FormulationType::parse(prm.get("Temperature density approximation"));
         }
