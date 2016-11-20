@@ -966,6 +966,7 @@ namespace aspect
           // adiabatic.simple = true
           // is_compressible= true
           // Assert AdiabaticConditions = InitialProfile
+          // or do we create AdiabaticConditionsALA ?
         }
       else if (formulation == "custom")
         {

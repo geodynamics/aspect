@@ -90,6 +90,9 @@ namespace aspect
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
 
           in.strain_rate.resize(0); // we do not need the viscosity
+
+          // Problem: if density depends on adiabatic_conditions, this will be wrong because temperature
+          // is not interpolated correctly.
           this->get_material_model().evaluate(in, out);
 
           // get the magnitude of gravity. we assume
