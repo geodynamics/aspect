@@ -144,7 +144,7 @@ namespace aspect
       for (unsigned int j=0; j < volume_fractions.size(); ++j)
         {
           // Power law creep equation
-          //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * d^(-m/n) * exp((E + P*V)/(nRT))
+          //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * d^(m/n) * exp((E + P*V)/(nRT))
           // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
           // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
           // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
@@ -154,7 +154,7 @@ namespace aspect
           double viscosity_diffusion = 0.5 * std::pow(prefactors_diffusion[j],-1/stress_exponents_diffusion[j]) *
                                        std::exp((activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j])/
                                                 (constants::gas_constant*temperature*stress_exponents_diffusion[j])) *
-                                       std::pow(grain_size, -grain_size_exponents_diffusion[j]);
+                                       std::pow(grain_size, grain_size_exponents_diffusion[j]);
 
           // For dislocation creep, viscosity is grain size independent (m=0) and strain-rate dependent (n>1)
           double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation[j],-1/stress_exponents_dislocation[j]) *
@@ -717,7 +717,7 @@ namespace aspect
                                    "(Anne Glerum) material models. "
                                    "\n\n "
                                    "The viscosity for dislocation or diffusion creep is defined as "
-                                   "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{-\\frac{m}{n}} * "
+                                   "\\[v = 0.5 * A^{-\\frac{1}{n}} * d^{\\frac{m}{n}} * "
                                    "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} * "
                                    "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\] "
                                    "where $A$ is the prefactor, $n$ is the stress exponent, "
