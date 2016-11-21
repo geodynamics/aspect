@@ -7,12 +7,6 @@ set Additional shared libraries            = ./code/libtangurnis.so
 # simulation
 set Dimension = 2
 
-subsection Formulation
-  set Buoyancy density approximation    = full
-  set Formulation                       = custom
-  set Mass density approximation        = adiabatic
-  set Temperature density approximation = full
-end
 
 # In computations, the time step $k$ is chosen according to $k = c \min_K
 # \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
@@ -57,6 +51,24 @@ set Start time                             = 0
 # For more information, see the section in the manual that discusses the
 # general mathematical model.
 set Adiabatic surface temperature          = 0
+
+subsection Adiabatic conditions model
+  #set Model name = initial profile
+  set Model name = function
+  subsection Function
+    set Function constants  = Di=0.5, gamma=1.0
+    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
+    set Variable names      = depth
+  end
+
+end
+
+subsection Formulation
+  set Formulation = custom
+  set Mass density approximation        = adiabatic
+  set Temperature density approximation = adiabatic
+end
+
 
 # The mathematical equations that describe thermal convection only determine
 # the pressure up to an arbitrary constant. On the other hand, for comparison
@@ -307,7 +319,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables      = density
+    set List of output variables      = density, adiabat
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

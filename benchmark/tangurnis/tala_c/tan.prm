@@ -1,7 +1,6 @@
 # Listing of Parameters
 # ---------------------
 
-
 set Additional shared libraries            = ./code/libtangurnis.so
 
 # At the top, state that the program should be run for a two-dimensional 
@@ -27,6 +26,7 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear solver scheme                = Stokes only
+set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
@@ -51,6 +51,24 @@ set Start time                             = 0
 # For more information, see the section in the manual that discusses the
 # general mathematical model.
 set Adiabatic surface temperature          = 0
+
+subsection Adiabatic conditions model
+  #set Model name = initial profile
+  set Model name = function
+  subsection Function
+    set Function constants  = Di=0.5, gamma=1.0
+    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
+    set Variable names      = depth
+  end
+
+end
+
+subsection Formulation
+  set Formulation = custom
+  set Mass density approximation        = adiabatic
+  set Temperature density approximation = adiabatic
+end
+
 
 # The mathematical equations that describe thermal convection only determine
 # the pressure up to an arbitrary constant. On the other hand, for comparison
@@ -301,6 +319,8 @@ subsection Postprocess
   end
 
   subsection Visualization
+    set List of output variables      = density, adiabat
+
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
     # grouping. This will disable parallel file output and instead write one

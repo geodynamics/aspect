@@ -62,9 +62,6 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
-        virtual void density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
-                                            std::vector<double> &densities) const;
-
 
         virtual double density (const double temperature,
                                 const double pressure,
@@ -285,17 +282,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    void
-    TanGurnis<dim>::density_approximation (const typename MaterialModel::Interface<dim>::MaterialModelInputs &inputs,
-                                           std::vector<double> &densities) const
-    {
-      for (unsigned int i=0; i<inputs.position.size(); ++i)
-        {
-          const double depth = 1.0-inputs.position[i](dim-1);
-          densities[i] = 1.0*exp(Di/gamma*(depth));
-        }
-    }
 
     template <int dim>
     double
@@ -336,6 +322,8 @@ namespace aspect
       const double depth = 1.0-pos(dim-1);
       double d = 1.0*exp(Di/gamma*(depth));
 
+      // this is no longer used because we use the new adiabatic mass formulation
+      // based on AdiabaticConditions
       return (d==0) ? 1.0 : (Di/gamma / d);
     }
 
@@ -502,6 +490,16 @@ namespace aspect
       double temperature (const GeometryModel::Interface<dim> &geometry_model,
                           const types::boundary_id                   boundary_indicator,
                           const Point<dim>                    &location) const;
+
+      virtual
+        double boundary_temperature (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position) const
+	{
+	  double wavenumber=1;
+	  return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
+	  
+	}
+      
 
       /**
        * Return the minimal the temperature on that part of the boundary on
