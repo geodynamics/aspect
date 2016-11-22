@@ -1,6 +1,8 @@
-% tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251999e-03, shear = -5.301807e-03
-% tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718841e-03, shear = -2.242313e-03
+% tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251999e-03, shear = -5.306916e-03
+% tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718841e-03, shear = -2.297907e-03
 % BA     Di=0.0, gamma = 1, a= 0 heating terms: adab = 0, shear = 0 ;-)
+heating terms: adab = 1.718841e-03, shear = -2.297907e-03
+
 
 function matlab
 
@@ -96,9 +98,9 @@ etazero = 1;
 etastar = exp(a*(1-x))/etazero;
 eta=exp(a*(1-x));
 Ts=0;%0.091;
-eta_xz=eta_xzs(i);
+eta_xz=eta_xzs(i)*2*k;
 adab_heating = Di*exp(beta_*(1-z))*Uz*cos(k*x)*(sin(pi*z)*cos(k*x)+Ts);
-shear_heating = Di/Ra * eta * (4*k^2*Ux^2+4/3*beta_^2*Uz^2-4*beta_*k*Ux*Uz) * (cos(k*x)^2 + 1/eta*(eta_xz)^2*sin(k*x)^2);
+shear_heating = Di/Ra * eta * (4*k^2*Ux^2+10/9*beta_^2*Uz^2-4*beta_*k*Ux*Uz) * cos(k*x)^2 + Di/Ra*1/eta*(eta_xz)^2*sin(k*x)^2;
 aa(i) = shear_heating;
 
 adab_heating_int = adab_heating_int + adab_heating*JxW;
