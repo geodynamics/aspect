@@ -230,9 +230,8 @@ namespace aspect
           if (this->include_adiabatic_heating ())
             {
               // temperature dependence is 1 - alpha * (T - T(adiabatic))
-              if (this->get_adiabatic_conditions().is_initialized())
-                temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                          * thermal_expansivity;
+              temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                        * thermal_expansivity;
             }
           else
             temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
@@ -321,7 +320,7 @@ namespace aspect
           out.compressibilities[i] = compressibility;
 
           double visc_temperature_dependence = 1.0;
-          if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+          if (this->include_adiabatic_heating ())
             {
               const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
               visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
@@ -358,9 +357,8 @@ namespace aspect
               if (this->include_adiabatic_heating ())
                 {
                   // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                  if (this->get_adiabatic_conditions().is_initialized())
-                    temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
-                                              * thermal_expansivity;
+                  temperature_dependence -= (in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]))
+                                            * thermal_expansivity;
                 }
               else
                 temperature_dependence -= (in.temperature[i] - reference_T) * thermal_expansivity;
@@ -381,7 +379,7 @@ namespace aspect
               melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
               double visc_temperature_dependence = 1.0;
-              if (this->include_adiabatic_heating () && this->get_adiabatic_conditions().is_initialized())
+              if (this->include_adiabatic_heating ())
                 {
                   const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
                   visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);

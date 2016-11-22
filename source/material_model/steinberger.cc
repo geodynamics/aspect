@@ -490,8 +490,7 @@ namespace aspect
                                const double,
                                const Point<dim> &position) const
     {
-      if (!(this->get_adiabatic_conditions().is_initialized())
-          || this->include_adiabatic_heating()
+      if (this->include_adiabatic_heating()
           || compressible)
         return temperature;
 
@@ -509,8 +508,7 @@ namespace aspect
                             const double pressure,
                             const Point<dim> &position) const
     {
-      if (!(this->get_adiabatic_conditions().is_initialized())
-          || compressible)
+      if (compressible)
         return pressure;
 
       return this->get_adiabatic_conditions().pressure(position);
@@ -655,8 +653,7 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &position) const
     {
-      if (compressible
-          || !(this->get_adiabatic_conditions().is_initialized()))
+      if (compressible)
         return get_compressible_density(temperature,pressure,compositional_fields,position);
       else
         return get_corrected_density(temperature,pressure,compositional_fields,position);
@@ -810,7 +807,7 @@ namespace aspect
            * corrected temperatures in case we compare it to the lateral
            * temperature average.
            */
-          if (this->get_adiabatic_conditions().is_initialized() && in.strain_rate.size())
+          if (in.strain_rate.size())
             {
               if (use_lateral_average_temperature)
                 {

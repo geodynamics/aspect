@@ -42,7 +42,7 @@ namespace aspect
       // note: the pressure case for adiabatic conditions initialized and
       // the pressure case for non-initialized adiabatic conditions
       // are the same, so the pressure case is included in the if statement for adiabatic conditions.
-      if (this->get_adiabatic_conditions().is_initialized() || use_depth ==false)
+      if (use_depth ==false)
         {
           // first, get the pressure at which the phase transition occurs normally
           // and get the pressure change in the range of the phase transition
@@ -214,9 +214,8 @@ namespace aspect
             if (this->include_adiabatic_heating ())
               {
                 // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                if (this->get_adiabatic_conditions().is_initialized())
-                  density_temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-                                                    * thermal_alpha;
+                density_temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
+                                                  * thermal_alpha;
               }
             else
               density_temperature_dependence -= temperature * thermal_alpha;

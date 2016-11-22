@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -91,6 +91,37 @@ namespace aspect
           values[n] = pressure(p);
         }
     }
+
+    template <int dim>
+    void Interface<dim>::get_adiabatic_density_profile(std::vector<double> &values) const
+    {
+      const unsigned int num_slices = values.size();
+      const double max_depth = this->get_geometry_model().maximal_depth();
+      double depth = 0.0;
+
+      for (unsigned int n = 0 ; n < num_slices; n++)
+        {
+          depth = n * max_depth / (num_slices-1);
+          const Point<dim> p = this->get_geometry_model().representative_point(depth);
+          values[n] = density(p);
+        }
+    }
+
+    template <int dim>
+    void Interface<dim>::get_adiabatic_density_derivative_profile(std::vector<double> &values) const
+    {
+      const unsigned int num_slices = values.size();
+      const double max_depth = this->get_geometry_model().maximal_depth();
+      double depth = 0.0;
+
+      for (unsigned int n = 0 ; n < num_slices; n++)
+        {
+          depth = n * max_depth / (num_slices-1);
+          const Point<dim> p = this->get_geometry_model().representative_point(depth);
+          values[n] = density_derivative(p);
+        }
+    }
+
 
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
