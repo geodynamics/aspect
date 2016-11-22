@@ -30,7 +30,7 @@ set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = outputnew
+set Output directory                       = output_tala
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -224,7 +224,6 @@ subsection Material model
 
   subsection Tan Gurnis model
     #set Reference density = 1
-    set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
 
@@ -235,6 +234,13 @@ subsection Material model
 
 end
 
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
@@ -308,7 +314,7 @@ subsection Postprocess
   # into files that can be read by a graphical visualization program.
   # Additional run time parameters are read from the parameter subsection
   # 'Visualization'.
-  set List of postprocessors = Tan Gurnis error, visualization
+  set List of postprocessors = Tan Gurnis error, visualization, heating statistics
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A

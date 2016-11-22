@@ -1,3 +1,7 @@
+% tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251999e-03, shear = -5.301807e-03
+% tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718841e-03, shear = -2.242313e-03
+% BA     Di=0.0, gamma = 1, a= 0 heating terms: adab = 0, shear = 0 ;-)
+
 function matlab
 
 format LONGG
@@ -13,6 +17,8 @@ figure(1);clf;
 
 for method={'tala','tala_c', 'ba'}
 
+fprintf('*** method %s ***\n', method{1})
+    
 convx=[];
 convy=[];
 first=1;
@@ -28,7 +34,7 @@ for j=[8 16 32 64 128]
 
         k = vv(1,3)*pi; %1*pi
         a=vv(1,4); % 0 or 2
-        fprintf('computing Di=%i, gamma = %i\n', Di, gamm)
+        fprintf('computing Di=%i, gamma = %i, a= %i\n', Di, gamm, a)
 
         tic
         %variables: u_z u_x eta_zz eta_xz
@@ -60,12 +66,47 @@ for j=[8 16 32 64 128]
     
 end
 figure(1);
-loglog(convx,convy); hold on;
+loglog(convx,convy,'x-'); hold on;
 convorder=polyfit(log(convx),log(convy),1);
 convorder=convorder(1);
 
 display([convx convy]);
 fprintf('convergence order: %f\n',-convorder);
+
+% compute heating terms
+
+Uxs = interp1(SOL.x, SOL.y(2,:), vv(:,2));
+Uzs = interp1(SOL.x, SOL.y(1,:), vv(:,2));
+eta_xzs = interp1(SOL.x, SOL.y(4,:), vv(:,2));
+adab_heating_int = 0;
+shear_heating_int = 0;
+
+aa = vv(:,1);
+
+for i=1:size(vv,1)
+    
+x=vv(i,1);
+z=vv(i,2);
+ux=vv(i,3);
+uz=vv(i,4);
+Ux=Uxs(i);
+Uz=Uzs(i);
+JxW=vv(i,5);
+etazero = 1;
+etastar = exp(a*(1-x))/etazero;
+eta=exp(a*(1-x));
+Ts=0;%0.091;
+eta_xz=eta_xzs(i);
+adab_heating = Di*exp(beta_*(1-z))*Uz*cos(k*x)*(sin(pi*z)*cos(k*x)+Ts);
+shear_heating = Di/Ra * eta * (4*k^2*Ux^2+4/3*beta_^2*Uz^2-4*beta_*k*Ux*Uz) * (cos(k*x)^2 + 1/eta*(eta_xz)^2*sin(k*x)^2);
+aa(i) = shear_heating;
+
+adab_heating_int = adab_heating_int + adab_heating*JxW;
+shear_heating_int = shear_heating_int + shear_heating*JxW;
+end
+
+fprintf('heating terms: adab = %d, shear = %d\n\n',adab_heating_int, shear_heating_int)
+
 end
 
 
@@ -117,7 +158,7 @@ res = [ya(1);yb(1);ya(4);yb(4)];
 end
 
 function [r]=myode(x,Y,p)
-
+% Uz Ux eta_zz eta_xz
 global a;
 global Ra;
 global k;

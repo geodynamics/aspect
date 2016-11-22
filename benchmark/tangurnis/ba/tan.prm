@@ -106,8 +106,8 @@ subsection Boundary temperature model
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
   # read from subsection 'Sherical constant'.
-  set Model name = box
- 
+  set Model name = Tan Gurnis
+
 end
 
 
@@ -225,7 +225,6 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    set Thermal expansion coefficient = 1
     set Di                            = 0
     set gamma                         = 1 # infinity really, but does not matter
 
