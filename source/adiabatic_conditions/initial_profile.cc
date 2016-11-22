@@ -56,6 +56,9 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
 
+      // Constant properties on the reference profile
+      in.strain_rate.resize(0); // we do not need the viscosity
+      in.velocity[0] = Tensor <1,dim> ();
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
@@ -109,7 +112,6 @@ namespace aspect
           in.position[0] = representative_point;
           in.temperature[0] = temperatures[i];
           in.pressure[0] = pressures[i];
-          in.velocity[0] = Tensor <1,dim> ();
 
           // we approximate the pressure gradient by extrapolating the values
           // from the two points above
@@ -121,8 +123,6 @@ namespace aspect
 
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
-
-          in.strain_rate.resize(0); // we do not need the viscosity
 
           this->get_material_model().evaluate(in, out);
 
@@ -205,6 +205,7 @@ namespace aspect
           return (densities[1] - densities.front()) / delta_z;
         }
 
+      // if z/delta_z is within [k-eps, k+eps] of a whole number k, round it down to k-1
       const unsigned int i = static_cast<unsigned int>((z/delta_z) * (1. - 2. * std::numeric_limits<double>::epsilon()));
       Assert (i < densities.size() - 1, ExcInternalError());
 
@@ -234,10 +235,15 @@ namespace aspect
 
       const double floating_index = z/delta_z;
       const unsigned int i = static_cast<unsigned int>(floating_index);
-      if (std::abs(floating_index-std::round(floating_index)) < 1e-6)
+
+      // If p is close to an existing value use that one. This prevents
+      // asking for values at i+1 while initializing i+1 (when p is at the
+      // depth of index i).
+      if (std::abs(floating_index-std::floor(floating_index+0.5)) < 1e-6)
         return property[i];
 
-      Assert (i+1 < temperatures.size(), ExcInternalError());
+      Assert (i+1 < property.size(), ExcInternalError());
+
       // now do the linear interpolation
       const double d = floating_index - i;
       Assert ((d>=0) && (d<=1), ExcInternalError());
