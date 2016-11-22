@@ -7,34 +7,34 @@ Number of degrees of freedom: 740 (450+65+225)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
-      Nonlinear Stokes residual: 5.10347e+15
+      Nonlinear Stokes residual: 5.11006e+15
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
-      Nonlinear Stokes residual: 7.90448e+13
+      Nonlinear Stokes residual: 7.93914e+13
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
-      Nonlinear Stokes residual: 2.11881e+13
+      Nonlinear Stokes residual: 2.12625e+13
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Nonlinear Stokes residual: 5.4754e+10
+      Nonlinear Stokes residual: 5.52075e+10
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Nonlinear Stokes residual: 1.19219e+09
+      Nonlinear Stokes residual: 1.1966e+09
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Nonlinear Stokes residual: 7.04723e+06
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 6.42385e+06
+   Solving Stokes system... 3+0 iterations.
+      Nonlinear Stokes residual: 7.10145e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 6.42385e+06
+      Nonlinear Stokes residual: 6.14611e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 6.42385e+06
+      Nonlinear Stokes residual: 6.14611e+06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Nonlinear Stokes residual: 6.42385e+06
+      Nonlinear Stokes residual: 6.14611e+06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 6.14611e+06
 
    Postprocessing:
 viscosity depends on temperature

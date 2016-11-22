@@ -9,9 +9,10 @@
 set CFL number                             = 1
 set End time                               = 0
 set Adiabatic surface temperature          = 0.5
+set Surface pressure                       = 0.0
 set Use years in output instead of seconds = false
 set Linear solver tolerance                = 1e-7
-set Pressure normalization                 = no
+set Pressure normalization                 = surface
 set Nonlinear solver scheme                = Advection only
 
 subsection Prescribed Stokes solution
@@ -32,7 +33,7 @@ subsection Boundary temperature model
   set Model name = box
   subsection Box
     set Top temperature = 0
-    set Bottom temperature = 2
+    set Bottom temperature = 1
   end
 end
 
@@ -49,7 +50,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1
+    set Magnitude = 0
   end
 end
 
@@ -58,6 +59,7 @@ subsection Initial conditions
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 0.01
+    set Reference temperature = 0.5
   end
 end
 
@@ -67,7 +69,7 @@ subsection Material model
   subsection Simple compressible model
     set Reference density = 1
     set Reference specific heat = 1
-    set Thermal expansion coefficient = 1
+    set Thermal expansion coefficient = 0.1
     set Viscosity = 1
     set Thermal conductivity = 1e-7
     set Reference compressibility = 1e-6

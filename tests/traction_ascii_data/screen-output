@@ -16,28 +16,28 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+49 iterations.
-      Nonlinear residuals: 14947, 1.27699e+14
+      Nonlinear residuals: 14928.8, 1.24366e+14
       Total relative nonlinear residual: 1
 
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+37 iterations.
-      Nonlinear residuals: 14947, 2.14224e+13
-      Total relative nonlinear residual: 0.167757
+      Nonlinear residuals: 14928.8, 2.14388e+13
+      Total relative nonlinear residual: 0.172385
 
 
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+34 iterations.
-      Nonlinear residuals: 14947, 2.90927e+12
-      Total relative nonlinear residual: 0.0227823
+      Nonlinear residuals: 14928.8, 2.9141e+12
+      Total relative nonlinear residual: 0.0234317
 
 
 
    Postprocessing:
-     RMS, max velocity:                  66.8 m/year, 176 m/year
-     Mass fluxes through boundary parts: 3.701e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     RMS, max velocity:                  66.5 m/year, 175 m/year
+     Mass fluxes through boundary parts: 3.726e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 Termination requested by criterion: end time
 

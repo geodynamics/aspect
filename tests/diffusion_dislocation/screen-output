@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
-      Nonlinear residuals: 231496, 5.96195e-06, 1.61827e+14
+      Nonlinear residuals: 231496, 5.96195e-06, 1.61778e+14
       Total relative nonlinear residual: 1
 
 
@@ -15,16 +15,16 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-      Nonlinear residuals: 231496, 5.96195e-06, 1.18749e+11
-      Total relative nonlinear residual: 0.000733802
+      Nonlinear residuals: 231496, 5.96195e-06, 1.18708e+11
+      Total relative nonlinear residual: 0.000733771
 
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Nonlinear residuals: 231496, 5.96195e-06, 3.12943e+07
-      Total relative nonlinear residual: 1.93381e-07
+   Solving Stokes system... 4+0 iterations.
+      Nonlinear residuals: 231496, 5.96195e-06, 3.12882e+07
+      Total relative nonlinear residual: 1.93403e-07
 
 
 
