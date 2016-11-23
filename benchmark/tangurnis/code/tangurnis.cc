@@ -602,33 +602,78 @@ namespace aspect
 
     const unsigned int n_q_points =  quadrature_formula.size();
     FEValues<dim> fe_values (this->get_mapping(), this->get_fe(),  quadrature_formula,
-                             update_JxW_values | update_values | update_quadrature_points);
+                             update_JxW_values | update_values    |
+                             update_gradients  | update_quadrature_points);
 
-    std::vector<Tensor<1, dim> > velocity_values (quadrature_formula.size());
-    std::vector<double>         temperature_values (quadrature_formula.size());
-    std::vector<double>         pressure_values (quadrature_formula.size());
+    MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+    MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+
+    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
+
+    const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+    const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
+
+    std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
+                                                                          HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
 
     typename DoFHandler<dim>::active_cell_iterator
     cell = this->get_dof_handler().begin_active(),
     endc = this->get_dof_handler().end();
     for (; cell != endc; ++cell)
       {
-        fe_values.reinit (cell);
-        fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), velocity_values);
-        fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), pressure_values);
-        fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), temperature_values);
+        fe_values.reinit (cell);    
+        fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), in.temperature);
+        fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), in.pressure);
+        fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), in.velocity);
+        fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(), in.pressure_gradient);
+
+        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
+                                                                                                  composition_values[c]);
+        for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+          {
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              in.composition[i][c] = composition_values[c][i];
+          }
+
+        fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
+                                                                                                 in.strain_rate);
+        in.position = fe_values.get_quadrature_points();
+
+        this->get_material_model().evaluate(in, out);
+
+        if (this->get_parameters().formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
+          {
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
+              }
+          }
+
+        unsigned int index = 0;
+        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator
+             heating_model = heating_model_objects.begin();
+             heating_model != heating_model_objects.end(); ++heating_model, ++index)
+          {
+            (*heating_model)->evaluate(in, out, heating_model_outputs[index]);
+          }
+
 
         for (unsigned int q = 0; q < n_q_points; ++q)
           {
             f
                 <<  fe_values.quadrature_point (q) (0)
                 << ' ' << fe_values.quadrature_point (q) (1)
-                << ' ' << velocity_values[q][0]
-                << ' ' << velocity_values[q][1]
+                << ' ' << in.velocity[q][0]
+                << ' ' << in.velocity[q][1]
                 << ' ' << fe_values.JxW (q)
-                << ' ' << pressure_values[q]
-                << ' ' << temperature_values[q]
-                << std::endl;
+                << ' ' << in.pressure[q]
+                << ' ' << in.temperature[q];
+
+             for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
+               f << ' ' << heating_model_outputs[i].heating_source_terms[q];
+
+             f  << std::endl;
           }
       }
 
