@@ -1,0 +1,6 @@
+subsection Material model
+  subsection Tan Gurnis model
+    set Use TALA = true
+  end
+end
+

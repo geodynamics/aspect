@@ -217,6 +217,10 @@ namespace aspect
           prm.declare_entry ("c", "0",
                              Patterns::Double (0),
                              "");
+          prm.declare_entry ("Use TALA", "false",
+                             Patterns::Bool (),
+                             "Whether to use the TALA instead of the ALA "
+                             "approximation.");
 
         }
         prm.leave_subsection();
@@ -234,16 +238,16 @@ namespace aspect
       {
         prm.enter_subsection("Tan Gurnis model");
         {
-          reference_rho     = prm.get_double ("Reference density");
+          reference_rho   = prm.get_double ("Reference density");
           //          reference_T = prm.get_double ("Reference temperature");
           //eta                   = prm.get_double ("Viscosity");
           b               = prm.get_double ("b");
           c               = prm.get_double ("c");
-          Di               = prm.get_double ("Di");
-          Ra               = prm.get_double ("Ra");
-          gamma            = prm.get_double ("gamma");
+          Di              = prm.get_double ("Di");
+          Ra              = prm.get_double ("Ra");
+          gamma           = prm.get_double ("gamma");
 
-          tala = false;
+          tala            = prm.get_bool ("Use TALA");
 
 
           reference_specific_heat = prm.get_double ("Reference specific heat");
