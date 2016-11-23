@@ -38,22 +38,6 @@ namespace aspect
     class Material : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
-        /*
-              virtual void
-              density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &densities) const
-              {
-                for (unsigned int i=0; i<in.position.size(); ++i)
-                  {
-                    const double depth = 1.0-in.position[i](dim-1);
-                    densities[i] = reference_rho;//rho_r*exp(Di/gamma*(depth));
-                    //    std::cout << densities[i] << std::endl;
-
-                  }
-              }
-        */
-
         /**
         * Evaluate material properties.
         */

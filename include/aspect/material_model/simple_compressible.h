@@ -44,11 +44,6 @@ namespace aspect
     class SimpleCompressible : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
-        virtual void
-        density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
-                               std::vector<double> &densities) const;
-
         /**
         * Evaluate material properties.
         */

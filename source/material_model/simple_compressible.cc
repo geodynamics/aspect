@@ -29,24 +29,6 @@ namespace aspect
     template <int dim>
     void
     SimpleCompressible<dim>::
-    density_approximation (const MaterialModel::MaterialModelInputs<dim> &in,
-                           std::vector<double> &densities) const
-    {
-      double Di = 0.25;
-      double gamma = 1.0;
-      for (unsigned int i=0; i<in.position.size(); ++i)
-        {
-          const double depth = 1.0-in.position[i](dim-1);
-          densities[i] = 1.0*exp(Di/gamma*(depth));
-        }
-
-      //for (unsigned int q=0; q < in.position.size(); ++q)
-      //densities[q] = reference_rho;
-    }
-
-    template <int dim>
-    void
-    SimpleCompressible<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
