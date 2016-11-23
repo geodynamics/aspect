@@ -6,6 +6,18 @@
  *
  * <ol>
  *
+ * <li> Changed: The adiabatic profile now contains a reference density
+ * profile, and the derivative of this reference density profile. The
+ * InitialProfile adiabatic profile now relies on the adiabatic heating
+ * to decide if the temperature increases with depth. Additionally, an
+ * off-by-one bug was fixed in InitialProfile leading to minor changes
+ * in the adiabatic profiles (relative change of ~1e-4), changing models
+ * that rely on the profile. Models that rely on the adiabatic profile
+ * might be changed by this PR if they are compressible, but do not
+ * use adiabatic heating, or vice versa.
+ * <br>
+ * (Timo Heister, Juliane Dannberg, Rene Gassmoeller, 2016/11/20)
+ *
  * <li> New: The visco plastic material model now includes an option for
  * strain-weakening of cohesion and the internal angle of friction. 
  * Strain-weakeing of these properties is commonly used to help localize 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2011, 2012, 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,12 +73,6 @@ namespace aspect
         virtual bool is_initialized() const;
 
         /**
-         * Empty update function. This class does not update the adiabatic
-         * profile over time.
-         */
-        virtual void update ();
-
-        /**
          * Return the adiabatic temperature at a given point of the domain.
          */
         virtual double temperature (const Point<dim> &p) const;
@@ -87,6 +81,18 @@ namespace aspect
          * Return the adiabatic pressure at a given point of the domain.
          */
         virtual double pressure (const Point<dim> &p) const;
+
+        /**
+         * Return the reference density at a given point of the domain.
+         */
+        virtual double density (const Point<dim> &p) const;
+
+        /**
+         * Return the derivative of the density with respect to depth
+         * at the given point @p p.
+         */
+        virtual
+        double density_derivative (const Point<dim> &p) const;
 
       private:
 
@@ -110,12 +116,20 @@ namespace aspect
          */
         std::vector<double> temperatures;
         std::vector<double> pressures;
+        std::vector<double> densities;
 
         /**
          * Interval spacing between each two data points in the tables above
          * with regard to the depth coordinate.
          */
         double delta_z;
+
+        /**
+         * Internal helper function. Returns the reference property at a
+         * given point of the domain.
+         */
+        double get_property (const Point<dim> &p,
+                             const std::vector<double> &property) const;
     };
   }
 }

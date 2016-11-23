@@ -9,7 +9,7 @@ Number of degrees of freedom: 70,789 (33,282+4,225+16,641+16,641)
    Solving Stokes system... 30+2 iterations.
 
    Postprocessing:
-     Melt fraction min/total/max: 0, 22.9, 1
+     Melt fraction min/total/max: 0, 21.91, 1
 
 Termination requested by criterion: end time
 

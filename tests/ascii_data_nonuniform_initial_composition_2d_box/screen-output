@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 
    Loading Ascii data initial file ASPECT_DIR/data/compositional-initial-conditions/ascii-data/test/box_2d_nonuniform.txt.
@@ -13,12 +11,12 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1 m/year, 1 m/year
      Temperature min/avg/max:            1613 K, 1672 K, 1913 K
-     Heat fluxes through boundary parts: -705 W, -705 W, -5640 W, 8.969e-12 W
+     Heat fluxes through boundary parts: -705 W, -705 W, -5640 W, 0 W
      Compositions min/max/mass:          0/1/3.259e+11
 
 *** Timestep 1:  t=82099.9 years

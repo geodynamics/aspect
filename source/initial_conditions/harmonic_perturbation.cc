@@ -38,7 +38,7 @@ namespace aspect
 
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
-      const double background_temperature = this->get_material_model().is_compressible() ?
+      const double background_temperature = this->include_adiabatic_heating() ?
                                             this->get_adiabatic_conditions().temperature(position) :
                                             reference_temperature;
 

@@ -134,9 +134,8 @@ namespace aspect
       if (this->include_adiabatic_heating ())
         {
           // temperature dependence is 1 - alpha * (T - T(adiabatic))
-          if (this->get_adiabatic_conditions().is_initialized())
-            temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-                                      * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
+          temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
+                                    * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
         }
       else
         temperature_dependence -= temperature * thermal_expansion_coefficient(temperature, pressure, compositional_fields, position);
@@ -171,8 +170,7 @@ namespace aspect
                                    const std::vector<double> &composition,
                                    const Point<dim> &position) const
     {
-      if (!(this->get_adiabatic_conditions().is_initialized()))
-        return thermal_alpha;
+      return thermal_alpha;
 
       const double melt_frac = melt_fraction(temperature, pressure, composition, position);
       return thermal_alpha * (1-melt_frac) + melt_thermal_alpha * melt_frac;

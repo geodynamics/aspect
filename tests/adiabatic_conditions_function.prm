@@ -19,7 +19,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = sin(depth); depth
+    set Function expression = sin(depth); depth; 5.0+depth*depth
     set Variable names      = depth
   end
 
@@ -81,7 +81,7 @@ subsection Model settings
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, depth average
 
   subsection Visualization
     set Output format                 = gnuplot

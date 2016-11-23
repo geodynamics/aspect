@@ -28,7 +28,7 @@ namespace aspect
   {
     template <int dim>
     Function<dim>::Function()
-      : function (2)
+      : function (3)
     {}
 
     template <int dim>
@@ -62,6 +62,25 @@ namespace aspect
       return function.value(Point<1>(z), 0);
     }
 
+    template <int dim>
+    double Function<dim>::density (const Point<dim> &p) const
+    {
+      const double z = this->get_geometry_model().depth(p);
+      return function.value(Point<1>(z), 2);
+    }
+
+
+
+    template <int dim>
+    double Function<dim>::density_derivative (const Point<dim> &p) const
+    {
+      // TODO: better eps or make it a user input
+      const double z = this->get_geometry_model().depth(p);
+      const double z2 = z + (1.e3 * std::numeric_limits<double>::epsilon())
+                        * this->get_geometry_model().maximal_depth();
+      return (function.value(Point<1>(z), 2)
+              - function.value(Point<1>(z2), 2))/(z-z2);
+    }
 
     template <int dim>
     void
@@ -70,8 +89,8 @@ namespace aspect
       prm.enter_subsection("Adiabatic conditions model");
       {
         prm.enter_subsection("Function");
-        Functions::ParsedFunction<1>::declare_parameters (prm, 2);
-        prm.declare_entry("Function expression","0.0: 0.0");
+        Functions::ParsedFunction<1>::declare_parameters (prm, 3);
+        prm.declare_entry("Function expression","0.0; 0.0; 1.0");
         prm.declare_entry("Variable names","depth");
         prm.leave_subsection();
       }

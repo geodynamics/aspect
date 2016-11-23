@@ -35,14 +35,9 @@ namespace aspect
                     const double pressure,
                     const int phase) const
     {
-      // if we already have the adiabatic conditions, we can use them.
       // We need to convert the depth to pressure (depth-based phase transitions),
       // or else use the pressure itself if the phase transition is defined based off a pressure.
-
-      // note: the pressure case for adiabatic conditions initialized and
-      // the pressure case for non-initialized adiabatic conditions
-      // are the same, so the pressure case is included in the if statement for adiabatic conditions.
-      if (this->get_adiabatic_conditions().is_initialized() || use_depth ==false)
+      if (!use_depth)
         {
           // first, get the pressure at which the phase transition occurs normally
           // and get the pressure change in the range of the phase transition
@@ -51,29 +46,9 @@ namespace aspect
           double pressure_width;
           double width_temp;
 
-
-
-
-
-          // using the depth to define the phase transition (default),
-          if (use_depth ==true)
-            {
-              const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[phase]);
-              const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_widths[phase]);
-              const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[phase] - transition_widths[phase]);
-
-              transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-              pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
-                                      - this->get_adiabatic_conditions().pressure(transition_minus_width));
-              width_temp = transition_widths[phase];
-            }
-          // transition based off of pressure
-          else
-            {
-              transition_pressure = transition_pressures[phase];
-              pressure_width = transition_pressure_widths[phase];
-              width_temp = transition_pressure_widths[phase];
-            }
+          transition_pressure = transition_pressures[phase];
+          pressure_width = transition_pressure_widths[phase];
+          width_temp = transition_pressure_widths[phase];
 
           // then calculate the deviation from the transition point (both in temperature
           // and in pressure)
@@ -90,10 +65,6 @@ namespace aspect
             phase_func = 0.5*(1.0 + std::tanh(pressure_deviation / pressure_width));
           return phase_func;
         }
-      // if we do not have the adiabatic conditions, we have to use the depth itself instead
-      // this is less precise, because we do not have the exact pressure gradient, instead we use pressure/depth
-      // (this is for calculating e.g. the density in the adiabatic profile)
-
       // this part of the loop is only implemented for phase transitions based off of depth,
       // since pressure-based transitions are included above.
       else
@@ -136,7 +107,7 @@ namespace aspect
       // first, get the pressure at which the phase transition occurs normally
 
       // phase transition based off of depth
-      if (use_depth ==true)
+      if (use_depth)
         {
           const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[phase]);
           const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_widths[phase]);
@@ -214,9 +185,8 @@ namespace aspect
             if (this->include_adiabatic_heating ())
               {
                 // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                if (this->get_adiabatic_conditions().is_initialized())
-                  density_temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-                                                    * thermal_alpha;
+                density_temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
+                                                  * thermal_alpha;
               }
             else
               density_temperature_dependence -= temperature * thermal_alpha;
@@ -241,7 +211,7 @@ namespace aspect
 
             // transitions defined by depth
             unsigned int number_of_phase_transitions;
-            if (use_depth == true)
+            if (use_depth)
               number_of_phase_transitions = transition_depths.size();
             // transitions defined by pressure
             else
@@ -291,7 +261,7 @@ namespace aspect
             unsigned int number_of_phase_transitions;
 
             // transition defined by depth
-            if (use_depth ==true)
+            if (use_depth)
               number_of_phase_transitions= transition_depths.size();
             // transition defined by pressure
             else
@@ -558,7 +528,7 @@ namespace aspect
                              (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
 
           // make sure to check against the depth lists for size errors, since using depth
-          if (use_depth == true)
+          if (use_depth)
             {
               if (transition_widths.size() != transition_depths.size() ||
                   transition_temperatures.size() != transition_depths.size() ||

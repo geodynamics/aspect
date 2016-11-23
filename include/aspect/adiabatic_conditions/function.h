@@ -36,7 +36,7 @@ namespace aspect
 
     /**
      * A simple class that sets the adiabatic conditions based on given
-     * a given function with two components: temperature and pressure.
+     * a given function with three components: temperature, pressure, density.
      */
     template <int dim>
     class Function : public Interface<dim>
@@ -69,6 +69,19 @@ namespace aspect
          */
         virtual double pressure (const Point<dim> &p) const;
 
+        /**
+         * Return the reference_density at a given point of the domain.
+         */
+        virtual
+        double density (const Point<dim> &p) const;
+
+        /**
+         * Return the derivative of the density with respect to depth
+         * at the given point @p p.
+         */
+        virtual
+        double density_derivative (const Point<dim> &p) const;
+
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -80,7 +93,7 @@ namespace aspect
       private:
 
         /**
-         * ParsedFunction: depth->(temperature, pressure)
+         * ParsedFunction: depth->(temperature, pressure, density)
          */
         Functions::ParsedFunction<1> function;
     };

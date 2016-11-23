@@ -9,7 +9,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:       6.6e-05 m/s, 0.000142 m/s
-     Pressure min/avg/max:    -0.002229 Pa, 0.5 Pa, 0.998 Pa
+     Pressure min/avg/max:    -0.002306 Pa, 0.4999 Pa, 0.9979 Pa
      Temperature min/avg/max: 0 K, 0.8632 K, 2 K
 
 *** Timestep 1:  t=400 seconds
@@ -19,7 +19,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      RMS, max velocity:       6.67e-05 m/s, 0.000141 m/s
-     Pressure min/avg/max:    -0.007575 Pa, 0.5 Pa, 0.9937 Pa
+     Pressure min/avg/max:    -0.007651 Pa, 0.4999 Pa, 0.9937 Pa
      Temperature min/avg/max: 0 K, 0.8639 K, 2 K
 
 Termination requested by criterion: end time

@@ -89,8 +89,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 3
-  set Initial global refinement          = 6
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.00
   set Strategy                           = temperature

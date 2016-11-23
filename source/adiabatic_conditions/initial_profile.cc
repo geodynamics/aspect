@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,10 +21,8 @@
 
 #include <aspect/global.h>
 #include <aspect/adiabatic_conditions/initial_profile.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/box.h>
 
-#include <deal.II/base/std_cxx11/bind.h>
+#include <deal.II/base/signaling_nan.h>
 
 
 namespace aspect
@@ -36,9 +34,12 @@ namespace aspect
       :
       initialized(false),
       n_points(1000),
-      temperatures(n_points, -1),
-      pressures(n_points, -1)
+      temperatures(n_points, numbers::signaling_nan<double>()),
+      pressures(n_points, numbers::signaling_nan<double>()),
+      densities(n_points, numbers::signaling_nan<double>())
     {}
+
+
 
     template <int dim>
     void
@@ -46,79 +47,86 @@ namespace aspect
     {
       if (initialized)
         return;
+
+      Assert (pressures.size() == n_points, ExcInternalError());
+      Assert (temperatures.size() == n_points, ExcInternalError());
+
       delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
 
-      const unsigned int n_compositional_fields = this->n_compositional_fields();
+      MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
 
-      temperatures[0] = this->get_adiabatic_surface_temperature();
-      pressures[0]    = this->get_surface_pressure();
-
+      // Constant properties on the reference profile
+      in.strain_rate.resize(0); // we do not need the viscosity
+      in.velocity[0] = Tensor <1,dim> ();
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
       // adiabatic pressures and temperatures with depth. In some cases it will point up / out
       // (e.g. for backward advection), in which case the pressures and temperatures should
       // decrease with depth and therefore gravity has to be negative in the following equations.
-      Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+      const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
       const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
       const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
       const int gravity_direction =  (g * (point_bot - point_surf) >= 0) ?
                                      1 :
                                      -1;
 
-
       // now integrate downward using the explicit Euler method for simplicity
       //
       // note: p'(z) = rho(p,T) * |g|
       //       T'(z) = alpha |g| T / c_p
-      double z;
-      for (unsigned int i=1; i<n_points; ++i)
+      for (unsigned int i=0; i<n_points; ++i)
         {
-          Assert (i < pressures.size(), ExcInternalError());
-          Assert (i < temperatures.size(), ExcInternalError());
+          if (i==0)
+            {
+              pressures[i] = this->get_surface_pressure();
+              temperatures[i] = this->get_adiabatic_surface_temperature();
+            }
+          else
+            {
+              // use material properties calculated at i-1
+              const double density = out.densities[0];
+              const double alpha = out.thermal_expansion_coefficients[0];
+              // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
+              // 1/cp = 0.0 we will have a constant temperature profile with depth.
+              const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
+              // get the magnitude of gravity. we assume
+              // that gravity always points along the depth direction. this
+              // may not strictly be true always but is likely a good enough
+              // approximation here.
+              const double gravity = gravity_direction * this->get_gravity_model().gravity_vector(in.position[0]).norm();
 
-          z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
+              pressures[i] = pressures[i-1] + density * gravity * delta_z;
+              temperatures[i] = (this->include_adiabatic_heating())
+                                ?
+                                temperatures[i-1] * (1 + alpha * gravity * delta_z * one_over_cp)
+                                :
+                                this->get_adiabatic_surface_temperature();
+            }
 
+          const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
           const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
-          const double delta_z = 1.0/double(n_points-1)*this->get_geometry_model().maximal_depth();
-          Tensor <1,dim> g = this->get_gravity_model().gravity_vector(representative_point);
+          const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(representative_point);
 
-          MaterialModel::MaterialModelInputs<dim> in(1, n_compositional_fields);
-          MaterialModel::MaterialModelOutputs<dim> out(1, n_compositional_fields);
           in.position[0] = representative_point;
-          in.temperature[0] = temperatures[i-1];
-          in.pressure[0] = pressures[i-1];
-          in.velocity[0] = Tensor <1,dim> ();
+          in.temperature[0] = temperatures[i];
+          in.pressure[0] = pressures[i];
 
           // we approximate the pressure gradient by extrapolating the values
           // from the two points above
-          if (i>1)
+          if (i>0)
             in.pressure_gradient[0] = g/(g.norm() != 0.0 ? g.norm() : 1.0)
-                                      * (pressures[i-1] - pressures[i-2]) / delta_z;
+                                      * (pressures[i] - pressures[i-1]) / delta_z;
           else
             in.pressure_gradient[0] = Tensor <1,dim> ();
 
-          for (unsigned int c=0; c<n_compositional_fields; ++c)
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             in.composition[0][c] = this->get_compositional_initial_conditions().initial_composition(representative_point, c);
 
-          in.strain_rate.resize(0); // we do not need the viscosity
           this->get_material_model().evaluate(in, out);
 
-          // get the magnitude of gravity. we assume
-          // that gravity always points along the depth direction. this
-          // may not strictly be true always but is likely a good enough
-          // approximation here.
-          const double density = out.densities[0];
-          const double alpha = out.thermal_expansion_coefficients[0];
-          // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
-          // 1/cp = 0.0 we will have a constant temperature profile with depth.
-          const double one_over_cp = (out.specific_heat[0]>0.0) ? 1.0/out.specific_heat[0] : 0.0;
-          double gravity = gravity_direction * this->get_gravity_model().gravity_vector(representative_point).norm();
-
-          pressures[i] = pressures[i-1]
-                         + density * gravity * delta_z;
-          temperatures[i] = temperatures[i-1] * (1 +
-                                                 alpha * gravity * delta_z * one_over_cp);
+          densities[i] = out.densities[0];
         }
 
       if (gravity_direction == 1 && this->get_surface_pressure() >= 0)
@@ -144,6 +152,8 @@ namespace aspect
       initialized = true;
     }
 
+
+
     template <int dim>
     bool
     InitialProfile<dim>::is_initialized() const
@@ -151,33 +161,12 @@ namespace aspect
       return initialized;
     }
 
-    template <int dim>
-    void
-    InitialProfile<dim>::update()
-    {}
 
 
     template <int dim>
     double InitialProfile<dim>::pressure (const Point<dim> &p) const
     {
-      const double z = this->get_geometry_model().depth(p);
-
-      if (z >= this->get_geometry_model().maximal_depth())
-        {
-          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-                  ExcInternalError());
-          return pressures.back();
-        }
-
-      const unsigned int i = static_cast<unsigned int>(z/delta_z);
-      Assert ((z/delta_z) >= 0, ExcInternalError());
-      Assert (i+1 < pressures.size(), ExcInternalError());
-
-      // now do the linear interpolation
-      const double d=1.0+i-z/delta_z;
-      Assert ((d>=0) && (d<=1), ExcInternalError());
-
-      return d*pressures[i]+(1-d)*pressures[i+1];
+      return get_property(p,pressures);
     }
 
 
@@ -185,24 +174,81 @@ namespace aspect
     template <int dim>
     double InitialProfile<dim>::temperature (const Point<dim> &p) const
     {
+      return get_property(p,temperatures);
+    }
+
+
+
+    template <int dim>
+    double InitialProfile<dim>::density (const Point<dim> &p) const
+    {
+      return get_property(p,densities);
+    }
+
+
+
+    template <int dim>
+    double InitialProfile<dim>::density_derivative (const Point<dim> &p) const
+    {
       const double z = this->get_geometry_model().depth(p);
 
       if (z >= this->get_geometry_model().maximal_depth())
         {
           Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
                   ExcInternalError());
-          return temperatures.back();
+          return (densities.back() - densities[densities.size()-2]) / delta_z;
         }
 
-      const unsigned int i = static_cast<unsigned int>(z/delta_z);
-      Assert ((z/delta_z) >= 0, ExcInternalError());
-      Assert (i+1 < temperatures.size(), ExcInternalError());
+      if (z < 0)
+        {
+          Assert (z >= -delta_z, ExcInternalError());
+          return (densities[1] - densities.front()) / delta_z;
+        }
+
+      // if z/delta_z is within [k-eps, k+eps] of a whole number k, round it down to k-1
+      const unsigned int i = static_cast<unsigned int>((z/delta_z) * (1. - 2. * std::numeric_limits<double>::epsilon()));
+      Assert (i < densities.size() - 1, ExcInternalError());
+
+      return (densities[i+1]-densities[i])/delta_z;
+    }
+
+
+
+    template <int dim>
+    double InitialProfile<dim>::get_property (const Point<dim> &p,
+                                              const std::vector<double> &property) const
+    {
+      const double z = this->get_geometry_model().depth(p);
+
+      if (z >= this->get_geometry_model().maximal_depth())
+        {
+          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
+                  ExcInternalError());
+          return property.back();
+        }
+
+      if (z <= 0)
+        {
+          Assert (z >= -delta_z, ExcInternalError());
+          return property.front();
+        }
+
+      const double floating_index = z/delta_z;
+      const unsigned int i = static_cast<unsigned int>(floating_index);
+
+      // If p is close to an existing value use that one. This prevents
+      // asking for values at i+1 while initializing i+1 (when p is at the
+      // depth of index i).
+      if (std::abs(floating_index-std::floor(floating_index+0.5)) < 1e-6)
+        return property[i];
+
+      Assert (i+1 < property.size(), ExcInternalError());
 
       // now do the linear interpolation
-      const double d=1.0+i-z/delta_z;
+      const double d = floating_index - i;
       Assert ((d>=0) && (d<=1), ExcInternalError());
 
-      return d*temperatures[i]+(1-d)*temperatures[i+1];
+      return d*property[i+1] + (1.-d)*property[i];
     }
   }
 }

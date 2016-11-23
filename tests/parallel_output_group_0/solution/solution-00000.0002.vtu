@@ -2,7 +2,6 @@
 <!-- 
 # vtk DataFile Version 3.0
 #This file was generated 
--->
 <VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
 <UnstructuredGrid>
 <FieldData>
@@ -28,9 +27,9 @@ AQAAAAYAAAAGAAAACwAAAA==eNrj5AQBAADDADc=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float64" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAEACAABAAgAAggAAAA==eNpjYGBgyN421R5IHZjwYw+IhoEHt0MLQPwGgeMo4qQCQuYsYOyZRIn5CUX31oHNf9E1YT+SeMPH+1lgcyX8bJDFF4jIrAKJK6xlX4lsr4JEVzM4HDxr5toTYQ4ugMscuHm2e4rtKXAPrvBU+JLVBOZf/N5pT4F7cJmDNb4A8XxLbA==    </DataArray>
+AQAAAEACAABAAgAAhAAAAA==eNpjYGB4EL9tqj0DA8OBCT/2gGg4uBRaAOInCB9HFScVEDDnAXvPJErMf1B9bx1I/4K3XRP2I4kvkHmQBbbX1c8GWdxBSmYVSNxhI/tKZHsXKHQ1g/gKATVz7YkwBxfAZQ4MJATsKbanwD04w/NzVhM4Hh9877SnwD24zMEaXwD6dEqs    </DataArray>
     <DataArray type="Float64" Name="p" format="binary">
-AQAAAMAAAADAAAAAYwAAAA==eNpjYGBg6K1SdgJSCm2hYHrBvPdGIDph4zsjZPEHyfHKyOIH9r4B0w6nXRYfBNIMbWIrQfQDt5fCIPEGzsdgGiau8JB71UEkcYX/98E0unqYfQylUcpOWNTDxMHuAQBlszAP    </DataArray>
+AQAAAMAAAADAAAAAYQAAAA==eNpjYGBg6K1SdgJSCm2hYHrBvPdGIDph4zsjZPEHyfHKyOIH9r6ByJ9xWXwQxG8XWwmiH7i9FAaJN3A+BtMw8YRH3KsOIokr/L8PptHVw+xjKI1SdsKiHiYOdg8ACoIxsw==    </DataArray>
     <DataArray type="Float64" Name="T" format="binary">
 AQAAAMAAAADAAAAAPwAAAA==eNpjYACCuiUOIIrhxFIIvXEDKg0Th6lDl8/oQ6XZ54HoBSxlc7HJI8Ql5mBXD7EvISJ9KTb1MHGwewA0myQg    </DataArray>
   </PointData>
