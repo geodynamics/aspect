@@ -1984,6 +1984,7 @@ namespace aspect
 
                   case Parameters<dim>::AdvectionFieldMethod::particles:
                     interpolate_particle_properties(adv_field);
+                    apply_limiter_to_dg_solutions(adv_field);
                     break;
 
                   default:
