@@ -302,6 +302,22 @@ namespace aspect
                        "the composition system gets solved. See 'linear solver "
                        "tolerance' for more details.");
 
+
+    prm.enter_subsection("Formulation");
+    {
+      prm.declare_entry ("Formulation", "full",
+                         Patterns::Selection ("full|custom|ALA|TALA|EBA|BA"),
+                         "");
+
+      prm.declare_entry ("Mass density approximation", "full",
+                         Patterns::Selection ("full|adiabatic|adiabatic density|implicit adiabatic|incompressible|ask material model"),
+                         "");
+      prm.declare_entry ("Temperature density approximation", "full",
+                         Patterns::Selection ("full|adiabatic"),
+                         "");
+    }
+    prm.leave_subsection();
+
     // next declare parameters that pertain to the equations to be
     // solved, along with boundary conditions etc. note that at this
     // point we do not know yet which geometry model we will use, so
@@ -948,6 +964,61 @@ namespace aspect
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
     }
     prm.leave_subsection ();
+
+
+    prm.enter_subsection ("Formulation");
+    {
+      const std::string formulation = prm.get("Formulation");
+      if (formulation == "full")
+        {
+          formulation_mass = FormulationType::ask_material_model;
+          formulation_temperature = FormulationType::full;
+        }
+      else if (formulation == "BA")
+        {
+          formulation_mass = FormulationType::incompressible;
+          formulation_temperature = FormulationType::adiabatic;
+
+          // Assert AdiabaticConditions = ConstantTemperature, density=1
+          // Assert shear/adiabatic heating plugins are off
+          // is_compressible= false
+        }
+      else if (formulation == "EBA")
+        {
+          formulation_temperature = FormulationType::adiabatic;
+          formulation_mass = FormulationType::incompressible;
+
+          // Assert shear/adiabatic heating plugins are on
+          // adiabatic.simple = true
+          // Assert AdiabaticConditions = InitialProfile
+          // is_compressible= false
+
+        }
+      else if (formulation == "TALA")
+        {
+          // like ALA, but make your MaterialModel::density
+          // independent of pressure
+          AssertThrow(false, ExcNotImplemented());
+        }
+      else if (formulation == "ALA")
+        {
+          formulation_temperature = FormulationType::adiabatic;
+          formulation_mass = FormulationType::adiabatic; // or maybe implicit_adiabatic?
+          // Assert shear/adiabatic heating plugins are on
+          // adiabatic.simple = true
+          // is_compressible= true
+          // Assert AdiabaticConditions = InitialProfile
+          // or do we create AdiabaticConditionsALA ?
+        }
+      else if (formulation == "custom")
+        {
+          formulation_mass = FormulationType::parse(prm.get("Mass density approximation"));
+          formulation_temperature = FormulationType::parse(prm.get("Temperature density approximation"));
+        }
+      else AssertThrow(false, ExcNotImplemented());
+    }
+    prm.leave_subsection ();
+
 
     prm.enter_subsection ("Model settings");
     {

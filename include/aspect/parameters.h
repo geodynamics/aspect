@@ -202,6 +202,50 @@ namespace aspect
      */
 
     /**
+     * @name Formulation settings
+     * @{
+     */
+    struct FormulationType
+    {
+      enum Kind
+      {
+        full,
+        adiabatic,
+        adiabatic_density,
+        adiabatic_pressure,
+        implicit_adiabatic,
+        incompressible, ask_material_model
+      };
+      static Kind parse(const std::string &input)
+      {
+        if (input == "full")
+          return FormulationType::full;
+        else if (input == "adiabatic")
+          return FormulationType::adiabatic;
+        else if (input == "adiabatic density")
+          return FormulationType::adiabatic_density;
+        else if (input == "adiabatic pressure")
+          return FormulationType::adiabatic_pressure;
+        else if (input == "implicit adiabatic")
+          return FormulationType::implicit_adiabatic;
+        else if (input == "incompressible")
+          return FormulationType::incompressible;
+        else if (input == "ask material model")
+          return FormulationType::ask_material_model;
+        else
+          AssertThrow(false, ExcNotImplemented());
+        return FormulationType::full;
+      }
+    };
+
+    typename FormulationType::Kind formulation_mass;
+    typename FormulationType::Kind formulation_temperature;
+
+    /**
+     * @}
+     */
+
+    /**
      * @name Parameters that have to do with terms in the model
      * @{
      */

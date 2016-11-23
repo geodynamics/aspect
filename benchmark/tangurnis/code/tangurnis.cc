@@ -62,6 +62,7 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
+
         virtual double density (const double temperature,
                                 const double pressure,
                                 const std::vector<double> &compositional_fields,
@@ -164,7 +165,6 @@ namespace aspect
         double reference_rho;
         double reference_T;
         double eta;
-        double thermal_alpha;
         double reference_specific_heat;
 
         /**
@@ -180,8 +180,10 @@ namespace aspect
 
       //BA:
       //Di=0;gamma=10000; //=inf
+
       //EBA:
       //Di=0.5;gamma=inf;
+
       //TALA:
       Di=0.5;
       gamma=1.0;
@@ -200,7 +202,7 @@ namespace aspect
                const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
-      return exp(a*depth);
+      return (Di==0.0?1.0:Di)*exp(a*depth);
     }
 
 
@@ -290,7 +292,7 @@ namespace aspect
     {
       const double depth = 1.0-pos(dim-1);
       const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
-      return -1.0*temperature*exp(Di/gamma*(depth));
+      return (Di==0.0?1.0:Di)*(-1.0*temperature)*exp(Di/gamma*(depth));
     }
 
 
@@ -303,7 +305,7 @@ namespace aspect
                                    const std::vector<double> &, /*composition*/
                                    const Point<dim> &) const
     {
-      return thermal_alpha;
+      return (Di==0.0)?1.0:Di;
     }
 
 
@@ -316,7 +318,11 @@ namespace aspect
                      const std::vector<double> &compositional_fields,
                      const Point<dim> &pos) const
     {
-      double d = density(temperature, pressure, compositional_fields, pos);
+      const double depth = 1.0-pos(dim-1);
+      double d = 1.0*exp(Di/gamma*(depth));
+
+      // this is no longer used because we use the new adiabatic mass formulation
+      // based on AdiabaticConditions
       return (d==0) ? 1.0 : (Di/gamma / d);
     }
 
@@ -397,10 +403,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
                              "Units: $J/kg/K$.");
-          prm.declare_entry ("Thermal expansion coefficient", "2e-5",
-                             Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
           prm.declare_entry ("a", "0",
                              Patterns::Double (0),
                              "");
@@ -435,7 +437,6 @@ namespace aspect
           eta                   = prm.get_double ("Viscosity");
           k_value               = prm.get_double ("Thermal conductivity");
           reference_specific_heat = prm.get_double ("Reference specific heat");
-          thermal_alpha = prm.get_double ("Thermal expansion coefficient");
           a = prm.get_double("a");
           Di = prm.get_double("Di");
           gamma = prm.get_double("gamma");
@@ -483,6 +484,16 @@ namespace aspect
       double temperature (const GeometryModel::Interface<dim> &geometry_model,
                           const types::boundary_id                   boundary_indicator,
                           const Point<dim>                    &location) const;
+
+      virtual
+      double boundary_temperature (const types::boundary_id boundary_indicator,
+                                   const Point<dim> &position) const
+      {
+        double wavenumber=1;
+        return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
+
+      }
+
 
       /**
        * Return the minimal the temperature on that part of the boundary on

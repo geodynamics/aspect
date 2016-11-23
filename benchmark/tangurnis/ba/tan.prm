@@ -54,6 +54,24 @@ set Start time                             = 0
 # general mathematical model.
 set Adiabatic surface temperature          = 0
 
+subsection Adiabatic conditions model
+  #set Model name = initial profile
+  set Model name = function
+  subsection Function
+    set Function constants  = Di=0.0, gamma=1.0
+    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
+    set Variable names      = depth
+  end
+
+end
+
+subsection Formulation
+  set Formulation = custom
+  set Mass density approximation        = adiabatic
+  set Temperature density approximation = adiabatic
+end
+
+
 # The mathematical equations that describe thermal convection only determine
 # the pressure up to an arbitrary constant. On the other hand, for comparison
 # and for looking up material parameters it is important that the pressure be
@@ -88,8 +106,8 @@ subsection Boundary temperature model
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
   # read from subsection 'Sherical constant'.
-  set Model name = box
- 
+  set Model name = Tan Gurnis
+
 end
 
 
@@ -207,7 +225,6 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    set Thermal expansion coefficient = 1
     set Di                            = 0
     set gamma                         = 1 # infinity really, but does not matter
 

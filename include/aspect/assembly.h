@@ -72,6 +72,9 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
+
+          std::vector<double> mass_densities;
+          std::vector<double> adiabatic_density_gradients;
         };
 
 

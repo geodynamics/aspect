@@ -112,7 +112,6 @@ namespace aspect
   class Simulator
   {
     public:
-
       /**
        * Constructor.
        *
