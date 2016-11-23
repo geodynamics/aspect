@@ -203,7 +203,6 @@ subsection Initial conditions
   subsection Function
     set Function expression = sin(pi*y)*cos(pi*1*x)
   end
-
 end
 
 
@@ -234,6 +233,13 @@ subsection Material model
 
 end
 
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
@@ -305,7 +311,7 @@ subsection Postprocess
   # into files that can be read by a graphical visualization program.
   # Additional run time parameters are read from the parameter subsection
   # 'Visualization'.
-  set List of postprocessors = Tan Gurnis error, visualization
+  set List of postprocessors = Tan Gurnis error, visualization, heating statistics
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A

@@ -1,8 +1,6 @@
 % tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251999e-03, shear = -5.306916e-03
 % tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718841e-03, shear = -2.297907e-03
 % BA     Di=0.0, gamma = 1, a= 0 heating terms: adab = 0, shear = 0 ;-)
-heating terms: adab = 1.718841e-03, shear = -2.297907e-03
-
 
 function matlab
 
@@ -47,21 +45,22 @@ for j=[8 16 32 64 128]
     end
     vv=vv(2:size(vv,1),:); %remove the first line
     
-    %now vv is an array with x,y,u_x,u_y,jxw,p,T
+    %now vv is an array with x,z,u_x,u_z,jxw,p,T
+    dat_calc_ux = vv(:,3);
+    dat_calc_uz = vv(:,4);
     
-    %we are looking at u_x:
-    dat_calc = vv(:,3);
-    % interpolate reference solution on points of the solution (in 1d)
-    dat_ref = interp1(SOL.x, SOL.y(2,:), vv(:,2)); 
-    dat_ref = dat_ref .* sin(vv(:,1).*k); % and make it 2d
-    
-    fprintf('%i,%i %i,%i\n',min(dat_calc),max(dat_calc),min(dat_ref),max(dat_ref))
-    
-    %scatter3(vv(:,1),vv(:,2),dat_ref,[],dat_ref)
-    %scatter3(vv(:,1),vv(:,2),vv(:,3),[],vv(:,3))
-    
-    %compute \sqrt(\int (u-u_ref)^2)
-    l2error = sqrt( sum((dat_ref - dat_calc).^2 .* vv(:,5)) );
+    % compute reference u*:
+    dat_ref_ux = interp1(SOL.x, SOL.y(2,:), vv(:,2)); 
+    dat_ref_ux = dat_ref_ux .* sin(vv(:,1).*k); % and make it 2d
+    dat_ref_uz = interp1(SOL.x, SOL.y(1,:), vv(:,2)); 
+    dat_ref_uz = dat_ref_uz .* cos(vv(:,1).*k); % and make it 2d
+
+    % compute |u-u*|_0 of the vector-valued function u=(u_x, u_z)
+    % as sqrt( \int (u_x-u*_x)^2 + (u_z-u*_z)^2 )  
+    l2error = sqrt( sum( ...
+        ( (dat_ref_ux - dat_calc_ux).^2 + (dat_ref_ux - dat_calc_ux).^2 ) ...
+          .* vv(:,5) ...
+        ) );
     
     convx=[convx; j];
     convy=[convy; l2error];
@@ -96,7 +95,7 @@ Uz=Uzs(i);
 JxW=vv(i,5);
 etazero = 1;
 etastar = exp(a*(1-x))/etazero;
-eta=exp(a*(1-x));
+eta=exp(a*(1-z));
 Ts=0;%0.091;
 eta_xz=eta_xzs(i)*2*k;
 adab_heating = Di*exp(beta_*(1-z))*Uz*cos(k*x)*(sin(pi*z)*cos(k*x)+Ts);
@@ -107,7 +106,7 @@ adab_heating_int = adab_heating_int + adab_heating*JxW;
 shear_heating_int = shear_heating_int + shear_heating*JxW;
 end
 
-fprintf('heating terms: adab = %d, shear = %d\n\n',adab_heating_int, shear_heating_int)
+fprintf('heating terms: adab = %.15d, shear = %.15d\n\n',adab_heating_int, shear_heating_int)
 
 end
 

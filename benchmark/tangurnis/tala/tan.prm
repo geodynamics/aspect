@@ -223,7 +223,6 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    #set Reference density = 1
     set Di                            = 0.5
     set gamma                         = 1
 
