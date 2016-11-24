@@ -305,16 +305,30 @@ namespace aspect
 
     prm.enter_subsection("Formulation");
     {
-      prm.declare_entry ("Formulation", "full",
-                         Patterns::Selection ("full|custom|ALA|TALA|EBA|BA"),
-                         "");
+      prm.declare_entry ("Formulation", "custom",
+                         Patterns::Selection ("isothermal compression|custom|ALA|BA"),
+                         "Select a formulation for the basic equations. Different "
+                         "published formulations are available in ASPECT (see list of "
+                         "possible parameters for available options). Two ASPECT specific "
+                         "options are: 'isothermal compression': ASPECT's original formulation, using the "
+                         "incompressible or explicit compressible mass equation, and "
+                         "the full density for the temperature equation. 'custom': "
+                         "A custom selection of 'Mass density approximation' and "
+                         "'Temperature density approximation'. Warning: The 'custom' option is "
+                         "implemented for advanced users that want full control over the "
+                         "equations solved. It is possible to choose inconsistent formulations "
+                         "and no error checking is performed on the consistency of the resulting "
+                         "equations.");
 
-      prm.declare_entry ("Mass density approximation", "full",
-                         Patterns::Selection ("full|adiabatic|adiabatic density|implicit adiabatic|incompressible|ask material model"),
-                         "");
-      prm.declare_entry ("Temperature density approximation", "full",
-                         Patterns::Selection ("full|adiabatic"),
-                         "");
+      prm.declare_entry ("Mass density approximation", "ask material model",
+                         Patterns::Selection ("incompressible|isothermal compression|reference profile compression|implicit reference profile compression|ask material model"),
+                         "Possible approximations for the density derivatives in the mass "
+                         "conservation equation. Note that this parameter is only evaluated "
+                         "if 'Formulation' is set to 'custom'. All other formulations overwrite "
+                         "this parameter.");
+      prm.declare_entry ("Temperature density approximation", "real density",
+                         Patterns::Selection ("real density|reference profile"),
+                         "Possible approximations for the density in the temperature equation. Possible approximations are: 'Full' ");
     }
     prm.leave_subsection();
 

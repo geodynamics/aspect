@@ -1827,45 +1827,71 @@ from previous time steps).
 \newpage
 \subsection{Approximations}
 
+There are several common simplifications of the above mentioned equations. They usually rely on the computation of a depth-dependent reference profile that represents a typical change of material parameters and solution variables with depth. The approximations are justified by the fact that the actual conditions do not deviate much from this reference profile. The terms influenced by these approximations are $\nabla \cdot (\rho u) =0$ in the continuity equation, and all occurences of $\rho(p,T)$ in the temperature equation, and we will discuss them separately below. 
+
+The reference profile is computed as:
+
+... fill in text from \ref{sec:adiabatic}
+
+
+
 1. Define adiabat as constant for BA models.
 
-2. given the density:
-\[
- \rho(depth, p, T, \dots) = A(depth) + B(p-p_{ref}) + C(T-T_{ref}) + \dots
-\]
-with an adiabat $p_{ref}$ and $T_{ref}$ as a function of depth,
-introduce a density approximation $\hat{\rho}=\rho(depth, p_{ref}, T_{ref})$ by default computed using adiabatic temperature and pressure (or one of them adiabatic) but can be overwritten.
+2. given an adiabat $p_{ref}$ and $T_{ref}$ as a function of depth,
+introduce a density approximation $\hat{\rho}=\rho(depth, p_{ref}, T_{ref})$ by default computed using adiabatic temperature and pressure but can be overwritten.
 
-{\bf Formulation:}
+
+\subsubsection{Mass density approximation}
+
+We provide the following simplifications for $\nabla \cdot (\rho u) =0$:
+
 \begin{itemize}
+
+\item
+``incompressible'':
+\[
+ \nabla \cdot \textbf{u} = 0
+\]
+
+\item
+``isothermal compression'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
+\]
+
+\item
+``reference profile'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\hat{\rho}} \frac{\partial \hat{\rho}}{\partial z} \frac{\textbf{g}}{g} \cdot \textbf{u}
+\]
+
+\item
+``implicit reference profile'':
+\[
+ \nabla \cdot \textbf{u} + \frac{1}{\hat{\rho}} \frac{\partial \hat{\rho}}{\partial z} \frac{\textbf{g}}{g} \cdot \textbf{u} = 0
+\]
+
+
  \item 
+``ask material model'': Uses ``isothermal compression'' if the material model reports is\_compressible and ``incompressible'' otherwise.
 
-ALA: $\hat{\rho} = \rho(z)$, $T_{ref}=T(z)$, adiabatic heating (simplified), shear heating;
-mass density = implicit adiabatic, buoyancy = full, temperature = adiabatic
+ \item 
+LATER: ``fuller?'':
+\[
+ \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
+ - \alpha \rho  \textbf{g} \cdot \textbf{u} 
+\]
 
-\item
-``TALA'': like ALA, except buoyancy approximation = adiabatic pressure
-
-\item
-``EBA'': $\rho=1$, $T_{ref}=0$, still with adiabatic heating (simplified), shear heating;
-mass density = incompressible, temperature = adiabatic, buoyancy = adiabatic pressure;
-
-Assert: material.compressible=false
-
-\item
-``BA'': EBA, but turn off shear heating and adiabatic heating. 
-
-\item
-``current'': full/full/full
-
-\item
-``better?''
 
 \end{itemize}
 
-\subsubsection{Stress tensor approximation}
+question: what if $\rho$ is a function of depth and we could give the exact $\nabla \rho$? We can do that now with the 'function' adiabatic conditions plugin.
 
-The stress tensor in the conservation of momentum (diffusion) is either
+''full`` is probably inconsistent because it doesn't use the reference density
+
+\bf{Stress tensor approximation}
+
+Incompressibility in the mass density equation automatically simplifies the shear strain rate in the momentum and temperature equation from
 \[
  \nabla \cdot \tau = 
  \nabla \cdot \left[
@@ -1873,130 +1899,63 @@ The stress tensor in the conservation of momentum (diffusion) is either
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                                   \right]
 \]
-or
+to
 \[
   \nabla \cdot \tau =  \nabla \cdot \left[
  2\eta \varepsilon(\mathbf u) \right]
 \]
 
-Currently controlled by material\_model.is\_compressible.
-
-\subsubsection{Mass density approximation}
-
-simplify $\nabla \cdot (\rho u) =0$ in one of the following ways:
-
-\begin{itemize}
-
- \item 
-``ask material model'': use ``full'' if is\_compressible and ``incompressible'' otherwise
-
- \item 
-``fuller?'':
-\[
- \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u} 
- - \alpha \rho  \textbf{g} \cdot \textbf{u} 
-\]
-
-\item
-``full'':
-\[
- \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \rho \textbf{g} \cdot \textbf{u}
-\]
-
-\item
-``adiabatic``:
-\[
- \nabla \cdot \textbf{u} = -\frac{1}{\rho} \frac{\partial \rho}{\partial p} \hat{\rho} \textbf{g} \cdot \textbf{u}
-\]
-
-\item
-``implicit adiabatic``:
-\[
- \nabla \cdot \textbf{u} + \frac{1}{\rho} \frac{\partial \rho}{\partial p} \hat{\rho} \textbf{g} \cdot \textbf{u} = 0
-\]
-
-\item
-``incompressible``:
-\[
- \nabla \cdot \textbf{u} = 0
-\]
-\end{itemize}
-
-question: what if $\rho$ is a function of depth and we could give the exact $\nabla \rho$?
-
-''full`` is probably inconsistent because it doesn't use the reference density
-
-\subsubsection{Buoyancy density approximation}
-
-we write the RHS of conservation of momentum 
-$
- \rho g
-$
-as
-\begin{itemize}
- \item 
-''full``: $\rho g$
-
-\item
-''adiabatic pressure``: $\rho(depth, p_{ref}, T) g$
-
-\end{itemize}
-
-
 \subsubsection{Temperature density approximation}
 
-temperature equation:
-\begin{align*}
-\rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right)
-  - \nabla\cdot k\nabla T
-  &=
-  \rho H
-  \notag
-  \\
-  &\quad
-  +
-  2\eta
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
-  :
-  \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
-  \\
-  &\quad
-  +\alpha T \left( \mathbf u \cdot \nabla p \right)
-  \notag
-%   \\
-%   &\quad
-%   + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right)
-\end{align*}
+The density occurs multiple times in the temperature equation. Depending on the selected approximation it is computed in two different ways:
 
 \begin{itemize}
  \item 
-``full``: use full density
+``real density'': Use the full density as computed for the buoyancy term of the momentum equations (i.e. the return value of the material model for ``density``).
 
 \item
-``adiabatic``: use density approximation in all terms
+``reference profile'': Use the density as computed for the reference profile (either adiabatic or constant, depending on ``include\_adiabatic\_heating'')
 \end{itemize}
 
 Note: simplified adiabatic heating allows different way of handling gravity 
 
+\subsubsection{Combined Formulations:}
+\begin{itemize}
+ \item 
+``ALA'': $\hat{\rho} = \rho(z)$, $T_{ref}=T(z)$, adiabatic heating (simplified), shear heating;
+mass density = reference profile or implicit reference profile, temperature = reference profile
+
+\item
+``TALA'': like ALA, except the dynamic pressure is neglected in the computation of the density for the buoyancy term.
+The buoyancy term on the RHS of the momentum equations can be approximated by neglecting pressure influences, which results in the TALA. This simplification is controlled by the material model, therefore the difference between the common TALA, and ALA formulations is decided inside the material model, and not as a separate formulation.
+
+\item
+``EBA'': Is not provided as combined formulation, since it is strongly inconsistent and easy to get wrong. It is still possible, by setting:
+$\rho=\rho_0$, $T_{ref}=const.$, still with adiabatic heating (simplified), shear heating;
+mass density = incompressible, temperature = reference profile;
+
+\item
+``BA'': mass density = incompressible, temperature = reference profile; like EBA, but without adiabatic and shear heating
+
+\item
+``current'': isothermal compression or incompressible in continuity equation/real density in temperature equation
+
+\item
+``better?''
+
+\end{itemize}
 
 \subsection{Questions}
 
 \begin{itemize}
- \item 
-how do people solve $\nabla \cdot (\rho u)=0$ with $\rho=\rho(z)$?
+\item
+The current material.is\_compressbile setting is needed for BA/EBA to get the simplified diffusion operator. Should this be a separate setting? It is equivalent, and we should use mass\_density\_formulation == incompressible instead.
 
 \item
-Should we allow very simple setups (pick all constants as 1)? Then we would need things like prefactors for shear heating. Otherwise picking constants like viscosity are somewhat more
-complicated...
+Should we model $\rho(z)$ using a linear adiabatic pressure and setting compressibilty to $\nabla \rho$ or should we introduce the depth derivative explicitly? We introduce the depth derivative explicitly to ensure best compatibilty to existing formulations.
 
 \item
-The current material.is\_compressbile setting is needed for BA/EBA to get the simplified diffusion operator. Should this be a separate setting?
-
-\item
-Should we model $\rho(z)$ using a linear adiabatic pressure and setting compressibilty to $\nabla \rho$ or should we introduce the depth derivative explicitly?
-
-\item
-Can we improve "full'' further and include additional terms?
+Can we improve "full'' further and include additional terms? Yes, but that is a longer term goal, and can be added by adding new mass_density_formulations.
 
 \item for WB: eqn (22) needs reference density and simplified adiabatic heating
 \end{itemize}
