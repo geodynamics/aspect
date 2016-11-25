@@ -6,6 +6,14 @@
  *
  * <ol>
  *
+ * <li> Changed: The 'Stokes only' nonlinear solver scheme now uses
+ * the nonlinear solver tolerance parameter (previously it was hard-
+ * coded to 1e-8), and it computes the nonlinear residual as current
+ * residual divided by initial residual, consistent with the 'iterated
+ * Stokes' solver scheme.
+ * <br>
+ * (Juliane Dannberg, Rene Gassmoeller, 2016/11/22)
+ * 
  * <li> Changed: The adiabatic profile now contains a reference density
  * profile, and the derivative of this reference density profile. The
  * InitialProfile adiabatic profile now relies on the adiabatic heating
