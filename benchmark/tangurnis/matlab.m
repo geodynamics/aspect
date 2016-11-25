@@ -1,5 +1,5 @@
-% tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251999e-03, shear = -5.306916e-03
-% tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718841e-03, shear = -2.297907e-03
+% tala   Di=0.5, gamma = 1, a= 0 heating terms: adab = 5.251998887401354e-03, shear = -5.306915879791999e-03
+% tala_c Di=0.5, gamma = 1, a= 2 heating terms: adab = 1.718840927336709e-03, shear = -1.671297523892296e-03
 % BA     Di=0.0, gamma = 1, a= 0 heating terms: adab = 0, shear = 0 ;-)
 
 function matlab
