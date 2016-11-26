@@ -621,7 +621,7 @@ namespace aspect
     endc = this->get_dof_handler().end();
     for (; cell != endc; ++cell)
       {
-        fe_values.reinit (cell);    
+        fe_values.reinit (cell);
         fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), in.temperature);
         fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(), in.pressure);
         fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(), in.velocity);
@@ -629,7 +629,7 @@ namespace aspect
 
         for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
           fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                                                                                                  composition_values[c]);
+              composition_values[c]);
         for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
           {
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
@@ -637,7 +637,7 @@ namespace aspect
           }
 
         fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                                                                                                 in.strain_rate);
+            in.strain_rate);
         in.position = fe_values.get_quadrature_points();
 
         this->get_material_model().evaluate(in, out);
@@ -670,10 +670,10 @@ namespace aspect
                 << ' ' << in.pressure[q]
                 << ' ' << in.temperature[q];
 
-             for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
-               f << ' ' << heating_model_outputs[i].heating_source_terms[q];
+            for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
+              f << ' ' << heating_model_outputs[i].heating_source_terms[q];
 
-             f  << std::endl;
+            f  << std::endl;
           }
       }
 

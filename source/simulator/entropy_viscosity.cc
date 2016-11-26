@@ -379,7 +379,7 @@ namespace aspect
 
         if (parameters.formulation_temperature == Parameters<dim>::TemperatureDensityFormulationType::reference_profile)
           for (unsigned int q=0; q<n_q_points; ++q)
-              scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
+            scratch.material_model_outputs.densities[q] = adiabatic_conditions->density(scratch.material_model_inputs.position[q]);
 
 
 

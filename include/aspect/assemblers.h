@@ -88,10 +88,10 @@ namespace aspect
 
       void
       local_assemble_stokes_mass_density_gradient_implicit (const double                                     pressure_scaling,
-                                                   const bool                                       rebuild_stokes_matrix,
-                                                   internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                   const Parameters<dim> &parameters) const;
+                                                            const bool                                       rebuild_stokes_matrix,
+                                                            internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                            internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                            const Parameters<dim> &parameters) const;
 
       void
       local_assemble_stokes_mass_density_explicit (const double                                     pressure_scaling,

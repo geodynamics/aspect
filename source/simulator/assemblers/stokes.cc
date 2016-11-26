@@ -276,10 +276,10 @@ namespace aspect
   void
   StokesAssembler<dim>::
   local_assemble_stokes_mass_density_gradient_implicit (const double                                     pressure_scaling,
-                                               const bool                                       rebuild_stokes_matrix,
-                                               internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                               internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                               const Parameters<dim> &parameters) const
+                                                        const bool                                       rebuild_stokes_matrix,
+                                                        internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                        internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                        const Parameters<dim> &parameters) const
   {
     // assemble compressibility term of:
     //  - div u - 1/rho * drho/dz g/||g||* u = 0
@@ -310,15 +310,15 @@ namespace aspect
         const Tensor<1,dim>
         gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
         const Tensor<1,dim> drho_dz = scratch.adiabatic_density_gradients[q]
-                                 * gravity / gravity.norm();
+                                      * gravity / gravity.norm();
         const double one_over_rho = 1.0/scratch.mass_densities[q];
         const double JxW = scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
           for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-          data.local_matrix(i,j) += (pressure_scaling *
-                                one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
-                               * JxW;
+            data.local_matrix(i,j) += (pressure_scaling *
+                                       one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
+                                      * JxW;
       }
   }
 
@@ -359,7 +359,7 @@ namespace aspect
         const double compressibility
           = scratch.material_model_outputs.compressibilities[q];
 
-        const double density = scratch.mass_densities[q];
+        const double density = scratch.material_model_outputs.densities[q];
         const double JxW = scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)

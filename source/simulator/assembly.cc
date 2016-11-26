@@ -1086,7 +1086,7 @@ namespace aspect
         scratch.velocity_values);
 
     const bool use_reference_profile = (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile)
-            || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
+                                       || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
     if (use_reference_profile)
       {
         for (unsigned int q=0; q<scratch.finite_element_values.n_quadrature_points; ++q)
@@ -1219,7 +1219,7 @@ namespace aspect
       stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     const bool use_reference_profile = (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile)
-            || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
+                                       || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
