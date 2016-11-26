@@ -73,8 +73,6 @@ namespace aspect
           MaterialModel::MaterialModelInputs<dim> material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
-          std::vector<double> mass_densities;
-          std::vector<double> adiabatic_density_gradients;
         };
 
 
@@ -96,7 +94,8 @@ namespace aspect
                         const UpdateFlags         face_update_flags,
                         const unsigned int        n_compositional_fields,
                         const unsigned int        stokes_dofs_per_cell,
-                        const bool                add_compaction_pressure);
+                        const bool                add_compaction_pressure,
+                        const bool                use_reference_profile);
 
           StokesSystem (const StokesSystem<dim> &data);
 
@@ -117,6 +116,9 @@ namespace aspect
            */
           MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
           MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+
+          std::vector<double> mass_densities;
+          std::vector<double> adiabatic_density_gradients;
         };
 
 

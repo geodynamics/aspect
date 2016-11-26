@@ -238,8 +238,7 @@ namespace aspect
   {
     // assemble RHS of:
     //  - div u = 1/rho * drho/dz g/||g||* u
-
-    Assert(parameters.formulation_mass == Parameters<dim>::FormulationType::adiabatic,
+    Assert(parameters.formulation_compressibility != Parameters<dim>::CompressibilityFormulationType::reference_profile,
            ExcInternalError());
 
     const Introspection<dim> &introspection = this->introspection();
@@ -276,13 +275,15 @@ namespace aspect
   template <int dim>
   void
   StokesAssembler<dim>::
-  local_assemble_stokes_mass_density_implicit (const double                                     pressure_scaling,
+  local_assemble_stokes_mass_density_gradient_implicit (const double                                     pressure_scaling,
                                                const bool                                       rebuild_stokes_matrix,
                                                internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
                                                const Parameters<dim> &parameters) const
   {
-    Assert(parameters.formulation_mass == Parameters<dim>::FormulationType::implicit_adiabatic,
+    // assemble compressibility term of:
+    //  - div u - 1/rho * drho/dz g/||g||* u = 0
+    Assert(parameters.formulation_compressibility != Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile,
            ExcInternalError());
 
     if (!rebuild_stokes_matrix)
@@ -301,7 +302,6 @@ namespace aspect
               {
                 scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
                 scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
-
                 ++i_stokes;
               }
             ++i;
@@ -309,22 +309,17 @@ namespace aspect
 
         const Tensor<1,dim>
         gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
-
-        const double compressibility
-          = scratch.material_model_outputs.compressibilities[q];
-        const double mass_density = scratch.mass_densities[q];
+        const Tensor<1,dim> drho_dz = scratch.adiabatic_density_gradients[q]
+                                 * gravity / gravity.norm();
+        const double one_over_rho = 1.0/scratch.mass_densities[q];
         const double JxW = scratch.finite_element_values.JxW(q);
 
         for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
           for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-            data.local_matrix(i,j) += (
-                                        - (pressure_scaling * compressibility * mass_density
-                                           *(scratch.phi_u[j] * gravity)
-                                           * scratch.phi_p[i])
-                                      )
-                                      * JxW;
+          data.local_matrix(i,j) += (pressure_scaling *
+                                one_over_rho * drho_dz * scratch.phi_u[j] * scratch.phi_p[i])
+                               * JxW;
       }
-
   }
 
   template <int dim>
@@ -336,7 +331,9 @@ namespace aspect
                                                internal::Assembly::CopyData::StokesSystem<dim> &data,
                                                const Parameters<dim> &parameters) const
   {
-    Assert(parameters.formulation_mass != Parameters<dim>::FormulationType::implicit_adiabatic,
+    // assemble RHS of:
+    //  - div u = 1/rho * drho/dp rho * g * u
+    Assert(parameters.formulation_compressibility != Parameters<dim>::CompressibilityFormulationType::isothermal_compression,
            ExcInternalError());
 
     const Introspection<dim> &introspection = this->introspection();

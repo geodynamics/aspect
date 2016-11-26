@@ -114,13 +114,9 @@ namespace aspect
 
             this->get_material_model().evaluate(in, out);
 
-            if (this->get_parameters().formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
-              {
-                for (unsigned int q=0; q<n_q_points; ++q)
-                  {
-                    out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
-                  }
-              }
+            if (this->get_parameters().formulation_temperature == Parameters<dim>::TemperatureDensityFormulationType::reference_profile)
+              for (unsigned int q=0; q<n_q_points; ++q)
+                out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               local_mass += out.densities[q] * fe_values.JxW(q);

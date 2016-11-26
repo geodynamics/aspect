@@ -205,41 +205,55 @@ namespace aspect
      * @name Formulation settings
      * @{
      */
-    struct FormulationType
+    struct CompressibilityFormulationType
     {
       enum Kind
       {
-        full,
-        adiabatic,
-        adiabatic_density,
-        adiabatic_pressure,
-        implicit_adiabatic,
-        incompressible, ask_material_model
+        isothermal_compression,
+        reference_profile,
+        implicit_reference_profile,
+        incompressible,
+        ask_material_model
       };
       static Kind parse(const std::string &input)
       {
-        if (input == "full")
-          return FormulationType::full;
-        else if (input == "adiabatic")
-          return FormulationType::adiabatic;
-        else if (input == "adiabatic density")
-          return FormulationType::adiabatic_density;
-        else if (input == "adiabatic pressure")
-          return FormulationType::adiabatic_pressure;
-        else if (input == "implicit adiabatic")
-          return FormulationType::implicit_adiabatic;
+        if (input == "isothermal compression")
+          return CompressibilityFormulationType::isothermal_compression;
+        else if (input == "reference profile")
+          return CompressibilityFormulationType::reference_profile;
+        else if (input == "implicit reference profile")
+          return CompressibilityFormulationType::implicit_reference_profile;
         else if (input == "incompressible")
-          return FormulationType::incompressible;
+          return CompressibilityFormulationType::incompressible;
         else if (input == "ask material model")
-          return FormulationType::ask_material_model;
+          return CompressibilityFormulationType::ask_material_model;
         else
           AssertThrow(false, ExcNotImplemented());
-        return FormulationType::full;
+        return CompressibilityFormulationType::isothermal_compression;
       }
     };
 
-    typename FormulationType::Kind formulation_mass;
-    typename FormulationType::Kind formulation_temperature;
+    struct TemperatureDensityFormulationType
+    {
+      enum Kind
+      {
+        real_density,
+        reference_profile
+      };
+      static Kind parse(const std::string &input)
+      {
+        if (input == "real density")
+          return TemperatureDensityFormulationType::real_density;
+        else if (input == "reference profile")
+          return TemperatureDensityFormulationType::reference_profile;
+        else
+          AssertThrow(false, ExcNotImplemented());
+        return TemperatureDensityFormulationType::real_density;
+      }
+    };
+
+    typename CompressibilityFormulationType::Kind formulation_compressibility;
+    typename TemperatureDensityFormulationType::Kind formulation_temperature;
 
     /**
      * @}
