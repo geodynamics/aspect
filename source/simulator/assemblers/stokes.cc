@@ -238,7 +238,7 @@ namespace aspect
   {
     // assemble RHS of:
     //  - div u = 1/rho * drho/dz g/||g||* u
-    Assert(parameters.formulation_compressibility != Parameters<dim>::CompressibilityFormulationType::reference_profile,
+    Assert(parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile,
            ExcInternalError());
 
     const Introspection<dim> &introspection = this->introspection();
@@ -283,7 +283,7 @@ namespace aspect
   {
     // assemble compressibility term of:
     //  - div u - 1/rho * drho/dz g/||g||* u = 0
-    Assert(parameters.formulation_compressibility != Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile,
+    Assert(parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile,
            ExcInternalError());
 
     if (!rebuild_stokes_matrix)
