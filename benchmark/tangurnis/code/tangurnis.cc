@@ -313,9 +313,9 @@ namespace aspect
     template <int dim>
     double
     TanGurnis<dim>::
-    compressibility (const double temperature,
-                     const double pressure,
-                     const std::vector<double> &compositional_fields,
+    compressibility (const double /*temperature*/,
+                     const double /*pressure*/,
+                     const std::vector<double> &/*compositional_fields*/,
                      const Point<dim> &pos) const
     {
       const double depth = 1.0-pos(dim-1);
@@ -466,52 +466,17 @@ namespace aspect
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
-      /**
-       * Return the temperature that is to hold at a particular location on
-       * the boundary of the domain. This function returns constant
-       * temperatures at the left and right boundaries.
-       *
-       * @param geometry_model The geometry model that describes the domain.
-       * This may be used to determine whether the boundary temperature
-       * model is implemented for this geometry.
-       * @param boundary_indicator The boundary indicator of the part of the
-       * boundary of the domain on which the point is located at which we
-       * are requesting the temperature.
-       * @param location The location of the point at which we ask for the
-       * temperature.
-       */
       virtual
-      double temperature (const GeometryModel::Interface<dim> &geometry_model,
-                          const types::boundary_id                   boundary_indicator,
-                          const Point<dim>                    &location) const;
-
-      virtual
-      double boundary_temperature (const types::boundary_id boundary_indicator,
+      double boundary_temperature (const types::boundary_id /*boundary_indicator*/,
                                    const Point<dim> &position) const
       {
         double wavenumber=1;
         return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
-
       }
 
-
-      /**
-       * Return the minimal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
       virtual
       double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
-      /**
-       * Return the maximal the temperature on that part of the boundary on
-       * which Dirichlet conditions are posed.
-       *
-       * This value is used in computing dimensionless numbers such as the
-       * Nusselt number indicating heat flux.
-       */
       virtual
       double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
   };
@@ -519,27 +484,7 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  temperature (const GeometryModel::Interface<dim> &geometry_model,
-               const types::boundary_id                   boundary_indicator,
-               const Point<dim>                    &location) const
-  {
-    // verify that the geometry is in fact a box since only
-    // for this geometry do we know for sure what boundary indicators it
-    // uses and what they mean
-    Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&geometry_model)
-            != 0,
-            ExcMessage ("This boundary model is only implemented if the geometry is "
-                        "in fact a box."));
-
-    double wavenumber=1;
-    return sin(numbers::PI*location(dim-1))*cos(numbers::PI*wavenumber*location(0));
-  }
-
-
-  template <int dim>
-  double
-  TanGurnisBoundary<dim>::
-  minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+  minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
   {
     return 0;
   }
@@ -549,7 +494,7 @@ namespace aspect
   template <int dim>
   double
   TanGurnisBoundary<dim>::
-  maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+  maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
   {
     return 1;
   }
@@ -574,7 +519,7 @@ namespace aspect
 
   template <int dim>
   std::pair<std::string,std::string>
-  TanGurnisPostprocessor<dim>::execute (TableHandler &statistics)
+  TanGurnisPostprocessor<dim>::execute (TableHandler &/*statistics*/)
   {
     AssertThrow(Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) == 1,
                 ExcNotImplemented());
@@ -592,9 +537,13 @@ namespace aspect
     f << material_model->parameter_Di() << ' '
       << material_model->parameter_gamma() << ' '
       << material_model->parameter_wavenumber() << ' '
-      << material_model->parameter_a() << ' '
-      << " -1 -1 -1" << std::endl; //pad to 7 values, so matlab is happy
+      << material_model->parameter_a();
 
+    // pad the first line to the same number of columns as the data below to make MATLAB happy
+    for (unsigned int i=4;i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
+      f << " -1";
+    
+    f << std::endl;
     f << std::scientific;
 
 
@@ -611,7 +560,6 @@ namespace aspect
     std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_q_points));
 
     const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
-    const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
 
     std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
                                                                           HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
@@ -642,7 +590,7 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
-        if (this->get_parameters().formulation_temperature == Parameters<dim>::FormulationType::adiabatic)
+        if (this->get_parameters().formulation_temperature == Parameters<dim>::TemperatureDensityFormulationType::reference_profile)
           {
             for (unsigned int q=0; q<n_q_points; ++q)
               {

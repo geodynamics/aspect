@@ -65,8 +65,8 @@ end
 
 subsection Formulation
   set Formulation = custom
-  set Mass density approximation        = adiabatic
-  set Temperature density approximation = adiabatic
+  set Mass density approximation        = reference profile
+  set Temperature density approximation = reference profile
 end
 
 
