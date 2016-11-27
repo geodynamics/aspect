@@ -231,9 +231,9 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = custom
-  set Mass density approximation        = adiabatic
-  set Temperature density approximation = adiabatic
+  set Formulation = ALA
+  #set Mass density approximation        = adiabatic
+  #set Temperature density approximation = adiabatic
 end
 
 subsection Gravity model
