@@ -1,16 +1,11 @@
-# like tangurnis.prm, but using implicit adiabatic mass conservation, so we should only need a single Stokes solve.
+# TanGurnis benchmark TALA
 
+set Additional shared libraries            = ./code/libtangurnis.so
 
 # At the top, state that the program should be run for a two-dimensional 
 # simulation
 set Dimension = 2
 
-subsection Formulation
-  set Buoyancy density approximation    = full
-  set Formulation                       = custom
-  set Mass density approximation        = adiabatic
-  set Temperature density approximation = full
-end
 
 # In computations, the time step $k$ is chosen according to $k = c \min_K
 # \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
@@ -30,10 +25,11 @@ set CFL number                             = 1.0
 set End time                               = 0.0001
 
 set Nonlinear solver scheme                = Stokes only
+set Use direct solver for Stokes system        = false
 
 # The name of the directory into which all output files should be placed. This
 # may be an absolute or a relative path.
-set Output directory                       = output
+set Output directory                       = output_tala
 
 # A flag indicating whether the computation should be resumed from a
 # previously saved state (if true) or start from scratch (if false).
@@ -54,6 +50,24 @@ set Start time                             = 0
 # For more information, see the section in the manual that discusses the
 # general mathematical model.
 set Adiabatic surface temperature          = 0
+
+subsection Adiabatic conditions model
+  #set Model name = initial profile
+  set Model name = function
+  subsection Function
+    set Function constants  = Di=0.5, gamma=1.0
+    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
+    set Variable names      = depth
+  end
+
+end
+
+subsection Formulation
+  set Formulation = custom
+  set Mass density approximation        = reference profile
+  set Temperature density approximation = reference profile
+end
+
 
 # The mathematical equations that describe thermal convection only determine
 # the pressure up to an arbitrary constant. On the other hand, for comparison
@@ -208,7 +222,6 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
 
@@ -219,6 +232,13 @@ subsection Material model
 
 end
 
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0                       # default: 2
@@ -232,8 +252,6 @@ end
 
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false # default: true
 
   # A comma separated list of integers denoting those boundaries on which the
   # temperature is fixed and described by the boundary temperature object
@@ -292,7 +310,7 @@ subsection Postprocess
   # into files that can be read by a graphical visualization program.
   # Additional run time parameters are read from the parameter subsection
   # 'Visualization'.
-  set List of postprocessors = Tan Gurnis error, visualization
+  set List of postprocessors = Tan Gurnis error, visualization, heating statistics
 
   subsection Depth average
     # The time interval between each generation of graphical output files. A
@@ -303,7 +321,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables      = density
+    set List of output variables      = density, adiabat
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no

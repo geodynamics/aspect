@@ -1,0 +1,48 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libtangurnis_tala.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+2 iterations.
+      Nonlinear Stokes residual: 0.0111578
+   Solving Stokes system... 24+0 iterations.
+      Nonlinear Stokes residual: 0.0491024
+   Solving Stokes system... 18+0 iterations.
+      Nonlinear Stokes residual: 0.00132486
+   Solving Stokes system... 14+0 iterations.
+      Nonlinear Stokes residual: 9.85798e-05
+   Solving Stokes system... 9+0 iterations.
+      Nonlinear Stokes residual: 3.96947e-06
+   Solving Stokes system... 4+0 iterations.
+      Nonlinear Stokes residual: 2.85331e-07
+   Solving Stokes system... 3+0 iterations.
+      Nonlinear Stokes residual: 1.13456e-08
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 2.8159e-09
+
+   Postprocessing:
+     writing:                       output.csv
+     Writing graphical output:      output-tangurnis_tala/solution/solution-00000
+     Heating rate (average/total):  4.234e-05 W/kg, 5.493e-05 W
+
+*** Timestep 1:  t=0.0001 seconds
+   Solving Stokes system... 0+0 iterations.
+      Nonlinear Stokes residual: 2.8159e-09
+
+   Postprocessing:
+     writing:                       output.csv
+     Writing graphical output:      output-tangurnis_tala/solution/solution-00001
+     Heating rate (average/total):  4.234e-05 W/kg, 5.493e-05 W
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
