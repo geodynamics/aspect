@@ -1,11 +1,4 @@
-# King2010 ALA, table ?
-
-# questions:
-# grueneisen gamma_r = ?
-# T_surf, \delta T_r, T_0 for ALA and EBA
-# H = ?
-
-# NOTE: incomplete!
+# King2010 ALA
 
 # reference values (old): 
 # Code Ra   Di   Nu     Vrms    Vsurf−max <V surf> <T>    <φ>    <W >
@@ -37,16 +30,6 @@
       
 
 
-
-
-# Di	    Ra	    Nu		RMS
-# 0.25 	    10^4    4.41	40.0
-# 0.75	    10^4    3.1		31
-# 1.0	    10^4    2.4		25
-# 1.0	    10^5    3.8		84  
-# 1.0	    10^6    ?
-
-
 # TALA:
 # Code Ra   Di   Nu     Vrms    Vsurf−max <V surf> <T>    <φ>    <W >
 # TALA 10^4 0.25 4.4200 40.1000 58.7000 39.3000 0.5129 0.8539 0.8521
@@ -57,9 +40,6 @@
 # ALA  10^4  1   2.4700 24.9000 37.6000 24.4000 0.5103 1.3627 1.3638
 
 
-
-
-# A description of convection in a 2d box. See the manual for more information.
 
 
 # At the top, we define the number of space dimensions we would like to
