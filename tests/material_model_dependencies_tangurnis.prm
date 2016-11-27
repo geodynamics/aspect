@@ -4,19 +4,20 @@ subsection Material model
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
-    set Thermal expansion coefficient = 1
     set Di                            = 0.5
     set gamma                         = 1
-
     set a                             = 0
-
     set wavenumber                    = 1
   end
 end
+
 subsection Postprocess
   set List of postprocessors = material model dependencies
 end
 
+subsection Formulation
+  set Formulation = ALA
+end
 
 #############################
 # Otherwise use the setup of SolCX
