@@ -62,9 +62,8 @@ namespace
 #ifdef ASPECT_USE_PETSC
     // TODO: PETSc statistics, n_nonzero_elements doesn't exist.
 #else
-    const int global_matrix_nnz = matrix.n_nonzero_elements();
     output << "Total " << matrix_name << " nnz: "
-           << global_matrix_nnz << std::endl;
+           << matrix.n_nonzero_elements() << std::endl;
 
     // output number of nonzero elements in each matrix block
     output << matrix_name << " nnz by block: " << std::endl;
