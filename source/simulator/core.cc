@@ -2046,11 +2046,13 @@ namespace aspect
 
               const double stokes_residual = solve_stokes();
 
+              const double relative_tolerance = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
+
               pcout << "      Relative Stokes residual after nonlinear iteration " << iteration+1
-                    << ": " << stokes_residual/initial_stokes_residual
+                    << ": " << relative_tolerance
                     << std::endl;
 
-              if (stokes_residual/initial_stokes_residual < parameters.nonlinear_tolerance)
+              if (relative_tolerance < parameters.nonlinear_tolerance)
                 break;
 
               current_linearization_point = solution;
