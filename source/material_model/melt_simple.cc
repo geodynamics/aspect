@@ -502,7 +502,7 @@ namespace aspect
                              "Freezing rate of melt when in subsolidus regions."
                              "Units: $1/yr$.");
           prm.declare_entry ("Depletion density change", "0.0",
-                             Patterns::Double (0),
+                             Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "
                              "depletion of zero. Negative values indicate lower densities of"
                              "depleted material. Depletion is indicated by the compositional"
