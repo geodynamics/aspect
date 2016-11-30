@@ -321,7 +321,9 @@ namespace aspect
                          "equations.");
 
       prm.declare_entry ("Mass conservation", "ask material model",
-                         Patterns::Selection ("incompressible|isothermal compression|reference density profile|implicit reference density profile|ask material model"),
+                         Patterns::Selection ("incompressible|isothermal compression|"
+                                              "reference density profile|implicit reference density profile|"
+                                              "ask material model"),
                          "Possible approximations for the density derivatives in the mass "
                          "conservation equation. Note that this parameter is only evaluated "
                          "if 'Formulation' is set to 'custom'. Other formulations overwrite "

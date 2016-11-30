@@ -659,9 +659,9 @@ namespace aspect
                                     std_cxx11::_5));
 
         if (parameters.formulation_mass_conservation ==
-        		Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile)
+            Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile)
           assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_gradient_implicit,
+          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_implicit_reference_density,
                                     std_cxx11::cref (*stokes_assembler),
                                     // discard cell,
                                     std_cxx11::_2,
@@ -670,10 +670,10 @@ namespace aspect
                                     std_cxx11::_5,
                                     std_cxx11::cref (this->parameters)));
         else if (parameters.formulation_mass_conservation ==
-        		Parameters<dim>::FormulationMassConservation::reference_density_profile)
+                 Parameters<dim>::FormulationMassConservation::reference_density_profile)
           {
             assemblers->local_assemble_stokes_system
-            .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_gradient,
+            .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_reference_density,
                                       std_cxx11::cref (*stokes_assembler),
                                       // discard cell,
                                       std_cxx11::_2,
@@ -683,16 +683,16 @@ namespace aspect
                                       std_cxx11::cref (this->parameters)));
           }
         else if (parameters.formulation_mass_conservation ==
-        		Parameters<dim>::FormulationMassConservation::incompressible
+                 Parameters<dim>::FormulationMassConservation::incompressible
                  || (parameters.formulation_mass_conservation ==
-                		 Parameters<dim>::FormulationMassConservation::ask_material_model
+                     Parameters<dim>::FormulationMassConservation::ask_material_model
                      && !material_model->is_compressible()))
           {
             // do nothing, because we assembled div u =0 above already
           }
         else
           assemblers->local_assemble_stokes_system
-          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_explicit,
+          .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_isothermal_compression,
                                     std_cxx11::cref (*stokes_assembler),
                                     // discard cell,
                                     std_cxx11::_2,
@@ -1090,7 +1090,7 @@ namespace aspect
         scratch.velocity_values);
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
-                                       || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
+                                               || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
     if (use_reference_density_profile)
       {
         for (unsigned int q=0; q<scratch.finite_element_values.n_quadrature_points; ++q)
@@ -1223,7 +1223,7 @@ namespace aspect
       stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
-                                       || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
+                                               || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),

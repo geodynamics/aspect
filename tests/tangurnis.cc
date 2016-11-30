@@ -540,9 +540,9 @@ namespace aspect
       << material_model->parameter_a();
 
     // pad the first line to the same number of columns as the data below to make MATLAB happy
-    for (unsigned int i=4;i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
+    for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
       f << " -1";
-    
+
     f << std::endl;
     f << std::scientific;
 
@@ -591,7 +591,7 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         if (this->get_parameters().formulation_temperature_equation ==
-        		Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
+            Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
           {
             for (unsigned int q=0; q<n_q_points; ++q)
               {

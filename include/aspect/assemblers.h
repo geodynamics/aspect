@@ -80,25 +80,25 @@ namespace aspect
                                                     internal::Assembly::CopyData::StokesSystem<dim> &data) const;
 
       void
-      local_assemble_stokes_mass_density_gradient (const double                                     pressure_scaling,
-                                                   const bool                                       rebuild_stokes_matrix,
-                                                   internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                   const Parameters<dim> &parameters) const;
+      local_assemble_stokes_mass_reference_density (const double                                     pressure_scaling,
+                                                    const bool                                       rebuild_stokes_matrix,
+                                                    internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                    internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                    const Parameters<dim> &parameters) const;
 
       void
-      local_assemble_stokes_mass_density_gradient_implicit (const double                                     pressure_scaling,
-                                                            const bool                                       rebuild_stokes_matrix,
-                                                            internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                            internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                            const Parameters<dim> &parameters) const;
+      local_assemble_stokes_mass_implicit_reference_density (const double                                     pressure_scaling,
+                                                             const bool                                       rebuild_stokes_matrix,
+                                                             internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                             internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                             const Parameters<dim> &parameters) const;
 
       void
-      local_assemble_stokes_mass_density_explicit (const double                                     pressure_scaling,
-                                                   const bool                                       rebuild_stokes_matrix,
-                                                   internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
-                                                   internal::Assembly::CopyData::StokesSystem<dim> &data,
-                                                   const Parameters<dim> &parameters) const;
+      local_assemble_stokes_mass_isothermal_compression (const double                                     pressure_scaling,
+                                                         const bool                                       rebuild_stokes_matrix,
+                                                         internal::Assembly::Scratch::StokesSystem<dim>  &scratch,
+                                                         internal::Assembly::CopyData::StokesSystem<dim> &data,
+                                                         const Parameters<dim> &parameters) const;
 
   };
 }
