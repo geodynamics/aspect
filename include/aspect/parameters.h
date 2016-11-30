@@ -205,55 +205,55 @@ namespace aspect
      * @name Formulation settings
      * @{
      */
-    struct CompressibilityFormulationType
+    struct FormulationMassConservation
     {
       enum Kind
       {
         isothermal_compression,
-        reference_profile,
-        implicit_reference_profile,
+        reference_density_profile,
+        implicit_reference_density_profile,
         incompressible,
         ask_material_model
       };
       static Kind parse(const std::string &input)
       {
         if (input == "isothermal compression")
-          return CompressibilityFormulationType::isothermal_compression;
-        else if (input == "reference profile")
-          return CompressibilityFormulationType::reference_profile;
-        else if (input == "implicit reference profile")
-          return CompressibilityFormulationType::implicit_reference_profile;
+          return FormulationMassConservation::isothermal_compression;
+        else if (input == "reference density profile")
+          return FormulationMassConservation::reference_density_profile;
+        else if (input == "implicit reference density profile")
+          return FormulationMassConservation::implicit_reference_density_profile;
         else if (input == "incompressible")
-          return CompressibilityFormulationType::incompressible;
+          return FormulationMassConservation::incompressible;
         else if (input == "ask material model")
-          return CompressibilityFormulationType::ask_material_model;
+          return FormulationMassConservation::ask_material_model;
         else
           AssertThrow(false, ExcNotImplemented());
-        return CompressibilityFormulationType::isothermal_compression;
+        return FormulationMassConservation::isothermal_compression;
       }
     };
 
-    struct TemperatureDensityFormulationType
+    struct FormulationTemperatureEquation
     {
       enum Kind
       {
         real_density,
-        reference_profile
+        reference_density_profile
       };
       static Kind parse(const std::string &input)
       {
         if (input == "real density")
-          return TemperatureDensityFormulationType::real_density;
-        else if (input == "reference profile")
-          return TemperatureDensityFormulationType::reference_profile;
+          return FormulationTemperatureEquation::real_density;
+        else if (input == "reference density profile")
+          return FormulationTemperatureEquation::reference_density_profile;
         else
           AssertThrow(false, ExcNotImplemented());
-        return TemperatureDensityFormulationType::real_density;
+        return FormulationTemperatureEquation::real_density;
       }
     };
 
-    typename CompressibilityFormulationType::Kind formulation_compressibility;
-    typename TemperatureDensityFormulationType::Kind formulation_temperature;
+    typename FormulationMassConservation::Kind formulation_mass_conservation;
+    typename FormulationTemperatureEquation::Kind formulation_temperature_equation;
 
     /**
      * @}

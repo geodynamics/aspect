@@ -66,8 +66,8 @@ end
 
 subsection Formulation
   set Formulation = BA
-  #set Mass density approximation        = incompressible
-  #set Temperature density approximation = reference profile
+  #set Mass conservation        = incompressible
+  #set Temperature equation     = reference density profile
 end
 
 

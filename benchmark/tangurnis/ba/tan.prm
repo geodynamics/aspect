@@ -66,9 +66,9 @@ subsection Adiabatic conditions model
 end
 
 subsection Formulation
-  set Formulation = custom
-  set Mass density approximation        = incompressible
-  set Temperature density approximation = reference profile
+  set Formulation              = custom # equivalent to BA
+  set Mass conservation        = incompressible
+  set Temperature equation     = reference profile
 end
 
 

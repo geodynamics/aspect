@@ -179,10 +179,9 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = EBA # custom
-  set Mass density approximation        = incompressible#implicit adiabatic
-  set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = full
+  set Formulation = EBA # equivalent to 'custom' with the settings below
+  #set Mass density approximation        = incompressible
+  #set Temperature density approximation = reference density profile
 end
 
 subsection Gravity model

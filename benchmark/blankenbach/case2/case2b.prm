@@ -172,9 +172,6 @@ end
 
 subsection Formulation
   set Formulation = BA
-  set Mass density approximation        = incompressible#implicit adiabatic
-  set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = full
 end
 
 subsection Gravity model

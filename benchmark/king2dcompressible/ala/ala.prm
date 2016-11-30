@@ -211,9 +211,9 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = ALA
-  #set Mass density approximation        = adiabatic
-  #set Temperature density approximation = adiabatic
+  set Formulation = ALA # equivalent to 'custom' with the settings below
+  #set Mass conservation    = reference density profile
+  #set Temperature equation = reference density profile
 end
 
 subsection Gravity model

@@ -111,7 +111,7 @@ namespace aspect
                       const unsigned int        n_compositional_fields,
                       const unsigned int        stokes_dofs_per_cell,
                       const bool                add_compaction_pressure,
-                      const bool                use_reference_profile)
+                      const bool                use_reference_density_profile)
           :
           StokesPreconditioner<dim> (finite_element, quadrature,
                                      mapping,
@@ -131,8 +131,8 @@ namespace aspect
           velocity_values (quadrature.size(), numbers::signaling_nan<Tensor<1,dim> >()),
           face_material_model_inputs(face_quadrature.size(), n_compositional_fields),
           face_material_model_outputs(face_quadrature.size(), n_compositional_fields),
-          mass_densities(use_reference_profile ? quadrature.size() : 0),
-          adiabatic_density_gradients(use_reference_profile ? quadrature.size() : 0)
+          mass_densities(use_reference_density_profile ? quadrature.size() : 0),
+          adiabatic_density_gradients(use_reference_density_profile ? quadrature.size() : 0)
         {}
 
 
@@ -658,7 +658,8 @@ namespace aspect
                                     std_cxx11::_4,
                                     std_cxx11::_5));
 
-        if (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile)
+        if (parameters.formulation_mass_conservation ==
+        		Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile)
           assemblers->local_assemble_stokes_system
           .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_gradient_implicit,
                                     std_cxx11::cref (*stokes_assembler),
@@ -668,7 +669,8 @@ namespace aspect
                                     std_cxx11::_4,
                                     std_cxx11::_5,
                                     std_cxx11::cref (this->parameters)));
-        else if (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile)
+        else if (parameters.formulation_mass_conservation ==
+        		Parameters<dim>::FormulationMassConservation::reference_density_profile)
           {
             assemblers->local_assemble_stokes_system
             .connect (std_cxx11::bind(&aspect::StokesAssembler<dim>::local_assemble_stokes_mass_density_gradient,
@@ -680,8 +682,10 @@ namespace aspect
                                       std_cxx11::_5,
                                       std_cxx11::cref (this->parameters)));
           }
-        else if (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::incompressible
-                 || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::ask_material_model
+        else if (parameters.formulation_mass_conservation ==
+        		Parameters<dim>::FormulationMassConservation::incompressible
+                 || (parameters.formulation_mass_conservation ==
+                		 Parameters<dim>::FormulationMassConservation::ask_material_model
                      && !material_model->is_compressible()))
           {
             // do nothing, because we assembled div u =0 above already
@@ -1085,9 +1089,9 @@ namespace aspect
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
         scratch.velocity_values);
 
-    const bool use_reference_profile = (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile)
-                                       || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
-    if (use_reference_profile)
+    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
+                                       || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
+    if (use_reference_density_profile)
       {
         for (unsigned int q=0; q<scratch.finite_element_values.n_quadrature_points; ++q)
           {
@@ -1218,8 +1222,8 @@ namespace aspect
     if (parameters.include_melt_transport)
       stokes_dofs_per_cell += finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell;
 
-    const bool use_reference_profile = (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::reference_profile)
-                                       || (parameters.formulation_compressibility == Parameters<dim>::CompressibilityFormulationType::implicit_reference_profile);
+    const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::reference_density_profile)
+                                       || (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::implicit_reference_density_profile);
 
     WorkStream::
     run (CellFilter (IteratorFilters::LocallyOwnedCell(),
@@ -1244,7 +1248,7 @@ namespace aspect
                             parameters.n_compositional_fields,
                             stokes_dofs_per_cell,
                             parameters.include_melt_transport,
-                            use_reference_profile),
+                            use_reference_density_profile),
          internal::Assembly::CopyData::
          StokesSystem<dim> (stokes_dofs_per_cell,
                             do_pressure_rhs_compatibility_modification));
@@ -1364,7 +1368,7 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-    if (parameters.formulation_temperature == Parameters<dim>::TemperatureDensityFormulationType::reference_profile)
+    if (parameters.formulation_temperature_equation == Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
       {
         const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
         for (unsigned int q=0; q<n_q_points; ++q)

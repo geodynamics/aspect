@@ -101,10 +101,9 @@ subsection Model settings
 end
 
 subsection Formulation
-  set Formulation = custom #BA
-  set Mass density approximation        = incompressible # implicit adiabatic
-  set Temperature density approximation = adiabatic
-  set Buoyancy density approximation    = full#adiabatic pressure
+  set Formulation          = custom # with this selection equivalent to BA
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
 end
 
 subsection Postprocess

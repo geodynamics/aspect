@@ -144,7 +144,8 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
-        if (this->get_parameters().formulation_temperature == Parameters<dim>::TemperatureDensityFormulationType::reference_profile)
+        if (this->get_parameters().formulation_temperature_equation
+        		== Parameters<dim>::FormulationTemperatureEquation::reference_density_profile)
           for (unsigned int q=0; q<n_quadrature_points; ++q)
             out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
 

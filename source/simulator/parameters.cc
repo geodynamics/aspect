@@ -310,9 +310,9 @@ namespace aspect
                          "Select a formulation for the basic equations. Different "
                          "published formulations are available in ASPECT (see list of "
                          "possible parameters for available options). Two ASPECT specific "
-                         "options are: 'isothermal compression': ASPECT's original formulation, using the "
-                         "incompressible or explicit compressible mass equation, and "
-                         "the full density for the temperature equation. 'custom': "
+                         "options are: 'isothermal compression': ASPECT's original formulation, "
+                         "using the incompressible or explicit compressible mass equation, "
+                         "and the full density for the temperature equation. 'custom': "
                          "A custom selection of 'Mass density approximation' and "
                          "'Temperature density approximation'. Warning: The 'custom' option is "
                          "implemented for advanced users that want full control over the "
@@ -320,15 +320,19 @@ namespace aspect
                          "and no error checking is performed on the consistency of the resulting "
                          "equations.");
 
-      prm.declare_entry ("Mass density approximation", "ask material model",
-                         Patterns::Selection ("incompressible|isothermal compression|reference profile|implicit reference profile|ask material model"),
+      prm.declare_entry ("Mass conservation", "ask material model",
+                         Patterns::Selection ("incompressible|isothermal compression|reference density profile|implicit reference density profile|ask material model"),
                          "Possible approximations for the density derivatives in the mass "
                          "conservation equation. Note that this parameter is only evaluated "
-                         "if 'Formulation' is set to 'custom'. All other formulations overwrite "
+                         "if 'Formulation' is set to 'custom'. Other formulations overwrite "
                          "this parameter.");
-      prm.declare_entry ("Temperature density approximation", "real density",
-                         Patterns::Selection ("real density|reference profile"),
-                         "Possible approximations for the density in the temperature equation. Possible approximations are: 'real density', 'reference profile'.");
+      prm.declare_entry ("Temperature equation", "real density",
+                         Patterns::Selection ("real density|reference density profile"),
+                         "Possible approximations for the density in the temperature equation. "
+                         "Possible approximations are: 'real density', 'reference profile'. "
+                         "Note that this parameter is only evaluated "
+                         "if 'Formulation' is set to 'custom'. Other formulations overwrite "
+                         "this parameter.");
     }
     prm.leave_subsection();
 
@@ -989,13 +993,13 @@ namespace aspect
       const std::string formulation = prm.get("Formulation");
       if (formulation == "isothermal_compression")
         {
-          formulation_compressibility = CompressibilityFormulationType::isothermal_compression;
-          formulation_temperature = TemperatureDensityFormulationType::real_density;
+          formulation_mass_conservation = FormulationMassConservation::isothermal_compression;
+          formulation_temperature_equation = FormulationTemperatureEquation::real_density;
         }
       else if (formulation == "BA")
         {
-          formulation_compressibility = CompressibilityFormulationType::incompressible;
-          formulation_temperature = TemperatureDensityFormulationType::reference_profile;
+          formulation_mass_conservation = FormulationMassConservation::incompressible;
+          formulation_temperature_equation = FormulationTemperatureEquation::reference_density_profile;
 
           // Assert AdiabaticConditions = ConstantTemperature, density=1
           // Assert shear/adiabatic heating plugins are off
@@ -1003,8 +1007,8 @@ namespace aspect
         }
       else if (formulation == "EBA")
         {
-          formulation_compressibility = CompressibilityFormulationType::incompressible;
-          formulation_temperature = TemperatureDensityFormulationType::reference_profile;
+          formulation_mass_conservation = FormulationMassConservation::incompressible;
+          formulation_temperature_equation = FormulationTemperatureEquation::reference_density_profile;
 
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true
@@ -1014,8 +1018,8 @@ namespace aspect
       else if (formulation == "ALA")
         {
           // equally possible: implicit_reference_profile
-          formulation_compressibility = CompressibilityFormulationType::reference_profile;
-          formulation_temperature = TemperatureDensityFormulationType::reference_profile;
+          formulation_mass_conservation = FormulationMassConservation::reference_density_profile;
+          formulation_temperature_equation = FormulationTemperatureEquation::reference_density_profile;
           // Assert shear/adiabatic heating plugins are on
           // adiabatic.simple = true
           // is_compressible= true
@@ -1024,8 +1028,8 @@ namespace aspect
         }
       else if (formulation == "custom")
         {
-          formulation_compressibility = CompressibilityFormulationType::parse(prm.get("Mass density approximation"));
-          formulation_temperature = TemperatureDensityFormulationType::parse(prm.get("Temperature density approximation"));
+          formulation_mass_conservation = FormulationMassConservation::parse(prm.get("Mass conservation"));
+          formulation_temperature_equation = FormulationTemperatureEquation::parse(prm.get("Temperature equation"));
         }
       else AssertThrow(false, ExcNotImplemented());
     }
