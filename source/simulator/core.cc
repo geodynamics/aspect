@@ -2009,8 +2009,10 @@ namespace aspect
 
           break;
         }
+
         case NonlinearSolver::Stokes_only:
         {
+          double initial_stokes_residual = 0.0;
           unsigned int iteration = 0;
 
           do
@@ -2038,12 +2040,22 @@ namespace aspect
 
               assemble_stokes_system();
               build_stokes_preconditioner();
-              const double stokes_residual = solve_stokes();
-              current_linearization_point = solution;
 
-              pcout << "      Nonlinear Stokes residual: " << stokes_residual << std::endl;
-              if (stokes_residual < 1e-8)
+              if (iteration == 0)
+                initial_stokes_residual = compute_initial_stokes_residual();
+
+              const double stokes_residual = solve_stokes();
+
+              const double relative_tolerance = (initial_stokes_residual > 0) ? stokes_residual/initial_stokes_residual : 0.0;
+
+              pcout << "      Relative Stokes residual after nonlinear iteration " << iteration+1
+                    << ": " << relative_tolerance
+                    << std::endl;
+
+              if (relative_tolerance < parameters.nonlinear_tolerance)
                 break;
+
+              current_linearization_point = solution;
 
               ++iteration;
             }

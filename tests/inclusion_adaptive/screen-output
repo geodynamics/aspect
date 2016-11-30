@@ -7,7 +7,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00000
@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,156 (706+97+353)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00001
@@ -31,7 +31,7 @@ Number of degrees of freedom: 1,520 (930+125+465)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00002
@@ -43,7 +43,7 @@ Number of degrees of freedom: 2,664 (1,634+213+817)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+0 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00003
@@ -55,7 +55,7 @@ Number of degrees of freedom: 4,172 (2,562+329+1,281)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+13 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00004
@@ -67,7 +67,7 @@ Number of degrees of freedom: 6,772 (4,162+529+2,081)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+11 iterations.
-      Nonlinear Stokes residual: 54.8383
+      Relative Stokes residual after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:      output-inclusion_adaptive/solution/solution-00005

@@ -7,34 +7,34 @@ Number of degrees of freedom: 268 (162+25+81)
 *** Timestep 0:  t=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Nonlinear Stokes residual: 5.75778
+      Relative Stokes residual after nonlinear iteration 1: 1
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
-      Nonlinear Stokes residual: 0.167567
+      Relative Stokes residual after nonlinear iteration 2: 0.0291028
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.22561
+      Relative Stokes residual after nonlinear iteration 3: 0.0391836
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.232292
+      Relative Stokes residual after nonlinear iteration 4: 0.0403441
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.141763
+      Relative Stokes residual after nonlinear iteration 5: 0.0246211
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.133049
+      Relative Stokes residual after nonlinear iteration 6: 0.0231077
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
-      Nonlinear Stokes residual: 0.163726
+      Relative Stokes residual after nonlinear iteration 7: 0.0284356
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.138607
+      Relative Stokes residual after nonlinear iteration 8: 0.024073
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.152346
+      Relative Stokes residual after nonlinear iteration 9: 0.0264592
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Nonlinear Stokes residual: 0.14749
+      Relative Stokes residual after nonlinear iteration 10: 0.0256158
 
    Postprocessing:
 viscosity depends on temperature composition
