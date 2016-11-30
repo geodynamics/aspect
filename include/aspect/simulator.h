@@ -1139,6 +1139,18 @@ namespace aspect
       stokes_matrix_depends_on_solution () const;
 
       /**
+       * This function checks that the user-selected formulations of the
+       * equations are consistent with the other inputs. If an incorrect
+       * selection is detected it throws an exception. It for example assures that
+       * correct heating terms are selected, and the material model supports
+       * the selection of the mass conservation formulation (e.g. incompressible)).
+       * If 'parameters.formulation' is set to 'custom'
+       * it only ensures very basic consistency.
+       */
+      void
+      check_consistency_of_formulation () const;
+
+      /**
        * This function is called at the end of each time step and writes the
        * statistics object that contains data like the current time, the
        * number of linear solver iterations, and whatever the postprocessors

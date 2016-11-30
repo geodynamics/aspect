@@ -205,6 +205,31 @@ namespace aspect
      * @name Formulation settings
      * @{
      */
+    struct CombinedFormulation
+    {
+      enum Kind
+      {
+        BA,
+        ALA,
+        isothermal_compression,
+        custom
+      };
+      static Kind parse(const std::string &input)
+      {
+        if (input == "isothermal compression")
+          return CombinedFormulation::isothermal_compression;
+        else if (input == "ALA")
+          return CombinedFormulation::ALA;
+        else if (input == "BA")
+          return CombinedFormulation::BA;
+        else if (input == "custom")
+          return CombinedFormulation::custom;
+        else
+          AssertThrow(false, ExcNotImplemented());
+        return CombinedFormulation::isothermal_compression;
+      }
+    };
+
     struct FormulationMassConservation
     {
       enum Kind
@@ -252,7 +277,27 @@ namespace aspect
       }
     };
 
+    /**
+     * A consistent way to formulate the equations to solve. Common formulations
+     * are the Boussinesq or Anelastic Liquid Approximations (BA, ALA). ASPECT's
+     * original formulation is termed 'isothermal compression'. 'Custom' allows
+     * to set the approximations individually.
+     */
+    typename CombinedFormulation::Kind combined_formulation;
+
+    /**
+     * Determines how to formulate the mass conservation equation in ASPECT.
+     * Common approximations are 'incompressible' or 'reference density profile'.
+     * ASPECT's original formulation is termed 'isothermal compression'. See the
+     * manual for more details about the individual terms.
+     */
     typename FormulationMassConservation::Kind formulation_mass_conservation;
+
+    /**
+     * Determines how to formulate the density in the temperature equation
+     * in ASPECT. Possible approximations are 'reference density profile' or
+     * 'real density'.
+     */
     typename FormulationTemperatureEquation::Kind formulation_temperature_equation;
 
     /**

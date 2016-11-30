@@ -990,15 +990,15 @@ namespace aspect
     {
       // The following options need a lot of error checking, however, most of
       // the information is not available at this point. Therefore the error checking is done
-      // in Simulator<dim>::set_assemblers() and material model initialize,
-      // when these approximations are used.
-      const std::string formulation = prm.get("Formulation");
-      if (formulation == "isothermal_compression")
+      // in Simulator<dim>::check_consistency_of_formulation() after the initialization of
+      // material models, heating plugins, and adiabatic conditions.
+      combined_formulation = CombinedFormulation::parse(prm.get("Formulation"));
+      if (combined_formulation == CombinedFormulation::isothermal_compression)
         {
           formulation_mass_conservation = FormulationMassConservation::isothermal_compression;
           formulation_temperature_equation = FormulationTemperatureEquation::real_density;
         }
-      else if (formulation == "BA")
+      else if (combined_formulation == CombinedFormulation::BA)
         {
           formulation_mass_conservation = FormulationMassConservation::incompressible;
           formulation_temperature_equation = FormulationTemperatureEquation::reference_density_profile;
@@ -1007,17 +1007,7 @@ namespace aspect
           // Assert shear/adiabatic heating plugins are off
           // is_compressible= false
         }
-      else if (formulation == "EBA")
-        {
-          formulation_mass_conservation = FormulationMassConservation::incompressible;
-          formulation_temperature_equation = FormulationTemperatureEquation::reference_density_profile;
-
-          // Assert shear/adiabatic heating plugins are on
-          // adiabatic.simple = true
-          // Assert AdiabaticConditions = InitialProfile
-          // is_compressible= false
-        }
-      else if (formulation == "ALA")
+      else if (combined_formulation == CombinedFormulation::ALA)
         {
           // equally possible: implicit_reference_profile
           formulation_mass_conservation = FormulationMassConservation::reference_density_profile;
@@ -1028,7 +1018,7 @@ namespace aspect
           // Assert AdiabaticConditions = InitialProfile
           // or do we create AdiabaticConditionsALA ?
         }
-      else if (formulation == "custom")
+      else if (combined_formulation == CombinedFormulation::custom)
         {
           formulation_mass_conservation = FormulationMassConservation::parse(prm.get("Mass conservation"));
           formulation_temperature_equation = FormulationTemperatureEquation::parse(prm.get("Temperature equation"));
