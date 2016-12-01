@@ -167,8 +167,8 @@
  * property plugins. Additionally the 'initial composition' property
  * now utilizes the user-provided names of the compositional fields
  * to identify its particle properties (they are now named
- * 'initial <field_name>', where <field_name> is replaced by the user
- * provided name).
+ * 'initial [field_name]', where '[field_name]'
+ * is replaced by the user provided name).
  * <br>
  * (Rene Gassmoeller, 2016/07/18)
  *
