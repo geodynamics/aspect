@@ -64,8 +64,6 @@ subsection Model settings
   # compressibility of the medium) or from shear friction,
   # as well as the rate of internal heating. We do not
   # want to use any of these options here:
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 end
 
 

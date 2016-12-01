@@ -18,8 +18,6 @@ subsection Geometry model
 end
 
 subsection Model settings
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       = left, right, bottom, top
 end

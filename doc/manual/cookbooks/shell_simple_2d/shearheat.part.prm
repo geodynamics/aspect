@@ -1,3 +1,2 @@
 subsection Model settings
-  set Include shear heating                   = false 
 end

@@ -118,7 +118,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = 
   set Zero velocity boundary indicators       = 
 
-  set Include shear heating                   = false
 end
 
 

@@ -27,8 +27,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = 0, 1, 2 ,3
   set Prescribed velocity boundary indicators = 
 
-  set Include shear heating = false
-  set Include adiabatic heating = false
 end
 
 subsection Boundary temperature model

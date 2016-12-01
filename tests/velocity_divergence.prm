@@ -144,7 +144,6 @@ subsection Model settings
   set Zero velocity boundary indicators       = 
 
   set Include melt transport                  = false
-  set Include latent heat                     = false
 end
 
 

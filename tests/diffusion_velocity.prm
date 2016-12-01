@@ -295,13 +295,11 @@ subsection Model settings
   # physical viewpoint, adiabatic heating should always be used but may be
   # undesirable when comparing results with known benchmarks that do not
   # include this term in the temperature equation.
-  set Include adiabatic heating               = false
 
   # Whether to include shear heating into the model or not. From a physical
   # viewpoint, shear heating should always be used but may be undesirable when
   # comparing results with known benchmarks that do not include this term in
   # the temperature equation.
-  set Include shear heating                   = false # default: true
 
   # H0
 

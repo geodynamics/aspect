@@ -80,8 +80,6 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 0,1
 
-  set Include adiabatic heating               = false
-  set Include shear heating                   = false
 
   set Tangential velocity boundary indicators = 0,2,3
   set Zero velocity boundary indicators       = 1

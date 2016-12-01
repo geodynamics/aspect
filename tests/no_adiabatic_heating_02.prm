@@ -81,8 +81,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = 0, 1
   set Zero velocity boundary indicators       =
   set Prescribed velocity boundary indicators = 2: function
-  set Include shear heating = true
-  set Include adiabatic heating = false
 end
 
 subsection Boundary velocity model
@@ -98,4 +96,8 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 0.1
   end
+end
+
+subsection Heating model
+  set List of model names =  shear heating
 end

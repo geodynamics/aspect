@@ -76,8 +76,6 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 0,1
 
-  set Include adiabatic heating               = true
-  set Include shear heating                   = false
 
   set Tangential velocity boundary indicators = 0,2,3
   set Zero velocity boundary indicators       = 1
@@ -99,4 +97,8 @@ subsection Postprocess
     set Number of zones = 10
   end
 
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
 end

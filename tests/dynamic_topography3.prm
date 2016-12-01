@@ -70,9 +70,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = inner,outer
   set Prescribed velocity boundary indicators =
   set Fixed temperature boundary indicators   = inner, outer
-  set Include shear heating                   = false
-  set Include adiabatic heating               = false
-  set Include latent heat                     = false
 end
 
 

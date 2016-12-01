@@ -32,7 +32,6 @@ subsection Model settings
   set Tangential velocity boundary indicators = 0,1
   set Prescribed velocity boundary indicators =
   set Fixed temperature boundary indicators   = 0,1
-  set Include shear heating                   = false
   set Remove nullspace = net rotation
 end
 

@@ -36,7 +36,6 @@ subsection Model settings
 
   set Fixed temperature boundary indicators   = inner, outer
 
-  set Include shear heating                   = true
 
   # net rotation|net translation|angular momentum|translational momentum
   set Remove nullspace = net rotation
@@ -82,4 +81,8 @@ subsection Postprocess
   subsection Depth average
     set Time between graphical output = 1e6
   end
+end
+
+subsection Heating model
+  set List of model names =  shear heating
 end

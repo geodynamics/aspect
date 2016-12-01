@@ -79,8 +79,6 @@ end
 subsection Model settings
   set Fixed temperature boundary indicators   = 2,3
 
-  set Include adiabatic heating               = true
-  set Include shear heating                   = true
 
   set Tangential velocity boundary indicators = 0,1
   set Prescribed velocity boundary indicators = 2:function, 3:function
@@ -101,4 +99,8 @@ subsection Postprocess
     set List of output variables = density
     set Time between graphical output = 0
   end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
 end

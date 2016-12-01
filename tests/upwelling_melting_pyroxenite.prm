@@ -113,9 +113,6 @@ subsection Model settings
   # compressibility of the medium) or from shear friction,
   # as well as the rate of internal heating. We do not
   # want to use any of these options here:
-  set Include adiabatic heating               = true
-  set Include latent heat                     = true
-  set Include shear heating                   = false
 end
 
 
@@ -176,3 +173,7 @@ subsection Postprocess
   set List of postprocessors = temperature statistics
 end
 
+
+subsection Heating model
+  set List of model names = adiabatic heating, latent heat
+end

@@ -306,7 +306,6 @@ subsection Model settings
   # viewpoint, shear heating should always be used but may be undesirable when
   # comparing results with known benchmarks that do not include this term in
   # the temperature equation.
-  set Include shear heating                   = true
 
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential but prescribed, i.e., where external forces act to
@@ -401,3 +400,7 @@ subsection Postprocess
 end
 
 
+
+subsection Heating model
+  set List of model names =  shear heating
+end
