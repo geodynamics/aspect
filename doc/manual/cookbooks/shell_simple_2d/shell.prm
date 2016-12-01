@@ -29,9 +29,7 @@ subsection Model settings
   set Zero velocity boundary indicators       = inner
   set Tangential velocity boundary indicators = outer, left, right
   set Prescribed velocity boundary indicators = 
-
   set Fixed temperature boundary indicators   = inner, outer
-
 end
 
 
@@ -41,6 +39,11 @@ subsection Boundary temperature model
     set Inner temperature = 4273 
     set Outer temperature = 973 
   end
+end
+
+
+subsection Heating model
+  set List of model names =  shear heating
 end
 
 
@@ -75,8 +78,4 @@ subsection Postprocess
   subsection Depth average
     set Time between graphical output = 1e6 
   end
-end
-
-subsection Heating model
-  set List of model names =  shear heating
 end
