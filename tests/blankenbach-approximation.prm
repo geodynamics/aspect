@@ -19,7 +19,7 @@ subsection Adiabatic conditions model
 
   subsection Function
     set Function constants  = 
-    set Function expression = 0; 0
+    set Function expression = 0; 0; 1
     set Variable names      = depth
   end
 
