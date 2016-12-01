@@ -333,7 +333,7 @@ namespace aspect
     TanGurnis<dim>::
     is_compressible () const
     {
-      return true;
+      return Di != 0.0;
     }
 
 

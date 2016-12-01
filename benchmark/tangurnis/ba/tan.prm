@@ -68,7 +68,7 @@ end
 subsection Formulation
   set Formulation              = custom # equivalent to BA
   set Mass conservation        = incompressible
-  set Temperature equation     = reference profile
+  set Temperature equation     = reference density profile
 end
 
 

@@ -16,7 +16,7 @@
 # work in:
 set Dimension                              = 2
 set CFL number = 5.0
-set Additional shared libraries                = libplugin.so
+set Additional shared libraries                = ./libplugin.so
 
 set Use direct solver for Stokes system        = true#false
 
@@ -179,9 +179,10 @@ subsection Heating model
 end
 
 subsection Formulation
-  set Formulation = EBA # equivalent to 'custom' with the settings below
-  #set Mass density approximation        = incompressible
-  #set Temperature density approximation = reference density profile
+  # essentially 'EBA' that we do not provide as a major option, because it is inconsistent
+  set Formulation = custom 
+  set Mass conservation        = incompressible
+  set Temperature equation     = reference density profile
 end
 
 subsection Gravity model

@@ -88,9 +88,15 @@ subsection Mesh refinement
 end
 
 
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
+
+
 subsection Model settings
-
-
   set Fixed temperature boundary indicators   = 0, 1
 
   set Prescribed velocity boundary indicators =
