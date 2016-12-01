@@ -471,10 +471,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 \index[prmindex]{Function expression}
 \index[prmindexfull]{Adiabatic conditions model!Function!Function expression}
-{\it Value:} 0.0: 0.0
+{\it Value:} 0.0; 0.0; 1.0
 
 
-{\it Default:} 0.0: 0.0
+{\it Default:} 0.0; 0.0; 1.0
 
 
 {\it Possible values:} Any string
@@ -5593,12 +5593,13 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 `visco plastic': An implementation of a visco-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws.  Plasticity limits viscous stresses through a Drucker Prager yield criterion. The model is incompressible. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill) and DruckerPrager (Anne Glerum) material models. 
 
- The viscosity for dislocation or diffusion creep is defined as \[v = 0.5 * A^{-\frac{1}{n}} * d^{-\frac{m}{n}} * \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} * \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodnynamic simulations.  See, for example, Billen and Hirth (2007), G3, 8, Q08012.
+ The viscosity for dislocation or diffusion creep is defined as \[v = 0.5 * A^{-\frac{1}{n}} * d^{\frac{m}{n}} * \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} * \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodnynamic simulations.  See, for example, Billen and Hirth (2007), G3, 8, Q08012.
 
  One may select to use the diffusion ($v_{diff}$; $n=1$, $m!=0$), dislocation ($v_{disl}$, $n>1$, $m=0$) or composite $\frac{v_{diff}*v_{disl}}{v_{diff}+v_{disl}}$ equation form. 
 
  Viscosity is limited through one of two different 'yielding' mechanism 
 Plasticity limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6*C*\cos(\phi) + 2*P*\sin(\phi)} {\sqrt(3)*(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coloumb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion) When the viscous stress ($2v{\varepsilon}_{ii}$) the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of accumulated finite strain. Finite strain may be calculated through tracers (implemented by Rene Gassmoeller) or the compositional field finite strain plugin (implemented by Juliane Dannberg). In either case, the user specifies compositional fields for each of the symmetric strain tensor components, which must be listed before any additional compositional fields and will reflect the following order 2D: fs[0][0], fs[1][1], fs[0][1] 3D: fs[0][0], fs[1][1], fs[2][2], fs[0][1], fs[0][2], fs[1][2] Above, fs refers to the 'finite strain' tensor and the numbers represent tensor indices.  While the user may define any names for each of the finite strain components, the above ordering is assumed in the strain weakening section. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_eff = \frac{\tau_y}{2*\varepsilon_y} {\frac{\varepsilon_ii}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation.  This method of limiting viscous stress has been used in various forms within the geodynamic literature, including Christensen (1992), JGR, 97(B2), pp. 2015-2036; Cizkova and Bina (2013), EPSL, 379, pp. 95-103; Cizkova and Bina (2015), EPSL, 430, pp. 408-415. When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -7968,7 +7969,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Description:} The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities ofdepleted material. Depletion is indicated by the compositionalfield with the name peridotite. Not used if this field does not exist in the model.Units: $kg/m^3$.
 
 
-{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Depletion solidus change}
 \phantomsection\label{parameters:Material model/Melt simple/Depletion solidus change}
 
@@ -9351,7 +9352,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 375e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $J / mol$
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $J / mol$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9367,7 +9368,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 530e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $J / mol$
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $J / mol$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9419,6 +9420,22 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Cohesion strain weakening factors}
+\phantomsection\label{parameters:Material model/Visco Plastic/Cohesion strain weakening factors}
+
+
+\index[prmindex]{Cohesion strain weakening factors}
+\index[prmindexfull]{Material model!Visco Plastic!Cohesion strain weakening factors}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} List of cohesion strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Cohesions}
 \phantomsection\label{parameters:Material model/Visco Plastic/Cohesions}
 
@@ -9447,7 +9464,39 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities, $\rho$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $kg / m^3$
+{\it Description:} List of densities, $\rho$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $kg / m^3$
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt End strain weakening intervals}
+\phantomsection\label{parameters:Material model/Visco Plastic/End strain weakening intervals}
+
+
+\index[prmindex]{End strain weakening intervals}
+\index[prmindexfull]{Material model!Visco Plastic!End strain weakening intervals}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} List of strain weakening interval final strains for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Friction strain weakening factors}
+\phantomsection\label{parameters:Material model/Visco Plastic/Friction strain weakening factors}
+
+
+\index[prmindex]{Friction strain weakening factors}
+\index[prmindexfull]{Material model!Visco Plastic!Friction strain weakening factors}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} List of friction strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9479,7 +9528,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3
 
 
-{\it Description:} List of grain size exponents, $m_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of grain size exponents, $m_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9495,7 +9544,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.25e3
 
 
-{\it Description:} List of heat capacities $C_p$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $J/kg/K$
+{\it Description:} List of heat capacities $C_p$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $J/kg/K$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9559,7 +9608,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value. Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_{diffusion}} m^{n_{diffusion}/m_{diffusion}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9575,7 +9624,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value. Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: $Pa^{-n_{dislocation}} m^{n_{dislocation}/m_{dislocation}} s^{-1}$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9627,6 +9676,22 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Start strain weakening intervals}
+\phantomsection\label{parameters:Material model/Visco Plastic/Start strain weakening intervals}
+
+
+\index[prmindex]{Start strain weakening intervals}
+\index[prmindexfull]{Material model!Visco Plastic!Start strain weakening intervals}
+{\it Value:} 0.
+
+
+{\it Default:} 0.
+
+
+{\it Description:} List of strain weakening interval initial strains for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Stress exponents for diffusion creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for diffusion creep}
 
@@ -9639,7 +9704,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1
 
 
-{\it Description:} List of stress exponents, $n_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_diffusion$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9655,7 +9720,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5
 
 
-{\it Description:} List of stress exponents, $n_dislocation$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_dislocation$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9687,7 +9752,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0.8e-6
 
 
-{\it Description:} List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $m^2/s$
+{\it Description:} List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $m^2/s$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9703,10 +9768,26 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5e-5
 
 
-{\it Description:} List of thermal expansivities for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one values is given, then all use the same value.  Units: $1 / K$
+{\it Description:} List of thermal expansivities for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: $1 / K$
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Use strain weakening}
+\phantomsection\label{parameters:Material model/Visco Plastic/Use strain weakening}
+
+
+\index[prmindex]{Use strain weakening}
+\index[prmindexfull]{Material model!Visco Plastic!Use strain weakening}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Apply strain weakening to viscosity, cohesion and internal angle of friction based on accumulated finite strain.  Units: None
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Viscosity averaging scheme}
 \phantomsection\label{parameters:Material model/Visco Plastic/Viscosity averaging scheme}
 
@@ -9739,6 +9820,22 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} Any one of diffusion, dislocation, composite
+\item {\it Parameter name:} {\tt Viscous strain weakening factors}
+\phantomsection\label{parameters:Material model/Visco Plastic/Viscous strain weakening factors}
+
+
+\index[prmindex]{Viscous strain weakening factors}
+\index[prmindexfull]{Material model!Visco Plastic!Viscous strain weakening factors}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} List of viscous strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Yield mechanism}
 \phantomsection\label{parameters:Material model/Visco Plastic/Yield mechanism}
 
@@ -10756,8 +10853,11 @@ The information produced by this postprocessor is a subset of what is generated 
 
 {\it Description:} A comma separated list which specifies which quantites to average in each depth slice. It defaults to averaging all availabe quantities, but this can be an expensive operation, so you may want to select only a few.
 
+List of options:
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux
 
-{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux
+
+{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux
 \item {\it Parameter name:} {\tt Number of zones}
 \phantomsection\label{parameters:Postprocess/Depth average/Number of zones}
 
@@ -11056,14 +11156,18 @@ The following properties are available:
 
 `probability density function': Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero inparts of the domain.
 
+`quadrature points': Generates particles at the quadrature points of each active cell of the triangulation. Here, Gauss quadrature of degree (velocity\_degree + 1), is used similarly to the assembly of Stokes matrix.
+
 `random uniform': Generates a random uniform distribution of particles over the entire simulation domain.
+
+`reference cell': Generate a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension
 
 `uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
 
 `uniform radial': Generate a uniform distribution of particlesover a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated tracers might not exactly match the one specified in the input file.
 
 
-{\it Possible values:} Any one of ascii file, probability density function, random uniform, uniform box, uniform radial
+{\it Possible values:} Any one of ascii file, probability density function, quadrature points, random uniform, reference cell, uniform box, uniform radial
 \item {\it Parameter name:} {\tt Time between data output}
 \phantomsection\label{parameters:Postprocess/Tracers/Time between data output}
 
@@ -11290,6 +11394,28 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Tracers/Generator/Reference cell}
+\label{parameters:Postprocess/Tracers/Generator/Reference_20cell}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of tracers per cell per direction}
+\phantomsection\label{parameters:Postprocess/Tracers/Generator/Reference cell/Number of tracers per cell per direction}
+
+
+\index[prmindex]{Number of tracers per cell per direction}
+\index[prmindexfull]{Postprocess!Tracers!Generator/Reference cell/Number of tracers per cell per direction}
+{\it Value:} 2
+
+
+{\it Default:} 2
+
+
+{\it Description:} List of number of tracers to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Tracers/Generator/Uniform box}
@@ -11606,7 +11732,7 @@ The following postprocessors are available:
 
 `Vs anomaly': A visualization output object that generates output showing the anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is shown as a percentage change relative to the average value of $V_s$ at the depth of this cell.
 
-`adiabat': A visualization output object that generates adiabatic temperature and pressure as produced by AdiabaticConditions.
+`adiabat': A visualization output object that generates adiabatic temperature, pressure, density, and density derivative as produced by AdiabaticConditions.
 
 `artificial viscosity': A visualization output object that generates output showing the value of the artificial viscosity on each cell.
 
