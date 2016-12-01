@@ -1328,8 +1328,19 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::check_consistency_of_formulation() const
+  Simulator<dim>::check_consistency_of_formulation()
   {
+    // Replace FormulationMassConservation::ask_material_model by the respective terms to avoid
+    // complicated checks later on
+    if (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::ask_material_model)
+      {
+        if (material_model->is_compressible() == true)
+          parameters.formulation_mass_conservation = Parameters<dim>::FormulationMassConservation::isothermal_compression;
+        else
+          parameters.formulation_mass_conservation = Parameters<dim>::FormulationMassConservation::incompressible;
+      }
+
+    // Ensure the material model supports the selected formulation of the mass conservation equation
     if (parameters.formulation_mass_conservation == Parameters<dim>::FormulationMassConservation::incompressible)
       {
         AssertThrow(material_model->is_compressible() == false,
@@ -1349,18 +1360,19 @@ namespace aspect
                                "Please check the consistency of your material model and selected formulation."));
       }
 
+    // Ensure that the correct heating terms have been selected for the chosen combined formulation
+    // Note that if the combined formulation is 'custom' there is no check
+    // (useful e.g. for smaller scale lithospheric models with shear heating but without adiabatic heating)
     if (parameters.combined_formulation == Parameters<dim>::CombinedFormulation::isothermal_compression)
       {
-        const std::vector<std::string> &heating_models = heating_model_manager.get_active_heating_model_names();
-
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end(),
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The 'isothermal compression' formulation expects adiabatic heating to be enabled, "
                                "but the heating model manager does not find a heating plugin "
                                "named 'adiabatic heating' in the list of active plugins. "
                                "Please check the consistency of your input file."));
 
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "shear heating") != heating_models.end(),
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The 'isothermal compression' formulation expects shear heating to be enabled, "
                                "but the heating model manager does not find a heating plugin "
@@ -1369,16 +1381,14 @@ namespace aspect
       }
     else if (parameters.combined_formulation == Parameters<dim>::CombinedFormulation::BA)
       {
-        const std::vector<std::string> &heating_models = heating_model_manager.get_active_heating_model_names();
-
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") == heating_models.end(),
+        AssertThrow(!heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The BA formulation expects adiabatic heating to be disabled, "
                                "but the heating model manager found a heating plugin "
                                "named 'adiabatic heating' in the list of active plugins. "
                                "Please check the consistency of your input file."));
 
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "shear heating") == heating_models.end(),
+        AssertThrow(!heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The BA formulation expects shear heating to be disabled, "
                                "but the heating model manager found a heating plugin "
@@ -1387,38 +1397,30 @@ namespace aspect
       }
     else if (parameters.combined_formulation == Parameters<dim>::CombinedFormulation::ALA)
       {
-        const std::vector<std::string> &heating_models = heating_model_manager.get_active_heating_model_names();
-
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "adiabatic heating") != heating_models.end(),
+        AssertThrow(heating_model_manager.adiabatic_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The ALA formulation expects adiabatic heating to be enabled, "
                                "but the heating model manager does not find a heating plugin "
                                "named 'adiabatic heating' in the list of active plugins. "
                                "Please check the consistency of your input file."));
 
-        AssertThrow(std::find(heating_models.begin(), heating_models.end(), "shear heating") != heating_models.end(),
+        AssertThrow(heating_model_manager.shear_heating_enabled(),
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
                                "The ALA formulation expects shear heating to be enabled, "
                                "but the heating model manager does not find a heating plugin "
                                "named 'shear heating' in the list of active plugins. "
                                "Please check the consistency of your input file."));
 
-        const std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > > &heating_plugins =
-          heating_model_manager.get_active_heating_models();
+        const bool use_simplified_adiabatic_heating =
+          heating_model_manager.template find_heating_model<HeatingModel::AdiabaticHeating<dim> >()
+          ->use_simplified_adiabatic_heating();
 
-        for (typename std::list<std_cxx11::shared_ptr<HeatingModel::Interface<dim> > >::const_iterator plugin =
-               heating_plugins.begin(); plugin != heating_plugins.end(); ++plugin)
-          {
-            const HeatingModel::AdiabaticHeating<dim> *
-            adiabatic_heating = dynamic_cast <const HeatingModel::AdiabaticHeating<dim> *> (&(**plugin));
-            if (adiabatic_heating != 0)
-              AssertThrow(adiabatic_heating->use_simplified_adiabatic_heating() == true,
-                          ExcMessage("ASPECT detected an inconsistency in the provided input file. "
-                                     "The ALA formulation expects adiabatic heating to use "
-                                     "a simplified heating term that neglects dynamic pressure influences, "
-                                     "but the adiabatic heating plugin does not report to simplify this term. "
-                                     "Please check the consistency of your input file."));
-          }
+        AssertThrow(use_simplified_adiabatic_heating == true,
+                    ExcMessage("ASPECT detected an inconsistency in the provided input file. "
+                               "The ALA formulation expects adiabatic heating to use "
+                               "a simplified heating term that neglects dynamic pressure influences, "
+                               "but the adiabatic heating plugin does not report to simplify this term. "
+                               "Please check the consistency of your input file."));
       }
   }
 }
@@ -1442,7 +1444,7 @@ namespace aspect
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
-  template void Simulator<dim>::check_consistency_of_formulation() const;
+  template void Simulator<dim>::check_consistency_of_formulation();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 }

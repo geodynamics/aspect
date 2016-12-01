@@ -1148,7 +1148,7 @@ namespace aspect
        * it only ensures very basic consistency.
        */
       void
-      check_consistency_of_formulation () const;
+      check_consistency_of_formulation ();
 
       /**
        * This function is called at the end of each time step and writes the

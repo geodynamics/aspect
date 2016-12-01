@@ -642,7 +642,7 @@ namespace aspect
         prm.print_parameters(prm_out, ParameterHandler::LaTeX);
       }
 
-    // check that the setup of equations, material models, and heating termes is consistent
+    // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
 
     // now that all member variables have been set up, also

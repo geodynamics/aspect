@@ -335,11 +335,8 @@ namespace aspect
   {
     // assemble RHS of:
     //  - div u = 1/rho * drho/dp rho * g * u
-    Assert((parameters.formulation_mass_conservation ==
-            Parameters<dim>::FormulationMassConservation::isothermal_compression) ||
-           ((parameters.formulation_mass_conservation ==
-             Parameters<dim>::FormulationMassConservation::ask_material_model) &&
-            this->get_material_model().is_compressible() == true) ,
+    Assert(parameters.formulation_mass_conservation ==
+            Parameters<dim>::FormulationMassConservation::isothermal_compression,
            ExcInternalError());
 
     const Introspection<dim> &introspection = this->introspection();

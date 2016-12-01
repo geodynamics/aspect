@@ -78,7 +78,6 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
 
-
     template <int dim>
     std::list<std::pair<std::string,std::string> >
     Manager<dim>::execute (TableHandler &statistics)
